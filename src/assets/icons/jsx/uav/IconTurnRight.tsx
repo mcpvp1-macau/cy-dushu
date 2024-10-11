@@ -1,0 +1,29 @@
+import { type SVGAttributes } from 'react'
+import Icon from '@ant-design/icons'
+
+type IconParams = Omit<Parameters<typeof Icon>[0], 'component'>
+
+const iconSvg = (props: SVGAttributes<SVGElement>) => {
+  return (
+    <svg fill="none" viewBox="0 0 14 14" {...props}>
+      <g transform="matrix(-1,0,0,1,28,0)">
+        <g>
+          <g>
+            <path
+              d="M13.999999999999996,6.7833499984741215L20.077079999999995,1.750349998474121L20.077079999999995,5.221469998474121C20.077079999999995,5.221469998474121,28.419799999999995,4.537229998474121,27.983499999999996,12.250349998474121C26.504199999999997,7.569099998474121,20.077079999999995,8.345219998474121,20.077079999999995,8.345219998474121L20.077079999999995,11.816349998474122L13.999999999999996,6.7833499984741215Z"
+              fill="currentColor"
+              fillOpacity="1"
+            />
+          </g>
+        </g>
+      </g>
+    </svg>
+  )
+}
+
+/**![icon](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiBmaWxsPSJub25lIiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDE0IDE0Ij48ZyB0cmFuc2Zvcm09Im1hdHJpeCgtMSwwLDAsMSwyOCwwKSI+PGc+PGc+PHBhdGggZD0iTTEzLjk5OTk5OTk5OTk5OTk5Niw2Ljc4MzM0OTk5ODQ3NDEyMTVMMjAuMDc3MDc5OTk5OTk5OTk1LDEuNzUwMzQ5OTk4NDc0MTIxTDIwLjA3NzA3OTk5OTk5OTk5NSw1LjIyMTQ2OTk5ODQ3NDEyMUMyMC4wNzcwNzk5OTk5OTk5OTUsNS4yMjE0Njk5OTg0NzQxMjEsMjguNDE5Nzk5OTk5OTk5OTk1LDQuNTM3MjI5OTk4NDc0MTIxLDI3Ljk4MzQ5OTk5OTk5OTk5NiwxMi4yNTAzNDk5OTg0NzQxMjFDMjYuNTA0MTk5OTk5OTk5OTk3LDcuNTY5MDk5OTk4NDc0MTIxLDIwLjA3NzA3OTk5OTk5OTk5NSw4LjM0NTIxOTk5ODQ3NDEyMSwyMC4wNzcwNzk5OTk5OTk5OTUsOC4zNDUyMTk5OTg0NzQxMjFMMjAuMDc3MDc5OTk5OTk5OTk1LDExLjgxNjM0OTk5ODQ3NDEyMkwxMy45OTk5OTk5OTk5OTk5OTYsNi43ODMzNDk5OTg0NzQxMjE1WiIgZmlsbD0iI0M3RDFEQyIgZmlsbC1vcGFjaXR5PSIxIi8+PC9nPjwvZz48L2c+PC9zdmc+) */
+const IconTurnRight = (props: IconParams) => (
+  <Icon component={iconSvg} {...props} />
+)
+
+export default IconTurnRight

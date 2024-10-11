@@ -1,0 +1,77 @@
+import { memo, type FC } from 'react'
+import styles from './index.module.less'
+import HSlider from '../../../HSlider'
+import YTPHJ from '../../icons/YTPHJ'
+import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
+import { ActionCameraPositionType } from '@/store/uav/uav-airline/types'
+
+type ConfigType = ActionCameraPositionType['config']
+
+type PropsType = {
+  config: ConfigType
+  onChange: (value: ConfigType) => unknown
+}
+
+const CameraPositionX: FC<PropsType> = ({ config, onChange }) => {
+  const currentBearing = useAirlineConfigStore((s) => s.bearing)
+
+  // const { leftHide } = useModel('leftNav', (m) => pick(m, 'leftHide'));
+  const leftHide = false
+
+  let diff = Math.abs(currentBearing - (config.x ?? 0))
+  if (diff > 180) {
+    diff = 360 - diff
+  }
+
+  const warningShow = diff >= 45
+  const errorShow = diff >= 90
+
+  return (
+    <div>
+      <div className={styles.titleHeader}>
+        <div className={styles.subTitle}>
+          <YTPHJ />
+          <span className={styles.text}>云台偏航角</span>
+        </div>
+        <div>
+          <span className={styles.important}>
+            {(config?.x ?? 0).toFixed(1)}
+          </span>
+          °
+        </div>
+      </div>
+      <HSlider
+        value={config?.x ?? 0}
+        min={-180}
+        max={180}
+        onChange={(value) => onChange({ x: Number(value.toFixed(2)) })}
+      />
+      {warningShow && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '134px',
+            left: `calc(50% + 19px + ${leftHide ? 0 : 175}px)`,
+            transform: 'translateX(-50%)',
+            background: errorShow
+              ? 'rgba(214, 34, 38, 0.6)'
+              : 'rgba(212, 107, 30, 0.75)',
+            padding: '12px 24px',
+            width: '300px',
+            borderRadius: '3px',
+            textAlign: 'center',
+          }}
+        >
+          {errorShow
+            ? '云台已达限位角度'
+            : '当前角度可能会拍到飞行器脚架或桨叶'}
+        </div>
+      )}
+    </div>
+  )
+}
+
+const memorizedCpn = memo(CameraPositionX)
+memorizedCpn.displayName = 'CameraPositionX'
+
+export default memorizedCpn

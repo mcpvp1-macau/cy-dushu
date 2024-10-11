@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .scroll-gutter-stable {
+    scrollbar-gutter: stable;
+  }
+  .device-detail-icon {
+    @apply w-[21px] h-[21px] min-w-[21px] min-h-[21px] border border-solid border-ground-250 text-sm flex items-center justify-center text-primary rounded-sm;
+  }
+  .page-full {
+    @apply w-[calc(100vw_-_38px)] h-[calc(100vh_-_38px)] z-50;
+  }
+  .card-border {
+    @apply border border-solid border-ground-250 rounded-[3px];
+  }
+}
+
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 1px 2px #000;
+  }
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+  }
+}

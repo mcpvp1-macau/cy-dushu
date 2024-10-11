@@ -1,0 +1,28 @@
+import { memo, type FC } from 'react'
+
+type PropsType = {
+  mode?: 'horizontal' | 'vertical'
+  children?: ReactNode
+}
+
+const FloatIconButtonGroup: FC<PropsType> = memo(
+  ({ children, mode = 'horizontal' }) => {
+    return (
+      <div
+        className={clsx(
+          'flex items-center bg-[#16202BCC] rounded gap-[1px] bg-ground-250 overflow-hidden shadow',
+          'border border-solid border-ground-250',
+          {
+            'flex-col': mode === 'vertical',
+          },
+        )}
+      >
+        {children}
+      </div>
+    )
+  },
+)
+
+FloatIconButtonGroup.displayName = 'FloatIconButtonGroup'
+
+export default FloatIconButtonGroup

@@ -1,0 +1,129 @@
+import { argbToHex } from '@/utils/color'
+import { shouldJson } from '@/utils/json'
+import { attempt, flatten } from 'lodash'
+import { memo, type FC } from 'react'
+import { Label, useCesium } from 'resium'
+import * as Cesium from 'cesium'
+import * as turf from '@turf/turf'
+
+type PropsType = {
+  data: API_LAYER_OVERLAY.domain.Overlay
+}
+
+const OverlayPolygon: FC<PropsType> = memo(({ data }) => {
+  const { viewer } = useCesium()
+
+  useEffect(() => {
+    if (!viewer) {
+      return
+    }
+
+    const overlayPositions = shouldJson(data.overlayPositions)
+
+    if (!overlayPositions) {
+      return
+    }
+
+    const positions = Cesium.Cartesian3.fromDegreesArray(
+      flatten(overlayPositions.map((e) => [e[0], e[1]])),
+    )
+
+    const styleConfig = shouldJson(data.overlayStyleConfig)
+    const fill = argbToHex(String(styleConfig?.fillColor?.['-value']))?.[0]
+    const stroke = argbToHex(String(styleConfig?.strokeColor?.['-value']))?.[0]
+
+    // 创建多边形几何实例
+    const instance1 = new Cesium.GeometryInstance({
+      geometry: new Cesium.PolygonGeometry({
+        polygonHierarchy: new Cesium.PolygonHierarchy(positions),
+        extrudedHeight: 1,
+      }),
+      id: `overlay--${data.overlayId}`,
+
+      attributes: {
+        color: Cesium.ColorGeometryInstanceAttribute.fromColor(
+          Cesium.Color.fromCssColorString(fill).withAlpha(0.3),
+        ),
+      },
+    })
+
+    // 创建边界线几何实例
+    const instance2 = new Cesium.GeometryInstance({
+      geometry: new Cesium.PolygonOutlineGeometry({
+        polygonHierarchy: new Cesium.PolygonHierarchy(positions),
+      }),
+
+      attributes: {
+        color: Cesium.ColorGeometryInstanceAttribute.fromColor(
+          Cesium.Color.fromCssColorString(stroke),
+        ),
+      },
+    })
+
+    const primitive = new Cesium.Primitive({
+      geometryInstances: [instance1], //可以是实例数组
+      appearance: new Cesium.PerInstanceColorAppearance({
+        closed: true,
+        flat: true,
+        renderState: {
+          depthTest: {
+            enabled: false,
+          },
+        },
+      }),
+      allowPicking: true,
+    })
+    const outlinePrimitive = new Cesium.Primitive({
+      geometryInstances: [instance2],
+      appearance: new Cesium.PerInstanceColorAppearance({
+        flat: true,
+        renderState: {
+          lineWidth: Math.min(2.0, viewer.scene.maximumAliasedLineWidth),
+          depthTest: {
+            enabled: false,
+          },
+        },
+      }),
+    })
+    viewer.scene.primitives.add(primitive)
+    viewer.scene.primitives.add(outlinePrimitive)
+
+    return () => {
+      attempt(() => {
+        viewer.scene.primitives.remove(primitive)
+        viewer.scene.primitives.remove(outlinePrimitive)
+      })
+    }
+  }, [viewer])
+
+  const center = turf.center(
+    turf.points(shouldJson(data.overlayPositions) ?? []),
+  )
+
+  return (
+    <Label
+      position={Cesium.Cartesian3.fromDegrees(
+        center.geometry.coordinates[0],
+        center.geometry.coordinates[1],
+        0,
+      )}
+      scale={0.2}
+      verticalOrigin={Cesium.VerticalOrigin.BOTTOM}
+      horizontalOrigin={Cesium.HorizontalOrigin.CENTER}
+      text={data.overlayName}
+      outlineColor={Cesium.Color.fromCssColorString('#000')}
+      outlineWidth={5}
+      font="700 64px Helvetica"
+      pixelOffset={new Cesium.Cartesian2(0, 0)}
+      backgroundColor={Cesium.Color.BLACK}
+      fillColor={Cesium.Color.WHITE}
+      disableDepthTestDistance={50000}
+      style={Cesium.LabelStyle.FILL_AND_OUTLINE}
+      heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
+    />
+  )
+})
+
+OverlayPolygon.displayName = 'OverlayPolygon'
+
+export default OverlayPolygon

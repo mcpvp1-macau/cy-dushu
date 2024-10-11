@@ -1,0 +1,27 @@
+.iconButton {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+  color: #bfcbd6;
+
+  &:hover {
+    color: #4c90f0;
+  }
+
+  &[disabled] {
+    cursor: not-allowed;
+    color: #c7d1dc;
+    opacity: 0.5;
+  }
+
+  & > * {
+    transition: color 0.2s linear;
+  }
+}
+
+.active {
+  color: #4c90f0;
+}

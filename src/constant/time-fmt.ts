@@ -1,0 +1,6 @@
+export const dft = 'YYYY-MM-DD HH:mm:ss'
+export const dateOnly = 'YYYY-MM-DD'
+export const timeOnly = 'HH:mm:ss'
+export const beginDay = 'YYYY-MM-DD 00:00:00'
+export const endDay = 'YYYY-MM-DD 23:59:59'
+export const beginMonth = 'YYYY-MM-01 00:00:00'

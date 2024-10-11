@@ -1,0 +1,94 @@
+import { Input } from 'antd'
+import AppSpin from '@/components/AppSpin'
+import { getActionList } from '@/service/modules/action'
+import ActionItem from './components/ActionItem'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import AddAction from './components/AddAction'
+import { useInfiniteQuery } from '@tanstack/react-query'
+import useReachBottom from '@/hooks/useReachBottom'
+import React from 'react'
+import AppEmpty from '@/components/AppEmpty'
+
+type PropsType = unknown
+
+const PageSituationAction: FC<PropsType> = memo(() => {
+  const [name, setName] = useState('')
+
+  const queryClient = useQueryClient()
+  const {
+    data,
+    isLoading,
+    isRefetching,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery(
+    {
+      queryKey: ['actionList', name],
+      initialPageParam: 1,
+      queryFn: async ({ pageParam }) => {
+        const { data } = await getActionList({
+          name: name || undefined,
+          status: ['PENDING', 'PROCESSING'],
+          isPage: true,
+          page: pageParam,
+          size: 15,
+        })
+        return data
+      },
+      getNextPageParam: (page, _, lastPageParam) => {
+        if (page.rows.length < 15) {
+          return undefined
+        }
+        return lastPageParam + 1
+      },
+    },
+    queryClient,
+  )
+
+  const handleScroll = useReachBottom(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage()
+    }
+  })
+
+  const handlePressEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    setName(e.currentTarget.value)
+  }
+
+  return (
+    <div className="h-full flex flex-col my-3 overflow-hidden">
+      <div className="px-3">
+        <Input
+          placeholder="请根据行动名称搜索"
+          onPressEnter={handlePressEnter}
+        />
+      </div>
+      <ScrollArea className="grow mt-3 px-3" onScroll={handleScroll}>
+        {isLoading || isRefetching || !data ? (
+          <AppSpin />
+        ) : data.pages.at(-1)?.rows.length === 0 ? (
+          <AppEmpty />
+        ) : (
+          <div className="flex flex-col gap-3">
+            {data.pages.map((page, idx) => (
+              <React.Fragment key={idx}>
+                {page.rows.map((item) => (
+                  <ActionItem key={item.id} data={item} />
+                ))}
+              </React.Fragment>
+            ))}
+          </div>
+        )}
+        {isFetchingNextPage && <AppSpin />}
+      </ScrollArea>
+      <div className="mt-3 text-center">
+        <AddAction />
+      </div>
+    </div>
+  )
+})
+
+PageSituationAction.displayName = 'PageAction'
+
+export default PageSituationAction

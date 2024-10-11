@@ -1,0 +1,65 @@
+.airlineConfig {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .handler {
+    color: #4c90f0;
+    cursor: pointer;
+  }
+
+  .takePhoto {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+  }
+
+  :global {
+    .ant-radio-group {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+
+      .ant-radio-button-wrapper {
+        flex-grow: 1;
+        text-align: center;
+        height: 28px;
+        line-height: 26px;
+        padding: 0;
+      }
+    }
+
+    .ant-form-item {
+      margin-bottom: 12px;
+    }
+  }
+
+  .xForm {
+    margin-top: 12px;
+
+    :global {
+      .ant-select-selector {
+        border-color: #37414d;
+      }
+    }
+  }
+
+  .checkedBtn {
+    padding: 2px 4px;
+    border-radius: 16px;
+    opacity: 0.5;
+    line-height: 14px;
+    background: #4c90f0;
+    border: 1px solid #4580d6;
+    cursor: pointer;
+
+    &.checked {
+      opacity: 1;
+    }
+  }
+
+  .subTitle {
+    margin-top: 12px;
+    color: #c7d1dc;
+  }
+}

@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package ja;
+
+enum LensType{
+  JA_LENS_TYPE_DEFAULT = 0;
+  JA_LENS_TYPE_WIDE = 1;
+  JA_LENS_TYPE_ZOOM = 2;
+  JA_LENS_TYPE_IR = 3;
+}
+
+enum CameraType{
+  JA_CAMERA_TYPE_UNKNOWN = 0;
+  JA_CAMERA_TYPE_Z30 = 20;
+  JA_CAMERA_TYPE_XT2 = 26;
+  JA_CAMERA_TYPE_PSDK = 31;
+  JA_CAMERA_TYPE_XTS = 41;
+  JA_CAMERA_TYPE_H20 = 42;
+  JA_CAMERA_TYPE_H20T = 43;
+  JA_CAMERA_TYPE_H20N = 61;
+  JA_CAMERA_TYPE_P1 = 50;
+  JA_CAMERA_TYPE_L1 = 51;
+  JA_CAMERA_TYPE_L2 = 84;
+  JA_CAMERA_TYPE_M30 = 52;
+  JA_CAMERA_TYPE_M30T = 53;
+  JA_CAMERA_TYPE_M3E = 66;
+  JA_CAMERA_TYPE_M3T = 67;
+  JA_CAMERA_TYPE_M3D = 80;
+  JA_CAMERA_TYPE_M3TD = 81;
+  JA_CAMERA_TYPE_H30 = 82;
+  JA_CAMERA_TYPE_H30T = 83;
+}
+
+message PropertiesData {
+  int32 width = 1;
+  int32 height = 2;
+  float longitude = 3;
+  float latitude = 4;
+  float altitude = 5;
+  float gimbalYaw = 6;
+  float gimbalPitch = 7;
+  float zoomFactor = 8;
+  CameraType cameraType = 9;
+  LensType lensType = 10;
+}

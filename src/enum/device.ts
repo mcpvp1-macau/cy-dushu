@@ -1,0 +1,72 @@
+import DeviceIconAIRPORT from '@/assets/icons/jsx/device/DeviceIconAIRPORT'
+import DeviceIconCamera from '@/assets/icons/jsx/device/DeviceIconCamera'
+import DeviceIconENFORCEMENT from '@/assets/icons/jsx/device/DeviceIconENFORCEMENT_RECODER'
+import DeviceIconTTP_BOX from '@/assets/icons/jsx/device/DeviceIconTTP_BOX'
+import DeviceIconUAV from '@/assets/icons/jsx/device/DeviceIconUAV'
+import DeviceIconWANGLOU from '@/assets/icons/jsx/device/DeviceIconWANGLOU'
+
+export enum DeviceEnum {
+  UAV = 'UAV',
+  ROBOT_DOG = 'ROBOT_DOG',
+  SITE_ENFORCEMENT_RECORDER = 'SITE_ENFORCEMENT_RECORDER',
+  RADAR = 'RADAR',
+  WANGLOU = 'WANGLOU',
+  CAMERA = 'CAMERA',
+  DEVICE_CHANNEL = 'DEVICE_CHANNEL',
+  AIS_BASE_STATION = 'AIS_BASE_STATION',
+  VHF = 'VHF',
+  SEARCHLIGHT = 'SEARCHLIGHT',
+  NVR = 'NVR',
+  DVR = 'DVR',
+  TTP_BOX = 'TTP_BOX',
+  UAV_AIRPORT = 'UAV_AIRPORT',
+  VISIBLE_LIGHT_CAMERA = 'VISIBLE_LIGHT_CAMERA',
+  INFRARED_CAMERA = 'INFRARED_CAMERA',
+}
+
+/** 图标映射 */
+export const deviceIconMap = {
+  [DeviceEnum.UAV]: DeviceIconUAV,
+  [DeviceEnum.UAV_AIRPORT]: DeviceIconAIRPORT,
+  [DeviceEnum.TTP_BOX]: DeviceIconTTP_BOX,
+  [DeviceEnum.CAMERA]: DeviceIconCamera,
+  [DeviceEnum.WANGLOU]: DeviceIconWANGLOU,
+  [DeviceEnum.SITE_ENFORCEMENT_RECORDER]: DeviceIconENFORCEMENT,
+}
+
+export enum DeviceStatusEnum {
+  ONLINE = 'ONLINE',
+  OFFLINE = 'OFFLINE',
+}
+
+export const StatusMap = {
+  [DeviceStatusEnum.ONLINE]: '在线',
+  [DeviceStatusEnum.OFFLINE]: '离线',
+}
+
+export const StatusColorMap = {
+  [DeviceStatusEnum.ONLINE]: 'rgb(21, 179, 113)',
+  [DeviceStatusEnum.OFFLINE]: 'rgb(228, 89, 81)',
+}
+
+export const UpdateStatusMap = {
+  NO_UPGRADE: '无需升级',
+  WAITING_UPGRADE: '等待升级，未执行升级操作',
+  PENDING: '升级等待中，执行升级操作，排队中',
+  DOWNLOADING: '下载中',
+  INSTALLING: '安装中',
+  REBOOTING: '重启中',
+  SUCCESS: '升级成功',
+  FAILED: '升级失败',
+}
+
+export enum UpdateStatusEnum {
+  NO_UPGRADE = 'NO_UPGRADE',
+  WAITING_UPGRADE = 'WAITING_UPGRADE',
+  PENDING = 'PENDING',
+  DOWNLOADING = 'DOWNLOADING',
+  INSTALLING = 'INSTALLING',
+  REBOOTING = 'REBOOTING',
+  SUCCESS = 'SUCCESS',
+  FAILED = 'FAILED',
+}

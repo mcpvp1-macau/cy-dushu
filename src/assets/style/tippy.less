@@ -1,0 +1,25 @@
+.tippy-box[data-theme~='liqun'] {
+  background-color: #27303b;
+  color: #c7d1dc;
+}
+
+.tippy-box[data-theme~='liqun'][data-placement^='top'] > .tippy-arrow::before {
+  border-top-color: #27303b;
+}
+.tippy-box[data-theme~='liqun'][data-placement^='bottom']
+  > .tippy-arrow::before {
+  border-bottom-color: #27303b;
+}
+.tippy-box[data-theme~='liqun'][data-placement^='left'] > .tippy-arrow::before {
+  border-left-color: #27303b;
+}
+.tippy-box[data-theme~='liqun'][data-placement^='right']
+  > .tippy-arrow::before {
+  border-right-color: #27303b;
+}
+
+/* The border of the arrow will now match the border of the box */
+.tippy-box[data-theme~='liqun'] {
+  background: #27303b;
+  border: 1px solid #424b54;
+}

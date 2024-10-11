@@ -1,0 +1,32 @@
+.divIndicatorFixed {
+  width: 0;
+  height: 0;
+  border: 0 solid transparent;
+  // opacity: ;
+  border-radius: 50%;
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  // z-index: 9999999999999;
+  z-index: 99;
+  // transform: none !important;
+
+  .divIndicatorDrag {
+    position: absolute;
+    text-align: center;
+    color: #fff;
+    z-index: 999;
+    cursor: move;
+  }
+
+  .divIndicatorLine {
+    position: absolute;
+    border-left: 2px solid #9da6af;
+    width: 0;
+    // top: 6px;
+    // left: 6px;
+    z-index: 99;
+    // transition: all 0.2s ease-in-out;
+  }
+}

@@ -1,0 +1,171 @@
+import CloseableHeader from '../../components/CloseableHeader'
+import DeviceIconAIRPORT from '@/assets/icons/jsx/device/DeviceIconAIRPORT'
+import useUserStore from '@/store/useUser.store'
+import { shouldJson } from '@/utils/json'
+import useWebSocket from 'react-use-websocket'
+import { heartbeat } from '@/constant/websocket'
+import UavAirportWeatherSection from './components/WeatherSection'
+import { enumProperty } from '@/utils/device/property-parse'
+import UavAirportInfoCard from './components/InfoCard'
+import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
+import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
+import { Button } from 'antd'
+import IconDebug from '@/assets/icons/jsx/uav/IconDebug'
+import IconTakeoff from '@/assets/icons/jsx/uav/IconTakeoff'
+import RemoteDebug from './components/RemoteDebug'
+import UavAirportUavDetail from './components/Uav'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import UavAirportCreateAction from './components/UavAirportCreateAction'
+
+type PropsType = {
+  data: API_DEVICE.domain.Device
+}
+
+const map = new Map<string, string>([
+  ['device_reboot', '机场重启'],
+  ['drone_open', '飞行器开机'],
+  ['drone_close', '飞行器关机'],
+  ['cover_open', '打开舱盖'],
+  ['cover_close', '关闭舱盖'],
+])
+
+const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
+  const productKey = data.productKey || data.deviceModel?.productKey
+  const deviceId = data.deviceId
+  const videoId = data?.properties.videoList?.[0]?.videoId ?? ''
+
+  const [state, setState] = useState<Record<string, any>>({})
+
+  const [progressState, setProgressState] = useState<any[]>([])
+  /** WebSocket 处理 */
+  const handleMessage = useMemoizedFn((evt: WebSocketEventMap['message']) => {
+    const { data } = evt
+    const wsData = shouldJson(data)
+    if (!wsData) {
+      return
+    }
+    switch (wsData.method) {
+      case 'event.property.post':
+      case 'properties.state':
+        // 属性变化
+        if (wsData.deviceId === deviceId) {
+          setState({ ...state, ...wsData.data })
+        }
+        break
+      case 'event.progress.info':
+        const { data } = wsData
+        const record = {
+          ...data,
+          time: dayjs(wsData.timestamp),
+        }
+        if (map.get((data.name as string).toLowerCase())) {
+          setProgressState((prev) => [record, ...prev].slice(0, 10))
+        }
+        break
+    }
+  })
+
+  useWebSocket(
+    `${globalConfig.globalWs}://${
+      location.host
+    }/v3/${productKey}/${deviceId}?token=${useUserStore.getState().token}`,
+    {
+      heartbeat,
+      reconnectAttempts: 0x3f3f3f3f,
+      onMessage: handleMessage,
+    },
+  )
+
+  const rainfall = useMemo(
+    () =>
+      enumProperty(data.properties, data.deviceModel.properties, 'rainfall'),
+    [data],
+  )
+
+  const modelNumber = useMemo(
+    () =>
+      data.deviceTags.find((e) => e.tagName === 'MODEL_NUMBER')?.tagValue ?? '',
+    [data],
+  )
+
+  const onlineStatus = useRealOnlineStatus(deviceId)
+
+  const { actionId } = useParams()
+
+  const header = useMemo(
+    () => (
+      <div className="flex justify-between gap-2">
+        <div className="flex gap-2 items-center">
+          <DeviceIconAIRPORT className="device-detail-icon" />
+          <h6 className="text-white text-base">{data.deviceName}</h6>
+        </div>
+        {actionId && <UavAirportCreateAction />}
+      </div>
+    ),
+    [data.deviceName],
+  )
+
+  const [openDebug, setOpenDebug] = useState(false)
+
+  return (
+    <>
+      <div className="overflow-y-hidden flex flex-col relative backdrop-blur-sm">
+        <CloseableHeader>{header}</CloseableHeader>
+        <ScrollArea className="grow">
+          <div className="mx-3">
+            <UavAirportWeatherSection
+              windSpeed={state.windSpeed}
+              rainfall={rainfall}
+              temperature={state.temperature}
+              environmentTemperature={state.environmentTemperature}
+            />
+          </div>
+          <div className="my-3 mx-3">
+            <UavAirportInfoCard
+              modelNumber={modelNumber}
+              onlineStatus={onlineStatus}
+              modeDisplay={state.modeDisplay}
+              stockStatus={state.isInDock}
+            />
+          </div>
+          <div className="mx-3 rounded overflow-hidden">
+            <DeviceLiveVideo
+              productKey={productKey}
+              deviceId={deviceId}
+              videoId={videoId}
+            />
+          </div>
+          <div className="my-3 flex gap-2 px-3">
+            <Button
+              block
+              className="h-7"
+              icon={<IconDebug />}
+              onClick={() => setOpenDebug(true)}
+            >
+              远程调试
+            </Button>
+            <Button block className="h-7" icon={<IconTakeoff />}>
+              一键起飞
+            </Button>
+          </div>
+
+          {data?.childDevice?.[0]?.deviceId && (
+            <UavAirportUavDetail deviceId={data?.childDevice?.[0]?.deviceId} />
+          )}
+        </ScrollArea>
+      </div>
+      {openDebug && (
+        <RemoteDebug
+          data={data}
+          state={state}
+          progress={progressState}
+          onClose={() => setOpenDebug(false)}
+        />
+      )}
+    </>
+  )
+})
+
+UavAirportDetail.displayName = 'UavAirportDetail'
+
+export default UavAirportDetail

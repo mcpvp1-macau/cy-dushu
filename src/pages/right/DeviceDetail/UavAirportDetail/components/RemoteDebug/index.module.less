@@ -1,0 +1,106 @@
+.remoteDebug {
+  position: fixed;
+  top: 50px;
+  right: 406px;
+  width: 400px;
+  background: rgba(22, 32, 43, 90%);
+  border-radius: 2px;
+  overflow: hidden;
+  z-index: 10;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #28323c;
+    height: 32px;
+    padding: 0 12px;
+    font-size: 14px;
+    border: 1px solid #37414d;
+  }
+
+  .wrapper {
+    padding: 12px;
+
+    .content {
+      padding: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      border-radius: 3px;
+      background: #1c2631;
+      border: 1px solid #37414d;
+      gap: 12px;
+
+      .item {
+        width: 168px;
+        height: 48px;
+        border-radius: 3px;
+        background: rgba(255, 255, 255, 0%);
+        border: 1px solid #37414d;
+        display: flex;
+        justify-content: space-between;
+        padding: 8px;
+        align-items: center;
+        gap: 8px;
+
+        .textBox {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          font-size: 12px;
+          height: 100%;
+
+          p {
+            margin: 0;
+            padding: 0;
+          }
+
+          .title {
+            color: #c7d1dc;
+            line-height: 12px;
+          }
+
+          .value {
+            color: #fff;
+            line-height: 12px;
+          }
+        }
+      }
+    }
+
+    .content2 {
+      margin-top: 12px;
+      border: 1px solid #37414d;
+      border-radius: 3px;
+      background-color: #1c2631;
+      box-sizing: content;
+
+      .progressHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 44px;
+        padding: 0 12px;
+        font-weight: normal;
+
+        p {
+          margin: 0;
+          padding: 0;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  .progressWrapper {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 14px;
+    max-height: calc(100vh - 550px);
+    overflow-y: auto;
+    color: #c7d1dc;
+  }
+}

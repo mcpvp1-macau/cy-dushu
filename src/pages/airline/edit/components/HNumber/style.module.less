@@ -1,0 +1,32 @@
+.hNumber {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+
+  .importantInfo {
+    flex: 1;
+    font-size: 18px;
+    text-align: center;
+
+    .value {
+      &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+      }
+    }
+
+    .unit {
+      color: #fff;
+      font-size: 12px;
+      margin-left: 1px;
+    }
+  }
+
+  :global {
+    .ant-btn {
+      background-color: #28323c;
+      border-color: #37414d;
+    }
+  }
+}

@@ -1,0 +1,54 @@
+.titleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.subTitle {
+  display: flex;
+  align-items: center;
+  color: #c7d1dc;
+  margin: 12px 0 8px;
+  gap: 8px;
+}
+
+.important {
+  color: #4c90f0;
+}
+
+.takePhoto {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.checkedBtn {
+  padding: 2px 4px;
+  border-radius: 16px;
+  opacity: 0.5;
+  line-height: 14px;
+  background: #4c90f0;
+  border: 1px solid #4580d6;
+  cursor: pointer;
+  transition: opacity 0.3s linear;
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.checked {
+    opacity: 1;
+  }
+
+  &.disabled.checked {
+    opacity: 0.8;
+  }
+}

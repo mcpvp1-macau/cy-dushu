@@ -1,0 +1,35 @@
+.takePhoto {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+
+  :global {
+    .ant-radio-group {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+
+      .ant-radio-button-wrapper {
+        flex-grow: 1;
+        text-align: center;
+        height: 28px;
+        line-height: 26px;
+        padding: 0;
+      }
+    }
+  }
+
+  .checkedBtn {
+    padding: 2px 4px;
+    border-radius: 16px;
+    opacity: 0.5;
+    line-height: 14px;
+    background: #4c90f0;
+    border: 1px solid #4580d6;
+    cursor: pointer;
+
+    &.checked {
+      opacity: 1;
+    }
+  }
+}

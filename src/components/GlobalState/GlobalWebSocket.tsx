@@ -1,0 +1,179 @@
+import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
+import useUserStore from '@/store/useUser.store'
+import { shouldJson } from '@/utils/json'
+import dayjs from 'dayjs'
+import { isEqual } from 'lodash'
+import { type FC } from 'react'
+import useWebSocket from 'react-use-websocket'
+
+type PropsType = unknown
+
+const GlobalWebSocket: FC<PropsType> = memo(() => {
+  const username = useUserStore((s) => s.user?.username)
+
+  const socketUrl = useMemo(() => {
+    if (!username) {
+      return ''
+    }
+    return `${globalConfig.globalWs ?? 'ws'}://${location.host}/ws/${username}`
+  }, [username])
+
+  const queryClient = useQueryClient()
+
+  // 雷达目标 ------------------------
+  const updateRadarTarget = useGlobalWsStore((s) => s.updateRadarTarget)
+  const handleRadarTarget = useMemoizedFn((obj: any) => {
+    const { parentId, deviceId, data } = obj
+    // if ('RADAR' !== data?.data?.sourceType)
+
+    const target = useGlobalWsStore.getState().radarTarget || {}
+    const parentDevice = target[parentId] || {}
+    const oldmap = parentDevice?.[deviceId] || {}
+    const newArr = data?.data?.targets?.length ? data?.data?.targets : []
+    const n: any = {}
+    newArr.forEach((item: any) => {
+      if (oldmap[item.targetId]) {
+        // 已存在的目标
+        if (item.loss_times > 0) {
+          delete n[item.targetId]
+        } else {
+          n[item.targetId] = [
+            ...oldmap[item.targetId],
+            {
+              ...item,
+              productKey: data?.productKey,
+              acquireTimestampFormat: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+              source: data?.data?.deviceName,
+              sourceType: data?.data?.sourceType || item.sourceType,
+              deviceInfo: data?.data?.deviceInfo,
+            },
+          ]
+        }
+      } else {
+        // 新目标
+        n[item.targetId] = [
+          {
+            ...item,
+            productKey: data?.productKey,
+            acquireTimestampFormat: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+            source: data?.data?.deviceName,
+            sourceType: data?.data?.sourceType || item.sourceType,
+            deviceInfo: data?.data?.deviceInfo,
+          },
+        ]
+      }
+    })
+    const targetMap = {
+      ...target,
+      [parentId]: {
+        ...parentDevice,
+        [deviceId]: n,
+      },
+    }
+
+    updateRadarTarget(targetMap)
+  })
+
+  // 设备状态变化 ---------------------
+  const updateDeviceRealtimeProperties = useGlobalWsStore(
+    (s) => s.updateDeviceRealtimeProperties,
+  )
+  const handleNewDeviceStatus = useMemoizedFn((message: string) => {
+    const obj = shouldJson(message)
+    const { data, type } = obj
+    switch (type) {
+      case 'PROPERTIES':
+        const pro: any = {}
+        const os: Record<string, string> = {}
+        for (const item of data) {
+          const { deviceId: id } = item
+          pro[id] = item
+          os[id] = item.deviceStatus
+        }
+        updateDeviceRealtimeProperties(pro)
+        // 判断是否需要刷新设备列表
+        if (!isEqual(useGlobalWsStore.getState().onlineStatus, os)) {
+          queryClient.invalidateQueries({
+            queryKey: ['deviceTreeList'],
+            exact: false,
+          })
+        }
+        break
+      case 'DEVICE_DISCOVERY':
+        const newOS = useGlobalWsStore.getState().onlineStatus
+        let needRefresh = false
+        for (const item of data) {
+          const { deviceId: id } = item
+          if (newOS[id] !== item.deviceStatus) {
+            newOS[id] = item.deviceStatus
+            needRefresh = true
+          }
+        }
+        if (needRefresh) {
+          queryClient.invalidateQueries({
+            queryKey: ['deviceTreeList'],
+            exact: false,
+          })
+        }
+        break
+      case 'DEVICE_EVENT':
+        if (data.method === 'event.targetInfo.info') {
+          // TODO: 更新设备信息
+          handleRadarTarget(obj)
+        }
+        break
+    }
+  })
+
+  // 事件推送 ------------------------
+  const updateNewEvent = useGlobalWsStore((s) => s.updateNewEvent)
+  const handleEventPush = useMemoizedFn((message: any) => {
+    updateNewEvent(message)
+  })
+
+  // 日志 ----------------------------
+  const updateNewLog = useGlobalWsStore((s) => s.updateNewLog)
+  const handleActionLog = useMemoizedFn((message: any) => {
+    updateNewLog(message)
+  })
+
+  const updateRefreshTemporary = useGlobalWsStore(
+    (s) => s.updateRefreshTemporary,
+  )
+  const handleTemporaryDetectResult = useMemoizedFn((message: any) => {
+    updateRefreshTemporary({ ...message, time: dayjs().valueOf() })
+  })
+
+  // websocket message
+  const handleMessage = useMemoizedFn((event: WebSocketEventMap['message']) => {
+    const { type, message } = shouldJson(event.data) ?? {}
+    switch (type) {
+      case 'DEVICE_STATUS':
+        // no use
+        break
+      case 'NEW_DEVICE_STATUS':
+        handleNewDeviceStatus(message)
+        break
+      case 'EVENT_STATUS':
+        // no use
+        break
+      case 'EVENT_PUSH':
+        handleEventPush(message)
+        break
+      case 'ACTION_LOG':
+        handleActionLog(message)
+        break
+      case 'TEMPORARY_DETECT_RESULT':
+        handleTemporaryDetectResult(message)
+        break
+    }
+  })
+
+  useWebSocket(socketUrl, { onMessage: handleMessage })
+
+  return null
+})
+
+GlobalWebSocket.displayName = 'GlobalWebSocket'
+
+export default GlobalWebSocket

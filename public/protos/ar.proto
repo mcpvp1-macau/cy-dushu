@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package ja;
+
+message floatList {
+  repeated float data = 1;
+}
+
+message intList {
+  repeated float data = 1;
+}
+
+message ARInfo{
+  repeated intList data = 1;
+}
+
+message geometry{
+  string type = 1;
+  floatList coordinates = 2;
+}
+
+message properties{
+  repeated ARInfo AR = 1;
+  string highway = 2;
+  string building = 3;
+  string name = 4;
+}
+
+message feature {
+  string type = 1;
+  properties properties = 2;
+  geometry geometry = 3;
+}
+
+message ARData {
+  bool referenceLastAR = 1;
+  bool referenceLastMap = 2;
+  int32 source_frame_height = 3;
+  int32 source_frame_width = 4;
+  repeated floatList fov = 5;
+  repeated feature features = 6;
+}

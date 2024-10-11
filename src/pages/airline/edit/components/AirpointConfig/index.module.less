@@ -1,0 +1,91 @@
+.mainContent {
+  // flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .airpointSwitch {
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .importantInfo {
+      flex: 1;
+      color: #4c90f0;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    :global {
+      .ant-btn {
+        background-color: #28323c;
+        border-color: #37414d;
+      }
+    }
+  }
+
+  .splitLine {
+    height: 1px;
+    background-color: #37414d;
+    border-radius: 1px;
+  }
+
+  .titleHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .important {
+    color: #4c90f0;
+  }
+
+  .subTitle {
+    display: flex;
+    align-items: center;
+    color: #c7d1dc;
+    margin: 12px 0 8px;
+
+    .text {
+      margin-left: 6px;
+    }
+  }
+}
+
+.takePhoto {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.checkedBtn {
+  padding: 2px 4px;
+  border-radius: 16px;
+  opacity: 0.5;
+  line-height: 14px;
+  background: #4c90f0;
+  border: 1px solid #4580d6;
+  cursor: pointer;
+  transition: opacity 0.3s linear;
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.checked {
+    opacity: 1;
+  }
+
+  &.disabled.checked {
+    opacity: 0.8;
+  }
+}

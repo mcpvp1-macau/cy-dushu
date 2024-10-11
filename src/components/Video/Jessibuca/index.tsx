@@ -1,0 +1,166 @@
+import useVideoEncoderStore from '@/store/useVideoEncoder.store'
+import JessibucaPro from '@/types/jessibuca-pro/jessibuca-pro'
+import {
+  supportMse,
+  supportSimd,
+  supportWCS,
+  supportWCSHevc,
+} from '@/utils/video/video-support'
+import { useThrottleEffect } from 'ahooks'
+import usePropertiesProtobuf from './hooks/usePropertiesProtobuf'
+import SeiEnum, { SEI_TYPE } from './sei-enum'
+import useProtobufSei from './hooks/useProtobufSei'
+
+type PropsType = {
+  containerId?: string
+  src: string
+  /** 视频信息回调 */
+  onVideoInfo?: (info: {
+    width: number
+    height: number
+    encType: string
+    encTypeCode: number
+  }) => void
+  /** 时间持续更新回调 */
+  onTimeUpdate?: (ts: number) => void
+  onSeiProperties?: (data: SEI_TYPE[SeiEnum.JSON_PROPERTIES]) => void
+  onSeiAIData?: (data: SEI_TYPE[SeiEnum.Protobuf_SEI]) => void
+}
+
+const Jessibuca: FC<PropsType> = memo(({ src, ...props }) => {
+  const ref = useRef<HTMLDivElement>(null)
+  const jessibucaRef = useRef<JessibucaPro | null>(null)
+
+  const videoEncoderValue = useVideoEncoderStore((s) => s.videoEncoderValue)
+  videoEncoderValue
+
+  const handleVideoInfo = useMemoizedFn((data) => {
+    props.onVideoInfo?.(data)
+  })
+
+  const handleTimeUpdate = useMemoizedFn((ts: number) => {
+    props.onTimeUpdate?.(ts)
+  })
+
+  const { handlePropertiesProtobuf } = usePropertiesProtobuf(
+    props.onSeiProperties,
+  )
+  const { handleProtobufSei } = useProtobufSei(props.onSeiAIData)
+
+  const handleVideoSei = useMemoizedFn((b: Uint8Array) => {
+    const n = b.length
+    for (let i = 0; i < n - 8; ) {
+      const flag = (b[i] << 16) | (b[i + 1] << 8) | b[i + 2]
+      if (flag !== 0xabcdef) {
+        i++
+        continue
+      }
+      const type = b[i + 3]
+      const length =
+        b[i + 4] | (b[i + 5] << 8) | (b[i + 6] << 16) | (b[i + 7] << 24)
+      const dataBytes = b.slice(i + 8, i + 8 + length)
+      switch (type) {
+        case SeiEnum.JSON_SEI: // 普通文本数据
+          break
+        case SeiEnum.Protobuf_SEI: // protobuf sei
+          handleProtobufSei(dataBytes)
+          break
+        case SeiEnum.PROTOBUF_PROPERTIES: // protobuf 属性
+          handlePropertiesProtobuf(dataBytes)
+          break
+      }
+      i += 8 + length
+    }
+  })
+
+  // 创建播放器
+  useEffect(() => {
+    const support: Record<string, boolean> = {
+      useMSE: false,
+      useSIMD: false,
+      useWCS: false,
+      useWasm: false,
+    }
+    if (videoEncoderValue) {
+      support[videoEncoderValue] = true
+    } else if (supportWCS && supportWCSHevc) {
+      support.useWCS = true
+    } else if (supportMse) {
+      support.useMSE = true
+    } else if (supportSimd) {
+      support.useSIMD = true
+    } else {
+      support.useWasm = true
+    }
+
+    jessibucaRef.current = new window.JessibucaPro({
+      container: ref.current!,
+      videoBuffer: globalConfig.videoBuffer || 0, // 缓存时长
+      videoBufferDelay: globalConfig.videoBufferDelay || 0, // 1000s
+      isResize: true,
+      // text: '',
+      loadingText: '',
+      debugLevel: 'debug',
+      ...support,
+      operateBtns: {},
+      timeout: 5000,
+      heartTimeoutReplayUseLastFrameShow: true,
+      audioEngine: 'worklet',
+      isNotMute: false,
+      heartTimeout: 10,
+      ptzClickType: 'mouseDownAndUp',
+      forceNoOffscreen: true,
+      useCanvasRender: false,
+      // useWebGPU: true,
+      debug: false,
+      isFullResize: false,
+      isEmitSEI: true,
+      decoder: '/js/JessibucaPro/decoder-pro.js',
+      // supportHls265: true,
+      /** @ts-ignore */
+      decoderAudio: 'js/JessibucaPro/decoder-pro-audio.js',
+      decoderHard: '/js/JessibucaPro/decoder-pro-hard.js',
+    })
+
+    jessibucaRef.current.on(
+      'videoInfo' as JessibucaPro.EVENTS.videoInfo,
+      handleVideoInfo,
+    )
+    jessibucaRef.current.on(
+      'timeUpdate' as JessibucaPro.EVENTS.timeUpdate,
+      handleTimeUpdate,
+    )
+
+    jessibucaRef.current.on(
+      'videoSEI' as JessibucaPro.EVENTS.videoSEI,
+      ({ data }) => {
+        handleVideoSei(data)
+      },
+    )
+
+    return () => {
+      jessibucaRef.current?.destroy()
+    }
+  }, [])
+
+  // 视频地址变化时，重新播放
+  useThrottleEffect(
+    () => {
+      if (!jessibucaRef.current) {
+        return
+      }
+      jessibucaRef.current.clearBufferDelay()
+      jessibucaRef.current.playbackClearCacheBuffer()
+      if (!src) {
+        return
+      }
+      jessibucaRef.current.play(src)
+    },
+    [src],
+    { wait: 500, trailing: false },
+  )
+
+  return <div id={props.containerId} ref={ref}></div>
+})
+
+export default Jessibuca
