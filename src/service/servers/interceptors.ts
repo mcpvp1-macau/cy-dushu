@@ -11,6 +11,7 @@ import { msgMitt } from '@/hooks/useAppMsg'
 /** token 携带 */
 export const withToken = (config: InternalAxiosRequestConfig<any>) => {
   const { token } = useUserStore.getState()
+  config.headers['_origin_target_host'] = location.host
   if (token) {
     config.headers['Authorization'] = `Bearer ${token}`
   }
