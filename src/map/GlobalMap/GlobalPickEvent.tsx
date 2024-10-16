@@ -83,7 +83,7 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
               e.primitive instanceof Cesium.Billboard &&
               e.id &&
               typeof e.id === 'string' &&
-              e.id.includes('--'),
+              e.id.includes('device--'),
           )
           .slice(0, 8) // 限制 8 个
           .map((e) => {
