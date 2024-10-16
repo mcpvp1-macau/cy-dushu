@@ -20,6 +20,27 @@ declare namespace API_DBAPI {
       longitude?: string
       latitude?: string
     }
+    interface TrackPoint {
+      deviceType: any
+      lng: number
+      lat_84: any
+      lng02Rectify: any
+      lat02Rectify: any
+      spaceType: any
+      attitudeHead: number
+      type: any
+      deviceId: string
+      deviceName: any
+      spaceId: any
+      lngGaode: number
+      latGaode: number
+      gimbalHead: number
+      acquisitionTimeFormat: string
+      acquisitionTime: number
+      lat: number
+      objectId: any
+      lng_84: any
+    }
   }
   // ------------------ req ------------------
   namespace req {
@@ -48,5 +69,6 @@ declare namespace API_DBAPI {
       API_DBAPI.domain.PlatformCaptureRecord[],
       [{ cnt: number }],
     ]
+    type GetTrackQueryRes = API_DBAPI.domain.TrackPoint[]
   }
 }

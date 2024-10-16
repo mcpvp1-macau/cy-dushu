@@ -15,3 +15,15 @@ export const getWirelessSituation = (
   data: API_DBAPI.req.WirelessSituation,
   config?: AxiosRequestConfig,
 ) => serverDBAPI.post('/api/wireless/union', data, config)
+
+/** 历史轨迹 */
+export const getTrackQuery = (data: {
+  deviceId: string
+  startTime: string
+  endTime: string
+}) => {
+  return serverDBAPI.post<API_DBAPI.res.GetTrackQueryRes>(
+    '/api/trackQuery',
+    data,
+  )
+}

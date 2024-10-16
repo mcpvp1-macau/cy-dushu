@@ -10,6 +10,7 @@ import LayerOverlay from './LayerOverlay'
 import MapSituation from './Situation'
 import MapViewSave from './MapViewSave'
 import DrawHandler from './DrawHandler'
+import DeviceHistoryTracks from './DeviceHistoryTracks'
 
 type PropsType = unknown
 
@@ -29,6 +30,7 @@ const GlobalMap: FC<PropsType> = memo(() => {
         <MapSituation />
         <MapViewSave />
         <DrawHandler />
+        <DeviceHistoryTracks />
         {airlineOpen && <ActionAirline />}
       </CesiumMap>
     </div>

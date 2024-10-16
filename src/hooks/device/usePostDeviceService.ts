@@ -2,6 +2,7 @@ import { postDeviceService } from '@/service/modules/device'
 import { useAppMsg } from '../useAppMsg'
 import { uniqueId } from 'lodash'
 
+/** 调用设备服务 */
 export const usePostDeviceService = (productKey: string, deviceId: string) => {
   const msgApi = useAppMsg()
   const postService = useMemoizedFn(async (identifier: string, data?: any) => {

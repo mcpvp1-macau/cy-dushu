@@ -3,6 +3,7 @@ import { memo, type FC } from 'react'
 
 import LinkSwitch from '@/components/LinkSwitch'
 import DeviceDetailMediaData, { MediaType } from '../../components/MediaData'
+import usePrevDayHisTrack from '../hooks/usePrevDayHisTrack'
 
 type PropsType = {}
 
@@ -19,6 +20,8 @@ const UavDetailData: FC<PropsType> = memo(() => {
       value: 'HISTORY_VIDEO',
     },
   ]).current
+
+  usePrevDayHisTrack()
 
   return (
     <div>

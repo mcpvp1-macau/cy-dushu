@@ -33,6 +33,7 @@ const UavUpdateRealMarker: FC<PropsType> = memo(() => {
         wsState.latitude || realProperties.latitude || data?.latitude || 0,
       uavYaw: wsState.uavYaw || realProperties.uavYaw || 0,
       gimbalYaw: wsState.gimbalYaw || realProperties.gimbalYaw || 0,
+      deviceId: data!.deviceId,
     }
   }, [data, realProperties, wsState])
 
