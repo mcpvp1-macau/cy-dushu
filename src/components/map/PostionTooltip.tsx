@@ -60,12 +60,18 @@ const PositionTooltip: FC<PropsType> = memo(
           }
         }
         const left = `${
-          limitNum(Math.floor(screenPostion.x.valueOf()), 0, rect.width) +
-          rect.left
+          limitNum(
+            Math.floor(screenPostion.x / viewer.resolutionScale),
+            0,
+            rect.width,
+          ) + rect.left
         }px`
         const top = `${
-          limitNum(Math.floor(screenPostion.y.valueOf()), 0, rect.height) +
-          rect.top
+          limitNum(
+            Math.floor(screenPostion.y / viewer.resolutionScale),
+            0,
+            rect.height,
+          ) + rect.top
         }px`
         if (
           divRef.current?.style.left === left &&
@@ -89,7 +95,7 @@ const PositionTooltip: FC<PropsType> = memo(
 
         tippyRef.current?.popperInstance?.update()
       },
-      { wait: 10, trailing: true },
+      { wait: 12, trailing: true },
     )
 
     // 创建 tippy 实例

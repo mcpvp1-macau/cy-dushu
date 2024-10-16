@@ -27,17 +27,7 @@ const CesiumDefaultConfig: FC<PropsType> = memo(() => {
     viewer.scene.fxaa = true
     viewer.scene.postProcessStages.fxaa.enabled = true
 
-    // 设备分辨率比例，防止部分电脑过于模糊
-    const supportsImageRenderingPixelated =
-      // @ts-ignore
-      viewer.cesiumWidget._supportsImageRenderingPixelated
-    let vtxf_dpr = window.devicePixelRatio
-    if (supportsImageRenderingPixelated) {
-      while (vtxf_dpr >= 2.0) {
-        vtxf_dpr /= 2.0
-      }
-    }
-
+    // 默认视角
     viewer.camera?.setView?.({
       destination: Cesium.Cartesian3.fromDegrees(110, 30, 18000000),
       orientation: {
@@ -47,17 +37,8 @@ const CesiumDefaultConfig: FC<PropsType> = memo(() => {
       },
     })
 
-    // 亮度设置
-    const stages = viewer.scene.postProcessStages
-    // @ts-ignore
-    viewer.scene.brightness =
-      // @ts-ignore
-      viewer.scene.brightness ||
-      stages.add(Cesium.PostProcessStageLibrary.createBrightnessStage())
-    // @ts-ignore
-    viewer.scene.brightness.enabled = true
-    // @ts-ignore
-    viewer.scene.brightness.uniforms.brightness = Number(1)
+    // 设置分辨率
+    viewer.resolutionScale = 1.2
   }, [viewer])
 
   return null
