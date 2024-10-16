@@ -16,10 +16,29 @@ import RemoteDebug from './components/RemoteDebug'
 import UavAirportUavDetail from './components/Uav'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import UavAirportCreateAction from './components/UavAirportCreateAction'
+import FormModal from '@/components/XForm/Modal'
+import { XFormItem } from '@/components/XForm/types'
+import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
 }
+
+const items: XFormItem[] = [
+  {
+    label: '起飞高度',
+    name: 'height',
+    type: 'input-number',
+    rules: [{ required: true, message: '请输入起飞高度' }],
+    otherProps: { style: { width: '100%' } },
+  },
+  {
+    label: '返航高度',
+    name: 'gohomeAltitude',
+    type: 'input-number',
+    otherProps: { style: { width: '100%' }, min: 50, max: 500 },
+  },
+]
 
 const map = new Map<string, string>([
   ['device_reboot', '机场重启'],
@@ -107,6 +126,14 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
 
   const [openDebug, setOpenDebug] = useState(false)
 
+  const [takeOffOpen, { setTrue: setTakeoffTrue, setFalse: setTakeoffFalse }] =
+    useBoolean(false)
+
+  const postDeviceService = usePostDeviceService(productKey, deviceId)
+  const handleTakeoffOk = async (values: any) => {
+    await postDeviceService('takeoff', values)
+  }
+
   return (
     <>
       <div className="overflow-y-hidden flex flex-col relative backdrop-blur-sm">
@@ -144,7 +171,13 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
             >
               远程调试
             </Button>
-            <Button block className="h-7" icon={<IconTakeoff />}>
+            <Button
+              disabled={state.modeCode !== 0}
+              block
+              className="h-7"
+              icon={<IconTakeoff />}
+              onClick={setTakeoffTrue}
+            >
               一键起飞
             </Button>
           </div>
@@ -160,6 +193,16 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
           state={state}
           progress={progressState}
           onClose={() => setOpenDebug(false)}
+        />
+      )}
+      {takeOffOpen && (
+        <FormModal
+          title="相对起飞 (m)"
+          open={takeOffOpen}
+          items={items}
+          onClose={setTakeoffFalse}
+          onConfirm={handleTakeoffOk}
+          confirmLoading={state.modeCode !== 0}
         />
       )}
     </>
