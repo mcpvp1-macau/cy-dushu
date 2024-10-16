@@ -65,13 +65,13 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
         key={deviceId + '-label'}
         id={deviceId + '-label'}
         position={Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30)}
-        scale={0.2}
+        scale={0.1}
         verticalOrigin={Cesium.VerticalOrigin.BOTTOM}
         horizontalOrigin={Cesium.HorizontalOrigin.CENTER}
         text={data.deviceName}
         outlineColor={Cesium.Color.fromCssColorString('#000')}
         outlineWidth={5}
-        font="700 64px Helvetica"
+        font="700 128px Helvetica"
         pixelOffset={new Cesium.Cartesian2(0, 25)}
         backgroundColor={Cesium.Color.BLACK}
         fillColor={Cesium.Color.WHITE}
@@ -79,6 +79,9 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
         disableDepthTestDistance={50000}
         style={Cesium.LabelStyle.FILL_AND_OUTLINE}
         heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
+        distanceDisplayCondition={
+          new Cesium.DistanceDisplayCondition(0, 500_000)
+        }
       />
     </>
   )

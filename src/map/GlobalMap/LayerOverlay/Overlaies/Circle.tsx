@@ -127,6 +127,7 @@ const OverlayCircle: FC<PropsType> = memo(({ data }) => {
       disableDepthTestDistance={50000}
       style={Cesium.LabelStyle.FILL_AND_OUTLINE}
       heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
+      distanceDisplayCondition={new Cesium.DistanceDisplayCondition(0, 500_000)}
     />
   )
 })
