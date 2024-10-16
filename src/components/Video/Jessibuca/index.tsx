@@ -14,6 +14,7 @@ import useProtobufSei from './hooks/useProtobufSei'
 type PropsType = {
   containerId?: string
   src: string
+  refreshKey?: React.Key
   /** 视频信息回调 */
   onVideoInfo?: (info: {
     width: number
@@ -27,7 +28,7 @@ type PropsType = {
   onSeiAIData?: (data: SEI_TYPE[SeiEnum.Protobuf_SEI]) => void
 }
 
-const Jessibuca: FC<PropsType> = memo(({ src, ...props }) => {
+const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
   const ref = useRef<HTMLDivElement>(null)
   const jessibucaRef = useRef<JessibucaPro | null>(null)
 
@@ -156,7 +157,7 @@ const Jessibuca: FC<PropsType> = memo(({ src, ...props }) => {
       }
       jessibucaRef.current.play(src)
     },
-    [src],
+    [src, refreshKey],
     { wait: 500, trailing: false },
   )
 

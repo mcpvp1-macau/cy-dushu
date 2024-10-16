@@ -88,12 +88,14 @@ const DeviceLiveVideo = memo(
         { wait: 333 },
       )
 
+      const [refreshKey, setRefreshKey] = useState(0)
       /** 刷新 */
-      const handleRefresh = useMemoizedFn(() => {
-        queryClient.invalidateQueries({
+      const handleRefresh = async () => {
+        await queryClient.invalidateQueries({
           queryKey: ['livePost', productKey, deviceId, videoId],
         })
-      })
+        setRefreshKey((v) => (v + 1) % 100)
+      }
 
       const wrapperRef = useRef<HTMLDivElement>(null)
       const [fullScreen, { toggleFullscreen }] = useFullscreen(wrapperRef)
@@ -223,6 +225,7 @@ const DeviceLiveVideo = memo(
             >
               {playUrl && (
                 <Jessibuca
+                  refreshKey={refreshKey}
                   containerId={videoContainerId}
                   src={playUrl}
                   onVideoInfo={(v) => {
