@@ -7,6 +7,7 @@ import HomeMarker from './components/HomeMarker'
 import UavMapInitial from './components/Initial'
 import UavRealTrack from './components/RealTrack'
 import UavMapPointFly from './components/PointFly/PointFly'
+import UavViewCombackResolver from './components/CombackResolver'
 
 type PropsType = unknown
 
@@ -20,6 +21,7 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
       <HomeMarker />
       <UavRealTrack />
       <UavMapPointFly />
+      <UavViewCombackResolver />
       {isResetHome && <ResetHomePointListener />}
     </CesiumMap>
   )
