@@ -23,7 +23,7 @@ const hidenSet = new Set([
 ])
 
 const App = () => {
-  useTitle(globalConfig.title ?? '旌旗')
+  useTitle(globalConfig.title ?? '牍术·无人装备智能引擎')
 
   const [messageApi, contextHolder] = message.useMessage({
     top: 45,

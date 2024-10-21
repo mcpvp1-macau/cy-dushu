@@ -1,6 +1,5 @@
 window.config = {
   systemName: 'jingqi-v3', // 应用名称
-  title: '警用无人机管控赋能平台',
   loginUrl: 'http://4a.jing-an.com:32712/login',
   globalWs: 'ws', // 全局
   defDeviceType: 'UAV',
@@ -36,7 +35,6 @@ window.config = {
   showSite: false, // 水库相关功能
   videoBuffer: 0,
   videoBufferDelay: 0.2,
-  logo: '/logo.svg',
   maptilerUrl: '', // 公网
   vodVideoUrl: 'http://172.21.30.201:31118',
   controlServerUploadUrl: 'http://172.21.30.201:32041',

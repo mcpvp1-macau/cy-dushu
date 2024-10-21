@@ -12,6 +12,7 @@ import AppEmpty from './components/AppEmpty.tsx'
 import '@/assets/style/index.less'
 import zh from 'antd/es/locale/zh_CN'
 import 'dayjs/locale/zh-cn'
+import '@/global/favicon-change.ts'
 
 // 设置 dayjs 语言
 dayjs.locale('zh-cn')
