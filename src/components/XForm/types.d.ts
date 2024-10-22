@@ -20,6 +20,7 @@ type CommonProps = {
   render?: ReactNode
   rules?: Rule[]
   valuePropName?: string
+  getValueFromEvent?: (...args: any[]) => any
   colsProps?: GetProps<typeof Col>
 }
 

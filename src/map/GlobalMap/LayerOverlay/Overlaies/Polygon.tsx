@@ -5,6 +5,7 @@ import { memo, type FC } from 'react'
 import { Label, useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import * as turf from '@turf/turf'
+import { useMapLayerAndOverlayConfigStore } from '@/store/map/useLayerAndOverlay.store'
 
 type PropsType = {
   data: API_LAYER_OVERLAY.domain.Overlay
@@ -13,8 +14,18 @@ type PropsType = {
 const OverlayPolygon: FC<PropsType> = memo(({ data }) => {
   const { viewer } = useCesium()
 
+  const hiddenOverlayIds = useMapLayerAndOverlayConfigStore(
+    (s) => s.hiddenOverlayIds,
+  )
+  const hiddenLayerIds = useMapLayerAndOverlayConfigStore(
+    (s) => s.hiddenLayerIds,
+  )
+
+  const isHidden =
+    hiddenOverlayIds.has(data.overlayId) || hiddenLayerIds.has(data.layerId)
+
   useEffect(() => {
-    if (!viewer) {
+    if (!viewer || isHidden) {
       return
     }
 
@@ -94,11 +105,15 @@ const OverlayPolygon: FC<PropsType> = memo(({ data }) => {
         viewer.scene.primitives.remove(outlinePrimitive)
       })
     }
-  }, [viewer])
+  }, [viewer, isHidden])
 
   const center = turf.center(
     turf.points(shouldJson(data.overlayPositions) ?? []),
   )
+
+  if (isHidden) {
+    return null
+  }
 
   return (
     <Label

@@ -15,7 +15,7 @@ const MapLayerConfig: FC<PropsType> = memo(() => {
       >
         <IconLayer />
       </FloatIconButton>
-      <MapLayerSettingModal open={open} onClose={setFalse} />
+      {open && <MapLayerSettingModal open={open} onClose={setFalse} />}
     </div>
   )
 })

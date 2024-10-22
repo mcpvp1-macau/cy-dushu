@@ -8,6 +8,7 @@ import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
 import { DeviceStatusEnum } from '@/enum/device'
 import { deviceStatusFilter } from '@/pages/situation/source/utils'
 import useRightMode from '@/store/layout/useRightMode.store'
+import { RightModeEnum } from '@/enum/right-mode'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -32,6 +33,7 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
 
   const status = useRealOnlineStatus(deviceId)
 
+  const rightMode = useRightMode((s) => s.rightMode)
   const detailDeviceId = useRightMode((s) => s.detailId)
 
   if (
@@ -45,7 +47,8 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
     return null
   }
   if (isOnline && status !== DeviceStatusEnum.ONLINE) return null
-  if (detailDeviceId === deviceId) return null
+  if (rightMode === RightModeEnum.DEVICE && detailDeviceId === deviceId)
+    return null
 
   return (
     <>

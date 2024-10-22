@@ -73,6 +73,9 @@ declare namespace API_LAYER_OVERLAY {
       overlayPositions: string
       overlayBindActions: string
     }
+    type AddLayerReq = {
+      layerName: string
+    }
   }
   // ------------------ res ------------------
   namespace res {

@@ -9,7 +9,6 @@ import { shouldJson } from '@/utils/json'
 import { argbToHex } from '@/utils/color'
 import IconButton from '@/components/ui/button/IconButton'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
-import IconShare from '@/assets/icons/jsx/IconShare'
 import IconEdit from '@/assets/icons/jsx/IconEdit'
 import { Input } from 'antd'
 import IconSave from '@/assets/icons/jsx/IconSave'
@@ -58,11 +57,13 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
     }
   }
 
+  const updateRightMode = useRightMode((s) => s.updateRightMode)
   const handleDelete = async () => {
     try {
       setConfirmLoading(true)
       await deleteOverlaies([overlay!.overlayId])
-      queryClient.invalidateQueries({
+      updateRightMode(null)
+      await queryClient.invalidateQueries({
         queryKey: ['overlayList'],
         exact: false,
       })
@@ -101,7 +102,7 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                 onChange={(e) => setRenameValue(e.currentTarget.value)}
               />
             ) : (
-              <h6 className="text-white text-base">
+              <h6 className="text-white text-base max-w-[190px] truncate">
                 {overlay?.overlayName || '-'}
               </h6>
             )}
@@ -131,9 +132,9 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                     <IconEdit className="scale-90" />
                   </IconButton>
                 )}
-                <IconButton toolTipProps={{ title: '分享' }}>
+                {/* <IconButton toolTipProps={{ title: '分享' }}>
                   <IconShare className="scale-90" />
-                </IconButton>
+                </IconButton> */}
                 <IconButton
                   toolTipProps={{ title: '删除点位' }}
                   onClick={handleDelete}

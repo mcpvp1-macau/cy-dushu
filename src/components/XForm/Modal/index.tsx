@@ -9,10 +9,11 @@ type PropsType = GetProps<typeof XForm> & {
   width?: string
   title: string
   open: boolean
+  /** FormModal 内部自动会处理 loading 状态 */
   confirmLoading?: boolean
-  /** @deprecated */
+  /** @deprecated 继承自 Form, 参考 https://ant-design.antgroup.com/components/form-cn#form */
   layout?: 'auto' | number
-  onConfirm?: (data: any) => void
+  onConfirm?: (data: any) => Promise<void> | void
   onClose?: () => void
 }
 
@@ -31,9 +32,15 @@ const FormModal: FC<PropsType> = ({
   const [innerForm] = Form.useForm()
 
   const form = propForm ?? innerForm
-
-  const handleConfirmClick = () => {
-    form.validateFields().then(onConfirm)
+  const [loading, setLoading] = useState(false)
+  const handleConfirmClick = async () => {
+    setLoading(true)
+    try {
+      const values = await form.validateFields()
+      onConfirm?.(values)
+    } finally {
+      setLoading(false)
+    }
   }
 
   useLayoutEffect(() => {
@@ -80,7 +87,7 @@ const FormModal: FC<PropsType> = ({
           <div className="text-right p-3 pt-0">
             <Button onClick={onClose}>取消</Button>
             <Button
-              loading={confirmLoading}
+              loading={confirmLoading || loading}
               type="primary"
               style={{ marginLeft: '12px' }}
               onClick={handleConfirmClick}

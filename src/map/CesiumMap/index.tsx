@@ -4,6 +4,7 @@ import * as Cesium from 'cesium'
 import DefaultImageryLayer from './components/DefaultImageryLayer'
 import CesiumDefaultConfig from './components/CesiumDefaultConfig'
 import MapLayerConfig from '../LayerConfig/LayerConfig'
+import CustomImageryLayer from './components/CustomImageryLayer'
 
 type PropsType = {
   id: string
@@ -38,6 +39,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, children }) => {
       imageryProvider={false}
     >
       <DefaultImageryLayer />
+      <CustomImageryLayer />
       <CesiumDefaultConfig />
       {children}
       <div className="absolute right-3 bottom-3">

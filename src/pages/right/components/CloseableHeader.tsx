@@ -1,6 +1,5 @@
 import IconClose from '@/assets/icons/jsx/IconClose'
 import IconButton from '@/components/ui/button/IconButton'
-import { RightModeEnum } from '@/enum/right-mode'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { memo, ReactNode, type FC } from 'react'
 
@@ -18,7 +17,7 @@ const CloseableHeader: FC<PropsType> = memo(({ children }) => {
       <div className="flex items-center">
         <IconButton
           onClick={() => {
-            updateRightMode(RightModeEnum.HIDE)
+            updateRightMode(null)
             updateDetailId(null)
           }}
         >

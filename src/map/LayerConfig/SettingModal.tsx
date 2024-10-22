@@ -1,11 +1,16 @@
-import IconDelete from '@/assets/icons/jsx/IconDelete'
-import IconEdit from '@/assets/icons/jsx/IconEdit'
+import IconPlus from '@/assets/icons/jsx/IconPlus'
 import AppCollapse from '@/components/AppCollapse'
-import AppSpin from '@/components/AppSpin'
 import IconButton from '@/components/ui/button/IconButton'
+import FormModal from '@/components/XForm/Modal'
 import XModal from '@/components/XModal'
-import { getSpaceList } from '@/service/modules/layer_overlay'
-import { shouldJson } from '@/utils/json'
+import MapSpaceListConfig from './components/MapSpaceListConfig'
+import MapLayerListConfig from './components/MapLayerListConfig'
+import AddLayerController from './components/AddLayerController'
+import { fileToBase64 } from '@/utils/base64'
+import { useAppMsg } from '@/hooks/useAppMsg'
+import { addSpace } from '@/service/modules/layer_overlay'
+import { v4 } from 'uuid'
+import { spaceFormItems } from './components/MapSpaceConfig'
 
 type PropsType = {
   open: boolean
@@ -13,23 +18,35 @@ type PropsType = {
 }
 
 const MapLayerSettingModal: FC<PropsType> = ({ open, onClose }) => {
-  const { data, isLoading } = useQuery({
-    queryKey: ['getSpaceList'],
-    queryFn: getSpaceList,
-    select: (d) => d.data.rows,
-  })
+  const msgApi = useAppMsg()
+  const [addSpaceOpen, { setFalse: closeAddSpace, setTrue: openAddSpace }] =
+    useBoolean(false)
+  const queryClient = useQueryClient()
 
-  const renderData = useMemo(() => {
-    if (!data) {
+  const handleAddSpaceConfirm = async (values: any) => {
+    const base64 = await fileToBase64(values.mapPreviewUrl[0].originFileObj)
+    if (base64 === null) {
+      msgApi.error('预览图解析失败')
       return
     }
-    return data.map((e) => {
-      return {
-        ...e,
-        spaceConfig: shouldJson(e.spaceConfig),
-      }
+    delete values.mapPreviewUrl
+    const spaceConfig = JSON.stringify({
+      mapPerviewUrl: [
+        {
+          thumbUrl: base64,
+          isAdd: true,
+        },
+      ],
     })
-  }, [data])
+    values.spaceConfig = spaceConfig
+    values.spaceId = v4()
+    await addSpace(values)
+    msgApi.success('添加地图成功')
+    await queryClient.invalidateQueries({
+      queryKey: ['getSpaceList'],
+    })
+    closeAddSpace()
+  }
 
   return (
     <XModal
@@ -43,42 +60,44 @@ const MapLayerSettingModal: FC<PropsType> = ({ open, onClose }) => {
     >
       <AppCollapse
         defaultActiveKey={['map']}
+        accordion
         items={[
           {
             key: 'map',
             label: '地图',
-            children: (
-              <div>
-                {isLoading || !renderData ? (
-                  <AppSpin />
-                ) : (
-                  <div className="p-3 flex flex-col gap-3">
-                    {renderData.map((e) => (
-                      <div key={e.spaceId} className="h-28 w-full relative">
-                        <img
-                          src={e.spaceConfig?.mapPerviewUrl?.[0].thumbUrl}
-                          className="h-full w-full object-cover"
-                        />
-                        <div className="absolute bottom-0 left-0 right-0 px-3 bg-ground-100 bg-opacity-50 backdrop-blur flex justify-between">
-                          <p>{e.spaceName}</p>
-                          <p className="flex gap-2">
-                            <IconButton>
-                              <IconEdit className="scale-90" />
-                            </IconButton>
-                            <IconButton>
-                              <IconDelete className="scale-90" />
-                            </IconButton>
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+            extra: (
+              <div onClick={(e) => e.stopPropagation()}>
+                <IconButton
+                  toolTipProps={{ title: '添加地图' }}
+                  onClick={openAddSpace}
+                >
+                  <IconPlus />
+                </IconButton>
               </div>
             ),
+            children: <MapSpaceListConfig />,
+          },
+          {
+            key: 'layer',
+            label: '图层',
+            extra: (
+              <div onClick={(e) => e.stopPropagation()}>
+                <AddLayerController />
+              </div>
+            ),
+            children: <MapLayerListConfig />,
           },
         ]}
       />
+      {addSpaceOpen && (
+        <FormModal
+          title="新增地图"
+          open={addSpaceOpen}
+          onClose={closeAddSpace}
+          items={spaceFormItems}
+          onConfirm={handleAddSpaceConfirm}
+        />
+      )}
     </XModal>
   )
 }

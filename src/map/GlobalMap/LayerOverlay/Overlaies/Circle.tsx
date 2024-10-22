@@ -4,6 +4,7 @@ import * as Cesium from 'cesium'
 import { shouldJson } from '@/utils/json'
 import { attempt } from 'lodash'
 import { argbToHex } from '@/utils/color'
+import { useMapLayerAndOverlayConfigStore } from '@/store/map/useLayerAndOverlay.store'
 
 type PropsType = {
   data: API_LAYER_OVERLAY.domain.Overlay
@@ -16,8 +17,17 @@ const OverlayCircle: FC<PropsType> = memo(({ data }) => {
   const overlayPositions = shouldJson(data.overlayPositions)?.[0]
   const postion = overlayPositions?.slice(0, 3)
 
+  const hiddenOverlayIds = useMapLayerAndOverlayConfigStore(
+    (s) => s.hiddenOverlayIds,
+  )
+  const hiddenLayerIds = useMapLayerAndOverlayConfigStore(
+    (s) => s.hiddenLayerIds,
+  )
+  const isHidden =
+    hiddenOverlayIds.has(data.overlayId) || hiddenLayerIds.has(data.layerId)
+
   useEffect(() => {
-    if (!viewer) {
+    if (!viewer || isHidden) {
       return
     }
     const overlayPositions = shouldJson(data.overlayPositions)?.[0]
@@ -104,9 +114,9 @@ const OverlayCircle: FC<PropsType> = memo(({ data }) => {
         viewer.scene.primitives.remove(CircleOutlinePrimitive)
       })
     }
-  }, [viewer])
+  }, [viewer, isHidden])
 
-  if (!postion) {
+  if (!postion || isHidden) {
     return null
   }
 

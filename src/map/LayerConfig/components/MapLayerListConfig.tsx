@@ -3,10 +3,14 @@ import IconVisible from '@/assets/icons/jsx/IconVisible'
 import AppCollapse from '@/components/AppCollapse'
 import AppEmpty from '@/components/AppEmpty'
 import IconButton from '@/components/ui/button/IconButton'
-import useMapLayerAndOverlayStore from '@/store/map/useLayerAndOverlay.store'
+import useMapLayerAndOverlayStore, {
+  useMapLayerAndOverlayConfigStore,
+} from '@/store/map/useLayerAndOverlay.store'
 import { groupBy } from 'lodash'
 import MapOverlayConfig from './MapOverlayConfig'
 import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
+import { delLayer } from '@/service/modules/layer_overlay'
+import { useAppMsg } from '@/hooks/useAppMsg'
 
 type PropsType = unknown
 
@@ -25,10 +29,22 @@ const MapLayerListConfig: FC<PropsType> = memo(() => {
     [overlayList],
   )
 
-  const hiddenLayerIds = useMapLayerAndOverlayStore((s) => s.hiddenLayerIds)
-  const updateHiddenLayerIds = useMapLayerAndOverlayStore(
+  const hiddenLayerIds = useMapLayerAndOverlayConfigStore(
+    (s) => s.hiddenLayerIds,
+  )
+  const updateHiddenLayerIds = useMapLayerAndOverlayConfigStore(
     (s) => s.updateHiddenLayerIds,
   )
+
+  const msgApi = useAppMsg()
+  const queryClient = useQueryClient()
+  const handleDelLayer = async (layerId: number) => {
+    await delLayer(layerId)
+    msgApi.success('删除成功')
+    await queryClient.invalidateQueries({
+      queryKey: ['layerList'],
+    })
+  }
 
   return (
     <AppCollapse
@@ -56,7 +72,10 @@ const MapLayerListConfig: FC<PropsType> = memo(() => {
               )}
             </IconButton>
             {'DEFAULT' !== e.layerType && (
-              <IconButton className="scale-90">
+              <IconButton
+                className="scale-90"
+                onClick={() => handleDelLayer(e.layerId)}
+              >
                 <IconDelete />
               </IconButton>
             )}

@@ -5,6 +5,7 @@ import { Label, PointPrimitive } from 'resium'
 import * as Cesium from 'cesium'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { RightModeEnum } from '@/enum/right-mode'
+import { useMapLayerAndOverlayConfigStore } from '@/store/map/useLayerAndOverlay.store'
 
 type PropsType = {
   data: API_LAYER_OVERLAY.domain.Overlay
@@ -16,6 +17,19 @@ const OverlayPoint: FC<PropsType> = memo(({ data }) => {
 
   const updateRightMode = useRightMode((s) => s.updateRightMode)
   const updateDetailId = useRightMode((s) => s.updateDetailId)
+
+  const hiddenOverlayIds = useMapLayerAndOverlayConfigStore(
+    (s) => s.hiddenOverlayIds,
+  )
+  const hiddenLayerIds = useMapLayerAndOverlayConfigStore(
+    (s) => s.hiddenLayerIds,
+  )
+  if (
+    hiddenOverlayIds.has(data.overlayId) ||
+    hiddenLayerIds.has(data.layerId)
+  ) {
+    return null
+  }
 
   if (!postion) {
     return null

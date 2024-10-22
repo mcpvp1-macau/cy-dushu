@@ -47,3 +47,30 @@ export const getSpaceList = () => {
     {},
   )
 }
+
+/** 新建图层 */
+export const addLayer = (data: API_LAYER_OVERLAY.req.AddLayerReq) => {
+  return serverJingqi.post('/layer/create', data)
+}
+
+/** 新增地图 */
+export const addSpace = (data: any) => {
+  return serverJingqi.post('/space/add', data)
+}
+
+/** 删除地图 */
+export const delSpace = (spaceId: number | string) => {
+  return serverJingqi.get('/space/deleteById', {
+    params: { id: spaceId },
+  })
+}
+
+/** 更新地图 */
+export const updSpace = (data: any) => {
+  return serverJingqi.post('/space/update', data)
+}
+
+/** 删除图层 */
+export const delLayer = (layerId: number) => {
+  return serverJingqi.post('/layer/delete', { layerId })
+}
