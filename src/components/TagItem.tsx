@@ -13,7 +13,7 @@ const TagItem: FC<PropsType> = memo(
     return (
       <div>
         <div
-          className="text-xs inline-flex items-center gap-1 h-[18px] p-1 px-2 rounded-sm"
+          className="text-xs inline-flex items-center gap-1 h-[18px] p-1 px-2 rounded-[2px]"
           style={{ color, background: bgColor, width: width }}
         >
           {icon}

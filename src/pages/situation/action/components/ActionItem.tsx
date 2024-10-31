@@ -28,7 +28,7 @@ const ActionItem: FC<PropsType> = memo(({ data }) => {
         <div
           className={clsx(
             'px-2 rounded-sm text-xs leading-6 whitespace-nowrap',
-            statusMap[data.status][1],
+            statusMap[data.status]?.[1],
           )}
         >
           {statusMap[data.status][0]}

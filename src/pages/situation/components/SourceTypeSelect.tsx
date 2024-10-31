@@ -37,7 +37,7 @@ const SourceTypeSelect: FC<PropsType> = memo(({ value, onChange }) => {
   return (
     <Select
       loading={isLoading}
-      className="w-fit"
+      // className="w-fit"
       variant="borderless"
       popupMatchSelectWidth={false}
       labelRender={(e) => (

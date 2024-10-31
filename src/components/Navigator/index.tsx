@@ -6,6 +6,7 @@ import MenuIconSituation from '@/assets/icons/jsx/menus/MenuIconSituation'
 import MenuIconSource from '@/assets/icons/jsx/menus/MenuIconSource'
 import MenuIconSchedule from '@/assets/icons/jsx/menus/MenuIconSchedule'
 import useUserStore from '@/store/useUser.store'
+import MenuIconEvents from '@/assets/icons/jsx/menus/MenuIconEvents'
 
 type PropsType = unknown
 
@@ -16,16 +17,11 @@ const menus = [
     auth: '',
     component: <MenuIconSituation className="text-lg text-[#529DCE]" />,
   },
-  // ...(window.config.isHaveEvent
-  //   ? [
-  //       {
-  //         mode: LeftNavType.EVENT,
-  //         component: (props: IconParams) => <ShijianIcon {...props} />,
-  //         url: 'event',
-  //         color: '#B86C6C',
-  //       },
-  //     ]
-  //   : []),
+  {
+    path: '/events',
+    auth: 'event',
+    component: <MenuIconEvents className="text-lg text-[#B86C6C]" />,
+  },
   {
     path: '/action-record',
     auth: 'action',

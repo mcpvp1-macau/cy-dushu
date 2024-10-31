@@ -128,15 +128,24 @@ export const actionMap = new Map<ActionTypeEnum, ActionConfigType>([
 ])
 
 export const iconMap = new Map<ActionTypeEnum, React.ReactNode>([
-  [ActionTypeEnum.HOVER, <WRJXT />],
-  [ActionTypeEnum.ROTATE_YAW, <FXQPHJ />],
-  [ActionTypeEnum.CAMERA_POSITION_X, <YTPHJ />],
-  [ActionTypeEnum.CAMERA_POSITION_Y, <YTFYJ />],
-  [ActionTypeEnum.ZOOM, <XJBJ />],
-  [ActionTypeEnum.GET_PICTURE, <PZ />],
-  [ActionTypeEnum.LEN_CHANGE, <IconCameraSwitch />],
-  [ActionTypeEnum.OPEN_AI, <IconAIEnable />],
-  [ActionTypeEnum.CLOSE_AI, <IconAIDisable />],
+  [ActionTypeEnum.HOVER, <WRJXT key={ActionTypeEnum.HOVER} />],
+  [ActionTypeEnum.ROTATE_YAW, <FXQPHJ key={ActionTypeEnum.ROTATE_YAW} />],
+  [
+    ActionTypeEnum.CAMERA_POSITION_X,
+    <YTPHJ key={ActionTypeEnum.CAMERA_POSITION_X} />,
+  ],
+  [
+    ActionTypeEnum.CAMERA_POSITION_Y,
+    <YTFYJ key={ActionTypeEnum.CAMERA_POSITION_Y} />,
+  ],
+  [ActionTypeEnum.ZOOM, <XJBJ key={ActionTypeEnum.ZOOM} />],
+  [ActionTypeEnum.GET_PICTURE, <PZ key={ActionTypeEnum.GET_PICTURE} />],
+  [
+    ActionTypeEnum.LEN_CHANGE,
+    <IconCameraSwitch key={ActionTypeEnum.LEN_CHANGE} />,
+  ],
+  [ActionTypeEnum.OPEN_AI, <IconAIEnable key={ActionTypeEnum.OPEN_AI} />],
+  [ActionTypeEnum.CLOSE_AI, <IconAIDisable key={ActionTypeEnum.CLOSE_AI} />],
 ])
 
 export const actionKeys = Array.from(actionMap.keys())

@@ -57,7 +57,7 @@ const REPEATFormItems = memo(() => {
         {(fields, { add, remove }) => (
           <>
             {fields.map(({ key, ...restField }, i) => (
-              <div className="flex gap-2">
+              <div key={key} className="flex gap-2">
                 <Form.Item
                   {...restField}
                   className="w-full"
@@ -69,7 +69,6 @@ const REPEATFormItems = memo(() => {
                       </Tooltip>
                     </span>
                   }
-                  key={key}
                   name={restField.name}
                   rules={[
                     ({ getFieldValue }) => ({

@@ -4,11 +4,13 @@ import CollapsedPage from '@/components/CollapsedPage'
 import { GetProps, Tabs } from 'antd'
 import { Outlet, useMatch } from 'react-router'
 import SourceTypeSelect from './components/SourceTypeSelect'
+import MenuIconEvents from '@/assets/icons/jsx/menus/MenuIconEvents'
 
 type PropsType = unknown
 
 const PageSituation: FC<PropsType> = memo(() => {
   const mathchedSource = useMatch('/source/:sourceType')
+  const matchEvents = useMatch('situation/events')
 
   const navigate = useNavigate()
 
@@ -42,11 +44,22 @@ const PageSituation: FC<PropsType> = memo(() => {
         />
       ),
     },
+    {
+      key: 'events',
+      label: (
+        <p className="flex gap-2">
+          <MenuIconEvents />
+          事件
+        </p>
+      ),
+    },
   ]
 
   const handleTabChange = useMemoizedFn((key: string) => {
     if (key === 'action') {
       navigate('action')
+    } else if (key === 'events') {
+      navigate('situation/events')
     } else {
       navigate(`source/${sourceType}`)
     }
@@ -61,7 +74,9 @@ const PageSituation: FC<PropsType> = memo(() => {
             items={menus}
             size="small"
             onChange={handleTabChange}
-            defaultActiveKey={mathchedSource ? 'source' : 'action'}
+            defaultActiveKey={
+              mathchedSource ? 'source' : matchEvents ? 'events' : 'action'
+            }
           />
         )}
         <AppViewSuspense>

@@ -42,6 +42,8 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
   const queryClient = useQueryClient()
   const msgApi = useAppMsg()
 
+  const actionPlanId = useParams().actionPlanId
+
   const handleConfirm = async (e: API_ACTION_PLAN.domain.Plan) => {
     try {
       setLoading(true)
@@ -83,7 +85,11 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
   return (
     <li>
       <Link
-        className="flex px-3 p-2 gap-2 hover:bg-[#242E37] cursor-pointer text-sm hover:text-fore"
+        className={clsx(
+          'flex px-3 p-2 gap-2  cursor-pointer text-sm',
+          'hover:bg-[#242E37] hover:text-fore',
+          actionPlanId == data.id && 'bg-[#242E37] text-fore',
+        )}
         to={`/schedule/${data.id!}`}
         replace
       >

@@ -1,3 +1,4 @@
+import PageSituationEvents from '@/pages/situation/events'
 import { lazy } from 'react'
 import { RouteObject } from 'react-router'
 
@@ -35,6 +36,10 @@ export default {
     {
       path: 'source/:sourceType',
       element: <PageSituationSource />,
+    },
+    {
+      path: 'situation/events',
+      element: <PageSituationEvents />,
     },
   ],
 } as RouteObject

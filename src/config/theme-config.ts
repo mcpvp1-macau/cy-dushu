@@ -77,6 +77,7 @@ export const themeConfig: ThemeConfig = {
       margin: 0,
       horizontalItemPadding: '0px 0',
       horizontalItemPaddingSM: '0px 0',
+      horizontalItemGutter: 16,
     },
     Segmented: {
       trackPadding: 0,

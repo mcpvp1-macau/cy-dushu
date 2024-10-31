@@ -8,12 +8,14 @@ import controlRoom from './modules/control-room'
 import actionPlan from './modules/action-plan'
 import airline from './modules/airline'
 import demo from './modules/demo'
+import events from './modules/events'
 
 const router = createBrowserRouter([
   {
     element: <App />,
     children: [
       situation,
+      events,
       sources,
       actionRecord,
       organization,

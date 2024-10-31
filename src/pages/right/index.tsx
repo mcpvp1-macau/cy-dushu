@@ -8,6 +8,7 @@ import RightRangingPanel from './right-tools/Ranging'
 const RightDeviceDetail = lazy(() => import('./DeviceDetail'))
 const RightAddPoint = lazy(() => import('./right-tools/AddPoint'))
 const RightAddGeometry = lazy(() => import('./right-tools/AddGeometry'))
+const RightEventDetail = lazy(() => import('./EventDetail'))
 
 const route = {
   [RightModeEnum.DEVICE]: RightDeviceDetail,
@@ -15,6 +16,7 @@ const route = {
   [RightModeEnum.DRAW_GEOMETRY]: RightAddGeometry,
   [RightModeEnum.POINT_DETAIL]: OverlayDetail,
   [RightModeEnum.RANGING]: RightRangingPanel,
+  [RightModeEnum.EVENT_DETAIL]: RightEventDetail,
 }
 
 type PropsType = unknown
