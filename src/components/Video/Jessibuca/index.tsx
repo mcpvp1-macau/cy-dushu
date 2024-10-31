@@ -26,6 +26,7 @@ type PropsType = {
   onTimeUpdate?: (ts: number) => void
   onSeiProperties?: (data: SEI_TYPE[SeiEnum.JSON_PROPERTIES]) => void
   onSeiAIData?: (data: SEI_TYPE[SeiEnum.Protobuf_SEI]) => void
+  onFetchError?: () => void
 }
 
 const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
@@ -139,10 +140,33 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
       },
     )
 
+    jessibucaRef.current.on(
+      'error' as JessibucaPro.EVENTS.error,
+      (err: Error) => {
+        console.error('jessibuca error', err)
+      },
+    )
+
+    jessibucaRef.current.on(
+      'fetchError' as JessibucaPro.ERROR.fetchError,
+      () => {
+        props.onFetchError?.()
+      },
+    )
+
     return () => {
       jessibucaRef.current?.destroy()
     }
   }, [])
+
+  // const hardRefresh = useMemoizedFn(() => {
+  //   jessibucaRef.current?.clearBufferDelay()
+  //   jessibucaRef.current?.playbackClearCacheBuffer()
+  //   if (!src) {
+  //     return
+  //   }
+  //   jessibucaRef.current?.play(src)
+  // })
 
   // 视频地址变化时，重新播放
   useThrottleEffect(

@@ -4,12 +4,7 @@ import { formatTs } from '@/utils/time'
 import IconButton from '../ui/button/IconButton'
 import IconRefresh from '@/assets/icons/jsx/IconRefresh'
 import IconFull from '@/assets/icons/jsx/IconFull'
-import {
-  useDebounceEffect,
-  useFullscreen,
-  useSize,
-  useThrottleFn,
-} from 'ahooks'
+import { useFullscreen, useThrottleFn } from 'ahooks'
 import { ExpandOutlined, FullscreenExitOutlined } from '@ant-design/icons'
 import { forwardRef, useImperativeHandle } from 'react'
 import { calcStreamId } from '@/utils/video/stream'
@@ -20,6 +15,7 @@ import { isNil } from 'lodash'
 import SeiEnum, { SEI_TYPE } from '../Video/Jessibuca/sei-enum'
 import SeiAIData from './SeiAIData'
 import DrawBox from '../DrawBox'
+import useElectricScale from './hooks/useElectricScale'
 
 type PropsType = {
   videoContainerId?: string
@@ -68,7 +64,7 @@ const DeviceLiveVideo = memo(
       ref,
     ) => {
       const queryClient = useQueryClient()
-      const { data: playUrl } = useQuery(
+      const { data: playUrl, refetch } = useQuery(
         {
           queryKey: ['livePost', { productKey, deviceId, videoId }],
           queryFn: async () => {
@@ -88,21 +84,15 @@ const DeviceLiveVideo = memo(
         { wait: 333 },
       )
 
-      const [refreshKey, setRefreshKey] = useState(0)
       /** 刷新 */
       const handleRefresh = async () => {
-        await queryClient.invalidateQueries({
-          queryKey: ['livePost', productKey, deviceId, videoId],
-        })
-        setRefreshKey((v) => (v + 1) % 100)
+        await refetch()
       }
 
       const wrapperRef = useRef<HTMLDivElement>(null)
       const [fullScreen, { toggleFullscreen }] = useFullscreen(wrapperRef)
-      const wrapperSize = useSize(wrapperRef)
 
       const videoBoxRef = useRef<HTMLDivElement>(null)
-      const videoBoxSize = useSize(videoBoxRef)
 
       /** 截图 */
       const snapshot: DeviceLiveVideoRefType['snapshot'] = (
@@ -150,53 +140,13 @@ const DeviceLiveVideo = memo(
         SEI_TYPE[SeiEnum.Protobuf_SEI] | null
       >(null)
 
-      const [enableScale, setEnableScale] = useState(0)
-      const [scaleAspect, setScaleAspect] = useState(0)
-      const [videoTranslate, setVideoTranslate] = useState([0, 0])
-      const [tranformCss, setTransformCss] = useState('')
-      const [scaleViewRect, setScaleViewRect] = useState<
-        [number, number, number, number] | null
-      >(null)
-      const [scaleMulti, setScaleMulti] = useState(1)
-      const handleDrewScaleEnd = (rect: [number, number, number, number]) => {
-        setScaleViewRect(rect)
-        setEnableScale(2)
-      }
-
-      useDebounceEffect(
-        () => {
-          if (enableScale !== 2 || !scaleViewRect) {
-            return
-          }
-          const rectWidth =
-            (scaleViewRect[2] - scaleViewRect[0]) * videoBoxSize!.width
-          const rectHeight =
-            (scaleViewRect[3] - scaleViewRect[1]) * videoBoxSize!.height
-          setScaleAspect(rectWidth / rectHeight)
-          setVideoTranslate([scaleViewRect[0], scaleViewRect[1]])
-          const multi = Math.max(
-            videoBoxSize!.width / rectWidth,
-            videoBoxSize!.height / rectHeight,
-          )
-          setScaleMulti(multi)
-
-          setTransformCss(
-            `translate(${-scaleViewRect[0] * 100}%, ${
-              -scaleViewRect[1] * 100
-            }%)`,
-          )
-
-          setTimeout(() => {
-            setTransformCss(
-              `translate(${-scaleViewRect[0] * 100}%, ${
-                -scaleViewRect[1] * 100
-              }%) scale(${multi})`,
-            )
-          }, 200)
-        },
-        [scaleViewRect, wrapperSize, enableScale],
-        { wait: 333 },
-      )
+      const {
+        enableScale,
+        originCenter,
+        tranformCss,
+        handleDrewScaleEnd,
+        setEnableScale,
+      } = useElectricScale(fullScreen)
 
       return (
         <div
@@ -207,7 +157,7 @@ const DeviceLiveVideo = memo(
           <div
             className="absolute inset-0 m-auto max-w-full max-h-full"
             style={{
-              aspectRatio: enableScale === 2 ? scaleAspect : aspectRatio,
+              aspectRatio: aspectRatio,
             }}
           >
             {/* 视频内容 */}
@@ -216,16 +166,18 @@ const DeviceLiveVideo = memo(
               className={clsx('absolute inset-0 bg-black')}
               style={{
                 aspectRatio: aspectRatio,
-                // transformOrigin: 'center',
-                transformOrigin: `${videoTranslate[0] * 100}% ${
-                  videoTranslate[1] * 100
+                transformOrigin: `${originCenter[0] * 100}% ${
+                  originCenter[1] * 100
                 }%`,
-                transform: enableScale === 2 ? tranformCss : undefined,
+                transition: enableScale === 2 ? 'transform 0.3s' : undefined,
+                transform:
+                  enableScale === 2 && tranformCss
+                    ? tranformCss
+                    : 'translate(0px, 0px)',
               }}
             >
               {playUrl && (
                 <Jessibuca
-                  refreshKey={refreshKey}
                   containerId={videoContainerId}
                   src={playUrl}
                   onVideoInfo={(v) => {
@@ -236,6 +188,7 @@ const DeviceLiveVideo = memo(
                   onSeiAIData={(aiData) => {
                     !aiData.ref && setAIData(aiData)
                   }}
+                  onFetchError={handleRefresh}
                 />
               )}
 
@@ -251,7 +204,7 @@ const DeviceLiveVideo = memo(
           </div>
           {/* 上工具栏 */}
           {(leftTop || rightTop) && (
-            <aside className="absolute top-0 left-0 right-0 bg-ground-100 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm">
+            <aside className="absolute top-0 inset-x-0 bg-ground-100 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm">
               <div className="flex justify-between items-center h-full">
                 <section className="flex items-center gap-3">{leftTop}</section>
                 <section className="flex items-center gap-3">
@@ -261,7 +214,7 @@ const DeviceLiveVideo = memo(
             </aside>
           )}
           {/* 下工具栏 */}
-          <aside className="absolute bottom-0 left-0 right-0 bg-ground-100 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm">
+          <aside className="absolute bottom-0 inset-x-0 bg-ground-100 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm">
             <div className="flex justify-between items-center h-full">
               <section className="flex items-center gap-3">
                 <div className="order-10 text-fore text-xs">{formatTs(ts)}</div>
