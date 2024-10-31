@@ -38,7 +38,6 @@ const usePrevDayHisTrack = () => {
       updateTracks([])
       return
     }
-    console.log(data.data, res)
     updateTracks([
       {
         id: res[0].deviceId,
