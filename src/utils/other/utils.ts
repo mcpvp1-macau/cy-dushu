@@ -16,7 +16,7 @@ dayjs.extend(utc)
  */
 export const mercatorTolonlat = (mercator: Array<number>) => {
   const lonlat = [0, 0]
-  let x = (mercator[0] / 20037508.34) * 180
+  const x = (mercator[0] / 20037508.34) * 180
   let y = (mercator[1] / 20037508.34) * 180
   y =
     (180 / Math.PI) *
@@ -268,9 +268,9 @@ export function getLngLatHFromCartesian(viewer: any, click: any): number[] {
 }
 
 export const getCenter = (points: number[][]) => {
-  let features = turf.points(points)
+  const features = turf.points(points)
 
-  let center = turf.center(features)
+  const center = turf.center(features)
 
   return center.geometry.coordinates
 }
@@ -301,9 +301,9 @@ export const getDistance = (points: number[][]) => {
 }
 
 export const getArea = (points: number[][]) => {
-  let polygon = turf.polygon([points])
+  const polygon = turf.polygon([points])
 
-  let area = turf.area(polygon)
+  const area = turf.area(polygon)
 
   return area
 }
@@ -462,7 +462,7 @@ export function infoFieldFormatter(config: {
       .join(joinString)
   } else if (typeof value === 'string') {
     try {
-      let v = JSON.parse(value as string)
+      const v = JSON.parse(value as string)
       if (Array.isArray(v)) {
         return v
           .map((v) =>
