@@ -35,16 +35,7 @@ interface BoardProps {
 }
 
 const Board: React.FC<BoardProps> = (props) => {
-  let {
-    map,
-    option,
-    onClose,
-    lng = 120,
-    lat = 30,
-    height = 0,
-    id,
-    children,
-  } = props
+  const { map, option, lng = 120, lat = 30, height = 0, children } = props
 
   const styleRef = useLatest({
     ...BOARD_STYLE,
