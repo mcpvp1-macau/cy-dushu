@@ -58,6 +58,8 @@ type StateType = {
   openPointZoom: 0 | 1 | 2
   /** 是否打开指点飞行 */
   openPointFly: boolean
+  /** 是否启用摇杆 */
+  enableGamepad: boolean
 }
 
 type ActionsType = {
@@ -81,6 +83,8 @@ type ActionsType = {
   updateOpenPointZoom: (open: StateType['openPointZoom']) => void
   /** 更新指点飞行 */
   updateOpenPointFly: (open: boolean) => void
+  /** 更新摇杆开启 */
+  updateEnableGamepad: (open: boolean) => void
 }
 
 type WsSendersType = {
@@ -113,6 +117,7 @@ const createInitialState = () =>
     openLarser: false,
     openPointZoom: 0,
     openPointFly: false,
+    enableGamepad: false,
   } as StateType)
 
 export const createUavControlRoomStore = (senders: WsSendersType) => {
@@ -234,6 +239,9 @@ export const createUavControlRoomStore = (senders: WsSendersType) => {
         updateOpenPointFly: (open) => {
           set({ openPointFly: open }, false, 'updateOpenPointFly')
         },
+        updateEnableGamepad: (open) => {
+          set({ enableGamepad: open }, false, 'updateEnableGamepad')
+        },
       }),
       {
         name: 'control-room-store',
@@ -307,12 +315,18 @@ export const useCreateUavControlRoomStore = (
     return `${globalConfig.globalWs}://${location.host}/v3/${productKey}/${deviceId}?token=${token}`
   }, [productKey, deviceId, token])
 
-  const { readyState, sendMessage } = useWebSocket(wsUrl, {
-    heartbeat,
-    reconnectAttempts: 0x3f3f3f3f,
-    onMessage: handleMessage,
-    retryOnError: true,
-  })
+  const { readyState, sendMessage } = useWebSocket(
+    wsUrl,
+    {
+      heartbeat,
+      reconnectAttempts: 0x3f3f3f3f,
+      onMessage: handleMessage,
+      retryOnError: true,
+      reconnectInterval: 5_000,
+      shouldReconnect: () => true,
+    },
+    true,
+  )
 
   const sendMessageRef = useLatest(sendMessage)
 

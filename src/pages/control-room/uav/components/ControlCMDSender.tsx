@@ -74,4 +74,6 @@ const ControlCMDSender: FC<PropsType> = memo(() => {
   return null
 })
 
+ControlCMDSender.displayName = 'ControlCMDSender'
+
 export default ControlCMDSender
