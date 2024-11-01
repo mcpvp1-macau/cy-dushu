@@ -1,5 +1,5 @@
 interface DisplayMeta {
-  display_text: string
+  displayText: string
 }
 
 interface FrameTensor {

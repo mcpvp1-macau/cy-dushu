@@ -4,7 +4,7 @@ import { formatTs } from '@/utils/time'
 import IconButton from '../ui/button/IconButton'
 import IconRefresh from '@/assets/icons/jsx/IconRefresh'
 import IconFull from '@/assets/icons/jsx/IconFull'
-import { useFullscreen, useThrottleFn } from 'ahooks'
+import { useFullscreen, useSize, useThrottleFn } from 'ahooks'
 import { ExpandOutlined, FullscreenExitOutlined } from '@ant-design/icons'
 import { forwardRef, useImperativeHandle } from 'react'
 import { calcStreamId } from '@/utils/video/stream'
@@ -16,6 +16,7 @@ import SeiEnum, { SEI_TYPE } from '../Video/Jessibuca/sei-enum'
 import SeiAIData from './SeiAIData'
 import DrawBox from '../DrawBox'
 import useElectricScale from './hooks/useElectricScale'
+import { limitNum } from '@/utils/math'
 
 type PropsType = {
   videoContainerId?: string
@@ -91,6 +92,7 @@ const DeviceLiveVideo = memo(
 
       const wrapperRef = useRef<HTMLDivElement>(null)
       const [fullScreen, { toggleFullscreen }] = useFullscreen(wrapperRef)
+      const size = useSize(wrapperRef)
 
       const videoBoxRef = useRef<HTMLDivElement>(null)
 
@@ -154,6 +156,20 @@ const DeviceLiveVideo = memo(
           ref={wrapperRef}
           style={{ aspectRatio: aspectRatio }}
         >
+          <ul
+            className="absolute left-0 bottom-8 text-sm text-white bg-black bg-opacity-20 rounded-lg backdrop-blur-sm p-1 z-10 pointer-events-none origin-bottom-left"
+            style={{
+              transform: `scale(${limitNum(
+                (size?.width ?? 1440) / 1440,
+                0.5,
+                1,
+              )})`,
+            }}
+          >
+            {aiData?.displayMetaList?.map((e, i) => (
+              <li key={i}>{e?.displayText}</li>
+            ))}
+          </ul>
           <div
             className="absolute inset-0 m-auto max-w-full max-h-full"
             style={{
@@ -193,7 +209,7 @@ const DeviceLiveVideo = memo(
               )}
 
               {/* 视频绘制框 */}
-              <div className="absolute inset-0 z-10">
+              <div className="absolute inset-0 z-20">
                 {aiData && <SeiAIData data={aiData} />}
                 {enableScale === 1 && (
                   <DrawBox onDrawEnd={handleDrewScaleEnd} />
