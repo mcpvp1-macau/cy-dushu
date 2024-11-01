@@ -5,6 +5,7 @@ import { limitNum } from '@/utils/math'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import { uavControlRoomZoomEmitter } from '../components/Zoom'
+import { gimbalSwitchEmitter } from '../components/GimbalSwitch'
 
 const keyMap_vendor0738_product2221 = new Map<number, string>([
   [0, 'resetGimbalYaw'], // 云台回中
@@ -62,7 +63,6 @@ type ButtonInfo = {
 const useGamepad = (
   productKey: string,
   deviceId: string,
-  handleLiveLensSwitch: (delta: number) => unknown,
   canMoveUav: boolean,
   isFly: boolean,
 ) => {
@@ -204,10 +204,10 @@ const useGamepad = (
         // ['takeoff', () => toolsEmitter.emit('takeoff')], 夏老师说 一键起飞 不要了~
         ['takePhoto', () => postService('takePhoto')],
         ['stopAll', () => postService('stopAll')],
-        ['goHome', () => postService('goHome')],
+        ['goHome', () => postService('gohome')],
         ['resetGimbalYaw', () => postService('resetGimbal')],
-        ['switchModeBefore', () => handleLiveLensSwitch(-1)],
-        ['switchModeAfter', () => handleLiveLensSwitch(1)],
+        ['switchModeBefore', () => gimbalSwitchEmitter.emit('switch', -1)],
+        ['switchModeAfter', () => gimbalSwitchEmitter.emit('switch', 1)],
         ['scaleGimbalBig', () => scaleGimbal(true)],
         ['scaleGimbalSmall', () => scaleGimbal(false)],
       ]),

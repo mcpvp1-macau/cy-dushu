@@ -9,8 +9,8 @@ import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDevice
 type PropsType = unknown
 
 const GamePadUser = () => {
-  const productKey = useUavControlRoomStore((s) => s.productKey)
-  const deviceId = useUavControlRoomStore((s) => s.deviceId)
+  const productKey = useDeviceDetailStore((s) => s.productKey)
+  const deviceId = useDeviceDetailStore((s) => s.deviceId)
   const limitedFly = useUavControlRoomStore((s) => s.isLimitedFly)
   const hasControlPower = useUavControlRoomStore((s) => s.hasControlPower)
 
@@ -19,7 +19,6 @@ const GamePadUser = () => {
   useGamepad(
     productKey,
     deviceId,
-    () => {},
     hasControlPower && serviceHas['moveUav'] && !limitedFly,
     !limitedFly,
   )

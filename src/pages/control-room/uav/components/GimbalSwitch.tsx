@@ -2,9 +2,14 @@ import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { Button } from 'antd'
+import mitt from 'mitt'
 import { memo, type FC } from 'react'
 
 type PropsType = unknown
+
+export const gimbalSwitchEmitter = mitt<{
+  switch: number
+}>()
 
 const gimbalTypes = [
   ['wide', '广角'],
@@ -36,6 +41,39 @@ const GimbalSwitch: FC<PropsType> = memo(() => {
   })
 
   const has = useDeviceDetailStore((s) => s.serviceHave.liveLensChange)
+
+  const handleLiveLensSwitch = useMemoizedFn((delta: number) => {
+    if (videoSource !== 'gimbal') {
+      return
+    }
+    let idx = gimbalTypes.findIndex((e) => e[0] === lensType)
+    idx =
+      (((idx + delta) % gimbalTypes.length) + gimbalTypes.length) %
+      gimbalTypes.length
+    let isHave = !!gimbalData?.types?.find(
+      (item: any) => item.type === gimbalTypes[idx][0],
+    )
+    if (isHave) {
+      handleClick(gimbalTypes[idx][0])
+    } else {
+      idx =
+        (((idx + delta) % gimbalTypes.length) + gimbalTypes.length) %
+        gimbalTypes.length
+      isHave = !!gimbalData?.types?.find(
+        (item: any) => item.type === gimbalTypes[idx][0],
+      )
+      if (isHave) {
+        handleClick(gimbalTypes[idx][0])
+      }
+    }
+  })
+
+  useEffect(() => {
+    gimbalSwitchEmitter.on('switch', handleLiveLensSwitch)
+    return () => {
+      gimbalSwitchEmitter.off('switch', handleLiveLensSwitch)
+    }
+  }, [])
 
   return (
     <div className="absolute left-3 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-50">
