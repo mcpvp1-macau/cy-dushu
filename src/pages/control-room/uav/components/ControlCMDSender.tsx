@@ -1,6 +1,7 @@
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { useRafInterval } from 'ahooks'
 import { memo, useMemo, type FC } from 'react'
+import useCheckAutoland from '../hooks/useCheckAutoland'
 
 type PropsType = unknown
 
@@ -10,6 +11,8 @@ const ControlCMDSender: FC<PropsType> = memo(() => {
   const gimbalControlInfo = useUavControlRoomStore((s) => s.gimbalControlInfo)
   const activeMouseBtn = useUavControlRoomStore((s) => s.activeMouseBtn)
   const post = useUavControlRoomStore((s) => s.sendCommand)
+
+  useCheckAutoland()
 
   // 无人机控制信息
   const uavPostInfo = useMemo(() => {
