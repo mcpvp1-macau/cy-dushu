@@ -14,6 +14,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { useDeviceDetailStore } from '../hooks/useDeviceDetail.store'
 import UavCreateAction from './components/UavCreateAction'
 import UavUpdateRealMarker from './components/UpdateRealMarker'
+import useServerEventMsg from '@/pages/control-room/uav/hooks/useServerEventMsg'
 
 const Header: FC = memo(() => {
   const deviceName =
@@ -40,10 +41,15 @@ type PropsType = {
 const UavDetail: FC<PropsType> = memo(({ data }) => {
   const productKey = data.productKey || data.deviceModel?.productKey
   const deviceId = data.deviceId
-  const store = useCreateUavControlRoomStore(productKey, deviceId)
+  const store = useCreateUavControlRoomStore(
+    productKey,
+    deviceId,
+    useServerEventMsg(),
+  )
 
   useEffect(() => {
     store?.getState()?.resetState()
+    store?.getState()?.updateProdctKeyAndDeviceId(productKey, deviceId)
   }, [deviceId])
 
   const [tab, setTab] = useState('详情')
