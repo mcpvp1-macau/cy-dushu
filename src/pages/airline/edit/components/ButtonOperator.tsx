@@ -109,7 +109,8 @@ const BottomOperator: FC<PropsType> = memo(({ disabled }) => {
       const data = generateTaskData()
       if (actionId) {
         // 说明是行动过来的
-        data[actionId] = actionId
+        data['actionId'] = actionId
+        data['deviceIds'] = deviceId
         if (actionItemId) {
           // 说明是编辑
           data[actionItemId] = actionItemId
