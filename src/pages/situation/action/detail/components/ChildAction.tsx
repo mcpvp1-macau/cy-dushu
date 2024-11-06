@@ -13,7 +13,7 @@ type PropsType = {
   data: API_ACTION_ITEM.domain.ActionItem
 }
 
-const statusMap: Record<string, string> = {
+export const taskStatusMap: Record<string, string> = {
   PENDING: '未开始',
   PROCESSING: '进行中',
   FINISHED: '已完成',
@@ -132,7 +132,7 @@ const ChildAction: FC<PropsType> = memo(({ data }) => {
         <p className="shrink-0">
           <span className="mr-1 text-nowrap">任务状态:</span>
           <span style={{ color: statusColor[data.status!] }}>
-            {statusMap[data.status!]}
+            {taskStatusMap[data.status!]}
           </span>
         </p>
       </div>
