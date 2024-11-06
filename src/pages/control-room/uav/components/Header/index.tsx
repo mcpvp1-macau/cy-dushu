@@ -9,9 +9,10 @@ import JCXT from '@/pages/right/DeviceDetail/UavAirportDetail/components/RemoteD
 import { useUavControlRoomStore as useS } from '@/store/context-store/useUavControlRoom.store'
 import { Tooltip } from 'antd'
 import { isNil } from 'lodash'
-import { lazy } from 'react'
+import { FC, lazy } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useShallow } from 'zustand/react/shallow'
+import LatestTask from './LatestTask'
 
 const DeviceLinkSwitch = lazy(
   () => import('@/components/device/DeviceLinkSwitch'),
@@ -192,7 +193,9 @@ const ControlRoomUavHeader: FC = memo(() => {
           <FD />
         </ul>
       </section>
-      <section />
+      <section>
+        <LatestTask deviceId={deviceId} />
+      </section>
     </header>
   )
 })

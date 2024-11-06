@@ -22,6 +22,9 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
 
   // 雷达目标 ------------------------
   const updateRadarTarget = useGlobalWsStore((s) => s.updateRadarTarget)
+  const updateActionItemStatus = useGlobalWsStore(
+    (s) => s.updateActionItemStatus,
+  )
   const handleRadarTarget = useMemoizedFn((obj: any) => {
     const { parentId, deviceId, data } = obj
     // if ('RADAR' !== data?.data?.sourceType)
@@ -166,6 +169,21 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
       case 'TEMPORARY_DETECT_RESULT':
         handleTemporaryDetectResult(message)
         break
+      case 'ACTION_ITEM_STATUS':
+        const data = shouldJson<any[]>(message)
+        if (!data) {
+          break
+        }
+        const res = data.reduce<Record<string, any>>((prev, e) => {
+          if (e.deviceId) {
+            prev[e.deviceId] = {
+              actionItemId: e.actionItemId,
+              status: e.status,
+            }
+          }
+          return prev
+        }, {})
+        updateActionItemStatus(res)
     }
   })
 
