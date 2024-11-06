@@ -61,6 +61,11 @@ const UavViewCombackResolver: FC<PropsType> = memo(() => {
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
 
     handler.setInputAction(() => {
+      canFly.current = false
+      comeBack()
+    }, Cesium.ScreenSpaceEventType.WHEEL)
+
+    handler.setInputAction(() => {
       isDrag = false
     }, Cesium.ScreenSpaceEventType.LEFT_UP)
 

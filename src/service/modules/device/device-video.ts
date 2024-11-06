@@ -1,4 +1,6 @@
 import serverControlCenter from '@/service/servers/serverControlCenter'
+import serverDushu from '@/service/servers/serverDushu'
+import serverVideo from '@/service/servers/serverVideo'
 import type { GenericAbortSignal } from 'axios'
 
 export const live = (
@@ -26,4 +28,33 @@ export const live = (
       },
     },
   )
+}
+
+/** 设置视频质量 */
+export const setLiveQuality = (data: any) => {
+  return serverVideo.post('/stream/setQualityLevel', data)
+}
+
+/** 设备算法视频流列表 */
+export const getDeviceStreamList = async (params: {
+  streamId: string
+  protocol?: string
+  ssl?: boolean
+  proxy?: boolean
+}) => {
+  return serverDushu.get<
+    {
+      transport: string
+      playUrl: string
+      sourceAccessProtocol: any
+      appName: string
+    }[]
+  >('/device/stream/list', {
+    params: {
+      protocol: 'WS_FLV',
+      ssl: globalConfig.globalWs === 'wss',
+      proxy: globalConfig.videoProxy || false,
+      ...params,
+    },
+  })
 }

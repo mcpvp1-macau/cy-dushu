@@ -30,7 +30,7 @@ const CloseAI: FC<PropsType> = memo(({ config, onChange }) => {
   const { data, isLoading } = useQuery(
     {
       queryKey: ['algorithmAppList', DeviceEnum.UAV],
-      queryFn: () => getAlgorithmList({ deviceType: DeviceEnum.UAV }),
+      queryFn: () => getAlgorithmList({ deviceType: [DeviceEnum.UAV] }),
       staleTime: Infinity,
       select: (d) => d.data.rows,
     },

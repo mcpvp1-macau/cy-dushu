@@ -9,6 +9,7 @@ import actionPlan from './modules/action-plan'
 import airline from './modules/airline'
 import demo from './modules/demo'
 import events from './modules/events'
+import backtracking from './modules/backtracking'
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
       controlRoom,
       actionPlan,
       airline,
+      backtracking,
       // 测试页面
       ...(import.meta.env.DEV ? [demo] : []),
     ],

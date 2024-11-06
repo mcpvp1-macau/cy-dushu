@@ -1,51 +1,108 @@
 import { create } from 'zustand'
-import { devtools } from 'zustand/middleware'
+import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 
 type StateType = {
   virtualReal: {
-    roadColor: string
-    buildingBackgroundColor: string
-    buildingLineColor: string
-    roadWidth: number
-    buildingWidth: number
-    showRoad: boolean
-    showSmallRoad: boolean
-    showBuilding: boolean
-    textColor: string
-    textSize: number
-    textOutlineColor: string
-    textOutlineWidth: number
+    /** 主路 */
+    mainRoad: {
+      enable: boolean
+      color: string
+      borderColor: string
+      size: number
+      borderSize: number
+    }
+    /** 小路 */
+    subRoad: {
+      enable: boolean
+      color: string
+      borderColor: string
+      size: number
+      borderSize: number
+    }
+    /** 文本 */
+    text: {
+      enable: boolean
+      color: string
+      borderColor: string
+      size: number
+      borderSize: number
+    }
+    /** 建筑 */
+    building: {
+      enable: boolean
+      color: string
+      borderColor: string
+      borderSize: number
+    }
+    shift: {
+      gimbalYaw: number
+      gimbalPitch: number
+      height: number
+      lng: number
+      lat: number
+    }
   }
 }
 
 type ActionsType = {
-  updateVirtualReal: (data: Partial<StateType['virtualReal']>) => void
+  updateVirtualReal: (data: StateType['virtualReal']) => void
 }
 
 const useSettingStore = create<StateType & ActionsType>()(
-  devtools((set) => ({
-    virtualReal: {
-      roadColor: '#ffffff',
-      buildingBackgroundColor: '#ffffff',
-      buildingLineColor: '#ffffff',
-      roadWidth: 1,
-      buildingWidth: 1,
-      showRoad: true,
-      showSmallRoad: true,
-      showBuilding: true,
-      textColor: '#ffffff',
-      textSize: 12,
-      textOutlineColor: '#ffffff',
-      textOutlineWidth: 1,
-    },
-    updateVirtualReal: (data) => {
-      set((state) => ({
+  devtools(
+    persist(
+      (set) => ({
         virtualReal: {
-          ...state.virtualReal,
-          ...data,
+          mainRoad: {
+            enable: true,
+            color: '#176932',
+            borderColor: '#000000',
+            size: 4,
+            borderSize: 2,
+          },
+          subRoad: {
+            enable: true,
+            color: '#FFB366',
+            borderColor: '#000000',
+            size: 2,
+            borderSize: 1,
+          },
+          text: {
+            enable: true,
+            color: '#ffffff',
+            borderColor: '#000000',
+            size: 20,
+            borderSize: 2,
+          },
+          building: {
+            enable: true,
+            color: '#5159A233',
+            borderColor: '#000000',
+            borderSize: 2,
+          },
+          shift: {
+            gimbalYaw: 0,
+            gimbalPitch: 0,
+            height: 0,
+            lng: 0,
+            lat: 0,
+          },
         },
-      }))
+        updateVirtualReal: (data) => {
+          set({
+            virtualReal: data,
+          })
+        },
+      }),
+      {
+        name: 'user-setting',
+        storage: createJSONStorage(() => sessionStorage),
+      },
+    ),
+    {
+      name: 'user-setting',
+      enabled: process.env.NODE_ENV === 'development',
     },
-  })),
+  ),
 )
 export default useSettingStore

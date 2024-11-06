@@ -105,7 +105,10 @@ const AsideButtons: FC<PropsType> = memo(() => {
           })}
           disabled={!canPointFly}
           icon={<IconPointFly className="text-base" />}
-          onClick={() => updateOpenPointFly(!openPointFly)}
+          onClick={() => {
+            updateFlyParamsOpen(true)
+            updateOpenPointFly(!openPointFly)
+          }}
         >
           指点飞行
         </VerticalIconButton>

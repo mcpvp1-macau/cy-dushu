@@ -19,6 +19,7 @@ type StateType = {
   >
   sleepStatus: Record<string, string>
   onlineStatus: Record<string, string>
+  actionItemStatus: Record<string, { actionItemId: number; status: string }>
 }
 
 type ActionsType = {
@@ -33,6 +34,9 @@ type ActionsType = {
   ) => void
   updateRadarTarget: (radarTarget: StateType['radarTarget']) => void
   updateOnlineStatus: (onlineStatus: StateType['onlineStatus']) => void
+  updateActionItemStatus: (
+    actionItemStatus: StateType['actionItemStatus'],
+  ) => void
 }
 
 const useGlobalWsStore = create<StateType & ActionsType>()(
@@ -45,6 +49,7 @@ const useGlobalWsStore = create<StateType & ActionsType>()(
       deviceRealtimeProperties: {},
       radarTarget: {},
       onlineStatus: {},
+      actionItemStatus: {},
       updateNewEvent: (newEvent) => {
         set({ newEvent }, false, 'updateNewEvent')
       },
@@ -73,6 +78,9 @@ const useGlobalWsStore = create<StateType & ActionsType>()(
         set({ radarTarget }, false, 'updateRadarTarget'),
       updateOnlineStatus: (onlineStatus) => {
         set({ onlineStatus }, false, 'updateOnlineStatus')
+      },
+      updateActionItemStatus: (actionItemStatus) => {
+        set({ actionItemStatus }, false, 'updateActionItemStatus')
       },
     }),
     {

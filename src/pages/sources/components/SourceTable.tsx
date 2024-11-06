@@ -5,9 +5,9 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { Badge, Input, Pagination } from 'antd'
+import { Badge, Button, Input, Pagination } from 'antd'
 import { memo, type FC } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import OTAUpdateColumn from './OTAUpdateColumn'
 import DeviceData from './DeviceData'
 import XTable from '@/components/ui/XTable.tsx'
@@ -116,10 +116,18 @@ const SourceTable: FC<PropsType> = memo(() => {
         id: 'actions',
         header: '操作',
         cell: (cell) => {
+          const data = cell.row.original
           return (
-            <>
+            <div className="flex justify-center">
               <DeviceData deviceData={cell?.row.original} />
-            </>
+              {data.deviceType === 'UAV' && (
+                <Link to={`/backtracking/device/${data.deviceId}`}>
+                  <Button type="link" size="small">
+                    回溯
+                  </Button>
+                </Link>
+              )}
+            </div>
           )
         },
       }),
@@ -142,7 +150,7 @@ const SourceTable: FC<PropsType> = memo(() => {
         <Input.Search
           placeholder="设备名称"
           defaultValue={kw ?? undefined}
-          onSearch={() => handleValueChange('kw', kw)}
+          onSearch={(e) => handleValueChange('kw', e)}
         />
       </div>
       <div className="mt-3 w-full grow rounded overflow-hidden border border-solid border-[#23272D]">

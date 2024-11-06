@@ -44,7 +44,7 @@ declare namespace API_Alogrithm {
   namespace req {
     interface GetAlgorithmlistReq {
       deviceId?: string
-      deviceType?: string | string[]
+      deviceType?: string[]
     }
     interface DeployAlgorithmReq {
       appId: number

@@ -1,11 +1,12 @@
 import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
-import { memo, type FC } from 'react'
 import LaserRanging from './LaserRanging'
 import PositionZoom from './PositionZoom'
 import { useSearchParams } from 'react-router-dom'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
+import useMixARStore from '@/store/control-room/useMixAR.store'
+import MixARCanvas from './MixARCanvas'
 
 type PropsType = {
   onAspectRatioChange?: (aspectRatio: number) => void
@@ -30,11 +31,16 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
     postService('liveSetQuality', { quality })
   }
 
+  // const enableMixAR = useControlRoomStore((s) => s.state.ar);
+  const enableAR = useMixARStore((s) => s.enable)
+  const updateUavProperties = useMixARStore((s) => s.updateUavProperties)
+
+  const handlePropertiesSei = (data: any) => {
+    updateUavProperties(data)
+  }
+
   return (
-    <div
-      className="absolute inset-0  bg-black"
-      // style={{ aspectRatio }}
-    >
+    <div className="absolute inset-0  bg-black">
       <DeviceLiveVideo
         deviceId={deviceId}
         productKey={productKey}
@@ -48,10 +54,12 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
           // setAspectRatio(v)
           onAspectRatioChange?.(v)
         }}
+        onUavProperties={handlePropertiesSei}
         videoChildren={
           <>
             <LaserRanging />
             <PositionZoom />
+            {enableAR && <MixARCanvas />}
           </>
         }
       />

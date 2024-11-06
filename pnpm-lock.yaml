@@ -65,6 +65,9 @@ importers:
       dayjs:
         specifier: ^1.11.12
         version: 1.11.12
+      geojson-rbush:
+        specifier: ^3.2.0
+        version: 3.2.0
       h3-js:
         specifier: ^4.1.0
         version: 4.1.0
@@ -174,6 +177,9 @@ importers:
       eslint-plugin-react-refresh:
         specifier: ^0.4.6
         version: 0.4.7(eslint@8.57.0)
+      geojson:
+        specifier: ^0.5.0
+        version: 0.5.0
       less:
         specifier: ^4.2.0
         version: 4.2.0
@@ -1078,6 +1084,9 @@ packages:
   '@turf/great-circle@7.1.0':
     resolution: {integrity: sha512-92q5fqUp5oW+FYekUIrUVR5PZBWbOV6NHKHPIiNahiPvtkpZItbbjoO+tGn5+2i8mxZP9FGOthayJe4V0a1xkg==}
 
+  '@turf/helpers@6.5.0':
+    resolution: {integrity: sha512-VbI1dV5bLFzohYYdgqwikdMVpe7pJ9X3E+dlr425wa2/sMJqYDhTO++ec38/pcPvPE6oD9WEEeU3Xu3gza+VPw==}
+
   '@turf/helpers@7.1.0':
     resolution: {integrity: sha512-dTeILEUVeNbaEeoZUOhxH5auv7WWlOShbx7QSd4s0T4Z0/iz90z9yaVCtZOLbU89umKotwKaJQltBNO9CzVgaQ==}
 
@@ -1140,6 +1149,9 @@ packages:
 
   '@turf/mask@7.1.0':
     resolution: {integrity: sha512-d+u3IIiRhe17TDfP/+UMn9qRlJYPJpK7sj6WorsssluGi0yIG/Z24uWpcLskWKSI8NNgkIbDrp+GIYkJi2t7SA==}
+
+  '@turf/meta@6.5.0':
+    resolution: {integrity: sha512-RrArvtsV0vdsCBegoBtOalgdSOfkBrTJ07VkpiCnq/491W67hnMWmDu7e6Ztw0C3WldRYTXkg3SumfdzZxLBHA==}
 
   '@turf/meta@7.1.0':
     resolution: {integrity: sha512-ZgGpWWiKz797Fe8lfRj7HKCkGR+nSJ/5aKXMyofCvLSc2PuYJs/qyyifDPWjASQQCzseJ7AlF2Pc/XQ/3XkkuA==}
@@ -1302,6 +1314,9 @@ packages:
 
   '@types/geojson@7946.0.14':
     resolution: {integrity: sha512-WCfD5Ht3ZesJUsONdhvm84dmzWOiOzOAqOncN0++w0lBw1o8OuDNJF2McvvCef/yBqb/HYRahp1BYtODFQ8bRg==}
+
+  '@types/geojson@7946.0.8':
+    resolution: {integrity: sha512-1rkryxURpr6aWP7R786/UQOkJ3PcpQiWkAXBmdWc7ryFWqN6a4xfK7BtjXvFBKO9LjQ+MWQSWxYeZX1OApnArA==}
 
   '@types/lodash@4.17.7':
     resolution: {integrity: sha512-8wTvZawATi/lsmNu10/j2hk1KEP0IvjubqPE3cu1Xz7xfXXt5oCq3SNUz4fMIP4XGF9Ky+Ue2tBA3hcS7LSBlA==}
@@ -1884,6 +1899,13 @@ packages:
 
   geojson-polygon-self-intersections@1.2.1:
     resolution: {integrity: sha512-/QM1b5u2d172qQVO//9CGRa49jEmclKEsYOQmWP9ooEjj63tBM51m2805xsbxkzlEELQ2REgTf700gUhhlegxA==}
+
+  geojson-rbush@3.2.0:
+    resolution: {integrity: sha512-oVltQTXolxvsz1sZnutlSuLDEcQAKYC/uXt9zDzJJ6bu0W+baTI8LZBaTup5afzibEH4N3jlq2p+a152wlBJ7w==}
+
+  geojson@0.5.0:
+    resolution: {integrity: sha512-/Bx5lEn+qRF4TfQ5aLu6NH+UKtvIv7Lhc487y/c8BdludrCTpiWf9wyI0RTyqg49MFefIAvFDuEi5Dfd/zgNxQ==}
+    engines: {node: '>= 0.10'}
 
   glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
@@ -4261,6 +4283,8 @@ snapshots:
       '@turf/invariant': 7.1.0
       '@types/geojson': 7946.0.14
 
+  '@turf/helpers@6.5.0': {}
+
   '@turf/helpers@7.1.0':
     dependencies:
       '@types/geojson': 7946.0.14
@@ -4441,6 +4465,10 @@ snapshots:
       '@types/geojson': 7946.0.14
       polygon-clipping: 0.15.7
       tslib: 2.7.0
+
+  '@turf/meta@6.5.0':
+    dependencies:
+      '@turf/helpers': 6.5.0
 
   '@turf/meta@7.1.0':
     dependencies:
@@ -4978,6 +5006,8 @@ snapshots:
   '@types/estree@1.0.5': {}
 
   '@types/geojson@7946.0.14': {}
+
+  '@types/geojson@7946.0.8': {}
 
   '@types/lodash@4.17.7': {}
 
@@ -5646,6 +5676,16 @@ snapshots:
   geojson-polygon-self-intersections@1.2.1:
     dependencies:
       rbush: 2.0.2
+
+  geojson-rbush@3.2.0:
+    dependencies:
+      '@turf/bbox': 7.1.0
+      '@turf/helpers': 6.5.0
+      '@turf/meta': 6.5.0
+      '@types/geojson': 7946.0.8
+      rbush: 3.0.1
+
+  geojson@0.5.0: {}
 
   glob-parent@5.1.2:
     dependencies:

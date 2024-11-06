@@ -1,10 +1,10 @@
-import { live } from '@/service/modules/device/device-video'
+import { live, setLiveQuality } from '@/service/modules/device/device-video'
 import Jessibuca from '../Video/Jessibuca'
 import { formatTs } from '@/utils/time'
 import IconButton from '../ui/button/IconButton'
 import IconRefresh from '@/assets/icons/jsx/IconRefresh'
 import IconFull from '@/assets/icons/jsx/IconFull'
-import { useFullscreen, useSize, useThrottleFn } from 'ahooks'
+import { useDebounceFn, useFullscreen, useSize, useThrottleFn } from 'ahooks'
 import { ExpandOutlined, FullscreenExitOutlined } from '@ant-design/icons'
 import { forwardRef, useImperativeHandle } from 'react'
 import { calcStreamId } from '@/utils/video/stream'
@@ -17,6 +17,9 @@ import SeiAIData from './SeiAIData'
 import DrawBox from '../DrawBox'
 import useElectricScale from './hooks/useElectricScale'
 import { limitNum } from '@/utils/math'
+import { PropertiesData } from '../Video/Jessibuca/sei-types/properties'
+import VideoStream from './VideoStream'
+import { ConfigProvider } from 'antd'
 
 type PropsType = {
   videoContainerId?: string
@@ -35,6 +38,7 @@ type PropsType = {
     onDRCChange?: (quality: string) => void
   }
   onAspectRatioChange?: (aspectRatio: number) => void
+  onUavProperties?: (properties: PropertiesData) => void
 }
 
 type DeviceLiveVideoRefType = {
@@ -61,6 +65,7 @@ const DeviceLiveVideo = memo(
         videoChildren,
         useVideoQualityCheck,
         onAspectRatioChange,
+        onUavProperties,
       },
       ref,
     ) => {
@@ -76,10 +81,17 @@ const DeviceLiveVideo = memo(
         queryClient,
       )
 
+      const [url, setUrl] = useState(playUrl ?? '')
+
+      useEffect(() => {
+        setUrl(playUrl ?? '')
+      }, [playUrl])
+
       const [aspectRatio, setAspectRatio] = useState(16 / 9)
       const [ts, _setTs] = useState(0)
       const { run: setTs } = useThrottleFn(
         (t: number) => {
+          debounceRetch()
           _setTs(t)
         },
         { wait: 333 },
@@ -87,6 +99,9 @@ const DeviceLiveVideo = memo(
 
       /** 刷新 */
       const handleRefresh = async () => {
+        queryClient.invalidateQueries({
+          queryKey: ['getDeviceStreamList', `${productKey}/${deviceId}`],
+        })
         await refetch()
       }
 
@@ -142,6 +157,7 @@ const DeviceLiveVideo = memo(
         SEI_TYPE[SeiEnum.Protobuf_SEI] | null
       >(null)
 
+      // 电子放大
       const {
         enableScale,
         originCenter,
@@ -149,6 +165,39 @@ const DeviceLiveVideo = memo(
         handleDrewScaleEnd,
         setEnableScale,
       } = useElectricScale(fullScreen)
+
+      /** 视频流切换 */
+      const handleStreamChange = useMemoizedFn((value: string) => {
+        if (url.indexOf('?') > -1) {
+          value += url.substring(url.indexOf('?'))
+        }
+        setUrl(value)
+      })
+
+      /** 视频质量切换 */
+      const handle5GChange = useMemoizedFn(async (value: string) => {
+        const sid = calcStreamId(url)
+        await setLiveQuality({
+          qualityLevel: value,
+          app: 'rtp',
+          streamId: sid,
+        })
+        await queryClient.invalidateQueries({
+          queryKey: ['getQualityLevel', 'rtp', sid],
+        })
+      })
+
+      const { run: debounceRetch } = useDebounceFn(
+        () => {
+          refetch()
+          debounceRetch()
+        },
+        { wait: 5000, leading: false },
+      )
+
+      useEffect(() => {
+        debounceRetch()
+      }, [])
 
       return (
         <div
@@ -195,7 +244,7 @@ const DeviceLiveVideo = memo(
               {playUrl && (
                 <Jessibuca
                   containerId={videoContainerId}
-                  src={playUrl}
+                  src={url}
                   onVideoInfo={(v) => {
                     setAspectRatio(v.width / v.height)
                     onAspectRatioChange?.(v.width / v.height)
@@ -204,6 +253,7 @@ const DeviceLiveVideo = memo(
                   onSeiAIData={(aiData) => {
                     !aiData.ref && setAIData(aiData)
                   }}
+                  onSeiProperties={onUavProperties}
                   onFetchError={handleRefresh}
                 />
               )}
@@ -218,74 +268,99 @@ const DeviceLiveVideo = memo(
               </div>
             </div>
           </div>
-          {/* 上工具栏 */}
-          {(leftTop || rightTop) && (
-            <aside className="absolute top-0 inset-x-0 bg-ground-100 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm">
+          <ConfigProvider
+            theme={{
+              components: {
+                Select: {
+                  paddingSM: 0,
+                },
+              },
+            }}
+          >
+            {/* 上工具栏 */}
+            {(leftTop || rightTop) && (
+              <aside className="absolute top-0 inset-x-0 bg-ground-100 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm">
+                <div className="flex justify-between items-center h-full">
+                  <section className="flex items-center gap-3">
+                    {leftTop}
+                  </section>
+                  <section className="flex items-center gap-3">
+                    {rightTop}
+                  </section>
+                </div>
+              </aside>
+            )}
+            {/* 下工具栏 */}
+            <aside className="absolute bottom-0 inset-x-0 bg-ground-100 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm">
               <div className="flex justify-between items-center h-full">
-                <section className="flex items-center gap-3">{leftTop}</section>
                 <section className="flex items-center gap-3">
-                  {rightTop}
+                  <div className="order-10 text-fore text-xs">
+                    {formatTs(ts)}
+                  </div>
+                  {leftBottom}
+                </section>
+                <section className="flex items-center gap-3">
+                  <VideoStream
+                    currentUrl={url}
+                    productKey={productKey}
+                    deviceId={deviceId}
+                    onChange={handleStreamChange}
+                  />
+                  {+videoQuality >= 0 && (
+                    <VideoQuality5G
+                      value={videoQuality}
+                      onChange={handle5GChange}
+                    />
+                  )}
+                  {videoQuality == -1 &&
+                    !isNil(useVideoQualityCheck?.valueDRC) && (
+                      <VideoQualityDRC
+                        value={useVideoQualityCheck.valueDRC}
+                        onChange={useVideoQualityCheck?.onDRCChange}
+                      />
+                    )}
+                  <IconButton
+                    toolTipProps={{
+                      title: '刷新',
+                      getPopupContainer: () =>
+                        (document.fullscreenElement as HTMLElement) ??
+                        document.body,
+                    }}
+                    className="order-20 text-[13px]"
+                    onClick={handleRefresh}
+                  >
+                    <IconRefresh />
+                  </IconButton>
+                  <IconButton
+                    className="scale-90"
+                    toolTipProps={{ title: '电子放大' }}
+                    active={!!enableScale}
+                    onClick={() => {
+                      setEnableScale(1 - Math.sign(enableScale))
+                    }}
+                  >
+                    <ExpandOutlined />
+                  </IconButton>
+                  <IconButton
+                    toolTipProps={{
+                      title: !fullScreen ? '全屏' : '退出全屏',
+                      align: {
+                        offset: [-20, -10],
+                      },
+                      getPopupContainer: () =>
+                        (document.fullscreenElement as HTMLElement) ??
+                        document.body,
+                    }}
+                    className="order-10 text-[13px]"
+                    onClick={toggleFullscreen}
+                  >
+                    {!fullScreen ? <IconFull /> : <FullscreenExitOutlined />}
+                  </IconButton>
+                  {rightBottom}
                 </section>
               </div>
             </aside>
-          )}
-          {/* 下工具栏 */}
-          <aside className="absolute bottom-0 inset-x-0 bg-ground-100 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm">
-            <div className="flex justify-between items-center h-full">
-              <section className="flex items-center gap-3">
-                <div className="order-10 text-fore text-xs">{formatTs(ts)}</div>
-                {leftBottom}
-              </section>
-              <section className="flex items-center gap-3">
-                {+videoQuality >= 0 && <VideoQuality5G value={videoQuality} />}
-                {videoQuality == -1 &&
-                  !isNil(useVideoQualityCheck?.valueDRC) && (
-                    <VideoQualityDRC
-                      value={useVideoQualityCheck.valueDRC}
-                      onChange={useVideoQualityCheck?.onDRCChange}
-                    />
-                  )}
-                <IconButton
-                  toolTipProps={{
-                    title: '刷新',
-                    getPopupContainer: () =>
-                      (document.fullscreenElement as HTMLElement) ??
-                      document.body,
-                  }}
-                  className="order-20 text-[13px]"
-                  onClick={handleRefresh}
-                >
-                  <IconRefresh />
-                </IconButton>
-                <IconButton
-                  className="scale-90"
-                  toolTipProps={{ title: '电子放大' }}
-                  active={!!enableScale}
-                  onClick={() => {
-                    setEnableScale(1 - Math.sign(enableScale))
-                  }}
-                >
-                  <ExpandOutlined />
-                </IconButton>
-                <IconButton
-                  toolTipProps={{
-                    title: !fullScreen ? '全屏' : '退出全屏',
-                    align: {
-                      offset: [-20, -10],
-                    },
-                    getPopupContainer: () =>
-                      (document.fullscreenElement as HTMLElement) ??
-                      document.body,
-                  }}
-                  className="order-10 text-[13px]"
-                  onClick={toggleFullscreen}
-                >
-                  {!fullScreen ? <IconFull /> : <FullscreenExitOutlined />}
-                </IconButton>
-                {rightBottom}
-              </section>
-            </div>
-          </aside>
+          </ConfigProvider>
         </div>
       )
     },

@@ -18,9 +18,10 @@ const options = [
 
 type PropsType = {
   value: string
+  onChange?: (value: string) => void
 }
 
-const VideoQuality5G: FC<PropsType> = memo(({ value }) => {
+const VideoQuality5G: FC<PropsType> = memo(({ value, onChange }) => {
   return (
     <Select
       variant="borderless"
@@ -29,10 +30,11 @@ const VideoQuality5G: FC<PropsType> = memo(({ value }) => {
       suffixIcon={null}
       popupMatchSelectWidth={false}
       options={options}
+      value={value}
+      onChange={onChange}
       getPopupContainer={() =>
         (document.fullscreenElement as HTMLElement) ?? document.body
       }
-      value={value}
     />
   )
 })

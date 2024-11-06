@@ -11,7 +11,6 @@ export const fileToBase64 = (file: File) => {
 
 /** base64 转文件 */
 export const base64ToFile = (base64: string, filename: string) => {
-  console.log(base64)
   const arr = base64.split(',')
   const mime = arr[0].match(/:(.*?);/)![1]
   const bstr = atob(arr[1])

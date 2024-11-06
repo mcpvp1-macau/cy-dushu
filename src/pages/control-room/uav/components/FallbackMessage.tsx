@@ -83,7 +83,7 @@ const FallbackMessage: FC<PropsType> = memo(() => {
               <div className="px-2 py-1 text-white text-sm rounded-[3px] bg-ground-180">
                 {renderMsgs.length}
               </div>
-              <p className="max-w-64">{renderMsgs[0]}</p>
+              <div className="max-w-64">{renderMsgs[0]}</div>
             </div>
           </Popover>
         </>

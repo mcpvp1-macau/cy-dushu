@@ -62,7 +62,6 @@ const EventDetail: FC<PropsType> = memo(({ eventId, useCol }) => {
     })
   }, [eventData, data])
 
-  console.log(data?.objectList)
   const expand = useMemo(() => shouldJson(data?.expand) ?? {}, [data])
 
   if (!data || isLoading) {

@@ -132,6 +132,7 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
   const postDeviceService = usePostDeviceService(productKey, deviceId)
   const handleTakeoffOk = async (values: any) => {
     await postDeviceService('takeoff', values)
+    setTakeoffFalse()
   }
 
   return (
