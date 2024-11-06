@@ -5,6 +5,7 @@ import { Popover } from 'antd'
 import UserDownMenu from './UserDownMenu'
 import HeaderSetting from './HeaderSetting'
 import POISearch from './POISearch'
+import Fullscreen from './Fullscreen'
 
 type PropsType = unknown
 
@@ -30,6 +31,7 @@ const Header: FC<PropsType> = memo(() => {
       <div></div>
       {/* 右边 */}
       <div className="text-fore mr-3 flex gap-3">
+        <Fullscreen target={document.documentElement} />
         <HeaderSetting />
         <Popover
           className="hover:cursor-pointer"
