@@ -15,7 +15,7 @@ export const getAlgorithmList = async (
 export const releaseAlgorithm = async (
   data: API_Alogrithm.req.ReleaseAlgorithmReq,
 ) => {
-  return serverAlgorithm.post('/pipeline/release/v4', {
+  return serverAlgorithm.post('/pipeline/release/jingqi', {
     ...data,
     method: 'unDeployPipeline',
   })
@@ -25,7 +25,7 @@ export const releaseAlgorithm = async (
 export const deployAlgorithm = async (
   data: API_Alogrithm.req.DeployAlgorithmReq,
 ) => {
-  return serverAlgorithm.post('/pipeline/deploy/v4', {
+  return serverAlgorithm.post('/pipeline/deploy/jingqi', {
     ...data,
     method: 'deploypipeline',
   })
