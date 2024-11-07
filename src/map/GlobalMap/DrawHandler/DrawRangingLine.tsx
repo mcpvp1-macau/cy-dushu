@@ -25,7 +25,6 @@ const DrawRangingLine: FC<PropsType> = memo(() => {
           if (path.current.length < 1 || !endPointRef.current) {
             return Cesium.Cartesian3.fromDegreesArray([0, 0, 0, 0])
           }
-          console.log(path.current)
           return Cesium.Cartesian3.fromDegreesArray([
             ...flatten(path.current),
             ...endPointRef.current,
