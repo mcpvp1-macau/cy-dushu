@@ -83,7 +83,10 @@ const Forecats: FC<PropsType> = memo(({ positions }) => {
       {viewer &&
         boardInfo.remainDistance >= 1 &&
         (waypointIndex || 0) < positions.length && (
-          <PositionTooltip position={[boardInfo.lng, boardInfo.lat]}>
+          <PositionTooltip
+            position={[boardInfo.lng, boardInfo.lat]}
+            alwayInViewport
+          >
             <div
               style={{
                 display: 'flex',

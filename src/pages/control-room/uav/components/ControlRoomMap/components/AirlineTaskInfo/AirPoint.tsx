@@ -1,6 +1,5 @@
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
-import image from '@/assets/imgs/inverted-triangle.svg'
 
 type PropsType = {
   positionIndex: number
@@ -16,7 +15,7 @@ const AirPoint: FC<PropsType> = memo(({ positionIndex, lng, lat }) => {
     const entity = viewer.entities.add({
       position: Cesium.Cartesian3.fromDegrees(lng, lat, 0),
       billboard: {
-        image: image,
+        image: '/images/airline/inverted-triangle.svg',
         scale: 1.15,
         eyeOffset: new Cesium.Cartesian3(0, 0, -2),
       },
