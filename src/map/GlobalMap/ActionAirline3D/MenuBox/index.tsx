@@ -3,7 +3,6 @@ import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { Dropdown, MenuProps } from 'antd'
 import { useLatest } from 'ahooks'
-import addPointCursor from '@/assets/imgs/add-point.svg'
 import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
 import { cartesian3ToDegrees } from '@/utils/geoUtils'
 
@@ -41,8 +40,8 @@ const MenuBox: FC<PropsType> = () => {
         const position = e.position
         const { x, y } = viewer.scene.canvas.getBoundingClientRect()
         if (divRef.current !== null) {
-          divRef.current.style.left = `${x + 5 + position.x}px`
-          divRef.current.style.top = `${y + 5 + position.y}px`
+          divRef.current.style.left = `${x + position.x}px`
+          divRef.current.style.top = `${y + position.y}px`
         }
 
         if (isDrawHomeRef.current || isDrawPointRef.current) return
@@ -153,13 +152,13 @@ const MenuBox: FC<PropsType> = () => {
         }}
       >
         <div
-          className="fixed w-[1px] h-[1px] left-[-9999px] top-[-9999px]"
+          className="fixed left-[-9999px] top-[-9999px] -translate-x-1/2 -translate-y-1/2"
           style={{ display: open ? 'block' : 'none' }}
           ref={divRef}
         >
           <img
-            src={addPointCursor}
-            className="relative left-[-15px] top-[-15px]"
+            src="/images/airline/add-point.svg"
+            className="relative w-6 h-6"
           />
         </div>
       </Dropdown>

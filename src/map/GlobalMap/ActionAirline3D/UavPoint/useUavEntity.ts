@@ -1,6 +1,5 @@
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
-import groundPointImg from '@/assets/imgs/ground-point.svg'
 import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
 
 export const useUavEntity = () => {
@@ -49,7 +48,7 @@ export const useUavEntity = () => {
     const bottomEntity = viewer.entities.add({
       position: bottomPosition,
       billboard: {
-        image: groundPointImg,
+        image: '/images/airline/ground-point.svg',
         scale: 0.8,
         heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
       },

@@ -2,9 +2,6 @@ import { useCesium } from 'resium'
 import { useLatest } from 'ahooks'
 import { useEffect, useRef } from 'react'
 import * as Cesium from 'cesium'
-
-import takeOffCursor from '@/assets/imgs/takeoff-cur.svg'
-import addPointCursor from '@/assets/imgs/add-point.svg'
 import mitt from 'mitt'
 import { useShallow } from 'zustand/react/shallow'
 import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
@@ -36,11 +33,11 @@ export const useMouseStyle = (open: boolean = true) => {
 
     handler.setInputAction((e: Cesium.ScreenSpaceEventHandler.MotionEvent) => {
       if (configRef.current.isDrawHome) {
-        viewer.scene.canvas.style.cursor = `url(${takeOffCursor}) 0 0, auto`
+        viewer.scene.canvas.style.cursor = `url(/images/airline/takeoff-cur.svg) 15 15, auto`
         return
       }
       if (configRef.current.isDrawPoint) {
-        viewer.scene.canvas.style.cursor = `url(${addPointCursor}) 10 10, auto`
+        viewer.scene.canvas.style.cursor = `url(/images/airline/add-point.svg) 10 10, auto`
         return
       }
 

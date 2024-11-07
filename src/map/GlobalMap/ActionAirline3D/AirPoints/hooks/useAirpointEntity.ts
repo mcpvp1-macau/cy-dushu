@@ -1,8 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
-import image from '@/assets/imgs/inverted-triangle.svg'
-import groundPointImg from '@/assets/imgs/ground-point.svg'
 import { AirlinePoint } from '@/store/uav/uav-airline/types'
 
 export const useAirpointEntity = (
@@ -25,7 +23,7 @@ export const useAirpointEntity = (
     entityRef.current = viewer.entities.add({
       position,
       billboard: {
-        image: image,
+        image: '/images/airline/inverted-triangle.svg',
         scale: 1.1,
         eyeOffset: new Cesium.Cartesian3(0, 0, -300),
       },
@@ -47,7 +45,7 @@ export const useAirpointEntity = (
     bottomRef.current = viewer.entities.add({
       position: bottomPosition,
       billboard: {
-        image: groundPointImg,
+        image: '/images/airline/ground-point.svg',
         scale: 0.8,
         heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
       },
