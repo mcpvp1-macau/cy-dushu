@@ -18,17 +18,8 @@ type PropsType = unknown
 
 const AsideButtons: FC<PropsType> = memo(() => {
   const hasControlPower = useUavControlRoomStore((s) => s.hasControlPower)
-  const displayMode = useUavControlRoomStore((s) => s.state.displayMode)
   const serviceHave = useDeviceDetailStore((s) => s.serviceHave)
-
-  const isLimitedFly = useMemo(() => {
-    if (!displayMode) {
-      return false
-    }
-    const isFly =
-      displayMode.includes('指点飞行') || displayMode.includes('一键起飞')
-    return isFly
-  }, [displayMode])
+  const isLimitedFly = useUavControlRoomStore((s) => s.isLimitedFly)
 
   const canBoxSelect =
     !isLimitedFly && hasControlPower && serviceHave['gimbalToPoint']
@@ -61,8 +52,8 @@ const AsideButtons: FC<PropsType> = memo(() => {
     (s) => s.updateFlyParamsOpen,
   )
 
-  const openPointFly = useUavControlRoomStore((s) => s.openPointFly)
-  const updateOpenPointFly = useUavControlRoomStore((s) => s.updateOpenPointFly)
+  const openPointFly = useUavControlRoomStore((s) => s.pointFly.open)
+  const updatePointFly = useUavControlRoomStore((s) => s.updatePointFly)
 
   return (
     <div className="p-3 pt-0.5 flex flex-col gap-2.5">
@@ -107,7 +98,10 @@ const AsideButtons: FC<PropsType> = memo(() => {
           icon={<IconPointFly className="text-base" />}
           onClick={() => {
             updateFlyParamsOpen(true)
-            updateOpenPointFly(!openPointFly)
+            updatePointFly({
+              open: !openPointFly,
+              targetPosition: null,
+            })
           }}
         >
           指点飞行

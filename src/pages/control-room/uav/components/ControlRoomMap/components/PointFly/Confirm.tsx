@@ -9,16 +9,15 @@ import { Button } from 'antd'
 
 type PropsType = {
   position: [number, number]
-  onAction: () => void
 }
 
-const UavPointFlyConfirm: FC<PropsType> = memo(({ position, onAction }) => {
+const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
   const uavLon = useUavControlRoomStore((s) => s.state.longitude)
   const uavLat = useUavControlRoomStore((s) => s.state.latitude)
   const speed = useUavControlRoomStore((s) => s.flyParams.flySpeed)
   const height = useUavControlRoomStore((s) => s.flyParams.targetHeight)
 
-  const updateOpenPointFly = useUavControlRoomStore((s) => s.updateOpenPointFly)
+  const updatePointFly = useUavControlRoomStore((s) => s.updatePointFly)
 
   const distance = useMemo(() => {
     if (!uavLon || !uavLat) {
@@ -48,12 +47,15 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position, onAction }) => {
       height,
       speed,
     })
-    updateOpenPointFly(false)
+    updatePointFly({
+      open: false,
+      targetPosition: null,
+    })
   }
 
   return (
     <>
-      <PositionTooltip offset={[0, 30]} position={position}>
+      <PositionTooltip offset={[0, 30]} position={position} alwayInViewport>
         <div className="flex flex-col gap-1 text-fore p-1">
           <p className="flex justify-between">
             任务距离:{' '}
@@ -73,8 +75,10 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position, onAction }) => {
             <Button
               size="small"
               onClick={() => {
-                updateOpenPointFly(false)
-                onAction()
+                updatePointFly({
+                  open: false,
+                  targetPosition: null,
+                })
               }}
             >
               取消

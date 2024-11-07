@@ -8,34 +8,25 @@ type PropsType = unknown
 
 /** 指点飞行 */
 const UavMapPointFly: FC<PropsType> = memo(() => {
-  const openPointFly = useUavControlRoomStore((s) => s.openPointFly)
-
-  const [position, setPosition] = useState<[number, number] | null>(null)
+  const pointFly = useUavControlRoomStore((s) => s.pointFly)
+  const updatePointFly = useUavControlRoomStore((s) => s.updatePointFly)
 
   const displayMode = useUavControlRoomStore((s) => s.state.displayMode)
 
   const handleClick = (longitude: number, latitude: number) => {
-    setPosition([longitude, latitude])
+    updatePointFly({ targetPosition: [longitude, latitude], open: true })
   }
 
   const isPointFlying = displayMode?.startsWith('指点飞行')
 
-  // 关闭指点飞行时清除位置
-  useEffect(() => {
-    if (!openPointFly) {
-      setPosition(null)
-    }
-  }, [openPointFly])
-
   return (
     <>
-      {openPointFly && <PositionPickListener onClick={handleClick} />}
-      {position && <UavPointFlyTarget position={position} />}
-      {openPointFly && position && (
-        <UavPointFlyConfirm
-          position={position}
-          onAction={() => setPosition(null)}
-        />
+      {pointFly.open && <PositionPickListener onClick={handleClick} />}
+      {pointFly.targetPosition && (
+        <UavPointFlyTarget position={pointFly.targetPosition} />
+      )}
+      {pointFly.open && pointFly.targetPosition && (
+        <UavPointFlyConfirm position={pointFly.targetPosition} />
       )}
       {isPointFlying && <PointFlyForecast />}
     </>

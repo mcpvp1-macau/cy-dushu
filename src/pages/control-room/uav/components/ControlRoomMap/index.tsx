@@ -12,6 +12,7 @@ import LastestTask from './components/AirlineTaskInfo/LatestTask'
 import useMixARStore from '@/store/control-room/useMixAR.store'
 import MapMixAR from './components/MapMixAR'
 import AppSpin from '@/components/AppSpin'
+import UAVControlRoomPOIResolver from './components/POIResolver'
 
 type PropsType = unknown
 
@@ -46,6 +47,7 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
       <UavMarker />
       <HomeMarker />
       <UavRealTrack />
+      <UAVControlRoomPOIResolver />
     </CesiumMap>
   )
 })

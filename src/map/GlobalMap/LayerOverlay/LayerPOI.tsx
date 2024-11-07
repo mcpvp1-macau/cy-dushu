@@ -1,5 +1,4 @@
 import useMapLayerAndOverlayStore from '@/store/map/useLayerAndOverlay.store'
-import { memo, type FC } from 'react'
 import { Billboard, BillboardCollection } from 'resium'
 import point from '@/assets/marker/point.png'
 import * as Cesium from 'cesium'

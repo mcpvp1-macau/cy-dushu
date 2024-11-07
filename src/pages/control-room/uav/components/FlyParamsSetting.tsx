@@ -117,7 +117,7 @@ const FlyParamsSetting: FC<PropsType> = memo(() => {
     postService('takeoff', {})
   }
 
-  const openPointFly = useUavControlRoomStore((s) => s.openPointFly)
+  const openPointFly = useUavControlRoomStore((s) => s.pointFly.open)
 
   if (!flyParams.open) {
     return null
