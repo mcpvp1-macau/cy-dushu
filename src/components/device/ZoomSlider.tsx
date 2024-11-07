@@ -37,8 +37,8 @@ const initialItems = [
 const ZoomSlider: FC<PropsType> = memo(
   ({ items = initialItems, value, onChange, onWheel }) => {
     let tot = 0
-    const renderItems = items
-      .toSorted((a, b) => a.value - b.value)
+    const renderItems = [...items]
+      .sort((a, b) => a.value - b.value)
       .map((item, i) => {
         tot += item.lineCnt
         return {
@@ -120,7 +120,7 @@ const ZoomSlider: FC<PropsType> = memo(
             const delta = rect.y - rootClient.y + rect.height / 2
             return 1 - delta / rootClient.height
           })
-          .toSorted(),
+          .sort(),
       })
     }, [items])
 
