@@ -38,16 +38,23 @@ const AirlineInfoCard: FC<PropsType> = memo(() => {
   const flyTimeFmt = useMemo(() => {
     const flyTime = totalDistance / speed
     if (flyTime < 60) {
-      return '< 1 m'
+      return '< 1 min'
     }
-    return `${(flyTime / 60).toFixed(0)} m`
+    return `${(flyTime / 60).toFixed(0)} min`
   }, [totalDistance, speed])
+
+  const distanceFmt = useMemo(() => {
+    if (totalDistance < 1000) {
+      return `${totalDistance.toFixed(0)} m`
+    }
+    return `${(totalDistance / 1000).toFixed(1)} km`
+  }, [totalDistance])
 
   return (
     <ul className="card-border flex p-3 px-1 text-xs text-center bg-[#1c2630] divide-x divide-ground-300">
       <li className="grow">
         <p>航线长度</p>
-        <p className="mt-1 text-white text-sm">{length.toFixed(1)} m</p>
+        <p className="mt-1 text-white text-sm">{distanceFmt}</p>
       </li>
       <li className="grow">
         <p>预计执行时间</p>
