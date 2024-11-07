@@ -33,6 +33,12 @@ type StateType = {
     flySpeed: number
     targetHeight?: number
   }
+  pointFly: {
+    /** 是否开启指点飞行 */
+    open: boolean
+    /** 目标经纬度 */
+    targetPosition: [number, number] | null
+  }
   /** 无人机的控制信息 */
   uavControlInfo: Partial<{
     /** AD */
@@ -57,7 +63,7 @@ type StateType = {
   /** 是否打开指点变焦 */
   openPointZoom: 0 | 1 | 2
   /** 是否打开指点飞行 */
-  openPointFly: boolean
+  // openPointFly: boolean
   /** 是否启用摇杆 */
   enableGamepad: boolean
 }
@@ -82,7 +88,7 @@ type ActionsType = {
   /** 更新指点变焦 */
   updateOpenPointZoom: (open: StateType['openPointZoom']) => void
   /** 更新指点飞行 */
-  updateOpenPointFly: (open: boolean) => void
+  updatePointFly: (open: StateType['pointFly']) => void
   /** 更新摇杆开启 */
   updateEnableGamepad: (open: boolean) => void
 }
@@ -108,6 +114,10 @@ const createInitialState = () =>
       isExecute: false,
       flySpeed: 10,
       targetHeight: 0,
+    },
+    pointFly: {
+      open: false,
+      targetPosition: null,
     },
     uavControlInfo: {},
     gimbalControlInfo: {},
@@ -236,8 +246,8 @@ export const createUavControlRoomStore = (senders: WsSendersType) => {
         updateOpenPointZoom: (open) => {
           set({ openPointZoom: open }, false, 'updateOpenPointZoom')
         },
-        updateOpenPointFly: (open) => {
-          set({ openPointFly: open }, false, 'updateOpenPointFly')
+        updatePointFly: (data) => {
+          set({ pointFly: data }, false, 'updateOpenPointFly')
         },
         updateEnableGamepad: (open) => {
           set({ enableGamepad: open }, false, 'updateEnableGamepad')
