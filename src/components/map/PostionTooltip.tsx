@@ -114,8 +114,9 @@ const PositionTooltip: FC<PropsType> = memo(
         offset,
         placement: 'top',
         interactive: true,
-
+        hideOnClick: false,
         popperOptions: {
+          strategy: 'fixed',
           modifiers: [
             {
               name: 'preventOverflow',
