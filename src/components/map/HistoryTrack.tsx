@@ -50,6 +50,7 @@ const HistoryTrack: FC<PropsType> = memo(
             width: 4,
             material: Cesium.Color.fromCssColorString('#000'),
             clampToGround: true,
+            zIndex: 1,
           },
         })
       }
@@ -83,6 +84,7 @@ const HistoryTrack: FC<PropsType> = memo(
           width: 2,
           material: Cesium.Color.fromCssColorString(color),
           clampToGround: true,
+          zIndex: 1,
         },
       })
 
