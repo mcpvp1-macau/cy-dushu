@@ -56,5 +56,8 @@ export const getDeviceStreamList = async (params: {
       proxy: globalConfig.videoProxy || false,
       ...params,
     },
+    xCustomConfig: {
+      autoShowMessageOnNotSuccess: false,
+    },
   })
 }
