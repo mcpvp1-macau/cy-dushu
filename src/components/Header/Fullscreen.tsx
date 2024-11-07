@@ -23,7 +23,7 @@ const Fullscreen: FC<PropsType> = memo(({ target }) => {
 
   return (
     <IconButton toolTipProps={{ title: '全屏' }} onClick={enterFullscreen}>
-      <IconFull />
+      <IconFull className="scale-95" />
     </IconButton>
   )
 })
