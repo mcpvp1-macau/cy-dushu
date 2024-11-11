@@ -78,7 +78,7 @@ const OverlayPoint: FC<PropsType> = memo(({ data }) => {
         backgroundPadding={new Cesium.Cartesian2(5, 5)}
         disableDepthTestDistance={50000}
         style={Cesium.LabelStyle.FILL_AND_OUTLINE}
-        heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
+        heightReference={Cesium.HeightReference.NONE}
         distanceDisplayCondition={
           new Cesium.DistanceDisplayCondition(0, 500_000)
         }

@@ -36,7 +36,7 @@ const LayerPOI: FC<PropsType> = memo(() => {
         verticalOrigin={Cesium.VerticalOrigin.BOTTOM}
         horizontalOrigin={Cesium.HorizontalOrigin.CENTER}
         disableDepthTestDistance={50000}
-        heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
+        heightReference={Cesium.HeightReference.NONE}
       />
     </BillboardCollection>
   )

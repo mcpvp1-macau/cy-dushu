@@ -62,7 +62,7 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
         verticalOrigin={Cesium.VerticalOrigin.BOTTOM}
         horizontalOrigin={Cesium.HorizontalOrigin.CENTER}
         disableDepthTestDistance={50000}
-        heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
+        heightReference={Cesium.HeightReference.NONE}
       />
       <Label
         key={deviceId + '-label'}
@@ -81,7 +81,7 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
         backgroundPadding={new Cesium.Cartesian2(5, 5)}
         disableDepthTestDistance={50000}
         style={Cesium.LabelStyle.FILL_AND_OUTLINE}
-        heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
+        heightReference={Cesium.HeightReference.NONE}
         distanceDisplayCondition={
           new Cesium.DistanceDisplayCondition(0, 500_000)
         }
