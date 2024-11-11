@@ -24,20 +24,35 @@ const GimbalButton: FC<{
   gimbalDataTypes: any[]
   canControl: boolean
   label: string
+  isGimbalSource?: boolean
   onClick?: (string) => void
-}> = memo(({ lensType, type, canControl, gimbalDataTypes, label, onClick }) => {
-  return (
-    <Button
-      block
-      size="small"
-      type={lensType === type ? 'primary' : 'default'}
-      disabled={!canControl || !gimbalDataTypes?.find((e) => e.type === type)}
-      onClick={() => onClick?.(type)}
-    >
-      {label}
-    </Button>
-  )
-})
+}> = memo(
+  ({
+    lensType,
+    type,
+    canControl,
+    gimbalDataTypes,
+    label,
+    isGimbalSource,
+    onClick,
+  }) => {
+    return (
+      <Button
+        block
+        size="small"
+        type={lensType === type ? 'primary' : 'default'}
+        disabled={
+          !isGimbalSource ||
+          !canControl ||
+          !gimbalDataTypes?.find((e) => e.type === type)
+        }
+        onClick={() => onClick?.(type)}
+      >
+        {label}
+      </Button>
+    )
+  },
+)
 
 const UavDetailGimbalControl: FC<PropsType> = memo(() => {
   const wsReadyState = useUavControlRoomStore((s) => s.wsReadyState)
@@ -69,6 +84,9 @@ const UavDetailGimbalControl: FC<PropsType> = memo(() => {
       (item: any) => item.id === 'gimbal',
     )?.types
 
+  const isGimbalSource =
+    useUavControlRoomStore((s) => s.state.videoSource) === 'gimbal'
+
   const gimbalTypes = useRef([
     ['zoom', '变焦模式'],
     ['ir', '红外模式'],
@@ -91,6 +109,7 @@ const UavDetailGimbalControl: FC<PropsType> = memo(() => {
             type={type}
             label={label}
             canControl={canControl}
+            isGimbalSource={isGimbalSource}
             gimbalDataTypes={gimbalDataTypes ?? []}
             onClick={handleLensTypeChange}
           />
@@ -103,7 +122,7 @@ const UavDetailGimbalControl: FC<PropsType> = memo(() => {
             max={200}
             value={round(zoomFactor)}
             onChange={(v) => !isNil(v) && setZoomFactor(v)}
-            disabled={!canControl}
+            disabled={!canControl || !isGimbalSource}
           />
         </div>
       </div>
@@ -115,7 +134,7 @@ const UavDetailGimbalControl: FC<PropsType> = memo(() => {
               <CircleButton
                 key={title}
                 className={className}
-                disabled={!canControl}
+                disabled={!canControl || !isGimbalSource}
                 onMouseDown={() => setDownKey(payload)}
                 onMouseUp={reset}
                 onMouseLeave={reset}
@@ -130,7 +149,7 @@ const UavDetailGimbalControl: FC<PropsType> = memo(() => {
             type="primary"
             block
             size="small"
-            disabled={!canControl}
+            disabled={!canControl || !isGimbalSource}
             onClick={() => postService('resetGimbal')}
           >
             复位
