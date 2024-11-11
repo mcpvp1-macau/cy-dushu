@@ -1,12 +1,12 @@
 import IconPlus from '@/assets/icons/jsx/IconPlus'
+import DeviceIcon from '@/components/device/DeviceIcon'
 import IconButton from '@/components/ui/button/IconButton'
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
 import { createActionItem } from '@/service/modules/action-item'
 import { getAirlineTemplateList } from '@/service/modules/airline'
-import { getAllDeviceListV3 } from '@/service/modules/device'
+import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import { pick } from 'lodash'
-import { memo, ReactNode, type FC } from 'react'
 
 type PropsType = {
   actionId: string
@@ -33,13 +33,15 @@ const createTaskConfig = (
       name: 'airlineIndex',
       type: 'select',
       options: airlineTemplateOptions,
-      rules: [{ required: true, message: '请选择航线' }],
     },
     {
       label: '选择设备',
       name: 'deviceIds',
       type: 'select',
       options: deviceOptions,
+      otherProps: {
+        optionFilterProp: 'deviceName',
+      },
       rules: [{ required: true, message: '请选择设备' }],
     },
     {
@@ -68,14 +70,19 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
     queryClient,
   )
 
-  const { data: allDeviceList } = useQuery(
-    {
-      queryKey: ['allDevice'],
-      queryFn: () => getAllDeviceListV3({}),
-      select: (d) => d?.data.rows ?? [],
-    },
-    queryClient,
-  )
+  const allDevices = useMapDevicesStore((s) => s.allDevices)
+  const deviceOptions = useMemo(() => {
+    return allDevices.map((e) => ({
+      label: (
+        <div className="flex gap-2">
+          <DeviceIcon type={e.deviceType} />
+          {e.deviceName}
+        </div>
+      ),
+      deviceName: e.deviceName,
+      value: e.deviceId,
+    }))
+  }, [])
 
   const airlineTemplateOptions = useMemo(
     () =>
@@ -84,15 +91,6 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
         value: i,
       })) ?? [],
     [airlineTemplateList],
-  )
-
-  const deviceOptions = useMemo(
-    () =>
-      allDeviceList?.map((e) => ({
-        label: e.deviceName,
-        value: e.deviceId,
-      })) ?? [],
-    [allDeviceList],
   )
 
   const [confirmLoading, setConfirmLoading] = useState(false)
@@ -118,11 +116,18 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
     try {
       await createActionItem(data)
       setOpen(false)
-      await queryClient.invalidateQueries({ queryKey: ['action', actionId, 'items'] })
+      await queryClient.invalidateQueries({
+        queryKey: ['action', actionId, 'items'],
+      })
     } finally {
       setConfirmLoading(false)
     }
   })
+
+  const formItems = useMemo(
+    () => createTaskConfig(airlineTemplateOptions, deviceOptions),
+    [airlineTemplateOptions, deviceOptions],
+  )
 
   return (
     <div onClick={(e) => e.stopPropagation()}>
@@ -131,7 +136,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
       </IconButton>
       <FormModal
         title="创建任务"
-        items={createTaskConfig(airlineTemplateOptions, deviceOptions)}
+        items={formItems}
         open={open}
         confirmLoading={confirmLoading}
         onClose={() => {

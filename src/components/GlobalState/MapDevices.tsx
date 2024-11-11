@@ -24,13 +24,18 @@ const MapDevices: FC<PropsType> = memo(() => {
   const updateWangloutDevices = useMapDevicesStore(
     (s) => s.updateWangloutDevices,
   )
-  const updateOtherDevices = useMapDevicesStore((s) => s.updateOtherDevices)
   const updateAirportDevices = useMapDevicesStore((s) => s.updateAirportDevices)
+  const updateOtherDevices = useMapDevicesStore((s) => s.updateOtherDevices)
+  const updateAllDevices = useMapDevicesStore((s) => s.updateAllDevices)
 
   useEffect(() => {
     if (!data) {
       return
     }
+    // 更新所有设备
+    updateAllDevices(data)
+
+    // 过滤 + 分组
     const m = {
       [DeviceEnum.UAV]: DeviceEnum.UAV,
       [DeviceEnum.WANGLOU]: DeviceEnum.WANGLOU,

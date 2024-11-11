@@ -17,6 +17,7 @@ type PropsType = GetProps<typeof XForm> & {
   onClose?: () => void
 }
 
+/** FormModal 表单提交对话框 */
 const FormModal: FC<PropsType> = ({
   width,
   open,

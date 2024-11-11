@@ -43,3 +43,21 @@ export const delAirlineTempalte = (waylineTemplateId: number) => {
 export const getLatestTask = (deviceId: string) => {
   return serverControlCenter.get(`/v3/latest/task/${deviceId}`)
 }
+
+/** 上传航线模板 */
+export const uploadAirlineTemplate = (
+  deviceId: string,
+  productKey: string,
+  file: File,
+  isThird?: boolean,
+) => {
+  const formData = new FormData()
+  formData.append('deviceId', deviceId)
+  formData.append('productKey', productKey)
+  formData.append('file', file)
+  formData.append('isThird', isThird ? 'true' : 'false')
+  return serverControlCenter.post(
+    '/v3/dji/waylines/task/template/upload',
+    formData,
+  )
+}
