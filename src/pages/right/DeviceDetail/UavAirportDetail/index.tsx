@@ -9,7 +9,7 @@ import { enumProperty } from '@/utils/device/property-parse'
 import UavAirportInfoCard from './components/InfoCard'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
 import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
-import { Button } from 'antd'
+import { Button, Dropdown } from 'antd'
 import IconDebug from '@/assets/icons/jsx/uav/IconDebug'
 import IconTakeoff from '@/assets/icons/jsx/uav/IconTakeoff'
 import RemoteDebug from './components/RemoteDebug'
@@ -19,6 +19,8 @@ import UavAirportCreateAction from './components/UavAirportCreateAction'
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
+import HealthInfoList from '@/components/device/HealthInfoList'
+import { InfoCircleOutlined } from '@ant-design/icons'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -95,12 +97,14 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
     },
   )
 
+  /** 降雨量 */
   const rainfall = useMemo(
     () =>
       enumProperty(data.properties, data.deviceModel.properties, 'rainfall'),
     [data],
   )
 
+  /** 机型 */
   const modelNumber = useMemo(
     () =>
       data.deviceTags.find((e) => e.tagName === 'MODEL_NUMBER')?.tagValue ?? '',
@@ -138,7 +142,20 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
   return (
     <>
       <div className="overflow-y-hidden flex flex-col relative backdrop-blur-sm">
-        <CloseableHeader>{header}</CloseableHeader>
+        <CloseableHeader>
+          <div className="flex gap-2 items-center">
+            {header}
+            {state.healthInfo?.length > 0 && (
+              <Dropdown
+                dropdownRender={() => (
+                  <HealthInfoList data={state.healthInfo} />
+                )}
+              >
+                <InfoCircleOutlined className="text-yellow-600" />
+              </Dropdown>
+            )}
+          </div>
+        </CloseableHeader>
         <ScrollArea className="grow">
           <div className="mx-3">
             <UavAirportWeatherSection
