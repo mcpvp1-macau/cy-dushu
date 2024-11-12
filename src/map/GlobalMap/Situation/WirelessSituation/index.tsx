@@ -5,7 +5,6 @@ import * as Cesium from 'cesium'
 import { Math as CesiumMath } from 'cesium'
 import { attempt, flatten } from 'lodash'
 import SignalBoardMarkers from './boards'
-import { useLatest } from 'ahooks'
 import useLockCameraPitch from '@/hooks/cesium/useLockCameraPitch'
 import useWirelessSituationStore from '@/store/map/useSignalLayer.store'
 
@@ -141,7 +140,6 @@ const WirelessSituation: FC<PropsType> = memo(() => {
     north: 0,
   })
 
-  const cameraPostRef = useLatest(cameraPos)
   useEffect(() => {
     if (!viewer) {
       return
@@ -223,12 +221,6 @@ const WirelessSituation: FC<PropsType> = memo(() => {
   const data = useMemo(() => {
     if (level <= 10) {
       return levelData[level] ?? []
-    }
-    let d = 0.006
-    if (level === 11) {
-      d = 0.3
-    } else if (level === 12) {
-      d = 0.02
     }
     const result =
       levelGQS[level]?.search(
