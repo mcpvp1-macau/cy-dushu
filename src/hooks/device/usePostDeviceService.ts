@@ -2,6 +2,10 @@ import { postDeviceService } from '@/service/modules/device'
 import { useAppMsg } from '../useAppMsg'
 import { uniqueId } from 'lodash'
 
+const fmt = (content: string, prefix?: string) => {
+  return prefix ? `${prefix}: ${content}` : content
+}
+
 /** 调用设备服务 */
 export const usePostDeviceService = (productKey: string, deviceId: string) => {
   const msgApi = useAppMsg()
@@ -11,9 +15,7 @@ export const usePostDeviceService = (productKey: string, deviceId: string) => {
       msgApi.open({
         type: 'loading',
         key: id,
-        content: msgPrefix
-          ? '正在执行操作...'
-          : `${msgPrefix}: 正在执行操作...`,
+        content: fmt('正在执行操作...', msgPrefix),
         duration: 0,
       })
       try {
@@ -23,19 +25,19 @@ export const usePostDeviceService = (productKey: string, deviceId: string) => {
           identifier,
           data ?? {},
         )
-        msgApi.open({
-          type: 'success',
-          key: id,
-          content: msgPrefix ? `${msgPrefix}: ${message}` : message,
-          duration: 3,
-        })
+        if (message) {
+          msgApi.open({
+            type: 'success',
+            key: id,
+            content: fmt(message, msgPrefix),
+            duration: 3,
+          })
+        }
       } catch (e: any) {
         msgApi.open({
           type: 'error',
           key: id,
-          content: msgPrefix
-            ? `${msgPrefix}: ${e.message ?? '操作失败'}`
-            : e.message ?? '操作失败',
+          content: fmt('操作失败', msgPrefix),
           duration: 3,
         })
       }
