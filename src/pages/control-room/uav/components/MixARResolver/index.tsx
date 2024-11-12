@@ -1,15 +1,12 @@
 import useMixARStore from '@/store/control-room/useMixAR.store'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { memo, useEffect, useRef, useState, type FC } from 'react'
 import * as turf from '@turf/turf'
 import GeoJSONRbush from 'geojson-rbush'
 import { Feature, LineString } from 'geojson'
 import { useThrottleEffect } from 'ahooks'
 import { useAppMsg } from '@/hooks/useAppMsg'
-import { isNil } from 'lodash'
 import { getGeoSearchData } from '@/service/modules/geo'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import gimbalMap from '@/constant/uav/gimbal'
 
 type PropsType = unknown
 
@@ -78,11 +75,8 @@ const MixARResolver: FC<PropsType> = memo(() => {
   // 激光测距
   // const laserDistance = useUavControlRoomStore((s) => s.state.laserDistance)
 
-  const height = useUavControlRoomStore((s) => s.state.height)
-
   const enable = useMixARStore((s) => s.enable)
   const updateEnable = useMixARStore((s) => s.updateEnable)
-  const updateStartInfo = useMixARStore((s) => s.updateStartInfo)
   const msgApi = useAppMsg()
 
   useEffect(() => {
@@ -94,27 +88,27 @@ const MixARResolver: FC<PropsType> = memo(() => {
     //   updateEnable(false)
     //   return
     // }
-    if (!uav?.gimbalPitch) {
+    if (!uav?.gimbalPitch && !uav?.altitude && !uav?.height && !uav.gimbalYaw) {
       msgApi.error('虚实融合开启失败: 无法获取无人机姿态')
       updateEnable(false)
       return
     }
-    if (uav.gimbalPitch >= 0) {
-      msgApi.error('虚实融合开启失败: 云台俯仰角度大于0')
-      updateEnable(false)
-      return
-    }
-    if (isNil(gimbalMap[uav.cameraType!])) {
-      msgApi.error('虚实融合开启失败: 无法获取相机参数')
-      updateEnable(false)
-      return
-    }
-    const c = (Math.abs(uav.gimbalPitch) * Math.PI) / 180
-    const h = 0 * Math.sin(c)
-    updateStartInfo({
-      startHeight: h,
-      startAGL: uav.altitude ?? height ?? 0,
-    })
+    // if (uav.gimbalPitch >= 0) {
+    //   msgApi.error('虚实融合开启失败: 云台俯仰角度大于0')
+    //   updateEnable(false)
+    //   return
+    // }
+    // if (isNil(gimbalMap[uav.cameraType!])) {
+    //   msgApi.error('虚实融合开启失败: 无法获取相机参数')
+    //   updateEnable(false)
+    //   return
+    // }
+    // const c = (Math.abs(uav.gimbalPitch) * Math.PI) / 180
+    // const h = 0 * Math.sin(c)
+    // updateStartInfo({
+    //   startHeight: h,
+    //   startAGL: uav.altitude ?? height ?? 0,
+    // })
   }, [enable])
 
   useThrottleEffect(
