@@ -1,15 +1,15 @@
-import * as Cesium from 'cesium';
-import { attempt } from 'lodash';
-import { useEffect } from 'react';
-import { useCesium } from 'resium';
+import * as Cesium from 'cesium'
+import { attempt } from 'lodash'
+import { useEffect } from 'react'
+import { useCesium } from 'resium'
 
+/** 仅在 3D 模式下生效 */
 const useLockCameraPitch = (angle: number) => {
-
-  const {viewer} = useCesium()
+  const { viewer } = useCesium()
 
   useEffect(() => {
-    if (!viewer) {
-      return;
+    if (!viewer || viewer.scene.mode !== Cesium.SceneMode.SCENE3D) {
+      return
     }
     viewer.camera.setView({
       destination: viewer.camera.position,
@@ -18,15 +18,15 @@ const useLockCameraPitch = (angle: number) => {
         pitch: Cesium.Math.toRadians(angle),
         roll: viewer.camera.roll,
       },
-    });
-    
-    viewer.scene.screenSpaceCameraController.enableTilt = false;
+    })
+
+    viewer.scene.screenSpaceCameraController.enableTilt = false
     return () => {
       attempt(() => {
-        viewer.scene.screenSpaceCameraController.enableTilt = true;
+        viewer.scene.screenSpaceCameraController.enableTilt = true
       })
     }
   }, [viewer])
 }
 
-export default useLockCameraPitch;
+export default useLockCameraPitch
