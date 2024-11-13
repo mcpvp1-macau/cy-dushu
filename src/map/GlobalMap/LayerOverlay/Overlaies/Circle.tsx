@@ -73,7 +73,7 @@ const OverlayCircle: FC<PropsType> = memo(({ data }) => {
         flat: true,
         renderState: {
           depthTest: {
-            enabled: false,
+            enabled: true,
           },
         },
       }),
@@ -99,7 +99,7 @@ const OverlayCircle: FC<PropsType> = memo(({ data }) => {
         flat: true,
         renderState: {
           depthTest: {
-            enabled: false,
+            enabled: true,
           },
         },
       }),
@@ -114,7 +114,7 @@ const OverlayCircle: FC<PropsType> = memo(({ data }) => {
         viewer.scene.primitives.remove(CircleOutlinePrimitive)
       })
     }
-  }, [viewer, isHidden])
+  }, [viewer, isHidden, data.overlayStyleConfig])
 
   if (!postion || isHidden) {
     return null
@@ -133,10 +133,9 @@ const OverlayCircle: FC<PropsType> = memo(({ data }) => {
       pixelOffset={new Cesium.Cartesian2(0, 0)}
       backgroundColor={Cesium.Color.BLACK}
       fillColor={Cesium.Color.WHITE}
-      // backgroundPadding={new Cesium.Cartesian2(5, 5)}
       disableDepthTestDistance={50000}
       style={Cesium.LabelStyle.FILL_AND_OUTLINE}
-      heightReference={Cesium.HeightReference.NONE}
+      heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
       distanceDisplayCondition={new Cesium.DistanceDisplayCondition(0, 500_000)}
     />
   )

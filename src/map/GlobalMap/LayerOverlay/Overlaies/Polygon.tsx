@@ -47,7 +47,7 @@ const OverlayPolygon: FC<PropsType> = memo(({ data }) => {
     const instance1 = new Cesium.GeometryInstance({
       geometry: new Cesium.PolygonGeometry({
         polygonHierarchy: new Cesium.PolygonHierarchy(positions),
-        extrudedHeight: 1,
+        extrudedHeight: 0,
       }),
       id: `overlay--${data.overlayId}`,
 
@@ -78,7 +78,7 @@ const OverlayPolygon: FC<PropsType> = memo(({ data }) => {
         flat: true,
         renderState: {
           depthTest: {
-            enabled: false,
+            enabled: true,
           },
         },
       }),
@@ -91,7 +91,7 @@ const OverlayPolygon: FC<PropsType> = memo(({ data }) => {
         renderState: {
           lineWidth: Math.min(2.0, viewer.scene.maximumAliasedLineWidth),
           depthTest: {
-            enabled: false,
+            enabled: true,
           },
         },
       }),
@@ -105,7 +105,7 @@ const OverlayPolygon: FC<PropsType> = memo(({ data }) => {
         viewer.scene.primitives.remove(outlinePrimitive)
       })
     }
-  }, [viewer, isHidden])
+  }, [viewer, isHidden, data.overlayStyleConfig])
 
   const center = turf.center(
     turf.points(shouldJson(data.overlayPositions) ?? []),
