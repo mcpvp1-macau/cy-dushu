@@ -25,14 +25,14 @@ export const useAirpointEntity = (
       billboard: {
         image: '/images/airline/inverted-triangle.svg',
         scale: 1.1,
-        eyeOffset: new Cesium.Cartesian3(0, 0, -300),
+        eyeOffset: new Cesium.Cartesian3(0, 0, -5),
       },
       label: {
         text: idx + 1 + '',
         font: 'bold 16px sans-serif',
         pixelOffset: new Cesium.Cartesian2(0, -3),
         horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-        eyeOffset: new Cesium.Cartesian3(0.0, 0.0, -400.0),
+        eyeOffset: new Cesium.Cartesian3(0.0, 0.0, -10.0),
       },
       properties: {
         point: point,
