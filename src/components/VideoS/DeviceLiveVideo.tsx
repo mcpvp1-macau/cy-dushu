@@ -20,6 +20,8 @@ import { limitNum } from '@/utils/math'
 import { PropertiesData } from '../Video/Jessibuca/sei-types/properties'
 import VideoStream from './VideoStream'
 import { ConfigProvider } from 'antd'
+import IconDing from '@/assets/icons/jsx/IconDing'
+import XModal from '../XModal'
 
 type PropsType = {
   videoContainerId?: string
@@ -37,6 +39,7 @@ type PropsType = {
     valueDRC?: number | string
     onDRCChange?: (quality: string) => void
   }
+  useDing?: boolean
   onAspectRatioChange?: (aspectRatio: number) => void
   onUavProperties?: (properties: PropertiesData) => void
 }
@@ -64,6 +67,7 @@ const DeviceLiveVideo = memo(
         rightTop,
         videoChildren,
         useVideoQualityCheck,
+        useDing = true,
         onAspectRatioChange,
         onUavProperties,
       },
@@ -142,6 +146,7 @@ const DeviceLiveVideo = memo(
         [playUrl],
       )
 
+      // 查询视频质量
       const { data: videoQuality } = useQuery(
         {
           queryKey: ['getLiveQuality', 'rtp', streamId],
@@ -199,6 +204,59 @@ const DeviceLiveVideo = memo(
         debounceRetch()
       }, [])
 
+      const videoNode = (
+        <div
+          className="absolute inset-0 m-auto max-w-full max-h-full"
+          style={{
+            aspectRatio: aspectRatio,
+          }}
+        >
+          {/* 视频内容 */}
+          <div
+            ref={videoBoxRef}
+            className={clsx('absolute inset-0 bg-black')}
+            style={{
+              aspectRatio: aspectRatio,
+              transformOrigin: `${originCenter[0] * 100}% ${
+                originCenter[1] * 100
+              }%`,
+              transition: enableScale === 2 ? 'transform 0.3s' : undefined,
+              transform:
+                enableScale === 2 && tranformCss
+                  ? tranformCss
+                  : 'translate(0px, 0px)',
+            }}
+          >
+            {playUrl && (
+              <Jessibuca
+                containerId={videoContainerId}
+                src={url}
+                onVideoInfo={(v) => {
+                  setAspectRatio(v.width / v.height)
+                  onAspectRatioChange?.(v.width / v.height)
+                }}
+                onTimeUpdate={setTs}
+                onSeiAIData={(aiData) => {
+                  !aiData.ref && setAIData(aiData)
+                }}
+                onSeiProperties={onUavProperties}
+                onFetchError={handleRefresh}
+              />
+            )}
+
+            {/* 视频绘制框 */}
+            <div className="absolute inset-0 z-20">
+              {aiData && <SeiAIData data={aiData} />}
+              {enableScale === 1 && <DrawBox onDrawEnd={handleDrewScaleEnd} />}
+              {videoChildren}
+            </div>
+          </div>
+        </div>
+      )
+
+      const [dingOpen, { setTrue: setDingOpen, setFalse: setDingClose }] =
+        useBoolean()
+
       return (
         <div
           className="size-full overflow-hidden relative"
@@ -219,55 +277,7 @@ const DeviceLiveVideo = memo(
               <li key={i}>{e?.displayText}</li>
             ))}
           </ul>
-          <div
-            className="absolute inset-0 m-auto max-w-full max-h-full"
-            style={{
-              aspectRatio: aspectRatio,
-            }}
-          >
-            {/* 视频内容 */}
-            <div
-              ref={videoBoxRef}
-              className={clsx('absolute inset-0 bg-black')}
-              style={{
-                aspectRatio: aspectRatio,
-                transformOrigin: `${originCenter[0] * 100}% ${
-                  originCenter[1] * 100
-                }%`,
-                transition: enableScale === 2 ? 'transform 0.3s' : undefined,
-                transform:
-                  enableScale === 2 && tranformCss
-                    ? tranformCss
-                    : 'translate(0px, 0px)',
-              }}
-            >
-              {playUrl && (
-                <Jessibuca
-                  containerId={videoContainerId}
-                  src={url}
-                  onVideoInfo={(v) => {
-                    setAspectRatio(v.width / v.height)
-                    onAspectRatioChange?.(v.width / v.height)
-                  }}
-                  onTimeUpdate={setTs}
-                  onSeiAIData={(aiData) => {
-                    !aiData.ref && setAIData(aiData)
-                  }}
-                  onSeiProperties={onUavProperties}
-                  onFetchError={handleRefresh}
-                />
-              )}
-
-              {/* 视频绘制框 */}
-              <div className="absolute inset-0 z-20">
-                {aiData && <SeiAIData data={aiData} />}
-                {enableScale === 1 && (
-                  <DrawBox onDrawEnd={handleDrewScaleEnd} />
-                )}
-                {videoChildren}
-              </div>
-            </div>
-          </div>
+          {videoNode}
           <ConfigProvider
             theme={{
               components: {
@@ -278,13 +288,21 @@ const DeviceLiveVideo = memo(
             }}
           >
             {/* 上工具栏 */}
-            {(leftTop || rightTop) && (
+            {(leftTop || rightTop || useDing) && (
               <aside className="absolute top-0 inset-x-0 bg-ground-100 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm">
                 <div className="flex justify-between items-center h-full">
                   <section className="flex items-center gap-3">
                     {leftTop}
                   </section>
                   <section className="flex items-center gap-3">
+                    {useDing && (
+                      <IconButton
+                        toolTipProps={{ title: '钉出' }}
+                        onClick={setDingOpen}
+                      >
+                        <IconDing />
+                      </IconButton>
+                    )}
                     {rightTop}
                   </section>
                 </div>
@@ -361,6 +379,47 @@ const DeviceLiveVideo = memo(
               </div>
             </aside>
           </ConfigProvider>
+          <XModal
+            title="实况视频"
+            open={dingOpen}
+            onClose={setDingClose}
+            destroyOnClose
+            width={810}
+            footer={false}
+            noPadding
+            mask={false}
+          >
+            <div className="relative w-full" style={{ aspectRatio }}>
+              {/* 加上 `dingOpen &&` 为了减少 render 时的计算量 */}
+              {dingOpen && (
+                <div
+                  className="absolute inset-0 m-auto max-w-full max-h-full"
+                  style={{
+                    aspectRatio: aspectRatio,
+                  }}
+                >
+                  {/* 视频内容 */}
+                  <div
+                    className={clsx('absolute inset-0 bg-black')}
+                    style={{
+                      aspectRatio: aspectRatio,
+                    }}
+                  >
+                    {playUrl && <Jessibuca src={url} />}
+
+                    {/* 视频绘制框 */}
+                    <div className="absolute inset-0 z-20">
+                      {aiData && <SeiAIData data={aiData} />}
+                      {enableScale === 1 && (
+                        <DrawBox onDrawEnd={handleDrewScaleEnd} />
+                      )}
+                      {videoChildren}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </XModal>
         </div>
       )
     },

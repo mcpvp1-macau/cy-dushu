@@ -45,6 +45,7 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
         deviceId={deviceId}
         productKey={productKey}
         videoId={videoId}
+        useDing={false}
         useVideoQualityCheck={{
           open: true,
           valueDRC: videoQuality ?? (useLW ? 'Unknown' : undefined),
