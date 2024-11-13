@@ -54,8 +54,6 @@ const UavDetailVideo: FC<PropsType> = memo(
       postService('liveSetQuality', { quality })
     })
 
-    useMemo(() => {}, [])
-
     return (
       <DeviceLiveVideo
         ref={videoLiveRef}
