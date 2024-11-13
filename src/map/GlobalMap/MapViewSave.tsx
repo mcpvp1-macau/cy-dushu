@@ -1,3 +1,4 @@
+import { useAppMsg } from '@/hooks/useAppMsg'
 import mitt from 'mitt'
 import { useCesium } from 'resium'
 
@@ -6,10 +7,11 @@ type PropsType = unknown
 export const mapViewSaveEmitter = mitt<{
   save: undefined
 }>()
-//
+
 /** 地图视角保存和初始化 */
 const MapViewSave: FC<PropsType> = memo(() => {
   const { viewer } = useCesium()
+  const msgApi = useAppMsg()
 
   useEffect(() => {
     const view = localStorage.getItem('map-view')
@@ -44,6 +46,7 @@ const MapViewSave: FC<PropsType> = memo(() => {
         roll: camera.roll,
       }
       localStorage.setItem('map-view', JSON.stringify(view))
+      msgApi.success('地图视角保存成功')
     }
     mapViewSaveEmitter.on('save', fn)
     return () => {
