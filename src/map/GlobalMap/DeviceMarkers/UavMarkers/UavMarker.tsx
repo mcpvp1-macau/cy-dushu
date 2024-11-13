@@ -30,12 +30,14 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
   const isOnline = useDeviceListConfigStore((s) => s.isOnline)
   const isTask = useDeviceListConfigStore((s) => s.isTask)
   const isNotTask = useDeviceListConfigStore((s) => s.isNotTask)
+  const isHidden = useDeviceListConfigStore((s) => s.hiddenDeviceIds[deviceId])
 
   const status = useRealOnlineStatus(deviceId)
 
   const rightMode = useRightMode((s) => s.rightMode)
   const detailDeviceId = useRightMode((s) => s.detailId)
 
+  if (isHidden) return null
   if (
     !deviceStatusFilter(
       { status, taskStatus: 'RUNNING' },

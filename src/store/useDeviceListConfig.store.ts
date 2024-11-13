@@ -10,6 +10,10 @@ type StateType = {
   isTask: boolean
   /** 是否非任务设备 */
   isNotTask: boolean
+  /** 隐藏的设备 */
+  hiddenDeviceIds: Record<string, boolean>
+  /** 隐藏的分组 */
+  hiddenGroupIds: Record<string, boolean>
 }
 
 type ActionType = {
@@ -19,6 +23,8 @@ type ActionType = {
     isTask?: boolean
     isNotTask?: boolean
   }) => void
+  updateHiddenDeviceIds: (ids: StateType['hiddenDeviceIds']) => void
+  updateHiddenGroupIds: (ids: StateType['hiddenGroupIds']) => void
 }
 
 /** 设备列表配置 */
@@ -29,11 +35,19 @@ const useDeviceListConfigStore = create<StateType & ActionType>()(
       isOnline: false,
       isTask: false,
       isNotTask: false,
+      hiddenDeviceIds: {},
+      hiddenGroupIds: {},
       setActiveDeviceType: (v) => {
         set({ activeDeviceType: v }, false, 'setActiveDeviceType')
       },
       setDeviceStatus: (payload) => {
         set(payload, false, 'setDeviceStatus')
+      },
+      updateHiddenDeviceIds: (ids) => {
+        set({ hiddenDeviceIds: ids }, false, 'updateHiddenDeviceIds')
+      },
+      updateHiddenGroupIds: (ids) => {
+        set({ hiddenGroupIds: ids }, false, 'updateHiddenGroupIds')
       },
     }),
     {

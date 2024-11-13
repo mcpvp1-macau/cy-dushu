@@ -10,6 +10,8 @@ import TagItem from '@/components/TagItem'
 import { RightModeEnum } from '@/enum/right-mode'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { Badge, Tooltip } from 'antd'
+import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
+import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -62,6 +64,13 @@ const DeviceItem: FC<PropsType> = memo(({ data }) => {
     [data],
   )
 
+  const isHidden = useDeviceListConfigStore(
+    (s) => s.hiddenDeviceIds[data.deviceId],
+  )
+  const updateHiddenDeviceIds = useDeviceListConfigStore(
+    (s) => s.updateHiddenDeviceIds,
+  )
+
   return (
     <div onClick={handleClick}>
       <div className="w-[350px] px-3 py-1 flex items-center justify-between text-fore">
@@ -78,8 +87,17 @@ const DeviceItem: FC<PropsType> = memo(({ data }) => {
           <span>{data.deviceName}</span>
         </div>
         <div className="pr-6">
-          <IconButton>
-            <IconVisible />
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation()
+              const newHiddenDeviceIds = {
+                ...useDeviceListConfigStore.getState().hiddenDeviceIds,
+              }
+              newHiddenDeviceIds[data.deviceId] = !isHidden
+              updateHiddenDeviceIds(newHiddenDeviceIds)
+            }}
+          >
+            {isHidden ? <IconNotVisible /> : <IconVisible />}
           </IconButton>
         </div>
       </div>

@@ -21,6 +21,9 @@ const UavAirportMarker: FC<PropsType> = memo(({ data }) => {
   const isOnline = useDeviceListConfigStore((s) => s.isOnline)
   const isTask = useDeviceListConfigStore((s) => s.isTask)
   const isNotTask = useDeviceListConfigStore((s) => s.isNotTask)
+  const isHidden = useDeviceListConfigStore((s) => s.hiddenDeviceIds[deviceId])
+
+  if (isHidden) return null
 
   if (
     !deviceStatusFilter(

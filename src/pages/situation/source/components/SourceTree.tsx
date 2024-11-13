@@ -23,30 +23,27 @@ const SourceTree: FC<PropsType> = memo(({ isLoading, data }) => {
     })),
   )
 
-  const resolveGroup = useMemoizedFn(
-    (data: API_DEVICE.domain.DeviceTreeItem) => {
-      const { children, devices } = data
-
-      return {
-        key: data.groupId,
-        title: <GroupHeader data={data} />,
-        children: [
-          ...devices
-            .filter((e) => deviceStatusFilter(e, isOnline, isTask, isNotTask))
-            .map((e) => {
-              return {
-                key: `device-${e.deviceId}`,
-                title: <DeviceItem data={e} />,
-                isLeaf: true,
-              }
-            }),
-          ...(children?.map(resolveGroup) ?? []).filter(
-            (e: any) => e.children.length > 0,
-          ),
-        ],
-      }
-    },
-  )
+  const resolveGroup = (data: API_DEVICE.domain.DeviceTreeItem) => {
+    const { children, devices } = data
+    return {
+      key: data.groupId,
+      title: <GroupHeader data={data} />,
+      children: [
+        ...devices
+          .filter((e) => deviceStatusFilter(e, isOnline, isTask, isNotTask))
+          .map((e) => {
+            return {
+              key: `device-${e.deviceId}`,
+              title: <DeviceItem data={e} />,
+              isLeaf: true,
+            }
+          }),
+        ...(children?.map(resolveGroup) ?? []).filter(
+          (e: any) => e.children.length > 0,
+        ),
+      ],
+    }
+  }
 
   const treeData = useMemo(
     () => [resolveGroup(data)],
@@ -79,6 +76,26 @@ const SourceTree: FC<PropsType> = memo(({ isLoading, data }) => {
       setExpandKeys([...expandKeys, key])
     }
   }
+
+  const hiddenDeviceIds = useDeviceListConfigStore((s) => s.hiddenDeviceIds)
+  const updateHiddenGroupIds = useDeviceListConfigStore(
+    (s) => s.updateHiddenGroupIds,
+  )
+  useEffect(() => {
+    const newHiddenGroupIds = { ...hiddenDeviceIds }
+    const dfs = (data: API_DEVICE.domain.DeviceTreeItem) => {
+      if (!data?.groupId) {
+        return true
+      }
+      newHiddenGroupIds[data.groupId] =
+        // every 自带短路, 需要先 map, 确保所有 group 都能遍历到, 并且需要放在筛设备前
+        (data.children?.map?.(dfs)?.every((e) => e) ?? true) &&
+        (data.devices?.every?.((d) => hiddenDeviceIds[d.deviceId]) ?? true)
+      return newHiddenGroupIds[data.groupId]
+    }
+    dfs(data)
+    updateHiddenGroupIds(newHiddenGroupIds)
+  }, [data, hiddenDeviceIds])
 
   return (
     <ScrollArea className="h-full">
