@@ -18,7 +18,7 @@ type PropsType = {
 /** 健康信息 */
 const HealthInfoList: FC<PropsType> = memo(({ data }) => {
   return (
-    <ul>
+    <ul className="flex flex-col gap-2 p-3 bg-ground-100 rounded border border-solid border-ground-200">
       {data.map((item) => (
         <HealthInfo key={item} data={item} />
       ))}
