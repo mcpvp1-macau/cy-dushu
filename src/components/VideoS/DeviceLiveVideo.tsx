@@ -22,6 +22,7 @@ import VideoStream from './VideoStream'
 import { ConfigProvider } from 'antd'
 import IconDing from '@/assets/icons/jsx/IconDing'
 import XModal from '../XModal'
+import useCalcSafeArea from './hooks/useCalcSafeArea'
 
 type PropsType = {
   videoContainerId?: string
@@ -34,6 +35,8 @@ type PropsType = {
   rightTop?: ReactNode
   rightBottom?: ReactNode
   videoChildren?: ReactNode
+  /** 区别于 videoChildren, 内容不会被工具栏挡住, 例如视频画框等操作请不要在这, 百分比是不对的 */
+  videoSafeAreaChildren?: ReactNode
   useVideoQualityCheck?: {
     open?: boolean
     valueDRC?: number | string
@@ -66,6 +69,7 @@ const DeviceLiveVideo = memo(
         rightBottom,
         rightTop,
         videoChildren,
+        videoSafeAreaChildren,
         useVideoQualityCheck,
         useDing = true,
         onAspectRatioChange,
@@ -204,9 +208,16 @@ const DeviceLiveVideo = memo(
         debounceRetch()
       }, [])
 
+      const [dingOpen, { setTrue: setDingOpen, setFalse: setDingClose }] =
+        useBoolean()
+
+      // 计算安全区相关
+      const { safeY, topBar, bottomBar, videoWrapper } = useCalcSafeArea(size)
+
       const videoNode = (
         <div
           className="absolute inset-0 m-auto max-w-full max-h-full"
+          ref={videoWrapper}
           style={{
             aspectRatio: aspectRatio,
           }}
@@ -249,13 +260,18 @@ const DeviceLiveVideo = memo(
               {aiData && <SeiAIData data={aiData} />}
               {enableScale === 1 && <DrawBox onDrawEnd={handleDrewScaleEnd} />}
               {videoChildren}
+              {videoSafeAreaChildren && (
+                <div
+                  className="absolute inset-x-0"
+                  style={{ top: `${safeY[0]}px`, bottom: `${safeY[1]}px` }}
+                >
+                  {videoSafeAreaChildren}
+                </div>
+              )}
             </div>
           </div>
         </div>
       )
-
-      const [dingOpen, { setTrue: setDingOpen, setFalse: setDingClose }] =
-        useBoolean()
 
       return (
         <div
@@ -289,7 +305,10 @@ const DeviceLiveVideo = memo(
           >
             {/* 上工具栏 */}
             {(leftTop || rightTop || useDing) && (
-              <aside className="absolute top-0 inset-x-0 bg-ground-100 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm">
+              <aside
+                ref={topBar}
+                className="absolute top-0 inset-x-0 bg-ground-100 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm"
+              >
                 <div className="flex justify-between items-center h-full">
                   <section className="flex items-center gap-3">
                     {leftTop}
@@ -309,7 +328,10 @@ const DeviceLiveVideo = memo(
               </aside>
             )}
             {/* 下工具栏 */}
-            <aside className="absolute bottom-0 inset-x-0 bg-ground-100 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm">
+            <aside
+              ref={bottomBar}
+              className="absolute bottom-0 inset-x-0 bg-ground-100 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm"
+            >
               <div className="flex justify-between items-center h-full">
                 <section className="flex items-center gap-3">
                   <div className="order-10 text-fore text-xs">
