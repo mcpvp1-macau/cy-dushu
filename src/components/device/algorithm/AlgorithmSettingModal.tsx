@@ -7,6 +7,7 @@ import XModal from '@/components/XModal'
 import IconSetting from '@/assets/icons/jsx/IconSetting'
 import AppEmpty from '@/components/AppEmpty'
 import XForm from '@/components/XForm'
+import useMapLayerAndOverlayStore from '@/store/map/useLayerAndOverlay.store'
 
 type PropsType = {
   open: boolean
@@ -20,11 +21,37 @@ type PropsType = {
 const AlgorithmSettingModal: FC<PropsType> = memo(
   ({ open, aiData, alogorithmConfig, onClose, onConfirm }) => {
     const { algorithmConfigList } = aiData
+
+    const overlay = useMapLayerAndOverlayStore((s) => s.overlayList)
+    const overlayOptions = useMemo(
+      () =>
+        overlay
+          .filter(
+            (e) => e.overlayType === 'POLYGON' || e.overlayType === 'CIRCLE',
+          )
+          .map((e) => ({
+            label: e.overlayName,
+            value: e.overlayId,
+          })),
+      [overlay],
+    )
+
     const formItems = useMemo<XFormItem[]>(
       () =>
         algorithmConfigList.map((e) => {
           let item: XFormItem
-          if (e.valueType === 'number') {
+          if (e.valueType === 'lnglatPositions') {
+            item = {
+              name: e.property,
+              label: e.propertyName,
+              type: 'select',
+              options: overlayOptions,
+              otherProps: {
+                mode: 'multiple',
+                maxTagCount: 'responsive',
+              },
+            }
+          } else if (e.valueType === 'number') {
             item = {
               name: e.property,
               label: e.propertyName,
@@ -46,24 +73,43 @@ const AlgorithmSettingModal: FC<PropsType> = memo(
               })),
             }
           } else if (e.valueType === 'radio') {
+            const enums = shouldJson<any[]>(e.valueEnums) ?? []
             item = {
               name: e.property,
               label: e.propertyName,
-              type: 'radio',
-              options: e.valueEnums.map((v: any) => ({
+              type: (enums.length ?? 0) > 3 ? 'select' : 'radio',
+              options: enums.map((v: any) => ({
                 label: v.name,
                 value: v.type,
               })),
             }
           } else if (e.valueType === 'checkbox') {
-            item = {
-              name: e.property,
-              label: e.propertyName,
-              type: 'checkbox',
-              options: shouldJson(e.valueEnums)?.map((v: any) => ({
-                label: v.name,
-                value: v.type,
-              })),
+            const enums = shouldJson<any[]>(e.valueEnums) ?? []
+            if ((enums?.length ?? 0) > 3) {
+              item = {
+                name: e.property,
+                label: e.propertyName,
+                type: 'select',
+                options: enums!.map((v: any) => ({
+                  label: v.name,
+                  value: v.type,
+                })),
+                otherProps: {
+                  mode: 'multiple',
+                  maxTagCount: 'responsive',
+                },
+              }
+            } else {
+              item = {
+                name: e.property,
+                label: e.propertyName,
+                type: 'checkbox',
+                options:
+                  enums?.map((v: any) => ({
+                    label: v.name,
+                    value: v.type,
+                  })) ?? [],
+              }
             }
           } else {
             item = {
@@ -72,7 +118,9 @@ const AlgorithmSettingModal: FC<PropsType> = memo(
               type: 'input',
             }
           }
-
+          if (e.valueTip) {
+            item.tooltip = e.valueTip
+          }
           if (e.required) {
             item.rules ??= []
             item.rules.push({
@@ -82,7 +130,7 @@ const AlgorithmSettingModal: FC<PropsType> = memo(
           }
           return item
         }),
-      [algorithmConfigList],
+      [algorithmConfigList, overlayOptions],
     )
 
     const [form] = Form.useForm()
@@ -93,6 +141,50 @@ const AlgorithmSettingModal: FC<PropsType> = memo(
 
     const handleConfirm = useMemoizedFn(() => {
       const data = form.getFieldsValue()
+
+      // 处理地图选区
+      const hasMapArea = !!algorithmConfigList.find(
+        ({ valueType }) => valueType === 'lnglatPositions',
+      )
+      if (hasMapArea) {
+        const map = new Map(overlay.map((e) => [e.overlayId, e]))
+        algorithmConfigList.forEach((e) => {
+          if (e.valueType === 'lnglatPositions') {
+            data[e.property] = data[e.property].map((v: number) => {
+              const overlay = map.get(v)
+              if (!overlay) {
+                return {
+                  type: 'INVALID',
+                  geometryData: [],
+                }
+              }
+              const position = shouldJson(overlay.overlayPositions)
+              if (!Array.isArray(position)) {
+                return {
+                  type: 'INVALID',
+                  geometryData: [],
+                }
+              }
+              if (overlay.overlayType === 'CIRCULAR') {
+                return {
+                  overlayId: overlay.overlayId,
+                  type: 'CIRCULAR',
+                  geometryData: {
+                    center: [position[0][0], position[0][1]],
+                    radius: position[0].at(-1),
+                  },
+                }
+              }
+              return {
+                overlayId: overlay.overlayId,
+                type: overlay.overlayType,
+                geometryData: shouldJson(overlay.overlayPositions),
+              }
+            })
+          }
+        })
+      }
+
       onConfirm?.(data)
     })
 
@@ -104,6 +196,14 @@ const AlgorithmSettingModal: FC<PropsType> = memo(
       }
       // 设置表单值
       const value = { ...(alogorithmConfig ?? {}) }
+
+      algorithmConfigList.forEach((e) => {
+        if (e.valueType === 'lnglatPositions') {
+          value[e.property] = shouldJson(alogorithmConfig[e.property])?.map(
+            (v: any) => v.overlayId,
+          )
+        }
+      })
 
       form.setFieldsValue(value)
     }, [alogorithmConfig])
