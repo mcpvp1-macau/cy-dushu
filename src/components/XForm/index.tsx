@@ -48,6 +48,7 @@ const XForm: FC<PropsType> = memo(
             <InputNumber
               placeholder={item.placeholder ?? '请输入'}
               {...item.otherProps}
+              className={clsx('w-full', item.otherProps?.className)}
             />
           )
           break
@@ -165,6 +166,7 @@ const XForm: FC<PropsType> = memo(
                   rules={item.rules}
                   valuePropName={item.valuePropName}
                   getValueFromEvent={item.getValueFromEvent}
+                  tooltip={item.tooltip}
                 >
                   {item.render}
                 </Form.Item>

@@ -22,6 +22,7 @@ type CommonProps = {
   valuePropName?: string
   getValueFromEvent?: (...args: any[]) => any
   colsProps?: GetProps<typeof Col>
+  tooltip?: string
 }
 
 export type XFormItem = CommonProps &
