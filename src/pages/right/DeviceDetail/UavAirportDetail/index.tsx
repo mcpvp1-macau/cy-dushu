@@ -15,7 +15,6 @@ import IconTakeoff from '@/assets/icons/jsx/uav/IconTakeoff'
 import RemoteDebug from './components/RemoteDebug'
 import UavAirportUavDetail from './components/Uav'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import UavAirportCreateAction from './components/UavAirportCreateAction'
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
@@ -113,8 +112,6 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
 
   const onlineStatus = useRealOnlineStatus(deviceId)
 
-  const { actionId } = useParams()
-
   const header = useMemo(
     () => (
       <div className="flex justify-between gap-2">
@@ -122,7 +119,6 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
           <DeviceIconAIRPORT className="device-detail-icon" />
           <h6 className="text-white text-base">{data.deviceName}</h6>
         </div>
-        {actionId && <UavAirportCreateAction />}
       </div>
     ),
     [data.deviceName],
@@ -135,7 +131,7 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
 
   const postDeviceService = usePostDeviceService(productKey, deviceId)
   const handleTakeoffOk = async (values: any) => {
-    await postDeviceService('takeoff', values)
+    await postDeviceService('takeoff', values, '一键起飞')
     setTakeoffFalse()
   }
 
