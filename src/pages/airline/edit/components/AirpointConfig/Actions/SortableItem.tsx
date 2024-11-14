@@ -14,6 +14,7 @@ import IconButton from '@/components/ui/button/IconButton'
 import IconCameraSwitch from '@/assets/icons/jsx/IconCameraSwitch'
 import IconAIEnable from '@/assets/icons/jsx/IconAIEnable'
 import IconAIDisable from '@/assets/icons/jsx/IconAIDisable'
+import { QuestionCircleOutlined } from '@ant-design/icons'
 
 interface Props {
   id: string
@@ -51,7 +52,22 @@ const getIcon = (action: any) => {
   if (action?.type === 'CLOSE_AI') {
     return <IconAIDisable />
   }
+  if (action?.type === 'UNKNOWN') {
+    return <QuestionCircleOutlined />
+  }
 }
+
+const actionNameMap = new Map([
+  ['HOVER', '悬停'],
+  ['ROTATE_YAW', '飞行器偏航角'],
+  ['CAMERA_POSITION', '云台偏航&俯仰角'],
+  ['ZOOM', '相机变焦'],
+  ['GET_PICTURE', '拍照'],
+  ['LEN_CHANGE', '镜头切换'],
+  ['OPEN_AI', '开启算法'],
+  ['CLOSE_AI', '关闭算法'],
+  ['UNKNOWN', '暂不支持编辑该航线'],
+])
 
 const SortableItem: React.FC<Props> = ({
   id,
@@ -136,7 +152,7 @@ const SortableItem: React.FC<Props> = ({
         >
           <IconButton
             toolTipProps={{
-              title: action.actionName,
+              title: actionNameMap.get(action?.type) ?? '',
               placement: 'top',
               mouseEnterDelay: 0.3,
             }}

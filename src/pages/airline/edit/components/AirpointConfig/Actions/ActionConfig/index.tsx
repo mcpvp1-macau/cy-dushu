@@ -143,6 +143,9 @@ const ActionConfig: React.FC<Props> = (props) => {
     if (action?.type === 'CLOSE_AI') {
       return <CloseAI config={action.config ?? {}} onChange={onChange} />
     }
+    if (action?.type === 'UNKNOWN') {
+      return <div className="text-center mt-2">暂不支持编辑该动作</div>
+    }
   }
 
   return (
