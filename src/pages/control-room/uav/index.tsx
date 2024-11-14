@@ -25,6 +25,8 @@ import ControlRoomUavMap from './components/ControlRoomMap'
 import { message } from 'antd'
 import { AppMsgContext } from '@/hooks/useAppMsg'
 import useServerEventMsg from './hooks/useServerEventMsg'
+import IconLeft from '@/assets/icons/jsx/IconLeft'
+import IconRight from '@/assets/icons/jsx/IconRight'
 
 type PropsType = unknown
 
@@ -52,6 +54,8 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
   const [active, setActive] = useState('video')
   const asideRef = useRef<HTMLDivElement>(null)
 
+  const [asideHidden, { toggle: toggleShowAside }] = useBoolean()
+
   return (
     <DeviceDetailStoreContext.Provider value={store}>
       <UavControlRoomStoreContext.Provider value={controlRoomStore}>
@@ -66,6 +70,8 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
                   'inset-0': active === 'map',
                   'top-[1px] right-[1px] w-[400px] h-[300px] z-50':
                     active === 'video',
+                  'opacity-0 pointer-events-none':
+                    active === 'video' && asideHidden,
                 })}
               >
                 <ControlRoomUavMap />
@@ -84,6 +90,8 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
                   'inset-0': active === 'video',
                   'top-[1px] right-[1px] w-[400px] h-[300px] z-50':
                     active === 'map',
+                  'opacity-0 pointer-events-none':
+                    active === 'map' && asideHidden,
                 })}
               >
                 <ControlRoomVideo />
@@ -97,28 +105,44 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
                 )}
               </div>
               {/* 右侧小窗口 */}
-              <aside className="absolute top-0 right-0 w-[400px] p-[1px] box-content bg-ground-100 bg-opacity-90 backdrop-blur z-[41]">
-                {/* 小窗口 placeholder */}
-                <div
-                  ref={asideRef}
-                  className="h-[300px] bg-black relative"
-                ></div>
-                <AppCollapse
-                  defaultActiveKey={['buttons']}
-                  items={[
-                    {
-                      key: 'buttons',
-                      label: '飞行控制',
-                      children: (
-                        <div>
-                          <AsideToolBar />
-                          <AsideButtons />
-                        </div>
-                      ),
-                    },
-                  ]}
-                />
-              </aside>
+              <button
+                className={clsx(
+                  'bg-[#141d28e6] h-12 border border-solid border-ground-250 rounded-l text-fore hover:text-primary origin-top-left scale-90',
+                  'absolute top-2.5 z-50',
+                  asideHidden ? 'right-0' : 'right-[400px]',
+                )}
+                onClick={toggleShowAside}
+              >
+                {asideHidden ? (
+                  <IconLeft className="text-sm" />
+                ) : (
+                  <IconRight className="text-sm" />
+                )}
+              </button>
+              {!asideHidden && (
+                <aside className="absolute top-0 right-0 w-[400px] p-[1px] box-content bg-ground-100 bg-opacity-90 backdrop-blur z-[41]">
+                  {/* 小窗口 placeholder */}
+                  <div
+                    ref={asideRef}
+                    className="h-[300px] bg-black relative"
+                  ></div>
+                  <AppCollapse
+                    defaultActiveKey={['buttons']}
+                    items={[
+                      {
+                        key: 'buttons',
+                        label: '飞行控制',
+                        children: (
+                          <div>
+                            <AsideToolBar />
+                            <AsideButtons />
+                          </div>
+                        ),
+                      },
+                    ]}
+                  />
+                </aside>
+              )}
               <aside className="absolute top-3 left-3 flex gap-3 items-center z-50">
                 <ControlRoomUavCameraSwitch />
                 <FallbackMessage />
