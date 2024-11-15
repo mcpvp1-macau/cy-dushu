@@ -8,6 +8,7 @@ import IconSetting from '@/assets/icons/jsx/IconSetting'
 import AppEmpty from '@/components/AppEmpty'
 import XForm from '@/components/XForm'
 import useMapLayerAndOverlayStore from '@/store/map/useLayerAndOverlay.store'
+import VideoAreaPicker from './VideoAreaPicker'
 
 type PropsType = {
   open: boolean
@@ -40,18 +41,7 @@ const AlgorithmSettingModal: FC<PropsType> = memo(
       () =>
         algorithmConfigList.map((e) => {
           let item: XFormItem
-          if (e.valueType === 'lnglatPositions') {
-            item = {
-              name: e.property,
-              label: e.propertyName,
-              type: 'select',
-              options: overlayOptions,
-              otherProps: {
-                mode: 'multiple',
-                maxTagCount: 'responsive',
-              },
-            }
-          } else if (e.valueType === 'number') {
+          if (e.valueType === 'number') {
             item = {
               name: e.property,
               label: e.propertyName,
@@ -110,6 +100,27 @@ const AlgorithmSettingModal: FC<PropsType> = memo(
                     value: v.type,
                   })) ?? [],
               }
+            }
+          } else if (
+            e.valueType === 'videoxyPositions' ||
+            e.property === 'videoxyPositions'
+          ) {
+            item = {
+              name: e.property,
+              label: e.propertyName,
+              type: 'input',
+            }
+            item.render = <VideoAreaPicker filedName={e.property} />
+          } else if (e.valueType === 'lnglatPositions') {
+            item = {
+              name: e.property,
+              label: e.propertyName,
+              type: 'select',
+              options: overlayOptions,
+              otherProps: {
+                mode: 'multiple',
+                maxTagCount: 'responsive',
+              },
             }
           } else {
             item = {
