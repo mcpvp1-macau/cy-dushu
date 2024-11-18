@@ -119,6 +119,10 @@ const FlyParamsSetting: FC<PropsType> = memo(() => {
 
   const openPointFly = useUavControlRoomStore((s) => s.pointFly.open)
 
+  useEffect(() => {
+    form.setFieldValue('targetAltitude', flyParams.targetHeight)
+  }, [flyParams.targetHeight])
+
   if (!flyParams.open) {
     return null
   }
@@ -213,7 +217,7 @@ const FlyParamsSetting: FC<PropsType> = memo(() => {
                   className="w-full"
                   suffix="m"
                   onChange={(e) =>
-                    updateFlyParams({ ...flyParams, targetHeight: e ?? 0 })
+                    updateFlyParams({ ...flyParams, targetHeight: e ?? 120 })
                   }
                 />
               </Form.Item>
