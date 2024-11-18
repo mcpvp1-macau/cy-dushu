@@ -9,7 +9,6 @@ import useWebSocket from 'react-use-websocket'
 import { shouldJson } from '@/utils/json'
 import { isEqual } from 'lodash'
 import { Btn } from '@/pages/control-room/uav/components/BottomButtons/type'
-import queryClient from '@/global/query-client'
 
 type StateType = {
   productKey: string
@@ -113,7 +112,7 @@ const createInitialState = () =>
       isResetHome: false,
       isExecute: false,
       flySpeed: 10,
-      targetHeight: 0,
+      targetHeight: 120,
     },
     pointFly: {
       open: false,
@@ -290,6 +289,7 @@ export const useCreateUavControlRoomStore = (
   onWebSocketData?: (data: any) => void,
 ) => {
   const storeRef = useRef<UavControlRoomStoreType | null>(null)
+  const queryClient = useQueryClient()
 
   /** WebSocket 处理 */
   const handleMessage = useMemoizedFn((evt: WebSocketEventMap['message']) => {
@@ -298,17 +298,25 @@ export const useCreateUavControlRoomStore = (
     if (!wsData) {
       return
     }
+    // 双链路切换
+    if (wsData.event === 'MULTI_LINK_STATE') {
+      queryClient.invalidateQueries({
+        queryKey: [
+          'getDeviceLinks',
+          {
+            productKey,
+            deviceId,
+          },
+        ],
+      })
+      return
+    }
     switch (wsData.method) {
       case 'event.property.post':
       case 'properties.state':
         storeRef.current?.getState().updateState(wsData.data)
         break
-      case 'MULTI_LINK_STATE':
-        // 链路变化
-        queryClient.invalidateQueries({
-          queryKey: ['getDeviceLinks', { productKey, deviceId }],
-        })
-        break
+
       case 'event.targetInfo.info':
         // 智能追踪 目标信息
         break
@@ -322,7 +330,8 @@ export const useCreateUavControlRoomStore = (
     if (!productKey || !deviceId || !token) {
       return null
     }
-    return `${globalConfig.globalWs}://${location.host}/v3/${productKey}/${deviceId}?token=${token}`
+    // return `${globalConfig.globalWs}://${location.host}/v3/${productKey}/${deviceId}?token=${token}`
+    return `/proxyWsApi/otherWsService/${globalConfig.systemName}/controlServer/v3/${productKey}/${deviceId}?token=${token}`
   }, [productKey, deviceId, token])
 
   const { readyState, sendMessage } = useWebSocket(
