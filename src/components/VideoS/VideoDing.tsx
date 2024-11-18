@@ -22,6 +22,12 @@ const VideoDing: FC<PropsType> = memo((props) => {
           deviceId: props.deviceId,
           videoId: props.videoId,
           allowScale: true,
+          layout: {
+            x: document.body.clientWidth / 2 - 200,
+            y: document.body.clientHeight / 2 - 150,
+            width: 400,
+            height: 300,
+          },
         })
       }}
     >
