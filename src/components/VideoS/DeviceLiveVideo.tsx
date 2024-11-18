@@ -20,15 +20,16 @@ import { limitNum } from '@/utils/math'
 import { PropertiesData } from '../Video/Jessibuca/sei-types/properties'
 import VideoStream from './VideoStream'
 import { ConfigProvider } from 'antd'
-import IconDing from '@/assets/icons/jsx/IconDing'
-import XModal from '../XModal'
 import useCalcSafeArea from './hooks/useCalcSafeArea'
+import VideoDing from './VideoDing'
 
 type PropsType = {
   videoContainerId?: string
   productKey: string
   deviceId: string
   videoId: string
+  useTopBar?: boolean
+  useBottomBar?: boolean
   // 需要决定位置传递 flex 的 order
   leftTop?: ReactNode
   leftBottom?: ReactNode
@@ -64,6 +65,8 @@ const DeviceLiveVideo = memo(
         productKey,
         deviceId,
         videoId,
+        useTopBar = true,
+        useBottomBar = true,
         leftBottom,
         leftTop,
         rightBottom,
@@ -208,8 +211,8 @@ const DeviceLiveVideo = memo(
         debounceRetch()
       }, [])
 
-      const [dingOpen, { setTrue: setDingOpen, setFalse: setDingClose }] =
-        useBoolean()
+      // const [dingOpen, { setTrue: setDingOpen, setFalse: setDingClose }] =
+      //   useBoolean()
 
       // 计算安全区相关
       const { safeY, topBar, bottomBar, videoWrapper } = useCalcSafeArea(size)
@@ -304,7 +307,7 @@ const DeviceLiveVideo = memo(
             }}
           >
             {/* 上工具栏 */}
-            {(leftTop || rightTop || useDing) && (
+            {useTopBar && (leftTop || rightTop || useDing) && (
               <aside
                 ref={topBar}
                 className="absolute top-0 inset-x-0 bg-ground-100 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm"
@@ -315,12 +318,11 @@ const DeviceLiveVideo = memo(
                   </section>
                   <section className="flex items-center gap-3">
                     {useDing && (
-                      <IconButton
-                        toolTipProps={{ title: '钉出' }}
-                        onClick={setDingOpen}
-                      >
-                        <IconDing />
-                      </IconButton>
+                      <VideoDing
+                        productKey={productKey}
+                        deviceId={deviceId}
+                        videoId={videoId}
+                      />
                     )}
                     {rightTop}
                   </section>
@@ -328,120 +330,81 @@ const DeviceLiveVideo = memo(
               </aside>
             )}
             {/* 下工具栏 */}
-            <aside
-              ref={bottomBar}
-              className="absolute bottom-0 inset-x-0 bg-ground-100 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm"
-            >
-              <div className="flex justify-between items-center h-full">
-                <section className="flex items-center gap-3">
-                  <div className="order-10 text-fore text-xs">
-                    {formatTs(ts)}
-                  </div>
-                  {leftBottom}
-                </section>
-                <section className="flex items-center gap-3">
-                  <VideoStream
-                    currentUrl={url}
-                    productKey={productKey}
-                    deviceId={deviceId}
-                    onChange={handleStreamChange}
-                  />
-                  {+videoQuality >= 0 && (
-                    <VideoQuality5G
-                      value={videoQuality}
-                      onChange={handle5GChange}
+            {useBottomBar && (
+              <aside
+                ref={bottomBar}
+                className="absolute bottom-0 inset-x-0 bg-ground-100 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm"
+              >
+                <div className="flex justify-between items-center h-full">
+                  <section className="flex items-center gap-3">
+                    <div className="order-10 text-fore text-xs">
+                      {formatTs(ts)}
+                    </div>
+                    {leftBottom}
+                  </section>
+                  <section className="flex items-center gap-3">
+                    <VideoStream
+                      currentUrl={url}
+                      productKey={productKey}
+                      deviceId={deviceId}
+                      onChange={handleStreamChange}
                     />
-                  )}
-                  {videoQuality == -1 &&
-                    !isNil(useVideoQualityCheck?.valueDRC) && (
-                      <VideoQualityDRC
-                        value={useVideoQualityCheck.valueDRC}
-                        onChange={useVideoQualityCheck?.onDRCChange}
+                    {+videoQuality >= 0 && (
+                      <VideoQuality5G
+                        value={videoQuality}
+                        onChange={handle5GChange}
                       />
                     )}
-                  <IconButton
-                    toolTipProps={{
-                      title: '刷新',
-                      getPopupContainer: () =>
-                        (document.fullscreenElement as HTMLElement) ??
-                        document.body,
-                    }}
-                    className="order-20 text-[13px]"
-                    onClick={handleRefresh}
-                  >
-                    <IconRefresh />
-                  </IconButton>
-                  <IconButton
-                    className="scale-90"
-                    toolTipProps={{ title: '电子放大' }}
-                    active={!!enableScale}
-                    onClick={() => {
-                      setEnableScale(1 - Math.sign(enableScale))
-                    }}
-                  >
-                    <ExpandOutlined />
-                  </IconButton>
-                  <IconButton
-                    toolTipProps={{
-                      title: !fullScreen ? '全屏' : '退出全屏',
-                      align: {
-                        offset: [-20, -10],
-                      },
-                      getPopupContainer: () =>
-                        (document.fullscreenElement as HTMLElement) ??
-                        document.body,
-                    }}
-                    className="order-10 text-[13px]"
-                    onClick={toggleFullscreen}
-                  >
-                    {!fullScreen ? <IconFull /> : <FullscreenExitOutlined />}
-                  </IconButton>
-                  {rightBottom}
-                </section>
-              </div>
-            </aside>
-          </ConfigProvider>
-          <XModal
-            title="实况视频"
-            open={dingOpen}
-            onClose={setDingClose}
-            destroyOnClose
-            width={810}
-            footer={false}
-            noPadding
-            mask={false}
-          >
-            <div className="relative w-full" style={{ aspectRatio }}>
-              {/* 加上 `dingOpen &&` 为了减少 render 时的计算量 */}
-              {dingOpen && (
-                <div
-                  className="absolute inset-0 m-auto max-w-full max-h-full"
-                  style={{
-                    aspectRatio: aspectRatio,
-                  }}
-                >
-                  {/* 视频内容 */}
-                  <div
-                    className={clsx('absolute inset-0 bg-black')}
-                    style={{
-                      aspectRatio: aspectRatio,
-                    }}
-                  >
-                    {playUrl && <Jessibuca src={url} />}
-
-                    {/* 视频绘制框 */}
-                    <div className="absolute inset-0 z-20">
-                      {aiData && <SeiAIData data={aiData} />}
-                      {enableScale === 1 && (
-                        <DrawBox onDrawEnd={handleDrewScaleEnd} />
+                    {videoQuality == -1 &&
+                      !isNil(useVideoQualityCheck?.valueDRC) && (
+                        <VideoQualityDRC
+                          value={useVideoQualityCheck.valueDRC}
+                          onChange={useVideoQualityCheck?.onDRCChange}
+                        />
                       )}
-                      {videoChildren}
-                    </div>
-                  </div>
+                    <IconButton
+                      toolTipProps={{
+                        title: '刷新',
+                        getPopupContainer: () =>
+                          (document.fullscreenElement as HTMLElement) ??
+                          document.body,
+                      }}
+                      className="order-20 text-[13px]"
+                      onClick={handleRefresh}
+                    >
+                      <IconRefresh />
+                    </IconButton>
+                    <IconButton
+                      className="scale-90"
+                      toolTipProps={{ title: '电子放大' }}
+                      active={!!enableScale}
+                      onClick={() => {
+                        setEnableScale(1 - Math.sign(enableScale))
+                      }}
+                    >
+                      <ExpandOutlined />
+                    </IconButton>
+                    <IconButton
+                      toolTipProps={{
+                        title: !fullScreen ? '全屏' : '退出全屏',
+                        align: {
+                          offset: [-20, -10],
+                        },
+                        getPopupContainer: () =>
+                          (document.fullscreenElement as HTMLElement) ??
+                          document.body,
+                      }}
+                      className="order-10 text-[13px]"
+                      onClick={toggleFullscreen}
+                    >
+                      {!fullScreen ? <IconFull /> : <FullscreenExitOutlined />}
+                    </IconButton>
+                    {rightBottom}
+                  </section>
                 </div>
-              )}
-            </div>
-          </XModal>
+              </aside>
+            )}
+          </ConfigProvider>
         </div>
       )
     },

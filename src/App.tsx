@@ -14,6 +14,7 @@ import controlRoom from './router/modules/control-room'
 import sources from './router/modules/sources'
 import schedule from './router/modules/action-plan'
 import organization from './router/modules/organization'
+import FixedWindowArea from './components/FixedWindowsArea'
 
 const hidenSet = new Set([
   controlRoom.id,
@@ -53,6 +54,7 @@ const App = () => {
         'text-fore',
       )}
     >
+      <FixedWindowArea />
       <AppMsgContext.Provider value={messageApi}>
         {contextHolder}
         <GlobalState />

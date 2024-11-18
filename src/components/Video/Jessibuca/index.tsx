@@ -156,8 +156,9 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
 
     return () => {
       jessibucaRef.current?.destroy()
+      jessibucaRef.current = null
     }
-  }, [])
+  }, [videoEncoderValue])
 
   // const hardRefresh = useMemoizedFn(() => {
   //   jessibucaRef.current?.clearBufferDelay()
@@ -185,7 +186,7 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
     { wait: 500, trailing: false },
   )
 
-  return <div id={props.containerId} ref={ref}></div>
+  return <div id={props.containerId} ref={ref} key={videoEncoderValue}></div>
 })
 
 export default Jessibuca
