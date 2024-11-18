@@ -66,7 +66,7 @@ const actionNameMap = new Map([
   ['LEN_CHANGE', '镜头切换'],
   ['OPEN_AI', '开启算法'],
   ['CLOSE_AI', '关闭算法'],
-  ['UNKNOWN', '暂不支持编辑该航线'],
+  ['UNKNOWN', '未知航点动作'],
 ])
 
 const SortableItem: React.FC<Props> = ({

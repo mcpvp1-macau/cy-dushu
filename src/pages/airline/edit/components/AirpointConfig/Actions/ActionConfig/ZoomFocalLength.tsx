@@ -21,7 +21,10 @@ const ZoomFocalLength: FC<PropsType> = ({ config, onChange }) => {
           <span className={styles.text}>相机变焦</span>
         </div>
         <div>
-          <span className={styles.important}>{config?.focalLength}</span>x
+          <span className={styles.important}>
+            {config?.focalLength?.toFixed(1)}
+          </span>
+          x
         </div>
       </div>
       <HSlider
