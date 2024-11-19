@@ -19,7 +19,11 @@ const PositionPickListener: FC<PropsType> = ({ onClick }) => {
     const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
     handler.setInputAction(
       (e: Cesium.ScreenSpaceEventHandler.PositionedEvent) => {
-        const cartesian = viewer.scene.pickPosition(e.position)
+        const ray = viewer.camera.getPickRay(e.position)
+        if (!ray) {
+          return
+        }
+        const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
         if (!cartesian) {
           return
         }
