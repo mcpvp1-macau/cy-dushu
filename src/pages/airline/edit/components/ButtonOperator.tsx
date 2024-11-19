@@ -113,7 +113,7 @@ const BottomOperator: FC<PropsType> = memo(({ disabled }) => {
         data['deviceIds'] = deviceId
         if (actionItemId) {
           // 说明是编辑
-          data[actionItemId] = actionItemId
+          data['actionItemId'] = actionItemId
           await updateActionItem(data)
         } else {
           // 创建子行动

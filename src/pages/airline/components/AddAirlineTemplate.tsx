@@ -96,18 +96,14 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
     // 模型名称
     const modelName = isNil(v.uavType)
       ? ''
-      : `&modelName=${encodeURIComponent(modelsData![v.uavType].modelName)}`
+      : `&modelName=${modelsData![v.uavType].modelName}`
     // 相机参数
     const camera = isNil(v.gimbalType)
       ? ''
-      : `&camera=${encodeURIComponent(
-          JSON.stringify(modelsData![v.uavType].cameras[v.gimbalType]),
+      : `&camera=${JSON.stringify(
+          modelsData![v.uavType].cameras[v.gimbalType],
         )}`
-    navigate(
-      `/airline/edit?name=${encodeURIComponent(
-        v.airlineName,
-      )}${modelName}${camera}`,
-    )
+    navigate(`/airline/edit?name=${v.airlineName}${modelName}${camera}`)
   }
 
   return (

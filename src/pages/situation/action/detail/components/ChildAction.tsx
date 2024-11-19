@@ -5,8 +5,10 @@ import {
   pauseActionItem,
   startActionItem,
 } from '@/service/modules/action-item'
+import { shouldJson } from '@/utils/json'
 import { LoadingOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
+import { isNil } from 'lodash'
 import { memo, type FC } from 'react'
 
 type PropsType = {
@@ -32,6 +34,7 @@ const OperatorBtns: FC<PropsType> = ({ data }) => {
   const [loading, setLoading] = useState(false)
   const msgApi = useAppMsg()
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   const handleClick = async (action: string) => {
     setLoading(true)
@@ -59,7 +62,27 @@ const OperatorBtns: FC<PropsType> = ({ data }) => {
     case 'PENDING':
       return (
         <div className="flex gap-2">
-          <Button size="small" onClick={() => {}}>
+          <Button
+            size="small"
+            onClick={() => {
+              const info = shouldJson(data.taskTemplateInfo)
+              let params = `?actionId=${data.actionId}&actionItemId=${
+                data.id
+              }&name=${data.actionItemName ?? ''}`
+              if (info) {
+                if (!isNil(info.parameters)) {
+                  params += `&parameters=${JSON.stringify(info.parameters)}`
+                }
+                if (!isNil(info.taskBasic)) {
+                  params += `&taskBasic=${info.taskBasic}`
+                }
+                if (!isNil(info.camera)) {
+                  params += `&camera=${JSON.stringify(info.camera)}`
+                }
+              }
+              navigate(`/airline/edit/${data.taskTplId}${params}`)
+            }}
+          >
             编辑
           </Button>
           <Button size="small" onClick={() => handleClick('start')}>

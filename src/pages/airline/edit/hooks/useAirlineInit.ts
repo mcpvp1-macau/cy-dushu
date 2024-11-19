@@ -3,6 +3,7 @@ import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.stor
 import { shouldJson } from '@/utils/json'
 import { useSearchParams } from 'react-router-dom'
 import { resolvePositions } from '../utils'
+import { pick } from 'lodash'
 
 /** 航线信息初始化 */
 const useAirlineInit = () => {
@@ -27,13 +28,11 @@ const useAirlineInit = () => {
     if (name) {
       updateAirlineTemplateInfo({
         ...useAirlineConfigStore.getState().airlineTemplateInfo,
-        taskName: decodeURIComponent(name),
+        taskName: name,
       })
     }
 
-    const camera = shouldJson(
-      decodeURIComponent(searchParams.get('camera') ?? ''),
-    )
+    const camera = shouldJson(searchParams.get('camera') ?? '')
     updateAirlineConfig({
       ...useAirlineConfigStore.getState().airlineConfig,
       camera,
@@ -49,11 +48,49 @@ const useAirlineInit = () => {
 
     const takeoffRefQ = searchParams.get('takeoffRef')
     if (takeoffRefQ) {
-      const takeoffRef = shouldJson(decodeURIComponent(takeoffRefQ))
+      const takeoffRef = shouldJson(takeoffRefQ)
       updateAirlineConfig({
         ...useAirlineConfigStore.getState().airlineConfig,
         takeOffRefPoint: takeoffRef,
       })
+    }
+
+    const taskBasic = searchParams.get('taskBasic')
+    if (taskBasic) {
+      const t = shouldJson(taskBasic)
+      if (t) {
+        const o = pick(t, [
+          'finishAction',
+          'flyToWaylineMode',
+          'gimbalPitchMode',
+          'globalRTHHeight',
+          'height',
+          'imageFormat',
+          'speed',
+          'takeOffRefPoint',
+          'takeOffSecurityHeight',
+          'waypointHeadingMode',
+          'globalTransitionalSpeed',
+          'globalWaypointTurnMode',
+        ])
+        if (t.camera) {
+          const cameraParams = shouldJson(camera?.defaultParam)
+          if (cameraParams) {
+            updateCameraInfo({
+              focal: cameraParams.focal ?? 24,
+              sensorWidth: cameraParams.sensorWidth ?? 40,
+              sensorHeight: cameraParams.sensorHeight ?? 30,
+            })
+          }
+        }
+        updateAirlineConfig(o)
+      }
+    }
+
+    const parameters = searchParams.get('parameters')
+    if (parameters) {
+      const airpoints = shouldJson(parameters)?.spaces?.[0]?.positions
+      updateAirpointsConfig(resolvePositions(airpoints))
     }
   }, [])
 

@@ -32,14 +32,12 @@ const UavAirportCreateAction: FC<PropsType> = memo(() => {
       const camera = data
       let params = `?actionId=${actionId}`
       params += `&deviceId=${deviceDetail.deviceId}`
-      params += `&name=${encodeURIComponent(deviceDetail.deviceName)}航线任务`
+      params += `&name=${deviceDetail.deviceName}航线任务`
       if (longitude || latitude) {
-        params += `&takeoffRef=${encodeURIComponent(
-          JSON.stringify([longitude, latitude, 0]),
-        )}`
+        params += `&takeoffRef=${JSON.stringify([longitude, latitude, 0])}`
       }
       if (camera) {
-        params += `&camera=${encodeURIComponent(JSON.stringify(camera))}`
+        params += `&camera=${JSON.stringify(camera)}`
       }
       navigate(`/airline/edit` + params)
     } finally {
