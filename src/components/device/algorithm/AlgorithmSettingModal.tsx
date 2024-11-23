@@ -1,5 +1,5 @@
 import { shouldJson } from '@/utils/json'
-import { Form } from 'antd'
+import { Form, GetProps } from 'antd'
 import { useDeepCompareEffect, useMemoizedFn } from 'ahooks'
 import { XFormItem } from '@/components/XForm/types'
 import { algorithmIconMap } from './AlgorithmListItem'
@@ -15,12 +15,20 @@ type PropsType = {
   aiData: API_Alogrithm.domain.AlgorithmRecord
   /** 算法配置 */
   alogorithmConfig?: Record<string, any>
+  areaPickervideoInfo?: GetProps<typeof VideoAreaPicker>['videoInfo']
   onClose?: () => void
   onConfirm?: (value: any) => void
 }
 
 const AlgorithmSettingModal: FC<PropsType> = memo(
-  ({ open, aiData, alogorithmConfig, onClose, onConfirm }) => {
+  ({
+    open,
+    aiData,
+    alogorithmConfig,
+    areaPickervideoInfo,
+    onClose,
+    onConfirm,
+  }) => {
     const { algorithmConfigList } = aiData
 
     const overlay = useMapLayerAndOverlayStore((s) => s.overlayList)
@@ -110,7 +118,12 @@ const AlgorithmSettingModal: FC<PropsType> = memo(
               label: e.propertyName,
               type: 'input',
             }
-            item.render = <VideoAreaPicker filedName={e.property} />
+            item.render = (
+              <VideoAreaPicker
+                filedName={e.property}
+                videoInfo={areaPickervideoInfo}
+              />
+            )
           } else if (e.valueType === 'lnglatPositions') {
             item = {
               name: e.property,

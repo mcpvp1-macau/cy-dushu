@@ -1,15 +1,16 @@
 import IconPositionZoom from '@/assets/icons/jsx/uav/IconPositionZoom'
 import IconButton from '@/components/ui/button/IconButton'
-import { Input } from 'antd'
+import { GetProps, Input } from 'antd'
 import useFormInstance from 'antd/es/form/hooks/useFormInstance'
 import VideoAreaPickerDrawer from './VideoAreaPickerDrawer'
 import { shouldJson } from '@/utils/json'
 
 type PropsType = {
   filedName: string
+  videoInfo?: GetProps<typeof VideoAreaPickerDrawer>['videoInfo']
 }
 
-const VideoAreaPicker: FC<PropsType> = memo(({ filedName }) => {
+const VideoAreaPicker: FC<PropsType> = memo(({ filedName, videoInfo }) => {
   const form = useFormInstance()
   const fieldValue = form.getFieldValue(filedName)
   const value = Array.isArray(shouldJson(fieldValue)) ? fieldValue : []
@@ -32,6 +33,7 @@ const VideoAreaPicker: FC<PropsType> = memo(({ filedName }) => {
             value={value}
             onChange={(v) => form.setFieldValue(filedName, v)}
             visible={open}
+            videoInfo={videoInfo}
             setVisible={set}
           />
         </>

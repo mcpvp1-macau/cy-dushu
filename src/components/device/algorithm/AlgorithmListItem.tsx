@@ -13,6 +13,7 @@ import { CloudFilled, LoadingOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
 import { memo, type FC } from 'react'
 import AlgorithmSettingModal from './AlgorithmSettingModal'
+import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 
 type PropsType = {
   deviceId: string
@@ -131,6 +132,10 @@ const AlgorithmListItem: FC<PropsType> = memo(
       onAction?.()
     })
 
+    const videoId = useDeviceDetailStore(
+      (s) => s.deviceDetail?.properties?.videoList?.[0]?.videoId,
+    )
+
     return (
       <div className="flex bg-ground-200 p-2 gap-2 rounded-[3px]">
         <div>
@@ -183,6 +188,11 @@ const AlgorithmListItem: FC<PropsType> = memo(
             open={open}
             aiData={aiData}
             alogorithmConfig={shouldJson(aiData.algorithmConfig)}
+            areaPickervideoInfo={{
+              deviceId,
+              productKey,
+              videoId: videoId ?? '',
+            }}
             onClose={() => setOpen(false)}
             onConfirm={handleUpdateAlgorithmConfig}
           />

@@ -2,22 +2,20 @@ import { useControllableValue, useSize } from 'ahooks'
 import { Button } from 'antd'
 import XModal from '@/components/XModal'
 import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
-import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 
 type Props = {
   value: any[][]
   onChange: (value: any[][]) => void
   visible: boolean
   setVisible: (visible: boolean) => void
+  videoInfo?: {
+    productKey: string
+    deviceId: string
+    videoId: string
+  }
 }
 const VideoAreaPickerDrawer: React.FC<Props> = (props) => {
-  const productKey = useDeviceDetailStore((s) => s.productKey) ?? ''
-  const deviceId = useDeviceDetailStore((s) => s.deviceId) ?? ''
   const { visible, setVisible } = props
-
-  const videoId = useDeviceDetailStore(
-    (s) => s.deviceDetail?.properties?.videoList?.[0]?.videoId,
-  )
 
   const [state, setState] = useControllableValue<any[]>(props)
   const ref = useRef<any>()
@@ -112,47 +110,49 @@ const VideoAreaPickerDrawer: React.FC<Props> = (props) => {
             <Button onClick={start}>开始框选</Button>
             <Button onClick={del}>删除选中</Button>
           </div>
-          <div className="relative w-full aspect-video mb-3" ref={ref}>
-            <DeviceLiveVideo
-              deviceId={deviceId}
-              productKey={productKey}
-              videoId={videoId ?? ''}
-              useTopBar={false}
-              useBottomBar={false}
-              videoChildren={
-                <div
-                  onClick={onClick}
-                  onMouseMove={onMouseMove}
-                  onContextMenu={onContextMenu}
-                  className="absolute z-[999] top-0 left-0 w-full h-full border-[red] border-solid border-[1px]"
-                >
-                  <svg className="absolute z-[999] top-0 left-0  w-full h-full">
-                    {[...state, positions1].map((positions, i) => {
-                      return (
-                        <g key={i} onClick={() => onChecked(i)}>
-                          <path
-                            d={(positions.length
-                              ? [...positions, positions[0]]
-                              : []
-                            )
-                              .map(
-                                (item, i) =>
-                                  `${i ? 'L' : 'M'}${item.x * width},${
-                                    item.y * height
-                                  }`,
+          <div className="relative w-full aspect-video mb-3 bg-black" ref={ref}>
+            {props.videoInfo && (
+              <DeviceLiveVideo
+                deviceId={props.videoInfo.deviceId}
+                productKey={props.videoInfo.productKey}
+                videoId={props.videoInfo.videoId}
+                useTopBar={false}
+                useBottomBar={false}
+                videoChildren={
+                  <div
+                    onClick={onClick}
+                    onMouseMove={onMouseMove}
+                    onContextMenu={onContextMenu}
+                    className="absolute z-[999] top-0 left-0 w-full h-full border-[red] border-solid border-[1px]"
+                  >
+                    <svg className="absolute z-[999] top-0 left-0  w-full h-full">
+                      {[...state, positions1].map((positions, i) => {
+                        return (
+                          <g key={i} onClick={() => onChecked(i)}>
+                            <path
+                              d={(positions.length
+                                ? [...positions, positions[0]]
+                                : []
                               )
-                              .join(' ')}
-                            stroke={'red'}
-                            fill="rgba(0,0,0,0)"
-                            stroke-dasharray={i === checked ? '5,3' : '0,0'}
-                          ></path>
-                        </g>
-                      )
-                    })}
-                  </svg>
-                </div>
-              }
-            />
+                                .map(
+                                  (item, i) =>
+                                    `${i ? 'L' : 'M'}${item.x * width},${
+                                      item.y * height
+                                    }`,
+                                )
+                                .join(' ')}
+                              stroke={'red'}
+                              fill="rgba(0,0,0,0)"
+                              strokeDasharray={i === checked ? '5,3' : '0,0'}
+                            ></path>
+                          </g>
+                        )
+                      })}
+                    </svg>
+                  </div>
+                }
+              />
+            )}
           </div>
         </>
       ) : null}
