@@ -265,8 +265,11 @@ const DeviceLiveVideo = memo(
                   containerId={videoContainerId}
                   src={url}
                   onVideoInfo={(v) => {
-                    setAspectRatio(v.width / v.height)
-                    onAspectRatioChange?.(v.width / v.height)
+                    const aspect = v.width / v.height
+                    if (Math.abs(aspect - aspectRatio) > 1e-5) {
+                      setAspectRatio(v.width / v.height)
+                      onAspectRatioChange?.(v.width / v.height)
+                    }
                   }}
                   onTimeUpdate={setTs}
                   onSeiAIData={(aiData) => {

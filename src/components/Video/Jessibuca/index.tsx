@@ -6,7 +6,7 @@ import {
   supportWCS,
   supportWCSHevc,
 } from '@/utils/video/video-support'
-import { useRafInterval, useThrottleEffect } from 'ahooks'
+import { useInterval, useThrottleEffect } from 'ahooks'
 import usePropertiesProtobuf from './hooks/usePropertiesProtobuf'
 import SeiEnum, { SEI_TYPE } from './sei-enum'
 import useProtobufSei from './hooks/useProtobufSei'
@@ -41,22 +41,24 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
   const lastVideoInfo = useRef<Partial<VideoInfo>>({})
   const handleVideoInfo = useMemoizedFn((data) => {
     props.onVideoInfo?.(data)
+    lastVideoInfo.current = data
   })
 
   const handleTimeUpdate = useMemoizedFn((ts: number) => {
     props.onTimeUpdate?.(ts)
   })
 
-  useRafInterval(() => {
+  useInterval(() => {
     const videoInfo = jessibucaRef.current?.getVideoInfo() as VideoInfo
     if (!videoInfo) {
       return
     }
-    const last = lastVideoInfo.current
-    if (videoInfo.width === last.width && videoInfo.height === last.height) {
-      handleVideoInfo(videoInfo)
-      lastVideoInfo.current = videoInfo
-    }
+    // if (
+    //   videoInfo.width !== lastVideoInfo.current.width ||
+    //   videoInfo.height !== lastVideoInfo.current.height
+    // ) {
+    handleVideoInfo(videoInfo)
+    // }
   }, 2000)
 
   const { handlePropertiesProtobuf } = usePropertiesProtobuf(
@@ -114,7 +116,7 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
       container: ref.current!,
       videoBuffer: globalConfig.videoBuffer || 0, // 缓存时长
       videoBufferDelay: globalConfig.videoBufferDelay || 0, // 1000s
-      isResize: true,
+      isResize: false,
       // text: '',
       loadingText: '',
       debugLevel: 'debug',
@@ -135,7 +137,7 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
       decoder: '/js/JessibucaPro/decoder-pro.js',
       // supportHls265: true,
       /** @ts-ignore */
-      decoderAudio: 'js/JessibucaPro/decoder-pro-audio.js',
+      // decoderAudio: 'js/JessibucaPro/decoder-pro-audio.js',
       decoderHard: '/js/JessibucaPro/decoder-pro-hard.js',
     })
 
