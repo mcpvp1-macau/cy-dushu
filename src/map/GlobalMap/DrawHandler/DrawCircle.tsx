@@ -40,7 +40,7 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
         circleCenter.current?.[0] ?? 0,
         circleCenter.current?.[1] ?? 0,
       )
-    }, false)
+    }, false) as unknown as Cesium.PositionProperty
 
     const e = viewer.entities.add({
       position: position, // 初始圆心

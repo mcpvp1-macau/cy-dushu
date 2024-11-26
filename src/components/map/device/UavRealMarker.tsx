@@ -27,7 +27,7 @@ const MapUavRealMarker: FC<PropsType> = memo(({ data }) => {
     if (!viewer) return
     const positonCallback = new Cesium.CallbackProperty(() => {
       return Cesium.Cartesian3.fromDegrees(lonRef.current, latRef.current, 0)
-    }, false)
+    }, false) as unknown as Cesium.PositionProperty
 
     const uav = viewer.entities.add({
       position: positonCallback,

@@ -32,7 +32,7 @@ const DrawRangingCircle: FC<PropsType> = memo(() => {
         circleCenterRef.current?.[0] ?? 0,
         circleCenterRef.current?.[1] ?? 0,
       )
-    }, false)
+    }, false) as unknown as Cesium.PositionProperty
 
     const e = viewer.entities.add({
       position: position, // 初始圆心
