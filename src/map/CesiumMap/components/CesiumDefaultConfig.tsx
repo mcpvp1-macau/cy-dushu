@@ -15,17 +15,24 @@ const CesiumDefaultConfig: FC<PropsType> = memo(() => {
       viewer.cesiumWidget._creditContainer.style.display = 'none'
     }
 
+    viewer.scene.screenSpaceCameraController.inertiaZoom = 0
+
     // 限制地图相机的最大高度最小高度，防止找不到地球或者进入地下
     viewer.scene.screenSpaceCameraController.minimumZoomDistance = 100
     viewer.scene.screenSpaceCameraController.maximumZoomDistance = 18000000
 
     // @ts-ignore
-    viewer.scene.terrainProvider.isCreateSkirt = false // 关闭裙边
+    // viewer.scene.terrainProvider.isCreateSkirt = false // 关闭裙边
+
+    viewer.scene.fog.enabled = false // 关闭雾效
+    // viewer.scene.globe.showGroundAtmosphere = false // 关闭地球大气效果
+    viewer.scene.highDynamicRange = false // 关闭 HDR
+    // viewer.scene.fxaa = false // 关闭抗锯齿
 
     // 是否开启抗锯齿
     // @ts-ignore
-    viewer.scene.fxaa = true
-    viewer.scene.postProcessStages.fxaa.enabled = true
+    // viewer.scene.fxaa = true
+    // viewer.scene.postProcessStages.fxaa.enabled = true
 
     // 默认视角
     viewer.camera?.setView?.({
@@ -38,7 +45,7 @@ const CesiumDefaultConfig: FC<PropsType> = memo(() => {
     })
 
     // 设置分辨率
-    viewer.resolutionScale = 1.2
+    viewer.resolutionScale = 1
   }, [viewer])
 
   return null
