@@ -6,22 +6,24 @@ import {
   supportWCS,
   supportWCSHevc,
 } from '@/utils/video/video-support'
-import { useThrottleEffect } from 'ahooks'
+import { useRafInterval, useThrottleEffect } from 'ahooks'
 import usePropertiesProtobuf from './hooks/usePropertiesProtobuf'
 import SeiEnum, { SEI_TYPE } from './sei-enum'
 import useProtobufSei from './hooks/useProtobufSei'
+
+type VideoInfo = {
+  width: number
+  height: number
+  encType: string
+  encTypeCode: number
+}
 
 type PropsType = {
   containerId?: string
   src: string
   refreshKey?: React.Key
   /** 视频信息回调 */
-  onVideoInfo?: (info: {
-    width: number
-    height: number
-    encType: string
-    encTypeCode: number
-  }) => void
+  onVideoInfo?: (info: VideoInfo) => void
   /** 时间持续更新回调 */
   onTimeUpdate?: (ts: number) => void
   onSeiProperties?: (data: SEI_TYPE[SeiEnum.JSON_PROPERTIES]) => void
@@ -36,6 +38,7 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
   const videoEncoderValue = useVideoEncoderStore((s) => s.videoEncoderValue)
   videoEncoderValue
 
+  const lastVideoInfo = useRef<Partial<VideoInfo>>({})
   const handleVideoInfo = useMemoizedFn((data) => {
     props.onVideoInfo?.(data)
   })
@@ -43,6 +46,18 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
   const handleTimeUpdate = useMemoizedFn((ts: number) => {
     props.onTimeUpdate?.(ts)
   })
+
+  useRafInterval(() => {
+    const videoInfo = jessibucaRef.current?.getVideoInfo() as VideoInfo
+    if (!videoInfo) {
+      return
+    }
+    const last = lastVideoInfo.current
+    if (videoInfo.width === last.width && videoInfo.height === last.height) {
+      handleVideoInfo(videoInfo)
+      lastVideoInfo.current = videoInfo
+    }
+  }, 2000)
 
   const { handlePropertiesProtobuf } = usePropertiesProtobuf(
     props.onSeiProperties,
@@ -106,7 +121,7 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
       ...support,
       operateBtns: {},
       timeout: 5000,
-      heartTimeoutReplayUseLastFrameShow: true,
+      heartTimeoutReplayUseLastFrameShow: false,
       audioEngine: 'worklet',
       isNotMute: false,
       heartTimeout: 10,
@@ -159,15 +174,6 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
       jessibucaRef.current = null
     }
   }, [videoEncoderValue])
-
-  // const hardRefresh = useMemoizedFn(() => {
-  //   jessibucaRef.current?.clearBufferDelay()
-  //   jessibucaRef.current?.playbackClearCacheBuffer()
-  //   if (!src) {
-  //     return
-  //   }
-  //   jessibucaRef.current?.play(src)
-  // })
 
   // 视频地址变化时，重新播放
   useThrottleEffect(
