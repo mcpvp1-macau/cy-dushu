@@ -98,6 +98,11 @@ export type ActionCloseAIType = {
   }
 }
 
+export type ActionUnknownType = {
+  type: 'UNKNOWN'
+  config: unknown
+}
+
 /** 航点动作配置 */
 export type ActionType = (
   | ActionHoverType
@@ -108,6 +113,7 @@ export type ActionType = (
   | ActionLensChangeType
   | ActionOpenAIType
   | ActionCloseAIType
+  | ActionUnknownType
 ) & {
   xid: string
 }
