@@ -8,6 +8,7 @@ import 'tippy.js/dist/tippy.css'
 import 'tippy.js/dist/border.css'
 import 'tippy.js/animations/scale.css'
 import 'tippy.js/animations/scale-subtle.css'
+import { wgs84ToDrawingBufferCoordinates } from '@/utils/cesium/sence-transform'
 
 type PropsType = {
   /** [lng, lat] */
@@ -34,11 +35,10 @@ const PositionTooltip: FC<PropsType> = memo(
           return
         }
         const catesian = Cesium.Cartesian3.fromDegrees(position[0], position[1])
-        const screenPostion =
-          Cesium.SceneTransforms.worldToDrawingBufferCoordinates(
-            viewer.scene,
-            catesian,
-          )
+        const screenPostion = wgs84ToDrawingBufferCoordinates(
+          viewer.scene,
+          catesian,
+        )
         if (!screenPostion) {
           return
         }

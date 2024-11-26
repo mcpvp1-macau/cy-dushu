@@ -2,6 +2,7 @@ import { Dropdown, GetProps } from 'antd'
 import { forwardRef, useImperativeHandle } from 'react'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
+import { wgs84ToDrawingBufferCoordinates } from '@/utils/cesium/sence-transform'
 
 type PropsType = Omit<GetProps<typeof Dropdown>, 'trigger' | 'open'> & {
   position: [number, number]
@@ -26,11 +27,10 @@ const PositionMenu = memo(
         return
       }
       const catesian = Cesium.Cartesian3.fromDegrees(position[0], position[1])
-      const screenPostion =
-        Cesium.SceneTransforms.worldToDrawingBufferCoordinates(
-          viewer.scene,
-          catesian,
-        )
+      const screenPostion = wgs84ToDrawingBufferCoordinates(
+        viewer.scene,
+        catesian,
+      )
       if (!screenPostion) {
         return
       }
