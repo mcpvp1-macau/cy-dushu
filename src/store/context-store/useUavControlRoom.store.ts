@@ -330,8 +330,8 @@ export const useCreateUavControlRoomStore = (
     if (!productKey || !deviceId || !token) {
       return null
     }
-    // return `${globalConfig.globalWs}://${location.host}/v3/${productKey}/${deviceId}?token=${token}`
-    return `/proxyWsApi/otherWsService/${globalConfig.systemName}/controlServer/v3/${productKey}/${deviceId}?token=${token}`
+    return `${globalConfig.globalWs}://${location.host}/v3/${productKey}/${deviceId}?token=${token}`
+    // return `/proxyWsApi/otherWsService/${globalConfig.systemName}/controlServer/v3/${productKey}/${deviceId}?token=${token}`
   }, [productKey, deviceId, token])
 
   const { readyState, sendMessage } = useWebSocket(
