@@ -22,7 +22,7 @@ const usePrevDayHisTrack = () => {
           endTime,
         },
       ],
-      queryFn: () => getTrackQuery({ deviceId, startTime, endTime }),
+      queryFn: () => getTrackQuery({ deviceId: deviceId!, startTime, endTime }),
     },
     queryClient,
   )
