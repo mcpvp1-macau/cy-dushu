@@ -9,6 +9,7 @@ import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.stor
 import { AirpointsConfigItem } from '@/store/uav/uav-airline/types'
 import { cartesian3ToDegrees } from '@/utils/geoUtils'
 import { get3DTan } from '@/utils/geo-math'
+import { wgs84ToDrawingBufferCoordinates } from '@/utils/cesium/sence-transform'
 
 type PropsType = {
   point: AirpointsConfigItem
@@ -146,7 +147,7 @@ const Airpoint: FC<PropsType> = ({ point }) => {
           high = 500.01
         while (high - low >= 0.01) {
           const mid = (low + high) / 2
-          const pos = Cesium.SceneTransforms.worldToDrawingBufferCoordinates(
+          const pos = wgs84ToDrawingBufferCoordinates(
             viewer.scene,
             Cesium.Cartesian3.fromDegrees(
               pointRef.current.pointX,
