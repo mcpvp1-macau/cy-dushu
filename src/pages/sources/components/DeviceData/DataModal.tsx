@@ -74,7 +74,7 @@ const DataModal: FC<PropsType> = memo(({ deviceId, open, onClose }) => {
                 children: (
                   <div className="min-h-[138px]">
                     <AppViewSuspense>
-                      <HistoryTrack />
+                      <HistoryTrack deviceList={deviceList} />
                     </AppViewSuspense>
                   </div>
                 ),
