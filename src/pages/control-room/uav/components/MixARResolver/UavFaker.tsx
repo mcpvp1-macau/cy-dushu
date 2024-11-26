@@ -12,6 +12,8 @@ import { Position } from 'geojson'
 import { calcFovRadiation } from '@/utils/fov'
 import gimbalMap from '@/constant/uav/gimbal'
 import useSettingStore from '@/store/useSetting.store'
+import useMapLayerAndOverlayStore from '@/store/map/useLayerAndOverlay.store'
+import { shouldJson } from '@/utils/json'
 
 type PropsType = unknown
 
@@ -83,9 +85,9 @@ const UavFaker: FC<PropsType> = memo(() => {
       })
 
       const frustum = camera.frustum as Cesium.PerspectiveFrustum
-      const tanFovY = Math.tan(camera.frustum.fovy / 2)
+      const tanFovY = Math.tan(camera.frustum.fovy! / 2)
       const aspectRatio = frustum.aspectRatio
-      const tanFovX = tanFovY * aspectRatio
+      const tanFovX = tanFovY * aspectRatio!
       const cameraDirection = Cesium.Cartesian3.clone(camera.direction)
       const cameraRight = Cesium.Cartesian3.clone(camera.right)
       const cameraUp = Cesium.Cartesian3.clone(camera.up)
@@ -237,7 +239,6 @@ const UavFaker: FC<PropsType> = memo(() => {
       ) {
         return
       }
-      // LiqunLog.log(uav);
       const coordinates = [
         gimbalPick.leftBottom,
         gimbalPick.leftTop,
@@ -326,7 +327,6 @@ const UavFaker: FC<PropsType> = memo(() => {
         }
         arResult.push(res)
       }
-      // LiqunLog.log(arResult);
       updateArData(arResult)
     },
     [rTree, gimbalPick, shiftSetting],
@@ -335,6 +335,80 @@ const UavFaker: FC<PropsType> = memo(() => {
       trailing: true,
     },
   )
+
+  // 计算航线空中点的位置
+  const airpointPositions = useMixARStore((s) => s.airpointPositions)
+  const updateAirpointPositionsAR = useMixARStore(
+    (s) => s.updateAirpointPositionsAR,
+  )
+  useEffect(() => {
+    if (!viewer || !cameraRef.current || !uav.width || !uav.height) {
+      return
+    }
+    const positionsAR: number[][] = []
+    for (const point of airpointPositions) {
+      const cartesian2 = H.worldToWindowCoordinates(
+        viewer?.scene,
+        Cesium.Cartesian3.fromDegrees(point.pointX, point.pointY, point.pointZ),
+        cameraRef.current,
+        uav.width,
+        uav.height,
+      )
+      if (!cartesian2) {
+        continue
+      }
+      const pixel = [cartesian2.x, cartesian2.y]
+      positionsAR.push(pixel)
+    }
+    updateAirpointPositionsAR(positionsAR)
+  }, [airpointPositions, uav.width, uav.height, gimbalPick, shiftSetting])
+
+  // 计算覆盖物点的位置
+  const overlayList = useMapLayerAndOverlayStore((s) => s.overlayList)
+  const updateOverlaiesAR = useMixARStore((s) => s.updateOverlaiesAR)
+  useEffect(() => {
+    if (!viewer || !cameraRef.current || !uav.width || !uav.height) {
+      return
+    }
+    const positionsAR: number[][][] = []
+    for (const overlay of overlayList) {
+      if (overlay.overlayType === 'POLYGON') {
+        console.log('first', overlayList.length)
+        const positions: number[][] = []
+        const overlayPositions = shouldJson(overlay.overlayPositions)
+        if (!overlayPositions) {
+          continue
+        }
+        if (
+          overlayPositions[0][0] !== overlayPositions.at(-1)![0] ||
+          overlayPositions[0][1] !== overlayPositions.at(-1)![1]
+        ) {
+          overlayPositions.push(overlayPositions[0])
+        }
+        for (const point of overlayPositions) {
+          const cartesian2 = H.worldToWindowCoordinates(
+            viewer?.scene,
+            Cesium.Cartesian3.fromDegrees(
+              point[0] + 0.00001 * shiftSetting.lng,
+              point[1] + 0.00001 * shiftSetting.lat,
+              0,
+            ),
+            cameraRef.current,
+            uav.width,
+            uav.height,
+          )
+          if (!cartesian2) {
+            continue
+          }
+          const pixel = [cartesian2.x, cartesian2.y]
+          positions.push(pixel)
+        }
+        positionsAR.push(positions)
+      }
+    }
+
+    updateOverlaiesAR(positionsAR)
+  }, [overlayList, uav.width, uav.height, gimbalPick, shiftSetting])
 
   return null
 })

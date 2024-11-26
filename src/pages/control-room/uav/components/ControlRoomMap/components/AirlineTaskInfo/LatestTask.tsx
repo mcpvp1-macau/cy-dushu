@@ -6,6 +6,7 @@ import AirPoint from './AirPoint'
 import PathLine from './PathLine'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import Forecast from './Forecast'
+import useMixARStore from '@/store/control-room/useMixAR.store'
 
 type PropsType = unknown
 
@@ -16,7 +17,7 @@ const LastestTask: FC<PropsType> = memo(() => {
   const { data: taskData } = useQuery(
     {
       queryKey: ['getLatestTask', deviceId],
-      queryFn: () => getLatestTask(deviceId),
+      queryFn: () => getLatestTask(deviceId!),
       select: (d) => d.data,
     },
     queryClient,
@@ -24,12 +25,19 @@ const LastestTask: FC<PropsType> = memo(() => {
 
   const displayMode = useUavControlRoomStore((s) => s.state.displayMode)
 
+  const updateAirpointPositions = useMixARStore(
+    (s) => s.updateAirpointPositions,
+  )
+
   const positions = useMemo(() => {
     const parameters = shouldJson(taskData?.parameters)
     if (!parameters?.spaces?.[0]?.positions) {
       return
     }
     const positions = resolvePositions(parameters.spaces[0].positions)
+    if (Array.isArray(positions)) {
+      updateAirpointPositions(positions)
+    }
     return positions
   }, [taskData?.id])
 

@@ -44,6 +44,7 @@ const drawLine = (
   ctx.strokeStyle = color
   ctx.lineWidth = lineWidth
   ctx.stroke()
+  // ctx.fill()
 }
 
 /** 虚实融合 Canvas */
@@ -55,6 +56,10 @@ const MixARCanvas: FC<PropsType> = memo(() => {
   const frameHeight = useMixARStore((s) => s.source_frame_height)
   const vrSetting = useSettingStore((s) => s.virtualReal)
 
+  const airpointPositionsAR = useMixARStore((s) => s.airpointPositionsAR)
+
+  const overlaiesAR = useMixARStore((s) => s.overlaiesAR)
+
   useEffect(() => {
     if (!canvasRef.current) {
       return
@@ -65,6 +70,8 @@ const MixARCanvas: FC<PropsType> = memo(() => {
     if (!ctx) {
       return
     }
+
+    ctx.globalCompositeOperation = 'source-over'
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -202,7 +209,33 @@ const MixARCanvas: FC<PropsType> = memo(() => {
         }
       }
     }
-  }, [arData, vrSetting])
+
+    // 绘制覆盖物
+    overlaiesAR.forEach((e) => {
+      drawClosedPolygon(
+        ctx,
+        e,
+        vrSetting.building.color,
+        vrSetting.building.borderColor,
+        vrSetting.building.borderSize,
+      )
+    })
+
+    drawLine(ctx, airpointPositionsAR, '#22c55e', 10)
+    airpointPositionsAR.forEach((e, i) => {
+      ctx.beginPath()
+      ctx.ellipse(e[0], e[1], 20, 20, 0, 0, Math.PI * 2)
+      ctx.fillStyle = '#22c55e'
+      ctx.fill()
+      ctx.fillStyle = vrSetting.text.color
+      ctx.strokeStyle = vrSetting.text.borderColor
+      ctx.lineWidth = vrSetting.text.borderSize // 描边的宽度
+      ctx.font = `${vrSetting.text.size}px sans-serif`
+      ctx.textAlign = 'center'
+      ctx.strokeText(`航点 ${i + 1}`, e[0], e[1])
+      ctx.fillText(`航点 ${i + 1}`, e[0], e[1])
+    })
+  }, [arData, vrSetting, airpointPositionsAR])
 
   if (!frameWidth || !frameHeight) {
     return null

@@ -6,7 +6,6 @@ import { Feature, LineString } from 'geojson'
 import { useThrottleEffect } from 'ahooks'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { getGeoSearchData } from '@/service/modules/geo'
-import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 
 type PropsType = unknown
 
