@@ -217,65 +217,6 @@ const DeviceLiveVideo = memo(
       // 计算安全区相关
       const { safeY, topBar, bottomBar, videoWrapper } = useCalcSafeArea(size)
 
-      const videoNode = (
-        <div
-          className="absolute inset-0 m-auto max-w-full max-h-full"
-          ref={videoWrapper}
-          style={{
-            aspectRatio: aspectRatio,
-          }}
-        >
-          {/* 视频内容 */}
-          <div
-            ref={videoBoxRef}
-            className={clsx('absolute inset-0 bg-black')}
-            style={{
-              aspectRatio: aspectRatio,
-              transformOrigin: `${originCenter[0] * 100}% ${
-                originCenter[1] * 100
-              }%`,
-              transition: enableScale === 2 ? 'transform 0.3s' : undefined,
-              transform:
-                enableScale === 2 && tranformCss
-                  ? tranformCss
-                  : 'translate(0px, 0px)',
-            }}
-          >
-            {playUrl && (
-              <Jessibuca
-                containerId={videoContainerId}
-                src={url}
-                onVideoInfo={(v) => {
-                  setAspectRatio(v.width / v.height)
-                  onAspectRatioChange?.(v.width / v.height)
-                }}
-                onTimeUpdate={setTs}
-                onSeiAIData={(aiData) => {
-                  !aiData.ref && setAIData(aiData)
-                }}
-                onSeiProperties={onUavProperties}
-                onFetchError={handleRefresh}
-              />
-            )}
-
-            {/* 视频绘制框 */}
-            <div className="absolute inset-0 z-20">
-              {aiData && <SeiAIData data={aiData} />}
-              {enableScale === 1 && <DrawBox onDrawEnd={handleDrewScaleEnd} />}
-              {videoChildren}
-              {videoSafeAreaChildren && (
-                <div
-                  className="absolute inset-x-0"
-                  style={{ top: `${safeY[0]}px`, bottom: `${safeY[1]}px` }}
-                >
-                  {videoSafeAreaChildren}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )
-
       return (
         <div
           className="size-full overflow-hidden relative"
@@ -296,7 +237,64 @@ const DeviceLiveVideo = memo(
               <li key={i}>{e?.displayText}</li>
             ))}
           </ul>
-          {videoNode}
+          <div
+            className="absolute inset-0 m-auto max-w-full max-h-full"
+            ref={videoWrapper}
+            style={{
+              aspectRatio: aspectRatio,
+            }}
+          >
+            {/* 视频内容 */}
+            <div
+              ref={videoBoxRef}
+              className={clsx('absolute inset-0 bg-black')}
+              style={{
+                aspectRatio: aspectRatio,
+                transformOrigin: `${originCenter[0] * 100}% ${
+                  originCenter[1] * 100
+                }%`,
+                transition: enableScale === 2 ? 'transform 0.3s' : undefined,
+                transform:
+                  enableScale === 2 && tranformCss
+                    ? tranformCss
+                    : 'translate(0px, 0px)',
+              }}
+            >
+              {playUrl && (
+                <Jessibuca
+                  containerId={videoContainerId}
+                  src={url}
+                  onVideoInfo={(v) => {
+                    setAspectRatio(v.width / v.height)
+                    onAspectRatioChange?.(v.width / v.height)
+                  }}
+                  onTimeUpdate={setTs}
+                  onSeiAIData={(aiData) => {
+                    !aiData.ref && setAIData(aiData)
+                  }}
+                  onSeiProperties={onUavProperties}
+                  onFetchError={handleRefresh}
+                />
+              )}
+
+              {/* 视频绘制框 */}
+              <div className="absolute inset-0 z-20">
+                {aiData && <SeiAIData data={aiData} />}
+                {enableScale === 1 && (
+                  <DrawBox onDrawEnd={handleDrewScaleEnd} />
+                )}
+                {videoChildren}
+                {videoSafeAreaChildren && (
+                  <div
+                    className="absolute inset-x-0"
+                    style={{ top: `${safeY[0]}px`, bottom: `${safeY[1]}px` }}
+                  >
+                    {videoSafeAreaChildren}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
           <ConfigProvider
             theme={{
               components: {
@@ -358,7 +356,7 @@ const DeviceLiveVideo = memo(
                     {videoQuality == -1 &&
                       !isNil(useVideoQualityCheck?.valueDRC) && (
                         <VideoQualityDRC
-                          value={useVideoQualityCheck.valueDRC}
+                          value={useVideoQualityCheck.valueDRC ?? 'Unknown'}
                           onChange={useVideoQualityCheck?.onDRCChange}
                         />
                       )}
