@@ -78,7 +78,7 @@ const DrawBox: FC<PropsType> = memo(({ onDrawEnd }) => {
 
   return (
     <div
-      className="absolute inset-0"
+      className="absolute inset-0 pointer-events-auto"
       style={{
         zIndex: isDrawing.current ? 99889998 : 98,
         cursor: 'crosshair',

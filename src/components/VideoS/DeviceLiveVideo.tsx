@@ -281,7 +281,7 @@ const DeviceLiveVideo = memo(
               )}
 
               {/* 视频绘制框 */}
-              <div className="absolute inset-0 z-20">
+              <div className="absolute inset-0 z-20 pointer-events-none">
                 {aiData && <SeiAIData data={aiData} />}
                 {enableScale === 1 && (
                   <DrawBox onDrawEnd={handleDrewScaleEnd} />

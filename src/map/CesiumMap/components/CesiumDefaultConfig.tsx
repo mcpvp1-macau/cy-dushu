@@ -1,6 +1,7 @@
 import { memo, type FC } from 'react'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
+import { useRafInterval } from 'ahooks'
 
 type PropsType = unknown
 
@@ -47,6 +48,13 @@ const CesiumDefaultConfig: FC<PropsType> = memo(() => {
     // 设置分辨率
     viewer.resolutionScale = 1
   }, [viewer])
+
+  useRafInterval(() => {
+    if (!viewer) {
+      return
+    }
+    viewer.scene.requestRender()
+  }, 100)
 
   return null
 })

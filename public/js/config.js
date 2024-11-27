@@ -1,4 +1,5 @@
 window.config = {
+  title: '牍术·无人装备智能引擎',
   systemName: 'jingqi-v3', // 应用名称
   loginUrl: 'http://4a.jing-an.com:32712/login',
   globalWs: 'ws', // 全局

@@ -35,7 +35,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, children }) => {
       // skyBox={false}
       shadows={false}
       animation={false}
-      // requestRenderMode={true}
+      requestRenderMode={true}
       skyBox={false}
       // @ts-ignore
       imageryProvider={false}

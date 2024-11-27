@@ -136,9 +136,10 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
       isEmitSEI: true,
       decoder: '/js/JessibucaPro/decoder-pro.js',
       // supportHls265: true,
-      /** @ts-ignore */
+      // supportDblclickFullscreen: true,
       // decoderAudio: 'js/JessibucaPro/decoder-pro-audio.js',
-      decoderHard: '/js/JessibucaPro/decoder-pro-hard.js',
+      /** @ts-ignore */
+      // decoderHard: '/js/JessibucaPro/decoder-pro-hard.js',
     })
 
     jessibucaRef.current.on(
