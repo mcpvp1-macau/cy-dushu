@@ -32,7 +32,17 @@ const HistoryTrackChildren: FC<{ tracks: API_DBAPI.res.GetTrackQueryRes }> =
     }, [tracks])
 
     useEffect(() => {
+      if (
+        !map ||
+        !(renderTracks.geometry as unknown as GeoJSON.LineString).coordinates
+          ?.length
+      ) {
+        return
+      }
       const box = bbox(renderTracks)
+      if (!box.length) {
+        return
+      }
       map?.fitBounds(
         [
           [box[0], box[1]],
