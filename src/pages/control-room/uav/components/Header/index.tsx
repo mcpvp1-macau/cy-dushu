@@ -13,6 +13,8 @@ import { FC, lazy } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useShallow } from 'zustand/react/shallow'
 import LatestTask from './LatestTask'
+import { createPortal } from 'react-dom'
+import { useTitle } from 'ahooks'
 
 const DeviceLinkSwitch = lazy(
   () => import('@/components/device/DeviceLinkSwitch'),
@@ -22,12 +24,14 @@ const HeaderLeft = memo(() => {
   const deviceName = useDeviceDetailStore((s) => s.deviceDetail?.deviceName)
   const navigate = useNavigate()
 
+  useTitle(`${deviceName ?? '-'} | ${globalConfig.title}`)
+
   return (
     <section className="flex items-center gap-3">
       <IconButton className="text-base" onClick={() => navigate(-1)}>
         <IconBack />
       </IconButton>
-      <h3 className="whitespace-nowrap">{deviceName}</h3>
+      {/* <h3 className="whitespace-nowrap">{deviceName}</h3> */}
     </section>
   )
 })
@@ -168,8 +172,7 @@ const ControlRoomUavHeader: FC = memo(() => {
   const useLW = searchParams.get('useLW')
   const productKey = useDeviceDetailStore((s) => s.productKey)
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
-
-  return (
+  return createPortal(
     <header className="h-7 flex justify-between gap-3 bg-ground-100 px-3 items-center text-sm">
       <HeaderLeft />
       <section className="grow">
@@ -196,7 +199,8 @@ const ControlRoomUavHeader: FC = memo(() => {
       <section>
         <LatestTask deviceId={deviceId} />
       </section>
-    </header>
+    </header>,
+    document.getElementById('app-header-center')!,
   )
 })
 

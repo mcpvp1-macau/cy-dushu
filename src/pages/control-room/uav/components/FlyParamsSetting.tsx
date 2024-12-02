@@ -1,4 +1,3 @@
-import IconClose from '@/assets/icons/jsx/IconClose'
 import IconSetting from '@/assets/icons/jsx/IconSetting'
 import IconTakeoff from '@/assets/icons/jsx/uav/IconTakeoff'
 import Select from '@/components/AntdOverride/Select'
@@ -123,120 +122,103 @@ const FlyParamsSetting: FC<PropsType> = memo(() => {
     form.setFieldValue('targetAltitude', flyParams.targetHeight)
   }, [flyParams.targetHeight])
 
-  if (!flyParams.open) {
-    return null
-  }
+  // if (!flyParams.open) {
+  //   return null
+  // }
 
   return (
-    <div className="absolute top-0 right-[404px] w-[400px] z-50 border border-solid border-ground-250 rounded-[2px]">
-      <header className="flex justify-between items-center h-8 px-3 bg-ground-200">
-        <p className="text-sm">飞行参数设置</p>
-        <IconButton
-          onClick={() => updateFlyParams({ ...flyParams, open: false })}
+    <>
+      <div className="p-3 pb-0">
+        <Form
+          form={form}
+          size="small"
+          labelCol={{
+            span: 12,
+          }}
+          labelAlign="left"
         >
-          <IconClose className="scale-[120%]" />
-        </IconButton>
-      </header>
-      <main
-        className="p-2 bg-ground-140"
-        onKeyDown={(e) => e.stopPropagation()}
-      >
-        <div className="card-border bg-ground-100 p-3 pb-0">
-          <Form
-            form={form}
-            size="small"
-            labelCol={{
-              span: 12,
-            }}
-            labelAlign="left"
-          >
-            <Form.Item label="返航高度 (20 - 1600 m)" name="gohomeAltitude">
-              <InputNumber className="w-full" suffix="m" />
+          <Form.Item label="返航高度 (20 - 1600 m)" name="gohomeAltitude">
+            <InputNumber className="w-full" suffix="m" />
+          </Form.Item>
+          <Form.Item label="返航点" name="gohomePosition">
+            <Input
+              addonAfter={
+                <IconButton
+                  active={flyParams.isResetHome}
+                  className="text-sm scale-90 px-1"
+                  toolTipProps={{ title: '重置返航点(在地图上点击设置)' }}
+                  onClick={() =>
+                    updateFlyParams({
+                      ...flyParams,
+                      isResetHome: !flyParams.isResetHome,
+                    })
+                  }
+                >
+                  <IconSetting />
+                </IconButton>
+              }
+            />
+          </Form.Item>
+          <Form.Item label="避障" name="horizontalAvoidEnable">
+            <Select
+              options={[
+                { label: '开启', value: '1' },
+                { label: '关闭', value: '0' },
+              ]}
+            />
+          </Form.Item>
+          <Form.Item label="失联动作" name="lostAction">
+            <Select
+              options={[
+                { label: '返航', value: '2' },
+                { label: '悬停', value: '0' },
+                { label: '降落', value: '1' },
+              ]}
+            />
+          </Form.Item>
+          {hasDisconnectTimeProps && (
+            <Form.Item label="平台断连触发失联时间" name="disconnectTime">
+              <InputNumber placeholder="请输入" className="w-full" suffix="s" />
             </Form.Item>
-            <Form.Item label="返航点" name="gohomePosition">
-              <Input
-                addonAfter={
-                  <IconButton
-                    active={flyParams.isResetHome}
-                    className="text-sm scale-90 px-1"
-                    toolTipProps={{ title: '重置返航点(在地图上点击设置)' }}
-                    onClick={() =>
-                      updateFlyParams({
-                        ...flyParams,
-                        isResetHome: !flyParams.isResetHome,
-                      })
-                    }
-                  >
-                    <IconSetting />
-                  </IconButton>
+          )}
+          <Form.Item label="飞行速度" name="flySpeed">
+            <InputNumber
+              placeholder="请输入"
+              min={1}
+              max={15}
+              className="w-full"
+              suffix="m/s"
+            />
+          </Form.Item>
+          {openPointFly && (
+            <Form.Item label="目标高度" name="targetAltitude">
+              <InputNumber
+                placeholder="请输入"
+                value={flyParams.targetHeight}
+                min={20}
+                max={1000}
+                className="w-full"
+                suffix="m"
+                onChange={(e) =>
+                  updateFlyParams({ ...flyParams, targetHeight: e ?? 120 })
                 }
               />
             </Form.Item>
-            <Form.Item label="避障" name="horizontalAvoidEnable">
-              <Select
-                options={[
-                  { label: '开启', value: '1' },
-                  { label: '关闭', value: '0' },
-                ]}
-              />
-            </Form.Item>
-            <Form.Item label="失联动作" name="lostAction">
-              <Select
-                options={[
-                  { label: '返航', value: '2' },
-                  { label: '悬停', value: '0' },
-                  { label: '降落', value: '1' },
-                ]}
-              />
-            </Form.Item>
-            {hasDisconnectTimeProps && (
-              <Form.Item label="平台断连触发失联时间" name="disconnectTime">
-                <InputNumber
-                  placeholder="请输入"
-                  className="w-full"
-                  suffix="s"
-                />
-              </Form.Item>
-            )}
-            <Form.Item label="飞行速度" name="flySpeed">
-              <InputNumber
-                placeholder="请输入"
-                min={1}
-                max={15}
-                className="w-full"
-                suffix="m/s"
-              />
-            </Form.Item>
-            {openPointFly && (
-              <Form.Item label="目标高度" name="targetAltitude">
-                <InputNumber
-                  placeholder="请输入"
-                  value={flyParams.targetHeight}
-                  min={20}
-                  max={1000}
-                  className="w-full"
-                  suffix="m"
-                  onChange={(e) =>
-                    updateFlyParams({ ...flyParams, targetHeight: e ?? 120 })
-                  }
-                />
-              </Form.Item>
-            )}
-          </Form>
+          )}
+        </Form>
+      </div>
+      {flyParams.isExecute && (
+        <div className="text-center">
+          <Button
+            className="h-[26px] w-36 mt-2"
+            icon={<IconTakeoff />}
+            onClick={handleTakeoff}
+          >
+            一键起飞
+          </Button>
         </div>
-        {flyParams.isExecute && (
-          <div className="text-center">
-            <Button
-              className="h-[26px] w-36 mt-2"
-              icon={<IconTakeoff />}
-              onClick={handleTakeoff}
-            >
-              一键起飞
-            </Button>
-          </div>
-        )}
-      </main>
-    </div>
+      )}
+    </>
   )
 })
 

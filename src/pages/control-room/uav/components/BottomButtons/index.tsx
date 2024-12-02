@@ -287,7 +287,7 @@ const BottomButtons: FC<PropsType> = memo(() => {
         <Compass />
       </div>
       {/* 避障 */}
-      <div className="absolute top-0 left-1/2 translate-x-[50px]">
+      <div className="absolute top-1/2 translate-y-[-80px] left-1/2 translate-x-[50px]">
         <GimbalService />
       </div>
       {/* 避障 */}

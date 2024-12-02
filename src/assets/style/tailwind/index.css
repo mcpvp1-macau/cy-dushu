@@ -15,6 +15,9 @@
   .card-border {
     @apply border border-solid border-ground-250 rounded-[3px];
   }
+  .abs-center {
+    @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2;
+  }
 }
 
 @layer utilities {

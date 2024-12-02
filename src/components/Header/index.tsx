@@ -28,7 +28,7 @@ const Header: FC<PropsType> = memo(() => {
           <POISearch />
         </div>
       </div>
-      <div></div>
+      <div id="app-header-center"></div>
       {/* 右边 */}
       <div className="text-fore mr-3 flex gap-3">
         <Fullscreen target={document.documentElement} />
