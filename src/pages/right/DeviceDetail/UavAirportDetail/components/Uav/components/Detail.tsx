@@ -27,7 +27,7 @@ const UavAirportUavDetailDetail: FC<PropsType> = memo(({ state }) => {
     <div>
       <section className="mt-3 mx-3">
         <UavFlyInfoCard
-          electric={(state.battery ?? data.properties.battery)?.capacityPercent}
+          electric={state.electricity}
           horizontalSpeed={state.horizontalSpeed}
           height={state.height}
           homeDistance={state.homeDistance}
