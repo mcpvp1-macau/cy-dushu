@@ -71,6 +71,9 @@ const UavAirportUavDetail: FC<PropsType> = memo(({ deviceId }) => {
   useWebSocket(wsUrl, {
     heartbeat,
     reconnectAttempts: 0x3f3f3f3f,
+    retryOnError: true,
+    reconnectInterval: 5_000,
+    shouldReconnect: () => true,
     onMessage: handleMessage,
   })
 

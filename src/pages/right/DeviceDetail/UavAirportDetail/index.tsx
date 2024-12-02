@@ -92,6 +92,9 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
     {
       heartbeat,
       reconnectAttempts: 0x3f3f3f3f,
+      retryOnError: true,
+      reconnectInterval: 5_000,
+      shouldReconnect: () => true,
       onMessage: handleMessage,
     },
   )

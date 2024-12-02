@@ -338,8 +338,8 @@ export const useCreateUavControlRoomStore = (
     wsUrl,
     {
       heartbeat,
-      reconnectAttempts: 0x3f3f3f3f,
       onMessage: handleMessage,
+      reconnectAttempts: 0x3f3f3f3f,
       retryOnError: true,
       reconnectInterval: 5_000,
       shouldReconnect: () => true,
