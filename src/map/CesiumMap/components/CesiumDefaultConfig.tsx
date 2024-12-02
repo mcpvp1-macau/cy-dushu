@@ -54,7 +54,7 @@ const CesiumDefaultConfig: FC<PropsType> = memo(() => {
       return
     }
     viewer.scene.requestRender()
-  }, 100)
+  }, 20)
 
   return null
 })
