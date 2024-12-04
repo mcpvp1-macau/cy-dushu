@@ -15,12 +15,14 @@ import sources from './router/modules/sources'
 import schedule from './router/modules/action-plan'
 import organization from './router/modules/organization'
 import FixedWindowArea from './components/FixedWindowsArea'
+import backtracking from './router/modules/backtracking'
 
 const hidenSet = new Set([
   controlRoom.id,
   sources.id,
   schedule.id,
   organization.id,
+  backtracking.id,
 ])
 
 const App = () => {
