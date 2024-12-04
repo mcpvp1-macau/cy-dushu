@@ -1,5 +1,6 @@
 import { limitNum } from '@/utils/math'
 import { sortSearchFnAsc } from '@/utils/sort'
+import { useSize } from 'ahooks'
 import { Fragment, useLayoutEffect } from 'react'
 
 type PropsType = {
@@ -102,6 +103,7 @@ const ZoomSlider: FC<PropsType> = memo(
     })
 
     const rootRef = useRef<HTMLDivElement>(null)
+    const size = useSize(rootRef)
 
     useLayoutEffect(() => {
       if (!rootRef.current) {
@@ -122,20 +124,23 @@ const ZoomSlider: FC<PropsType> = memo(
           })
           .sort(),
       })
-    }, [items])
+    }, [items, size])
 
     // 计算当前值对应的位置
     const index = sortSearchFnAsc(items, (x) => x.value > value) - 1
     let bottom = 0
-    if (index === items.length - 1) {
-      bottom = positionInfo.bottomPercents.at(-1)!
-    } else if (index >= 0) {
-      const prev = positionInfo.bottomPercents[index]
-      const curr = positionInfo.bottomPercents[index + 1]
-      const diffPercent = curr - prev
-      const diffValue = renderItems[index + 1].value - renderItems[index].value
-      const diff = (value - renderItems[index].value) / diffValue
-      bottom = prev + diffPercent * diff
+    if (positionInfo.rootHeight > 0) {
+      if (index === items.length - 1) {
+        bottom = positionInfo.bottomPercents.at(-1)!
+      } else if (index >= 0) {
+        const prev = positionInfo.bottomPercents[index]
+        const curr = positionInfo.bottomPercents[index + 1]
+        const diffPercent = curr - prev
+        const diffValue =
+          renderItems[index + 1].value - renderItems[index].value
+        const diff = (value - renderItems[index].value) / diffValue
+        bottom = prev + diffPercent * diff
+      }
     }
 
     const handleWheel = useMemoizedFn((e: React.WheelEvent<HTMLDivElement>) => {
@@ -146,7 +151,7 @@ const ZoomSlider: FC<PropsType> = memo(
       <div className="absolute right-0 top-2 bottom-2 left-0 text-sm">
         <div
           ref={rootRef}
-          className="flex flex-col-reverse h-full items-end"
+          className="relative flex flex-col-reverse h-full items-end"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMove}
           onMouseLeave={handleLeaveOrUp}
