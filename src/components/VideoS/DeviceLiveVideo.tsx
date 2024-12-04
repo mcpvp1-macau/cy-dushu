@@ -118,9 +118,9 @@ const DeviceLiveVideo = memo(
 
       const wrapperRef = useRef<HTMLDivElement>(null)
       const [fullScreen, { toggleFullscreen }] = useFullscreen(wrapperRef)
-      const size = useSize(wrapperRef)
 
       const videoBoxRef = useRef<HTMLDivElement>(null)
+      const size = useSize(videoBoxRef)
 
       /** 截图 */
       const snapshot: DeviceLiveVideoRefType['snapshot'] = (
@@ -375,16 +375,18 @@ const DeviceLiveVideo = memo(
                     >
                       <IconRefresh />
                     </IconButton>
-                    <IconButton
-                      className="scale-90"
-                      toolTipProps={{ title: '电子放大' }}
-                      active={!!enableScale}
-                      onClick={() => {
-                        setEnableScale(1 - Math.sign(enableScale))
-                      }}
-                    >
-                      <ExpandOutlined />
-                    </IconButton>
+                    {globalConfig.enableElectricScale && (
+                      <IconButton
+                        className="scale-90"
+                        toolTipProps={{ title: '电子放大' }}
+                        active={!!enableScale}
+                        onClick={() => {
+                          setEnableScale(1 - Math.sign(enableScale))
+                        }}
+                      >
+                        <ExpandOutlined />
+                      </IconButton>
+                    )}
                     <IconButton
                       toolTipProps={{
                         title: !fullScreen ? '全屏' : '退出全屏',
