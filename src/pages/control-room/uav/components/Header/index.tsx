@@ -176,7 +176,7 @@ const ControlRoomUavHeader: FC = memo(() => {
     <header className="h-7 flex justify-between gap-3 bg-ground-100 px-3 items-center text-sm">
       <HeaderLeft />
       <section className="grow">
-        <ul className="flex justify-center gap-3 lg:gap-5 whitespace-nowrap">
+        <ul className="flex justify-center gap-1 xl:gap-3 2xl:gap-5 whitespace-nowrap">
           {useLW && (
             <DeviceLinkSwitch
               productKey={productKey}
