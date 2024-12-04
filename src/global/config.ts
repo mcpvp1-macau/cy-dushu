@@ -14,6 +14,7 @@ export type ConfigType = {
     max: number
   }[]
   logo?: string
+  enableElectricScale?: boolean
 }
 
 type WindowType = Window & { config: ConfigType }
