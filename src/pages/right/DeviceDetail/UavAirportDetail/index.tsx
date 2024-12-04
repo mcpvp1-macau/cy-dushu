@@ -85,19 +85,23 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
     }
   })
 
-  useWebSocket(
-    `${globalConfig.globalWs}://${
-      location.host
-    }/v3/${productKey}/${deviceId}?token=${useUserStore.getState().token}`,
-    {
-      heartbeat,
-      reconnectAttempts: 0x3f3f3f3f,
-      retryOnError: true,
-      reconnectInterval: 5_000,
-      shouldReconnect: () => true,
-      onMessage: handleMessage,
-    },
-  )
+  const token = useUserStore((s) => s.token)
+  const wsUrl = useMemo(() => {
+    if (!productKey || !deviceId || !token) {
+      return null
+    }
+    return `${globalConfig.globalWs}://${location.host}/v3/${productKey}/${deviceId}?token=${token}`
+    // return `/proxyWsApi/otherWsService/${globalConfig.systemName}/controlServer/v3/${productKey}/${deviceId}?token=${token}`
+  }, [productKey, deviceId, token])
+
+  useWebSocket(wsUrl, {
+    heartbeat,
+    reconnectAttempts: 0x3f3f3f3f,
+    retryOnError: true,
+    reconnectInterval: 5_000,
+    shouldReconnect: () => true,
+    onMessage: handleMessage,
+  })
 
   /** 降雨量 */
   const rainfall = useMemo(
@@ -150,7 +154,12 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
                   <HealthInfoList data={state.healthInfo} />
                 )}
               >
-                <InfoCircleOutlined className="text-yellow-600" />
+                <InfoCircleOutlined
+                  className={clsx('text-yellow-600', {
+                    'text-red-600': state.healthInfo[0]?.startsWith?.('Error'),
+                    'text-blue-600': state.healthInfo[0]?.startsWith?.('Info'),
+                  })}
+                />
               </Dropdown>
             )}
           </div>
@@ -214,6 +223,9 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
       )}
       {takeOffOpen && (
         <FormModal
+          initialValues={{
+            height: 100,
+          }}
           title="相对起飞 (m)"
           open={takeOffOpen}
           items={items}
