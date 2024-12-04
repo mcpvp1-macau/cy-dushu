@@ -75,7 +75,13 @@ const UploadAirlineTemplte: FC<PropsType> = memo(() => {
       file,
       !!data.isThird?.includes(true),
     )
-    msgApi.success('上传成功')
+
+    if (data.isThird?.includes(true)) {
+      msgApi.warning('上传成功: 上传第三方航线，请检查后再飞行!')
+    } else {
+      msgApi.success('上传成功')
+    }
+
     setFalse()
     queryClient.invalidateQueries({
       queryKey: ['airlineTemplates'],
