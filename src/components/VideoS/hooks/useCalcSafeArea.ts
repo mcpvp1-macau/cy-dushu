@@ -24,7 +24,7 @@ const useCalcSafeArea = (key: any) => {
       setSafeY([top, bottom])
     },
     [key],
-    { wait: 200, leading: true },
+    { wait: 200, trailing: true },
   )
   return { safeY, topBar, bottomBar, videoWrapper }
 }
