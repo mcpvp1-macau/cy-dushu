@@ -58,6 +58,11 @@ type StateType = {
   airpointPositionsAR: number[][]
   /** 覆盖物 AR */
   overlaiesAR: number[][][]
+
+  /** ====== 3D 虚实融合 ====== */
+  roads: API_GEO_SERACH.domain.Road[]
+  aois: API_GEO_SERACH.domain.AOI[]
+  pois: API_GEO_SERACH.domain.POI[]
 }
 
 type ActionsType = {
@@ -78,6 +83,10 @@ type ActionsType = {
     airpointPositionsAR: StateType['airpointPositionsAR'],
   ) => void
   updateOverlaiesAR: (overlaiesAR: StateType['overlaiesAR']) => void
+  /** ====== 3D 虚实融合 ====== */
+  updateRoads: (roads: StateType['roads']) => void
+  updateAOIs: (aois: StateType['aois']) => void
+  updatePOIs: (pois: StateType['pois']) => void
 }
 
 /** 虚实融合 */
@@ -102,6 +111,9 @@ const useMixARStore = create<StateType & ActionsType>()(
       airpointPositions: [],
       airpointPositionsAR: [],
       overlaiesAR: [],
+      roads: [],
+      aois: [],
+      pois: [],
       updateEnable: (enable) => {
         set({ enable, arData: [], features: [] }, false, 'updateEnable')
       },
@@ -142,6 +154,15 @@ const useMixARStore = create<StateType & ActionsType>()(
       },
       updateOverlaiesAR: (overlaiesAR) => {
         set({ overlaiesAR }, false, 'updateOverlaiesAR')
+      },
+      updateRoads: (roads) => {
+        set({ roads }, false, 'updateRoads')
+      },
+      updateAOIs: (aois) => {
+        set({ aois }, false, 'updateAOIs')
+      },
+      updatePOIs: (pois) => {
+        set({ pois }, false, 'updatePOIs')
       },
     }),
     {

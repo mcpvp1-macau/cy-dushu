@@ -6,8 +6,8 @@ import { useSearchParams } from 'react-router-dom'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import useMixARStore from '@/store/control-room/useMixAR.store'
-import MixARCanvas from './MixARCanvas'
 import Avoidance from './components/Avoidance'
+import ARScene from './components/ARScene'
 
 type PropsType = {
   onAspectRatioChange?: (aspectRatio: number) => void
@@ -61,7 +61,12 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
           <>
             <LaserRanging />
             <PositionZoom />
-            {enableAR && <MixARCanvas />}
+            {/* {enableAR && <MixARCanvas />} */}
+            {enableAR && (
+              <div className="asolute inset-0">
+                <ARScene />
+              </div>
+            )}
           </>
         }
         videoSafeAreaChildren={<Avoidance />}
