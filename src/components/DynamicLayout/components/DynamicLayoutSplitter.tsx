@@ -29,10 +29,29 @@ const DynamicLayoutSplitter: FC<PropsType> = memo(
 
       const gapSize = (layout.length - 1) * 8
       const totalSize = sz - gapSize
+
+      // 决定是否使用默认大小
       const useSizes = sizes.length ? sizes : layout.map((e) => e.size)
       const totalWeight = useSizes.reduce((acc, e) => acc + e, 0)
-
-      const newSizes = useSizes.map((e) => (e / totalWeight) * totalSize)
+      let totWeight2 = 0
+      const newSizes = new Array(layout.length).fill(0)
+      let minCnt = 0
+      // 先处理小于最小值的情况
+      for (let i = 0; i < useSizes.length; i++) {
+        if ((useSizes[i] / totalWeight) * totalSize < MIN_SIZE) {
+          newSizes[i] = MIN_SIZE
+          minCnt++
+        } else {
+          totWeight2 += useSizes[i]
+        }
+      }
+      // 处理剩下的空间
+      const restSize = totalSize - minCnt * MIN_SIZE
+      for (let i = 0; i < newSizes.length; i++) {
+        if (newSizes[i] === 0) {
+          newSizes[i] = (useSizes[i] / totWeight2) * restSize
+        }
+      }
 
       setCollapses(newSizes.map((e) => e <= MIN_SIZE))
       setSizes(newSizes)

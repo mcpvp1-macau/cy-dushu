@@ -25,8 +25,6 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ tabs }) => {
   const isHidden = w <= 64 || h <= 64
   const isVertical = w <= MIN_SIZE
 
-  console.log(isHidden)
-
   return (
     <div
       ref={containerRef}

@@ -55,7 +55,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       size: 1,
       children: [
         {
-          size: 2,
+          size: 4,
           type: 'col',
           children: [
             {
@@ -69,22 +69,6 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
                 },
               ],
             },
-            {
-              size: 1,
-              tabs: [
-                {
-                  key: 'flyButtons',
-                  title: '操作',
-                  icon: <DeviceIconUAV2 className="text-purple-600" />,
-                  children: (
-                    <>
-                      <AsideToolBar />
-                      <AsideButtons />
-                    </>
-                  ),
-                },
-              ],
-            },
           ],
         },
         {
@@ -92,7 +76,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
           type: 'col',
           children: [
             {
-              size: 2,
+              size: 3,
               tabs: [
                 {
                   key: 'video',
@@ -117,7 +101,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
               type: 'row',
               children: [
                 {
-                  size: 4,
+                  size: 3,
                   tabs: [
                     {
                       key: 'flyParams',
@@ -135,6 +119,17 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
                   size: 3,
                   tabs: [
                     {
+                      key: 'flyButtons',
+                      title: '操作',
+                      icon: <DeviceIconUAV2 className="text-purple-600" />,
+                      children: (
+                        <>
+                          <AsideToolBar />
+                          <AsideButtons />
+                        </>
+                      ),
+                    },
+                    {
                       key: 'flyParamsSetting',
                       title: '飞行参数',
                       icon: <FormOutlined className="text-emerald-600" />,
@@ -147,7 +142,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
           ],
         },
         {
-          size: 2,
+          size: 0,
           tabs: [
             {
               title: 'AI 算法',
