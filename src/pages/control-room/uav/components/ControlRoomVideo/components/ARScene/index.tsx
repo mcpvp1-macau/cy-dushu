@@ -1,4 +1,3 @@
-import { memo, type FC } from 'react'
 import { Viewer } from 'resium'
 import ARSceneConfig from './Config'
 import ARSceneCamera from './Camera'
@@ -7,7 +6,10 @@ import ARSceneRoads from './roads/Roads'
 import ARSceneAOIs from './aois'
 import ARScenePOIs from './pois'
 import ARSceneBanAreas from './ban-fly-area'
-import UavARSceneAirline from './airline'
+import ARSceneUavAirline from './airline'
+import ARSceneHomePoint from './HomePoint'
+import ARScenePointFly from './PointFly'
+import ARSceneUavTracks from './RealTrack'
 
 type PropsType = unknown
 
@@ -43,8 +45,11 @@ const ARScene: FC<PropsType> = memo(() => {
       <ARSceneRoads />
       <ARSceneAOIs />
       <ARScenePOIs />
-      <UavARSceneAirline />
+      <ARSceneUavAirline />
       <ARSceneBanAreas />
+      <ARSceneHomePoint />
+      <ARScenePointFly />
+      <ARSceneUavTracks />
       {/* <LayerOverlaies /> */}
     </Viewer>
   )

@@ -12,7 +12,7 @@ import { wgs84ToDrawingBufferCoordinates } from '@/utils/cesium/sence-transform'
 
 type PropsType = {
   /** [lng, lat] */
-  position: [number, number]
+  position: number[]
   /** 永远保持在视口内 */
   alwayInViewport?: boolean
   children?: ReactNode
@@ -34,7 +34,11 @@ const PositionTooltip: FC<PropsType> = memo(
         if (!viewer?.scene) {
           return
         }
-        const catesian = Cesium.Cartesian3.fromDegrees(position[0], position[1])
+        const catesian = Cesium.Cartesian3.fromDegrees(
+          position[0],
+          position[1],
+          position[2] ?? 0,
+        )
         const screenPostion = wgs84ToDrawingBufferCoordinates(
           viewer.scene,
           catesian,

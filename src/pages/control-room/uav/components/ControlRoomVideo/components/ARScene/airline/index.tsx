@@ -4,7 +4,7 @@ import useMixARStore from '@/store/control-room/useMixAR.store'
 
 type PropsType = unknown
 
-const UavARSceneAirline: FC<PropsType> = memo(() => {
+const ARSceneUavAirline: FC<PropsType> = memo(() => {
   const airpointPositions = useMixARStore((s) => s.airpointPositions)
 
   return (
@@ -14,6 +14,6 @@ const UavARSceneAirline: FC<PropsType> = memo(() => {
   )
 })
 
-UavARSceneAirline.displayName = 'UavARSceneAirline'
+ARSceneUavAirline.displayName = 'ARSceneUavAirline'
 
-export default UavARSceneAirline
+export default ARSceneUavAirline

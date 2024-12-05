@@ -18,6 +18,9 @@ const useRealTrack = (lon?: number, lat?: number) => {
     if (isNil(lon) || isNil(lat)) {
       return
     }
+    if (lon === 0 && lat === 0) {
+      return
+    }
     if (realTrackLastest.current.length === 0) {
       setRealTrack([{ lon: lon, lat }])
       return

@@ -31,6 +31,7 @@ import DeviceAlgorithmList from '@/components/device/algorithm/DeviceAlgorithmLi
 import { DeviceEnum } from '@/enum/device'
 import IconData from '@/assets/icons/jsx/IconData'
 import UavDetailData from '@/pages/right/DeviceDetail/UavDetail/components/UavDetailData'
+import StateResolver from './components/StateResolver'
 
 type PropsType = unknown
 
@@ -178,6 +179,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
   return (
     <DeviceDetailStoreContext.Provider value={store}>
       <UavControlRoomStoreContext.Provider value={controlRoomStore}>
+        <StateResolver />
         <div className="page-full flex flex-col">
           <ControlRoomUavHeader />
           <main className="grow w-full relative overflow-hidden">

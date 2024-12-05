@@ -6,7 +6,6 @@ type PropsType = unknown
 
 const ARSceneAOIs: FC<PropsType> = memo(() => {
   const aois = useMixARStore((s) => s.aois)
-  console.log('aois', aois)
 
   return (
     <>
