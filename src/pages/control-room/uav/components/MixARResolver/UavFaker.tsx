@@ -373,7 +373,6 @@ const UavFaker: FC<PropsType> = memo(() => {
     const positionsAR: number[][][] = []
     for (const overlay of overlayList) {
       if (overlay.overlayType === 'POLYGON') {
-        console.log('first', overlayList.length)
         const positions: number[][] = []
         const overlayPositions = shouldJson(overlay.overlayPositions)
         if (!overlayPositions) {
