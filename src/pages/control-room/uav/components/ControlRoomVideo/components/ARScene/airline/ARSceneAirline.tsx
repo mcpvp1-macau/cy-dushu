@@ -7,6 +7,7 @@ import {
 } from 'resium'
 import * as Cesium from 'cesium'
 import { attempt } from 'lodash'
+import { Fragment } from 'react'
 
 type PropsType = {
   data: number[][]
@@ -58,7 +59,7 @@ const ARSceneAirline: FC<PropsType> = memo(({ data }) => {
       <LabelCollection>
         {data.map((item, index) => {
           return (
-            <>
+            <Fragment key={index}>
               <Billboard
                 key={`billboard-${index}`}
                 position={Cesium.Cartesian3.fromDegrees(
@@ -88,7 +89,7 @@ const ARSceneAirline: FC<PropsType> = memo(({ data }) => {
                 verticalOrigin={Cesium.VerticalOrigin.CENTER}
                 style={Cesium.LabelStyle.FILL_AND_OUTLINE}
               />
-            </>
+            </Fragment>
           )
         })}
       </LabelCollection>

@@ -1,6 +1,7 @@
 import { useSize } from 'ahooks'
 import { DynamicLayout, DynamicLayoutType } from '..'
 import SplitBar from './SplitBar'
+import { Fragment } from 'react'
 
 type PropsType = {
   mode?: 'vertical' | 'horizontal'
@@ -89,7 +90,7 @@ const DynamicLayoutSplitter: FC<PropsType> = memo(
         })}
       >
         {layout.map((e, i) => (
-          <>
+          <Fragment key={i}>
             {i > 0 && (
               <SplitBar
                 vertical={mode === 'vertical'}
@@ -118,7 +119,7 @@ const DynamicLayoutSplitter: FC<PropsType> = memo(
                 vertical={mode === 'vertical'}
               />
             </div>
-          </>
+          </Fragment>
         ))}
       </div>
     )
