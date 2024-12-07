@@ -1,14 +1,28 @@
-import { memo, type FC } from 'react'
+import { memo, ReactNode, type FC } from 'react'
 import DynamicLayoutSplitter from './components/DynamicLayoutSplitter'
 import DynamicLayoutTabs, {
   DynamicLayoutTabsType,
 } from './components/DynamicLayoutTabs'
+import {
+  createDynamicLayoutStore,
+  DynamicLayoutStore,
+  DynamicLayoutStoreContext,
+} from './store/useDynamicLayout.store'
+import RenderBox from './components/RenderBox'
 
 export type DynamicLayoutType = {
+  /** 占用大小 */
   size: number
+  /** 是否收起 */
+  isCollapsed?: boolean
+  /** 是否全屏 */
+  isFull?: boolean
 } & (
   | {
-      tabs: DynamicLayoutTabsType
+      type: 'tabs'
+      // tabs: DynamicLayoutTabsType
+      activeKey?: string
+      children: DynamicLayoutTabsType
     }
   | {
       type: 'row' | 'col'
@@ -16,24 +30,36 @@ export type DynamicLayoutType = {
     }
 )
 
-type PropsType = {
-  vertical?: boolean
-  collapse?: boolean
-  layout: DynamicLayoutType
-}
-
 /** 灵动布局 */
-const DynamicLayout: FC<PropsType> = memo(({ collapse, layout }) => {
-  if ('tabs' in layout) {
-    return <DynamicLayoutTabs tabs={layout.tabs} />
-  }
+const DynamicLayout: FC<{
+  layout: DynamicLayoutType
+  onLayoutChange: (layout: DynamicLayoutType) => void
+}> = memo(({ layout, onLayoutChange }) => {
+  /** 处理改变 */
+  const handleChane = useMemoizedFn((layout: DynamicLayoutType) => {
+    if (layout.type === 'row' || layout.type === 'col') {
+      let allCollapsed = true
+      for (const e of layout.children) {
+        if (!e.isCollapsed) {
+          allCollapsed = false
+          break
+        }
+      }
+      if (allCollapsed) {
+        layout.children[0].isCollapsed = false
+        layout.children[0].size = 350
+      }
+    }
+    onLayoutChange(layout)
+  })
+
   return (
-    <div className="size-full">
-      <DynamicLayoutSplitter
-        mode={layout.type === 'col' ? 'vertical' : 'horizontal'}
-        layout={layout.children}
-        collapse={collapse}
-      />
+    <div className="size-full rounded overflow-hidden">
+      {layout.type === 'tabs' ? (
+        <DynamicLayoutTabs layout={layout} onLayoutChange={handleChane} />
+      ) : (
+        <DynamicLayoutSplitter layout={layout} onLayoutChange={handleChane} />
+      )}
     </div>
   )
 })
@@ -42,28 +68,40 @@ DynamicLayout.displayName = 'DynamicLayout'
 
 export { DynamicLayout }
 
-/** 动态布局 */
-const DynamicLayoutRoot: FC<PropsType> = memo(({ layout }) => {
-  useEffect(() => {
-    console.log('first')
-  }, [layout])
+type PropsType = {
+  layout: DynamicLayoutType
+  onLayoutChange: (layout: DynamicLayoutType) => void
+  componentMap?: Record<string, ReactNode>
+  iconMap?: Record<string, ReactNode>
+}
 
-  if ('tabs' in layout) {
+/** 动态布局 */
+const DynamicLayoutRoot: FC<PropsType> = memo(
+  ({ layout, iconMap, componentMap, onLayoutChange }) => {
+    const store = useRef<DynamicLayoutStore | null>(null)
+
+    if (!store.current) {
+      store.current = createDynamicLayoutStore()
+    }
+
+    useEffect(() => {
+      if (iconMap) {
+        store.current?.getState().updateIconMap(iconMap || {})
+      }
+    }, [iconMap])
+
     return (
-      <div className="p-2 size-full">
-        <DynamicLayoutTabs tabs={layout.tabs} />
-      </div>
+      <DynamicLayoutStoreContext.Provider value={store.current}>
+        <div className="size-full p-2">
+          <DynamicLayout layout={layout} onLayoutChange={onLayoutChange} />
+          {componentMap && (
+            <RenderBox componentMap={componentMap} layout={layout} />
+          )}
+        </div>
+      </DynamicLayoutStoreContext.Provider>
     )
-  }
-  return (
-    <div className="p-2 size-full">
-      <DynamicLayoutSplitter
-        mode={layout.type === 'col' ? 'vertical' : 'horizontal'}
-        layout={layout.children}
-      />
-    </div>
-  )
-})
+  },
+)
 
 DynamicLayoutRoot.displayName = 'DynamicLayoutRoot'
 

@@ -6,7 +6,6 @@ import IconPointFly from '@/assets/icons/jsx/uav/IconPointFly'
 import IconReturnBase from '@/assets/icons/jsx/uav/IconReturnBase'
 import IconLanding from '@/assets/icons/jsx/uav/IconLanding'
 import IconBoxSelect from '@/assets/icons/jsx/uav/IconBoxSelect'
-import { SettingOutlined } from '@ant-design/icons'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import IconStopCircle from '@/assets/icons/jsx/IconStopCircle'
@@ -35,8 +34,6 @@ const AsideButtons: FC<PropsType> = memo(() => {
 
   const canAutoland =
     !isLimitedFly && hasControlPower && serviceHave['autoland']
-
-  const canSetFlyParams = hasControlPower
 
   const openPointZoom = useUavControlRoomStore((s) => s.openPointZoom)
   const updateOpenPointZoom = useUavControlRoomStore(
@@ -71,14 +68,6 @@ const AsideButtons: FC<PropsType> = memo(() => {
           框选
         </Button>
         <IntelligentPhotography postServiceFn={postSerivce} />
-        <Button
-          className="grow h-[26px] px-0"
-          disabled={!canSetFlyParams}
-          icon={<SettingOutlined />}
-          onClick={() => updateFlyParamsOpen(true)}
-        >
-          飞行参数
-        </Button>
         <Gamepad />
       </div>
       <div className="flex justify-between gap-2.5">

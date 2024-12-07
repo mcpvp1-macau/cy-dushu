@@ -1,15 +1,17 @@
 type PropsType = {
+  index: number
   vertical?: boolean
-  onStartResize?: (offsetX: number, offsetY: number) => void
+  onStartResize?: (offsetX: number, offsetY: number, index: number) => void
   onResize?: (offsetX: number, offsetY: number) => void
+  onSizeEnd?: () => void
 }
 
 const SplitBar: FC<PropsType> = memo(
-  ({ vertical, onStartResize, onResize }) => {
+  ({ vertical, index, onStartResize, onResize, onSizeEnd }) => {
     const [dragging, { setTrue, setFalse }] = useBoolean(false)
 
     const handleDown = (e: React.MouseEvent) => {
-      onStartResize?.(e.clientX, e.clientY)
+      onStartResize?.(e.clientX, e.clientY, index)
       setTrue()
     }
 
@@ -26,6 +28,7 @@ const SplitBar: FC<PropsType> = memo(
         setFalse()
         window.document.body.style.cursor = ''
         window.document.body.style.userSelect = ''
+        onSizeEnd?.()
       }
       window.addEventListener('mousemove', moveHandler)
       window.addEventListener('mouseup', mouseupHandler)
@@ -38,10 +41,13 @@ const SplitBar: FC<PropsType> = memo(
 
     return (
       <div
-        className={clsx('group bg-ground-140 relative', {
-          'h-full w-2 cursor-ew-resize': !vertical,
-          'w-full h-2 cursor-ns-resize': vertical,
-        })}
+        className={clsx(
+          'group bg-ground-140 relative flex-shrink-0 flex-grow-0',
+          {
+            'h-full w-2 cursor-ew-resize': !vertical,
+            'w-full h-2 cursor-ns-resize': vertical,
+          },
+        )}
         onMouseDown={handleDown}
       >
         <div
