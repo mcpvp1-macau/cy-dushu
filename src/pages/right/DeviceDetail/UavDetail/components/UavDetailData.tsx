@@ -4,6 +4,7 @@ import { memo, type FC } from 'react'
 import LinkSwitch from '@/components/LinkSwitch'
 import DeviceDetailMediaData, { MediaType } from '../../components/MediaData'
 import usePrevDayHisTrack from '../hooks/usePrevDayHisTrack'
+import AppEmpty from '@/components/AppEmpty'
 
 type PropsType = {}
 
@@ -40,7 +41,7 @@ const UavDetailData: FC<PropsType> = memo(() => {
           },
           {
             label: '检测数据',
-            children: <div>检测数据</div>,
+            children: <AppEmpty />,
           },
         ]}
       />
