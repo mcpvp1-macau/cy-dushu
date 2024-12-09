@@ -1,3 +1,5 @@
+import AppSpin from '@/components/AppSpin'
+import { useAsyncEffect } from 'ahooks'
 import { forwardRef, useImperativeHandle } from 'react'
 
 export type VideoInfoEvent = {
@@ -64,7 +66,12 @@ const CyberPlayer = memo(
       on: (event, callback) => playerRef.current?.on(event, callback),
     }))
 
+    const [loaded, setLoaded] = useState(!!window?.cyberplayer)
+
     useEffect(() => {
+      if (!loaded) {
+        return
+      }
       const player = window.cyberplayer('cyber-player').setup({
         title: 'h265点播播放',
         width: '100%',
@@ -91,7 +98,23 @@ const CyberPlayer = memo(
         playerRef.current?.remove()
         clearTimeout(playTimer.current!)
       }
-    }, [props.src])
+    }, [props.src, loaded])
+
+    useAsyncEffect(async () => {
+      if (loaded) {
+        return
+      }
+      try {
+        await loadCyberPlayer()
+        setLoaded(true)
+      } catch (e) {
+        console.error('load cyberplayer failed')
+      }
+    }, [])
+
+    if (!loaded) {
+      return <AppSpin />
+    }
 
     return <div id="cyber-player" />
   }),
@@ -100,3 +123,24 @@ const CyberPlayer = memo(
 CyberPlayer.displayName = 'CyberPlayer'
 
 export default CyberPlayer
+
+// 加载 cyberplayer
+const loadCyberPlayer = async () => {
+  return new Promise<void>((resolve, reject) => {
+    if (window.cyberplayer) {
+      resolve()
+      return
+    }
+    const script = document.createElement('script')
+    script.src = '/js/cyberplayer/cyberplayer.js'
+    document.body.appendChild(script)
+    script.onload = () => {
+      script.remove()
+      resolve()
+    }
+    script.onerror = () => {
+      script.remove()
+      reject('load cyberplayer failed')
+    }
+  })
+}
