@@ -23,7 +23,7 @@ const SeiAIData: FC<PropsType> = memo(({ data }) => {
           }}
         >
           <p className="w-full bg-green-600 text-center text-xs group-hover:bg-red-600 text-white transition-colors duration-300">
-            {item.objectLabel}
+            {item.objectLabel}({item.objectId})
           </p>
         </div>
       ))}
