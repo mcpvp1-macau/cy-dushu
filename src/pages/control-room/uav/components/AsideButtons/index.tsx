@@ -1,7 +1,6 @@
 import { Button } from 'antd'
 import ControlPower from './ControlPower'
 import VerticalIconButton from '@/components/ui/button/VerticalButton.tsx'
-import IconTakeoff from '@/assets/icons/jsx/uav/IconTakeoff'
 import IconPointFly from '@/assets/icons/jsx/uav/IconPointFly'
 import IconReturnBase from '@/assets/icons/jsx/uav/IconReturnBase'
 import IconLanding from '@/assets/icons/jsx/uav/IconLanding'
@@ -12,6 +11,7 @@ import IconStopCircle from '@/assets/icons/jsx/IconStopCircle'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import IntelligentPhotography from './IntelligentPhotograph'
 import Gamepad from './Gamepad'
+import Takeoff from './Takeoff'
 
 type PropsType = unknown
 
@@ -22,8 +22,6 @@ const AsideButtons: FC<PropsType> = memo(() => {
 
   const canBoxSelect =
     !isLimitedFly && hasControlPower && serviceHave['gimbalToPoint']
-
-  const canTakeoff = !isLimitedFly && hasControlPower && serviceHave['takeoff']
 
   const canPointFly =
     !isLimitedFly && hasControlPower && serviceHave['gotoPosition']
@@ -71,14 +69,7 @@ const AsideButtons: FC<PropsType> = memo(() => {
         <Gamepad />
       </div>
       <div className="flex justify-between gap-2.5">
-        <VerticalIconButton
-          className="flex-1 h-10 p-0 text-xs"
-          disabled={!canTakeoff}
-          icon={<IconTakeoff className="text-base" />}
-          onClick={() => updateFlyParamsOpen(true, true)}
-        >
-          一键起飞
-        </VerticalIconButton>
+        <Takeoff postServiceFn={postSerivce} />
         <VerticalIconButton
           className={clsx('flex-1 h-10 p-0 text-xs', {
             'text-primary': openPointFly,

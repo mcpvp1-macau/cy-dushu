@@ -1,6 +1,6 @@
 import PositionTooltip from '@/components/map/PostionTooltip'
+import FormModal from '@/components/XForm/Modal'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
-import { useAppMsg } from '@/hooks/useAppMsg'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { getSpaceDistance } from '@/utils/geo-math'
@@ -15,7 +15,6 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
   const uavLon = useUavControlRoomStore((s) => s.state.longitude)
   const uavLat = useUavControlRoomStore((s) => s.state.latitude)
   const speed = useUavControlRoomStore((s) => s.flyParams.flySpeed)
-  const height = useUavControlRoomStore((s) => s.flyParams.targetHeight)
 
   const updatePointFly = useUavControlRoomStore((s) => s.updatePointFly)
 
@@ -35,22 +34,21 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
   const productKey = useDeviceDetailStore((s) => s.productKey)
   const postService = usePostDeviceService(productKey, deviceId)
 
-  const msgApi = useAppMsg()
-  const handleConfirm = async () => {
-    if (!height) {
-      msgApi.error('请设置飞行目标高度')
-      return
+  const [
+    paramsOpen,
+    { setTrue: setParamsOpenTrue, setFalse: setParamsOpenFalse },
+  ] = useBoolean(false)
+
+  const handleConfirm = async (data) => {
+    try {
+      await postService('gotoPosition', {
+        longitude: position[0],
+        latitude: position[1],
+        ...data,
+      })
+    } finally {
+      setParamsOpenFalse()
     }
-    await postService('gotoPosition', {
-      longitude: position[0],
-      latitude: position[1],
-      height,
-      speed,
-    })
-    updatePointFly({
-      open: false,
-      targetPosition: null,
-    })
   }
 
   return (
@@ -83,12 +81,39 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
             >
               取消
             </Button>
-            <Button size="small" type="primary" onClick={handleConfirm}>
-              开始执行
+            <Button size="small" type="primary" onClick={setParamsOpenTrue}>
+              指点飞行
             </Button>
           </p>
         </div>
       </PositionTooltip>
+      {paramsOpen && (
+        <FormModal
+          title="指点飞行"
+          initialValues={{
+            height: 200,
+            speed: 10,
+          }}
+          items={[
+            {
+              label: '目标高度',
+              name: 'height',
+              type: 'input-number',
+              rules: [{ required: true, message: '请输入目标高度' }],
+              otherProps: { addonAfter: 'm' },
+            },
+            {
+              label: '飞行速度',
+              name: 'speed',
+              type: 'input-number',
+              rules: [{ required: true, message: '请输入飞行速度' }],
+              otherProps: { addonAfter: 'm/s', max: 15, min: 1 },
+            },
+          ]}
+          onClose={setParamsOpenFalse}
+          onConfirm={handleConfirm}
+        />
+      )}
     </>
   )
 })
