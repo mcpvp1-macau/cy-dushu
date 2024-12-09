@@ -33,7 +33,7 @@ import IconData from '@/assets/icons/jsx/IconData'
 import UavDetailData from '@/pages/right/DeviceDetail/UavDetail/components/UavDetailData'
 import StateResolver from './components/StateResolver'
 import DynamicLayoutRoot from '@/components/DynamicLayout'
-import { useLocalStorageState, useThrottleEffect } from 'ahooks'
+import { useLocalStorageState } from 'ahooks'
 
 type PropsType = unknown
 
@@ -135,15 +135,57 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
     { defaultValue: initialLayout },
   )
 
-  useThrottleEffect(
-    () => {
-      console.log(layout)
-    },
-    [layout],
-    {
-      trailing: true,
-      wait: 1000,
-    },
+  const iconMap = useMemo(
+    () => ({
+      map: <IconMap className="text-blue-500" />,
+      video: <IconCameraVideo className="text-blue-500" />,
+      flyParams: <IconGamepad className="text-orange-500" />,
+      flyButtons: <DeviceIconUAV2 className="text-purple-500" />,
+      flyParamsSetting: <FormOutlined className="text-emerald-500" />,
+      'ai-list': <IconAISwitch className="text-violet-500" />,
+      'device-data': <IconData className="text-emerald-500" />,
+    }),
+    [],
+  )
+
+  const componentMap = useMemo(
+    () => ({
+      map: <ControlRoomUavMap />,
+      video: (
+        <div className="size-full relative">
+          <ControlRoomVideo />
+          <aside className="absolute top-3 left-3 flex gap-3 items-center z-50">
+            <ControlRoomUavCameraSwitch />
+            <FallbackMessage />
+          </aside>
+          <GimbalSwitch />
+          <Zoom />
+        </div>
+      ),
+      flyParams: (
+        <div className="absolute inset-0 flex justify-center scale-90">
+          <BottomButtons />
+        </div>
+      ),
+      flyParamsSetting: <FlyParamsSetting />,
+      ['device-data']: <UavDetailData />,
+      flyButtons: (
+        <>
+          <AsideToolBar />
+          <AsideButtons />
+        </>
+      ),
+      ['ai-list']: (
+        <div className="text-sm">
+          <DeviceAlgorithmList
+            productKey={productKey}
+            deviceId={deviceId}
+            deviceType={DeviceEnum.UAV}
+          />
+        </div>
+      ),
+    }),
+    [productKey, deviceId],
   )
 
   return (
@@ -156,51 +198,8 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
             <DynamicLayoutRoot
               layout={layout!}
               onLayoutChange={setLayout}
-              iconMap={{
-                map: <IconMap className="text-blue-500" />,
-                video: <IconCameraVideo className="text-blue-500" />,
-                flyParams: <IconGamepad className="text-orange-500" />,
-                flyButtons: <DeviceIconUAV2 className="text-purple-500" />,
-                flyParamsSetting: <FormOutlined className="text-emerald-500" />,
-                'ai-list': <IconAISwitch className="text-violet-500" />,
-                'device-data': <IconData className="text-emerald-500" />,
-              }}
-              componentMap={{
-                map: <ControlRoomUavMap />,
-                video: (
-                  <div className="size-full relative">
-                    <ControlRoomVideo />
-                    <aside className="absolute top-3 left-3 flex gap-3 items-center z-50">
-                      <ControlRoomUavCameraSwitch />
-                      <FallbackMessage />
-                    </aside>
-                    <GimbalSwitch />
-                    <Zoom />
-                  </div>
-                ),
-                flyParams: (
-                  <div className="absolute inset-0 flex justify-center scale-90">
-                    <BottomButtons />
-                  </div>
-                ),
-                flyParamsSetting: <FlyParamsSetting />,
-                ['device-data']: <UavDetailData />,
-                flyButtons: (
-                  <>
-                    <AsideToolBar />
-                    <AsideButtons />
-                  </>
-                ),
-                ['ai-list']: (
-                  <div className="text-sm">
-                    <DeviceAlgorithmList
-                      productKey={productKey}
-                      deviceId={deviceId}
-                      deviceType={DeviceEnum.UAV}
-                    />
-                  </div>
-                ),
-              }}
+              iconMap={iconMap}
+              componentMap={componentMap}
             />
           </main>
         </div>

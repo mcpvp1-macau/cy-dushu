@@ -90,12 +90,37 @@ const DynamicLayoutRoot: FC<PropsType> = memo(
       }
     }, [iconMap])
 
+    // 计算全屏 Tabs 的路径
+    const fullTabsPath = useMemo(() => {
+      const dfs = (layout: DynamicLayoutType, path: string) => {
+        let res = ''
+        if (layout.type === 'tabs') {
+          if (layout.isFull) {
+            return path
+          }
+        } else {
+          for (let i = 0; i < layout.children.length; i++) {
+            res =
+              res ||
+              dfs(layout.children[i], `${path}${path ? '.' : ''}children[${i}]`)
+          }
+        }
+        return res
+      }
+      return dfs(layout, '')
+    }, [layout])
+
     return (
       <DynamicLayoutStoreContext.Provider value={store.current}>
-        <div className="size-full p-2">
+        <div className="relative size-full p-2">
           <DynamicLayout layout={layout} onLayoutChange={onLayoutChange} />
           {componentMap && (
-            <RenderBox componentMap={componentMap} layout={layout} />
+            <RenderBox
+              componentMap={componentMap}
+              layout={layout}
+              fullTabsPath={fullTabsPath}
+              onLayoutChange={onLayoutChange}
+            />
           )}
         </div>
       </DynamicLayoutStoreContext.Provider>

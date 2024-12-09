@@ -103,10 +103,12 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
                     },
                   )}
                   onClick={() => {
-                    onLayoutChange?.({ ...layout, activeKey: e.key })
-                    if (layout.isCollapsed) {
-                      handleCollapseToggle()
-                    }
+                    onLayoutChange?.({
+                      ...layout,
+                      activeKey: e.key,
+                      isCollapsed: false,
+                      size: layout.isCollapsed ? 350 : layout.size,
+                    })
                   }}
                 >
                   <i
@@ -124,6 +126,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
           </ul>
           {!isVertical && <ScrollBar orientation="horizontal"></ScrollBar>}
         </ScrollArea>
+        {/* 右侧小按钮 */}
         <div
           className={clsx(
             'text-sm hidden group-hover:flex gap-2 animate-in fade-in duration-500 items-center text-ground-300',
