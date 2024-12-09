@@ -34,6 +34,7 @@ import UavDetailData from '@/pages/right/DeviceDetail/UavDetail/components/UavDe
 import StateResolver from './components/StateResolver'
 import DynamicLayoutRoot from '@/components/DynamicLayout'
 import { useLocalStorageState } from 'ahooks'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 type PropsType = unknown
 
@@ -167,7 +168,13 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
           <BottomButtons />
         </div>
       ),
-      flyParamsSetting: <FlyParamsSetting />,
+      flyParamsSetting: (
+        <div className="size-full overflow-hidden flex flex-col">
+          <ScrollArea>
+            <FlyParamsSetting />
+          </ScrollArea>
+        </div>
+      ),
       ['device-data']: <UavDetailData />,
       flyButtons: (
         <>
@@ -176,7 +183,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
         </>
       ),
       ['ai-list']: (
-        <div className="text-sm">
+        <div className="size-full text-sm overflow-hidden flex flex-col">
           <DeviceAlgorithmList
             productKey={productKey}
             deviceId={deviceId}
