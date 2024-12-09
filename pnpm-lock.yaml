@@ -89,6 +89,9 @@ importers:
       mitt:
         specifier: ^3.0.1
         version: 3.0.1
+      pannellum:
+        specifier: ^2.5.6
+        version: 2.5.6
       proj4:
         specifier: ^2.12.0
         version: 2.12.0
@@ -156,6 +159,9 @@ importers:
       '@types/node':
         specifier: ^20.14.10
         version: 20.14.10
+      '@types/pannellum':
+        specifier: ^2.5.0
+        version: 2.5.0
       '@types/proj4':
         specifier: ^2.5.5
         version: 2.5.5
@@ -1890,6 +1896,9 @@ packages:
   '@types/node@20.14.10':
     resolution: {integrity: sha512-MdiXf+nDuMvY0gJKxyfZ7/6UFsETO7mGKF54MVD/ekJS6HdFtpZFBgrh6Pseu64XTb2MLyFPlbW6hj8HYRQNOQ==}
 
+  '@types/pannellum@2.5.0':
+    resolution: {integrity: sha512-iFVwMHmsTx91t74gU12bDmB1ty5lRgmfK6X+FxymQe8n0nuw3Pp/vk0nw73YdL9WqZgthrpf1KLPzQjZDUsj0g==}
+
   '@types/proj4@2.5.5':
     resolution: {integrity: sha512-y4tHUVVoMEOm2nxRLQ2/ET8upj/pBmoutGxFw2LZJTQWPgWXI+cbxVEUFFmIzr/bpFR83hGDOTSXX6HBeObvZA==}
 
@@ -3002,6 +3011,9 @@ packages:
 
   pako@2.1.0:
     resolution: {integrity: sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug==}
+
+  pannellum@2.5.6:
+    resolution: {integrity: sha512-R4kSPpj36wQPlyIi9ZftxPfVYF11DEbNBATUEI+pkMGZDFYBV5Jxi6tYFVDdmxA2xaTeKZQHMIuIIj7njVSTQQ==}
 
   parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
@@ -6537,6 +6549,8 @@ snapshots:
     dependencies:
       undici-types: 5.26.5
 
+  '@types/pannellum@2.5.0': {}
+
   '@types/proj4@2.5.5': {}
 
   '@types/prop-types@15.7.12': {}
@@ -7724,6 +7738,8 @@ snapshots:
   package-json-from-dist@1.0.0: {}
 
   pako@2.1.0: {}
+
+  pannellum@2.5.6: {}
 
   parent-module@1.0.1:
     dependencies:
