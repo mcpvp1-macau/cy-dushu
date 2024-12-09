@@ -16,10 +16,15 @@ type PropsType = {
 const DynamicLayoutFullTabs: FC<PropsType> = memo(
   ({ layout, onLayoutChange }) => {
     const iconMap = useDynamicLayoutStore((s) => s.iconMap)
+
+    const handleExitFull = () => {
+      onLayoutChange?.({ ...layout, isFull: false })
+    }
+
     return (
       <div
         className={clsx(
-          'flex justify-between items-center bg-ground-200 gap-2 group',
+          'flex justify-between items-center bg-ground-200 gap-2',
         )}
       >
         <ScrollArea className="flex-1 flex-shrink-0">
@@ -27,6 +32,7 @@ const DynamicLayoutFullTabs: FC<PropsType> = memo(
             className={clsx(
               'flex gap-0.5 items-center text-sm p-1 select-none',
             )}
+            onDoubleClick={handleExitFull}
           >
             {layout.children.map((e, i) => (
               <Fragment key={e.key}>
@@ -63,7 +69,7 @@ const DynamicLayoutFullTabs: FC<PropsType> = memo(
         {/* 右侧小按钮 */}
         <div
           className={clsx(
-            'text-sm hidden group-hover:flex gap-2 animate-in fade-in duration-500 items-center text-ground-300 pr-2',
+            'text-sm flex gap-2 animate-in fade-in duration-500 items-center text-ground-300 pr-2',
           )}
         >
           <IconButton
@@ -72,7 +78,7 @@ const DynamicLayoutFullTabs: FC<PropsType> = memo(
               title: '缩小',
               mouseEnterDelay: 0.2,
             }}
-            onClick={() => onLayoutChange?.({ ...layout, isFull: false })}
+            onClick={handleExitFull}
           >
             <IconFullscreenExit2 />
           </IconButton>

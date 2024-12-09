@@ -42,8 +42,8 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
 
   const iconMap = useDynamicLayoutStore((s) => s.iconMap)
 
+  // 更新该渲染组件的边界
   const updateMergeBounds = useDynamicLayoutStore((s) => s.updateMergeBounds)
-
   useEffect(() => {
     const bounds: Record<string, [number, number, number, number]> = {}
     const rect = containerRef.current?.getBoundingClientRect()
@@ -61,6 +61,8 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
     })
     updateMergeBounds(bounds)
   }, [w, h])
+
+  const activeKey = layout.activeKey ?? layout.children[0]?.key
 
   return (
     <div className="size-full flex flex-col group">
@@ -99,7 +101,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
                     'px-1.5 py-0.5 cursor-pointer font-medium hover:bg-ground-250 rounded flex flex-shrink-0 gap-1 items-center text-white',
                     {
                       'flex-col': isVertical,
-                      'text-opacity-70': e.key !== layout.activeKey,
+                      'text-opacity-70': e.key !== activeKey,
                     },
                   )}
                   onClick={() => {
@@ -114,7 +116,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
                   <i
                     className={clsx({
                       'rotate-90': isVertical,
-                      'opacity-60': e.key !== layout.activeKey,
+                      'opacity-60': e.key !== activeKey,
                     })}
                   >
                     {iconMap?.[e.key]}
@@ -126,7 +128,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
           </ul>
           {!isVertical && <ScrollBar orientation="horizontal"></ScrollBar>}
         </ScrollArea>
-        {/* 右侧小按钮 */}
+        {/* 右侧的按钮们 */}
         <div
           className={clsx(
             'text-sm hidden group-hover:flex gap-2 animate-in fade-in duration-500 items-center text-ground-300',
@@ -139,7 +141,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
           <IconButton
             className="text-sm"
             toolTipProps={{
-              title: layout.isFull ? '缩小' : '放大',
+              title: layout.isFull ? '缩小' : '最大化',
               mouseEnterDelay: 0.2,
             }}
             onClick={() =>
