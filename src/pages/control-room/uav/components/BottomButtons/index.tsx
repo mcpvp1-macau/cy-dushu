@@ -214,13 +214,7 @@ const BottomButtons: FC<PropsType> = memo(() => {
     useUavControlRoomStore((s) => s.state.videoSource) === 'gimbal'
 
   return (
-    <div
-      className={clsx(
-        'flex items-center select-none',
-        // 因为右侧的按钮少, 为了保证方向盘在中间, 所以向左偏移一丢丢
-        '-translate-x-2',
-      )}
-    >
+    <div className={clsx('flex items-center select-none')}>
       {/* 左 */}
       <div className="flex flex-col gap-1">
         <div className="border border-solid rounded bg-ground-100 border-ground-300 flex overflow-hidden">
