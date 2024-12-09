@@ -86,7 +86,6 @@ const DynamicLayoutSplitter: FC<PropsType> = memo(
           newSizes[operateIndex - 1] = MIN_SIZE
         }
         setSizes(newSizes)
-        console.log('newSizes', newSizes)
       },
       { wait: 5, trailing: true },
     )
@@ -99,7 +98,6 @@ const DynamicLayoutSplitter: FC<PropsType> = memo(
           setStartPos(y)
         }
         setOperateIndex(i)
-        console.log('startNewSizes', sizes, y)
         startSizes.current = sizes
       },
     )

@@ -56,8 +56,6 @@ const RenderBox: FC<PropsType> = memo(
       return keys
     }, [fullTabsPath, layout])
 
-    console.log('notKeeyRenders', notKeeyRenders)
-
     return (
       <div
         className={clsx('absolute inset-2 pointer-events-none', {
