@@ -5,7 +5,6 @@ import { dft } from '@/constant/time-fmt'
 import { getPlatformCapture } from '@/service/modules/db-api'
 import { Col, DatePicker, Image, Pagination, Row, Select } from 'antd'
 import { Dayjs } from 'dayjs'
-import { memo, type FC } from 'react'
 
 const { RangePicker } = DatePicker
 
@@ -23,7 +22,7 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
     deviceList,
   )
 
-  const [dateRange, setDateRange] = useState<[Dayjs, Dayjs]>([
+  const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>([
     dayjs().startOf('day'),
     dayjs().endOf('day'),
   ])
@@ -41,7 +40,7 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
         'PICTURE',
         deviceId,
         type,
-        `${dateRange[0].unix()}-${dateRange[1].unix()}`,
+        `${dateRange?.[0].unix()}-${dateRange?.[1].unix()}`,
         page,
       ],
       queryFn: () =>
@@ -49,13 +48,13 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
           deviceId,
           type: 'PICTURE',
           sourceId: type,
-          startTime: dateRange[0].format(dft),
-          endTime: dateRange[1].format(dft),
+          startTime: dateRange![0].format(dft),
+          endTime: dateRange![1].format(dft),
           isPage: true,
           page,
           pageSize: 12,
         }),
-      enabled: !!deviceId,
+      enabled: !!deviceId && !!dateRange,
       select: (d) => d.data,
     },
 
@@ -70,7 +69,13 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
       <div className="py-3 flex gap-3">
         <RangePicker
           value={dateRange}
-          onChange={(s) => setDateRange([s![0]!, s![1]!.endOf('day')])}
+          onChange={(s) => {
+            if (!s) {
+              setDateRange(null)
+            } else {
+              setDateRange([s![0]!, s![1]!.endOf('day')])
+            }
+          }}
         />
         <Select
           value={deviceId}
@@ -86,9 +91,9 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
         />
       </div>
       <div>
-        {isLoading || !records ? (
+        {isLoading ? (
           <AppSpin />
-        ) : total?.[0].cnt === 0 || records.length === 0 ? (
+        ) : !records || total?.[0].cnt === 0 || records.length === 0 ? (
           <AppEmpty className="my-10" />
         ) : (
           <div>

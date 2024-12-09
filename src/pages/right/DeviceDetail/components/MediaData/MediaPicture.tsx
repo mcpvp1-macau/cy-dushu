@@ -57,8 +57,8 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(({ deviceList }) => {
   )
 
   return (
-    <div className="p-3">
-      <section className="flex gap-2">
+    <div>
+      <section className="m-3 flex gap-2">
         <Select
           className="grow"
           value={mode}
@@ -77,7 +77,7 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(({ deviceList }) => {
       ) : data[1]?.[0]?.cnt === 0 || !data[0]?.length ? (
         <AppEmpty />
       ) : (
-        <div>
+        <div className="m-3">
           <Spin spinning={isRefetching}>
             <Image.PreviewGroup>
               <Row className="mt-3" gutter={[8, 8]}>

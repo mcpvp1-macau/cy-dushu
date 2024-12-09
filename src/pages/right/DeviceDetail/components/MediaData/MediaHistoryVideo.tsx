@@ -7,7 +7,7 @@ import { dateOnly, dft } from '@/constant/time-fmt'
 import { getHistoryVideo } from '@/service/modules/device'
 import { Col, DatePicker, Row } from 'antd'
 import Select from 'antd/es/select'
-import { memo, type FC } from 'react'
+import { Dayjs } from 'dayjs'
 
 type PropsType = {
   deviceList: API_DEVICE.domain.Device[]
@@ -15,7 +15,7 @@ type PropsType = {
 
 /** 详情历史视频 */
 const DeviceDetailMediaHistoryVideo: FC<PropsType> = memo(({ deviceList }) => {
-  const [date, setDate] = useState(dayjs())
+  const [date, setDate] = useState<Dayjs | null>(dayjs())
   const deviceOptions = useMemo(
     () =>
       deviceList.map((e) => ({
@@ -37,13 +37,13 @@ const DeviceDetailMediaHistoryVideo: FC<PropsType> = memo(({ deviceList }) => {
 
   const { data: videoList, isLoading } = useQuery(
     {
-      queryKey: ['getHistoryVideo', deviceId, `${date.format(dateOnly)}`],
+      queryKey: ['getHistoryVideo', deviceId, `${date?.format(dateOnly)}`],
       queryFn: () =>
         getHistoryVideo(productKey, deviceId, videoId!, {
-          startTime: date.startOf('day').format(dft),
-          endTime: date.endOf('day').format(dft),
+          startTime: date!.startOf('day').format(dft),
+          endTime: date!.endOf('day').format(dft),
         }),
-      enabled: !!videoId,
+      enabled: !!videoId && !!date,
       select: (d) => d.data.videoList,
     },
     queryClient,
@@ -53,8 +53,8 @@ const DeviceDetailMediaHistoryVideo: FC<PropsType> = memo(({ deviceList }) => {
     useState<API_DEVICE.domain.HistoryVideoListItem | null>(null)
 
   return (
-    <div className="p-3">
-      <section className="flex gap-2">
+    <div>
+      <section className="m-3 flex gap-2">
         <DatePicker className="w-36" value={date} onChange={setDate} />
         <Select
           className="flex-1"
@@ -63,12 +63,12 @@ const DeviceDetailMediaHistoryVideo: FC<PropsType> = memo(({ deviceList }) => {
           onChange={setDeviceId}
         />
       </section>
-      {isLoading || !videoList ? (
+      {isLoading ? (
         <AppSpin />
-      ) : videoList.length === 0 ? (
+      ) : !videoList || videoList.length === 0 ? (
         <AppEmpty />
       ) : (
-        <div className="mt-3 overflow-x-hidden overflow-y-auto">
+        <div className="m-3 overflow-x-hidden overflow-y-auto">
           <Row gutter={[8, 8]}>
             {videoList.map((e) => (
               <Col span={8} key={e.playUrl}>
@@ -77,8 +77,8 @@ const DeviceDetailMediaHistoryVideo: FC<PropsType> = memo(({ deviceList }) => {
                   previewSrc={`/storage/${e.previewUrl}`}
                   info={
                     <p className="flex gap-1">
-                      <span>{dayjs(e.timeRange[0]).format('HH:mm')}</span>-
-                      <span>{dayjs(e.timeRange[1]).format('HH:mm')}</span>
+                      <span>{dayjs(e.timeRange[0])?.format('HH:mm')}</span>-
+                      <span>{dayjs(e.timeRange[1])?.format('HH:mm')}</span>
                     </p>
                   }
                   onClick={() => setActiveVideo(e)}

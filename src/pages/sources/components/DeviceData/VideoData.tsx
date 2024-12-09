@@ -7,7 +7,6 @@ import { dft } from '@/constant/time-fmt'
 import { getHistoryVideo } from '@/service/modules/device'
 import { Col, DatePicker, Row, Select } from 'antd'
 import { Dayjs } from 'dayjs'
-import { memo, type FC } from 'react'
 
 const { RangePicker } = DatePicker
 
@@ -35,7 +34,7 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
     }
   }, [deviceList, deviceId])
 
-  const [dateRange, setDateRange] = useState<[Dayjs, Dayjs]>([
+  const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>([
     dayjs().subtract(7, 'day').startOf('minute'),
     dayjs().endOf('minute'),
   ])
@@ -47,14 +46,14 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
       queryKey: [
         'getHistoryVideo',
         deviceId,
-        `${dateRange[0].unix()}-${dateRange[1].unix()}`,
+        `${dateRange?.[0].unix()}-${dateRange?.[1].unix()}`,
       ],
       queryFn: () =>
         getHistoryVideo(productKey, deviceId, videoId!, {
-          startTime: dateRange[0].format(dft),
-          endTime: dateRange[1].format(dft),
+          startTime: dateRange![0].format(dft),
+          endTime: dateRange![1].format(dft),
         }),
-      enabled: !!videoId,
+      enabled: !!videoId && !!dateRange,
       select: (d) => d.data.videoList,
     },
     queryClient,
@@ -71,12 +70,16 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
             showSecond: false,
           }}
           value={dateRange}
-          onChange={(s) =>
-            setDateRange([
-              s![0]!.startOf('minute'),
-              s![1]!.endOf('day').endOf('minute'),
-            ])
-          }
+          onChange={(s) => {
+            if (!s) {
+              setDateRange(null)
+            } else {
+              setDateRange([
+                s[0]!.startOf('minute'),
+                s[1]!.endOf('day').endOf('minute'),
+              ])
+            }
+          }}
         />
         <Select
           value={deviceId}
@@ -86,9 +89,9 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
         />
       </div>
       <div>
-        {isLoading || !videoList ? (
+        {isLoading ? (
           <AppSpin />
-        ) : videoList.length === 0 ? (
+        ) : !videoList || videoList.length === 0 ? (
           <AppEmpty className="my-10" />
         ) : (
           <div className="max-h-[460px] overflow-x-hidden overflow-y-auto">
