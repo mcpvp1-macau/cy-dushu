@@ -8,7 +8,7 @@ import XForm from '../index'
 type PropsType = GetProps<typeof XForm> & {
   width?: string
   title: string
-  open: boolean
+  open?: boolean
   /** FormModal 内部自动会处理 loading 状态 */
   confirmLoading?: boolean
   /** @deprecated 继承自 Form, 参考 https://ant-design.antgroup.com/components/form-cn#form */
@@ -20,7 +20,7 @@ type PropsType = GetProps<typeof XForm> & {
 /** FormModal 表单提交对话框 */
 const FormModal: FC<PropsType> = ({
   width,
-  open,
+  open = true,
   title,
   confirmLoading,
   form: propForm,
