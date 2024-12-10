@@ -1,7 +1,7 @@
 import useGlobalWsStore, {
   useRealOnlineStatus,
 } from '@/store/useGlobalWebSocket.store'
-import icon from '@/assets/marker/icon/uav.png'
+import icon from '@/assets/marker/icon/uav.svg'
 import { Billboard, Label } from 'resium'
 import * as Cesium from 'cesium'
 import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
@@ -59,10 +59,8 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
         id={`device--${data.deviceType}--${data.deviceName}--${data.deviceId}--${lng}--${lat}`}
         position={Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30)}
         image={icon}
-        width={40}
-        height={40}
-        verticalOrigin={Cesium.VerticalOrigin.BOTTOM}
-        horizontalOrigin={Cesium.HorizontalOrigin.CENTER}
+        width={26}
+        height={26}
         disableDepthTestDistance={50000}
         heightReference={Cesium.HeightReference.NONE}
       />
@@ -77,7 +75,7 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
         outlineColor={Cesium.Color.fromCssColorString('#000')}
         outlineWidth={5}
         font="700 128px Helvetica"
-        pixelOffset={new Cesium.Cartesian2(0, 25)}
+        pixelOffset={new Cesium.Cartesian2(0, 32)}
         backgroundColor={Cesium.Color.BLACK}
         fillColor={Cesium.Color.WHITE}
         backgroundPadding={new Cesium.Cartesian2(5, 5)}
