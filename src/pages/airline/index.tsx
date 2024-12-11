@@ -1,6 +1,5 @@
 import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
 import CollapsedPage from '@/components/CollapsedPage'
-import { memo, type FC } from 'react'
 import AirlineTemplateList from './components/AirlineTemplateList'
 import AddAirlineTemplate from './components/AddAirlineTemplate'
 import UploadAirlineTemplte from './components/UploadAirlineTemplate'

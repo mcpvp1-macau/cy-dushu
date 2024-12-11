@@ -3,6 +3,7 @@ import { RouteObject } from 'react-router'
 
 const PageAirline = lazy(() => import('@/pages/airline'))
 const PageAirlineEdit = lazy(() => import('@/pages/airline/edit'))
+const PageAreaWaylineEdit = lazy(() => import('@/pages/airline/area-wayline'))
 
 export default {
   id: 'airline',
@@ -24,6 +25,16 @@ export default {
         {
           path: '',
           element: <PageAirlineEdit />,
+        },
+      ],
+    },
+    {
+      id: 'area-wayline-edit',
+      path: 'area-wayline-edit',
+      children: [
+        {
+          path: '',
+          element: <PageAreaWaylineEdit />,
         },
       ],
     },

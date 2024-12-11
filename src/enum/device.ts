@@ -1,6 +1,7 @@
 import DeviceIconAIRPORT from '@/assets/icons/jsx/device/DeviceIconAIRPORT'
 import DeviceIconCamera from '@/assets/icons/jsx/device/DeviceIconCamera'
 import DeviceIconENFORCEMENT from '@/assets/icons/jsx/device/DeviceIconENFORCEMENT_RECODER'
+import DeviceIconTracker from '@/assets/icons/jsx/device/DeviceIconTracker'
 import DeviceIconTTP_BOX from '@/assets/icons/jsx/device/DeviceIconTTP_BOX'
 import DeviceIconUAV from '@/assets/icons/jsx/device/DeviceIconUAV'
 import DeviceIconWANGLOU from '@/assets/icons/jsx/device/DeviceIconWANGLOU'
@@ -22,6 +23,8 @@ export enum DeviceEnum {
   UAV_AIRPORT = 'UAV_AIRPORT',
   VISIBLE_LIGHT_CAMERA = 'VISIBLE_LIGHT_CAMERA',
   INFRARED_CAMERA = 'INFRARED_CAMERA',
+  /** 追踪器 */
+  TRACKER = 'TRACKER',
 }
 
 /** 图标映射 */
@@ -32,6 +35,7 @@ export const deviceIconMap = {
   [DeviceEnum.CAMERA]: DeviceIconCamera,
   [DeviceEnum.WANGLOU]: DeviceIconWANGLOU,
   [DeviceEnum.SITE_ENFORCEMENT_RECORDER]: DeviceIconENFORCEMENT,
+  [DeviceEnum.TRACKER]: DeviceIconTracker,
 }
 
 export enum DeviceStatusEnum {

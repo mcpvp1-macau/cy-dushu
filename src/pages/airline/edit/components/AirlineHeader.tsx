@@ -12,19 +12,17 @@ const AirlineHeader: FC<PropsType> = memo(() => {
   const navigate = useNavigate()
 
   return (
-    <div>
-      <EditableNameHeader
-        className="px-3"
-        value={taskName ?? '-'}
-        onFinish={(v) => {
-          updateAirlineTemplateInfo({
-            ...useAirlineConfigStore.getState().airlineTemplateInfo,
-            taskName: v,
-          })
-        }}
-        onBackClick={() => navigate(-1)}
-      />
-    </div>
+    <EditableNameHeader
+      className="px-3"
+      value={taskName ?? '-'}
+      onFinish={(v) => {
+        updateAirlineTemplateInfo({
+          ...useAirlineConfigStore.getState().airlineTemplateInfo,
+          taskName: v,
+        })
+      }}
+      onBackClick={() => navigate(-1)}
+    />
   )
 })
 

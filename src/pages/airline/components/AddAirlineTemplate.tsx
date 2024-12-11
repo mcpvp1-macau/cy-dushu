@@ -2,6 +2,7 @@ import IconPlus from '@/assets/icons/jsx/IconPlus'
 import IconButton from '@/components/ui/button/IconButton'
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
+import { UAVWaylineEnum } from '@/constant/uav/wayline'
 import { getWaylineTaskModel } from '@/service/modules/airline'
 import { Form } from 'antd'
 import { DefaultOptionType } from 'antd/es/cascader'
@@ -17,6 +18,15 @@ const createAddAirlineFormItems = (
       label: '航线名称',
       type: 'input',
       rules: [{ required: true, message: '请输入航线名称' }],
+    },
+    {
+      name: 'type',
+      label: '航线类型',
+      type: 'select',
+      options: [
+        { label: '航点航线', value: 0 },
+        { label: '面状航线', value: 1 },
+      ],
     },
     {
       name: 'uavType',
@@ -103,7 +113,9 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
       : `&camera=${JSON.stringify(
           modelsData![v.uavType].cameras[v.gimbalType],
         )}`
-    navigate(`/airline/edit?name=${v.airlineName}${modelName}${camera}`)
+    const to =
+      v.type === UAVWaylineEnum.PointWayline ? 'edit' : 'area-wayline-edit'
+    navigate(`/airline/${to}?name=${v.airlineName}${modelName}${camera}`)
   }
 
   return (
@@ -119,6 +131,9 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
         title="创建航线"
         open={open}
         items={addItems}
+        initialValues={{
+          type: UAVWaylineEnum.PointWayline,
+        }}
         onClose={() => setOpen(false)}
         onConfirm={handleConfirm}
       />
