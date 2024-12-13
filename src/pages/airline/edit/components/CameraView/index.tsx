@@ -7,11 +7,14 @@ import { limitNum } from '@/utils/math'
 import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
 import CesiumMap from '@/map/CesiumMap'
 import ZoomSlider from '@/components/device/ZoomSlider'
+import IconClose from '@/assets/icons/jsx/IconClose'
 
-type PropsType = unknown
+type PropsType = {
+  onClose?: () => void
+}
 
 /** 摄像头视图地图 */
-const CameraView: FC<PropsType> = memo(() => {
+const CameraView: FC<PropsType> = memo(({ onClose }) => {
   const cameraInfo = useAirlineConfigStore((s) => s.cameraInfo)
   const fovMultipiler = useAirlineConfigStore((s) => s.uav.eoFovMultiplier)
   const updateUav = useAirlineConfigStore((s) => s.updateUav)
@@ -53,16 +56,11 @@ const CameraView: FC<PropsType> = memo(() => {
       }}
       onWheel={handleWheel}
     >
-      <CesiumMap id="airline-edit-camera-view-map">
+      <CesiumMap id="airline-edit-camera-view-map" useToolBar={false}>
         <CameraControl viewType={viewType} />
         {viewType === 'wide' && <NarrowRect />}
         <DistanceMeasure />
       </CesiumMap>
-      {/* <DirtyCesiumMap>
-            <CameraControl viewType={viewType} />
-            {viewType === 'wide' && <NarrowRect />}
-            <DistanceMeasure />
-          </DirtyCesiumMap> */}
       {/* 模式切换按钮 */}
       <Button
         className="absolute left-3 top-1/2"
@@ -71,6 +69,14 @@ const CameraView: FC<PropsType> = memo(() => {
       >
         {viewType === 'narrow' ? '广角[1]' : `变焦[2]`}
       </Button>
+      <div className="absolute top-3 left-3">
+        <Button
+          shape="circle"
+          size="small"
+          icon={<IconClose className="scale-110" />}
+          onClick={onClose}
+        />
+      </div>
       {/* 焦距滑块 */}
       <div
         className="absolute right-0 top-0 bottom-0 w-[70px]"

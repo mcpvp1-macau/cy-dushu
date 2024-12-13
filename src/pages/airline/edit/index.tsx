@@ -2,7 +2,6 @@ import AirlineConfig from './components/AirlineConfig'
 import AirpointConfig from './components/AirpointConfig'
 import NotTakeoffWarning from './components/NotTakeoffWarning'
 import DistanceWarning from './components/DistanceWarning'
-import CameraView from './components/CameraView'
 import CollapsedPage from '@/components/CollapsedPage'
 import AirlineInfoCard from './components/InfoCard'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -12,10 +11,15 @@ import useAirlineEditOpen from './hooks/useAirlineEditOpen'
 import AirlineAirpointNavbar from './components/AirlineAirpointNavBar'
 import BottomOperator from './components/ButtonOperator'
 import { Spin } from 'antd'
+import { lazy, Suspense } from 'react'
+import FloatIconButton from '@/components/ui/button/FloatIconButton'
+import IconCamera from '@/assets/icons/jsx/IconCamera'
 
 type PropsType = {
   pilot?: ReactNode
 }
+
+const CameraView = lazy(() => import('./components/CameraView'))
 
 /** 航线航点配置 */
 const AirlineAirpointConfig: FC<PropsType> = memo(({ pilot }) => {
@@ -23,6 +27,8 @@ const AirlineAirpointConfig: FC<PropsType> = memo(({ pilot }) => {
 
   useAirlineEditOpen()
   const { isLoading } = useAirlineInit()
+
+  const [cameraViewOpen, { setTrue, setFalse }] = useBoolean()
 
   return (
     <>
@@ -52,7 +58,15 @@ const AirlineAirpointConfig: FC<PropsType> = memo(({ pilot }) => {
       </CollapsedPage>
       <DistanceWarning />
       <NotTakeoffWarning />
-      <CameraView />
+      {!cameraViewOpen && (
+        <FloatIconButton
+          className="fixed top-[50px] right-[52px]"
+          onClick={setTrue}
+        >
+          <IconCamera />
+        </FloatIconButton>
+      )}
+      <Suspense>{cameraViewOpen && <CameraView onClose={setFalse} />}</Suspense>
     </>
   )
 })
