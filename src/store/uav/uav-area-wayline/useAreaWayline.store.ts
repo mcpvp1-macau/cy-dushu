@@ -1,11 +1,20 @@
 import { create } from 'zustand'
-import { AirlineConfigType, AirlineTemplateType } from '../uav-airline/types'
+import {
+  AirlineConfigType,
+  AirlinePoint,
+  AirlineTemplateType,
+} from '../uav-airline/types'
 import { createInitAirlineConfig } from '../uav-airline/helper'
 
 type StateType = {
   open: boolean
   airlineConfig: AirlineConfigType
-  templateConfig: AirlineTemplateType
+  airpointsConfig: AirlinePoint[]
+  templateConfig: AirlineTemplateType & {
+    polygon: number[][] | null
+    mainK: number
+    interval: number
+  }
   isDrawHome: boolean
 }
 
@@ -14,6 +23,7 @@ type ActionsType = {
   updateAirlineConfig: (config: Partial<AirlineConfigType>) => void
   updateTemplateConfig: (config: Partial<AirlineTemplateType>) => void
   updateIsDrawHome: (isDrawHome: StateType['isDrawHome']) => void
+  updateAirpointsConfig: (config: AirlinePoint[]) => void
 }
 
 const createInitialState = (): StateType => ({
@@ -31,8 +41,12 @@ const createInitialState = (): StateType => ({
     pilotCode: '',
     actionId: '',
     deviceId: '',
+    polygon: null,
+    mainK: 0,
+    interval: 0,
   },
   isDrawHome: false,
+  airpointsConfig: [],
 })
 
 const useAreaWaylineStore = create<StateType & ActionsType>()((set) => ({
@@ -64,6 +78,9 @@ const useAreaWaylineStore = create<StateType & ActionsType>()((set) => ({
   },
   updateIsDrawHome: (isDrawHome) => {
     set({ isDrawHome }, false)
+  },
+  updateAirpointsConfig: (airpoints) => {
+    set({ airpointsConfig: airpoints }, false)
   },
 }))
 

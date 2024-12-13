@@ -13,6 +13,7 @@ import DrawHandler from './DrawHandler'
 import DeviceHistoryTracks from './DeviceHistoryTracks'
 import useAreaWaylineStore from '@/store/uav/uav-area-wayline/useAreaWayline.store'
 import AreaWayline from './AreaWayline'
+import UpdateMap from './UpdateMap'
 
 type PropsType = unknown
 
@@ -25,6 +26,7 @@ const GlobalMap: FC<PropsType> = memo(() => {
   return (
     <div className="absolute inset-0">
       <CesiumMap id="global-map">
+        <UpdateMap />
         <DeviceMarkers />
         <CesiumGlobalPickEvent />
         <BigFlyListener />

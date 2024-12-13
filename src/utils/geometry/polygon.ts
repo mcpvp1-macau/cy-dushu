@@ -77,7 +77,7 @@ function findFirstReflexVertex(polygon: Polygon): number {
     const a = polygon[i]
     const b = polygon[(i + 1) % n]
     const c = polygon[(i + 2) % n]
-    if (cross(subtract(b, a), subtract(c, b)) * f < -1e-10) {
+    if (cross(subtract(b, a), subtract(c, b)) * f < -1e-4) {
       return (i + 1) % n
     }
   }
@@ -213,4 +213,21 @@ function subtract(a: Point, b: Point): Point {
 
 function cross(a: Point, b: Point): number {
   return a[0] * b[1] - a[1] * b[0]
+}
+
+// 计算多边形的最长边的斜率
+export function calcLongestK(polygon: Polygon) {
+  let maxDis = 0
+  let res = 0
+  for (let i = 0; i < polygon.length; i++) {
+    const a = polygon[i]
+    const b = polygon[(i + 1) % polygon.length]
+    const dis = (b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2
+    if (dis > maxDis) {
+      const k = (b[1] - a[1]) / (b[0] - a[0] || 1e-10)
+      maxDis = dis
+      res = k
+    }
+  }
+  return res
 }

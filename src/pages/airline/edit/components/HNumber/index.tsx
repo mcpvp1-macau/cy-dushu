@@ -1,5 +1,4 @@
 import { memo, useState, type FC } from 'react'
-import styles from './style.module.less'
 import { Button, InputNumber } from 'antd'
 import IconPlus from '@/assets/icons/jsx/IconPlus'
 import IconMinus from '@/assets/icons/jsx/IconMinus'
@@ -12,6 +11,7 @@ type PropsType = {
   negatives?: number[]
   positives?: number[]
   onChange?: (value: number) => void
+  className?: string
 }
 
 const HNumber: FC<PropsType> = ({
@@ -22,6 +22,7 @@ const HNumber: FC<PropsType> = ({
   negatives,
   positives,
   onChange,
+  className,
 }) => {
   const onChangeValue = (value: number) => {
     if (value < min) {
@@ -36,7 +37,12 @@ const HNumber: FC<PropsType> = ({
   const [isEdit, setIsEdit] = useState(false)
 
   return (
-    <div className={styles.hNumber}>
+    <div
+      className={clsx(
+        'w-full flex justify-between gap-3 items-center',
+        className,
+      )}
+    >
       {negatives ? (
         negatives?.map((item) => (
           <Button
@@ -55,7 +61,7 @@ const HNumber: FC<PropsType> = ({
           onClick={() => onChangeValue?.(value - 1)}
         />
       )}
-      <div className={clsx(styles.importantInfo, 'text-primary')}>
+      <div className={clsx('flex-1 text-[18px] text-center', 'text-primary')}>
         {isEdit ? (
           <InputNumber
             size="small"
@@ -66,11 +72,14 @@ const HNumber: FC<PropsType> = ({
             autoFocus
           />
         ) : (
-          <span className={styles.value} onClick={() => setIsEdit(true)}>
+          <span
+            className="hover:underline cursor-pointer"
+            onClick={() => setIsEdit(true)}
+          >
             {value}
           </span>
         )}
-        <span className={styles.unit}>{unit}</span>
+        <span className="text-white text-sm ml-0.5">{unit}</span>
       </div>
       {positives ? (
         positives?.map((item) => (

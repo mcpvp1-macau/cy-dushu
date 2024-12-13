@@ -5,6 +5,9 @@ import { Dropdown, MenuProps } from 'antd'
 import { useLatest } from 'ahooks'
 import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
 import { cartesian3ToDegrees } from '@/utils/geoUtils'
+import { useCurrentAirpoint } from '@/store/uav/uav-airline/select'
+import { omit } from 'lodash'
+import { v4 } from 'uuid'
 
 type PropsType = unknown
 
@@ -19,6 +22,7 @@ const MenuBox: FC<PropsType> = () => {
   const deleteAirPoint = useAirlineConfigStore((s) => s.delteAirPoint)
   const addAirPoint = useAirlineConfigStore((s) => s.addAirPoint)
   const insertAirPoint = useAirlineConfigStore((s) => s.insertAirPoint)
+  const currentAirpoint = useLatest(useCurrentAirpoint())
 
   const heightRef = useLatest(height)
   const isDrawHomeRef = useLatest(isDrawHome)
@@ -128,8 +132,24 @@ const MenuBox: FC<PropsType> = () => {
           setOpen(false)
         },
       },
+      {
+        key: 'copy',
+        label: `复制航点 ${currentIndex + 1}`,
+        onClick: () => {
+          insertAirPoint(
+            {
+              ...currentAirpoint.current,
+              positionName: `航点 ${currentIndex + 2}`,
+              xid: v4(),
+              positionIndex: currentIndex + 1,
+            },
+            currentIndex + 1,
+          )
+          setOpen(false)
+        },
+      },
     ],
-    [],
+    [currentIndex],
   )
 
   const renderItems = useMemo(() => {
@@ -137,7 +157,7 @@ const MenuBox: FC<PropsType> = () => {
       return items.slice(2, 3)
     }
     return items
-  }, [airPointSize])
+  }, [airPointSize, items])
 
   return (
     <>

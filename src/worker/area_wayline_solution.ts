@@ -1,4 +1,4 @@
-import { convexDecomposition } from '@/utils/geometry/polyline'
+import { convexDecomposition } from '@/utils/geometry/polygon'
 import { expose } from 'comlink'
 
 type Point = [number, number]
@@ -199,14 +199,20 @@ class AreaWaylinePathSolution {
     // 从 start 到最近的交点
     let startId = -1
     let minDis = Number.MAX_VALUE
-    intersections.forEach((point, i) => {
+    for (const i of [
+      0,
+      0 ^ 1,
+      intersections.length - 1,
+      (intersections.length - 1) ^ 1,
+    ]) {
+      const point = intersections[i]
       const dis =
         (point[0] - startPoint[0]) ** 2 + (point[1] - startPoint[1]) ** 2
       if (dis < minDis) {
         minDis = dis
         startId = i
       }
-    })
+    }
 
     const deg = Array.from({ length: intersections.length }).map(() => 1)
     const n = intersections.length
@@ -335,10 +341,10 @@ class AreaWaylinePathSolution {
 }
 
 const WaylineAreaPath = {
-  solve(polygon: Polygon, k: number, delta: number) {
+  solve(polygon: Polygon, k: number, delta: number, start: Point = [0, 0]) {
     const polygons = convexDecomposition(polygon, k)
     const solution = new AreaWaylinePathSolution(polygons)
-    return solution.getAreaPath([0, 0], k, delta)
+    return solution.getAreaPath(start, k, delta)
   },
 }
 

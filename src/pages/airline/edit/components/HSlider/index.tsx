@@ -1,6 +1,4 @@
 import { Button, Slider } from 'antd'
-import { type FC } from 'react'
-import styles from './style.module.less'
 import IconPlus from '@/assets/icons/jsx/IconPlus'
 import IconMinus from '@/assets/icons/jsx/IconMinus'
 
@@ -10,6 +8,7 @@ type PropsType = {
   min: number
   step?: number
   onChange?: (val: number) => void
+  className?: string
 }
 
 const HSlider: FC<PropsType> = ({
@@ -18,15 +17,16 @@ const HSlider: FC<PropsType> = ({
   min = 0,
   step = 0.1,
   onChange,
+  className,
 }) => {
   return (
-    <div className={styles.hSlider}>
+    <div className={clsx('flex justify-between items-center gap-3', className)}>
       <Button
         size="small"
         icon={<IconMinus />}
         onClick={() => onChange?.(value - 1 < min ? min : value - 1)}
       />
-      <div className={styles.slider}>
+      <div className="flex-1">
         <Slider
           value={value}
           max={max}

@@ -12,6 +12,7 @@ const DrawTakeoffRef: FC<PropsType> = memo(() => {
     (s) => s.airlineConfig.takeOffRefPoint,
   )
   const updateAirlineConfig = useAreaWaylineStore((e) => e.updateAirlineConfig)
+  const updateIsDrawHome = useAreaWaylineStore((e) => e.updateIsDrawHome)
 
   const { viewer } = useCesium()
   // 绘制起飞点
@@ -85,13 +86,14 @@ const DrawTakeoffRef: FC<PropsType> = memo(() => {
           ...useAreaWaylineStore.getState().airlineConfig,
           takeOffRefPoint: [geoDegrees.longitude, geoDegrees.latitude, 0],
         })
-
-        updateAirlineConfig({
-          isDrawHome: false,
-        })
+        updateIsDrawHome(false)
       },
       Cesium.ScreenSpaceEventType.LEFT_CLICK,
     )
+
+    return () => {
+      handler.destroy()
+    }
   }, [isDrawHome])
 
   return null
