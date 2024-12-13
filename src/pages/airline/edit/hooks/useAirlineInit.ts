@@ -5,6 +5,21 @@ import { useSearchParams } from 'react-router-dom'
 import { resolvePositions } from '../utils'
 import { pick } from 'lodash'
 
+const resolveAirlineConifg = (config: any) => {
+  for (const key of [
+    'height',
+    'speed',
+    'globalRTHHeight',
+    'takeOffSecurityHeight',
+    'globalTransitionalSpeed',
+  ]) {
+    if (config[key]) {
+      config[key] = Number(config[key])
+    }
+  }
+  return config
+}
+
 /** 航线信息初始化 */
 const useAirlineInit = () => {
   const updateAirlineTemplateInfo = useAirlineConfigStore(
@@ -83,7 +98,7 @@ const useAirlineInit = () => {
             })
           }
         }
-        updateAirlineConfig(o)
+        updateAirlineConfig(resolveAirlineConifg(o))
       }
     }
 
@@ -123,7 +138,7 @@ const useAirlineInit = () => {
     const { camera } = waylineConfig
 
     if (waylineConfig) {
-      updateAirlineConfig({ camera, ...waylineConfig })
+      updateAirlineConfig({ camera, ...resolveAirlineConifg(waylineConfig) })
     }
     const parameters = shouldJson(data.parameters)
     const points = resolvePositions(parameters?.spaces?.at(0)?.positions)
