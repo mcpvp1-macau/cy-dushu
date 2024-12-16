@@ -46,6 +46,10 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
         latitude: position[1],
         ...data,
       })
+      updatePointFly({
+        open: false,
+        targetPosition: null,
+      })
     } finally {
       setParamsOpenFalse()
     }
