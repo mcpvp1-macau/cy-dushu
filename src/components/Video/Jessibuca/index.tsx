@@ -96,29 +96,38 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
     }
   })
 
+  const openTime = useRef(Date.now())
   const metricsURL = useMemo(() => {
     const index = src.indexOf('/rtp')
-    if (index === -1) {
+    const flvIndex = src.indexOf('.flv')
+
+    if (index === -1 || flvIndex === -1) {
       return null
     }
-    const metricsURL = src.slice(0, index) + '/metrics'
+
+    const metricsURL = `${src.slice(0, index)}/metrics?stream_id=${src.slice(
+      index + '/rtp/'.length,
+      flvIndex,
+    )}&client_id=${useUserStore.getState().user?.username ?? ''}_${
+      openTime.current
+    }`
+
     return metricsURL
   }, [src])
 
-  const { sendJsonMessage } = useWebSocket(metricsURL, {
-    heartbeat,
-    reconnectAttempts: 0x3f3f3f3f,
-    retryOnError: true,
-    reconnectInterval: 5_000,
-    shouldReconnect: () => true,
-  })
+  const { sendJsonMessage } = useWebSocket(
+    metricsURL,
+    {
+      heartbeat,
+      reconnectAttempts: 0x3f3f3f3f,
+      retryOnError: true,
+      // reconnectInterval: 5_000,
+      shouldReconnect: () => true,
+    },
+    true,
+  )
 
-  const openTime = useRef(Date.now())
   const handleStats = useMemoizedFn((stats) => {
-    stats.url = src
-    stats.id = `${useUserStore.getState().user?.username ?? ''}:${
-      openTime.current
-    }`
     sendJsonMessage(stats)
   })
 
