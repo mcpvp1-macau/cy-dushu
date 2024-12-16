@@ -7,8 +7,6 @@ import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
 import { ComponentRef, lazy } from 'react'
 import VideoSnapshotBtn from '@/hooks/device/VideoSnapshot'
 import AppViewSuspense from '@/components/AppViewSuspense'
-import { AiObject } from '@/components/Video/Jessibuca/sei-types/ai-data'
-import useSmarkTrack from '@/hooks/device/useSmarkTrack'
 
 const DeviceLinkSwitch = lazy(
   () => import('@/components/device/DeviceLinkSwitch'),
@@ -41,8 +39,6 @@ const UavDetailVideo: FC<PropsType> = memo(
     const videoId = deviceDetail?.properties.videoList?.[0]?.videoId ?? ''
     const postService = usePostDeviceService(productKey, deviceId)
 
-    const { handlePostSmartTrack } = useSmarkTrack(postService)
-
     const handleVideoSourceChange = useMemoizedFn((v: string) => {
       postService('liveSourcesChange', { videoId, sourceType: v })
     })
@@ -58,31 +54,6 @@ const UavDetailVideo: FC<PropsType> = memo(
       postService('liveSetQuality', { quality })
     })
 
-    const handleSeiClick = useMemoizedFn((e: AiObject) => {
-      console.info('e----', e)
-      const { sourceFrameWidth: fw, sourceFrameHeight: fh, seq } = e
-      if (!fw || !fh) return
-      let x1 = e.bboxLeft ?? 0
-      let y1 = e.bboxLeft ?? 0
-      const w = e.bboxWidth
-      const h = e.bboxHeight
-      if (!x1 && !y1 && !w && !h) return
-      const x2 = (x1 + w) / fw
-      const y2 = (y1 + h) / fh
-      x1 = x1 / fw
-      y1 = y1 / fh
-      handlePostSmartTrack({
-        x1,
-        y1,
-        x2,
-        y2,
-        enable: true,
-        frame_no: seq,
-        object_label: e.objectLabel,
-        label_value: e.objLabelList?.[0]?.labelValue,
-      });
-    })
-
     return (
       <DeviceLiveVideo
         ref={videoLiveRef}
@@ -94,7 +65,7 @@ const UavDetailVideo: FC<PropsType> = memo(
           valueDRC: videoQuality,
           onDRCChange: liveSetQuality,
         }}
-        onClickSeiBox={handleSeiClick}
+        // onClickSeiBox={handleSeiClik}
         leftTop={
           <>
             <LinkSwitch
