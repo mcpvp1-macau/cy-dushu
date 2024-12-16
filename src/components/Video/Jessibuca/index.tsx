@@ -10,6 +10,9 @@ import { useInterval, useThrottleEffect } from 'ahooks'
 import usePropertiesProtobuf from './hooks/usePropertiesProtobuf'
 import SeiEnum, { SEI_TYPE } from './sei-enum'
 import useProtobufSei from './hooks/useProtobufSei'
+import useWebSocket from 'react-use-websocket'
+import { heartbeat } from '@/constant/websocket'
+import useUserStore from '@/store/useUser.store'
 
 type VideoInfo = {
   width: number
@@ -29,6 +32,7 @@ type PropsType = {
   onSeiProperties?: (data: SEI_TYPE[SeiEnum.JSON_PROPERTIES]) => void
   onSeiAIData?: (data: SEI_TYPE[SeiEnum.Protobuf_SEI]) => void
   onFetchError?: () => void
+  onStats?: (stats: any) => void
 }
 
 const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
@@ -90,6 +94,33 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
       }
       i += 8 + length
     }
+  })
+
+  const metricsURL = useMemo(() => {
+    const index = src.indexOf('/rtp')
+    if (index === -1) {
+      return null
+    }
+    const metricsURL = src.slice(0, index) + '/metrics'
+    return metricsURL
+  }, [src])
+
+  const { sendJsonMessage } = useWebSocket(metricsURL, {
+    heartbeat,
+    reconnectAttempts: 0x3f3f3f3f,
+    retryOnError: true,
+    reconnectInterval: 5_000,
+    shouldReconnect: () => true,
+  })
+
+  const openTime = useRef(Date.now())
+  const handleStats = useMemoizedFn((stats) => {
+    stats.url = src
+    stats.id = `${useUserStore.getState().user?.username ?? ''}:${
+      openTime.current
+    }`
+    console.log('stats', stats)
+    sendJsonMessage(stats)
   })
 
   // 创建播放器
@@ -171,6 +202,8 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
         props.onFetchError?.()
       },
     )
+
+    jessibucaRef.current.on('stats' as JessibucaPro.EVENTS.stats, handleStats)
 
     return () => {
       jessibucaRef.current?.destroy()
