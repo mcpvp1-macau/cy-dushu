@@ -119,7 +119,6 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
     stats.id = `${useUserStore.getState().user?.username ?? ''}:${
       openTime.current
     }`
-    console.log('stats', stats)
     sendJsonMessage(stats)
   })
 
