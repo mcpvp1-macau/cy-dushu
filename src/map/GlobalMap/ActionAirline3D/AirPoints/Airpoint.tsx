@@ -143,7 +143,7 @@ const Airpoint: FC<PropsType> = ({ point }) => {
           return
         }
 
-        let low = 100,
+        let low = 1,
           high = 500.01
         while (high - low >= 0.01) {
           const mid = (low + high) / 2
@@ -155,7 +155,8 @@ const Airpoint: FC<PropsType> = ({ point }) => {
               mid,
             ),
           )!
-          if (pos.y < e.endPosition.y) {
+          const y = pos.y / viewer.resolutionScale
+          if (y < e.endPosition.y) {
             high = mid
           } else {
             low = mid
