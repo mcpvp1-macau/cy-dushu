@@ -3,7 +3,7 @@ import * as Cesium from 'cesium'
 import { useCesium } from 'resium'
 import { useDebounceFn } from 'ahooks'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import { isNil } from 'lodash'
+import { attempt, isNil } from 'lodash'
 
 type PropsType = unknown
 
@@ -70,7 +70,9 @@ const UavViewCombackResolver: FC<PropsType> = memo(() => {
     }, Cesium.ScreenSpaceEventType.LEFT_UP)
 
     return () => {
-      handler.destroy()
+      attempt(() => {
+        handler.destroy()
+      })
     }
   }, [])
 
