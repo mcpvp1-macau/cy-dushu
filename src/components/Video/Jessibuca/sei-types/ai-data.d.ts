@@ -25,7 +25,7 @@ interface ObjPayload {
   payload: number[]
 }
 
-interface Object {
+export interface Object {
   bboxHeight: number
   bboxLeft: number
   bboxTop: number
@@ -51,6 +51,12 @@ interface Object {
   sourceType: string
   objPayloadList: ObjPayload[]
   labelId: number
+}
+
+export interface AiObject extends Object {
+  seq: number
+  sourceFrameHeight: number
+  sourceFrameWidth: number
 }
 
 export interface AIData {

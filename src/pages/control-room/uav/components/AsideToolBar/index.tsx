@@ -21,6 +21,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
   const openLarser = useUavControlRoomStore((s) => s.openLarser)
   const updateOpenLarser = useUavControlRoomStore((s) => s.updateOpenLarser)
   const openPositionZoom = useUavControlRoomStore((s) => s.openPointZoom)
+  const updateEnableSmartTrack = useUavControlRoomStore(s => s.updateEnableSmartTrack)
   const updateOpenPositionZoom = useUavControlRoomStore(
     (s) => s.updateOpenPointZoom,
   )
@@ -69,7 +70,10 @@ const AsideToolBar: FC<PropsType> = memo(() => {
       {hasCameraMode && <CameraMode />}
       <TakePhoto />
       {hasSmartTrack && (
-        <IconButton toolTipProps={{ title: '智能追踪' }}>
+        <IconButton
+          toolTipProps={{ title: '智能追踪' }}
+          onClick={() => updateEnableSmartTrack()}
+        >
           <IconIntelligentTrack />
         </IconButton>
       )}

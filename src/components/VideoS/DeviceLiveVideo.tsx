@@ -22,6 +22,7 @@ import VideoStream from './VideoStream'
 import { ConfigProvider } from 'antd'
 import useCalcSafeArea from './hooks/useCalcSafeArea'
 import VideoDing from './VideoDing'
+import { AiObject } from '../Video/Jessibuca/sei-types/ai-data'
 
 type PropsType = {
   videoContainerId?: string
@@ -46,6 +47,7 @@ type PropsType = {
   useDing?: boolean
   onAspectRatioChange?: (aspectRatio: number) => void
   onUavProperties?: (properties: PropertiesData) => void
+  onClickSeiBox?: (box: AiObject) => void
 }
 
 type DeviceLiveVideoRefType = {
@@ -77,6 +79,7 @@ const DeviceLiveVideo = memo(
         useDing = true,
         onAspectRatioChange,
         onUavProperties,
+        onClickSeiBox,
       },
       ref,
     ) => {
@@ -217,6 +220,7 @@ const DeviceLiveVideo = memo(
       // 计算安全区相关
       const { safeY, topBar, bottomBar, videoWrapper } = useCalcSafeArea(size)
 
+
       return (
         <div
           className="size-full overflow-hidden relative"
@@ -282,7 +286,7 @@ const DeviceLiveVideo = memo(
 
               {/* 视频绘制框 */}
               <div className="absolute inset-0 z-20 pointer-events-none">
-                {aiData && <SeiAIData data={aiData} />}
+                {aiData && <SeiAIData data={aiData} onClickSeiBox={onClickSeiBox}/>}
                 {enableScale === 1 && (
                   <DrawBox onDrawEnd={handleDrewScaleEnd} />
                 )}

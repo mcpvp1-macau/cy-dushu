@@ -8,6 +8,8 @@ import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import useMixARStore from '@/store/control-room/useMixAR.store'
 import Avoidance from './components/Avoidance'
 import ARScene from './components/ARScene'
+import { AiObject } from '@/components/Video/Jessibuca/sei-types/ai-data'
+import useSmarkTrack from '@/hooks/device/useSmarkTrack'
 
 type PropsType = {
   onAspectRatioChange?: (aspectRatio: number) => void
@@ -28,6 +30,8 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
   const videoQuality = useUavControlRoomStore((s) => s.state.videoQuality)
 
   const postService = usePostDeviceService(productKey, deviceId)
+
+  const { handlePostSmartTrack } = useSmarkTrack(postService)
   const liveSetQuality = (quality: string) => {
     postService('liveSetQuality', { quality })
   }
@@ -39,6 +43,30 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
   const handlePropertiesSei = (data: any) => {
     updateUavProperties(data)
   }
+
+  const handleSeiClick = useMemoizedFn((e: AiObject) => {
+    const { sourceFrameWidth: fw, sourceFrameHeight: fh, seq } = e
+    if (!fw || !fh) return
+    let x1 = e.bboxLeft ?? 0
+    let y1 = e.bboxLeft ?? 0
+    const w = e.bboxWidth
+    const h = e.bboxHeight
+    if (!x1 && !y1 && !w && !h) return
+    const x2 = (x1 + w) / fw
+    const y2 = (y1 + h) / fh
+    x1 = x1 / fw
+    y1 = y1 / fh
+    handlePostSmartTrack({
+      x1,
+      y1,
+      x2,
+      y2,
+      enable: true,
+      frame_no: seq,
+      object_label: e.objectLabel,
+      label_value: e.objLabelList?.[0]?.labelValue,
+    });
+  })
 
   return (
     <div className="absolute inset-0  bg-black">
@@ -57,6 +85,7 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
           onAspectRatioChange?.(v)
         }}
         onUavProperties={handlePropertiesSei}
+        onClickSeiBox={handleSeiClick}
         videoChildren={
           <>
             <LaserRanging />

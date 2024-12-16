@@ -66,6 +66,7 @@ type StateType = {
   /** 是否启用摇杆 */
   enableGamepad: boolean
   historyTracks: number[][][]
+  enableSmartTrack: boolean
 }
 
 type ActionsType = {
@@ -93,6 +94,8 @@ type ActionsType = {
   updateEnableGamepad: (open: boolean) => void
   /** 更新历史轨迹 */
   updateHistoryTracks: (tracks: StateType['historyTracks']) => void
+
+  updateEnableSmartTrack: (enable?: boolean) => void
 }
 
 type WsSendersType = {
@@ -131,6 +134,7 @@ const createInitialState = () =>
     openPointFly: false,
     enableGamepad: false,
     historyTracks: [],
+    enableSmartTrack: false,
   } as StateType)
 
 export const createUavControlRoomStore = (senders: WsSendersType) => {
@@ -257,6 +261,16 @@ export const createUavControlRoomStore = (senders: WsSendersType) => {
         },
         updateHistoryTracks: (tracks) => {
           set({ historyTracks: tracks }, false, 'updateHistory')
+        },
+        updateEnableSmartTrack: (enable) => {
+          set(
+            {
+              enableSmartTrack:
+                enable !== undefined ? enable : !get().enableSmartTrack,
+            },
+            false,
+            'updateEnableSmartTrack',
+          )
         },
       }),
       {
