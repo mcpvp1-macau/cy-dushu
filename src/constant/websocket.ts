@@ -4,5 +4,5 @@ export const heartbeat: HeartbeatOptions = {
   interval: 10_000,
   message: 'ping',
   returnMessage: 'pong',
-  timeout: 6_000,
+  timeout: 16_000,
 }
