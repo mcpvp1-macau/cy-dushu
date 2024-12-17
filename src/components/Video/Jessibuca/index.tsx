@@ -111,25 +111,27 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
     )}&client_id=${useUserStore.getState().user?.username ?? ''}_${
       openTime.current
     }`
-
     return metricsURL
   }, [src])
 
-  const { sendJsonMessage } = useWebSocket(
+  const { sendJsonMessage, sendMessage } = useWebSocket(
     metricsURL,
     {
       heartbeat,
       reconnectAttempts: 0x3f3f3f3f,
       retryOnError: true,
-      // reconnectInterval: 5_000,
+      reconnectInterval: 5_000,
       shouldReconnect: () => true,
+      onOpen: () => {
+        sendMessage('ping')
+      },
     },
     true,
   )
 
-  const handleStats = useMemoizedFn((stats) => {
+  const handleStats = (stats) => {
     sendJsonMessage(stats)
-  })
+  }
 
   // 创建播放器
   useEffect(() => {
