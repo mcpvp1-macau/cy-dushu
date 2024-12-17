@@ -9,6 +9,7 @@ import 'tippy.js/dist/border.css'
 import 'tippy.js/animations/scale.css'
 import 'tippy.js/animations/scale-subtle.css'
 import { wgs84ToDrawingBufferCoordinates } from '@/utils/cesium/sence-transform'
+import { attempt } from 'lodash'
 
 type PropsType = {
   /** [lng, lat] */
@@ -155,7 +156,9 @@ const PositionTooltip: FC<PropsType> = memo(
       const fn = () => handleUpdatePostion()
       viewer.scene?.preRender.addEventListener(fn)
       return () => {
-        viewer.scene?.preRender.removeEventListener(fn)
+        attempt(() => {
+          viewer.scene?.preRender.removeEventListener(fn)
+        })
       }
     }, [])
 
