@@ -12,7 +12,6 @@ import { getStreamQualityLevel } from '@/service/modules/video'
 import VideoQuality5G from './VideoQuality5G'
 import VideoQualityDRC from './VideoQualityDRC'
 import { isNil } from 'lodash'
-import SeiEnum, { SEI_TYPE } from '../Video/Jessibuca/sei-enum'
 import SeiAIData from './SeiAIData'
 import DrawBox from '../DrawBox'
 import useElectricScale from './hooks/useElectricScale'
@@ -23,6 +22,7 @@ import { ConfigProvider } from 'antd'
 import useCalcSafeArea from './hooks/useCalcSafeArea'
 import VideoDing from './VideoDing'
 import { AiObject } from '../Video/Jessibuca/sei-types/ai-data'
+import useAIDataState from './hooks/useAIDataState'
 
 type PropsType = {
   videoContainerId?: string
@@ -168,10 +168,6 @@ const DeviceLiveVideo = memo(
         queryClient,
       )
 
-      const [aiData, setAIData] = useState<
-        SEI_TYPE[SeiEnum.Protobuf_SEI] | null
-      >(null)
-
       // 电子放大
       const {
         enableScale,
@@ -214,12 +210,10 @@ const DeviceLiveVideo = memo(
         debounceRetch()
       }, [])
 
-      // const [dingOpen, { setTrue: setDingOpen, setFalse: setDingClose }] =
-      //   useBoolean()
-
       // 计算安全区相关
       const { safeY, topBar, bottomBar, videoWrapper } = useCalcSafeArea(size)
 
+      const [aiData, setAIData] = useAIDataState()
 
       return (
         <div
@@ -276,9 +270,7 @@ const DeviceLiveVideo = memo(
                     }
                   }}
                   onTimeUpdate={setTs}
-                  onSeiAIData={(aiData) => {
-                    !aiData.ref && setAIData(aiData)
-                  }}
+                  onSeiAIData={setAIData}
                   onSeiProperties={onUavProperties}
                   onFetchError={handleRefresh}
                 />
@@ -286,7 +278,9 @@ const DeviceLiveVideo = memo(
 
               {/* 视频绘制框 */}
               <div className="absolute inset-0 z-20 pointer-events-none">
-                {aiData && <SeiAIData data={aiData} onClickSeiBox={onClickSeiBox}/>}
+                {aiData && (
+                  <SeiAIData data={aiData} onClickSeiBox={onClickSeiBox} />
+                )}
                 {enableScale === 1 && (
                   <DrawBox onDrawEnd={handleDrewScaleEnd} />
                 )}

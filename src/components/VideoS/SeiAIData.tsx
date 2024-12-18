@@ -1,4 +1,4 @@
-import { memo, type FC } from 'react'
+import { memo, useDeferredValue, type FC } from 'react'
 import SeiEnum, { SEI_TYPE } from '../Video/Jessibuca/sei-enum'
 import { AiObject } from '../Video/Jessibuca/sei-types/ai-data'
 
@@ -11,12 +11,14 @@ type PropsType = {
 const SeiAIData: FC<PropsType> = memo(({ data, onClickSeiBox }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [active, setActive] = useState<string | null>(null)
+  const deferedData = useDeferredValue(data)
+
   return (
     <div className="absolute inset-0">
-      {(data.objectList ?? []).map((item) => (
+      {deferedData.objectList?.map((item, i) => (
         <div
           key={item.objectId}
-          className="absolute z-[9999] pointer-events-auto border border-solid border-green-600 group hover:border-red-600 cursor-pointer transition-all duration-300"
+          className="absolute z-[9999] pointer-events-auto border border-solid border-green-600 group hover:border-red-600 cursor-pointer transition-colors duration-300"
           style={{
             left: `${((item.bboxLeft ?? 0) / data.sourceFrameWidth) * 100}%`,
             top: `${((item.bboxTop ?? 0) / data.sourceFrameHeight) * 100}%`,
