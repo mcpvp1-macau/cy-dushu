@@ -4,10 +4,11 @@ import IconButton from './ui/button/IconButton'
 
 type PropsType = GetProps<typeof Dropdown> & {
   tooltipProps?: GetProps<typeof Tooltip>
+  className?: string
 }
 
 const IconButtonWithDropDown: FC<PropsType> = memo(
-  ({ children, tooltipProps, ...props }) => {
+  ({ children, tooltipProps, className, ...props }) => {
     const [open, setOpen] = useState(false)
     return (
       <Dropdown
@@ -20,7 +21,11 @@ const IconButtonWithDropDown: FC<PropsType> = memo(
           setOpen(open)
         }}
       >
-        <IconButton toolTipProps={tooltipProps} active={open}>
+        <IconButton
+          className={className}
+          toolTipProps={tooltipProps}
+          active={open}
+        >
           {children}
         </IconButton>
       </Dropdown>

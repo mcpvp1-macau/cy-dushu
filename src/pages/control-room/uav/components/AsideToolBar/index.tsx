@@ -12,12 +12,15 @@ import useMixARStore from '@/store/control-room/useMixAR.store'
 import IconSetting from '@/assets/icons/jsx/IconSetting'
 import { ConfigProvider, Drawer } from 'antd'
 import AppViewSuspense from '@/components/AppViewSuspense'
-import ZoomFocusMode from './ZoomFocusMode'
+import ZoomFocusMode from './ZoomFucusMode'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 
 const VRSetting = lazy(() => import('@/components/Header/setting/VRSetting'))
 
 type PropsType = unknown
+
+export const borderedBtnClassName =
+  'border border-solid border-ground-300 bg-ground-200 rounded-sm  w-[25px] h-[25px]'
 
 const AsideToolBar: FC<PropsType> = memo(() => {
   const openLarser = useUavControlRoomStore((s) => s.openLarser)
@@ -70,6 +73,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
       >
         {hasLaserDistance && (
           <IconButton
+            className={borderedBtnClassName}
             toolTipProps={{ title: '激光测距' }}
             active={openLarser}
             onClick={() => updateOpenLarser(!openLarser)}
@@ -79,6 +83,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
         )}
         {hasTapZoomAtTarget && (
           <IconButton
+            className={borderedBtnClassName}
             toolTipProps={{ title: '指点变焦' }}
             active={openPositionZoom === 1}
             onClick={() =>
@@ -92,6 +97,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
         <TakePhoto />
         {hasSmartTrack && (
           <IconButton
+            className={borderedBtnClassName}
             toolTipProps={{ title: '智能追踪' }}
             onClick={() => updateEnableSmartTrack()}
           >
@@ -100,6 +106,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
         )}
         {hasAr && (
           <IconButton
+            className={borderedBtnClassName}
             active={arEnable}
             toolTipProps={{ title: '虚实融合' }}
             onClick={handleToggleMixAR}

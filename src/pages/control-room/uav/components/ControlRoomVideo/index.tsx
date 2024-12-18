@@ -10,6 +10,7 @@ import Avoidance from './components/Avoidance'
 import ARScene from './components/ARScene'
 import { AiObject } from '@/components/Video/Jessibuca/sei-types/ai-data'
 import useSmarkTrack from '@/hooks/device/useSmarkTrack'
+import ZoomFocus from './components/ZoomFocus'
 
 type PropsType = {
   onAspectRatioChange?: (aspectRatio: number) => void
@@ -65,7 +66,7 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
       frame_no: seq,
       object_label: e.objectLabel,
       label_value: e.objLabelList?.[0]?.labelValue,
-    });
+    })
   })
 
   return (
@@ -89,6 +90,7 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
         videoChildren={
           <>
             <LaserRanging />
+            <ZoomFocus />
             <PositionZoom />
             {/* {enableAR && <MixARCanvas />} */}
             {enableAR && (

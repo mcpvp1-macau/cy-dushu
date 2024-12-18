@@ -7,6 +7,7 @@ import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDevice
 import { setDeviceProp } from '@/service/modules/device'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { GetProps, Menu, Tooltip } from 'antd'
+import { borderedBtnClassName } from '.'
 
 type PropsType = unknown
 
@@ -59,6 +60,7 @@ const CameraMode: FC<PropsType> = memo(() => {
 
   return (
     <IconButtonWithDropDown
+      className={borderedBtnClassName}
       disabled={cameraModeMenuItems?.length === 0}
       menu={{
         items: cameraModeMenuItems,

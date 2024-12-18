@@ -4,6 +4,7 @@ import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { memo, type FC } from 'react'
+import { borderedBtnClassName } from '.'
 
 type PropsType = unknown
 
@@ -30,6 +31,7 @@ const TakePhoto: FC<PropsType> = memo(() => {
 
   return (
     <IconButton
+      className={borderedBtnClassName}
       toolTipProps={{ title: '拍照' }}
       disabled={disabled}
       onClick={handleClick}

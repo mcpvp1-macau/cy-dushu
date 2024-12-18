@@ -15,7 +15,7 @@ const SeiAIData: FC<PropsType> = memo(({ data, onClickSeiBox }) => {
 
   return (
     <div className="absolute inset-0">
-      {deferedData.objectList?.map((item, i) => (
+      {deferedData.objectList?.map((item) => (
         <div
           key={item.objectId}
           className="absolute z-[9999] pointer-events-auto border border-solid border-green-600 group hover:border-red-600 cursor-pointer transition-colors duration-300"
