@@ -1,8 +1,8 @@
-import { memo, useEffect, useRef, useState, type FC } from 'react'
 import { useCesium } from 'resium'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import PositionTooltip from '@/components/map/PostionTooltip'
 import { getSpaceDistance } from '@/utils/geo-math'
+import { isNil } from 'lodash'
 
 type PropsType = {
   positions: { pointX: number; pointY: number; pointZ: number }[]
@@ -13,8 +13,7 @@ const Forecats: FC<PropsType> = memo(({ positions }) => {
   const waypointIndex = useUavControlRoomStore((s) => s.state.waypointIndex)
   const { viewer } = useCesium()
 
-  const horizontalSpeed =
-    useUavControlRoomStore((s) => s.state.horizontalSpeed) ?? 1
+  const speed = useUavControlRoomStore((s) => s.state.horizontalSpeed) ?? 1
   const {
     uavLng = 0,
     uavLlat = 0,
@@ -30,9 +29,7 @@ const Forecats: FC<PropsType> = memo(({ positions }) => {
     lat: 0,
     alt: 0,
     remainDistance: 0,
-    remainTime: 0,
   })
-  const lastRemainTime = useRef(Number.MAX_VALUE)
 
   useEffect(() => {
     if (
@@ -49,34 +46,29 @@ const Forecats: FC<PropsType> = memo(({ positions }) => {
       [targetPoint.pointX, targetPoint.pointY, targetPoint.pointZ],
     ])
 
-    const remainTime = Math.min(
-      lastRemainTime.current,
-      remainDistance / horizontalSpeed,
-    )
-    lastRemainTime.current = remainTime
-
     setBoardInfo({
       lng: targetPoint.pointX,
       lat: targetPoint.pointY,
       alt: targetPoint.pointZ,
       remainDistance,
-      remainTime,
     })
 
     return () => {}
-  }, [waypointIndex, positions, uavLng, uavLlat, uavHeight, horizontalSpeed])
+  }, [waypointIndex, positions, uavLng, uavLlat, uavHeight])
 
-  useEffect(() => {
-    lastRemainTime.current = Number.MAX_VALUE
-  }, [waypointIndex])
-
-  /** 获取剩余时间 */
-  const getRemainTime = () => {
-    if (boardInfo.remainDistance < 30) {
+  const timeFormat = useMemo(() => {
+    if (isNil(speed) || speed < 1e-1) {
+      return '准备中'
+    }
+    if (boardInfo.remainDistance < 20) {
       return '即将到达'
     }
-    return `${boardInfo.remainTime.toFixed(0)}s`
-  }
+    const time = boardInfo.remainDistance / (speed ?? 1)
+    if (time < 60) {
+      return `${time.toFixed(1)} s`
+    }
+    return `${(time / 60).toFixed(1)} min`
+  }, [boardInfo.remainDistance, speed])
 
   return (
     <>
@@ -96,8 +88,8 @@ const Forecats: FC<PropsType> = memo(({ positions }) => {
                 textAlign: 'left',
               }}
             >
-              <div>剩余时间：{getRemainTime()}</div>
               <div>剩余距离：{boardInfo.remainDistance.toFixed(0)}m</div>
+              <div>预计时间：{timeFormat}</div>
             </div>
           </PositionTooltip>
         )}
