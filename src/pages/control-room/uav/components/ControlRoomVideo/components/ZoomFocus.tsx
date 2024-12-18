@@ -19,12 +19,12 @@ const InnerZoomFocus: FC<PropsType> = () => {
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const x = e.nativeEvent.offsetX / e.currentTarget.clientWidth
     const y = e.nativeEvent.offsetY / e.currentTarget.clientHeight
-    postDeviceService('focusPoint', { lens, x, y })
+    postDeviceService('focusPoint', { lens, x, y }, '变焦')
   }
 
   return (
     <div
-      className="absolute inset-0 bg-red-50 pointer-events-auto"
+      className="absolute inset-0 pointer-events-auto"
       onClick={handleClick}
     ></div>
   )
