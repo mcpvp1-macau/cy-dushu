@@ -32,8 +32,15 @@ export const endActionItem = (actionId: number) => {
 }
 
 /** 创建子行动 */
-export const createActionItem = (data: any) => {
-  return serverJingqi.post('/action/item/add', data)
+export const createActionItem = (
+  data: any,
+  autoShowMessageOnNotSuccess = true,
+) => {
+  return serverJingqi.post('/action/item/add', data, {
+    xCustomConfig: {
+      autoShowMessageOnNotSuccess,
+    },
+  })
 }
 
 /** 更新子行动 */

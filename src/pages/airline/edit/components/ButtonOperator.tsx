@@ -1,12 +1,15 @@
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
+import XModal from '@/components/XModal'
 import { DictEnum } from '@/enum/dict'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import {
   createActionItem,
+  endActionItem,
   updateActionItem,
 } from '@/service/modules/action-item'
 import { getAllDeviceListV3 } from '@/service/modules/device'
+import { isLiqunCommonError } from '@/service/servers/liqunAxios'
 import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
 import { useDictOptions } from '@/store/useDict.store'
 import { Button } from 'antd'
@@ -142,6 +145,10 @@ const BottomOperator: FC<PropsType> = memo(({ disabled }) => {
     }
   }
 
+  const [runningActionPayload, setRunningActionPayload] = useState<{
+    actionItem: number
+    message: string
+  } | null>(null)
   const handleExecuteConfirm = async (deviceId: string, type?: string) => {
     setLoading(2)
     try {
@@ -152,8 +159,21 @@ const BottomOperator: FC<PropsType> = memo(({ disabled }) => {
       data['execute'] = true
       data['type'] = type
       data['deviceIds'] = deviceId
-      await createActionItem(data)
+      await createActionItem(data, false)
       navigate(-1)
+    } catch (e) {
+      if (isLiqunCommonError(e)) {
+        // 该设备有正在执行的任务
+        if (
+          Array.isArray(e.data?.actionItemIdList) &&
+          e.data.actionItemIdList.length
+        ) {
+          setRunningActionPayload({
+            actionItem: e.data.actionItemIdList[0],
+            message: e.message,
+          })
+        }
+      }
     } finally {
       setLoading(0)
     }
@@ -189,6 +209,15 @@ const BottomOperator: FC<PropsType> = memo(({ disabled }) => {
     [actionTypeOptions, deviceOptions],
   )
 
+  // 停止任务
+  const handleStopActionItem = async () => {
+    if (runningActionPayload) {
+      await endActionItem(runningActionPayload.actionItem)
+      msgApi.success('停止任务成功')
+      setRunningActionPayload(null)
+    }
+  }
+
   return (
     <div className="m-3 flex gap-5 px-3">
       <Button
@@ -220,6 +249,20 @@ const BottomOperator: FC<PropsType> = memo(({ disabled }) => {
             handleExecuteConfirm(values.deviceId, values.type)
           }
         />
+      )}
+      {runningActionPayload && (
+        <XModal
+          title="执行失败"
+          width={400}
+          centered
+          open={!!runningActionPayload}
+          noPadding
+          onClose={() => setRunningActionPayload(null)}
+          onConfirm={handleStopActionItem}
+        >
+          <p className="m-3">{runningActionPayload.message}</p>
+          <p className="m-3">是否停止该任务?</p>
+        </XModal>
       )}
     </div>
   )
