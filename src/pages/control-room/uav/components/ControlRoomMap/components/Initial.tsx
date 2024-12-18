@@ -16,9 +16,13 @@ const UavMapInitial: FC<PropsType> = memo(() => {
     }
 
     if (lon && lat) {
-      viewer.camera.flyTo({
-        destination: Cesium.Cartesian3.fromDegrees(lon, lat, 1000),
-        duration: 0.6,
+      viewer.camera.setView({
+        destination: Cesium.Cartesian3.fromDegrees(lon, lat, 1500),
+        orientation: {
+          heading: Cesium.Math.toRadians(0),
+          pitch: Cesium.Math.toRadians(-90),
+          roll: 0,
+        },
       })
     }
   }, [lon, lat])
