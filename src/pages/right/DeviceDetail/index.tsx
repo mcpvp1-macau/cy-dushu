@@ -55,7 +55,7 @@ const RightDeviceDetail: FC<PropsType> = memo(() => {
     <DeviceDetailStoreContext.Provider value={deviceDetailStore}>
       <div className="w-[350px] flex flex-col overflow-y-hidden">
         <AppViewSuspense>
-          <DetailComponent key={deviceDetail.deviceType} data={deviceDetail} />
+          <DetailComponent key={deviceDetail.deviceId} data={deviceDetail} />
         </AppViewSuspense>
       </div>
     </DeviceDetailStoreContext.Provider>
