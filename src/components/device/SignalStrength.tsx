@@ -25,7 +25,7 @@ const SignalStrength: FC<PropsType> = memo(
       )
     }
 
-    const radio = Number(value) / Number(max)
+    const radio = Math.floor((Number(value) / Number(max)) * 10) / 10
 
     return (
       <svg
@@ -43,7 +43,7 @@ const SignalStrength: FC<PropsType> = memo(
             width="28"
             height={`${80 + index * 20}`}
             rx="10"
-            fill={radio >= index * 0.2 ? '#c7d1dc' : 'rgba(205, 205, 205, 0.5)'}
+            fill={radio > index * 0.2 ? '#c7d1dc' : 'rgba(205, 205, 205, 0.5)'}
           />
         ))}
       </svg>

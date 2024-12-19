@@ -10,14 +10,41 @@ import ARSceneUavAirline from './airline'
 import ARSceneHomePoint from './HomePoint'
 import ARScenePointFly from './PointFly'
 import ARSceneUavTracks from './RealTrack'
+import useSettingStore from '@/store/useSetting.store'
+import type { ContextOptions } from 'cesium'
 
 type PropsType = unknown
 
+const Inner: FC = () => {
+  const roadEnable = useSettingStore((s) => s.virtualReal.mainRoad.enable)
+  const aoiEnable = useSettingStore((s) => s.virtualReal.building.enable)
+  const textEnable = useSettingStore((s) => s.virtualReal.text.enable)
+
+  return (
+    <>
+      <ARSceneConfig />
+      <ARSceneCamera />
+      <ARSenceUpdateData />
+      {roadEnable && <ARSceneRoads />}
+      {aoiEnable && <ARSceneAOIs />}
+      {textEnable && <ARScenePOIs />}
+      <ARSceneUavAirline />
+      <ARSceneBanAreas />
+      <ARSceneHomePoint />
+      <ARScenePointFly />
+      <ARSceneUavTracks />
+    </>
+  )
+}
+
+Inner.displayName = 'Inner'
+
 const ARScene: FC<PropsType> = memo(() => {
+  const contextOptions = useRef<ContextOptions>({ webgl: { alpha: true } })
   return (
     <Viewer
       full
-      id="ar-scene"
+      key={'ar-scene'}
       geocoder={false}
       homeButton={false}
       sceneModePicker={false}
@@ -36,21 +63,10 @@ const ARScene: FC<PropsType> = memo(() => {
       skyBox={false}
       // @ts-ignore
       imageryProvider={false}
-      contextOptions={{ webgl: { alpha: true } }}
+      contextOptions={contextOptions.current}
       scene3DOnly={true}
     >
-      <ARSceneConfig />
-      <ARSceneCamera />
-      <ARSenceUpdateData />
-      <ARSceneRoads />
-      <ARSceneAOIs />
-      <ARScenePOIs />
-      <ARSceneUavAirline />
-      <ARSceneBanAreas />
-      <ARSceneHomePoint />
-      <ARScenePointFly />
-      <ARSceneUavTracks />
-      {/* <LayerOverlaies /> */}
+      <Inner />
     </Viewer>
   )
 })

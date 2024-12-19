@@ -43,6 +43,21 @@ const I: FC<{ l: ReactNode; v: ReactNode; t?: string }> = ({ l, v, t }) => (
   </li>
 )
 
+const Signal14G = memo(() => {
+  const signal = useS((s) => s.state.signal)
+  const item = signal?.find((s) => s.type === '14G')
+  if (isNil(item)) {
+    return null
+  }
+  return (
+    <I
+      t={'1.4G信号强度'}
+      l={'1.4G'}
+      v={<SignalStrengthIcon value={item.sqe} max={5} />}
+    />
+  )
+})
+
 const SDRStrength = memo(() => {
   const sdrStrength = useS((s) => s.state?.sdrStrength)
   if (isNil(sdrStrength)) {
@@ -184,6 +199,7 @@ const ControlRoomUavHeader: FC = memo(() => {
               className="text-fore"
             />
           )}
+          <Signal14G />
           <SDRStrength />
           <SignalStrength />
           <SatelliteNumber />
