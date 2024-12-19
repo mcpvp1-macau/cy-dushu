@@ -17,7 +17,8 @@ const Takeoff: FC<PropsType> = memo(({ postServiceFn }) => {
   const canTakeoff = !isLimitedFly && hasControlPower && hasService
 
   const handleClick = async (data) => {
-    postServiceFn('takeoff', data)
+    await postServiceFn('takeoff', data)
+    setFalse()
   }
 
   const [open, { setTrue, setFalse }] = useBoolean(false)
