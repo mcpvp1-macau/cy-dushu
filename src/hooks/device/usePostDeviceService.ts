@@ -40,6 +40,7 @@ export const usePostDeviceService = (productKey: string, deviceId: string) => {
           content: fmt('操作失败', msgPrefix),
           duration: 3,
         })
+        throw e
       }
     },
   )

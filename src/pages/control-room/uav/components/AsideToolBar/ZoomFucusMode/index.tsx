@@ -19,7 +19,7 @@ const ZoomFocusMode: FC<PropsType> = memo(({ postSerivce }) => {
   const lensType = useUavControlRoomStore((s) => s.state.lensType)
   const handleClick = ({ key }: { key: string }) => {
     postSerivce('changeZoomFocusMode', {
-      mode: Number(key),
+      mode: String(key),
       lens: lensType,
     })
   }

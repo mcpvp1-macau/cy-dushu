@@ -12,7 +12,6 @@ import ControlRoomVideo from './components/ControlRoomVideo'
 import AsideToolBar from './components/AsideToolBar'
 import ControlRoomUavCameraSwitch from './components/CameraSwitch'
 import FallbackMessage from './components/FallbackMessage'
-import GimbalSwitch from './components/GimbalSwitch'
 import AsideButtons from './components/AsideButtons'
 import BottomButtons from './components/BottomButtons'
 import ControlCMDSender from './components/ControlCMDSender'
@@ -35,6 +34,7 @@ import StateResolver from './components/StateResolver'
 import DynamicLayoutRoot from '@/components/DynamicLayout'
 import { useLocalStorageState } from 'ahooks'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import GimbalLeft from './components/GimbalLeft'
 
 type PropsType = unknown
 
@@ -159,7 +159,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
             <ControlRoomUavCameraSwitch />
             <FallbackMessage />
           </aside>
-          <GimbalSwitch />
+          <GimbalLeft />
           <Zoom />
         </div>
       ),

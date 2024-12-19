@@ -5,6 +5,7 @@ import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDevice
 import { pick } from 'lodash'
 import { useShallow } from 'zustand/react/shallow'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
+import { useDebounceFn, useThrottleFn } from 'ahooks'
 
 type PropsType = unknown
 
@@ -16,22 +17,61 @@ const InnerZoomFocus: FC<PropsType> = () => {
 
   const lens = useUavControlRoomStore((s) => s.state.lensType)
 
-  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const x = e.nativeEvent.offsetX / e.currentTarget.clientWidth
-    const y = e.nativeEvent.offsetY / e.currentTarget.clientHeight
-    postDeviceService('focusPoint', { lens, x, y }, '变焦')
-  }
+  const [pos, setPos] = useState<{ x: number; y: number } | null>({
+    x: 0,
+    y: 0,
+  })
+
+  const { run: clear } = useDebounceFn(
+    () => {
+      setPos(null)
+    },
+    { wait: 1500 },
+  )
+
+  const { run: handleClick } = useThrottleFn(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      const x = e.nativeEvent.offsetX / e.currentTarget.clientWidth
+      const y = e.nativeEvent.offsetY / e.currentTarget.clientHeight
+      setPos({ x, y })
+      postDeviceService('focusPoint', { lens, x, y }, '对焦')
+      clear()
+    },
+    {
+      wait: 500,
+    },
+  )
 
   return (
     <div
-      className="absolute inset-0 pointer-events-auto"
+      className="absolute inset-0 pointer-events-auto overflow-hidden"
       onClick={handleClick}
-    ></div>
+    >
+      {pos && (
+        <div
+          key={JSON.stringify(pos)}
+          className="w-20 h-20 border border-yellow-500 absolute animate-in zoom-in-125 duration-500 opacity-80 pointer-events-none"
+          style={{
+            left: `calc(${pos.x * 100}% - 40px)`,
+            top: `calc(${pos.y * 100}% - 40px)`,
+          }}
+        >
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-yellow-500 w-[1px] h-2" />
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 bg-yellow-500 w-[1px] h-2" />
+          <div className="absolute left-0 top-1/2 -translate-y-1/2 bg-yellow-500 w-2 h-[1px]" />
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-yellow-500 w-2 h-[1px]" />
+          {/* <div className="absolute -right-2 top-1/2 -translate-y-1/2 translate-x-full">
+            <SunOutlined className="text-yellow-500 text-xl" />
+          </div> */}
+        </div>
+      )}
+    </div>
   )
 }
 
 InnerZoomFocus.displayName = 'InnerZoomFocus'
 
+/** 点对焦 */
 const ZoomFocus: FC<PropsType> = memo(() => {
   const zoomFocusMode = useUavControlRoomStore((s) => s.state.zoomFocusMode)
   const has = useDeviceDetailStore((s) => s.serviceHave['focusPoint'])

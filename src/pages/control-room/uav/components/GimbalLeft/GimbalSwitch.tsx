@@ -1,9 +1,8 @@
-import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { Button } from 'antd'
 import mitt from 'mitt'
-import { memo, type FC } from 'react'
+import usePostDeviceService from '../../hooks/usePostDeviceService'
 
 type PropsType = unknown
 
@@ -19,8 +18,6 @@ const gimbalTypes = [
 
 /** 镜头切换 */
 const GimbalSwitch: FC<PropsType> = memo(() => {
-  const productKey = useDeviceDetailStore((s) => s.productKey)
-  const deviceId = useDeviceDetailStore((s) => s.deviceId)
   const firstVideo = useDeviceDetailStore(
     (s) => s.deviceDetail?.properties.videoList?.[0],
   )
@@ -34,7 +31,7 @@ const GimbalSwitch: FC<PropsType> = memo(() => {
     [firstVideo],
   )
 
-  const postService = usePostDeviceService(productKey, deviceId)
+  const postService = usePostDeviceService()
 
   const handleClick = useMemoizedFn((lensType: string) => {
     postService('liveLensChange', { videoId, lensType })
@@ -76,13 +73,16 @@ const GimbalSwitch: FC<PropsType> = memo(() => {
   }, [])
 
   return (
-    <div className="absolute left-3 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-50">
+    <>
       {gimbalTypes.map(([type, label]) => (
         <Button
           key={type}
-          className={clsx({
-            'text-primary': videoSource === 'gimbal' && lensType === type,
-          })}
+          className={clsx(
+            {
+              'text-primary': videoSource === 'gimbal' && lensType === type,
+            },
+            'w-14 h-7',
+          )}
           disabled={
             !has ||
             videoSource !== 'gimbal' ||
@@ -93,7 +93,7 @@ const GimbalSwitch: FC<PropsType> = memo(() => {
           {label}
         </Button>
       ))}
-    </div>
+    </>
   )
 })
 

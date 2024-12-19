@@ -5,7 +5,7 @@ import { limitNum } from '@/utils/math'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import { uavControlRoomZoomEmitter } from '../components/Zoom'
-import { gimbalSwitchEmitter } from '../components/GimbalSwitch'
+import { gimbalSwitchEmitter } from '../components/GimbalLeft/GimbalSwitch'
 
 const keyMap_vendor0738_product2221 = new Map<number, string>([
   [0, 'resetGimbalYaw'], // 云台回中
