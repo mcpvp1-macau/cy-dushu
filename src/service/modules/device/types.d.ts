@@ -11,7 +11,7 @@ declare namespace API_DEVICE {
     interface DeviceListItem {
       productKey: string
       deviceId: string
-      deviceModel: any
+      deviceModel: DeviceModel
       deviceName: string
       deviceRegisterVersion: string
       deviceType: string
@@ -25,6 +25,143 @@ declare namespace API_DEVICE {
       createTime: number
       username: string
       otaInfo?: OTAInfo
+    }
+
+    // type dType =
+    //   | 'struct'
+    //   | 'int'
+    //   | 'text'
+    //   | 'float'
+    //   | 'double'
+    //   | 'bool'
+    //   | 'enum'
+    //   | 'array'
+
+    interface NumberSpecs {
+      max: number
+      min: number
+      step: number
+      unit?: string
+      unitName?: string
+    }
+
+    interface TextSpecs {
+      length: number
+    }
+
+    interface EnumSpec {
+      [key: string | number]: string
+    }
+
+    interface BooleanSpec {
+      0: string
+      1: string
+    }
+
+    type StructSpec = {
+      paramName: string
+      identifier: string
+      name: string
+    } & DataType
+
+    type BaseType =
+      | {
+          type: 'int' | 'float' | 'double'
+          specs: NumberSpecs
+        }
+      | {
+          type: 'text'
+          specs: TextSpecs
+        }
+      | {
+          type: 'enum'
+          specs: EnumSpec[]
+        }
+      | {
+          type: 'bool'
+          specs: BooleanSpec
+        }
+      | {
+          type: 'struct'
+          specs: StructSpec[]
+        }
+
+    type Rename<T, K extends string, V extends string> = {
+      [P in keyof T as P extends K ? V : P]: T[P]
+    }
+
+    type ArrayItemSpec = Rename<BaseType, 'type', 'dataType'>
+
+    type DataType =
+      | BaseType
+      | {
+          type: 'array'
+          specs: {
+            size: number
+          }
+          item: ArrayItemSpec
+        }
+
+    type expandsType = {
+      show?: boolean
+    }
+
+    type Field = {
+      dataType: DataType
+      id: number
+      identifier: string
+      name: string
+      required: boolean
+    }
+
+    interface Event {
+      desc: string
+      identifier: string
+      inputMethodFields: Field[]
+      method: string
+      name: string
+      outputMethodFields: Field[]
+    }
+
+    interface Events {
+      [identifier: string]: Event
+    }
+
+    interface Service {
+      callType: 'sync' | 'async'
+      desc: string
+      expands: expandsType
+      identifier: string
+      inputMethodFields: Field[]
+      method: string
+      name: string
+      outputMethodFields: any[]
+    }
+
+    interface Services {
+      [identifier: string]: Service
+    }
+
+    interface Propertie {
+      dataType: DataType
+      desc: string
+      expands: expandsType
+      id: number
+      identifier: string
+      name: string
+      required: boolean
+    }
+
+    interface DeviceModel {
+      configs: Propertie[]
+      deviceId: string
+      events: Events
+      name: string
+      productKey: string
+      productType: string
+      productVersion: string
+      properties: Propertie[]
+      services: Services
     }
     interface Device {
       name: string
@@ -47,10 +184,10 @@ declare namespace API_DEVICE {
       }[]
       properties: API_DEVICE.domain.Properties
       childrenDevices?: any[]
-      childDevice?: any[]
+      childDevice?: Device[]
       parentId: string
       subDevice: boolean
-      deviceModel?: any
+      deviceModel?: DeviceModel
     }
     type Properties = Partial<{
       HorizontalAvoidEnable: string
