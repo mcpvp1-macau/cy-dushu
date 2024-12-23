@@ -1,7 +1,6 @@
 import { memo, useDeferredValue, type FC } from 'react'
 import SeiEnum, { SEI_TYPE } from '../Video/Jessibuca/sei-enum'
 import { AiObject } from '../Video/Jessibuca/sei-types/ai-data'
-import { useAppMsg } from '@/hooks/useAppMsg'
 
 type PropsType = {
   data: SEI_TYPE[SeiEnum.Protobuf_SEI]
@@ -9,22 +8,15 @@ type PropsType = {
 }
 
 const Inner: FC<PropsType> = memo(({ data, onClickSeiBox }) => {
-  const msgApi = useAppMsg()
   const objList = useMemo(() => {
     const set = new Set()
     const list: typeof data.objectList = []
-    const repeatIds: string[] = []
     data.objectList?.forEach((item) => {
       if (!set.has(item.objectId)) {
         list.push(item)
         set.add(item.objectId)
-      } else {
-        repeatIds.push(item.objectId)
       }
     })
-    if (repeatIds.length > 0) {
-      msgApi.error(`重复的目标ID: [${repeatIds.join(', ')}]`)
-    }
     return list
   }, [data])
 
