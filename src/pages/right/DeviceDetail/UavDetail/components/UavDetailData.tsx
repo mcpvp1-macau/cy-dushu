@@ -25,27 +25,25 @@ const UavDetailData: FC<PropsType> = memo(() => {
   usePrevDayHisTrack()
 
   return (
-    <div>
-      <AppCollapse
-        className="border-x-0 border-b-0"
-        items={[
-          {
-            label: (
-              <LinkSwitch
-                value={mediaType}
-                items={items}
-                onChange={(e) => setMediaType(e as MediaType)}
-              />
-            ),
-            children: <DeviceDetailMediaData type={mediaType} />,
-          },
-          {
-            label: '检测数据',
-            children: <AppEmpty />,
-          },
-        ]}
-      />
-    </div>
+    <AppCollapse
+      className="border-x-0 border-b-0"
+      items={[
+        {
+          label: (
+            <LinkSwitch
+              value={mediaType}
+              items={items}
+              onChange={(e) => setMediaType(e as MediaType)}
+            />
+          ),
+          children: <DeviceDetailMediaData type={mediaType} />,
+        },
+        {
+          label: '检测数据',
+          children: <AppEmpty />,
+        },
+      ]}
+    />
   )
 })
 
