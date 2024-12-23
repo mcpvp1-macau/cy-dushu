@@ -8,14 +8,14 @@ export default mergeConfig(
       proxy: {
         // 4A 接口
         '/proxyApi': {
-          target: 'http://172.21.30.201:31851/',
+          target: 'http://172.21.30.201:32711/',
           // target: 'http://127.0.0.1:7001/',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/proxyApi/, '/'),
         },
         // 全局 WebSocket
         '/ws': {
-          target: 'ws://172.21.30.164:32201',
+          target: 'ws://172.21.30.201:32201',
           ws: true,
           changeOrigin: true,
         },

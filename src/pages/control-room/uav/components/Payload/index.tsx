@@ -1,5 +1,4 @@
 import AppCollapse from '@/components/AppCollapse'
-import AppEmpty from '@/components/AppEmpty'
 import { emtpyArray } from '@/constant/data'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { CollapseProps } from 'antd'
@@ -12,10 +11,12 @@ const MMC_Gimbal_LP12_1 = React.lazy(() => import('./MMC_Gimbal_LP12_1'))
 const MMC_Gimbal_LP12_2 = React.lazy(() => import('./MMC_Gimbal_LP12_2'))
 const MMC_Gimbal_Z30Pro = React.lazy(() => import('./MMC_Gimbal_Z30Pro'))
 const MMC_Gimbal_Z60R = React.lazy(() => import('./MMC_Gimbal_Z60R'))
+const PARACHUTE = React.lazy(() => import('./PARACHUTE'))
 
 type PropsType = unknown
 
 type MountType =
+  | 'PARACHUTE'
   | 'MMC_Gimbal_P3'
   | 'MMC_Gimbal_Z60R'
   | 'MMC_Gimbal_Z30Pro'
@@ -24,6 +25,7 @@ type MountType =
   | 'MMC_Gimbal_D4'
 
 const labelMap: { [key in MountType]: string } = {
+  PARACHUTE: '降落伞',
   MMC_Gimbal_P3: '喊话器 P3',
   MMC_Gimbal_Z60R: '云台相机 Z60R',
   MMC_Gimbal_Z30Pro: '云台相机 Z30Pro',
@@ -36,6 +38,7 @@ const labelMap: { [key in MountType]: string } = {
 const UavPayload: FC<PropsType> = memo(() => {
   // TODO mock 挂载
   const mount: string[] = useUavControlRoomStore((s) => s.state.mounts) || [
+    'PARACHUTE',
     'MMC_Gimbal_P3',
     'MMC_Gimbal_Z60R',
     'MMC_Gimbal_Z30Pro',
@@ -60,6 +63,11 @@ const UavPayload: FC<PropsType> = memo(() => {
   const MountsChildren: {
     [key in MountType]: React.ReactNode
   } = {
+    PARACHUTE: (
+      <Suspense fallback={'loading...'}>
+        <PARACHUTE />
+      </Suspense>
+    ),
     MMC_Gimbal_P3: (
       <Suspense fallback={'loading...'}>
         <MMC_Gimbal_P3 />
@@ -101,14 +109,7 @@ const UavPayload: FC<PropsType> = memo(() => {
       }
     }) || emtpyArray
 
-  return (
-    <AppCollapse
-      items={[
-        { label: '降落伞', key: 'parachute', children: <AppEmpty /> },
-        ...collapseItems,
-      ]}
-    />
-  )
+  return <AppCollapse items={collapseItems} />
 })
 
 UavPayload.displayName = 'UavPayload'
