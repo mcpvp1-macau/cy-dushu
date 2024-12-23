@@ -35,6 +35,8 @@ import DynamicLayoutRoot from '@/components/DynamicLayout'
 import { useLocalStorageState } from 'ahooks'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import GimbalLeft from './components/GimbalLeft'
+import IconPayload from '@/assets/icons/jsx/IconPayload'
+import UavPayload from './components/Payload'
 
 type PropsType = unknown
 
@@ -104,6 +106,10 @@ const initialLayout: DynamicLayoutType = {
       isCollapsed: true,
       children: [
         {
+          title: '负载',
+          key: 'payload',
+        },
+        {
           title: 'AI 算法',
           key: 'ai-list',
         },
@@ -143,6 +149,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       flyParams: <IconGamepad className="text-orange-500" />,
       flyButtons: <DeviceIconUAV2 className="text-purple-500" />,
       flyParamsSetting: <FormOutlined className="text-emerald-500" />,
+      payload: <IconPayload className="text-emerald-500" />,
       'ai-list': <IconAISwitch className="text-violet-500" />,
       'device-data': <IconData className="text-emerald-500" />,
     }),
@@ -175,6 +182,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
           </ScrollArea>
         </div>
       ),
+      payload: <UavPayload />,
       ['device-data']: <UavDetailData />,
       flyButtons: (
         <>
