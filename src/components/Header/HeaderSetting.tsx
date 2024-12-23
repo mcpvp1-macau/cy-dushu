@@ -38,6 +38,10 @@ const HeaderSetting: FC<PropsType> = memo(() => {
       label: 'MSE',
       disabled: !supportMse,
     },
+    {
+      value: 'useWasm',
+      label: 'Wasm',
+    },
   ])
 
   const [settingOpen, { setTrue, setFalse }] = useBoolean(false)
