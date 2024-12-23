@@ -14,10 +14,10 @@ const GimbalPitchBar: FC<PropsType> = memo(() => {
       <div className="h-[72px] w-2 border border-solid border-black bg-white bg-opacity-15 relative  pointer-events-none">
         {!isNil(gimbalPitch) && (
           <span
-            className="absolute top-0 -translate-y-[120%] -translate-x-[8px] text-green-500 text-xl"
+            className="absolute top-0 -translate-y-[120%] -translate-x-[8px] text-green-500 whitespace-nowrap"
             style={{ textShadow: '0 0 2px #000' }}
           >
-            {gimbalPitch.toFixed?.(0)}°
+            θ {gimbalPitch.toFixed?.(0)}°
           </span>
         )}
         <div

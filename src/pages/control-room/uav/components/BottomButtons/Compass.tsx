@@ -42,10 +42,16 @@ const Compass: FC<PropsType> = memo(() => {
         <img src={compassArrowImg} className="scale-90" />
       </div>
       <div
-        className="absolute top-0 -translate-y-full left-1/2 -translate-x-1/2 text-green-500 text-xl"
+        className="absolute top-0 -translate-y-full left-1/2 -translate-x-1/2 text-green-500"
         style={{ textShadow: '0 0 2px #000' }}
       >
-        {uavYaw?.toFixed?.(1)}°
+        ψ {uavYaw?.toFixed?.(1)}°
+      </div>
+      <div
+        className="absolute bottom-0 translate-y-full left-1/2 -translate-x-1/2 text-green-500"
+        style={{ textShadow: '0 0 2px #000' }}
+      >
+        ϕ {uavRoll?.toFixed?.(1)}°
       </div>
     </div>
   )
