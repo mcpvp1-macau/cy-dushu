@@ -27,3 +27,12 @@ export const getTrackQuery = (data: {
     data,
   )
 }
+
+/** 无人机属性回溯 */
+export const getUavDeviceAttrBackV2 = (data: {
+  deviceId: string
+  startTime: string
+  endTime: string
+}) => {
+  return serverDBAPI.post('api/uavDeviceAttrBackV2', data)
+}
