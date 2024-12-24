@@ -64,6 +64,7 @@ const OperatorBtns: FC<PropsType> = ({ data }) => {
         <div className="flex gap-2">
           <Button
             size="small"
+            disabled={isNil(data.taskTplId)}
             onClick={() => {
               const info = shouldJson(data.taskTemplateInfo)
               let params = `?actionId=${data.actionId}&actionItemId=${
