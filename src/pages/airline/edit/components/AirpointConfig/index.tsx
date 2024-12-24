@@ -1,4 +1,3 @@
-import { FC, ReactNode, useRef, useState } from 'react'
 import styles from './index.module.less'
 import { Button, Popconfirm } from 'antd'
 import Actions from './Actions'
@@ -38,12 +37,10 @@ const AirpointConfig: FC<PropsType> = ({ info }) => {
     (s) => s.updateAirpointsConfig,
   )
 
-  const lastCurrentIndex = useRef(currentIndex)
-  if (lastCurrentIndex.current !== currentIndex) {
-    lastCurrentIndex.current = currentIndex
+  useEffect(() => {
     setCurrentActionIndex(0)
     setActiveAction(airpointsConfig[currentIndex]?.actions?.[0]?.xid || '')
-  }
+  }, [currentIndex])
 
   const handleTakeoffClick = () => {
     if (isDrawPoint) {

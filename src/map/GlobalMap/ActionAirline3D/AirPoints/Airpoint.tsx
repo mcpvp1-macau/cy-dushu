@@ -89,6 +89,17 @@ const Airpoint: FC<PropsType> = ({ point }) => {
       const target = cartesian3ToDegrees(
         entityRef.current!.position!.getValue(viewer.clock.currentTime)!,
       )
+
+      // 如果是 2D 模式
+      if (viewer.scene.mode === Cesium.SceneMode.SCENE2D) {
+        editCurrentAirPoint({
+          pointX: x[0],
+          pointY: x[1],
+          pointZ: target[2],
+        })
+        return
+      }
+
       const distance = target[2] / get3DTan(x, y)
       const bearing = turf.bearing(
         turf.point([x[0], x[1]]),

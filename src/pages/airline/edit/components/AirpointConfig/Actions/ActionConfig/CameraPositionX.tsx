@@ -1,9 +1,9 @@
-import { memo, type FC } from 'react'
 import styles from './index.module.less'
 import HSlider from '../../../HSlider'
 import YTPHJ from '../../icons/YTPHJ'
 import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
 import { ActionCameraPositionType } from '@/store/uav/uav-airline/types'
+import { createPortal } from 'react-dom'
 
 type ConfigType = ActionCameraPositionType['config']
 
@@ -14,9 +14,6 @@ type PropsType = {
 
 const CameraPositionX: FC<PropsType> = ({ config, onChange }) => {
   const currentBearing = useAirlineConfigStore((s) => s.bearing)
-
-  // const { leftHide } = useModel('leftNav', (m) => pick(m, 'leftHide'));
-  const leftHide = false
 
   let diff = Math.abs(currentBearing - (config.x ?? 0))
   if (diff > 180) {
@@ -46,27 +43,24 @@ const CameraPositionX: FC<PropsType> = ({ config, onChange }) => {
         max={180}
         onChange={(value) => onChange({ x: Number(value.toFixed(2)) })}
       />
-      {warningShow && (
-        <div
-          style={{
-            position: 'fixed',
-            bottom: '134px',
-            left: `calc(50% + 19px + ${leftHide ? 0 : 175}px)`,
-            transform: 'translateX(-50%)',
-            background: errorShow
-              ? 'rgba(214, 34, 38, 0.6)'
-              : 'rgba(212, 107, 30, 0.75)',
-            padding: '12px 24px',
-            width: '300px',
-            borderRadius: '3px',
-            textAlign: 'center',
-          }}
-        >
-          {errorShow
-            ? '云台已达限位角度'
-            : '当前角度可能会拍到飞行器脚架或桨叶'}
-        </div>
-      )}
+      {warningShow &&
+        createPortal(
+          <div
+            className="z-50 text-white fixed bottom-6 left-1/2 transform -translate-x-1/2 p-3 py-6  whitespace-nowrap rounded"
+            style={{
+              background: errorShow
+                ? 'rgba(214, 34, 38, 0.6)'
+                : 'rgba(212, 107, 30, 0.75)',
+              padding: '12px 24px',
+              textAlign: 'center',
+            }}
+          >
+            {errorShow
+              ? '云台已达限位角度'
+              : '当前角度可能会拍到飞行器脚架或桨叶'}
+          </div>,
+          document.body,
+        )}
     </div>
   )
 }
