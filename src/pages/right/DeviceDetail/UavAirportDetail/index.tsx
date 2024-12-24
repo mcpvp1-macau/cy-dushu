@@ -9,7 +9,7 @@ import { enumProperty } from '@/utils/device/property-parse'
 import UavAirportInfoCard from './components/InfoCard'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
 import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
-import { Button, Dropdown } from 'antd'
+import { Button } from 'antd'
 import IconDebug from '@/assets/icons/jsx/uav/IconDebug'
 import IconTakeoff from '@/assets/icons/jsx/uav/IconTakeoff'
 import RemoteDebug from './components/RemoteDebug'
@@ -18,8 +18,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
-import HealthInfoList from '@/components/device/HealthInfoList'
-import { InfoCircleOutlined } from '@ant-design/icons'
+import HealthInfoMini from '@/components/device/HealthInfoMini'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -148,19 +147,8 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
         <CloseableHeader>
           <div className="flex gap-2 items-center">
             {header}
-            {state.healthInfo?.length > 0 && (
-              <Dropdown
-                dropdownRender={() => (
-                  <HealthInfoList data={state.healthInfo} />
-                )}
-              >
-                <InfoCircleOutlined
-                  className={clsx('text-yellow-600', {
-                    'text-red-600': state.healthInfo[0]?.startsWith?.('Error'),
-                    'text-blue-600': state.healthInfo[0]?.startsWith?.('Info'),
-                  })}
-                />
-              </Dropdown>
+            {state.healthInfo?.length && (
+              <HealthInfoMini healthInfo={state.healthInfo} />
             )}
           </div>
         </CloseableHeader>
