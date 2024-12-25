@@ -10,6 +10,7 @@ type PropsType = unknown
 
 const ARSenceUpdateData: FC<PropsType> = memo(() => {
   const uav = useMixARStore((s) => s.uavProperties)
+  const DISTANCE = 600
 
   const lastCoordinates = useRef<[number, number] | undefined>(undefined)
   const [range, setRange] = useState<[number, number][] | undefined>()
@@ -57,6 +58,11 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
 
   useEffect(() => {
     if (Array.isArray(aoiData)) {
+      aoiData.sort((a, b) => {
+        const ax = a.class === 'building' ? 1 : 0
+        const bx = b.class === 'building' ? 1 : 0
+        return ax - bx
+      })
       updateAOIs(aoiData)
     }
   }, [aoiData])
@@ -91,13 +97,13 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
     if (lastCoordinates.current) {
       const from = turf.point(lastCoordinates.current)
       const distance = turf.distance(from, to, { units: 'meters' })
-      if (distance < 500) {
+      if (distance < DISTANCE / 2) {
         return
       }
     }
     lastCoordinates.current = [uav.longitude, uav.latitude]
-    const rt = turf.rhumbDestination(to, 2000, 45, { units: 'meters' })
-    const lb = turf.rhumbDestination(to, 2000, 225, { units: 'meters' })
+    const rt = turf.rhumbDestination(to, DISTANCE, 45, { units: 'meters' })
+    const lb = turf.rhumbDestination(to, DISTANCE, 225, { units: 'meters' })
     setRange([
       [lb.geometry.coordinates[0], lb.geometry.coordinates[1]],
       [rt.geometry.coordinates[0], rt.geometry.coordinates[1]],

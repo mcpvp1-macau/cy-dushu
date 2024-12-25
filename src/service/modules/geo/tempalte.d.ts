@@ -4,7 +4,9 @@ declare namespace API_GEO_SERACH {
     interface AOI {
       id: number
       name: string
+      height?: number
       coordinates: [number, number][]
+      class?: string
     }
     interface Road {
       id: number

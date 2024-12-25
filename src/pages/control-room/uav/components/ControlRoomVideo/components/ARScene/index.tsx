@@ -25,9 +25,9 @@ const Inner: FC = () => {
       <ARSceneConfig />
       <ARSceneCamera />
       <ARSenceUpdateData />
-      {roadEnable && <ARSceneRoads />}
       {aoiEnable && <ARSceneAOIs />}
       {textEnable && <ARScenePOIs />}
+      {roadEnable && <ARSceneRoads />}
       <ARSceneUavAirline />
       <ARSceneBanAreas />
       <ARSceneHomePoint />

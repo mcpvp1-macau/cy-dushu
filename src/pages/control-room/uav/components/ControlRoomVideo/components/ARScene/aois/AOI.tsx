@@ -1,23 +1,33 @@
 import { memo, type FC } from 'react'
-import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
-import { attempt, flatten } from 'lodash'
+import { attempt } from 'lodash'
 
 type PropsType = {
   data: API_GEO_SERACH.domain.AOI
+  collection: Cesium.PrimitiveCollection
 }
 
-const ARSceneAOI: FC<PropsType> = memo(({ data }) => {
-  const { viewer } = useCesium()
-
+const ARSceneAOI: FC<PropsType> = memo(({ data, collection }) => {
   useEffect(() => {
-    if (!viewer || !data) {
+    if (!data) {
+      return
+    }
+    const coordinates = data.coordinates.map((e) => [e[0], e[1]])
+
+    if (coordinates.length === 0) {
       return
     }
 
-    const positions = Cesium.Cartesian3.fromDegreesArray(
-      flatten(data.coordinates.map((e) => [e[0], e[1]])),
-    )
+    console.log('coordinates', coordinates)
+
+    if (
+      coordinates[0][0] !== coordinates[coordinates.length - 1][0] ||
+      coordinates[0][1] !== coordinates[coordinates.length - 1][1]
+    ) {
+      coordinates.push(coordinates[0])
+    }
+
+    const positions = Cesium.Cartesian3.fromDegreesArray(coordinates.flat())
 
     // 创建多边形几何实例
     const instance1 = new Cesium.GeometryInstance({
@@ -26,36 +36,71 @@ const ARSceneAOI: FC<PropsType> = memo(({ data }) => {
         extrudedHeight: 0,
       }),
       id: `aoi-${data.id}`,
-
       attributes: {
         color: Cesium.ColorGeometryInstanceAttribute.fromColor(
-          Cesium.Color.fromCssColorString('#5159a2').withAlpha(0.2),
+          Cesium.Color.fromCssColorString('#5159a2').withAlpha(0.5),
         ),
+        distanceDisplayCondition:
+          new Cesium.DistanceDisplayConditionGeometryInstanceAttribute(0, 1000),
       },
     })
 
     const primitive = new Cesium.Primitive({
       geometryInstances: [instance1], //可以是实例数组
       appearance: new Cesium.PerInstanceColorAppearance({
-        closed: true,
-        flat: true,
+        closed: false,
+        flat: false,
+        translucent: true,
+
         renderState: {
           depthTest: {
-            enabled: true,
+            enabled: false,
           },
+          depthMask: true,
+          // 混合模式
+          // blending: Cesium.BlendingState.ALPHA_BLEND,
         },
       }),
+
       allowPicking: true,
     })
 
-    viewer.scene.primitives.add(primitive)
+    const polylinePrimitive = new Cesium.Primitive({
+      geometryInstances: [
+        new Cesium.GeometryInstance({
+          geometry: new Cesium.PolylineGeometry({
+            positions,
+            width: 2,
+          }),
+
+          attributes: {
+            color: Cesium.ColorGeometryInstanceAttribute.fromColor(
+              Cesium.Color.fromCssColorString('#000000'),
+            ),
+            distanceDisplayCondition:
+              new Cesium.DistanceDisplayConditionGeometryInstanceAttribute(
+                0,
+                1000,
+              ),
+          },
+        }),
+      ],
+
+      appearance: new Cesium.PolylineColorAppearance({
+        translucent: false,
+      }),
+    })
+
+    collection.add(primitive)
+    collection.add(polylinePrimitive)
 
     return () => {
       attempt(() => {
-        viewer.scene.primitives.remove(primitive)
+        collection.remove(primitive)
+        collection.remove(polylinePrimitive)
       })
     }
-  }, [viewer, data])
+  }, [data])
 
   return null
 })
