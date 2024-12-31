@@ -11,7 +11,6 @@ import {
 import { shouldJson } from '@/utils/json'
 import { CloudFilled, LoadingOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
-import { memo, type FC } from 'react'
 import AlgorithmSettingModal from './AlgorithmSettingModal'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 
@@ -33,64 +32,49 @@ export const algorithmIconMap = {
 
 const AlgorithmListItem: FC<PropsType> = memo(
   ({ deviceId, productKey, aiData, onAction }) => {
+    const { t } = useTranslation()
+
     const Icon = algorithmIconMap[aiData.imageType] || CloudFilled
 
     const envMap = shouldJson(aiData.envMap)
 
-    let btnName = ''
-    let status = ''
-
-    if (aiData.deployRecordList.length) {
-      const last = aiData.deployRecordList[0]
-      switch (last.status) {
-        case 'STOPPED':
-          btnName = '部署'
-          status = '停止成功'
-          break
-        case 'PENDING':
-          btnName = '部署'
-          status = '未部署'
-          // loading = true;
-          break
-        case 'COMPLETED':
-          btnName = '停止'
-          status = '已完成'
-          break
-        case 'DEPLOYING':
-          btnName = '停止'
-          status = '部署中'
-          // loading = true;
-          break
-        case 'ERROR':
-          btnName = '停止'
-          status = '部署失败'
-          break
-        case 'EXCEPTION':
-          btnName = '停止'
-          status = '运行异常'
-          break
-        case 'STOPPING':
-          btnName = '停止'
-          status = '停止中'
-          // loading = true;
-          break
-        case 'STOP_ERROR':
-          btnName = '停止'
-          status = '停止失败'
-          break
-        case 'SUCCESS':
-          btnName = '停止'
-          status = '部署成功'
-          break
-
-        default:
-          btnName = '停止'
-          break
+    const { btnName, status } = useMemo(() => {
+      const e = aiData.deployRecordList?.[0]
+      if (!e) {
+        return {
+          btnName: t('device.algorithm.deploy.title'),
+          status: '',
+        }
       }
-    } else {
-      btnName = '部署'
-    }
-    const isRunning = btnName === '停止'
+
+      const btnName = ['STOPPED', 'PENDING'].includes(e.status)
+        ? t('device.algorithm.deploy.title')
+        : t('device.algorithm.stop.title')
+      const status =
+        e.status === 'STOPPED'
+          ? t('device.algorithm.stopped.title')
+          : e.status === 'PENDING'
+          ? t('device.algorithm.pending.title')
+          : e.status === 'COMPLETED'
+          ? t('device.algorihm.competed.title')
+          : e.status === 'DEPLOYING'
+          ? t('device.algorithm.deploying')
+          : e.status === 'ERROR'
+          ? t('device.algorithm.error.title')
+          : e.status === 'EXCEPTION'
+          ? t('device.algorithm.exception.title')
+          : e.status === 'STOPPING'
+          ? t('device.algorithm.stopping.title')
+          : e.status === 'STOP_ERROR'
+          ? t('device.algorithm.stopError.title')
+          : e.status === 'SUCCESS'
+          ? t('device.algorithm.success.title')
+          : ''
+
+      return { btnName, status }
+    }, [aiData.deployRecordList])
+
+    const isRunning = btnName === 'Stop' || btnName === '停止'
     const msgApi = useAppMsg()
     const handleBtnClick = useMemoizedFn(async () => {
       if (!productKey || !deviceId) {
@@ -98,7 +82,7 @@ const AlgorithmListItem: FC<PropsType> = memo(
       }
       const deployRecord = aiData.deployRecordList?.[0]
       let message = ''
-      if (btnName === '部署') {
+      if (btnName === '部署' || btnName === 'Deploy') {
         message = (
           await deployAlgorithm({
             appId: aiData.id,
@@ -127,7 +111,7 @@ const AlgorithmListItem: FC<PropsType> = memo(
         deviceId: deviceId!,
         algorithmConfig: JSON.stringify(data),
       })
-      msgApi.success('更新成功')
+      msgApi.success(t('api.success'))
       setOpen(false)
       onAction?.()
     })
@@ -154,7 +138,7 @@ const AlgorithmListItem: FC<PropsType> = memo(
                 size="small"
                 className="text-xs h-5 leading-5"
                 type={!isRunning ? 'primary' : 'default'}
-                disabled={btnName !== '部署' && btnName !== '停止'}
+                // disabled={btnName !== '部署' && btnName !== '停止'}
                 onClick={handleBtnClick}
               >
                 {btnName}
@@ -163,15 +147,15 @@ const AlgorithmListItem: FC<PropsType> = memo(
           </div>
           <div className="flex mt-0.5 text-xs text-fore whitespace-nowrap">
             <p className="flex-1 flex gap-1">
-              <span>版本号:</span>
+              <span>{t('common.version')}:</span>
               <span>{envMap['version'] || '-'}</span>
             </p>
             <p className="flex-1 flex gap-1">
-              <span>来源:</span>
+              <span>{t('common.source')}:</span>
               <span>{envMap['from'] || '-'}</span>
             </p>
             <p className="flex-1 flex gap-1">
-              <span>状态:</span>
+              <span>{t('common.status')}:</span>
               <span>
                 {status || '-'}
                 {'部署中' === status && <LoadingOutlined className="ml-1" />}
@@ -179,7 +163,7 @@ const AlgorithmListItem: FC<PropsType> = memo(
             </p>
           </div>
           <p className="text-xs text-fore mt-0.5 flex gap-1">
-            <span>创建时间:</span>
+            <span>{t('common.createTime')}:</span>
             <span>{aiData.createTime}</span>
           </p>
         </div>

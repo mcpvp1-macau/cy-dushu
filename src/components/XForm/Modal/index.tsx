@@ -30,6 +30,7 @@ const FormModal: FC<PropsType> = ({
   onClose,
   ...restProps
 }) => {
+  const { t } = useTranslation()
   const [innerForm] = Form.useForm()
 
   const form = propForm ?? innerForm
@@ -86,14 +87,14 @@ const FormModal: FC<PropsType> = ({
             />
           </div>
           <div className="text-right p-3 pt-0">
-            <Button onClick={onClose}>取消</Button>
+            <Button onClick={onClose}>{t('modal.cancel')}</Button>
             <Button
               loading={confirmLoading || loading}
               type="primary"
               style={{ marginLeft: '12px' }}
               onClick={handleConfirmClick}
             >
-              确定
+              {t('modal.confirm')}
             </Button>
           </div>
         </div>

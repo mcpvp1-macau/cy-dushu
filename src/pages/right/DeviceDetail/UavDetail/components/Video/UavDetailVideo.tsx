@@ -18,19 +18,19 @@ type PropsType = {
   useLinksSwitch?: boolean
 }
 
-const videoSourceOptions = [
-  {
-    label: 'FPV',
-    value: 'fpv',
-  },
-  {
-    label: '云台',
-    value: 'gimbal',
-  },
-]
-
 const UavDetailVideo: FC<PropsType> = memo(
   ({ videoSource, videoQuality, useLinksSwitch }) => {
+    const { t } = useTranslation()
+    const videoSourceOptions = [
+      {
+        label: 'FPV',
+        value: 'fpv',
+      },
+      {
+        label: t('uav.gimbal.title'),
+        value: 'gimbal',
+      },
+    ]
     const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
     const deviceId = deviceDetail?.deviceId
     const productKey =
@@ -92,7 +92,7 @@ const UavDetailVideo: FC<PropsType> = memo(
               videoLiveRef={videoLiveRef}
             />
             <IconButton
-              toolTipProps={{ title: '拍照' }}
+              toolTipProps={{ title: t('common.takePhoto') }}
               onClick={handleTakePhoto}
             >
               <IconCamera />

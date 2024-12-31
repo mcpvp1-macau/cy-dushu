@@ -1,7 +1,7 @@
 import Select from '@/components/AntdOverride/Select'
 import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
-import { pictureSourceTypeOptions } from '@/constant/options/device-media'
+import usePicutreSourceTypeOptions from '@/constant/options/pictureSourceTypeOptions'
 import { beginDay, dft, timeOnly } from '@/constant/time-fmt'
 import { getPlatformCapture } from '@/service/modules/db-api'
 import { Col, Image, Pagination, Row, Spin } from 'antd'
@@ -55,6 +55,8 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(({ deviceList }) => {
     },
     queryClient,
   )
+
+  const pictureSourceTypeOptions = usePicutreSourceTypeOptions()
 
   return (
     <div>

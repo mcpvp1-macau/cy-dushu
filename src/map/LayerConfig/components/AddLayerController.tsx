@@ -4,18 +4,10 @@ import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
 import { addLayer } from '@/service/modules/layer_overlay'
 
-const formItems = [
-  {
-    label: '图层名称',
-    name: 'layerName',
-    type: 'input',
-    rules: [{ required: true }],
-  },
-] as XFormItem[]
-
 type PropsType = unknown
 
 const AddLayerController: FC<PropsType> = memo(() => {
+  const { t } = useTranslation()
   const [addLayerOpen, { setFalse: closeAddLayer, setTrue: openAddLayer }] =
     useBoolean(false)
 
@@ -28,13 +20,29 @@ const AddLayerController: FC<PropsType> = memo(() => {
     closeAddLayer()
   }
 
+  const formItems = useMemo(
+    () =>
+      [
+        {
+          label: t('mapLayer.createMap.form.layerName.title'),
+          name: 'layerName',
+          type: 'input',
+          rules: [{ required: true }],
+        },
+      ] as XFormItem[],
+    [t],
+  )
+
   return (
     <>
-      <IconButton toolTipProps={{ title: '添加图层' }} onClick={openAddLayer}>
+      <IconButton
+        toolTipProps={{ title: t('mapLayer.setting.addLayer.title') }}
+        onClick={openAddLayer}
+      >
         <IconPlus />
       </IconButton>
       <FormModal
-        title="新增图层"
+        title={t('mapLayer.setting.addLayer.title')}
         open={addLayerOpen}
         onClose={closeAddLayer}
         items={formItems}

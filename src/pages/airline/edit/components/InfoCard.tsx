@@ -11,6 +11,8 @@ const AirlineInfoCard: FC<PropsType> = memo(() => {
 
   const speed = useAirlineConfigStore((s) => s.airlineConfig.speed)
 
+  const { t } = useTranslation()
+
   /** 航线距离 */
   const totalDistance = useMemo(() => {
     if (!takeOffRefPoint) return 0
@@ -53,19 +55,19 @@ const AirlineInfoCard: FC<PropsType> = memo(() => {
   return (
     <ul className="card-border flex p-3 px-1 text-xs text-center bg-[#1c2630] divide-x divide-ground-300">
       <li className="grow">
-        <p>航线长度</p>
+        <p>{t('wayline.info.length.title')}</p>
         <p className="mt-1 text-white text-sm">{distanceFmt}</p>
       </li>
       <li className="grow">
-        <p>预计执行时间</p>
+        <p>{t('wayline.info.time.title')}</p>
         <p className="mt-1 text-white text-sm">{flyTimeFmt}</p>
       </li>
       <li className="grow">
-        <p>航点</p>
+        <p>{t('wayline.info.pointCnt.title')}</p>
         <p className="mt-1 text-white text-sm">{airpointsConfig.length}</p>
       </li>
       <li className="grow">
-        <p>照片</p>
+        <p>{t('wayline.info.photoCnt.title')}</p>
         <p className="mt-1 text-white text-sm">{totalPhotos}</p>
       </li>
     </ul>

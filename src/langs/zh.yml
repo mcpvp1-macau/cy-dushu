@@ -1,0 +1,774 @@
+login:
+  logout: 退出登录
+poi_searcher:
+  placeholder: 请输入关键字
+  result_tip: 为您展示前 {{count}} 个结果
+setting:
+  title: 设置
+  video_decoder:
+    title: 本机视频解码器
+    description: 默认会根据浏览器是否支持，按照WCS、MSE、Simd、Wasm的顺序自动选择解码器。
+    attention: 注意
+situation:
+  menus:
+    action: 行动
+    events: 事件
+source:
+  status:
+    online: 在线
+    isTask: 任务中
+    isNotTask: 无任务
+  input:
+    placeholder: 请根据名称搜索
+device:
+  status:
+    task:
+      RUNNING: 任务中
+      IDLE: 无任务
+    reported:
+      ok: 已报备
+      'no': 未报备
+    online:
+      ONLINE: 在线
+      OFFLINE: 离线
+  enterControlRoom:
+    title: 进入驾驶舱
+  controlPower:
+    title: 控制权
+  aiModel:
+    title: AI 模型
+  algorithm:
+    deploy:
+      title: 部署
+    stop:
+      title: 停止
+    stopped:
+      title: 停止成功
+    pending:
+      title: 未部署
+    deploying: 部署中
+    error:
+      title: 部署失败
+    success:
+      title: 部署成功
+    exception:
+      title: 运行异常
+    stopping:
+      title: 停止中
+    stopError:
+      title: 停止失败
+    aiModelSetting:
+      title: AI 模型配置
+    deviceCountofDeployed:
+      title: 已部署设备数量
+    emptyConfig:
+      description: 该算法暂无配置项
+  algorihm:
+    competed:
+      title: 已完成
+  pictureFilter:
+    all:
+      title: 所有
+    screenshot:
+      title: 截图
+    photograph:
+      title: 拍照
+  lens:
+    wide:
+      title: 广角
+    ir:
+      title: 红外
+    zoom:
+      title: 变焦
+action:
+  input:
+    placeholder: 请根据行动名称搜索
+  status:
+    PENDING: 未开始
+    PROCESSING: 进行中
+  item:
+    time: 时间
+    description: 描述
+  add:
+    title: 创建行动
+    form:
+      name:
+        label: 行动名称
+        required_msg: 请输入行动名称
+      type:
+        label: 行动类型
+        required_msg: 请选择行动类型
+      description:
+        label: 描述
+  detail:
+    kcyp:
+      title: 事故信息
+      case_code:
+        title: 事件编码
+      process_status:
+        title: 协议状态
+      form:
+        driverName:
+          label: 一方姓名
+        phone:
+          label: 一方手机号
+          msg: 请输入正确的手机号
+        idType:
+          label: 一方证件类型
+        cardNo:
+          label: 一方证件号码
+          msg: 请输入正确的证件号码
+        otherDriverName:
+          label: 另一方姓名
+        otherPhone:
+          label: 另一方手机号
+        otherIdType:
+          label: 另一方证件类型
+        otherCardNo:
+          label: 另一方证件号码
+        brokenPart:
+          label: 一方车辆受损部位
+        otherBrokenPart:
+          label: 另一方车辆受损部位
+        carNo:
+          label: 一方车牌号
+        otherCarNo:
+          label: 另一方车牌号
+        firstScene:
+          label: 是否第一现场
+        accidentTime:
+          label: 事故类型
+    task:
+      title: 任务列表
+      edit:
+        title: 编辑
+      start:
+        title: 开始
+      pause:
+        title: 暂停
+      end:
+        title: 结束
+      continue:
+        title: 继续
+      people:
+        title: 执行人员
+      device:
+        title: 执行设备
+      status:
+        title: 任务状态
+      add:
+        title: 创建任务
+        form:
+          name:
+            label: 任务名称
+            required_msg: 请输入任务名称
+          airline:
+            label: 航线
+          device:
+            label: 设备
+            required_msg: 请选择设备
+          staff:
+            label: 飞手
+    ai_result:
+      title: 检测结果
+    log:
+      title: 行动记录
+    end:
+      title: 结束行动
+    aiResult:
+      empty:
+        title: 暂无结果
+modal:
+  cancel: 取消
+  confirm: 确定
+api:
+  success:
+    msg: 操作成功
+  error:
+    msg: 操作失败
+common:
+  back: 返回
+  save: 保存
+  edit: 编辑
+  color: 颜色
+  time: 时间
+  position: 位置
+  source: 来源
+  level: 等级
+  ignore: 忽略
+  process: 处理
+  detail: 详情
+  data: 数据
+  modelNumber: 型号
+  onlineStatus: 在线状态
+  electricity: 电量
+  longitude: 经度
+  latitude: 纬度
+  height: 高度
+  speed: 速度
+  takePhoto: 拍照
+  up: 上
+  down: 下
+  left: 左
+  right: 右
+  version: 版本号
+  status: 状态
+  createTime: 创建时间
+  operation: 操作
+  startTime: 开始时间
+  endTime: 结束时间
+  description: 描述
+  backTracking: 回溯
+  picture: 图片
+  video: 视频
+  track: 轨迹
+  'yes': 是
+  download: 下载
+  delete: 删除
+  updateTime: 更新时间
+  set: 设置
+  reset: 重设
+  advancedSetting: 高级设置
+  executeError: 执行失败
+  lens: 镜头
+  used: 使用中
+  unused: 未使用
+  terminate: 终止
+  creator: 创建者
+  type: 类型
+  form:
+    pleaseInput: 请输入
+    pleaseSelect: 请选择
+  executeTime:
+    title: 执行时间
+  executeDate:
+    title: 执行日期
+  distance: 距离
+  area: 面积
+  angle: 角度
+  clockwise: 顺时针
+  map: 地图
+  layer: 图层
+  upload: 上传
+  preview: 预览
+  pause: 暂停
+  recover: 恢复
+  open: 开启
+  close: 关闭
+  flightSpeed: 飞行速度
+  emptyContent: 暂无数据
+  requsting: 请求中...
+events:
+  search:
+    placeholder: 请根据事件名称或 ID 搜索
+  filter:
+    title: 事件筛选
+    riskLevel:
+      title: 风险等级
+      high:
+        title: 高风险
+      middle:
+        title: 中风险
+      low:
+        title: 低风险
+    source:
+      title: 事件来源
+    type:
+      title: 事件类型
+    status:
+      title: 事件状态
+      PENDING:
+        title: 未处理
+      PROCESSING:
+        title: 处理中
+  status:
+    IGNORE:
+      title: 已忽略
+    PENDING:
+      title: 未处理
+    PROCESSED:
+      title: 已处理
+    PROCESSING:
+      title: 处理中
+  table:
+    eventName:
+      title: 事件名称
+    eventTime:
+      title: 发生时间
+    endTime:
+      title: 结束时间
+    processStatus:
+      title: 处理状态
+  title: 事件
+uav:
+  displayMode:
+    title: 飞机状态
+  gimbal:
+    title: 云台
+    zoomMode:
+      title: 变焦模式
+    irMode:
+      title: 红外模式
+    wideMode:
+      title: 广角模式
+    focalLength:
+      title: 焦距
+    reset:
+      title: 复位
+  gimbalControl:
+    title: 云台控制
+  flightControl:
+    title: 飞行控制
+  takeOff:
+    title: 起飞
+  land:
+    title: 降落
+  return:
+    title: 返程
+actionRecord:
+  title: 行动记录
+  table:
+    actionName:
+      title: 行动名称
+  signalDownload:
+    title: 信号下载
+resource:
+  title: 资源
+  table:
+    deviceName:
+      title: 设备名称
+    username:
+      title: 使用者
+    deviceModel:
+      title: 设备型号
+    otaInfo:
+      title: 固件版本
+    otaUpgrade:
+      title: 固件升级
+    sn:
+      title: 设备序列号
+    deviceId:
+      title: 设备编号
+wayline:
+  title: 航线
+  upload:
+    title: 上传航线
+    error:
+      deviceNotExist:
+        msg: 设备不存在
+    success:
+      third: '上传成功: 上传第三方航线，请检查后再飞行!'
+      msg: 上传成功
+    form:
+      device:
+        label: 设备
+        required_msg: 请选择设备
+      kmzFile:
+        label: 上传文件
+        required_msg: 请上传航线文件
+      isThird:
+        label: 第三方
+  searcher:
+    placeholder: 请根据关键字搜索
+  deleteWayline:
+    title: 删除航线
+    description: 删除后航线内容不可恢复，确认删除航线吗？
+  regenerator:
+    title: 更新人
+  create:
+    form:
+      waylineName:
+        label: 航线名称
+        required_msg: 请输入航线名称
+      waylineType:
+        label: 航线类型
+        options:
+          point:
+            title: 航点航线
+          area:
+            title: 面状航线
+      uavType:
+        label: 飞行器型号
+      gimbalType:
+        label: 负载型号
+    title: 创建航线
+  waylineConfig:
+    title: 航线设置
+    atl:
+      title: 航线相对高度
+    returnHeight:
+      title: 返航高度
+    speed:
+      title: 全局航线速度
+    noTakeoffPointError:
+      msg: 点击地图设置参考起飞点
+  waylinePoint:
+    config: 航点设置
+    waypointList:
+      title: 航点列表
+    deleteAllWaypoint:
+      title: 一键删除所有航点
+      question: 确定删除所有航点吗？
+    cancelCreateWaypoint:
+      title: 取消创建
+    createWaypoint:
+      title: 创建航点
+      error:
+        notSetTakeoff: 请先设置起飞点
+    createWaypointAction:
+      title: 创建航点动作
+    actions:
+      HOVER:
+        title: 悬停
+      ROTATE_YAW:
+        title: 飞行器偏航角
+      CAMERA_POSITION_X:
+        title: 云台偏航角
+      CAMERA_POSITION_Y:
+        title: 云台俯仰角
+      ZOOM:
+        title: 相机变焦
+      GET_PICTURE:
+        title: 拍照
+      LEN_CHANGE:
+        title: 镜头切换
+        Timing:
+          title: 执行时机
+          ARRIVE:
+            title: 到达时
+          LEAVE:
+            title: 离开时
+      OPEN_AI:
+        title: 开启算法
+        select:
+          title: 选择算法
+        timing:
+          title: 执行时机
+        ARRIVE:
+          title: 到达时
+        LEAVE:
+          title: 离开时
+        error:
+          noSelect:
+            msg: 请选择算法
+      CLOSE_AI:
+        title: 关闭算法
+  info:
+    length:
+      title: 航线长度
+    time:
+      title: 预计执行时间
+    pointCnt:
+      title: 航点个数
+    photoCnt:
+      title: 照片
+  imageFormat:
+    wide:
+      title: 广角
+    zoom:
+      title: 变焦
+    ir:
+      title: 红外
+  takeoffRefPoint:
+    setted:
+      title: 已设置参考起飞点
+    notSetted:
+      title: 未设置起飞点
+  advancedSetting:
+    globalWaypointTurnMode:
+      title: 航点类型
+      coordinateTurn:
+        title: 协调转弯，不过点，提前转弯
+      toPointAndStopWithDiscontinuityCurvature:
+        title: 直线飞行，飞行器到点停
+      toPointAndStopWithContinuityCurvature:
+        title: 曲线飞行，飞行器到点停
+      toPointAndPassWithContinuityCurvature:
+        title: 曲线飞行，飞行器过点不停
+    waypointHeadingMode:
+      title: 飞行器偏航角模式
+      followWayline:
+        title: 沿航线方向
+      manually:
+        title: 手动控制
+    gimbalPitchMode:
+      title: 航点间云台俯仰角控制模式
+      manual:
+        title: 手动控制
+      fixed:
+        title: 依照每个航点设置
+    finishAction:
+      title: 航线结束动作
+      GO_HOME:
+        title: 自动返航
+      NO_ACTION:
+        title: 退出航线模式
+  saveTask:
+    title: 保存任务
+  executeTask:
+    title: 立即执行
+    type:
+      title: 类型
+      required_msg: 请选择类型
+    device:
+      title: 设备
+      required_msg: 请选择设备
+    error:
+      waypointNotEnough: 航点数量至少需要 2 个
+      rthHeightNotSet: 请设置返航高度
+    defaultTaskName: 航线任务
+    success:
+      stopTask:
+        msg: 停止任务成功
+    question:
+      stopTask:
+        msg: 是否停止该任务？
+  useGlobalPayloadLensIndex:
+    title: 跟随航线
+  distanceWarning:
+    msg: 航点间距离超过 {{meters}} 米
+schedue:
+  list:
+    title: 计划库
+schedule:
+  edit:
+    title: 编辑计划
+  type:
+    DIRECT:
+      title: 立即
+    SINGLE:
+      title: 单次
+    REPEAT:
+      title: 重复
+    CONTINUE:
+      title: 连续定时
+  status:
+    PENDING:
+      title: 未开始
+    PROCESSING:
+      title: 周期中
+    TERMINATE:
+      title: 已结束
+  creation:
+    title: 创建计划
+  tip:
+    mustSetGoHome: 航线结束动作必须设置为返航
+    20minsInterval: 重复任务的计划间隔必须设置为至少超过 前一次任务实际执行时长 20 分钟以上
+  form:
+    name:
+      title: 计划名称
+    device:
+      title: 设备
+    wayline:
+      title: 航线
+    type:
+      title: 计划策略
+  errors:
+    selectTime:
+      msg: 请选择执行时间
+    smallThanThePrevious:
+      msg: 时间间隔必须大于前一次执行时间
+    lessThan2h:
+      msg: 时间间隔必须大于 2 小时
+  table:
+    actionName:
+      title: 行动名称
+    deviceName:
+      title: 设备名称
+    status:
+      PROCESSING:
+        title: 执行中
+      TERMINATE:
+        title: 执行中断
+      FAILED:
+        title: 执行失败
+      FINISH:
+        title: 执行成功
+      PENDING:
+        title: 未执行
+      FINISHED:
+        title: 已结束
+overlay:
+  marker:
+    title: 点位标记
+    point:
+      title: 点位
+    create:
+      title: 创建点位
+      form:
+        overlayName:
+          title: 点位名称
+          required_msg: 请输入点位名称
+        layerId:
+          title: 所属图层
+          required_msg: 请选择所属图层
+  drawing:
+    title: 画区
+    circle:
+      title: 圆形
+    rect:
+      title: 矩形
+    polygon:
+      title: 多边形
+    sector:
+      title: 扇形
+    create:
+      title: 创建区域
+  measure:
+    title: 测量
+    polyline:
+      title: 测线
+    polygon:
+      title: 测面
+    circle:
+      title: 测圆
+    angle:
+      title: 测角
+tools:
+  saveMapView:
+    title: 保存地图视角
+signalSituation:
+  title: 电磁态势
+  heightFilter:
+    title: 信号高度层
+mapLayer:
+  setting:
+    title: 图层设置
+    addLayer:
+      title: 创建图层
+  createMap:
+    title: 创建地图
+    form:
+      layerName:
+        title: 图层名称
+      mapName:
+        title: 地图名称
+      mapType:
+        title: 地图类型
+        options:
+          xyz:
+            label: 经纬度地图
+      tileType:
+        title: 瓦片类型
+        option:
+          xyz:
+            label: xyz栅格瓦片
+        options:
+          3dTiles:
+            label: 倾斜摄影
+      url:
+        title: 瓦片地址
+      permission:
+        title: 权属
+        option:
+          default:
+            label: 所有人可见
+          NORMAL:
+            label: 自己可见
+      overview:
+        title: 预览
+  updateMap:
+    title: 编辑地图
+  errors:
+    previewParse:
+      msg: 预览图解析失败
+message:
+  success:
+    saveMapView: 地图视角保存成功
+controlRoom:
+  uav:
+    flyParams:
+      title: 飞行操控
+    flyButtons:
+      title: 操作
+    flyParamsSetting:
+      title: 飞参设置
+    payload:
+      title: 负载
+    aiList:
+      title: 算法库
+    deviceData:
+      title: 设备数据
+    header:
+      14g:
+        title: 1.4G信号强度
+      sdr:
+        title: 无线电信号强度
+      signal:
+        title: 信号强度
+      hSpeed:
+        title: 水平速度
+      altitude:
+        title: 海拔
+      distanceFromHome:
+        title: 距离起飞点
+      ft:
+        title: 飞行时间
+        untaken: 未起飞
+      fd:
+        title: 飞行距离
+    service:
+      tapToFly:
+        title: 指点飞行
+      stopAll:
+        title: 紧急停止
+      goHome:
+        title: 返航
+      autoland:
+        title: 降落
+      takeoff:
+        title: 一键起飞
+      gimbalToPoint:
+        title: 指点变焦
+      aiPhoto:
+        title: 智能拍照
+      laserRanging:
+        title: 激光测距
+      boxZoom:
+        title: 框选
+      smartTrack:
+        title: 智能追踪
+      ar:
+        title: 虚实融合
+        setting:
+          title: 虚实融合设置
+      takePhoto:
+        title: 拍照
+      cameraMode:
+        photo:
+          title: 拍照模式
+        record:
+          title: 录像模式
+      videoRecord:
+        title: 录像
+      hover:
+        title: 悬停
+    gamepad:
+      title: 摇杆
+    goHome:
+      height:
+        title: 返航高度
+      point:
+        title: 返航点
+      reset:
+        msg: 重置返航点(在地图上点击设置)
+    avoidDistance:
+      title: 避障
+    loseAction:
+      title: 失联动作
+    disconnectTime:
+      title: 平台断连触发失联时间
+    targetAltitude:
+      title: 目标高度
+    btn:
+      gimbal:
+        title: 云台
+dynamicLayout:
+  exit:
+    title: 退出
+  maximize:
+    title: 最大化
+  fold:
+    title: 折叠
+  unfold:
+    title: 展开

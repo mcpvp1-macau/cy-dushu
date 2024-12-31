@@ -39,17 +39,19 @@ const UavDetailFlightControl: FC<PropsType> = memo(() => {
 
   const canControl = uuid && controlTag === uuid && wsReadyState === 1
 
+  const { t } = useTranslation()
+
   return (
     <div className="p-3 flex items-center justify-between gap-3">
       <div className="flex flex-col gap-3 w-[90px]">
         <Button type="primary" block size="small" disabled={!canControl}>
-          起飞
+          {t('uav.takeOff.title')}
         </Button>
         <Button type="primary" block size="small" disabled={!canControl}>
-          降落
+          {t('uav.land.title')}
         </Button>
         <Button type="primary" block size="small" disabled={!canControl}>
-          返程
+          {t('uav.return.title')}
         </Button>
       </div>
 

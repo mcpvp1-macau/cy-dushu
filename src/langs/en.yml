@@ -1,0 +1,780 @@
+login:
+  logout: Logout
+poi_searcher:
+  placeholder: Please enter keyword
+  result_tip: Showing top {{count}} results for you
+setting:
+  title: Setting
+  video_decoder:
+    title: Local Video Decoder
+    description: >-
+      By default, the decoder will be automatically selected in the order of
+      WCS, MSE, Simd, and Wasm based on browser support.
+    attention: Attention
+situation:
+  menus:
+    action: Action
+    events: Events
+source:
+  status:
+    online: Online
+    isTask: Tasking
+    isNotTask: Idle
+  input:
+    placeholder: Please search by name
+device:
+  status:
+    task:
+      RUNNING: Tasking
+      IDLE: Idle
+    reported:
+      ok: Reported
+      'no': Not Reported
+    online:
+      ONLINE: Online
+      OFFLINE: Offline
+  enterControlRoom:
+    title: Go To Control Room
+  controlPower:
+    title: Control Power
+  aiModel:
+    title: AI Model
+  algorithm:
+    deploy:
+      title: Deploy
+    stop:
+      title: Stop
+    stopped:
+      title: Stop succeed
+    pending:
+      title: Pending
+    deploying: Deploying
+    error:
+      title: Error
+    success:
+      title: Success
+    exception:
+      title: Exception
+    stopping:
+      title: Stopping
+    aiModelSetting:
+      title: AI Model Setting
+    deviceCountofDeployed:
+      title: Deployed devices
+    emptyConfig:
+      description: There is no configuration item for this algorithm
+    stopError:
+      title: Stop Error
+  algorihm:
+    competed:
+      title: Completed
+  pictureFilter:
+    all:
+      title: All
+    screenshot:
+      title: Screen Shot
+    photograph:
+      title: Photo Graph
+  lens:
+    wide:
+      title: Wide
+    ir:
+      title: IR
+    zoom:
+      title: Zoom
+action:
+  input:
+    placeholder: Please search by action name
+  status:
+    PENDING: Pending
+    PROCESSING: Tasking
+  item:
+    time: Time
+    description: Description
+  add:
+    title: Create Action
+    form:
+      name:
+        label: Action Name
+        required_msg: Please enter action name
+      type:
+        label: Action Type
+        required_msg: Please select action type
+      description:
+        label: Description
+  detail:
+    kcyp:
+      title: Case Form Information
+      case_code:
+        title: Case Code
+      process_status:
+        title: Process Status
+      form:
+        driverName:
+          label: Driver Name
+        phone:
+          label: Driver Phone Number
+          msg: Please input correct phone number
+        idType:
+          label: Driver ID Type
+        cardNo:
+          label: Driver ID Card No
+          msg: Please input correct ID card number
+        otherDriverName:
+          label: Another Name
+        otherPhone:
+          label: Another Phone Number
+        otherIdType:
+          label: Another ID Type
+        otherCardNo:
+          label: Another ID Card No
+        brokenPart:
+          label: Broken Park of Car
+        otherBrokenPart:
+          label: Broken Part of Another
+        carNo:
+          label: Car No of Driver
+        otherCarNo:
+          label: Car No of Another
+        firstScene:
+          label: Whether First Scene
+        accidentTime:
+          label: Case Type
+    task:
+      title: Task List
+      edit:
+        title: Edit
+      start:
+        title: Start
+      pause:
+        title: Pause
+      end:
+        title: Finish
+      continue:
+        title: Continue
+      people:
+        title: Staff
+      device:
+        title: Device
+      status:
+        title: Status
+      add:
+        title: Create Task
+        form:
+          name:
+            label: Task Name
+            required_msg: Please enter task name
+          airline:
+            label: Wayline
+          device:
+            label: Device
+            required_msg: Please select device
+          staff:
+            label: Staff
+    ai_result:
+      title: AI Results
+    log:
+      title: Action Logs
+    end:
+      title: Finish Action
+    aiResult:
+      empty:
+        title: Null Result
+modal:
+  cancel: Cancel
+  confirm: Confirm
+api:
+  success:
+    msg: Success
+  error:
+    msg: Error
+common:
+  back: Back
+  save: Save
+  edit: Edit
+  color: Color
+  time: Time
+  position: Pos
+  source: Source
+  level: Level
+  ignore: Ignore
+  process: Process
+  detail: Detail
+  data: Data
+  modelNumber: Model
+  onlineStatus: Online Status
+  electricity: Electricity
+  longitude: Longitude
+  latitude: Latitude
+  height: Height
+  speed: Speed
+  takePhoto: Take Photo
+  up: Up
+  down: Down
+  left: Left
+  right: Right
+  version: Version
+  status: Status
+  createTime: Create Time
+  operation: Operation
+  startTime: Start Time
+  endTime: End Time
+  description: Description
+  backTracking: Back Tracking
+  picture: Picture
+  video: Video
+  track: Track
+  'yes': 'Yes'
+  download: Download
+  delete: Delete
+  updateTime: Update Time
+  set: Set
+  reset: Reset
+  advancedSetting: Advanced Setting
+  executeError: Execute Error
+  lens: Lens
+  used: Used
+  unused: Unused
+  terminate: Terminate
+  creator: Creator
+  type: Type
+  form:
+    pleaseInput: Please Input
+    pleaseSelect: Please Select
+  executeTime:
+    title: Execution Time
+  executeDate:
+    title: Execution Date
+  distance: Distance
+  area: Area
+  angle: Angle
+  clockwise: Clockwise
+  map: Map
+  layer: Layer
+  upload: Upload
+  preview: Preview
+  pause: Pause
+  recover: Recover
+  open: Open
+  close: Close
+  flightSpeed: Flight Speed
+  emptyContent: Empty Content
+  requsting: Requsting...
+events:
+  search:
+    placeholder: Please search by event name or ID
+  filter:
+    title: Event Filter
+    riskLevel:
+      title: Risk Level
+      high:
+        title: High
+      middle:
+        title: Middle
+      low:
+        title: Low
+    source:
+      title: Source
+    type:
+      title: Type
+    status:
+      title: Status
+      PENDING:
+        title: Pending
+      PROCESSING:
+        title: Processing
+  status:
+    PENDING:
+      title: Pending
+    PROCESSING:
+      title: Processing
+    IGNORE:
+      title: Ignored
+    PROCESSED:
+      title: Processed
+  table:
+    eventName:
+      title: Event Name
+    eventTime:
+      title: Event Time
+    endTime:
+      title: End Time
+    processStatus:
+      title: Process Status
+  title: Events
+uav:
+  displayMode:
+    title: Display Mode
+  gimbal:
+    title: Gimbal
+    zoomMode:
+      title: Zoom
+    irMode:
+      title: IR
+    wideMode:
+      title: Wide
+    focalLength:
+      title: Focal
+    reset:
+      title: Reset
+  gimbalControl:
+    title: Gimbal Control
+  flightControl:
+    title: Flight Control
+  takeOff:
+    title: Take Off
+  land:
+    title: Land
+  return:
+    title: Return
+actionRecord:
+  title: Action Records
+  table:
+    actionName:
+      title: Action Name
+  signalDownload:
+    title: Download Signal Info
+resource:
+  title: Resources
+  table:
+    deviceName:
+      title: Device Name
+    username:
+      title: User
+    deviceModel:
+      title: Device Model
+    otaInfo:
+      title: OTA Info
+    otaUpgrade:
+      title: OTA Upgrade
+    sn:
+      title: Device SN
+    deviceId:
+      title: Device ID
+wayline:
+  title: Wayline
+  upload:
+    title: Upload Wayline Template
+    error:
+      deviceNotExist:
+        msg: The device is not exist
+    success:
+      third: 'Success: Please check wayline detail before running'
+      msg: Success
+    form:
+      device:
+        label: Device
+        required_msg: Please select device
+      kmzFile:
+        label: KMZ File
+        required_msg: Please upload .kmz file
+      isThird:
+        label: Third
+  searcher:
+    placeholder: Please search by keywords
+  deleteWayline:
+    title: Delete the Wayline
+    description: >-
+      After deletion, the wayline content cannot be recovered. Are you sure you
+      want to delete the wayline?
+  regenerator:
+    title: Regenerator
+  create:
+    form:
+      waylineName:
+        label: Name
+        required_msg: Please input the wayline name
+      waylineType:
+        label: Type
+        options:
+          point:
+            title: Point Wayline
+          area:
+            title: Area Wayline
+      uavType:
+        label: UAV Model
+      gimbalType:
+        label: Gimbal Model
+    title: Create Wayline
+  waylineConfig:
+    title: Wayline
+    atl:
+      title: Wayline ATL
+    returnHeight:
+      title: Go Home Height
+    speed:
+      title: Global Flight Speed
+    noTakeoffPointError:
+      msg: Click on the map to set the reference takeoff point
+  waylinePoint:
+    config: Waypoints
+    waypointList:
+      title: Waypoint List
+    deleteAllWaypoint:
+      title: Delete All Waypoints
+      question: Are you sure you want to delete all waypoints?
+    cancelCreateWaypoint:
+      title: Cancel Creation
+    createWaypoint:
+      title: Create Waypoint
+      error:
+        notSetTakeoff: Please set reference take-off point before
+    createWaypointAction:
+      title: Create Waypoint Actions
+    actions:
+      HOVER:
+        title: Hover
+      ROTATE_YAW:
+        title: UAV Rotate Yaw
+      CAMERA_POSITION_X:
+        title: Gimbal Rotate Yaw
+      CAMERA_POSITION_Y:
+        title: Gimbal Rotate Pitch
+      ZOOM:
+        title: Zoom
+      GET_PICTURE:
+        title: Take Photo
+      LEN_CHANGE:
+        title: Lens Change
+        Timing:
+          title: Timing
+          ARRIVE:
+            title: Arrival
+          LEAVE:
+            title: Leaving
+      OPEN_AI:
+        title: Open Algorithm
+        select:
+          title: Select Algorithm
+        timing:
+          title: Timing
+        ARRIVE:
+          title: Arrival
+        LEAVE:
+          title: Leaving
+        error:
+          noSelect:
+            msg: Please select a algorithm
+      CLOSE_AI:
+        title: Close Algorithm
+  info:
+    length:
+      title: Length
+    time:
+      title: Forecast Time
+    pointCnt:
+      title: Point Count
+    photoCnt:
+      title: Photos
+  imageFormat:
+    wide:
+      title: Wide
+    zoom:
+      title: Zoom
+    ir:
+      title: IR
+  takeoffRefPoint:
+    setted:
+      title: The ref take-off point is set
+    notSetted:
+      title: The ref take-off point is not set.
+  advancedSetting:
+    globalWaypointTurnMode:
+      title: Global Waypoint Turn Mode
+      coordinateTurn:
+        title: Coordinate Turn
+      toPointAndStopWithDiscontinuityCurvature:
+        title: To Point and Stop with Discontinuity Curvature
+      toPointAndStopWithContinuityCurvature:
+        title: To Point and Stop with Continuity Curvature
+      toPointAndPassWithContinuityCurvature:
+        title: To Point and Pass with Continuity Curvature
+    waypointHeadingMode:
+      title: Waypoint Heading Mode
+      followWayline:
+        title: Follow Wayline
+      manually:
+        title: Manually
+    gimbalPitchMode:
+      title: Gimbal Pitch Mode
+      manual:
+        title: Manual
+      fixed:
+        title: Fixed
+    finishAction:
+      title: Finish Action
+      GO_HOME:
+        title: Go Home
+      NO_ACTION:
+        title: No Action
+  saveTask:
+    title: Save Task
+  executeTask:
+    title: Execut Task
+    type:
+      title: Type
+      required_msg: Please select type
+    device:
+      title: Device
+      required_msg: Please select device
+    error:
+      waypointNotEnough: At least 2 waypoints are required
+      rthHeightNotSet: Return Height is not set
+    defaultTaskName: Wayline Task
+    success:
+      stopTask:
+        msg: Task stopped successfully
+    question:
+      stopTask:
+        msg: Do you want to stop this task?
+  useGlobalPayloadLensIndex:
+    title: Use Global
+  distanceWarning:
+    msg: The distance between waypoints exceeds {{meters}} meters
+schedue:
+  list:
+    title: Schedule List
+schedule:
+  edit:
+    title: Edit Schedule
+  type:
+    DIRECT:
+      title: Direct
+    SINGLE:
+      title: Single
+    REPEAT:
+      title: Repeat
+    CONTINUE:
+      title: Continue
+  status:
+    PENDING:
+      title: Pending
+    PROCESSING:
+      title: Processing
+    TERMINATE:
+      title: Terminate
+  creation:
+    title: Create Schedule
+  tip:
+    mustSetGoHome: End action of wayline must be set to `Go Home`
+    20minsInterval: >-
+      The scheduled interval of repeated tasks must exceed the actual execution
+      duration of the previous task by at least 20 minutes
+  form:
+    name:
+      title: Name
+    device:
+      title: Device
+    wayline:
+      title: Wayline
+    type:
+      title: Type
+  errors:
+    selectTime:
+      msg: Please select execution time
+    smallThanThePrevious:
+      msg: The interval must be later than the previous execution time
+    lessThan2h:
+      msg: The interval must be greater than 2 hours
+  table:
+    actionName:
+      title: Action name
+    deviceName:
+      title: Device Name
+    status:
+      PROCESSING:
+        title: Processing
+      TERMINATE:
+        title: Terminate
+      FAILED:
+        title: Failed
+      FINISH:
+        title: Finish
+      PENDING:
+        title: Pending
+      FINISHED:
+        title: Finished
+overlay:
+  marker:
+    title: Point Marker
+    point:
+      title: Point
+    create:
+      title: Create Point Marker
+      form:
+        overlayName:
+          title: Marker Name
+          required_msg: Please input marker name
+        layerId:
+          required_msg: Please select layer group
+          title: Layer Group
+  drawing:
+    title: Drawing
+    circle:
+      title: Circle
+    rect:
+      title: Rect
+    polygon:
+      title: Polygon
+    sector:
+      title: Sector
+    create:
+      title: Create Area
+  measure:
+    title: Measurement
+    polyline:
+      title: Polyline
+    polygon:
+      title: Polygon
+    circle:
+      title: Circle
+    angle:
+      title: Angle
+tools:
+  saveMapView:
+    title: Save View
+signalSituation:
+  title: Signal Situation
+  heightFilter:
+    title: Height Level
+mapLayer:
+  setting:
+    title: Layer Setting
+    addLayer:
+      title: Create Layer
+  createMap:
+    title: Create Map
+    form:
+      layerName:
+        title: Name
+      mapName:
+        title: Map Name
+      mapType:
+        title: Map Type
+        options:
+          xyz:
+            label: Lng&Lat
+      tileType:
+        title: Tile Type
+        option:
+          xyz:
+            label: XYZ Grid
+        options:
+          3dTiles:
+            label: Oblique Photography
+      url:
+        title: URL
+      permission:
+        title: Permission
+        option:
+          default:
+            label: Everyone
+          NORMAL:
+            label: Only Me
+      overview:
+        title: Preview
+  updateMap:
+    title: Edit Map
+  errors:
+    previewParse:
+      msg: Preview image parsing failed
+message:
+  success:
+    saveMapView: Map view saved successfully
+controlRoom:
+  uav:
+    flyParams:
+      title: Flight Control
+    flyButtons:
+      title: Command
+    flyParamsSetting:
+      title: Flight Setting
+    payload:
+      title: Payload
+    aiList:
+      title: AI List
+    deviceData:
+      title: Device Data
+    header:
+      14g:
+        title: 1.4G Signal Strength
+      sdr:
+        title: SDR Signal Strength
+      signal:
+        title: Signal Strength
+      hSpeed:
+        title: Horizontal Speed
+      altitude:
+        title: Altitude
+      distanceFromHome:
+        title: Distance from home
+      ft:
+        title: Flight Time
+        untaken: Untaken
+      fd:
+        title: Flight Distance
+    service:
+      tapToFly:
+        title: Tap-to-Fly
+      stopAll:
+        title: Stop All
+      goHome:
+        title: Go Home
+      autoland:
+        title: Auto Land
+      takeoff:
+        title: Takeoff
+      gimbalToPoint:
+        title: Gimbal-to-Point
+      aiPhoto:
+        title: AI Photo
+      laserRanging:
+        title: Laser Ranging
+      boxZoom:
+        title: Box Zoom
+      smartTrack:
+        title: AI Track
+      ar:
+        title: AR
+        setting:
+          title: AR Setting
+      takePhoto:
+        title: Take Photo
+      cameraMode:
+        photo:
+          title: Photograph Mode
+        record:
+          title: Video Recording Mode
+      videoRecord:
+        title: Video Record
+      hover:
+        title: Hover
+    gamepad:
+      title: Gamepad
+    goHome:
+      height:
+        title: Go Home Height
+      point:
+        title: Home Point
+      reset:
+        msg: Reset home point (click on the map to set)
+    avoidDistance:
+      title: Avoid Distance
+    loseAction:
+      title: Lose Connection Action
+    disconnectTime:
+      title: Disconnection timeout
+    targetAltitude:
+      title: Target Altitude
+    btn:
+      gimbal:
+        title: GIM
+dynamicLayout:
+  maximize:
+    title: Maximize
+  fold:
+    title: Fold
+  unfold:
+    title: Unfold
+  exit:
+    title: Exit

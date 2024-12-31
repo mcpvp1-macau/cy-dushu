@@ -9,6 +9,7 @@ import { isNil } from 'lodash'
 type PropsType = unknown
 
 const PageSources: FC<PropsType> = memo(() => {
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
 
   const [searchParams, setSearchParams] = useSearchParams()
@@ -31,7 +32,7 @@ const PageSources: FC<PropsType> = memo(() => {
 
   return (
     <div className="page-full p-3 bg-ground-180 flex flex-col overflow-y-hidden">
-      <h2 className="text-white">资源</h2>
+      <h2 className="text-white">{t('resource.title')}</h2>
       <div>
         {isLoading || !data ? (
           <div className="w-64">

@@ -17,19 +17,6 @@ type PropsType = {
   data: API_ACTION_PLAN.domain.Plan
 }
 
-const TypeMap = {
-  DIRECT: '立即',
-  SINGLE: '单次定时',
-  REPEAT: '重复定时 ',
-  CONTINUE: '连续定时',
-}
-
-const StatusMap = {
-  PENDING: '未开始',
-  PROCESSING: '周期中',
-  TERMINATE: '已结束',
-}
-
 const StatusColorMap = {
   PENDING: '#C7D1DC',
   PROCESSING: '#15B371',
@@ -37,6 +24,8 @@ const StatusColorMap = {
 }
 
 const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
+  const { t } = useTranslation()
+
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const queryClient = useQueryClient()
@@ -55,7 +44,7 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
       queryClient.invalidateQueries({
         queryKey: ['getActionPlanList'],
       })
-      msgApi.success('更新成功')
+      msgApi.success(t('api.success'))
     } finally {
       setLoading(false)
     }
@@ -66,7 +55,7 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
     queryClient.invalidateQueries({
       queryKey: ['getActionPlanList'],
     })
-    msgApi.success('终止成功')
+    msgApi.success(t('api.success'))
   }
 
   const handleChangeValid = async () => {
@@ -79,7 +68,7 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
     queryClient.invalidateQueries({
       queryKey: ['getActionPlanList'],
     })
-    msgApi.success('操作成功')
+    msgApi.success(t('api.success'))
   }
 
   return (
@@ -102,19 +91,22 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
             {data.status !== 'TERMINATE' && (
               <div
                 className="flex items-center gap-3"
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  e.preventDefault()
+                }}
               >
                 <IconButtonWithDropDown
                   menu={{
                     items: [
                       {
                         key: 'edit',
-                        label: '编辑',
+                        label: t('common.edit'),
                         onClick: () => setOpen(true),
                       },
                       {
                         key: 'terminate',
-                        label: '终止',
+                        label: t('common.terminate'),
                         onClick: handleTerminate,
                       },
                     ],
@@ -134,18 +126,22 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
           </div>
           <div className="mt-1 text-xs flex gap-2 justify-between">
             <TagItem
-              label={StatusMap[data.status!]}
+              label={t(`schedule.status.${data.status}.title`)}
               color={StatusColorMap[data.status!]}
               bgColor={`${StatusColorMap[data.status!]}33`}
             />
-            <span className="flex-1">创建人: {data.gmtCreateBy}</span>
-            <span className="flex-1">类型: {TypeMap[data.type!]}</span>
+            <span className="flex-1">
+              {t('common.creator')}: {data.gmtCreateBy}
+            </span>
+            <span className="flex-1">
+              {t('common.type')}: {t(`schedule.type.${data.type}.title`)}
+            </span>
           </div>
         </div>
       </Link>
       {open && (
         <ScheduleModal
-          title="编辑计划"
+          title={t('schedule.edit.title')}
           open={open}
           data={data}
           loading={loading}

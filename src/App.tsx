@@ -9,6 +9,11 @@ import GlobalState from './components/GlobalState'
 import Right from './pages/right'
 import AppViewSuspense from './components/AppViewSuspense'
 import RightTools from './components/right-tools'
+import { ConfigProvider } from 'antd'
+import { themeConfig } from './config/theme-config'
+import AppEmpty from './components/AppEmpty.tsx'
+import zh from 'antd/es/locale/zh_CN'
+import en from 'antd/es/locale/en_US'
 
 import controlRoom from './router/modules/control-room'
 import sources from './router/modules/sources'
@@ -48,40 +53,48 @@ const App = () => {
     [matcheds],
   )
 
+  const { i18n } = useTranslation()
+
   return (
-    <div
-      className={clsx(
-        'w-screen h-screen overflow-hidden',
-        'flex flex-col',
-        'text-fore',
-      )}
+    <ConfigProvider
+      renderEmpty={() => <AppEmpty />}
+      theme={themeConfig}
+      locale={i18n.language === 'zh' ? zh : en}
     >
-      <FixedWindowArea />
-      <AppMsgContext.Provider value={messageApi}>
-        {contextHolder}
-        <GlobalState />
-        <AppHeader />
-        <div className="flex-grow overflow-hidden">
-          <div className="h-full flex overflow-hidden">
-            <AppNavigator />
-            <main className="flex-grow bg-ground-100 relative overflow-hidden z-10">
-              <div className="absolute h-full z-20 overflow-hidden">
-                <AppViewSuspense>
-                  <Outlet />
-                </AppViewSuspense>
-              </div>
-              {hide && (
-                <>
-                  <GlobalMap />
-                  <RightTools />
-                  <Right />
-                </>
-              )}
-            </main>
+      <div
+        className={clsx(
+          'w-screen h-screen overflow-hidden',
+          'flex flex-col',
+          'text-fore',
+        )}
+      >
+        <FixedWindowArea />
+        <AppMsgContext.Provider value={messageApi}>
+          {contextHolder}
+          <GlobalState />
+          <AppHeader />
+          <div className="flex-grow overflow-hidden">
+            <div className="h-full flex overflow-hidden">
+              <AppNavigator />
+              <main className="flex-grow bg-ground-100 relative overflow-hidden z-10">
+                <div className="absolute h-full z-20 overflow-hidden">
+                  <AppViewSuspense>
+                    <Outlet />
+                  </AppViewSuspense>
+                </div>
+                {hide && (
+                  <>
+                    <GlobalMap />
+                    <RightTools />
+                    <Right />
+                  </>
+                )}
+              </main>
+            </div>
           </div>
-        </div>
-      </AppMsgContext.Provider>
-    </div>
+        </AppMsgContext.Provider>
+      </div>
+    </ConfigProvider>
   )
 }
 

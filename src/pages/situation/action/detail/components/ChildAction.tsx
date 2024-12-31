@@ -15,11 +15,19 @@ type PropsType = {
   data: API_ACTION_ITEM.domain.ActionItem
 }
 
-export const taskStatusMap: Record<string, string> = {
-  PENDING: '未开始',
-  PROCESSING: '进行中',
-  FINISHED: '已完成',
-  PAUSE: '暂停',
+export const taskStatusMap: Record<string, Record<string, string>> = {
+  en: {
+    PENDING: 'Pending',
+    PROCESSING: 'Tasking',
+    FINISHED: 'Finished',
+    PAUSE: 'Pausing',
+  },
+  zh: {
+    PENDING: '未开始',
+    PROCESSING: '进行中',
+    FINISHED: '已完成',
+    PAUSE: '暂停',
+  },
 }
 
 const statusColor: Record<string, string> = {
@@ -31,6 +39,7 @@ const statusColor: Record<string, string> = {
 
 /** 操作栏 */
 const OperatorBtns: FC<PropsType> = ({ data }) => {
+  const { t, i18n } = useTranslation()
   const [loading, setLoading] = useState(false)
   const msgApi = useAppMsg()
   const queryClient = useQueryClient()
@@ -49,7 +58,7 @@ const OperatorBtns: FC<PropsType> = ({ data }) => {
       await queryClient.invalidateQueries({
         queryKey: ['action', String(data.actionId), 'items'],
       })
-      msgApi.success('操作成功')
+      msgApi.success(t('api.success.msg'))
     } finally {
       setLoading(false)
     }
@@ -84,10 +93,10 @@ const OperatorBtns: FC<PropsType> = ({ data }) => {
               navigate(`/airline/edit/${data.taskTplId}${params}`)
             }}
           >
-            编辑
+            {t('action.detail.task.edit.title')}
           </Button>
           <Button size="small" onClick={() => handleClick('start')}>
-            开始
+            {t('action.detail.task.start.title')}
           </Button>
         </div>
       )
@@ -95,10 +104,10 @@ const OperatorBtns: FC<PropsType> = ({ data }) => {
       return (
         <div className="flex gap-2">
           <Button size="small" onClick={() => handleClick('pause')}>
-            暂停
+            {t('action.detail.task.pause.title')}
           </Button>
           <Button size="small" onClick={() => handleClick('end')}>
-            结束
+            {t('action.detail.task.end.title')}
           </Button>
         </div>
       )
@@ -106,10 +115,10 @@ const OperatorBtns: FC<PropsType> = ({ data }) => {
       return (
         <div className="flex gap-2">
           <Button size="small" onClick={() => handleClick('continue')}>
-            继续
+            {t('action.detail.task.continue.title')}
           </Button>
           <Button size="small" onClick={() => handleClick('end')}>
-            结束
+            {t('action.detail.task.end.title')}
           </Button>
         </div>
       )
@@ -119,6 +128,7 @@ const OperatorBtns: FC<PropsType> = ({ data }) => {
 
 /** 子任务 */
 const ChildAction: FC<PropsType> = memo(({ data }) => {
+  const { t, i18n } = useTranslation()
   // 任务执行人员
   let pilotsStr = ''
   if (data.extra) {
@@ -145,18 +155,22 @@ const ChildAction: FC<PropsType> = memo(({ data }) => {
         </div>
       </div>
       <div>
-        <span className="mr-1">执行人员:</span>
+        <span className="mr-1">{t('action.detail.task.people.title')}:</span>
         <span>{pilotsStr || '-'}</span>
       </div>
       <div className="flex gap-2 overflow-hidden">
         <p className="grow flex overflow-hidden">
-          <span className="mr-1 text-nowrap">执行设备:</span>
+          <span className="mr-1 text-nowrap">
+            {t('action.detail.task.device.title')}:
+          </span>
           <span className="max-w-32 truncate">{data.deviceName || '-'}</span>
         </p>
         <p className="shrink-0">
-          <span className="mr-1 text-nowrap">任务状态:</span>
+          <span className="mr-1 text-nowrap">
+            {t('action.detail.task.status.title')}:
+          </span>
           <span style={{ color: statusColor[data.status!] }}>
-            {taskStatusMap[data.status!]}
+            {taskStatusMap[i18n.language][data.status!]}
           </span>
         </p>
       </div>

@@ -7,9 +7,13 @@ type PropsType = {
 }
 
 const AiResultItem: FC<PropsType> = memo(({ data }) => {
+  const { t } = useTranslation()
+
   return (
     <div>
-      <p className="leading-5">{data.plateNo || '暂无结果'}</p>
+      <p className="leading-5">
+        {data.plateNo || t('action.detail.aiResult.empty.title')}
+      </p>
       <div className="flex h-24 gap-2">
         <div className="w-[140px] h-24">
           <ImageContainBox src={`/storage${data.image || data.sourceImage}`}>
@@ -37,22 +41,24 @@ const AiResultItem: FC<PropsType> = memo(({ data }) => {
         </div>
         <ul className="flex flex-col justify-between text-fore">
           <li className="flex gap-1">
-            <span>颜色:</span>
+            <span>{t('common.color')}:</span>
             <span>{data.plateColor || '-'}</span>
           </li>
           <li className="flex gap-1">
-            <span>时间:</span>
+            <span>{t('common.time')}:</span>
             <span>{dayjs(data.gmtModified).format('MM/DD HH:mm:ss')}</span>
           </li>
           <li className="flex gap-1 whitespace-nowrap">
-            <span>位置:</span>
+            <span>{t('common.position')}:</span>
             <span>
-              {data.longitude.toFixed(5)}, {data.latitude.toFixed(5)}
+              {data.longitude.toFixed(4)}, {data.latitude.toFixed(4)}
             </span>
           </li>
           <li className="flex gap-1">
-            <span>来源:</span>
-            <span>{data.source}</span>
+            <span>{t('common.source')}:</span>
+            <span className="whitespace-nowrap max-w-[120px] truncate">
+              {data.source}
+            </span>
           </li>
         </ul>
       </div>

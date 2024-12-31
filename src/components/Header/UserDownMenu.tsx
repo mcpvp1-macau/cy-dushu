@@ -14,6 +14,8 @@ const UserDownMenu: FC<PropsType> = memo(() => {
     logout()
   })
 
+  const { t } = useTranslation()
+
   return (
     <ul className="border border-solid border-ground-300 rounded text-fore">
       <li className="p-2 flex items-center gap-2">
@@ -27,7 +29,7 @@ const UserDownMenu: FC<PropsType> = memo(() => {
           onClick={handleLogoutClick}
         >
           <LogoutOutlined />
-          退出登录
+          {t('login.logout')}
         </button>
       </li>
     </ul>

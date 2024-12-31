@@ -12,6 +12,7 @@ export type ActionConfigType = {
   actionName: string
   config: any
   type: string
+  key: string
   [k: string]: any
 }
 
@@ -40,6 +41,7 @@ export const actionMap = new Map<ActionTypeEnum, ActionConfigType>([
   [
     ActionTypeEnum.HOVER,
     {
+      key: 'HOVER',
       actionName: '悬停',
       config: {
         hoverTime: 10,
@@ -50,6 +52,7 @@ export const actionMap = new Map<ActionTypeEnum, ActionConfigType>([
   [
     ActionTypeEnum.ROTATE_YAW,
     {
+      key: 'ROTATE_YAW',
       actionName: '飞行器偏航角',
       config: {
         aircraftHeading: 0,
@@ -60,6 +63,7 @@ export const actionMap = new Map<ActionTypeEnum, ActionConfigType>([
   [
     ActionTypeEnum.CAMERA_POSITION_X,
     {
+      key: 'CAMERA_POSITION_X',
       actionName: '云台偏航角',
       config: {
         x: 0,
@@ -70,6 +74,7 @@ export const actionMap = new Map<ActionTypeEnum, ActionConfigType>([
   [
     ActionTypeEnum.CAMERA_POSITION_Y,
     {
+      key: 'CAMERA_POSITION_Y',
       actionName: '云台俯仰角',
       config: {
         y: 0,
@@ -80,6 +85,7 @@ export const actionMap = new Map<ActionTypeEnum, ActionConfigType>([
   [
     ActionTypeEnum.ZOOM,
     {
+      key: 'ZOOM',
       actionName: '相机变焦',
       config: {
         focalLength: 5,
@@ -90,6 +96,7 @@ export const actionMap = new Map<ActionTypeEnum, ActionConfigType>([
   [
     ActionTypeEnum.GET_PICTURE,
     {
+      key: 'GET_PICTURE',
       actionName: '拍照',
       config: {
         payloadLensIndex: [],
@@ -101,6 +108,7 @@ export const actionMap = new Map<ActionTypeEnum, ActionConfigType>([
   [
     ActionTypeEnum.LEN_CHANGE,
     {
+      key: 'LEN_CHANGE',
       actionName: '镜头切换',
       config: {
         actionTiming: 'ARRIVE',
@@ -112,6 +120,7 @@ export const actionMap = new Map<ActionTypeEnum, ActionConfigType>([
   [
     ActionTypeEnum.OPEN_AI,
     {
+      key: 'OPEN_AI',
       actionName: '开启算法',
       config: {},
       type: 'OPEN_AI',
@@ -120,6 +129,7 @@ export const actionMap = new Map<ActionTypeEnum, ActionConfigType>([
   [
     ActionTypeEnum.CLOSE_AI,
     {
+      key: 'CLOSE_AI',
       actionName: '关闭算法',
       config: {},
       type: 'CLOSE_AI',

@@ -1,30 +1,35 @@
 import FormModal from '@/components/XForm/Modal'
 import { Button } from 'antd'
-import { memo, type FC } from 'react'
 // import { createAddActionFormItems } from '../constant'
 import { useDictOptions } from '@/store/useDict.store'
 import { DictEnum } from '@/enum/dict'
 import { addAction } from '@/service/modules/action'
 import { XFormItem } from '@/components/XForm/types'
+import { TFunctionNonStrict } from 'i18next'
 
 export const createAddActionFormItems = (
+  t: TFunctionNonStrict<'transition', undefined>,
   typeOptions: { label: ReactNode; value: any }[],
 ): XFormItem[] => [
   {
-    label: '行动名称',
+    label: t('action.add.form.name.label'),
     name: 'name',
     type: 'input',
-    rules: [{ required: true, message: '请输入行动名称' }],
+    rules: [
+      { required: true, message: t('action.add.form.name.required_msg') },
+    ],
   },
   {
-    label: '行动类型',
+    label: t('action.add.form.type.label'),
     name: 'type',
     type: 'select',
     options: typeOptions,
-    rules: [{ required: true, message: '请选择行动类型' }],
+    rules: [
+      { required: true, message: t('action.add.form.type.required_msg') },
+    ],
   },
   {
-    label: '备注',
+    label: t('action.add.form.description.label'),
     name: 'description',
     type: 'textarea',
   },
@@ -34,13 +39,14 @@ type PropsType = unknown
 
 /** 创建行动 */
 const AddAction: FC<PropsType> = memo(() => {
+  const { t, i18n } = useTranslation()
   const [open, setOpen] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
 
   const actionTypeOptions = useDictOptions(DictEnum.ACTION_TYPE)
   const formItems = useMemo(
-    () => createAddActionFormItems(actionTypeOptions),
-    [actionTypeOptions],
+    () => createAddActionFormItems(t, actionTypeOptions),
+    [i18n.language, actionTypeOptions],
   )
   const queryClient = useQueryClient()
   const navigate = useNavigate()
@@ -63,10 +69,10 @@ const AddAction: FC<PropsType> = memo(() => {
   return (
     <>
       <Button className="w-28" type="primary" onClick={() => setOpen(true)}>
-        创建行动
+        {t('action.add.title')}
       </Button>
       <FormModal
-        title="创建行动"
+        title={t('action.add.title')}
         open={open}
         items={formItems}
         confirmLoading={confirmLoading}

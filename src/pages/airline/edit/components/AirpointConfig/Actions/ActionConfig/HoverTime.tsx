@@ -12,11 +12,15 @@ type PropsType = {
 }
 
 const HoverTime: FC<PropsType> = ({ config, onChange }) => {
+  const { t } = useTranslation()
+
   return (
     <div>
       <div className={styles.subTitle}>
         <WRJXT />
-        <span className={styles.text}>悬停</span>
+        <span className={styles.text}>
+          {t('wayline.waylinePoint.actions.HOVER.title')}
+        </span>
       </div>
       <HNumber
         value={config.hoverTime || 0}

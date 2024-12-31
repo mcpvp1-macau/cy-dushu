@@ -25,13 +25,14 @@ const PageSituation: FC<PropsType> = memo(() => {
     }
   })
 
+  const { t } = useTranslation()
   const menus: GetProps<typeof Tabs>['items'] = [
     {
       key: 'action',
       label: (
         <p className="flex gap-2">
           <MenuIconAction />
-          行动
+          {t('situation.menus.action')}
         </p>
       ),
     },
@@ -49,7 +50,7 @@ const PageSituation: FC<PropsType> = memo(() => {
       label: (
         <p className="flex gap-2">
           <MenuIconEvents />
-          事件
+          {t('situation.menus.events')}
         </p>
       ),
     },

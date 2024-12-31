@@ -26,6 +26,8 @@ type PropsType = {
 }
 
 const CloseAI: FC<PropsType> = memo(({ config, onChange }) => {
+  const { t } = useTranslation()
+
   const queryClient = useQueryClient()
   const { data, isLoading } = useQuery(
     {
@@ -89,7 +91,9 @@ const CloseAI: FC<PropsType> = memo(({ config, onChange }) => {
   const [activeId, setActiveId] = useState<number | null>(null)
   const handleConfirm = useMemoizedFn(() => {
     if (!activeId) {
-      msgApi.warning('请选择算法')
+      msgApi.warning(
+        t('wayline.waylinePoint.actions.OPEN_AI.error.noSelect.msg'),
+      )
       return
     }
     setOpen(false)
@@ -107,10 +111,10 @@ const CloseAI: FC<PropsType> = memo(({ config, onChange }) => {
 
   return (
     <div>
-      <div className="mt-3 flex leading-4 justify-between items-center text-fore-base">
+      <div className="mt-3 flex justify-between items-center text-fore-base">
         <div className="flex gap-2">
           <IconAIDisable />
-          <span>关闭算法</span>
+          <span>{t('wayline.waylinePoint.actions.CLOSE_AI.title')}</span>
         </div>
         {activeAlgorithm && (
           <Button
@@ -119,7 +123,7 @@ const CloseAI: FC<PropsType> = memo(({ config, onChange }) => {
             className="p-0 h-4 leading-4"
             onClick={() => setOpen(true)}
           >
-            选择算法
+            {t('wayline.waylinePoint.actions.OPEN_AI.select.title')}
           </Button>
         )}
       </div>
@@ -131,11 +135,23 @@ const CloseAI: FC<PropsType> = memo(({ config, onChange }) => {
         ) : activeAlgorithm ? (
           <>
             <div className="flex gap-3 items-center">
-              <span className="text-fore-base">执行时机</span>
+              <span className="text-fore-base">
+                {t('wayline.waylinePoint.actions.OPEN_AI.timing.title')}
+              </span>
               <Radio.Group
                 options={[
-                  { label: '到达时', value: 'ARRIVE' },
-                  { label: '离开时', value: 'LEAVE' },
+                  {
+                    label: t(
+                      'wayline.waylinePoint.actions.OPEN_AI.ARRIVE.title',
+                    ),
+                    value: 'ARRIVE',
+                  },
+                  {
+                    label: t(
+                      'wayline.waylinePoint.actions.OPEN_AI.LEAVE.title',
+                    ),
+                    value: 'LEAVE',
+                  },
                 ]}
                 value={config.actionTiming}
                 onChange={handleTimingChange}
@@ -155,7 +171,7 @@ const CloseAI: FC<PropsType> = memo(({ config, onChange }) => {
             icon={<PlusOutlined />}
             onClick={() => setOpen(true)}
           >
-            选择算法
+            {t('wayline.waylinePoint.actions.OPEN_AI.select.title')}
           </Button>
         )}
       </div>
@@ -166,7 +182,7 @@ const CloseAI: FC<PropsType> = memo(({ config, onChange }) => {
         title={
           <div className="flex gap-2">
             <MinusCircleOutlined />
-            选择算法
+            {t('wayline.waylinePoint.actions.OPEN_AI.select.title')}
           </div>
         }
         open={open}

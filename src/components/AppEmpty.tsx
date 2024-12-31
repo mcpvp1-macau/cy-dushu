@@ -5,7 +5,8 @@ import zanwushujuSvg from '@/assets/imgs/zanwushuju.svg'
 type PropsType = GetProps<typeof Empty>
 
 const AppEmpty: FC<PropsType> = ({ ...restProps }) => {
-  restProps.description ??= '暂无数据'
+  const { t } = useTranslation()
+  restProps.description ??= t('common.emptyContent')
   restProps.imageStyle ??= { height: 32 }
 
   return (

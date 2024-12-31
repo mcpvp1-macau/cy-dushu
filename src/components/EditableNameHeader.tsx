@@ -20,6 +20,7 @@ type PropsType = {
 const EditableNameHeader: FC<PropsType> = memo(
   ({ value, className, loading, onFinish, onBackClick }) => {
     const [isEdit, setIsEdit] = useState(false)
+    const { t } = useTranslation()
 
     const [form] = Form.useForm()
 
@@ -46,7 +47,10 @@ const EditableNameHeader: FC<PropsType> = memo(
         )}
       >
         <div>
-          <IconButton toolTipProps={{ title: '返回' }} onClick={onBackClick}>
+          <IconButton
+            toolTipProps={{ title: t('common.back') }}
+            onClick={onBackClick}
+          >
             <IconBack />
           </IconButton>
         </div>
@@ -68,14 +72,14 @@ const EditableNameHeader: FC<PropsType> = memo(
         <div className="text-sm">
           {isEdit ? (
             <IconButton
-              toolTipProps={{ title: '保存' }}
+              toolTipProps={{ title: t('common.save') }}
               onClick={handleSaveClick}
             >
               <IconSave />
             </IconButton>
           ) : (
             <IconButton
-              toolTipProps={{ title: '编辑' }}
+              toolTipProps={{ title: t('common.edit') }}
               onClick={() => setIsEdit(true)}
             >
               <IconEdit />

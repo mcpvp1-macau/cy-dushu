@@ -21,18 +21,22 @@ import {
 import type { Dayjs } from 'dayjs'
 
 const TipInfo = memo(() => {
+  const { t } = useTranslation()
+
   return (
     <p className="flex gap-2 text-fore">
       <InfoCircleOutlined />
-      航线结束动作必须设置为返航
+      {t('schedule.tip.mustSetGoHome')}
     </p>
   )
 })
 
 const SingleFormItems = memo(() => {
+  const { t } = useTranslation()
+
   return (
     <Form.Item
-      label="执行时间"
+      label={t('common.executeTime.title')}
       name="executeTime"
       required
       rules={[{ required: true }]}
@@ -43,10 +47,12 @@ const SingleFormItems = memo(() => {
 })
 
 const REPEATFormItems = memo(() => {
+  const { t } = useTranslation()
+
   return (
     <>
       <Form.Item
-        label="执行日期"
+        label={t('common.executeDate.title')}
         name="timeRange"
         required
         rules={[{ required: true }]}
@@ -63,8 +69,14 @@ const REPEATFormItems = memo(() => {
                   className="w-full"
                   label={
                     <span>
-                      执行时间{' '}
-                      <Tooltip title="重复任务的计划间隔必须设置为至少超过 前一次任务实际执行时长 20 分钟以上">
+                      {t('common.executeTime.title')}{' '}
+                      <Tooltip
+                        title={
+                          <p className="text-justify">
+                            {t('schedule.tip.20minsInterval')}
+                          </p>
+                        }
+                      >
                         <InfoCircleOutlined />
                       </Tooltip>
                     </span>
@@ -74,7 +86,9 @@ const REPEATFormItems = memo(() => {
                     ({ getFieldValue }) => ({
                       validator: (_, value) => {
                         if (!value) {
-                          return Promise.reject('请选择执行时间')
+                          return Promise.reject(
+                            t('schedule.errors.selectTime.msg'),
+                          )
                         }
                         if (i === 0) {
                           return Promise.resolve()
@@ -84,11 +98,13 @@ const REPEATFormItems = memo(() => {
                           const diff = value.diff(prevTime, 'minute')
                           if (value.isBefore(prevTime)) {
                             return Promise.reject(
-                              '时间间隔必须大于前一次执行时间',
+                              t('schedule.errors.smallThanThePrevious.msg'),
                             )
                           }
                           if (diff < 120) {
-                            return Promise.reject('时间间隔必须大于 2 小时')
+                            return Promise.reject(
+                              t('schedule.errors.lessThan2h.msg'),
+                            )
                           }
                         }
                         return Promise.resolve()
@@ -148,7 +164,8 @@ type PropsType = {
 }
 
 const ScheduleModal: FC<PropsType> = memo(
-  ({ title = '新建计划', data, open, loading, onClose, onConfirm }) => {
+  ({ title, data, open, loading, onClose, onConfirm }) => {
+    const { t } = useTranslation()
     const { data: airlines, airlineOptions } = useAirlineOptions()
 
     const [form] = Form.useForm<FormValuesType>()
@@ -275,6 +292,7 @@ const ScheduleModal: FC<PropsType> = memo(
         confirmLoading={loading}
         onClose={onClose}
         onConfirm={handleConfirm}
+        noPadding
       >
         <ConfigProvider
           theme={{
@@ -288,46 +306,47 @@ const ScheduleModal: FC<PropsType> = memo(
           }}
         >
           <Form
+            className="m-3"
             autoComplete="off"
             layout="vertical"
             initialValues={{ type: 'SINGLE' }}
             form={form}
           >
             <Form.Item
-              label="计划名称"
+              label={t('schedule.form.name.title')}
               name="name"
               required
               rules={[{ required: true }]}
             >
-              <Input placeholder="请输入" />
+              <Input placeholder={t('common.form.pleaseInput')} />
             </Form.Item>
             <Form.Item
-              label="设备"
+              label={t('schedule.form.device.title')}
               name="deviceId"
               rules={[{ required: true }]}
             >
               <Select
-                placeholder="请选择"
+                placeholder={t('common.form.pleaseSelect')}
                 showSearch
                 optionFilterProp="label"
                 options={uavDevices}
               />
             </Form.Item>
             <Form.Item
-              label="航线"
+              label={t('schedule.form.wayline.title')}
               name="airlineIndex"
               required
               rules={[{ required: true }]}
             >
               <Select
-                placeholder="请选择"
+                placeholder={t('common.form.pleaseSelect')}
                 showSearch
                 optionFilterProp="label"
                 options={airlineOptions}
               />
             </Form.Item>
             <Form.Item
-              label="计划策略"
+              label={t('schedule.form.type.title')}
               name="type"
               required
               rules={[{ required: true }]}
@@ -338,10 +357,10 @@ const ScheduleModal: FC<PropsType> = memo(
                 className="w-full flex gap-[1px]"
               >
                 <Radio.Button className="flex-1 text-center" value="SINGLE">
-                  单次定时
+                  {t('schedule.type.SINGLE.title')}
                 </Radio.Button>
                 <Radio.Button className="flex-1 text-center" value="REPEAT">
-                  重复定时
+                  {t('schedule.type.REPEAT.title')}
                 </Radio.Button>
               </Radio.Group>
             </Form.Item>

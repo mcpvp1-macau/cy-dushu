@@ -14,13 +14,16 @@ const SourceStatusCheckGroup: FC<PropsType> = memo((props) => {
         pick(s, ['isOnline', 'isTask', 'isNotTask', 'setDeviceStatus']),
       ),
     )
+
+  const { t } = useTranslation()
+
   return (
     <div {...props}>
       {(
         [
-          ['isOnline', isOnline, '在线'],
-          ['isTask', isTask, '任务中'],
-          ['isNotTask', isNotTask, '无任务'],
+          ['isOnline', isOnline, t('source.status.online')],
+          ['isTask', isTask, t('source.status.isTask')],
+          ['isNotTask', isNotTask, t('source.status.isNotTask')],
         ] as const
       ).map(([prop, value, label]) => (
         <Checkbox

@@ -1,5 +1,5 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Fragment, memo, type FC } from 'react'
+import { Fragment } from 'react'
 import { DynamicLayoutType } from '..'
 import useDynamicLayoutStore from '../store/useDynamicLayout.store'
 import IconButton from '@/components/ui/button/IconButton'
@@ -16,10 +16,13 @@ type PropsType = {
 const DynamicLayoutFullTabs: FC<PropsType> = memo(
   ({ layout, onLayoutChange }) => {
     const iconMap = useDynamicLayoutStore((s) => s.iconMap)
+    const titleMap = useDynamicLayoutStore((s) => s.titleMap)
 
     const handleExitFull = () => {
       onLayoutChange?.({ ...layout, isFull: false })
     }
+
+    const { t } = useTranslation()
 
     return (
       <div
@@ -58,9 +61,9 @@ const DynamicLayoutFullTabs: FC<PropsType> = memo(
                       'opacity-60': e.key !== layout.activeKey,
                     })}
                   >
-                    {iconMap?.[e.key]}
+                    {iconMap[e.key]}
                   </i>
-                  <span>{e.title}</span>
+                  <span>{titleMap[e.key]}</span>
                 </li>
               </Fragment>
             ))}
@@ -75,7 +78,7 @@ const DynamicLayoutFullTabs: FC<PropsType> = memo(
           <IconButton
             className="text-sm"
             toolTipProps={{
-              title: '缩小',
+              title: t('dynamicLayout.exit.title'),
               mouseEnterDelay: 0.2,
             }}
             onClick={handleExitFull}

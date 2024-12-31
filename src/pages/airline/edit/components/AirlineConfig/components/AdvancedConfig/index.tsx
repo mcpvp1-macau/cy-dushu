@@ -18,9 +18,14 @@ const AdvancedConfig: FC<PropsType> = () => {
     ),
   )
 
+  const { t } = useTranslation()
+
   return (
-    <XCard title="高级设置" collapsible>
-      <div style={{ marginTop: '8px', marginBottom: '-12px' }}>
+    <XCard title={t('common.advancedSetting')} collapsible>
+      <div
+        className="w-full overflow-hidden"
+        style={{ marginTop: '8px', marginBottom: '-12px' }}
+      >
         <Form
           layout="vertical"
           initialValues={pick(
@@ -35,9 +40,19 @@ const AdvancedConfig: FC<PropsType> = () => {
           }}
         >
           {moreFormItems.map((item) => (
-            <Form.Item key={item.key} label={item.label} name={item.key}>
+            <Form.Item
+              key={item.key}
+              label={t(`wayline.advancedSetting.${item.key}.title`)}
+              name={item.key}
+            >
               <Select
-                options={item.options}
+                className="max-w-[300px]"
+                options={item.options.map((e) => ({
+                  value: e.value,
+                  label: t(
+                    `wayline.advancedSetting.${item.key}.${e.value}.title`,
+                  ),
+                }))}
                 suffixIcon={<CaretDownOutlined />}
               />
             </Form.Item>

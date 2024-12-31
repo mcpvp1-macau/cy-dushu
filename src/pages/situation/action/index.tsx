@@ -56,11 +56,13 @@ const PageSituationAction: FC<PropsType> = memo(() => {
     setName(e.currentTarget.value)
   }
 
+  const { t } = useTranslation()
+
   return (
     <div className="h-full flex flex-col my-3 overflow-hidden">
       <div className="px-3">
         <Input
-          placeholder="请根据行动名称搜索"
+          placeholder={t('action.input.placeholder')}
           onPressEnter={handlePressEnter}
         />
       </div>

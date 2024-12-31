@@ -1,4 +1,3 @@
-import { memo, type FC } from 'react'
 import { actionKeys, actionMap, ActionTypeEnum, iconMap } from './actionMap'
 import { v4 as uuidv4 } from 'uuid'
 import { useAppMsg } from '@/hooks/useAppMsg'
@@ -15,6 +14,7 @@ type PropsType = {
 /** 航点添加动作 */
 const AirpointAddAction: FC<PropsType> = memo(({ setActiveOperator }) => {
   const msgApi = useAppMsg()
+  const { t, i18n } = useTranslation()
 
   const currentBearing = useAirlineConfigStore((s) => s.bearing)
   const eoBearingDelta = useAirlineConfigStore((s) => s.eoBearingDealta)
@@ -80,19 +80,24 @@ const AirpointAddAction: FC<PropsType> = memo(({ setActiveOperator }) => {
         label: (
           <div className="flex gap-2">
             {iconMap.get(e)}
-            <span>{actionMap.get(e)?.actionName}</span>
+            <span>
+              {t(`wayline.waylinePoint.actions.${actionMap.get(e)?.key}.title`)}
+            </span>
           </div>
         ),
         onClick: () => addAction(e),
       })),
-    [],
+    [i18n.language],
   )
 
   return (
     <IconButtonWithDropDown
       className="my-2"
       menu={{ items: menus }}
-      tooltipProps={{ title: '添加航点动作', mouseEnterDelay: 0.5 }}
+      tooltipProps={{
+        title: t('wayline.waylinePoint.createWaypointAction.title'),
+        mouseEnterDelay: 0.5,
+      }}
       trigger={['click']}
       placement="bottomRight"
     >

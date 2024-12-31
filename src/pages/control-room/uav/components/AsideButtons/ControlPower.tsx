@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid'
 type PropsType = unknown
 
 const ControlPower: FC<PropsType> = memo(() => {
+  const { t } = useTranslation()
   const username = useUserStore((s) => s.user?.username)
   const { robControlPower, isPending, disabled } = useRobControlPower()
   const operator = useUavControlRoomStore((s) => s.state.operator)
@@ -32,7 +33,8 @@ const ControlPower: FC<PropsType> = memo(() => {
         }
       }}
     >
-      飞行控制{operator && `(${operator})`}
+      {t('device.controlPower.title')}
+      {operator && ` (${operator})`}
     </Button>
   )
 })

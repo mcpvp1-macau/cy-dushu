@@ -83,36 +83,51 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
     setEventName(e.currentTarget.value)
   }
 
+  const { t } = useTranslation()
+
   return (
     <div className="h-full flex flex-col my-3 overflow-hidden">
       <div className="px-3 flex gap-3">
         <Input
-          placeholder="请根据事件名称或 ID 搜索"
+          placeholder={t('events.search.placeholder')}
           onPressEnter={handlePressEnter}
         />
         <IconButtonWithDropDown
-          tooltipProps={{ title: '事件筛选' }}
+          tooltipProps={{ title: t('events.filter.title') }}
           trigger={['click']}
           dropdownRender={() => (
             <div className="bg-ground-200 p-3 rounded">
               <div className="flex gap-2 items-center">
                 <div className="h-[10px] w-[2px] bg-green-500 rounded-sm" />
-                <span className="text-white">风险等级</span>
+                <span className="text-white">
+                  {t('events.filter.riskLevel.title')}
+                </span>
               </div>
 
               <div>
                 <Checkbox.Group
                   options={[
-                    { label: '高风险', value: 'High' },
-                    { label: '中风险', value: 'Middle' },
-                    { label: '低风险', value: 'Low' },
+                    {
+                      label: t('events.filter.riskLevel.high.title'),
+                      value: 'High',
+                    },
+                    {
+                      label: t('events.filter.riskLevel.middle.title'),
+                      value: 'Middle',
+                    },
+                    {
+                      label: t('events.filter.riskLevel.low.title'),
+                      value: 'Low',
+                    },
                   ]}
                   onChange={setEventLevelList}
                 />
               </div>
               <div className="flex gap-2 items-center mt-3 mb-1">
                 <div className="h-[10px] w-[2px] bg-green-500 rounded-sm" />
-                <span className="text-white">事件来源</span>
+                <span className="text-white">
+                  {t('events.filter.source.title')}
+                </span>
               </div>
               <div>
                 <Checkbox.Group
@@ -122,7 +137,9 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
               </div>
               <div className="flex gap-2 items-center mt-3 mb-1">
                 <div className="h-[10px] w-[2px] bg-green-500 rounded-sm" />
-                <span className="text-white">事件类型</span>
+                <span className="text-white">
+                  {t('events.filter.type.title')}
+                </span>
               </div>
               <div>
                 <Checkbox.Group
@@ -132,13 +149,21 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
               </div>
               <div className="flex gap-2 items-center mt-3 mb-1">
                 <div className="h-[10px] w-[2px] bg-green-500 rounded-sm" />
-                <span className="text-white">事件状态</span>
+                <span className="text-white">
+                  {t('events.filter.status.title')}
+                </span>
               </div>
               <div>
                 <Checkbox.Group
                   options={[
-                    { label: '待处理', value: 'PENDING' },
-                    { label: '处理中', value: 'PROCESSING' },
+                    {
+                      label: t('events.filter.status.PENDING.title'),
+                      value: 'PENDING',
+                    },
+                    {
+                      label: t('events.filter.status.PROCESSING.title'),
+                      value: 'PROCESSING',
+                    },
                   ]}
                   onChange={setProcessStatusList}
                 />

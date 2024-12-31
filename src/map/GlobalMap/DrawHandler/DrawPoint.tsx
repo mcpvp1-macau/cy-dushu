@@ -14,6 +14,7 @@ type PropsType = {
 
 /** 打点 */
 const DrawPoint: FC<PropsType> = memo(({ onSuccess }) => {
+  const { t } = useTranslation()
   const { viewer } = useCesium()
 
   const pointRef = useRef<[number, number] | null>(null)
@@ -80,7 +81,7 @@ const DrawPoint: FC<PropsType> = memo(({ onSuccess }) => {
   return (
     <>
       <AddFormModal
-        title="新增点位"
+        title={t('overlay.marker.create.title')}
         open={open}
         onClose={setFalse}
         onConfirm={handleConfirm}

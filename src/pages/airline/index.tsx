@@ -7,13 +7,15 @@ import UploadAirlineTemplte from './components/UploadAirlineTemplate'
 type PropsType = unknown
 
 const PageAirline: FC<PropsType> = memo(() => {
+  const { t } = useTranslation()
+
   return (
     <CollapsedPage>
       <div className="h-full flex flex-col">
         <header className="flex justify-between items-center p-3 border-b border-solid border-ground-250">
           <div className="flex gap-1">
             <MenuIconAirline />
-            <h2 className="text-white">航线</h2>
+            <h2 className="text-white">{t('wayline.title')}</h2>
           </div>
           <div className="text-sm flex gap-3">
             <UploadAirlineTemplte />

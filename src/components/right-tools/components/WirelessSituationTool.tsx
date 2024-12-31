@@ -1,10 +1,7 @@
 import { type ButtonHTMLAttributes, memo, type FC, useRef } from 'react'
 import { useDebounceEffect, useMemoizedFn } from 'ahooks'
-
-// import styles from './index.less'
 import { Slider, SliderSingleProps } from 'antd'
 import dayjs from 'dayjs'
-// import SignalExample from '../Example/SignalExample'
 import GeoQuickSearch from '@/utils/geo-quick-search'
 import { signalStrParseWithLngLat } from '@/utils/signal-parse'
 import { sortSearchFn } from '@/utils/sort'
@@ -15,7 +12,6 @@ import IconButton from '@/components/ui/button/IconButton'
 import IconClose from '@/assets/icons/jsx/IconClose'
 import { getWirelessSituation } from '@/service/modules/db-api'
 import FloatIconButton from '@/components/ui/button/FloatIconButton'
-// import BottomSafeAreaPortal from '@/components2/BottomSafeAreaPortal'
 
 type PropsType = ButtonHTMLAttributes<HTMLButtonElement>
 
@@ -70,6 +66,8 @@ const WirelessSituationTool: FC<PropsType> = memo((props) => {
     updateLevelGQSByLevel: s.updateLevelGQSByLevel,
     updateLevelGQS: s.updateLevelGQS,
   }))
+
+  const { t } = useTranslation()
 
   const handleClick = useMemoizedFn(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -135,7 +133,7 @@ const WirelessSituationTool: FC<PropsType> = memo((props) => {
   return (
     <>
       <FloatIconButton
-        toolTipProps={{ title: '电磁态势', placement: 'left' }}
+        toolTipProps={{ title: t('signalSituation.title'), placement: 'left' }}
         onClick={handleClick}
         active={enableSignalLayer}
       >
@@ -151,7 +149,9 @@ const WirelessSituationTool: FC<PropsType> = memo((props) => {
             )}
           >
             <div className="flex flex-nowrap gap-3 items-center">
-              <h5 className="text-base text-white">信号高度层</h5>
+              <h5 className="text-base text-white">
+                {t('signalSituation.heightFilter.title')}
+              </h5>
               <IconButton onClick={() => updateEnableSignalLayer(false)}>
                 <IconClose
                   style={{ fontSize: '16px', transform: 'scale(1.3)' }}

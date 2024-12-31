@@ -10,17 +10,9 @@ import {
 } from '@tanstack/react-table'
 import { DatePicker, Pagination, Select, Tooltip } from 'antd'
 import { Dayjs } from 'dayjs'
-import { memo, type FC } from 'react'
 
 type PropsType = unknown
 
-const statusMap = {
-  PROCESSING: '执行中',
-  TERMINATE: '执行中断',
-  FAILED: '执行失败',
-  FINISH: '执行成功',
-  PENDING: '未执行',
-}
 const colorMap = {
   PROCESSING: '#4C90F0',
   FINISH: '#15B371',
@@ -29,48 +21,12 @@ const colorMap = {
   PENDING: 'white',
 }
 
-const statusOptions = Object.entries(statusMap).map(([value, label]) => ({
-  value,
-  label,
-}))
-
 const columnHelper = createColumnHelper<API_ACTION_PLAN.domain.PlanRecord>()
-
-const columns = [
-  columnHelper.accessor('startTime', {
-    header: '开始时间',
-  }),
-  columnHelper.accessor('endTime', {
-    header: '结束时间',
-  }),
-  columnHelper.accessor('status', {
-    header: '执行状态',
-    cell: (cell) => {
-      return (
-        <p className="flex gap-2 items-center">
-          <div
-            className="w-2 h-2 rounded"
-            style={{ background: colorMap[cell.getValue()!] ?? 'white' }}
-          />
-          {statusMap[cell.getValue()!] || '-'}
-          <Tooltip title={cell.row.original.message}>
-            <InfoCircleOutlined className="text-orange-400" />
-          </Tooltip>
-        </p>
-      )
-    },
-  }),
-  columnHelper.accessor('actionName', {
-    header: '行动名称',
-  }),
-  columnHelper.accessor('deviceName', {
-    header: '设备名称',
-    cell: (cell) => cell.getValue() || '-',
-  }),
-]
 
 const ScheduleTable: FC<PropsType> = memo(() => {
   const actionPlanId = parseInt(useParams().actionPlanId ?? '0') || null
+
+  const { t, i18n } = useTranslation()
 
   const [timeRange, setTimeRange] = useState<[Dayjs, Dayjs] | null>()
   const [status, setStatus] = useState<string | null>()
@@ -97,6 +53,54 @@ const ScheduleTable: FC<PropsType> = memo(() => {
     queryClient,
   )
 
+  const statusOptions = useMemo(() => {
+    return ['PROCESSING', 'TERMINATE', 'FAILED', 'FINISH', 'PENDING'].map(
+      (value) => ({
+        value,
+        label: t(`schedule.table.status.${value}.title`),
+      }),
+    )
+  }, [t, i18n])
+
+  console.log('statusOptions', statusOptions)
+
+  const columns = useMemo(() => {
+    return [
+      columnHelper.accessor('startTime', {
+        header: t('common.startTime'),
+      }),
+      columnHelper.accessor('endTime', {
+        header: t('common.endTime'),
+      }),
+      columnHelper.accessor('status', {
+        header: t('common.status'),
+        cell: (cell) => {
+          return (
+            <p className="flex gap-2 items-center">
+              <div
+                className="w-2 h-2 rounded"
+                style={{ background: colorMap[cell.getValue()!] ?? 'white' }}
+              />
+              {cell.getValue()
+                ? t(`schedule.table.status.${cell.getValue()}.title`)
+                : '-'}
+              <Tooltip title={cell.row.original.message}>
+                <InfoCircleOutlined className="text-orange-400" />
+              </Tooltip>
+            </p>
+          )
+        },
+      }),
+      columnHelper.accessor('actionName', {
+        header: t('schedule.table.actionName.title'),
+      }),
+      columnHelper.accessor('deviceName', {
+        header: t('schedule.table.deviceName.title'),
+        cell: (cell) => cell.getValue() || '-',
+      }),
+    ]
+  }, [t])
+
   const table = useReactTable({
     data: data?.rows ?? emtpyArray,
     columns,
@@ -112,8 +116,8 @@ const ScheduleTable: FC<PropsType> = memo(() => {
           onChange={(v) => setTimeRange(v ? [v[0]!, v[1]!] : null)}
         />
         <Select
-          className="w-32"
-          placeholder="请选择"
+          className="w-36"
+          placeholder={t('common.form.pleaseSelect')}
           allowClear
           value={status}
           options={statusOptions}
@@ -122,7 +126,11 @@ const ScheduleTable: FC<PropsType> = memo(() => {
       </section>
       <section className="grow mx-3 mb-3 flex flex-col overflow-y-hidden">
         <ScrollArea className="grow border border-solid border-ground-200 rounded">
-          <XTable table={table} loading={isLoading || isRefetching} />
+          <XTable
+            key={i18n.language}
+            table={table}
+            loading={isLoading || isRefetching}
+          />
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
         <div className="mt-1 flex justify-end">

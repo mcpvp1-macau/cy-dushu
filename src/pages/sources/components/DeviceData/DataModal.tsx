@@ -31,11 +31,12 @@ const DataModal: FC<PropsType> = memo(({ deviceId, open, onClose }) => {
   )
 
   const deviceList = useDeviceChildrenList(data)
+  const { t } = useTranslation()
 
   return (
     <XModal
       width={830}
-      title="数据"
+      title={t('common.data')}
       open={open}
       footer={false}
       onClose={onClose}
@@ -47,7 +48,7 @@ const DataModal: FC<PropsType> = memo(({ deviceId, open, onClose }) => {
           <Tabs
             items={[
               {
-                label: '图片',
+                label: t('common.picture'),
                 key: 'PICTURE',
                 children: (
                   <div className="min-h-[138px]">
@@ -58,7 +59,7 @@ const DataModal: FC<PropsType> = memo(({ deviceId, open, onClose }) => {
                 ),
               },
               {
-                label: '视频',
+                label: t('common.video'),
                 key: 'VIDEO',
                 children: (
                   <div className="min-h-[138px]">
@@ -69,7 +70,7 @@ const DataModal: FC<PropsType> = memo(({ deviceId, open, onClose }) => {
                 ),
               },
               {
-                label: '轨迹',
+                label: t('common.track'),
                 key: 'TRACK',
                 children: (
                   <div className="min-h-[138px]">

@@ -14,7 +14,7 @@ const SnackBar: FC<PropsType> = memo(
       open &&
       createPortal(
         <div
-          className="fixed z-[60] bottom-6 rounded left-1/2 -translate-x-1/2 p-3 py-6 whitespace-nowrap"
+          className="fixed z-[60] bottom-6 rounded left-1/2 -translate-x-1/2 p-3 px-6 whitespace-nowrap"
           style={{
             color,
             background,

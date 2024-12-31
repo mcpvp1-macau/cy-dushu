@@ -33,6 +33,8 @@ const PageActionDetailSub: FC<PropsType> = memo(() => {
 
   const actionDetail = useActionDetail()
 
+  const { t } = useTranslation()
+
   return (
     <div className="pt-3 h-full flex flex-col overflow-y-hidden">
       {actionDetail ? (
@@ -41,7 +43,7 @@ const PageActionDetailSub: FC<PropsType> = memo(() => {
             defaultActiveKey={['2']}
             items={[
               {
-                label: '事故信息',
+                label: t('action.detail.kcyp.title'),
                 key: '1',
                 children: (
                   <AppViewSuspense>
@@ -50,7 +52,7 @@ const PageActionDetailSub: FC<PropsType> = memo(() => {
                 ),
               },
               {
-                label: '任务列表',
+                label: t('action.detail.task.title'),
                 key: '2',
                 extra: <AddTask actionId={actionId!} />,
                 children: (
@@ -60,7 +62,7 @@ const PageActionDetailSub: FC<PropsType> = memo(() => {
                 ),
               },
               {
-                label: '检测结果',
+                label: t('action.detail.ai_result.title'),
                 key: '3',
                 extra: <KCYPNormalModal actionId={actionId!} />,
                 children: (
@@ -70,7 +72,7 @@ const PageActionDetailSub: FC<PropsType> = memo(() => {
                 ),
               },
               {
-                label: '行动记录',
+                label: t('action.detail.log.title'),
                 key: '4',
                 children: (
                   <AppViewSuspense>
@@ -86,7 +88,7 @@ const PageActionDetailSub: FC<PropsType> = memo(() => {
       )}
       <div className="text-center p-3">
         <Button type="primary" className="w-28" onClick={handleEndActionClick}>
-          结束行动
+          {t('action.detail.end.title')}
         </Button>
       </div>
     </div>

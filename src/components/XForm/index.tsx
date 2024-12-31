@@ -30,6 +30,8 @@ type PropsType = GetProps<typeof Form> & {
 /** 表单 */
 const XForm: FC<PropsType> = memo(
   ({ items, rowsProps, themeConfig = {}, colsProps, ...restProps }) => {
+    const { t } = useTranslation()
+
     // 处理 items
     const renderItems = items.map((item) => {
       if (item.render) return item
@@ -38,7 +40,7 @@ const XForm: FC<PropsType> = memo(
         case 'input':
           newItem.render = (
             <Input
-              placeholder={item.placeholder ?? '请输入'}
+              placeholder={item.placeholder ?? t('common.form.pleaseInput')}
               {...item.otherProps}
             />
           )
@@ -46,7 +48,7 @@ const XForm: FC<PropsType> = memo(
         case 'input-number':
           newItem.render = (
             <InputNumber
-              placeholder={item.placeholder ?? '请输入'}
+              placeholder={item.placeholder ?? t('common.form.pleaseInput')}
               {...item.otherProps}
               className={clsx('w-full', item.otherProps?.className)}
             />
@@ -55,7 +57,7 @@ const XForm: FC<PropsType> = memo(
         case 'textarea':
           newItem.render = (
             <Input.TextArea
-              placeholder={item.placeholder ?? '请输入'}
+              placeholder={item.placeholder ?? t('common.form.pleaseInput')}
               {...item.otherProps}
             />
           )
@@ -63,7 +65,7 @@ const XForm: FC<PropsType> = memo(
         case 'select':
           newItem.render = (
             <Select
-              placeholder={item.placeholder ?? '请选择'}
+              placeholder={item.placeholder ?? t('common.form.pleaseSelect')}
               options={item.options}
               showSearch={true}
               optionFilterProp="label"
@@ -74,7 +76,7 @@ const XForm: FC<PropsType> = memo(
         case 'tree-select':
           newItem.render = (
             <TreeSelect
-              placeholder={item.placeholder ?? '请选择'}
+              placeholder={item.placeholder ?? t('common.form.pleaseSelect')}
               treeData={item.treeData}
               treeExpandAction={'click'}
               treeNodeFilterProp={'label'}
@@ -95,7 +97,7 @@ const XForm: FC<PropsType> = memo(
                 icon={<UploadOutlined className="pr-2" />}
                 style={{ display: 'block', width: '100%' }}
               >
-                上传
+                {t('common.upload')}
               </Button>
             </Upload>
           )
@@ -111,7 +113,7 @@ const XForm: FC<PropsType> = memo(
                   background: 'rgba(0,0,0,0)',
                 }}
               >
-                上传
+                {t('common.upload')}
               </Button>
             </AliyunOSSUpload>
           )
@@ -131,7 +133,7 @@ const XForm: FC<PropsType> = memo(
           break
         default:
           const _: never = item // 这里不要删掉, 用 ts 检查
-          console.warn(_, '未知类型')
+          console.warn(_, 'Unknown XForm type')
       }
       return newItem
     })

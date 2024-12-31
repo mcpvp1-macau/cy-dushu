@@ -17,6 +17,7 @@ type PropsType = {
 const AlgorithmItem: FC<PropsType> = memo(
   ({ data, config, editable = true, onConfigChange }) => {
     const [settingOpen, setSettingOpen] = useState(false)
+    const { t } = useTranslation()
 
     const handleConfirm = useMemoizedFn((v: Record<string, any>) => {
       onConfigChange?.(v)
@@ -35,16 +36,18 @@ const AlgorithmItem: FC<PropsType> = memo(
         </div>
         <div className="flex flex-wrap mt-1 text-xs text-fore-base gap-y-1 overflow-hidden whitespace-nowrap">
           <div className="w-1/2 flex gap-1">
-            <span>状态:</span>
-            <span>{data.status === 'USED' ? '使用中' : '未使用'}</span>
+            <span>{t('common.status')}:</span>
+            <span>
+              {data.status === 'USED' ? t('common.used') : t('common.unused')}
+            </span>
           </div>
           <div className="w-1/2 flex gap-1">
-            <span>来源:</span>
+            <span>{t('common.source')}:</span>
             <span>-</span>
           </div>
           <div className="w-1/2 flex gap-1">
-            <span>创建时间:</span>
-            <span>{dayjs(data.createTime).format('YYYY-MM-DD')}</span>
+            <span>{t('common.createTime')}:</span>
+            <span>{dayjs(data.createTime).format('YY-MM-DD')}</span>
           </div>
           {data.algorithmConfigList?.map((v) => (
             <div className="w-1/2 flex gap-1 overflow-hidden" key={v.property}>

@@ -1,10 +1,10 @@
 import SignalStrength from '@/components/device/SignalStrength'
-import { StatusColorMap, StatusMap } from '@/enum/device'
+import { StatusColorMap } from '@/enum/device'
 
 const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
   return (
     <li className="w-1/2 flex gap-1">
-      <div>{l}:</div>
+      <div className="whitespace-nowrap">{l}:</div>
       {v}
     </li>
   )
@@ -34,26 +34,31 @@ const UavDetailInfoCard: FC<PropsType> = memo(
     height,
     horizontalSpeed,
   }) => {
+    const { t } = useTranslation()
+
     return (
       <ul className="p-2 mx-3 mr-[9px] card-border text-sm flex flex-wrap">
-        <I l="型号" v={modelNumber} />
+        <I l={t('common.modelNumber')} v={modelNumber} />
         <I
-          l="在线状态"
+          l={t('common.onlineStatus')}
           v={
             <p className="flex gap-2">
               <span style={{ color: StatusColorMap[onlineStatus!] }}>
-                {StatusMap[onlineStatus!] || '-'}
+                {onlineStatus ? t(`device.status.online.${onlineStatus}`) : '-'}
               </span>
               <SignalStrength value={signalStrength ?? 0} />
             </p>
           }
         />
-        <I l="飞行状态" v={displayMode} />
-        <I l="电量" v={`${electricity || 0} %`} />
-        <I l="经度" v={longitude?.toFixed(5) || '-'} />
-        <I l="纬度" v={latitude?.toFixed(5) || '-'} />
-        <I l="高度" v={`${height?.toFixed(2) || 0} m`} />
-        <I l="速度" v={`${horizontalSpeed?.toFixed(2) || 0} m/s`} />
+        <I l={t('uav.displayMode.title')} v={displayMode} />
+        <I l={t('common.electricity')} v={`${electricity || 0} %`} />
+        <I l={t('common.longitude')} v={longitude?.toFixed(5) || '-'} />
+        <I l={t('common.latitude')} v={latitude?.toFixed(5) || '-'} />
+        <I l={t('common.height')} v={`${height?.toFixed(2) || 0} m`} />
+        <I
+          l={t('common.speed')}
+          v={`${horizontalSpeed?.toFixed(2) || 0} m/s`}
+        />
       </ul>
     )
   },

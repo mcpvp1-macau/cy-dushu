@@ -50,7 +50,6 @@ const initialLayout: DynamicLayoutType = {
       children: [
         {
           key: 'map',
-          title: '地图',
         },
       ],
     },
@@ -64,7 +63,6 @@ const initialLayout: DynamicLayoutType = {
           children: [
             {
               key: 'video',
-              title: '视频',
             },
           ],
         },
@@ -78,7 +76,6 @@ const initialLayout: DynamicLayoutType = {
               children: [
                 {
                   key: 'flyParams',
-                  title: '飞行操控',
                 },
               ],
             },
@@ -88,11 +85,9 @@ const initialLayout: DynamicLayoutType = {
               children: [
                 {
                   key: 'flyButtons',
-                  title: '操作',
                 },
                 {
                   key: 'flyParamsSetting',
-                  title: '飞行参数',
                 },
               ],
             },
@@ -106,15 +101,12 @@ const initialLayout: DynamicLayoutType = {
       isCollapsed: true,
       children: [
         {
-          title: '负载',
           key: 'payload',
         },
         {
-          title: 'AI 算法',
           key: 'ai-list',
         },
         {
-          title: '设备数据',
           key: 'device-data',
         },
       ],
@@ -128,7 +120,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
   const productKey = useStore(
     store,
     (s) =>
-      s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey,
+      (s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey)!,
   )
 
   const controlRoomStore = useCreateUavControlRoomStore(
@@ -141,7 +133,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
     'uav-control-room-layout',
     { defaultValue: initialLayout },
   )
-
+  const { t } = useTranslation()
   const iconMap = useMemo(
     () => ({
       map: <IconMap className="text-blue-500" />,
@@ -154,6 +146,20 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       'device-data': <IconData className="text-emerald-500" />,
     }),
     [],
+  )
+
+  const titleMap = useMemo(
+    () => ({
+      map: t('common.map'),
+      video: t('common.video'),
+      flyParams: t('controlRoom.uav.flyParams.title'),
+      flyButtons: t('controlRoom.uav.flyButtons.title'),
+      flyParamsSetting: t('controlRoom.uav.flyParamsSetting.title'),
+      payload: t('controlRoom.uav.payload.title'),
+      ['ai-list']: t('controlRoom.uav.aiList.title'),
+      ['device-data']: t('controlRoom.uav.deviceData.title'),
+    }),
+    [t],
   )
 
   const componentMap = useMemo(
@@ -214,6 +220,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
               layout={layout!}
               onLayoutChange={setLayout}
               iconMap={iconMap}
+              titleMap={titleMap}
               componentMap={componentMap}
             />
           </main>

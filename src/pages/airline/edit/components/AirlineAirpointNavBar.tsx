@@ -7,6 +7,8 @@ type PropsType = {
 
 const AirlineAirpointNavbar: FC<PropsType> = memo(
   ({ activeNav, onActiveNavChange }) => {
+    const { t } = useTranslation()
+
     return (
       <nav className="flex gap-6 m-3">
         <button
@@ -20,7 +22,7 @@ const AirlineAirpointNavbar: FC<PropsType> = memo(
           onClick={() => onActiveNavChange?.(0)}
         >
           <MenuIconAirline />
-          <span className="ml-1.5">航线设置</span>
+          <span className="ml-1.5">{t('wayline.waylineConfig.title')}</span>
         </button>
         <button
           className={clsx(
@@ -33,7 +35,7 @@ const AirlineAirpointNavbar: FC<PropsType> = memo(
           onClick={() => onActiveNavChange?.(1)}
         >
           <MenuIconAirline />
-          <span className="ml-1.5">航点设置</span>
+          <span className="ml-1.5">{t('wayline.waylinePoint.config')}</span>
         </button>
       </nav>
     )

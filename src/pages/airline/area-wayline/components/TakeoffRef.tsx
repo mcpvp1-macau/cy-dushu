@@ -12,9 +12,15 @@ const TakeoffRef: FC<PropsType> = memo(() => {
   )
   const updateIsDrawHome = useAreaWaylineStore((s) => s.updateIsDrawHome)
 
+  const { t } = useTranslation()
+
   return (
     <XCard
-      title={takeOffRefPoint ? '已设置参考起飞点' : '未设置起飞点'}
+      title={
+        takeOffRefPoint
+          ? t('wayline.takeoffRefPoint.setted.title')
+          : '未设置起飞点'
+      }
       topRight={
         <Button
           type="link"

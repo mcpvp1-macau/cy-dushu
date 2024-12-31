@@ -15,6 +15,8 @@ const DrawRangingLine: FC<PropsType> = memo(() => {
   const [endPoint, setEndPoint] = useState<number[] | null>(null)
   const endPointRef = useLatest(endPoint)
 
+  const { t } = useTranslation()
+
   useEffect(() => {
     if (!viewer) {
       return
@@ -101,7 +103,9 @@ const DrawRangingLine: FC<PropsType> = memo(() => {
 
   return (
     <PositionTooltip position={[endPoint[0], endPoint[1]]} offset={[0, 20]}>
-      <div>距离: {distanceFmt}</div>
+      <div>
+        {t('common.distance')}: {distanceFmt}
+      </div>
     </PositionTooltip>
   )
 })

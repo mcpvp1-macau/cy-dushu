@@ -12,6 +12,7 @@ type PropsType = {
 }
 
 const EventItem: FC<PropsType> = memo(({ data }) => {
+  const { t } = useTranslation()
   const process = EventStatusMap[data.processStatus]
 
   const queryClient = useQueryClient()
@@ -41,21 +42,21 @@ const EventItem: FC<PropsType> = memo(({ data }) => {
         <TagItem
           color={process?.color ?? '#fff'}
           bgColor={`${process?.color ?? '#ffffff'}44`}
-          label={process?.label}
+          label={t(`events.status.${process?.key}.title`)}
         />
       </div>
       <ul className="text-xs flex flex-col mt-1">
         <li>
-          <span>时间: </span>
+          <span>{t('common.time')}: </span>
           <span>{data.eventTime}</span>
         </li>
         <li className="mt-1">
-          <span>来源: </span>
+          <span>{t('common.source')}: </span>
           <span>{data.positionName}</span>
         </li>
         <li className="flex justify-between items-center">
           <p>
-            <span>等级: </span>
+            <span>{t('common.level')}: </span>
             <span>{data.level}</span>
           </p>
           <div>
@@ -80,14 +81,14 @@ const EventItem: FC<PropsType> = memo(({ data }) => {
                     }
                   }}
                 >
-                  忽略
+                  {t('common.ignore')}
                 </Button>
                 <Button
                   className="ml-2 text-xs px-2.5"
                   size="small"
                   type="primary"
                 >
-                  处理
+                  {t('common.process')}
                 </Button>
               </>
             )}

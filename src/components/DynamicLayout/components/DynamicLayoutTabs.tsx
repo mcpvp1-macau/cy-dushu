@@ -11,7 +11,6 @@ import useDynamicLayoutStore from '../store/useDynamicLayout.store'
 
 export type DynamicLayoutTabsType = {
   key: string
-  title: ReactNode
   keeyRenderOnHidden?: boolean
 }[]
 
@@ -25,12 +24,13 @@ type PropsType = {
 
 /** Tab 动态布局 */
 const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
+  const { t, i18n } = useTranslation()
   const containerRef = useRef<HTMLDivElement | null>(null)
 
   const size = useSize(containerRef)
   const w = size?.width ?? 0
   const h = size?.height ?? 0
-  const isVertical = w <= MIN_SIZE
+  const isVertical = w <= MIN_SIZE && w > 0
 
   const handleCollapseToggle = useMemoizedFn(() => {
     onLayoutChange?.({
@@ -41,6 +41,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
   })
 
   const iconMap = useDynamicLayoutStore((s) => s.iconMap)
+  const titleMap = useDynamicLayoutStore((s) => s.titleMap)
 
   // 更新该渲染组件的边界
   const updateMergeBounds = useDynamicLayoutStore((s) => s.updateMergeBounds)
@@ -65,7 +66,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
   const activeKey = layout.activeKey ?? layout.children[0]?.key
 
   return (
-    <div className="size-full flex flex-col group">
+    <div className={clsx('size-full flex flex-col group')}>
       <div
         className={clsx(
           'flex justify-between items-center bg-ground-200 gap-2',
@@ -98,7 +99,8 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
                 {/* Tab 标签 */}
                 <li
                   className={clsx(
-                    'px-1.5 py-0.5 cursor-pointer font-medium hover:bg-ground-250 rounded flex flex-shrink-0 gap-1 items-center text-white',
+                    'cursor-pointer font-medium hover:bg-ground-250 rounded flex flex-shrink-0 gap-1 items-center text-white',
+                    isVertical ? 'px-0.5 py-1.5' : 'px-1.5 py-0.5',
                     {
                       'flex-col': isVertical,
                       'text-opacity-70': e.key !== activeKey,
@@ -113,15 +115,34 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
                     })
                   }}
                 >
-                  <i
-                    className={clsx({
-                      'rotate-90': isVertical,
-                      'opacity-60': e.key !== activeKey,
-                    })}
+                  <div
+                    className={clsx(
+                      'whitespace-nowrap flex gap-1 items-center',
+                      {
+                        'flex-col': isVertical,
+                      },
+                    )}
                   >
-                    {iconMap?.[e.key]}
-                  </i>
-                  <span>{e.title}</span>
+                    <div
+                      className={clsx({
+                        'rotate-90': isVertical,
+                        'opacity-60': activeKey !== e.key,
+                      })}
+                    >
+                      {iconMap?.[e.key]}
+                    </div>
+                    <div
+                      style={{
+                        writingMode: isVertical ? 'vertical-rl' : undefined,
+                        letterSpacing:
+                          isVertical && i18n.language === 'zh'
+                            ? '0.2em'
+                            : undefined,
+                      }}
+                    >
+                      {titleMap[e.key] ?? '?'}
+                    </div>
+                  </div>
                 </li>
               </Fragment>
             ))}
@@ -141,7 +162,9 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
           <IconButton
             className="text-sm"
             toolTipProps={{
-              title: layout.isFull ? '缩小' : '最大化',
+              title: layout.isFull
+                ? t('dynamicLayout.exit.title')
+                : t('dynamicLayout.maximize.title'),
               mouseEnterDelay: 0.2,
             }}
             onClick={() =>
@@ -152,7 +175,9 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
           </IconButton>
           <IconButton
             toolTipProps={{
-              title: layout.isCollapsed ? '展开' : '折叠',
+              title: layout.isCollapsed
+                ? t('dynamicLayout.unfold.title')
+                : t('dynamicLayout.fold.title'),
               mouseEnterDelay: 0.2,
             }}
             onClick={handleCollapseToggle}

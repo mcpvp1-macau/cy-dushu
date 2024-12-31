@@ -18,6 +18,8 @@ const AirlineTemplateListItem: FC<PropsType> = memo(({ data }) => {
     queryClient.invalidateQueries({ queryKey: ['airlineTemplates'] })
   }
 
+  const { t } = useTranslation()
+
   return (
     <li className="card-border text-sm p-2 bg-[#1C2630]">
       <div className="flex gap-2">
@@ -35,7 +37,7 @@ const AirlineTemplateListItem: FC<PropsType> = memo(({ data }) => {
             items: [
               {
                 key: 'download',
-                label: '下载',
+                label: t('common.download'),
                 onClick: () =>
                   downloadAndRename(
                     `/storage/${data.taskTemplateFileUrl}`,
@@ -46,11 +48,11 @@ const AirlineTemplateListItem: FC<PropsType> = memo(({ data }) => {
                 key: 'delete',
                 label: (
                   <Popconfirm
-                    title="删除航线"
-                    description="删除后航线内容不可恢复，确认删除航线吗？"
+                    title={t('wayline.deleteWayline.title')}
+                    description={t('wayline.deleteWayline.description')}
                     onConfirm={handleDel}
                   >
-                    删除
+                    {t('common.delete')}
                   </Popconfirm>
                 ),
               },
@@ -62,8 +64,12 @@ const AirlineTemplateListItem: FC<PropsType> = memo(({ data }) => {
           </IconButton>
         </Dropdown>
       </div>
-      <p className="text-xs mt-1">更新人员: {data.gmtModifiedBy}</p>
-      <p className="text-xs mt-1">更新时间: {data.gmtModified}</p>
+      <p className="text-xs mt-1">
+        {t('wayline.regenerator.title')}: {data.gmtModifiedBy}
+      </p>
+      <p className="text-xs mt-1">
+        {t('common.updateTime')}: {data.gmtModified}
+      </p>
     </li>
   )
 })

@@ -57,18 +57,6 @@ const getIcon = (action: any) => {
   }
 }
 
-const actionNameMap = new Map([
-  ['HOVER', '悬停'],
-  ['ROTATE_YAW', '飞行器偏航角'],
-  ['CAMERA_POSITION', '云台偏航&俯仰角'],
-  ['ZOOM', '相机变焦'],
-  ['GET_PICTURE', '拍照'],
-  ['LEN_CHANGE', '镜头切换'],
-  ['OPEN_AI', '开启算法'],
-  ['CLOSE_AI', '关闭算法'],
-  ['UNKNOWN', '未知航点动作'],
-])
-
 const SortableItem: React.FC<Props> = ({
   id,
   action,
@@ -83,6 +71,8 @@ const SortableItem: React.FC<Props> = ({
     transition,
     isDragging,
   } = useSortable({ id })
+
+  const { t } = useTranslation()
 
   let transition2 = transition
   if (transition2 === 'transform 0ms linear') {
@@ -129,7 +119,7 @@ const SortableItem: React.FC<Props> = ({
           }}
           className="rrr"
         >
-          删除
+          {t('common.delete')}
         </div>
       ),
     },
@@ -152,7 +142,7 @@ const SortableItem: React.FC<Props> = ({
         >
           <IconButton
             toolTipProps={{
-              title: actionNameMap.get(action?.type) ?? '',
+              title: t(`wayline.waylinePoint.actions.${action?.key}.title`),
               placement: 'top',
               mouseEnterDelay: 0.3,
             }}

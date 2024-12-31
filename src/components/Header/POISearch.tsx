@@ -4,13 +4,13 @@ import useMapLayerAndOverlayStore from '@/store/map/useLayerAndOverlay.store'
 import { EnvironmentOutlined } from '@ant-design/icons'
 import { useDebounceFn } from 'ahooks'
 import { Select } from 'antd'
-import { memo, type FC } from 'react'
 import AppSpin from '../AppSpin'
 
 type PropsType = unknown
 
 /** POI 下拉搜索框 */
 const POISearch: FC<PropsType> = memo(() => {
+  const { t } = useTranslation()
   const [query, _setQuery] = useState('')
   const { run: setQuery } = useDebounceFn(
     (v) => {
@@ -55,7 +55,7 @@ const POISearch: FC<PropsType> = memo(() => {
         showSearch
         value={value}
         open={open}
-        placeholder="请输入关键词搜索"
+        placeholder={t('poi_searcher.placeholder')}
         style={{ width: 330 }}
         defaultActiveFirstOption={false}
         suffixIcon={null}
@@ -90,7 +90,7 @@ const POISearch: FC<PropsType> = memo(() => {
         dropdownRender={(menu) => (
           <>
             <div className="px-3 py-1">
-              为您展示前 {data?.length} 条搜索结果
+              {t('poi_searcher.result_tip', { count: data?.length })}
             </div>
             {isLoading || !menu ? <AppSpin /> : menu}
           </>

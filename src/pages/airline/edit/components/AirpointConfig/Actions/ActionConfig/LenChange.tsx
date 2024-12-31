@@ -14,18 +14,34 @@ type PropsType = {
 }
 
 const LenChange: FC<PropsType> = ({ config, onChange }) => {
+  const { t } = useTranslation()
+
   return (
     <div>
       <div className={styles.subTitle}>
         <IconCameraSwitch />
-        <span className={styles.text}>镜头切换</span>
+        <span className={styles.text}>
+          {t('wayline.waylinePoint.actions.LEN_CHANGE.title')}
+        </span>
       </div>
       <div className="flex gap-3">
-        <span className="w-16 text-fore">执行时机</span>
+        <span className="w-16 text-fore">
+          {t('wayline.waylinePoint.actions.LEN_CHANGE.Timing.title')}
+        </span>
         <Radio.Group
           options={[
-            { label: '到达时', value: 'ARRIVE' },
-            { label: '离开时', value: 'LEAVE' },
+            {
+              label: t(
+                'wayline.waylinePoint.actions.LEN_CHANGE.Timing.ARRIVE.title',
+              ),
+              value: 'ARRIVE',
+            },
+            {
+              label: t(
+                'wayline.waylinePoint.actions.LEN_CHANGE.Timing.LEAVE.title',
+              ),
+              value: 'LEAVE',
+            },
           ]}
           value={config.actionTiming}
           onChange={(e) =>
@@ -34,12 +50,12 @@ const LenChange: FC<PropsType> = ({ config, onChange }) => {
         />
       </div>
       <div className="flex gap-3 mt-1">
-        <span className="w-16 text-fore">镜头</span>
+        <span className="w-16 text-fore">{t('common.lens')}</span>
         <Radio.Group
           options={[
-            { label: '广角', value: 'wide' },
-            { label: '红外', value: 'ir' },
-            { label: '变焦', value: 'zoom' },
+            { label: t('device.lens.wide.title'), value: 'wide' },
+            { label: t('device.lens.ir.title'), value: 'ir' },
+            { label: t('device.lens.zoom.title'), value: 'zoom' },
           ]}
           value={config.videoType}
           onChange={(e) => onChange({ ...config, videoType: e.target.value })}

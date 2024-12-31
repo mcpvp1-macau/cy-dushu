@@ -8,11 +8,12 @@ type PropsType = {
 const DeviceData: FC<PropsType> = memo(({ deviceData }) => {
   const [open, setOpen] = useState(false)
   const { deviceId } = deviceData
+  const { t } = useTranslation()
 
   return (
     <>
       <Button size="small" type="link" onClick={() => setOpen(true)}>
-        数据
+        {t('common.data')}
       </Button>
       {open && (
         <DataModal

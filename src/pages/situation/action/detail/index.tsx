@@ -11,6 +11,7 @@ type PropsType = unknown
 
 const PageSituationActionDetail: FC<PropsType> = memo(() => {
   const { actionId } = useParams()
+  const { t } = useTranslation()
 
   const queryClient = useQueryClient()
 
@@ -42,7 +43,7 @@ const PageSituationActionDetail: FC<PropsType> = memo(() => {
       key: 'action',
       label: (
         <p>
-          <MenuIconAction /> 行动中
+          <MenuIconAction /> {t('action.status.PROCESSING')}
         </p>
       ),
     },

@@ -10,6 +10,7 @@ type PropsType = unknown
 
 /** 拍照 */
 const TakePhoto: FC<PropsType> = memo(() => {
+  const { t } = useTranslation()
   const productKey = useDeviceDetailStore((s) => s.productKey)
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
 
@@ -32,7 +33,7 @@ const TakePhoto: FC<PropsType> = memo(() => {
   return (
     <IconButton
       className={borderedBtnClassName}
-      toolTipProps={{ title: '拍照' }}
+      toolTipProps={{ title: t('controlRoom.uav.service.takePhoto.title') }}
       disabled={disabled}
       onClick={handleClick}
     >

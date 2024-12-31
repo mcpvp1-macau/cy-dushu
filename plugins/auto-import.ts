@@ -38,6 +38,10 @@ export default AutoImport({
       clsx: [['default', 'clsx']],
     },
     {
+      from: 'react-i18next',
+      imports: ['useTranslation'],
+    },
+    {
       '@/global/config': [['default', 'globalConfig']],
     },
     {

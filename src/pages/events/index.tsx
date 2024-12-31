@@ -24,6 +24,7 @@ const h = createColumnHelper<API_EVENTS.domain.Event>()
 type PropsType = unknown
 
 const PageEvents: FC<PropsType> = memo(() => {
+  const { t } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
 
   const kw = searchParams.get('kw') || undefined
@@ -44,7 +45,7 @@ const PageEvents: FC<PropsType> = memo(() => {
   const eventStatusOptions = useMemo(
     () =>
       Object.values(EventStatusMap).map((e) => ({
-        label: e.label,
+        label: t(`events.status.${e.key}.title`),
         value: e.key,
       })),
     [],
@@ -79,7 +80,7 @@ const PageEvents: FC<PropsType> = memo(() => {
   const columns = useMemo(
     () => [
       h.accessor('eventName', {
-        header: '事件名称',
+        header: t('events.table.eventName.title'),
         maxSize: 200,
         size: 200,
         minSize: 200,
@@ -91,12 +92,12 @@ const PageEvents: FC<PropsType> = memo(() => {
         ),
       }),
       h.accessor('eventTime', {
-        header: '发生时间',
+        header: t('events.table.eventTime.title'),
         minSize: 200,
         maxSize: 500,
       }),
       h.accessor('startTime', {
-        header: '结束时间',
+        header: t('events.table.endTime.title'),
         minSize: 200,
         maxSize: 500,
         cell: (r) => {
@@ -104,7 +105,7 @@ const PageEvents: FC<PropsType> = memo(() => {
         },
       }),
       h.accessor('processStatus', {
-        header: '事件状态',
+        header: t('events.table.processStatus.title'),
         minSize: 200,
         maxSize: 300,
         cell: (r) => {
@@ -112,18 +113,22 @@ const PageEvents: FC<PropsType> = memo(() => {
           if (!e) {
             return '-'
           }
-          return <span style={{ color: e.color }}>{e.label || '-'}</span>
+          return (
+            <span style={{ color: e.color }}>
+              {t(`events.status.${e.key}.title`) || '-'}
+            </span>
+          )
         },
       }),
       h.display({
         id: 'actions',
-        header: '操作',
+        header: t('common.operation'),
         cell: (cell) => {
           return <EventDetailModal data={cell.row.original} />
         },
       }),
     ],
-    [],
+    [t],
   )
 
   const table = useReactTable<API_EVENTS.domain.Event>({
@@ -137,11 +142,11 @@ const PageEvents: FC<PropsType> = memo(() => {
 
   return (
     <div className="page-full p-3 bg-ground-180 flex flex-col overflow-y-hidden">
-      <h2 className="text-white">事件</h2>
+      <h2 className="text-white">{t('events.title')}</h2>
       <section className="mt-3 flex gap-2">
         <Input.Search
           defaultValue={kw}
-          placeholder="事件名称"
+          placeholder={t('events.search.placeholder')}
           className="w-56"
           onSearch={(e) => handleValueChange('kw', e)}
         />
@@ -156,7 +161,7 @@ const PageEvents: FC<PropsType> = memo(() => {
           }}
         />
         <Select
-          placeholder="事件类型"
+          placeholder={t('events.filter.type.title')}
           className="w-56"
           defaultValue={eventType}
           options={eventTypeOptions}
@@ -164,7 +169,7 @@ const PageEvents: FC<PropsType> = memo(() => {
           onChange={(v) => handleValueChange('eventType', v)}
         />
         <Select
-          placeholder="事件状态"
+          placeholder={t('events.filter.status.title')}
           className="w-56"
           defaultValue={status}
           options={eventStatusOptions}

@@ -1,7 +1,7 @@
 import IconLoginUser from '@/assets/icons/jsx/IconLoginUser'
 import useUserStore from '@/store/useUser.store'
 import { CaretDownOutlined } from '@ant-design/icons'
-import { Popover } from 'antd'
+import { Button, Popover } from 'antd'
 import UserDownMenu from './UserDownMenu'
 import HeaderSetting from './HeaderSetting'
 import POISearch from './POISearch'
@@ -13,6 +13,8 @@ const Header: FC<PropsType> = memo(() => {
   const [poVisible, setPoVisible] = useState(false)
 
   const user = useUserStore((s) => s.user)
+
+  const { i18n } = useTranslation()
 
   return (
     <header className="h-[38px] bg-ground-100 flex items-center justify-between border-b border-solid border-ground-300 z-20">
@@ -31,6 +33,14 @@ const Header: FC<PropsType> = memo(() => {
       <div id="app-header-center"></div>
       {/* 右边 */}
       <div className="text-fore mr-3 flex gap-3">
+        <Button
+          size="small"
+          onClick={() => {
+            i18n.changeLanguage(i18n.language === 'en' ? 'zh' : 'en')
+          }}
+        >
+          {i18n.language}
+        </Button>
         <Fullscreen target={document.documentElement} />
         <HeaderSetting />
         <Popover

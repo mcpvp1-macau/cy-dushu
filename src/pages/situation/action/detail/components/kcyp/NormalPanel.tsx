@@ -16,6 +16,7 @@ type PropsType = { actionId: string }
 /** 快处易赔 基础面板 */
 const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
   const queryClient = useQueryClient()
+  const { t, i18n } = useTranslation()
 
   const { data, isLoading } = useQuery(
     {
@@ -55,12 +56,14 @@ const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
   const formItems = useMemo(
     () =>
       createFormItems({
+        t,
         cardTypeOptions,
         brokenPartTypeOptions,
         firstSceneOptions,
         accidentTypeOptions,
       }),
     [
+      i18n.language,
       cardTypeOptions,
       brokenPartTypeOptions,
       firstSceneOptions,
@@ -104,13 +107,17 @@ const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
   return (
     <div className="text-fore p-3">
       <p className="flex gap-2">
-        <span className="text-white">案件编码:</span>
+        <span className="text-white">
+          {t('action.detail.kcyp.case_code.title')}:
+        </span>
         <span>{data.caseId}</span>
       </p>
       <p className="flex gap-2 mt-1">
-        <span className="text-white">协议状态:</span>
+        <span className="text-white">
+          {t('action.detail.kcyp.process_status.title')}:
+        </span>
         <span style={{ color: statusColorMap[data.processStatus!]?.color }}>
-          {statusColorMap[data.processStatus!]?.label || '-'}
+          {statusColorMap[data.processStatus!]?.label[i18n.language] || '-'}
         </span>
       </p>
       <XForm

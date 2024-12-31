@@ -14,29 +14,7 @@ import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.stor
 import { useDictOptions } from '@/store/useDict.store'
 import { Button } from 'antd'
 import { DefaultOptionType } from 'antd/es/select'
-import { memo, type FC } from 'react'
 import { useSearchParams } from 'react-router-dom'
-
-export const createExecuteFormItems = (
-  actionTypeOptions: DefaultOptionType[],
-  deviceIdOptions: DefaultOptionType[],
-) =>
-  [
-    {
-      label: '类型',
-      name: 'type',
-      type: 'select',
-      options: actionTypeOptions,
-      rules: [{ required: true, message: '请选择类型' }],
-    },
-    {
-      label: '设备',
-      name: 'deviceId',
-      type: 'select',
-      options: deviceIdOptions,
-      rules: [{ required: true, message: '请选择设备' }],
-    },
-  ] as XFormItem[]
 
 type PropsType = {
   disabled?: boolean
@@ -45,6 +23,7 @@ type PropsType = {
 /** 航线编辑底部按钮栏 */
 const BottomOperator: FC<PropsType> = memo(({ disabled }) => {
   const msgApi = useAppMsg()
+  const { t, i18n } = useTranslation()
 
   const [searchParams] = useSearchParams()
   const actionId = searchParams.get('actionId')
@@ -55,11 +34,11 @@ const BottomOperator: FC<PropsType> = memo(({ disabled }) => {
   const invalidate = () => {
     const { airlineConfig, airpointsConfig } = useAirlineConfigStore.getState()
     if ((airpointsConfig?.length ?? 0) < 2) {
-      msgApi.error('航点数量至少需要 2 个')
+      msgApi.error(t('wayline.executeTask.error.waypointNotEnough'))
       return true
     }
     if (!airlineConfig.globalRTHHeight) {
-      msgApi.error('请设置返航高度')
+      msgApi.error(t('wayline.executeTask.error.rthHeightNotSet'))
       return true
     }
     return false
@@ -69,7 +48,8 @@ const BottomOperator: FC<PropsType> = memo(({ disabled }) => {
     // 由于只有事件中才需要, 状态更新时不需要通知该组件 render, 所以不需要 hook useAirlineConfigStore
     const { airlineConfig, airpointsConfig, airlineTemplateInfo } =
       useAirlineConfigStore.getState()
-    const getTaskName = () => airlineTemplateInfo.taskName || '航点任务'
+    const getTaskName = () =>
+      airlineTemplateInfo.taskName || t('wayline.executeTask.defaultTaskName')
     const data: Record<string, any> = {
       taskName: getTaskName(),
       templateId: airlineTemplateInfo.templateId,
@@ -204,16 +184,42 @@ const BottomOperator: FC<PropsType> = memo(({ disabled }) => {
 
   const actionTypeOptions = useDictOptions(DictEnum.ACTION_TYPE)
   const formItems = useMemo(
-    () => createExecuteFormItems(actionTypeOptions, deviceOptions),
+    () =>
+      [
+        {
+          label: t('wayline.executeTask.type.title'),
+          name: 'type',
+          type: 'select',
+          options: actionTypeOptions,
+          rules: [
+            {
+              required: true,
+              message: t('wayline.executeTask.type.required_msg'),
+            },
+          ],
+        },
+        {
+          label: t('wayline.executeTask.device.title'),
+          name: 'deviceId',
+          type: 'select',
+          options: deviceOptions,
+          rules: [
+            {
+              required: true,
+              message: t('wayline.executeTask.device.required_msg'),
+            },
+          ],
+        },
+      ] as XFormItem[],
 
-    [actionTypeOptions, deviceOptions],
+    [i18n.language, actionTypeOptions, deviceOptions],
   )
 
   // 停止任务
   const handleStopActionItem = async () => {
     if (runningActionPayload) {
       await endActionItem(runningActionPayload.actionItem)
-      msgApi.success('停止任务成功')
+      msgApi.success(t('wayline.executeTask.success.stopTask.msg'))
       setRunningActionPayload(null)
     }
   }
@@ -226,7 +232,7 @@ const BottomOperator: FC<PropsType> = memo(({ disabled }) => {
         disabled={loading === 2 || disabled}
         onClick={handleSave}
       >
-        保存任务
+        {t('wayline.saveTask.title')}
       </Button>
       {!actionItemId && (
         <Button
@@ -236,12 +242,12 @@ const BottomOperator: FC<PropsType> = memo(({ disabled }) => {
           type="primary"
           onClick={handleExecute}
         >
-          立即执行
+          {t('wayline.executeTask.title')}
         </Button>
       )}
       {executeOpen && (
         <FormModal
-          title="立即执行"
+          title={t('wayline.executeTask.title')}
           open={executeOpen}
           items={formItems}
           onClose={() => setExecuteOpen(false)}
@@ -252,7 +258,7 @@ const BottomOperator: FC<PropsType> = memo(({ disabled }) => {
       )}
       {runningActionPayload && (
         <XModal
-          title="执行失败"
+          title={t('common.executeError')}
           width={400}
           centered
           open={!!runningActionPayload}
@@ -261,7 +267,9 @@ const BottomOperator: FC<PropsType> = memo(({ disabled }) => {
           onConfirm={handleStopActionItem}
         >
           <p className="m-3">{runningActionPayload.message}</p>
-          <p className="m-3">是否停止该任务?</p>
+          <p className="m-3">
+            {t('wayline.executeTask.question.stopTask.msg')}
+          </p>
         </XModal>
       )}
     </div>

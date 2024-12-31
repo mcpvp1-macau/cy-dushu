@@ -10,7 +10,7 @@ import { fileToBase64 } from '@/utils/base64'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { addSpace } from '@/service/modules/layer_overlay'
 import { v4 } from 'uuid'
-import { spaceFormItems } from './components/MapSpaceConfig'
+import useAddMapFormItems from './hooks/useAddMapFormItems'
 
 type PropsType = {
   open: boolean
@@ -18,15 +18,18 @@ type PropsType = {
 }
 
 const MapLayerSettingModal: FC<PropsType> = ({ open, onClose }) => {
+  const { t } = useTranslation()
   const msgApi = useAppMsg()
   const [addSpaceOpen, { setFalse: closeAddSpace, setTrue: openAddSpace }] =
     useBoolean(false)
   const queryClient = useQueryClient()
 
+  const spaceFormItems = useAddMapFormItems()
+
   const handleAddSpaceConfirm = async (values: any) => {
     const base64 = await fileToBase64(values.mapPreviewUrl[0].originFileObj)
     if (base64 === null) {
-      msgApi.error('预览图解析失败')
+      msgApi.error(t('mapLayer.errors.previewParse.msg'))
       return
     }
     delete values.mapPreviewUrl
@@ -41,7 +44,7 @@ const MapLayerSettingModal: FC<PropsType> = ({ open, onClose }) => {
     values.spaceConfig = spaceConfig
     values.spaceId = v4()
     await addSpace(values)
-    msgApi.success('添加地图成功')
+    msgApi.success(t('api.success.msg'))
     await queryClient.invalidateQueries({
       queryKey: ['getSpaceList'],
     })
@@ -51,7 +54,7 @@ const MapLayerSettingModal: FC<PropsType> = ({ open, onClose }) => {
   return (
     <XModal
       width={350}
-      title="图层设置"
+      title={t('mapLayer.setting.title')}
       open={open}
       onClose={onClose}
       noPadding
@@ -64,11 +67,11 @@ const MapLayerSettingModal: FC<PropsType> = ({ open, onClose }) => {
         items={[
           {
             key: 'map',
-            label: '地图',
+            label: t('common.map'),
             extra: (
               <div onClick={(e) => e.stopPropagation()}>
                 <IconButton
-                  toolTipProps={{ title: '添加地图' }}
+                  toolTipProps={{ title: t('mapLayer.createMap.title') }}
                   onClick={openAddSpace}
                 >
                   <IconPlus />
@@ -79,7 +82,7 @@ const MapLayerSettingModal: FC<PropsType> = ({ open, onClose }) => {
           },
           {
             key: 'layer',
-            label: '图层',
+            label: t('common.layer'),
             extra: (
               <div onClick={(e) => e.stopPropagation()}>
                 <AddLayerController />
@@ -91,7 +94,7 @@ const MapLayerSettingModal: FC<PropsType> = ({ open, onClose }) => {
       />
       {addSpaceOpen && (
         <FormModal
-          title="新增地图"
+          title={t('mapLayer.createMap.title')}
           open={addSpaceOpen}
           onClose={closeAddSpace}
           items={spaceFormItems}
