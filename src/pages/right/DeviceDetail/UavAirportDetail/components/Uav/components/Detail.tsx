@@ -21,7 +21,7 @@ type PropsType = {
 const UavAirportUavDetailDetail: FC<PropsType> = memo(({ state }) => {
   const data = useDeviceDetailStore((s) => s.deviceDetail)!
 
-  const productKey = data?.productKey || data?.deviceModel?.productKey
+  const productKey = data?.productKey || data?.deviceModel!.productKey
 
   return (
     <div>

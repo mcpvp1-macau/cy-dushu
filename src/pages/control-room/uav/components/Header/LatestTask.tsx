@@ -19,6 +19,8 @@ const LatestTask: FC<PropsType> = memo(({ deviceId }) => {
   const msgApi = useAppMsg()
   const actionItem = useGlobalWsStore((s) => s.actionItemStatus[deviceId])
 
+  const { i18n } = useTranslation()
+
   const queryClient = useQueryClient()
   const { data: taskData } = useQuery(
     {
@@ -105,7 +107,7 @@ const LatestTask: FC<PropsType> = memo(({ deviceId }) => {
           ? '任务中'
           : status === 'HANGUP'
           ? '任务暂停'
-          : taskStatusMap[status]}
+          : taskStatusMap[i18n.language][status]}
       </label>
     </div>
   )

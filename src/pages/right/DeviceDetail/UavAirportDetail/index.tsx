@@ -49,7 +49,7 @@ const map = new Map<string, string>([
 ])
 
 const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
-  const productKey = data.productKey || data.deviceModel?.productKey
+  const productKey = data.productKey || data.deviceModel!.productKey
   const deviceId = data.deviceId
   const videoId = data?.properties.videoList?.[0]?.videoId ?? ''
 
@@ -105,7 +105,7 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
   /** 降雨量 */
   const rainfall = useMemo(
     () =>
-      enumProperty(data.properties, data.deviceModel.properties, 'rainfall'),
+      enumProperty(data.properties, data.deviceModel!.properties, 'rainfall'),
     [data],
   )
 

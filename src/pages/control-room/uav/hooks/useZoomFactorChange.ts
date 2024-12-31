@@ -51,7 +51,7 @@ const useUavZoomFactorChange = () => {
     () => {
       sendCommand('service.liveZoomChange.post', {
         videoId,
-        [zoomfactor.identifier]: valueLatest.current,
+        zoomFactor: valueLatest.current,
       })
     },
     { wait: 500 },

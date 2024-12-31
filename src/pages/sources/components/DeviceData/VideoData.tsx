@@ -30,7 +30,7 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
     const device = deviceList.find((e) => e.deviceId === deviceId)!
     return {
       videoId: device.properties?.videoList?.[0]?.videoId,
-      productKey: device.deviceModel.productKey,
+      productKey: device.deviceModel!.productKey,
     }
   }, [deviceList, deviceId])
 

@@ -19,8 +19,9 @@ type PropsType = {
 const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
   const deviceId = useDeviceDetailStore((s) => s.deviceDetail?.deviceId)!
   const productKey = useDeviceDetailStore(
-    (s) => s.deviceDetail?.productKey || s.deviceDetail?.deviceModel.productKey,
-  )
+    (s) =>
+      s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey,
+  )!
   const videoId = useDeviceDetailStore(
     (s) => s.deviceDetail?.properties.videoList?.[0]?.videoId,
   )!
