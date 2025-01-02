@@ -9,7 +9,6 @@ import { shouldJson } from '@/utils/json'
 import { LoadingOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
 import { isNil } from 'lodash'
-import { memo, type FC } from 'react'
 
 type PropsType = {
   data: API_ACTION_ITEM.domain.ActionItem
@@ -39,7 +38,7 @@ const statusColor: Record<string, string> = {
 
 /** 操作栏 */
 const OperatorBtns: FC<PropsType> = ({ data }) => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const msgApi = useAppMsg()
   const queryClient = useQueryClient()

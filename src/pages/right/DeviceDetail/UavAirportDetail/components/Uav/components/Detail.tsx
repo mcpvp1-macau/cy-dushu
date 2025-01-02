@@ -23,6 +23,8 @@ const UavAirportUavDetailDetail: FC<PropsType> = memo(({ state }) => {
 
   const productKey = data?.productKey || data?.deviceModel!.productKey
 
+  const { t } = useTranslation()
+
   return (
     <div>
       <section className="mt-3 mx-3">
@@ -46,7 +48,7 @@ const UavAirportUavDetailDetail: FC<PropsType> = memo(({ state }) => {
       <section className="mx-3 mt-3">
         <Link to={`/control-room/uav/${data.deviceId}?useLW=true`}>
           <Button block className="h-7" icon={<IconControlRoom />}>
-            进入驾驶舱
+            {t('device.enterControlRoom.title')}
           </Button>
         </Link>
       </section>
@@ -54,7 +56,7 @@ const UavAirportUavDetailDetail: FC<PropsType> = memo(({ state }) => {
         <AppCollapse
           items={[
             {
-              label: 'AI 模型',
+              label: t('device.aiList.title'),
               children: (
                 <AppViewSuspense>
                   <DeviceAlgorithmList

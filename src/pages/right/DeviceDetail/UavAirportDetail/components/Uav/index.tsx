@@ -26,7 +26,10 @@ type PropsType = {
   deviceId: string
 }
 
+/** 机场的无人机详情 */
 const UavAirportUavDetail: FC<PropsType> = memo(({ deviceId }) => {
+  const { t } = useTranslation()
+
   const { store: deviceDetailStore, isLoading } =
     useCreateDeviceDetailStore(deviceId)
   const data = useStore(deviceDetailStore, (s) => s.deviceDetail)
@@ -94,19 +97,22 @@ const UavAirportUavDetail: FC<PropsType> = memo(({ deviceId }) => {
     [data?.deviceName, isLoading, actionId],
   )
 
-  const [tab, setTab] = useState('详情')
-  const segmentOptions = useRef([
-    {
-      label: '详情',
-      value: '详情',
-      icon: <IconDetail />,
-    },
-    {
-      label: '数据',
-      value: '数据',
-      icon: <IconData />,
-    },
-  ]).current
+  const [tab, setTab] = useState(0)
+  const segmentOptions = useMemo(
+    () => [
+      {
+        label: t('common.detail'),
+        value: 0,
+        icon: <IconDetail />,
+      },
+      {
+        label: t('common.data'),
+        value: 1,
+        icon: <IconData />,
+      },
+    ],
+    [t],
+  )
 
   return (
     <DeviceDetailStoreContext.Provider value={deviceDetailStore}>
@@ -125,7 +131,7 @@ const UavAirportUavDetail: FC<PropsType> = memo(({ deviceId }) => {
             />
             <div className="flex-1 overflow-y-auto">
               <AppViewSuspense>
-                {tab === '详情' ? (
+                {tab === 0 ? (
                   <UavAirportUavDetailDetail state={state} />
                 ) : (
                   <div className="mt-3">

@@ -27,9 +27,11 @@ device:
     task:
       RUNNING: Tasking
       IDLE: Idle
+      title: Tasking Status
     reported:
       ok: Reported
       'no': Not Reported
+      title: Reported
     online:
       ONLINE: Online
       OFFLINE: Offline
@@ -82,6 +84,99 @@ device:
       title: IR
     zoom:
       title: Zoom
+  uav:
+    takeoffHeight:
+      title: Takeoff Height
+    takeoffForm:
+      takeoffHeight:
+        required_msg: Please Input takeoff height
+      goHomeAltitude:
+        title: Go Home Altitude
+  uavDock:
+    windSpeed:
+      title: Wind Speed
+    rainFall:
+      title: Rainfall
+    cabinTemperature:
+      title: Cabin Temperature
+    externalTemperature:
+      title: External Temperature
+    remoteDebug:
+      title: Remote Debugging
+      processProgress:
+        title: Processing Progress
+      jcxt:
+        title: Dock System
+        restart:
+          title: Restart
+      uav:
+        title: Aircraft
+        booting:
+          title: Booting
+        Halting:
+          title: Shutting Down
+        powerOn:
+          title: Power On
+        powerDown:
+          title: Power Down
+        'on':
+          title: 'On'
+        'off':
+          title: 'Off'
+      cover:
+        title: Cover
+        open:
+          title: Open
+        close:
+          title: Close
+        openWarning: >-
+          Before opening the cover, please ensure the surrounding environment of
+          the airport is clear of obstacles and no personnel are nearby.
+      putter:
+        title: Putter
+      aircraftCharging:
+        title: Charging
+        idle:
+          title: Idle
+        charging:
+          title: Charging
+        preparing:
+          title: Preparing
+        poweringOff:
+          title: Powering Off
+        powerOn:
+          title: Power On
+        powerOff:
+          title: Power Off
+      goHome:
+        title: Go Home
+        btn:
+          title: Go Home
+    takeoffForm:
+      title: Takeoff
+    status:
+      inDock:
+        title: In Dock
+      outDock:
+        title: Out Dock
+      modeDisplay:
+        title: Mode Display
+      dockStatus:
+        title: In-dock status
+    dockStorage:
+      title: Dock Storage
+      formatting:
+        title: Formatting
+      format:
+        title: Format
+    aircraftStorage:
+      title: Aircraft Storage
+    supplementLight:
+      title: Light
+    alarmState:
+      title: ALarm
+  aiList:
+    title: AI List
 action:
   input:
     placeholder: Please search by action name
@@ -158,6 +253,10 @@ action:
         title: Device
       status:
         title: Status
+        RUNNING:
+          title: Tasking
+        HANGUP:
+          title: Hang Up
       add:
         title: Create Task
         form:
@@ -260,6 +359,13 @@ common:
   flightSpeed: Flight Speed
   emptyContent: Empty Content
   requsting: Requsting...
+  error: Error
+  refresh: Refresh
+  fullScreen: Fullscreen
+  exit: Exit
+  fixedOut: Fixed
+  screenShot: Screenshot
+  loading: Loading
 events:
   search:
     placeholder: Please search by event name or ID
@@ -637,6 +743,13 @@ signalSituation:
   title: Signal Situation
   heightFilter:
     title: Height Level
+  detail:
+    signalStrength:
+      title: Signal Strength
+    sn:
+      title: SNR
+    altitude:
+      title: Altitude
 mapLayer:
   setting:
     title: Layer Setting
@@ -769,6 +882,43 @@ controlRoom:
     btn:
       gimbal:
         title: GIM
+  control:
+    uavTurnLeft:
+      title: UAV Turn Left
+    uavTurnRight:
+      title: UAV Turn Right
+    uavForward:
+      title: UAV Forward
+    uavBack:
+      title: UAV Move Back
+    uavLeft:
+      title: UAV Move Left
+    uavRight:
+      title: UAV Move Right
+    uavFlyUp:
+      title: UAV Fly Up
+    uavFlyDown:
+      title: UAV Fly Down
+    gimbalTiltUp:
+      title: Gimbal Tilt Up
+    gimbalTiltDown:
+      title: GImbal Tilt Down
+    gimbalTurnLeft:
+      title: GImbal Turn Left
+    gimbalTurnRight:
+      title: GImbal Turn Right
+    gimbalReset:
+      title: GImbal Reset
+    gimbalToDown:
+      title: GImbal Facing Down
+    gimbalResetYaw:
+      title: GImbal Yaw Reset
+    gimbalPitchDown:
+      title: GImbal Pitch Down
+    gimbalFollowMode:
+      title: Follow Mode
+    gimbalFreeMode:
+      title: Free Mode
 dynamicLayout:
   maximize:
     title: Maximize
@@ -778,3 +928,8 @@ dynamicLayout:
     title: Unfold
   exit:
     title: Exit
+video:
+  electricScale:
+    title: Electric Scale
+screenshot:
+  screenshotSuccess: Screenshot successful

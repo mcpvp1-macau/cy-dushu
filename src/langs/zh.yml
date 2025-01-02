@@ -25,9 +25,11 @@ device:
     task:
       RUNNING: 任务中
       IDLE: 无任务
+      title: 任务状态
     reported:
       ok: 已报备
       'no': 未报备
+      title: 报备状态
     online:
       ONLINE: 在线
       OFFLINE: 离线
@@ -80,6 +82,96 @@ device:
       title: 红外
     zoom:
       title: 变焦
+  uav:
+    takeoffForm:
+      takeoffHeight:
+        title: 起飞高度
+        required_msg: 请输入起飞高度
+      goHomeAltitude:
+        title: 返航高度
+  uavDock:
+    windSpeed:
+      title: 风速
+    rainFall:
+      title: 降雨量
+    cabinTemperature:
+      title: 舱内温度
+    externalTemperature:
+      title: 舱外温度
+    remoteDebug:
+      title: 远程调试
+      processProgress:
+        title: 执行进度
+      jcxt:
+        title: 机场系统
+        restart:
+          title: 重启
+      uav:
+        title: 飞行器
+        booting:
+          title: 开启中
+        Halting:
+          title: 关机中
+        powerOn:
+          title: 已开机
+        powerDown:
+          title: 已关机
+        'on':
+          title: 开机
+        'off':
+          title: 关机
+      cover:
+        title: 舱盖
+        open:
+          title: 打开
+        close:
+          title: 关闭
+        openWarning: 开盖前请确认机场周边环境，无障碍物或人员靠近
+      putter:
+        title: 推杆
+      aircraftCharging:
+        title: 飞行器充电
+        idle:
+          title: 空闲
+        charging:
+          title: 充电中
+        preparing:
+          title: 准备中
+        poweringOff:
+          title: 断电中
+        powerOn:
+          title: 充电
+        powerOff:
+          title: 结束
+      goHome:
+        title: 一键返航
+        btn:
+          title: 返航
+    takeoffForm:
+      title: 一键起飞
+    status:
+      inDock:
+        title: 在舱
+      outDock:
+        title: 离舱
+      modeDisplay:
+        title: 工作状态
+      dockStatus:
+        title: 在舱状态
+    dockStorage:
+      title: 机场存储
+      formatting:
+        title: 格式化中
+      format:
+        title: 格式化
+    aircraftStorage:
+      title: 飞行器存储
+    supplementLight:
+      title: 补光灯
+    alarmState:
+      title: 声光报警
+  aiList:
+    title: 算法库
 action:
   input:
     placeholder: 请根据行动名称搜索
@@ -156,6 +248,10 @@ action:
         title: 执行设备
       status:
         title: 任务状态
+        RUNNING:
+          title: 任务中
+        HANGUP:
+          title: 任务暂停
       add:
         title: 创建任务
         form:
@@ -258,6 +354,13 @@ common:
   flightSpeed: 飞行速度
   emptyContent: 暂无数据
   requsting: 请求中...
+  error: 异常
+  refresh: 刷新
+  fullScreen: 全屏
+  exit: 退出
+  fixedOut: 钉出
+  screenShot: 截图
+  loading: 加载中
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -631,6 +734,13 @@ signalSituation:
   title: 电磁态势
   heightFilter:
     title: 信号高度层
+  detail:
+    signalStrength:
+      title: 信号强度
+    sn:
+      title: 信噪比
+    altitude:
+      title: 高度
 mapLayer:
   setting:
     title: 图层设置
@@ -763,6 +873,43 @@ controlRoom:
     btn:
       gimbal:
         title: 云台
+  control:
+    uavTurnLeft:
+      title: 无人机左转
+    uavTurnRight:
+      title: 无人机右转
+    uavForward:
+      title: 无人机前进
+    uavBack:
+      title: 无人机后退
+    uavLeft:
+      title: 无人机左移
+    uavRight:
+      title: 无人机右移
+    uavFlyUp:
+      title: 无人机上升
+    uavFlyDown:
+      title: 无人机下降
+    gimbalTiltUp:
+      title: 云台上仰
+    gimbalTiltDown:
+      title: 云台下俯
+    gimbalTurnLeft:
+      title: 云台左转
+    gimbalTurnRight:
+      title: 云台右转
+    gimbalReset:
+      title: 云台回中
+    gimbalToDown:
+      title: 云台朝下
+    gimbalResetYaw:
+      title: 云台偏航回中
+    gimbalPitchDown:
+      title: 云台俯仰朝下
+    gimbalFollowMode:
+      title: 跟踪模式
+    gimbalFreeMode:
+      title: 自由模式
 dynamicLayout:
   exit:
     title: 退出
@@ -772,3 +919,8 @@ dynamicLayout:
     title: 折叠
   unfold:
     title: 展开
+video:
+  electricScale:
+    title: 电子放大
+screenshot:
+  screenshotSuccess: 截图成功

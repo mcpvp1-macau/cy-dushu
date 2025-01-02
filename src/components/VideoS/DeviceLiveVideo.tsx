@@ -83,6 +83,7 @@ const DeviceLiveVideo = memo(
       },
       ref,
     ) => {
+      const { t } = useTranslation()
       const queryClient = useQueryClient()
       const { data: playUrl, refetch } = useQuery(
         {
@@ -363,7 +364,7 @@ const DeviceLiveVideo = memo(
                       )}
                     <IconButton
                       toolTipProps={{
-                        title: '刷新',
+                        title: t('common.refresh'),
                         getPopupContainer: () =>
                           (document.fullscreenElement as HTMLElement) ??
                           document.body,
@@ -376,7 +377,7 @@ const DeviceLiveVideo = memo(
                     {globalConfig.enableElectricScale && (
                       <IconButton
                         className="scale-90"
-                        toolTipProps={{ title: '电子放大' }}
+                        toolTipProps={{ title: t('video.electricScale.title') }}
                         active={!!enableScale}
                         onClick={() => {
                           setEnableScale(1 - Math.sign(enableScale))
@@ -387,7 +388,9 @@ const DeviceLiveVideo = memo(
                     )}
                     <IconButton
                       toolTipProps={{
-                        title: !fullScreen ? '全屏' : '退出全屏',
+                        title: !fullScreen
+                          ? t('common.fullScreen')
+                          : t('common.exit'),
                         align: {
                           offset: [-20, -10],
                         },

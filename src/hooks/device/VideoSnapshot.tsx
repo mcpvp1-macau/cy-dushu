@@ -19,6 +19,8 @@ const VideoSnapshotBtn: FC<PropsType> = memo(
     const msgApi = useAppMsg()
     const [loading, setLoading] = useState(false)
 
+    const { t } = useTranslation()
+
     /** 截图 */
     const handleSnapshot = async () => {
       setLoading(true)
@@ -28,7 +30,7 @@ const VideoSnapshotBtn: FC<PropsType> = memo(
         if (idx > -1) {
           const data = base64!.substring(idx + 'base64,'.length)
           await uploadPic(productKey, deviceId, { imgData: data! })
-          msgApi.success('截图成功')
+          msgApi.success(t('screenshot.screenshotSuccess'))
         }
       } finally {
         setLoading(false)
@@ -36,7 +38,10 @@ const VideoSnapshotBtn: FC<PropsType> = memo(
     }
 
     return (
-      <IconButton toolTipProps={{ title: '截图' }} onClick={handleSnapshot}>
+      <IconButton
+        toolTipProps={{ title: t('common.screenShot') }}
+        onClick={handleSnapshot}
+      >
         {!loading ? <IconSnapshot /> : <LoadingOutlined />}
       </IconButton>
     )

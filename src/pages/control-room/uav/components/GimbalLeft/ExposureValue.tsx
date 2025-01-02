@@ -41,7 +41,7 @@ const exposureMap = new Map<number, string>([
 ])
 
 const revMap = new Map<string, number>(
-  exposureMap.entries().map(([k, v]) => [v, k]),
+  Array.from(exposureMap.entries()).map(([k, v]) => [v, k]),
 )
 
 /** 曝光值 显示 和 设置 */

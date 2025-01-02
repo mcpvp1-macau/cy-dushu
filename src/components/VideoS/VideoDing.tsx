@@ -12,9 +12,11 @@ type PropsType = {
 const VideoDing: FC<PropsType> = memo((props) => {
   const addWindow = useFixedWindowsStore((s) => s.addWindow)
 
+  const { t } = useTranslation()
+
   return (
     <IconButton
-      toolTipProps={{ title: '钉出' }}
+      toolTipProps={{ title: t('common.fixedOut') }}
       onClick={() => {
         addWindow({
           type: 'live-video',

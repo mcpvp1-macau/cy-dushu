@@ -7,18 +7,16 @@ import gimbalYawMiddle from '@/assets/imgs/control/gimbalYawMiddle.png'
 import follow from '@/assets/imgs/control/follow.png'
 import freedom from '@/assets/imgs/control/freedom.png'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
-import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
+import usePostDeviceService from '../../hooks/usePostDeviceService'
 
 type PropsType = unknown
 
 const GimbalService: FC<PropsType> = memo(() => {
   const gimbalMode = useUavControlRoomStore((s) => s.state.gimbalMode)
 
-  const productKey = useDeviceDetailStore((s) => s.productKey)
-  const deviceId = useDeviceDetailStore((s) => s.deviceId)
+  const { t } = useTranslation()
 
-  const postService = usePostDeviceService(productKey, deviceId)
+  const postService = usePostDeviceService()
 
   const handleClick = useMemoizedFn(({ key }) => {
     const data =
@@ -37,7 +35,10 @@ const GimbalService: FC<PropsType> = memo(() => {
           {
             key: 'resetGimbal',
             label: (
-              <Tooltip title="云台回中" placement="right">
+              <Tooltip
+                title={t('controlRoom.control.gimbalReset.title')}
+                placement="right"
+              >
                 <img src={gimbalMiddle} className="w-6" />
               </Tooltip>
             ),
@@ -45,7 +46,10 @@ const GimbalService: FC<PropsType> = memo(() => {
           {
             key: 'resetGimbalToDown',
             label: (
-              <Tooltip title="云台朝下" placement="right">
+              <Tooltip
+                title={t('controlRoom.control.gimbalToDown.title')}
+                placement="right"
+              >
                 <img src={gimbalBottom} className="w-6" />
               </Tooltip>
             ),
@@ -53,7 +57,10 @@ const GimbalService: FC<PropsType> = memo(() => {
           {
             key: 'resetGimbalYaw',
             label: (
-              <Tooltip title="云台偏航回中" placement="right">
+              <Tooltip
+                title={t('controlRoom.control.gimbalResetYaw.title')}
+                placement="right"
+              >
                 <img src={gimbalYawMiddle} className="w-6" />
               </Tooltip>
             ),
@@ -61,7 +68,10 @@ const GimbalService: FC<PropsType> = memo(() => {
           {
             key: 'resetGimbalPitchToDown',
             label: (
-              <Tooltip title="云台俯仰朝下" placement="right">
+              <Tooltip
+                title={t('controlRoom.control.gimbalPitchDown.title')}
+                placement="right"
+              >
                 <img src={gimbalPitchBottom} className="w-6" />
               </Tooltip>
             ),
@@ -70,7 +80,11 @@ const GimbalService: FC<PropsType> = memo(() => {
             key: 'setGimbalMode',
             label: (
               <Tooltip
-                title={gimbalBottom === 'free' ? '跟踪模式' : '自由模式'}
+                title={
+                  gimbalBottom === 'free'
+                    ? t('controlRoom.control.gimbalFollowMode.title')
+                    : t('controlRoom.control.gimbalFreeMode.title')
+                }
                 placement="right"
               >
                 <img

@@ -16,29 +16,13 @@ import RemoteDebug from './components/RemoteDebug'
 import UavAirportUavDetail from './components/Uav'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import FormModal from '@/components/XForm/Modal'
-import { XFormItem } from '@/components/XForm/types'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import HealthInfoMini from '@/components/device/HealthInfoMini'
+import { XFormItem } from '@/components/XForm/types'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
 }
-
-const items: XFormItem[] = [
-  {
-    label: '起飞高度',
-    name: 'height',
-    type: 'input-number',
-    rules: [{ required: true, message: '请输入起飞高度' }],
-    otherProps: { style: { width: '100%' } },
-  },
-  {
-    label: '返航高度',
-    name: 'gohomeAltitude',
-    type: 'input-number',
-    otherProps: { style: { width: '100%' }, min: 50, max: 500 },
-  },
-]
 
 const map = new Map<string, string>([
   ['device_reboot', '机场重启'],
@@ -52,6 +36,33 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
   const productKey = data.productKey || data.deviceModel!.productKey
   const deviceId = data.deviceId
   const videoId = data?.properties.videoList?.[0]?.videoId ?? ''
+
+  const { t } = useTranslation()
+
+  const items = useMemo(
+    () =>
+      [
+        {
+          label: t('device.uav.takeoffForm.takeoffHeight.title'),
+          name: 'height',
+          type: 'input-number',
+          rules: [
+            {
+              required: true,
+              message: t('device.uav.takeoffForm.takeoffHeight.required_msg'),
+            },
+          ],
+          otherProps: { style: { width: '100%' } },
+        },
+        {
+          label: t('device.uav.takeoffForm.goHomeAltitude.title'),
+          name: 'gohomeAltitude',
+          type: 'input-number',
+          otherProps: { style: { width: '100%' }, min: 50, max: 500 },
+        },
+      ] as XFormItem[],
+    [t],
+  )
 
   const [state, setState] = useState<Record<string, any>>({})
 
@@ -137,7 +148,7 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
 
   const postDeviceService = usePostDeviceService(productKey, deviceId)
   const handleTakeoffOk = async (values: any) => {
-    await postDeviceService('takeoff', values, '一键起飞')
+    await postDeviceService('takeoff', values, t(''))
     setTakeoffFalse()
   }
 
@@ -183,7 +194,7 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
               icon={<IconDebug />}
               onClick={() => setOpenDebug(true)}
             >
-              远程调试
+              {t('device.uavDock.remoteDebug.title')}
             </Button>
             <Button
               disabled={state.modeCode !== 0}
@@ -192,7 +203,7 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
               icon={<IconTakeoff />}
               onClick={setTakeoffTrue}
             >
-              一键起飞
+              {t('device.uavDock.takeoffForm.title')}
             </Button>
           </div>
 
@@ -214,7 +225,7 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
           initialValues={{
             height: 100,
           }}
-          title="相对起飞 (m)"
+          title={`${t('device.uavDock.takeoffForm.title')} ATL(m)`}
           open={takeOffOpen}
           items={items}
           onClose={setTakeoffFalse}

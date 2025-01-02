@@ -19,7 +19,7 @@ const LatestTask: FC<PropsType> = memo(({ deviceId }) => {
   const msgApi = useAppMsg()
   const actionItem = useGlobalWsStore((s) => s.actionItemStatus[deviceId])
 
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const queryClient = useQueryClient()
   const { data: taskData } = useQuery(
@@ -73,13 +73,19 @@ const LatestTask: FC<PropsType> = memo(({ deviceId }) => {
         ) : status === 'RUNNING' ? (
           <>
             <IconButton
-              toolTipProps={{ title: '暂停任务', placement: 'bottomRight' }}
+              toolTipProps={{
+                title: t('action.detail.task.pause.title'),
+                placement: 'bottomRight',
+              }}
               onClick={() => handleClick('pause')}
             >
               <IconPause className="scale-75" />
             </IconButton>
             <IconButton
-              toolTipProps={{ title: '结束任务', placement: 'bottomRight' }}
+              toolTipProps={{
+                title: t('action.detail.task.end.title'),
+                placement: 'bottomRight',
+              }}
               onClick={() => handleClick('end')}
             >
               <IconStopCircle className="scale-90" />
@@ -88,13 +94,19 @@ const LatestTask: FC<PropsType> = memo(({ deviceId }) => {
         ) : status === 'HANGUP' ? (
           <>
             <IconButton
-              toolTipProps={{ title: '继续任务', placement: 'bottomRight' }}
+              toolTipProps={{
+                title: t('action.detail.task.continue.title'),
+                placement: 'bottomRight',
+              }}
               onClick={() => handleClick('continue')}
             >
               <IconPlay className="scale-75" />
             </IconButton>
             <IconButton
-              toolTipProps={{ title: '结束任务', placement: 'bottomRight' }}
+              toolTipProps={{
+                title: t('action.detail.task.end.title'),
+                placement: 'bottomRight',
+              }}
               onClick={() => handleClick('end')}
             >
               <IconStopCircle className="scale-90" />
@@ -104,9 +116,9 @@ const LatestTask: FC<PropsType> = memo(({ deviceId }) => {
       </div>
       <label>
         {status === 'RUNNING'
-          ? '任务中'
+          ? t('action.detail.task.status.RUNNING.title')
           : status === 'HANGUP'
-          ? '任务暂停'
+          ? t('action.detail.task.status.HANGUP.title')
           : taskStatusMap[i18n.language][status]}
       </label>
     </div>

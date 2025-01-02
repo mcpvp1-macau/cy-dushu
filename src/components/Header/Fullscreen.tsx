@@ -13,16 +13,24 @@ const Fullscreen: FC<PropsType> = memo(({ target }) => {
   const [isFullScreen, { enterFullscreen, exitFullscreen }] =
     useFullscreen(target)
 
+  const { t } = useTranslation()
+
   if (isFullScreen) {
     return (
-      <IconButton toolTipProps={{ title: '退出全屏' }} onClick={exitFullscreen}>
+      <IconButton
+        toolTipProps={{ title: t('common.exit') }}
+        onClick={exitFullscreen}
+      >
         <FullscreenExitOutlined />
       </IconButton>
     )
   }
 
   return (
-    <IconButton toolTipProps={{ title: '全屏' }} onClick={enterFullscreen}>
+    <IconButton
+      toolTipProps={{ title: t('common.fullScreen') }}
+      onClick={enterFullscreen}
+    >
       <IconFull className="scale-95" />
     </IconButton>
   )
