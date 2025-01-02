@@ -1,9 +1,10 @@
 export type ConfigType = {
   systemName: string
   title: string
-  loginUrl: string
+  loginUrl?: string
   globalWs: string
   videoBuffer?: number
+  loginHttps?: boolean
   videoBufferDelay?: number
   videoProxy?: boolean
   disableZoomHeight?: number
@@ -26,6 +27,8 @@ if (import.meta.env.DEV && __DEV_MERGE_CONFIG__) {
   Object.assign(globalConfig, __DEV_MERGE_CONFIG__)
 }
 
-globalConfig.loginUrl ??= `http://${location.hostname}:32712`
+globalConfig.loginUrl ??= `${globalConfig.loginHttps ? 'https' : 'http'}://${
+  location.hostname
+}:32712`
 
 export default globalConfig
