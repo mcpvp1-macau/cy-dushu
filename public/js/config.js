@@ -1,7 +1,8 @@
 window.config = {
   title: '牍术·无人装备智能引擎',
   systemName: 'jingqi',
-  loginHttps: false,
+  // loginUrl: 'https://4a.jing-an.com/login',
+  loginHttps: true,
   globalWs: 'ws',
   defaultImageries: [
     {
@@ -22,4 +23,5 @@ window.config = {
   ],
   videoBuffer: 0,
   videoBufferDelay: 0.2,
+  videoProxy: true,
 }

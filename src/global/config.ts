@@ -29,6 +29,6 @@ if (import.meta.env.DEV && __DEV_MERGE_CONFIG__) {
 
 globalConfig.loginUrl ??= `${globalConfig.loginHttps ? 'https' : 'http'}://${
   location.hostname
-}:32712`
+}:32712/login`
 
 export default globalConfig

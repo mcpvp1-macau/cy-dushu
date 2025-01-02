@@ -28,6 +28,7 @@ const VideoAreaPickerDrawer: React.FC<Props> = (props) => {
   const drawingRef = useRef(false)
 
   const onClick = (e) => {
+    console.info('isDraw----', isDraw)
     e.preventDefault()
     e.stopPropagation()
     if (isDraw) {
@@ -123,7 +124,7 @@ const VideoAreaPickerDrawer: React.FC<Props> = (props) => {
                     onClick={onClick}
                     onMouseMove={onMouseMove}
                     onContextMenu={onContextMenu}
-                    className="absolute z-[999] top-0 left-0 w-full h-full border-[red] border-solid border-[1px]"
+                    className="absolute z-[999] top-0 left-0 w-full h-full border-[red] border-solid border-[1px] pointer-events-auto"
                   >
                     <svg className="absolute z-[999] top-0 left-0  w-full h-full">
                       {[...state, positions1].map((positions, i) => {
