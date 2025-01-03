@@ -7,6 +7,7 @@ import MenuIconSource from '@/assets/icons/jsx/menus/MenuIconSource'
 import MenuIconSchedule from '@/assets/icons/jsx/menus/MenuIconSchedule'
 import useUserStore from '@/store/useUser.store'
 import MenuIconEvents from '@/assets/icons/jsx/menus/MenuIconEvents'
+import { twMerge } from 'tailwind-merge'
 
 type PropsType = unknown
 
@@ -75,13 +76,15 @@ const AppNavigator: FC<PropsType> = memo(() => {
           <li key={e.id}>
             <Link
               to={e.path}
-              className={clsx(
-                'w-[28px] h-[28px] bg-ground-200 border border-solid border-ground-300 rounded',
-                'flex justify-center items-center',
-                'hover:border-fore transition-all duration-500',
-                {
-                  'border-fore': usedKey.has(e.id),
-                },
+              className={twMerge(
+                clsx(
+                  'w-[28px] h-[28px] bg-ground-200 border border-solid border-ground-300 rounded',
+                  'flex justify-center items-center',
+                  'hover:border-fore transition-all duration-500',
+                  {
+                    'border-fore': usedKey.has(e.id),
+                  },
+                ),
               )}
             >
               {e.component}
