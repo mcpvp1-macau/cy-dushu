@@ -18,7 +18,7 @@ const ARSenceBanFlyArea: FC<PropsType> = memo(({ data }) => {
       wall: {
         positions: Cesium.Cartesian3.fromDegreesArrayHeights(data.flat()),
         material: new Cesium.ImageMaterialProperty({
-          image: '/images/ban-area-liner.png',
+          image: '/images/mask/ban-area-liner.png',
           color: Cesium.Color.fromCssColorString('#ef4444').withAlpha(0.7),
         }),
       },
