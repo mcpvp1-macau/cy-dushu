@@ -16,6 +16,7 @@ type PropsType = unknown
 const colorMap = {
   PROCESSING: '#4C90F0',
   FINISH: '#15B371',
+  FINISHED: '#15B371',
   FAILED: '#DD4444',
   TERMINATE: '#DD4444',
   PENDING: 'white',
@@ -54,12 +55,17 @@ const ScheduleTable: FC<PropsType> = memo(() => {
   )
 
   const statusOptions = useMemo(() => {
-    return ['PROCESSING', 'TERMINATE', 'FAILED', 'FINISH', 'PENDING'].map(
-      (value) => ({
-        value,
-        label: t(`schedule.table.status.${value}.title`),
-      }),
-    )
+    return [
+      'PROCESSING',
+      'TERMINATE',
+      'FAILED',
+      // 'FINISH',
+      'FINISHED',
+      'PENDING',
+    ].map((value) => ({
+      value,
+      label: t(`schedule.table.status.${value}.title`),
+    }))
   }, [t, i18n])
 
   console.log('statusOptions', statusOptions)

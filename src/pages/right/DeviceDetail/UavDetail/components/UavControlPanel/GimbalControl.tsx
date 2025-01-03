@@ -7,6 +7,10 @@ import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import { useDeviceDetailStore } from '../../../hooks/useDeviceDetail.store'
 import useUavZoomFactorChange from '@/pages/control-room/uav/hooks/useZoomFactorChange'
 import { isNil, round } from 'lodash'
+import IconUp from '@/assets/icons/jsx/IconUp'
+import IconDown from '@/assets/icons/jsx/IconDown'
+import IconLeft from '@/assets/icons/jsx/IconLeft'
+import IconRight from '@/assets/icons/jsx/IconRight'
 
 type PropsType = unknown
 
@@ -55,10 +59,10 @@ const UavDetailGimbalControl: FC<PropsType> = memo(() => {
   const canControl = wsReadyState === WebSocket.OPEN
 
   const controls1 = [
-    [t('common.up'), 'left-1/2 -translate-x-1/2', { pitch: 15 }],
-    [t('common.down'), 'left-1/2 bottom-0 -translate-x-1/2', { pitch: -15 }],
-    [t('common.left'), 'top-1/2 -translate-y-1/2', { yaw: -15 }],
-    [t('common.right'), 'top-1/2 right-0 -translate-y-1/2', { yaw: 15 }],
+    [<IconUp />, 'left-1/2 -translate-x-1/2', { pitch: 15 }],
+    [<IconDown />, 'left-1/2 bottom-0 -translate-x-1/2', { pitch: -15 }],
+    [<IconLeft />, 'top-1/2 -translate-y-1/2', { yaw: -15 }],
+    [<IconRight />, 'top-1/2 right-0 -translate-y-1/2', { yaw: 15 }],
   ] as const
 
   const sendCommand = useUavControlRoomStore((s) => s.sendCommand)
@@ -131,9 +135,9 @@ const UavDetailGimbalControl: FC<PropsType> = memo(() => {
         <div className="relative h-[100px] w-[100px] select-none">
           <img className="size-full" src={controlBG} alt="" />
           <div className="absolute inset-1">
-            {controls1.map(([title, className, payload]) => (
+            {controls1.map(([title, className, payload], i) => (
               <CircleButton
-                key={title}
+                key={i}
                 className={className}
                 disabled={!canControl || !isGimbalSource}
                 onMouseDown={() => setDownKey(payload)}

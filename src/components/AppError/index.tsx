@@ -36,7 +36,6 @@ const Content = () => {
   }
 
   if (error instanceof Error) {
-    console.log(error.stack)
     return (
       <div className="flex flex-col items-center gap-3 text-white">
         <pre className="text-lg">{error.message}</pre>
@@ -51,6 +50,8 @@ const Content = () => {
       </div>
     )
   }
+
+  console.error(error)
   return (
     <div className="flex flex-col items-center gap-3 text-white">
       <pre className="text-lg">未知错误</pre>
