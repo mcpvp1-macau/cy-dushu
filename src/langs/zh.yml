@@ -746,6 +746,8 @@ mapLayer:
     title: 图层设置
     addLayer:
       title: 创建图层
+    layer:
+      title: 图层
   createMap:
     title: 创建地图
     form:

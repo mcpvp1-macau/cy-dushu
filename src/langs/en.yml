@@ -755,6 +755,8 @@ mapLayer:
     title: Layer Setting
     addLayer:
       title: Create Layer
+    layer:
+      title: Layer
   createMap:
     title: Create Map
     form:
