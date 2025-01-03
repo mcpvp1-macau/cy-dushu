@@ -1,7 +1,7 @@
 import useGlobalWsStore, {
   useRealOnlineStatus,
 } from '@/store/useGlobalWebSocket.store'
-import icon from '@/assets/marker/icon/uav.svg'
+import icon from '/images/marker/icon/uav.svg'
 import { Billboard, Label } from 'resium'
 import * as Cesium from 'cesium'
 import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'

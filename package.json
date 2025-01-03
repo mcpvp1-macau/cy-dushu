@@ -1,7 +1,7 @@
 {
   "name": "ja-dushu-front",
   "private": true,
-  "version": "v0.0.54-dev",
+  "version": "v0.0.55-dev",
   "type": "module",
   "scripts": {
     "dev": "vite --config ./vite-config/dev/config.82.ts",

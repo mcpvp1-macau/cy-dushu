@@ -1,4 +1,4 @@
-import icon from '@/assets/marker/icon/uav_dock.svg'
+import icon from '/images/marker/icon/uav_dock.svg'
 import { Billboard, Label } from 'resium'
 import * as Cesium from 'cesium'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
