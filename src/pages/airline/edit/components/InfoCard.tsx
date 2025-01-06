@@ -36,14 +36,27 @@ const AirlineInfoCard: FC<PropsType> = memo(() => {
     return ans
   }, [airpointsConfig])
 
+  const hoverTimeTotal = useMemo(
+    () =>
+      airpointsConfig.reduce((prev, e) => {
+        e.actions?.forEach((a: any) => {
+          if (a?.type === 'HOVER') {
+            prev += Number(a.config.hoverTime)
+          }
+        })
+        return prev
+      }, 0),
+    airpointsConfig,
+  )
+
   /** 飞行时间 */
   const flyTimeFmt = useMemo(() => {
     const flyTime = totalDistance / speed
     if (flyTime < 60) {
       return '< 1 min'
     }
-    return `${(flyTime / 60).toFixed(0)} min`
-  }, [totalDistance, speed])
+    return `${((flyTime + hoverTimeTotal) / 60).toFixed(0)} min`
+  }, [totalDistance, speed, hoverTimeTotal])
 
   const distanceFmt = useMemo(() => {
     if (totalDistance < 1000) {
