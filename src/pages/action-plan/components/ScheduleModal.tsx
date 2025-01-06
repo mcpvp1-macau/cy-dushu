@@ -219,6 +219,7 @@ const ScheduleModal: FC<PropsType> = memo(
             form.setFieldValue(
               'executeTime',
               dayjs(data.startTime)
+                .startOf('day')
                 .add(dayjs(data.executeTime![0], 'HH:mm:ss').hour(), 'hour')
                 .add(dayjs(data.executeTime![0], 'HH:mm:ss').minute(), 'minute')
                 .add(
