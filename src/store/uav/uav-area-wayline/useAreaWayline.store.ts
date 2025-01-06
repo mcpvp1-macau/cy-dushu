@@ -14,8 +14,14 @@ type StateType = {
     polygon: number[][] | null
     mainK: number
     interval: number
+    coverage: number
   }
   isDrawHome: boolean
+  cameraInfo: {
+    focal: number
+    sensorWidth: number
+    sensorHeight: number
+  }
 }
 
 type ActionsType = {
@@ -44,8 +50,14 @@ const createInitialState = (): StateType => ({
     polygon: null,
     mainK: 0,
     interval: 0,
+    coverage: 10,
   },
   isDrawHome: false,
+  cameraInfo: {
+    focal: 24,
+    sensorWidth: 40,
+    sensorHeight: 30,
+  },
   airpointsConfig: [],
 })
 
