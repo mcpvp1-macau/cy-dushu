@@ -1,0 +1,129 @@
+.control {
+  padding: 10px;
+
+  :global {
+    .ant-btn-primary:disabled {
+      border-color: transparent;
+    }
+
+    .ant-btn-primary.ant-btn-background-ghost:disabled {
+      border-color: inherit;
+    }
+
+    .ant-input-number-disabled {
+      background-color: #242e37;
+    }
+  }
+
+  .top {
+    width: 100%;
+
+    .left {
+      :global {
+        .ant-form-item-label {
+          padding-bottom: 4px;
+
+          label {
+            font-size: 12px;
+            height: 14px;
+
+            &::after {
+              display: none;
+            }
+          }
+        }
+
+        .ant-form-item {
+          margin-bottom: 8px;
+          line-height: 16px !important;
+
+          // .ant-input-number-disabled {
+          //   background-color: #242e37;
+          // }
+        }
+      }
+    }
+
+    .btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 80px;
+      height: 24px;
+      font-size: 14px;
+      border-radius: 3px;
+    }
+
+    :global {
+      .ant-btn-default:disabled {
+        background-color: transparent;
+      }
+    }
+
+    .tableTitle {
+      margin: 0 0 10px;
+    }
+  }
+
+  .bottom {
+    color: #c7d1dc;
+
+    .btnGroup {
+      display: flex;
+      gap: 15px;
+
+      :global {
+        .ant-btn-link {
+          color: #4c90f0;
+        }
+
+        .ant-btn {
+          padding: 0 !important;
+        }
+
+        .ant-btn-link.ant-btn-dangerous {
+          color: #ff4d4f;
+        }
+
+        .ant-btn-link:disabled {
+          color: rgb(112 163 251 / 60%);
+        }
+      }
+    }
+
+    :global {
+      .ant-table-cell {
+        padding: 4px !important;
+        border-bottom: 0;
+        font-weight: normal;
+      }
+
+      .ant-table-thead {
+        .ant-table-cell {
+          background-color: #242e37;
+
+          &::before {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
+  .controlForm {
+    :global {
+      .ant-form-item-control {
+        display: inline-block;
+        position: relative;
+
+        // .ant-input-number::after {
+        //   display: inline-block;
+        //   content: '°';
+        //   position: absolute;
+        //   right: -12px;
+        //   top: -4px;
+        // }
+      }
+    }
+  }
+}

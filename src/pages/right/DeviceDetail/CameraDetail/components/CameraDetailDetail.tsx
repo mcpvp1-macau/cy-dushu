@@ -11,7 +11,7 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
 
   const deviceId = deviceDetail.deviceId
   const productKey =
-    deviceDetail.productKey || deviceDetail.deviceModel.productKey
+    deviceDetail.productKey || deviceDetail.deviceModel?.productKey
   const videoId = deviceDetail?.properties.videoList?.[0]?.videoId
 
   const modelName =
@@ -35,11 +35,11 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
         <DeviceLiveVideo
           ref={videoRef}
           deviceId={deviceId}
-          productKey={productKey}
+          productKey={productKey!}
           videoId={videoId ?? ''}
           rightTop={
             <VideoSnapshotBtn
-              productKey={productKey}
+              productKey={productKey!}
               deviceId={deviceId}
               videoLiveRef={videoRef}
             />

@@ -42,14 +42,14 @@ const UavDetail: FC<PropsType> = memo(({ data }) => {
   const productKey = data.productKey || data.deviceModel?.productKey
   const deviceId = data.deviceId
   const store = useCreateUavControlRoomStore(
-    productKey,
+    productKey!,
     deviceId,
     useServerEventMsg(),
   )
 
   useEffect(() => {
     store?.getState()?.resetState()
-    store?.getState()?.updateProdctKeyAndDeviceId(productKey, deviceId)
+    store?.getState()?.updateProdctKeyAndDeviceId(productKey!, deviceId)
   }, [deviceId])
 
   const [tab, setTab] = useState('详情')

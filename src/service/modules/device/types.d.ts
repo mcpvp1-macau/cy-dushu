@@ -170,12 +170,14 @@ declare namespace API_DEVICE {
       deviceName: string
       longitude?: number
       latitude?: number
+      altitude?: number
       status: string
       taskStatus: string
       sn: string
       remainingPower: number
       createTime: number
       deviceType: string
+      /** 地图id 以前给机器狗用的 */
       spaceId: string
       deviceRegisterVersion: string
       deviceTags: {
@@ -188,6 +190,15 @@ declare namespace API_DEVICE {
       parentId: string
       subDevice: boolean
       deviceModel?: DeviceModel
+      videos?: {
+        name: string
+        videoId: string
+        videoTypes: any[]
+      }[]
+      /** 望楼转台独有的 */
+      pitch?: number
+      /** 望楼转台独有的 */
+      yaw?: number
     }
     type Properties = Partial<{
       HorizontalAvoidEnable: string

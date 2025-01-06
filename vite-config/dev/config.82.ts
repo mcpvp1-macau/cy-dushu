@@ -9,8 +9,8 @@ export default mergeConfig(
       proxy: {
         // 4A 接口
         '/proxyApi': {
-          target: 'http://172.27.95.212:31851/',
-          // target: 'http://127.0.0.1:7001/',
+          // target: 'http://172.27.95.212:31851/',
+          target: 'http://172.27.95.212:32711/',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/proxyApi/, '/'),
         },
@@ -46,13 +46,19 @@ export default mergeConfig(
           target: 'http://47.111.155.82:32712',
           changeOrigin: true,
         },
+        '/raster': {
+          target: 'http://api.mapbox.com',
+          // secure: false,
+          changeOrigin: true,
+          
+        },
       },
     },
     define: {
       // 用于合并 window.config 的配置
       __DEV_MERGE_CONFIG__: {
         systemName: 'jingqi-v3',
-        loginUrl: 'http://4a.jing-an.com:32712/login',
+        loginUrl: 'http://test.4a.jing-an.com:32712/login',
       },
     },
   }),

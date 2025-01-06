@@ -13,11 +13,13 @@ import { bigFlyEmitter } from '@/map/GlobalMap/BigFlyListener'
 const UavDetail = lazy(() => import('./UavDetail'))
 const UavAirportDetail = lazy(() => import('./UavAirportDetail'))
 const CameraDetail = lazy(() => import('./CameraDetail'))
+const WangLouDetail = lazy(() => import('./WangLouDetail'))
 
 const route = {
   [DeviceEnum.UAV]: UavDetail,
   [DeviceEnum.UAV_AIRPORT]: UavAirportDetail,
   [DeviceEnum.CAMERA]: CameraDetail,
+  [DeviceEnum.WANGLOU]: WangLouDetail,
 }
 
 type PropsType = unknown
@@ -45,8 +47,7 @@ const RightDeviceDetail: FC<PropsType> = memo(() => {
   if (isLoading || !deviceDetail) {
     return <AppSpin />
   }
-
-  const DetailComponent = route[deviceDetail.deviceType]
+  const DetailComponent = route[deviceDetail.deviceType] || CameraDetail
   if (!DetailComponent) {
     return <div className="p-3">404</div>
   }

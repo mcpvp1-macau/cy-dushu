@@ -23,7 +23,6 @@ type PropsType = unknown
 
 const Right: FC<PropsType> = memo(() => {
   const rightMode = useRightMode((s) => s.rightMode)
-
   const RightComponent = rightMode && route[rightMode]
 
   if (!RightComponent) {

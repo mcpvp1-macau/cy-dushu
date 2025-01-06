@@ -42,6 +42,7 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
   const controlTag = useUavControlRoomStore((s) => s.state.controlTag)
   const uuid = useUavControlRoomStore((s) => s.uuid)
   const videoSource = useUavControlRoomStore((s) => s.state.videoSource)
+  const updateUUID = useUavControlRoomStore((s) => s.updateUUID)
 
   return (
     <div>
@@ -67,7 +68,10 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
             进入驾驶舱
           </Button>
         </Link>
-        <ControlPower open={!!(uuid && uuid === controlTag)} />
+        <ControlPower
+          open={!!(uuid && uuid === controlTag)}
+          updateUUID={updateUUID}
+        />
       </section>
       <AppCollapse
         className="mt-3 border-x-0 border-b-0"
@@ -98,7 +102,7 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
                 <DeviceAlgorithmList
                   deviceType={DeviceEnum.UAV}
                   deviceId={deviceId}
-                  productKey={productKey}
+                  productKey={productKey!}
                 />
               </AppViewSuspense>
             ),

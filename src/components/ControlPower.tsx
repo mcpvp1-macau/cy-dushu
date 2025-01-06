@@ -3,14 +3,17 @@ import useUserStore from '@/store/useUser.store'
 import { Switch } from 'antd'
 import { v4 as uuidv4 } from 'uuid'
 
+// const updateUUID = useUavControlRoomStore((s) => s.updateUUID)
+
 type PropsType = {
   open?: boolean
+  updateUUID: (uuid: string) => void
 }
 
 /** 控制权 */
-const ControlPower: FC<PropsType> = memo(({ open }) => {
+const ControlPower: FC<PropsType> = memo(({ open, updateUUID }) => {
   const username = useUserStore((s) => s.user?.username)
-  const { robControlPower, isPending } = useRobControlPower()
+  const { robControlPower, isPending } = useRobControlPower(updateUUID)
   const handleSwitchChange = (checked: boolean) => {
     if (checked) {
       robControlPower(

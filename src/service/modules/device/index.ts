@@ -55,6 +55,31 @@ export const setDeviceProp = (
   )
 }
 
+/** 设备设置属性 */
+export const setDeviceConfig = (
+  productKey: string,
+  deviceId: string,
+  data: Record<string, any>,
+  xCustomConfig: XCustomConfig = {},
+) => {
+  return serverControlCenter.post(
+    `/v3/properties/${productKey}/${deviceId}/config/post`,
+    data,
+    { xCustomConfig },
+  )
+}
+
+export const setProperty = (
+  productKey: string,
+  deviceId: string,
+  params: any,
+) => {
+  return serverControlCenter.post(
+    `/v3/operate/upload/${productKey}/${deviceId}/property/set`,
+    params,
+  )
+}
+
 /** 设备能力调用 */
 export const postDeviceService = (
   productKey: string,

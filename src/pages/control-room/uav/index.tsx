@@ -132,7 +132,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
   )
 
   const controlRoomStore = useCreateUavControlRoomStore(
-    productKey,
+    productKey!,
     deviceId,
     useServerEventMsg(),
   )

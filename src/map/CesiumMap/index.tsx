@@ -6,6 +6,7 @@ import CesiumDefaultConfig from './components/CesiumDefaultConfig'
 import MapLayerConfig from '../LayerConfig/LayerConfig'
 import CustomImageryLayer from './components/CustomImageryLayer'
 import FloatIconButton from '@/components/ui/button/FloatIconButton'
+import CustomCesiumGlobalTerrain from './components/CustomCesiumGlobalTerrain'
 
 type PropsType = {
   id: string
@@ -48,6 +49,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
       <DefaultImageryLayer />
       <CustomImageryLayer />
       <CesiumDefaultConfig />
+      <CustomCesiumGlobalTerrain />
       {children}
       {useToolBar && (
         <div className="absolute right-3 bottom-3 flex flex-col gap-3">
