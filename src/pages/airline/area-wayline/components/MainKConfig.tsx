@@ -11,6 +11,7 @@ import * as Cesium from 'cesium'
 type PropsType = unknown
 
 const MainKConfig: FC<PropsType> = memo(() => {
+  const { t } = useTranslation()
   const [kValue, setKValue] = useState(0)
   const mainK = useAreaWaylineStore((s) => s.templateConfig.mainK)
 
@@ -84,7 +85,7 @@ const MainKConfig: FC<PropsType> = memo(() => {
 
   return (
     <XCard
-      title="航线主轴方向"
+      title={t('wayline.waylineConfig.mainAxisDirection.title')}
       topRight={<span className="text-primary text-sm">{kValue}°</span>}
     >
       <HSlider

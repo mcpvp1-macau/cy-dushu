@@ -1,11 +1,11 @@
 import IconTakeoff from '@/assets/icons/jsx/uav/IconTakeoff'
+import TextButton from '@/components/ui/button/TextButton'
 import XCard from '@/components/ui/XCard'
 import useAreaWaylineStore from '@/store/uav/uav-area-wayline/useAreaWayline.store'
-import { Button } from 'antd'
-import { memo, type FC } from 'react'
 
 type PropsType = unknown
 
+/** 起飞点 */
 const TakeoffRef: FC<PropsType> = memo(() => {
   const takeOffRefPoint = useAreaWaylineStore(
     (s) => s.airlineConfig.takeOffRefPoint,
@@ -19,17 +19,13 @@ const TakeoffRef: FC<PropsType> = memo(() => {
       title={
         takeOffRefPoint
           ? t('wayline.takeoffRefPoint.setted.title')
-          : '未设置起飞点'
+          : t('wayline.takeoffRefPoint.notSetted.title')
       }
       topRight={
-        <Button
-          type="link"
-          icon={<IconTakeoff />}
-          size="small"
-          onClick={() => updateIsDrawHome(true)}
-        >
-          {takeOffRefPoint ? '重设' : '设置'}起飞点
-        </Button>
+        <TextButton onClick={() => updateIsDrawHome(true)}>
+          <IconTakeoff className="mr-1" />
+          {takeOffRefPoint ? t('common.reset') : t('common.set')}
+        </TextButton>
       }
     />
   )

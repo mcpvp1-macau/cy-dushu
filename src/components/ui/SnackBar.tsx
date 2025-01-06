@@ -9,7 +9,6 @@ type PropsType = {
 
 const SnackBar: FC<PropsType> = memo(
   ({ open, children, color = 'white', background = 'rgba(0, 0, 0, 0.6)' }) => {
-    console.log('open', open)
     return (
       open &&
       createPortal(

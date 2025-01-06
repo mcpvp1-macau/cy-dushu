@@ -505,6 +505,10 @@ wayline:
       title: 全局航线速度
     noTakeoffPointError:
       msg: 点击地图设置参考起飞点
+    mainAxisDirection:
+      title: 航线主轴方向
+    coverage:
+      title: 航线覆盖率
   waylinePoint:
     config: 航点设置
     waypointList:
@@ -565,6 +569,8 @@ wayline:
       title: 航点个数
     photoCnt:
       title: 照片
+    area:
+      title: 面积
   imageFormat:
     wide:
       title: 广角

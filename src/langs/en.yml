@@ -512,6 +512,10 @@ wayline:
       title: Global Flight Speed
     noTakeoffPointError:
       msg: Click on the map to set the reference takeoff point
+    mainAxisDirection:
+      title: Wayline Main Axis Direction
+    coverage:
+      title: Coverage Rate
   waylinePoint:
     config: Waypoints
     waypointList:
@@ -572,6 +576,8 @@ wayline:
       title: Point Count
     photoCnt:
       title: Photos
+    area:
+      title: Area
   imageFormat:
     wide:
       title: Wide

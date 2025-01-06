@@ -5,6 +5,8 @@ import * as turf from '@turf/turf'
 type PropsType = unknown
 
 const InfoCard: FC<PropsType> = memo(() => {
+  const { t } = useTranslation()
+
   const takeOffRefPoint = useAreaWaylineStore(
     (s) => s.airlineConfig.takeOffRefPoint,
   )
@@ -71,21 +73,17 @@ const InfoCard: FC<PropsType> = memo(() => {
   return (
     <ul className="card-border flex p-3 px-1 text-xs text-center bg-[#1c2630] divide-x divide-ground-300">
       <li className="grow">
-        <p>航线长度</p>
+        <p>{t('wayline.info.length.title')}</p>
         <p className="mt-1 text-white text-sm">{distanceFmt}</p>
       </li>
       <li className="grow">
-        <p>预计执行时间</p>
+        <p>{t('wayline.info.time.title')}</p>
         <p className="mt-1 text-white text-sm">{flyTimeFmt}</p>
       </li>
       <li className="grow">
-        <p>面积</p>
+        <p>{t('wayline.info.area.title')}</p>
         <p className="mt-1 text-white text-sm">{areaFmt}</p>
       </li>
-      {/* <li className="grow">
-        <p>航点</p>
-        <p className="mt-1 text-white text-sm">{airpointsConfig.length}</p>
-      </li> */}
     </ul>
   )
 })
