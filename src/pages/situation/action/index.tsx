@@ -42,6 +42,7 @@ const PageSituationAction: FC<PropsType> = memo(() => {
         }
         return lastPageParam + 1
       },
+      gcTime: 0, // 避免无限轮播, 后续切换页面时, 导致多次请求
     },
     queryClient,
   )
@@ -69,7 +70,7 @@ const PageSituationAction: FC<PropsType> = memo(() => {
       <ScrollArea className="grow mt-3 px-3" onScroll={handleScroll}>
         {isLoading || isRefetching || !data ? (
           <AppSpin />
-        ) : data.pages.at(-1)?.rows.length === 0 ? (
+        ) : data.pages?.[0]?.rows.length === 0 ? (
           <AppEmpty />
         ) : (
           <div className="flex flex-col gap-3">
