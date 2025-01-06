@@ -1,5 +1,5 @@
-import { Button } from 'antd'
 import DataModal from './DataModal'
+import TextButton from '@/components/ui/button/TextButton'
 
 type PropsType = {
   deviceData: API_DEVICE.domain.DeviceListItem
@@ -12,9 +12,7 @@ const DeviceData: FC<PropsType> = memo(({ deviceData }) => {
 
   return (
     <>
-      <Button size="small" type="link" onClick={() => setOpen(true)}>
-        {t('common.data')}
-      </Button>
+      <TextButton onClick={() => setOpen(true)}>{t('common.data')}</TextButton>
       {open && (
         <DataModal
           open={open}

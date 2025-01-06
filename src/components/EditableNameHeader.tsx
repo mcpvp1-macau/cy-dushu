@@ -3,8 +3,8 @@ import IconButton from './ui/button/IconButton'
 import IconBack from '@/assets/icons/jsx/IconBack'
 import { Form, Input } from 'antd'
 import IconEdit from '@/assets/icons/jsx/IconEdit'
-import IconSave from '@/assets/icons/jsx/IconSave'
 import { LoadingOutlined } from '@ant-design/icons'
+import IconTick from '@/assets/icons/jsx/IconTick'
 
 type PropsType = {
   value: string
@@ -75,7 +75,7 @@ const EditableNameHeader: FC<PropsType> = memo(
               toolTipProps={{ title: t('common.save') }}
               onClick={handleSaveClick}
             >
-              <IconSave />
+              <IconTick />
             </IconButton>
           ) : (
             <IconButton

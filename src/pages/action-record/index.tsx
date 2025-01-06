@@ -1,4 +1,5 @@
 import MenuIconAction from '@/assets/icons/jsx/menus/MenuIconAction'
+import TextButton from '@/components/ui/button/TextButton'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import XTable from '@/components/ui/XTable.tsx'
 import { emtpyArray } from '@/constant/data'
@@ -13,7 +14,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { Button, DatePicker, Input, Pagination } from 'antd'
+import { DatePicker, Input, Pagination } from 'antd'
 import { Dayjs } from 'dayjs'
 import { useSearchParams } from 'react-router-dom'
 
@@ -93,10 +94,9 @@ const PageActionRecord: FC<PropsType> = memo(() => {
         cell: (cell) => {
           const item = cell.row.original
           return (
-            <div>
-              <Button type="link">{t('common.backTracking')}</Button>
-              <Button
-                type="link"
+            <div className="flex gap-3">
+              <TextButton>{t('common.backTracking')}</TextButton>
+              <TextButton
                 onClick={() =>
                   downloadAndRename(
                     `${serverJingqi.baseURL}/action/signal/${item.actionId}/record.csv`,
@@ -108,13 +108,13 @@ const PageActionRecord: FC<PropsType> = memo(() => {
                 }
               >
                 {t('actionRecord.signalDownload.title')}
-              </Button>
+              </TextButton>
             </div>
           )
         },
       }),
     ],
-    [i18n.language],
+    [t],
   )
 
   const table = useReactTable<API_ACTION.domain.ActionRecord>({
@@ -148,7 +148,11 @@ const PageActionRecord: FC<PropsType> = memo(() => {
       <section className="mt-3 grow flex flex-col overflow-hidden">
         <div className="flex-1 border border-solid border-ground-100 rounded-[3px] overflow-hidden">
           <ScrollArea className="size-full x-table">
-            <XTable table={table} loading={isLoading || isRefetching} />
+            <XTable
+              key={i18n.language}
+              table={table}
+              loading={isLoading || isRefetching}
+            />
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </div>

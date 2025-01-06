@@ -5,7 +5,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { Badge, Button, Input, Pagination } from 'antd'
+import { Badge, Input, Pagination } from 'antd'
 import { Link, useSearchParams } from 'react-router-dom'
 import OTAUpdateColumn from './OTAUpdateColumn'
 import DeviceData from './DeviceData'
@@ -13,6 +13,7 @@ import XTable from '@/components/ui/XTable.tsx'
 import usePageSearchParams from '@/hooks/useTableSearchParams'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import DeviceIcon from '@/components/device/DeviceIcon'
+import TextButton from '@/components/ui/button/TextButton'
 
 type PropsType = unknown
 
@@ -121,13 +122,11 @@ const SourceTable: FC<PropsType> = memo(() => {
         cell: (cell) => {
           const data = cell.row.original
           return (
-            <div className="flex justify-center">
+            <div className="flex gap-3">
               <DeviceData deviceData={cell?.row.original} />
               {data.deviceType === 'UAV' && (
                 <Link to={`/backtracking/device/${data.deviceId}`}>
-                  <Button type="link" size="small">
-                    {t('common.backTracking')}
-                  </Button>
+                  <TextButton>{t('common.backTracking')}</TextButton>
                 </Link>
               )}
             </div>

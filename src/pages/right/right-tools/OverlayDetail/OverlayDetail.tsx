@@ -11,14 +11,14 @@ import IconButton from '@/components/ui/button/IconButton'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconEdit from '@/assets/icons/jsx/IconEdit'
 import { ColorPicker, Form, Input } from 'antd'
-import IconSave from '@/assets/icons/jsx/IconSave'
 import { deleteOverlaies, updateOverlay } from '@/service/modules/layer_overlay'
-import { CloseCircleFilled, LoadingOutlined } from '@ant-design/icons'
+import { LoadingOutlined } from '@ant-design/icons'
 import { CotType } from '@/store/map/useDraw.store'
 import IconDrawArea from '@/assets/icons/jsx/right-tools/IconDrawArea'
 import { useForm } from 'antd/es/form/Form'
 import { AggregationColor } from 'antd/es/color-picker/color'
 import { getHexWithAlpha } from '@/utils/other/utils'
+import IconTick from '@/assets/icons/jsx/IconTick'
 
 type PropsType = unknown
 
@@ -168,13 +168,7 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                         toolTipProps={{ title: '保存' }}
                         onClick={handleSave}
                       >
-                        <IconSave className="scale-90" />
-                      </IconButton>
-                      <IconButton
-                        toolTipProps={{ title: '取消' }}
-                        onClick={setFalse}
-                      >
-                        <CloseCircleFilled />
+                        <IconTick className="scale-90" />
                       </IconButton>
                     </>
                   ) : (

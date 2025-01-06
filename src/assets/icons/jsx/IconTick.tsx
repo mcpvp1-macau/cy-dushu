@@ -1,0 +1,20 @@
+import { type SVGAttributes } from 'react'
+import Icon from '@ant-design/icons'
+
+type IconParams = Omit<Parameters<typeof Icon>[0], 'component'>
+
+const iconSvg = (props: SVGAttributes<SVGElement>) => {
+  return (
+    <svg viewBox="0 0 1045 1024" id="mx_n_1736130479785" {...props}>
+      <path
+        d="M934.746453 106.965333c-19.413333 1.706667-37.248 10.026667-50.773333 23.509334L327.68512 687.36l-187.605333-187.605333a79.488 79.488 0 0 0-58.112-24.448 82.090667 82.090667 0 0 0-58.112 140.032l245.76 245.76c15.189333 15.189333 35.882667 23.808 58.112 23.808 22.186667 0 42.922667-8.618667 58.112-23.808l614.4-614.4A82.090667 82.090667 0 0 0 942.08512 106.666667l-7.338667 0.298666z"
+        fill="currentColor"
+      ></path>
+    </svg>
+  )
+}
+
+/**![icon](data:image/svg+xml;base64,PHN2ZyB0PSIxNzM2MTMwNDc5Nzg0IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwNDUgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjI4OTU3IiBpZD0ibXhfbl8xNzM2MTMwNDc5Nzg1IiB3aWR0aD0iNDgiIGhlaWdodD0iNDgiPjxwYXRoIGQ9Ik05MzQuNzQ2NDUzIDEwNi45NjUzMzNjLTE5LjQxMzMzMyAxLjcwNjY2Ny0zNy4yNDggMTAuMDI2NjY3LTUwLjc3MzMzMyAyMy41MDkzMzRMMzI3LjY4NTEyIDY4Ny4zNmwtMTg3LjYwNTMzMy0xODcuNjA1MzMzYTc5LjQ4OCA3OS40ODggMCAwIDAtNTguMTEyLTI0LjQ0OCA4Mi4wOTA2NjcgODIuMDkwNjY3IDAgMCAwLTU4LjExMiAxNDAuMDMybDI0NS43NiAyNDUuNzZjMTUuMTg5MzMzIDE1LjE4OTMzMyAzNS44ODI2NjcgMjMuODA4IDU4LjExMiAyMy44MDggMjIuMTg2NjY3IDAgNDIuOTIyNjY3LTguNjE4NjY3IDU4LjExMi0yMy44MDhsNjE0LjQtNjE0LjRBODIuMDkwNjY3IDgyLjA5MDY2NyAwIDAgMCA5NDIuMDg1MTIgMTA2LjY2NjY2N2wtNy4zMzg2NjcgMC4yOTg2NjZ6IiBwLWlkPSIyODk1OCIgZmlsbD0iI2M3ZDFkYyI+PC9wYXRoPjwvc3ZnPg==) */
+const IconTick = (props: IconParams) => <Icon component={iconSvg} {...props} />
+
+export default IconTick
