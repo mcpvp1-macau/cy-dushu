@@ -123,7 +123,7 @@ const AlgorithmListItem: FC<PropsType> = memo(
     return (
       <div className="flex bg-ground-200 p-2 gap-2 rounded-[3px]">
         <div>
-          <Icon />
+          <Icon className="text-fore" />
         </div>
         <div className="grow">
           <div className="flex justify-between">

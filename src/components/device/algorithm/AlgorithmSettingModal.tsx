@@ -248,7 +248,7 @@ const AlgorithmSettingModal: FC<PropsType> = memo(
       >
         <div className="bg-[#16202B] p-3 mb-3">
           <div className="flex gap-2">
-            <Icon />
+            <Icon className="text-fore" />
             <span>{aiData.name}</span>
           </div>
           <div className="mt-3 border border-solid border-gray-700 rounded-[3px] p-2 flex text-fore text-sm">

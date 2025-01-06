@@ -11,6 +11,8 @@ import IconButtonWithDropDown from '@/components/IconButtonWithDropDown'
 import IconFilter from '@/assets/icons/jsx/IconFilter'
 import { LoadingOutlined } from '@ant-design/icons'
 import useEventTypeAndSourceOptions from './hooks/useEventTypeAndSourceOptions'
+import useRightMode from '@/store/layout/useRightMode.store'
+import { RightModeEnum } from '@/enum/right-mode'
 
 type PropsType = unknown
 
@@ -27,6 +29,13 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
   const [eventTypeList, setEventTypeList] = useState<string[]>([])
   const [eventSourceList, setEventSourceList] = useState<string[]>([])
   const [processStatusList, setProcessStatusList] = useState<string[]>([])
+
+  const rightDetailId = useRightMode((s) => {
+    if (s.rightMode !== RightModeEnum.EVENT_DETAIL) {
+      return null
+    }
+    return s.detailId
+  })
 
   const {
     data,
@@ -185,7 +194,11 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
               {data.pages.map((page, idx) => (
                 <Fragment key={idx}>
                   {page.rows.map((item) => (
-                    <EventItem key={item.id} data={item} />
+                    <EventItem
+                      key={item.id}
+                      data={item}
+                      active={item.eventId == rightDetailId}
+                    />
                   ))}
                 </Fragment>
               ))}

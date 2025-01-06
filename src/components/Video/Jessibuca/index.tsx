@@ -168,6 +168,7 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
       operateBtns: {},
       timeout: 5000,
       heartTimeoutReplayUseLastFrameShow: false,
+      replayUseLastFrameShow: false,
       audioEngine: 'worklet',
       isNotMute: false,
       heartTimeout: 10,

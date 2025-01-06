@@ -19,18 +19,18 @@ const UavAirportWeatherSection: FC<PropsType> = memo(
     return (
       <ul className="flex items-center justify-between text-sm">
         <li className="flex-1">
-          <Tooltip title={t('device.uavDock.windSpeed.title')}>
-            <div className="flex gap-1">
-              <IconWind />
-              <span className="ml-1">{windSpeed ?? '-'} m/s</span>
-            </div>
-          </Tooltip>
-        </li>
-        <li className="flex-1">
           <Tooltip title={t('device.uavDock.rainFall.title')}>
             <div className="flex gap-1">
               <IconWeather />
               <span className="ml-1">{rainfall || '-'}</span>
+            </div>
+          </Tooltip>
+        </li>
+        <li className="flex-1">
+          <Tooltip title={t('device.uavDock.windSpeed.title')}>
+            <div className="flex gap-1">
+              <IconWind />
+              <span className="ml-1">{windSpeed ?? '-'} m/s</span>
             </div>
           </Tooltip>
         </li>

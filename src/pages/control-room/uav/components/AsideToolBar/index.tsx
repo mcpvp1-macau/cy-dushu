@@ -1,4 +1,3 @@
-import IconIntelligentTrack from '@/assets/icons/jsx/uav/IconIntelligentTrack'
 import IconLaser from '@/assets/icons/jsx/uav/IconLaser'
 import IconPositionZoom from '@/assets/icons/jsx/uav/IconPositionZoom'
 import IconButton from '@/components/ui/button/IconButton'
@@ -14,6 +13,7 @@ import { ConfigProvider, Drawer } from 'antd'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import ZoomFocusMode from './ZoomFucusMode'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
+import IconSmartTrack from '@/assets/icons/jsx/uav/IconSmartTrack'
 
 const VRSetting = lazy(() => import('@/components/Header/setting/VRSetting'))
 
@@ -109,7 +109,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
             }}
             onClick={() => updateEnableSmartTrack()}
           >
-            <IconIntelligentTrack />
+            <IconSmartTrack />
           </IconButton>
         )}
         {hasAr && (

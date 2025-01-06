@@ -9,9 +9,10 @@ import { Button } from 'antd'
 
 type PropsType = {
   data: API_EVENTS.domain.Event
+  active?: boolean
 }
 
-const EventItem: FC<PropsType> = memo(({ data }) => {
+const EventItem: FC<PropsType> = memo(({ data, active }) => {
   const { t } = useTranslation()
   const process = EventStatusMap[data.processStatus]
 
@@ -26,6 +27,9 @@ const EventItem: FC<PropsType> = memo(({ data }) => {
       className={clsx(
         'p-3 bg-ground-100 rounded-[3px] transition-colors cursor-pointer',
         'border border-solid border-ground-200 hover:border-primary text-sm',
+        {
+          'border-primary': active,
+        },
       )}
       onClick={() => {
         updateRightMode(RightModeEnum.EVENT_DETAIL)

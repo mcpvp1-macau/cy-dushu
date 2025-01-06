@@ -91,7 +91,7 @@ const ScheduleTable: FC<PropsType> = memo(() => {
                 ? t(`schedule.table.status.${cell.getValue()}.title`)
                 : '-'}
               <Tooltip title={cell.row.original.message}>
-                <InfoCircleOutlined className="text-orange-400" />
+                <InfoCircleOutlined className="text-fore" />
               </Tooltip>
             </p>
           )

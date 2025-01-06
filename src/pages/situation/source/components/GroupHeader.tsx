@@ -8,6 +8,7 @@ import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
 
 type PropsType = {
   data: API_DEVICE.domain.DeviceTreeItem
+  depth?: number
 }
 
 // 统计设备总数和在线数
@@ -34,7 +35,7 @@ const calcDeviceTotal = (
 }
 
 /** 树头 */
-const GroupHeader: FC<PropsType> = memo(({ data }) => {
+const GroupHeader: FC<PropsType> = memo(({ data, depth }) => {
   const [total, onlineCnt] = useMemo(() => calcDeviceTotal(data), [data])
   const selectedKeys = useSelectedGroup()
 
@@ -61,7 +62,7 @@ const GroupHeader: FC<PropsType> = memo(({ data }) => {
 
   return (
     <div className="p-1 px-3 w-[350px] flex items-center justify-between">
-      <div>
+      <div style={{ marginLeft: `${depth ?? 0}em` }}>
         {data.groupName} ({onlineCnt}/{total})
       </div>
       <div className="flex gap-3">

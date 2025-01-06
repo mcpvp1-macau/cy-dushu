@@ -52,7 +52,7 @@ export default mergeConfig(
       // 用于合并 window.config 的配置
       __DEV_MERGE_CONFIG__: {
         systemName: 'jingqi-v3',
-        loginUrl: 'http://4a.jing-an.com:32712/login',
+        loginUrl: 'http://test.4a.jing-an.com:32712/login',
       },
     },
   }),
