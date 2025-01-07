@@ -38,6 +38,11 @@ export default mergeConfig(
           target: 'http://135.100.11.110:32712',
           changeOrigin: true,
         },
+        // 视频下载
+        '/vod/download': {
+          target: 'http://135.100.11.110:31118',
+          changeOrigin: true,
+        },
       },
     },
     define: {

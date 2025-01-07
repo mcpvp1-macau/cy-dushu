@@ -4,8 +4,11 @@ import VideoPreview from '@/components/VideoPreview'
 import VideoPlayer from '@/components/VideoS/VideoPlayer'
 import XModal from '@/components/XModal'
 import { dft } from '@/constant/time-fmt'
+import { useAppMsg } from '@/hooks/useAppMsg'
 import { getHistoryVideo } from '@/service/modules/device'
-import { Col, DatePicker, Row, Select } from 'antd'
+import { getVodUrl } from '@/service/modules/video'
+import { downloadAndRename } from '@/utils/download'
+import { Button, Col, DatePicker, Row, Select } from 'antd'
 import { Dayjs } from 'dayjs'
 
 const { RangePicker } = DatePicker
@@ -62,6 +65,24 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
   const [activeVideo, setActiveVideo] =
     useState<API_DEVICE.domain.HistoryVideoListItem | null>(null)
 
+  const msgApi = useAppMsg()
+  const handleDownloadClick = async () => {
+    if (activeVideo?.playUrl) {
+      const resp = await getVodUrl(activeVideo?.playUrl)
+      if (resp.data?.location) {
+        msgApi.info('正在下载视频, 请稍候~')
+        downloadAndRename(
+          resp.data.location + '&proxy=true',
+          'history_video.mp4',
+        )
+      } else {
+        msgApi.error(resp.message)
+      }
+    } else {
+      msgApi.error('play url is not exist')
+    }
+  }
+
   return (
     <div>
       <div className="py-3 flex gap-2">
@@ -116,7 +137,14 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
       </div>
       {activeVideo && (
         <XModal
-          title={`历史视频 ${activeVideo.timeRange[0]} - ${activeVideo.timeRange[1]}`}
+          title={
+            <>
+              {`历史视频 ${activeVideo.timeRange[0]} - ${activeVideo.timeRange[1]}`}
+              <Button type="link" onClick={handleDownloadClick}>
+                下载
+              </Button>
+            </>
+          }
           open={!!activeVideo}
           footer={false}
           width={800}

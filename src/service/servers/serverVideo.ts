@@ -19,4 +19,23 @@ serverVideo.interceptors.response.use((resp) => {
   return resp.data
 })
 
+const serverVod = new LiqunAxios<'common'>({
+  baseURL: `/proxyApi/otherService/${config.systemName}/vodServer`,
+  timeout: 60_000,
+})
+
+serverVod.interceptors.request.use(withToken)
+
+serverVod.interceptors.response.use(unAuthorized, unAuthorized)
+
+serverVod.interceptors.response.use((resp) => {
+  if (resp.data?.code !== 'SUCCESS') {
+    shouldShowError(resp)
+    return Promise.reject(resp.data)
+  }
+  return resp.data
+})
+
+export { serverVod }
+
 export default serverVideo
