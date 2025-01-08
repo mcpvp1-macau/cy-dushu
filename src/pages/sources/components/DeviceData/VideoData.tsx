@@ -7,7 +7,6 @@ import { dft } from '@/constant/time-fmt'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { getHistoryVideo } from '@/service/modules/device'
 import { getVodUrl } from '@/service/modules/video'
-import { downloadAndRename } from '@/utils/download'
 import { Button, Col, DatePicker, Row, Select } from 'antd'
 import { Dayjs } from 'dayjs'
 
@@ -33,7 +32,7 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
     const device = deviceList.find((e) => e.deviceId === deviceId)!
     return {
       videoId: device.properties?.videoList?.[0]?.videoId,
-      productKey: device.deviceModel.productKey,
+      productKey: device.deviceModel?.productKey,
     }
   }, [deviceList, deviceId])
 
@@ -71,10 +70,11 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
       const resp = await getVodUrl(activeVideo?.playUrl)
       if (resp.data?.location) {
         msgApi.info('正在下载视频, 请稍候~')
-        downloadAndRename(
-          resp.data.location + '&proxy=true',
-          'history_video.mp4',
-        )
+        let url = resp.data.location + '&proxy=true'
+        if (globalConfig.vodVideoUrl) {
+          url = url.replace(globalConfig.vodVideoUrl, '')
+        }
+        window.open(url, 'download')
       } else {
         msgApi.error(resp.message)
       }
@@ -120,7 +120,7 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
               {videoList.map((e) => (
                 <Col span={24} md={12} lg={8} key={e.playUrl}>
                   <VideoPreview
-                    previewSrc={e.playUrl}
+                    previewSrc={`/storage/${e.previewUrl}`}
                     info={
                       <p>
                         <span>{e.timeRange[0]}</span>-
