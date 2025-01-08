@@ -64,7 +64,7 @@ const DeviceItem: FC<PropsType> = memo(({ data }) => {
 
   /** 设备型号 */
   const moduleNumber = useMemo(
-    () => data.deviceTags.find((e) => e.tagName === 'MODEL_NUMBER')?.tagValue,
+    () => data.deviceTags?.find((e) => e.tagName === 'MODEL_NUMBER')?.tagValue,
     [data],
   )
 
