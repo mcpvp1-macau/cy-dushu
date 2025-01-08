@@ -16,6 +16,7 @@ export type ConfigType = {
   }[]
   logo?: string
   enableElectricScale?: boolean
+  vodVideoUrl?: string
 }
 
 type WindowType = Window & { config: ConfigType }

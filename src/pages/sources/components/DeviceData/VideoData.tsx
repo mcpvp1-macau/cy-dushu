@@ -4,8 +4,10 @@ import VideoPreview from '@/components/VideoPreview'
 import VideoPlayer from '@/components/VideoS/VideoPlayer'
 import XModal from '@/components/XModal'
 import { dft } from '@/constant/time-fmt'
+import { useAppMsg } from '@/hooks/useAppMsg'
 import { getHistoryVideo } from '@/service/modules/device'
-import { Col, DatePicker, Row, Select } from 'antd'
+import { getVodUrl } from '@/service/modules/video'
+import { Button, Col, DatePicker, Row, Select } from 'antd'
 import { Dayjs } from 'dayjs'
 
 const { RangePicker } = DatePicker
@@ -30,7 +32,7 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
     const device = deviceList.find((e) => e.deviceId === deviceId)!
     return {
       videoId: device.properties?.videoList?.[0]?.videoId,
-      productKey: device.deviceModel.productKey,
+      productKey: device.deviceModel?.productKey,
     }
   }, [deviceList, deviceId])
 
@@ -61,6 +63,25 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
 
   const [activeVideo, setActiveVideo] =
     useState<API_DEVICE.domain.HistoryVideoListItem | null>(null)
+
+  const msgApi = useAppMsg()
+  const handleDownloadClick = async () => {
+    if (activeVideo?.playUrl) {
+      const resp = await getVodUrl(activeVideo?.playUrl)
+      if (resp.data?.location) {
+        msgApi.info('正在下载视频, 请稍候~')
+        let url = resp.data.location + '&proxy=true'
+        if (globalConfig.vodVideoUrl) {
+          url = url.replace(globalConfig.vodVideoUrl, '')
+        }
+        window.open(url, 'download')
+      } else {
+        msgApi.error(resp.message)
+      }
+    } else {
+      msgApi.error('play url is not exist')
+    }
+  }
 
   return (
     <div>
@@ -99,7 +120,7 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
               {videoList.map((e) => (
                 <Col span={24} md={12} lg={8} key={e.playUrl}>
                   <VideoPreview
-                    previewSrc={e.playUrl}
+                    previewSrc={`/storage/${e.previewUrl}`}
                     info={
                       <p>
                         <span>{e.timeRange[0]}</span>-
@@ -116,7 +137,14 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
       </div>
       {activeVideo && (
         <XModal
-          title={`历史视频 ${activeVideo.timeRange[0]} - ${activeVideo.timeRange[1]}`}
+          title={
+            <>
+              {`历史视频 ${activeVideo.timeRange[0]} - ${activeVideo.timeRange[1]}`}
+              <Button type="link" onClick={handleDownloadClick}>
+                下载
+              </Button>
+            </>
+          }
           open={!!activeVideo}
           footer={false}
           width={800}
