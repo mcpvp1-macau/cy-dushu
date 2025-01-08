@@ -32,6 +32,10 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
       (item: { tagName: string }) => item.tagName === 'MODEL_NUMBER',
     )?.tagValue || '-'
 
+  /** 是否道通播放器 */
+  const isRtcDemo = !!data.deviceTags?.find(
+    (item: any) => item.tagName === 'PLAY_TYPE' && item.tagValue === 'DT_RTC',
+  )?.tagValue
   const status = useRealOnlineStatus(data.deviceId)
 
   const deviceId = data.deviceId
@@ -58,7 +62,7 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
       />
 
       <section className="m-3 rounded overflow-hidden">
-        <UavDetailVideo videoSource={videoSource ?? ''} />
+        <UavDetailVideo videoSource={videoSource ?? ''} sn={isRtcDemo ? data.sn: undefined}/>
       </section>
 
       <section className="mx-3 mr-[9px] my-3 flex gap-2">

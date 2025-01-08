@@ -112,7 +112,7 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
   /** 机型 */
   const modelNumber = useMemo(
     () =>
-      data.deviceTags.find((e) => e.tagName === 'MODEL_NUMBER')?.tagValue ?? '',
+      data.deviceTags?.find((e) => e.tagName === 'MODEL_NUMBER')?.tagValue ?? '',
     [data],
   )
 
