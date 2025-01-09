@@ -16,10 +16,11 @@ type PropsType = {
   videoSource: string
   videoQuality?: string
   useLinksSwitch?: boolean
+  sn?: string
 }
 
 const UavDetailVideo: FC<PropsType> = memo(
-  ({ videoSource, videoQuality, useLinksSwitch }) => {
+  ({ videoSource, videoQuality, sn, useLinksSwitch }) => {
     const { t } = useTranslation()
     const videoSourceOptions = [
       {
@@ -60,6 +61,7 @@ const UavDetailVideo: FC<PropsType> = memo(
         productKey={productKey}
         deviceId={deviceId}
         videoId={videoId}
+        sn={sn}
         useVideoQualityCheck={{
           open: true,
           valueDRC: videoQuality,

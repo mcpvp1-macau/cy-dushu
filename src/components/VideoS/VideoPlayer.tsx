@@ -1,4 +1,4 @@
-import { ComponentRef, memo, type FC } from 'react'
+import { ComponentRef, memo, ReactNode, type FC } from 'react'
 import CyberPlayer, {
   TimeUpdateEvent,
   VideoInfoEvent,
@@ -11,9 +11,10 @@ import { formatSecMMSS } from '@/utils/time'
 
 type PropsType = {
   src: string
+  rightTools?: ReactNode
 }
 
-const VideoPlayer: FC<PropsType> = memo(({ src }) => {
+const VideoPlayer: FC<PropsType> = memo(({ src, rightTools }) => {
   const [isPlaying, setIsPlaying] = useState(true)
 
   const playerRef = useRef<ComponentRef<typeof CyberPlayer>>(null)
@@ -121,6 +122,7 @@ const VideoPlayer: FC<PropsType> = memo(({ src }) => {
               onChangeComplete={handleSliderChangeComplete}
             />
           </div>
+          {rightTools}
         </div>
       </aside>
     </div>

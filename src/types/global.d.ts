@@ -4,5 +4,6 @@ export declare global {
   interface Window {
     JessibucaPro: typeof JessibucaPro
     cyberplayer: any
+    AutelMedia: any
   }
 }

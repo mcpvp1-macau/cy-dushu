@@ -23,12 +23,14 @@ import useCalcSafeArea from './hooks/useCalcSafeArea'
 import VideoDing from './VideoDing'
 import { AiObject } from '../Video/Jessibuca/sei-types/ai-data'
 import useAIDataState from './hooks/useAIDataState'
+import DaoTongPlayer from '../Video/DaoTongPlayer'
 
 type PropsType = {
   videoContainerId?: string
   productKey: string
   deviceId: string
   videoId: string
+  sn?: string
   useTopBar?: boolean
   useBottomBar?: boolean
   // 需要决定位置传递 flex 的 order
@@ -67,6 +69,7 @@ const DeviceLiveVideo = memo(
         productKey,
         deviceId,
         videoId,
+        sn,
         useTopBar = true,
         useBottomBar = true,
         leftBottom,
@@ -259,7 +262,7 @@ const DeviceLiveVideo = memo(
                     : 'translate(0px, 0px)',
               }}
             >
-              {playUrl && (
+              {playUrl && !sn && (
                 <Jessibuca
                   containerId={videoContainerId}
                   src={url}
@@ -276,6 +279,8 @@ const DeviceLiveVideo = memo(
                   onFetchError={handleRefresh}
                 />
               )}
+
+              {sn && <DaoTongPlayer sn={sn} containerId={videoContainerId} />}
 
               {/* 视频绘制框 */}
               <div className="absolute inset-0 z-20 pointer-events-none">

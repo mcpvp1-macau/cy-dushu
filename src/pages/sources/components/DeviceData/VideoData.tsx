@@ -1,12 +1,11 @@
 import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
 import VideoPreview from '@/components/VideoPreview'
-import VideoPlayer from '@/components/VideoS/VideoPlayer'
-import XModal from '@/components/XModal'
 import { dft } from '@/constant/time-fmt'
 import { getHistoryVideo } from '@/service/modules/device'
 import { Col, DatePicker, Row, Select } from 'antd'
 import { Dayjs } from 'dayjs'
+import VideoViewModal from './VideoViewModal'
 
 const { RangePicker } = DatePicker
 
@@ -30,7 +29,7 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
     const device = deviceList.find((e) => e.deviceId === deviceId)!
     return {
       videoId: device.properties?.videoList?.[0]?.videoId,
-      productKey: device.deviceModel!.productKey,
+      productKey: device.deviceModel?.productKey,
     }
   }, [deviceList, deviceId])
 
@@ -99,7 +98,7 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
               {videoList.map((e) => (
                 <Col span={24} md={12} lg={8} key={e.playUrl}>
                   <VideoPreview
-                    previewSrc={e.playUrl}
+                    previewSrc={`/storage/${e.previewUrl}`}
                     info={
                       <p>
                         <span>{e.timeRange[0]}</span>-
@@ -115,16 +114,10 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
         )}
       </div>
       {activeVideo && (
-        <XModal
-          title={`历史视频 ${activeVideo.timeRange[0]} - ${activeVideo.timeRange[1]}`}
-          open={!!activeVideo}
-          footer={false}
-          width={800}
-          noPadding
+        <VideoViewModal
+          data={activeVideo}
           onClose={() => setActiveVideo(null)}
-        >
-          <VideoPlayer src={activeVideo.playUrl} />
-        </XModal>
+        />
       )}
     </div>
   )
