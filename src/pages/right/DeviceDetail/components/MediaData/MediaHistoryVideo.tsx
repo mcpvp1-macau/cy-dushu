@@ -1,9 +1,8 @@
 import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
 import VideoPreview from '@/components/VideoPreview'
-import VideoPlayer from '@/components/VideoS/VideoPlayer'
-import XModal from '@/components/XModal'
 import { dateOnly, dft } from '@/constant/time-fmt'
+import VideoViewModal from '@/pages/sources/components/DeviceData/VideoViewModal'
 import { getHistoryVideo } from '@/service/modules/device'
 import { Col, DatePicker, Row } from 'antd'
 import Select from 'antd/es/select'
@@ -89,16 +88,10 @@ const DeviceDetailMediaHistoryVideo: FC<PropsType> = memo(({ deviceList }) => {
         </div>
       )}
       {activeVideo && (
-        <XModal
-          title={`历史视频 ${activeVideo.timeRange[0]} - ${activeVideo.timeRange[1]}`}
-          open={!!activeVideo}
-          footer={false}
-          width={800}
-          noPadding
+        <VideoViewModal
+          data={activeVideo}
           onClose={() => setActiveVideo(null)}
-        >
-          <VideoPlayer src={activeVideo.playUrl} />
-        </XModal>
+        />
       )}
     </div>
   )
