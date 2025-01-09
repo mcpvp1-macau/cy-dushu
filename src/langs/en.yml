@@ -145,9 +145,9 @@ device:
         poweringOff:
           title: Powering Off
         powerOn:
-          title: Power On
+          title: 'On'
         powerOff:
-          title: Power Off
+          title: 'Off'
       goHome:
         title: Go Home
         btn:
@@ -164,13 +164,13 @@ device:
       dockStatus:
         title: In-dock status
     dockStorage:
-      title: Dock Storage
+      title: Dock Save
       formatting:
         title: Formatting
       format:
         title: Format
     aircraftStorage:
-      title: Aircraft Storage
+      title: Aircraft Save
     supplementLight:
       title: Light
     alarmState:

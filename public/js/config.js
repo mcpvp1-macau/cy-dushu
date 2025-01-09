@@ -28,8 +28,7 @@ window.config = {
   ],
   videoBuffer: 0,
   videoBufferDelay: 0.2,
-  videoProxy: true,
-  daotongServer: 'http://135.100.11.130:18099/'
+  daotongServer: 'http://135.100.11.130:18099/',
 }
 
 if (isPublic()) {
@@ -54,4 +53,3 @@ if (isPublic()) {
     ],
   )
 }
-
