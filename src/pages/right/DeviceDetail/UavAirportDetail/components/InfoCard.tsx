@@ -1,4 +1,4 @@
-import { StatusColorMap, StatusMap } from '@/enum/device'
+import { StatusColorMap } from '@/enum/device'
 import { memo, type FC } from 'react'
 
 type PropsType = {

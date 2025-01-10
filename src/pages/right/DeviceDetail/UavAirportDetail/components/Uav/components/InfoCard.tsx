@@ -1,4 +1,4 @@
-import { StatusColorMap, StatusMap } from '@/enum/device'
+import { StatusColorMap } from '@/enum/device'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
 import { memo, type FC } from 'react'
@@ -45,8 +45,8 @@ const UavAirportUavDetailInfoCard: FC<PropsType> = memo(({ taskStatus }) => {
       deviceDetail?.deviceTags?.find(
         (e: any) => 'FLIGHT_REPORTING_STATUS' === e.tagName,
       )?.tagValue === 'REPORTED'
-        ? t('device.status.reported.ok')
-        : t('device.status.reported.no'),
+        ? t('common.yes')
+        : t('common.no'),
     [t, deviceDetail],
   )
 
@@ -57,7 +57,7 @@ const UavAirportUavDetailInfoCard: FC<PropsType> = memo(({ taskStatus }) => {
         l={t('common.onlineStatus')}
         v={
           <span style={{ color: StatusColorMap[onlineStatus] }}>
-            {StatusMap[onlineStatus]}
+            {onlineStatus ? t(`device.status.online.${onlineStatus}`) : '-'}
           </span>
         }
       />

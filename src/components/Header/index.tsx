@@ -1,11 +1,14 @@
 import IconLoginUser from '@/assets/icons/jsx/IconLoginUser'
 import useUserStore from '@/store/useUser.store'
 import { CaretDownOutlined } from '@ant-design/icons'
-import { Button, Popover } from 'antd'
+import { Popover } from 'antd'
 import UserDownMenu from './UserDownMenu'
 import HeaderSetting from './HeaderSetting'
 import POISearch from './POISearch'
 import Fullscreen from './Fullscreen'
+import IconButton from '../ui/button/IconButton'
+import IconLanguageEnglish from '@/assets/icons/jsx/IconLanguageEnglish'
+import IconLanguageChinese from '@/assets/icons/jsx/IconLanguageChinese'
 
 type PropsType = unknown
 
@@ -33,14 +36,17 @@ const Header: FC<PropsType> = memo(() => {
       <div id="app-header-center"></div>
       {/* 右边 */}
       <div className="text-fore mr-3 flex gap-3">
-        <Button
-          size="small"
+        <IconButton
           onClick={() => {
             i18n.changeLanguage(i18n.language === 'en' ? 'zh' : 'en')
           }}
         >
-          {i18n.language}
-        </Button>
+          {i18n.language === 'en' ? (
+            <IconLanguageChinese />
+          ) : (
+            <IconLanguageEnglish />
+          )}
+        </IconButton>
         <Fullscreen target={document.documentElement} />
         <HeaderSetting />
         <Popover

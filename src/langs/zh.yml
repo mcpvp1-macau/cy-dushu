@@ -361,6 +361,10 @@ common:
   fixedOut: 钉出
   screenShot: 截图
   loading: 加载中
+  'no': 否
+  connectionLost: 连接断开
+  preparing: 准备中
+  arriving: 即将到达
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -881,6 +885,16 @@ controlRoom:
     btn:
       gimbal:
         title: 云台
+    uavYaw:
+      title: 无人机偏航角
+    uavPitch:
+      title: 无人机俯仰角
+    uavRoll:
+      title: 无人机横滚角
+    gimbalPitch:
+      title: 云台俯仰角
+    healthInfo:
+      offline: 当前设备已离线
   control:
     uavTurnLeft:
       title: 无人机左转
@@ -932,3 +946,8 @@ video:
     title: 电子放大
 screenshot:
   screenshotSuccess: 截图成功
+forecast:
+  remainDistance:
+    title: 剩余距离
+  remainTime:
+    title: 剩余时间

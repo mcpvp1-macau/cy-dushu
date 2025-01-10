@@ -1,8 +1,8 @@
-import { memo, type FC } from 'react'
 import compassRingImg from '@/assets/imgs/control/compass-ring.png'
 import compassArrowImg from '@/assets/imgs/control/compass-arrow.svg'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import compassGimbalPointer from '@/assets/imgs/control/compass-gimbal-pointer.svg'
+import { Tooltip } from 'antd'
 
 type PropsType = unknown
 
@@ -12,6 +12,8 @@ const Compass: FC<PropsType> = memo(() => {
 
   const uavRoll = useUavControlRoomStore((s) => s.state.uavRoll) ?? 0
   const uavPitch = useUavControlRoomStore((s) => s.state.uavPitch) ?? 0
+
+  const { t } = useTranslation()
 
   return (
     <div className="w-32 h-32 relative pointer-events-none">
@@ -41,24 +43,39 @@ const Compass: FC<PropsType> = memo(() => {
       <div className="abs-center">
         <img src={compassArrowImg} className="scale-90" />
       </div>
-      <div
-        className="absolute top-0 -translate-y-full left-1/2 -translate-x-1/2 text-green-500 whitespace-nowrap"
-        style={{ textShadow: '0 0 2px #000' }}
+      <Tooltip
+        className="pointer-events-auto"
+        title={t('controlRoom.uav.uavYaw.title')}
       >
-        ψ {uavYaw?.toFixed?.(1)}°
-      </div>
-      <div
-        className="absolute bottom-0 translate-y-full left-0 text-green-500 whitespace-nowrap"
-        style={{ textShadow: '0 0 2px #000' }}
+        <div
+          className="absolute top-0 -translate-y-full left-1/2 -translate-x-1/2 text-green-500 whitespace-nowrap"
+          style={{ textShadow: '0 0 2px #000' }}
+        >
+          ψ {uavYaw?.toFixed?.(1)}°
+        </div>
+      </Tooltip>
+      <Tooltip
+        className="pointer-events-auto"
+        title={t('controlRoom.uav.uavPitch.title')}
       >
-        θ {uavPitch?.toFixed?.(1)}°
-      </div>
-      <div
-        className="absolute bottom-0 translate-y-full right-0 text-green-500 whitespace-nowrap"
-        style={{ textShadow: '0 0 2px #000' }}
+        <div
+          className="absolute bottom-0 translate-y-full left-0 text-green-500 whitespace-nowrap"
+          style={{ textShadow: '0 0 2px #000' }}
+        >
+          θ {uavPitch?.toFixed?.(1)}°
+        </div>
+      </Tooltip>
+      <Tooltip
+        className="pointer-events-auto"
+        title={t('controlRoom.uav.uavRoll.title')}
       >
-        ϕ {uavRoll?.toFixed?.(1)}°
-      </div>
+        <div
+          className="absolute bottom-0 translate-y-full right-0 text-green-500 whitespace-nowrap"
+          style={{ textShadow: '0 0 2px #000' }}
+        >
+          ϕ {uavRoll?.toFixed?.(1)}°
+        </div>
+      </Tooltip>
     </div>
   )
 })

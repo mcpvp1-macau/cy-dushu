@@ -36,7 +36,7 @@ device:
       ONLINE: Online
       OFFLINE: Offline
   enterControlRoom:
-    title: Go To Control Room
+    title: Go To Cockpit
   controlPower:
     title: Control Power
   aiModel:
@@ -102,7 +102,7 @@ device:
     externalTemperature:
       title: External Temperature
     remoteDebug:
-      title: Remote Debugging
+      title: Debugging
       processProgress:
         title: Processing Progress
       jcxt:
@@ -156,13 +156,13 @@ device:
       title: Takeoff
     status:
       inDock:
-        title: In Dock
+        title: In
       outDock:
-        title: Out Dock
+        title: Out
       modeDisplay:
-        title: Mode Display
+        title: State
       dockStatus:
-        title: In-dock status
+        title: In-dock Status
     dockStorage:
       title: Dock Save
       formatting:
@@ -366,6 +366,10 @@ common:
   fixedOut: Fixed
   screenShot: Screenshot
   loading: Loading
+  'no': 'No'
+  connectionLost: Connection Lost
+  preparing: Preparing
+  arriving: Arriving
 events:
   search:
     placeholder: Please search by event name or ID
@@ -890,6 +894,16 @@ controlRoom:
     btn:
       gimbal:
         title: GIM
+    uavYaw:
+      title: UAV Yaw
+    uavPitch:
+      title: UAV Pitch
+    uavRoll:
+      title: UAV Roll
+    gimbalPitch:
+      title: GImbal Pitch
+    healthInfo:
+      offline: The current device is offline.
   control:
     uavTurnLeft:
       title: UAV Turn Left
@@ -941,3 +955,8 @@ video:
     title: Electric Scale
 screenshot:
   screenshotSuccess: Screenshot successful
+forecast:
+  remainDistance:
+    title: Distance
+  remainTime:
+    title: Time

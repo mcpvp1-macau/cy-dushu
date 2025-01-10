@@ -15,6 +15,8 @@ const FallbackMessage: FC<PropsType> = memo(() => {
   const isONLINE = onlineStatus === 'ONLINE'
   const wsReadyState = useUavControlRoomStore((s) => s.wsReadyState)
 
+  const { t } = useTranslation()
+
   const formatMsg = useMemoizedFn((msg: string) => {
     let info = '',
       color: string | undefined = undefined
@@ -22,7 +24,7 @@ const FallbackMessage: FC<PropsType> = memo(() => {
       return { info, color }
     }
     if (!isONLINE) {
-      info = '当前设备已离线'
+      info = t('controlRoom.uav.healthInfo.offline')
       color = '#DD4444'
     }
     let i = msg.indexOf('Error')
@@ -59,10 +61,10 @@ const FallbackMessage: FC<PropsType> = memo(() => {
 
   const mode = useMemo(() => {
     if (wsReadyState !== WebSocket.OPEN) {
-      return '连接断开'
+      return t('common.connectionLost')
     }
     if (!isONLINE) {
-      return '离线'
+      return t('device.status.online.OFFLINE')
     }
     if (!displayMode) {
       return ''
