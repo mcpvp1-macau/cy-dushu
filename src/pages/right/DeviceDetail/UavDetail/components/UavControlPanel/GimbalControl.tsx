@@ -1,4 +1,4 @@
-import { Button, InputNumber } from 'antd'
+import { Button, InputNumber, Tooltip } from 'antd'
 import controlBG from '@/assets/imgs/control/buttonBg.png'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import CircleButton from './CircleButton'
@@ -59,10 +59,34 @@ const UavDetailGimbalControl: FC<PropsType> = memo(() => {
   const canControl = wsReadyState === WebSocket.OPEN
 
   const controls1 = [
-    [<IconUp />, 'left-1/2 -translate-x-1/2', { pitch: 15 }],
-    [<IconDown />, 'left-1/2 bottom-0 -translate-x-1/2', { pitch: -15 }],
-    [<IconLeft />, 'top-1/2 -translate-y-1/2', { yaw: -15 }],
-    [<IconRight />, 'top-1/2 right-0 -translate-y-1/2', { yaw: 15 }],
+    [
+      <IconUp />,
+      'left-1/2 -translate-x-1/2',
+      { pitch: 15 },
+      t('controlRoom.control.gimbalTiltUp.title'),
+      'top',
+    ],
+    [
+      <IconDown />,
+      'left-1/2 bottom-0 -translate-x-1/2',
+      { pitch: -15 },
+      t('controlRoom.control.gimbalTiltDown.title'),
+      'bottom',
+    ],
+    [
+      <IconLeft />,
+      'top-1/2 -translate-y-1/2',
+      { yaw: -15 },
+      t('controlRoom.control.gimbalTurnLeft.title'),
+      'left',
+    ],
+    [
+      <IconRight />,
+      'top-1/2 right-0 -translate-y-1/2',
+      { yaw: 15 },
+      t('controlRoom.control.gimbalTurnRight.title'),
+      'right',
+    ],
   ] as const
 
   const sendCommand = useUavControlRoomStore((s) => s.sendCommand)
@@ -135,18 +159,21 @@ const UavDetailGimbalControl: FC<PropsType> = memo(() => {
         <div className="relative h-[100px] w-[100px] select-none">
           <img className="size-full" src={controlBG} alt="" />
           <div className="absolute inset-1">
-            {controls1.map(([title, className, payload], i) => (
-              <CircleButton
-                key={i}
-                className={className}
-                disabled={!canControl || !isGimbalSource}
-                onMouseDown={() => setDownKey(payload)}
-                onMouseUp={reset}
-                onMouseLeave={reset}
-              >
-                {title}
-              </CircleButton>
-            ))}
+            {controls1.map(
+              ([title, className, payload, tooltip, placement], i) => (
+                <Tooltip key={i} title={tooltip} placement={placement}>
+                  <CircleButton
+                    className={className}
+                    disabled={!canControl || !isGimbalSource}
+                    onMouseDown={() => setDownKey(payload)}
+                    onMouseUp={reset}
+                    onMouseLeave={reset}
+                  >
+                    {title}
+                  </CircleButton>
+                </Tooltip>
+              ),
+            )}
           </div>
         </div>
         <div>

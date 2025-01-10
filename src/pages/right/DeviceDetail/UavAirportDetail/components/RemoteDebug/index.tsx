@@ -76,7 +76,7 @@ const _ServiceItem: FC<ServiceItemProps> = ({
             <Button
               size="small"
               style={{
-                width: '44px',
+                width: '48px',
                 padding: '0',
                 backgroundColor: '#28323C',
                 fontSize: '12px',
@@ -91,7 +91,7 @@ const _ServiceItem: FC<ServiceItemProps> = ({
           <Button
             size="small"
             style={{
-              width: '44px',
+              width: '48px',
               padding: '0',
               backgroundColor: '#28323C',
               fontSize: '12px',
@@ -217,9 +217,9 @@ const RemoteDebug: FC<PropsType> = ({ state, onClose, data, progress }) => {
         btnLabel: (() => {
           switch (state['droneOpenProcess']) {
             case 2:
-              return t('device.uavDock.remoteDebug.uav.on.title')
-            case 3:
               return t('device.uavDock.remoteDebug.uav.off.title')
+            case 3:
+              return t('device.uavDock.remoteDebug.uav.on.title')
             default:
               break
           }
@@ -413,7 +413,7 @@ const RemoteDebug: FC<PropsType> = ({ state, onClose, data, progress }) => {
           }),
       },
     ],
-    [t],
+    [t, state, propertiesMap],
   )
 
   return (

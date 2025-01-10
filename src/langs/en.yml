@@ -106,7 +106,7 @@ device:
       processProgress:
         title: Processing Progress
       jcxt:
-        title: Dock System
+        title: DK System
         restart:
           title: Restart
       uav:
@@ -151,7 +151,7 @@ device:
       goHome:
         title: Go Home
         btn:
-          title: Go Home
+          title: Back
     takeoffForm:
       title: Takeoff
     status:
@@ -170,7 +170,7 @@ device:
       format:
         title: Format
     aircraftStorage:
-      title: Aircraft Save
+      title: AC Save
     supplementLight:
       title: Light
     alarmState:

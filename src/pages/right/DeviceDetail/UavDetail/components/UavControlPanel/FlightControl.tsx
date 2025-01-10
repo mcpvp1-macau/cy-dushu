@@ -1,4 +1,4 @@
-import { Button } from 'antd'
+import { Button, Tooltip } from 'antd'
 import controlBG from '@/assets/imgs/control/buttonBg.png'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import CircleButton from './CircleButton'
@@ -11,20 +11,6 @@ import IconTurnLeft from '@/assets/icons/jsx/uav/IconTurnLeft'
 import IconTurnRight from '@/assets/icons/jsx/uav/IconTurnRight'
 import IconDownStraight from '@/assets/icons/jsx/IconDownStraight'
 import IconUpStraight from '@/assets/icons/jsx/IconUpStraight'
-
-const controls1 = [
-  [<IconUp />, 'left-1/2 -translate-x-1/2', { y: 15 }],
-  [<IconDown />, 'left-1/2 bottom-0 -translate-x-1/2', { y: -15 }],
-  [<IconLeft />, 'top-1/2 -translate-y-1/2', { x: -15 }],
-  [<IconRight />, 'top-1/2 right-0 -translate-y-1/2', { x: 15 }],
-] as const
-
-const controls2 = [
-  [<IconUpStraight />, 'left-1/2 -translate-x-1/2', { z: 5 }],
-  [<IconDownStraight />, 'left-1/2 bottom-0 -translate-x-1/2', { z: -5 }],
-  [<IconTurnLeft />, 'top-1/2 -translate-y-1/2', { yaw: -15 }],
-  [<IconTurnRight />, 'top-1/2 right-0 -translate-y-1/2', { yaw: 15 }],
-] as const
 
 type PropsType = unknown
 
@@ -49,6 +35,76 @@ const UavDetailFlightControl: FC<PropsType> = memo(() => {
 
   const { t } = useTranslation()
 
+  const controls1 = useMemo(
+    () =>
+      [
+        [
+          <IconUp />,
+          'left-1/2 -translate-x-1/2',
+          { y: 15 },
+          t('controlRoom.control.uavForward.title'),
+          'top',
+        ],
+        [
+          <IconDown />,
+          'left-1/2 bottom-0 -translate-x-1/2',
+          { y: -15 },
+          t('controlRoom.control.uavBack.title'),
+          'bottom',
+        ],
+        [
+          <IconLeft />,
+          'top-1/2 -translate-y-1/2',
+          { x: -15 },
+          t('controlRoom.control.uavLeft.title'),
+          'left',
+        ],
+        [
+          <IconRight />,
+          'top-1/2 right-0 -translate-y-1/2',
+          { x: 15 },
+          t('controlRoom.control.uavRight.title'),
+          'right',
+        ],
+      ] as const,
+    [t],
+  )
+
+  const controls2 = useMemo(
+    () =>
+      [
+        [
+          <IconUpStraight />,
+          'left-1/2 -translate-x-1/2',
+          { z: 5 },
+          t('controlRoom.control.uavFlyUp.title'),
+          'top',
+        ],
+        [
+          <IconDownStraight />,
+          'left-1/2 bottom-0 -translate-x-1/2',
+          { z: -5 },
+          t('controlRoom.control.uavFlyDown.title'),
+          'bottom',
+        ],
+        [
+          <IconTurnLeft />,
+          'top-1/2 -translate-y-1/2',
+          { yaw: -15 },
+          t('controlRoom.control.uavTurnLeft.title'),
+          'left',
+        ],
+        [
+          <IconTurnRight />,
+          'top-1/2 right-0 -translate-y-1/2',
+          { yaw: 15 },
+          t('controlRoom.control.uavTurnRight.title'),
+          'right',
+        ],
+      ] as const,
+    [t],
+  )
+
   return (
     <div className="p-3 flex items-center justify-between gap-3">
       <div className="flex flex-col gap-3 w-[90px]">
@@ -67,18 +123,21 @@ const UavDetailFlightControl: FC<PropsType> = memo(() => {
       <div className="relative h-[100px] w-[100px]">
         <img className="size-full" src={controlBG} alt="" />
         <div className="absolute inset-1">
-          {controls1.map(([title, className, payload], i) => (
-            <CircleButton
-              key={i}
-              className={className}
-              disabled={!canControl}
-              onMouseDown={() => setDownKey(payload)}
-              onMouseUp={() => setDownKey(null)}
-              onMouseLeave={() => setDownKey(null)}
-            >
-              {title}
-            </CircleButton>
-          ))}
+          {controls1.map(
+            ([title, className, payload, tooltip, placement], i) => (
+              <Tooltip key={i} title={tooltip} placement={placement}>
+                <CircleButton
+                  className={className}
+                  disabled={!canControl}
+                  onMouseDown={() => setDownKey(payload)}
+                  onMouseUp={() => setDownKey(null)}
+                  onMouseLeave={() => setDownKey(null)}
+                >
+                  {title}
+                </CircleButton>
+              </Tooltip>
+            ),
+          )}
         </div>
       </div>
 
@@ -86,18 +145,21 @@ const UavDetailFlightControl: FC<PropsType> = memo(() => {
       <div className="relative h-[100px] w-[100px]">
         <img className="size-full" src={controlBG} alt="" />
         <div className="absolute inset-1">
-          {controls2.map(([title, className, payload], i) => (
-            <CircleButton
-              key={i}
-              className={className}
-              disabled={!canControl}
-              onMouseDown={() => setDownKey(payload)}
-              onMouseUp={() => setDownKey(null)}
-              onMouseLeave={() => setDownKey(null)}
-            >
-              {title}
-            </CircleButton>
-          ))}
+          {controls2.map(
+            ([title, className, payload, tooltip, placement], i) => (
+              <Tooltip key={i} title={tooltip} placement={placement}>
+                <CircleButton
+                  className={className}
+                  disabled={!canControl}
+                  onMouseDown={() => setDownKey(payload)}
+                  onMouseUp={() => setDownKey(null)}
+                  onMouseLeave={() => setDownKey(null)}
+                >
+                  {title}
+                </CircleButton>
+              </Tooltip>
+            ),
+          )}
         </div>
       </div>
     </div>
