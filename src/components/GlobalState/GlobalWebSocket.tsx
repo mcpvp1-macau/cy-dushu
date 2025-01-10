@@ -1,3 +1,4 @@
+import { heartbeat } from '@/constant/websocket'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import useUserStore from '@/store/useUser.store'
 import { shouldJson } from '@/utils/json'
@@ -188,6 +189,7 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
   })
 
   useWebSocket(socketUrl, {
+    heartbeat,
     onMessage: handleMessage,
     reconnectAttempts: 0x3f3f3f3f,
     retryOnError: true,
