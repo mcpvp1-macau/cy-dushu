@@ -7,13 +7,33 @@ import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouCont
 import { WanglouDeviceTypeMap, WANGLOUTargetName } from '../StatusInfo/config'
 import ChartCircle from '@/components/RadarChart/ChartCircle'
 import ControlButtons from './ControlButtons'
+import axios from 'axios'
 
 const RadarData: React.FC = () => {
   const detail = useDeviceDetailStore((s) => s.deviceDetail)
   const state = useWangLouControlRoomStore((s) => s.state)
   const { longitude, latitude } = detail || {}
+  const queryClient = useQueryClient()
+
   const radar = detail?.childDevice?.find(
     (item: any) => item.deviceType === 'RADAR',
+  )
+
+  const { data: positions = [] } = useQuery(
+    {
+      queryKey: [
+        'scanRangeProfile',
+        state[radar?.deviceId || '']?.scanRangeProfile,
+      ],
+      queryFn: () =>
+        axios(
+          `/storage/${
+            state[radar?.deviceId || '']?.scanRangeProfile
+          }?timestamp=${dayjs().valueOf()}`,
+        ),
+      select: (res) => res?.data?.data?.[0] || [],
+    },
+    queryClient,
   )
 
   const Infrared = detail?.childDevice?.find(
@@ -45,7 +65,6 @@ const RadarData: React.FC = () => {
     }
   }, [state[Infrared?.deviceId || '']])
 
-
   // TODO 雷达目标
   const targetObj = {}
 
@@ -67,7 +86,7 @@ const RadarData: React.FC = () => {
       <RadarChart id="1" width={350} height={200} max={1000}>
         <Radar
           center={{ lng: longitude, lat: latitude }} // 中心点
-          radarRangeData={[]} // 雷达范围
+          radarRangeData={positions} // 雷达范围
           angle={90} // 雷达范围获取时不是从正北开始，这里写90
         />
         {/**

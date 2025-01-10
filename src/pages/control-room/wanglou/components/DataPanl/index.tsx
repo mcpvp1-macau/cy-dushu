@@ -1,3 +1,4 @@
+import AiData from '@/components/AiData'
 import AppCollapse from '@/components/AppCollapse'
 import DeviceAlgorithmList from '@/components/device/algorithm/DeviceAlgorithmList'
 import { DeviceEnum } from '@/enum/device'
@@ -28,7 +29,7 @@ const DataPanl: React.FC = () => {
         {
           label: '检测数据',
           key: '2',
-          children: <>检测数据</>,
+          children: <AiData deviceId={deviceId} deviceType={'WANGLOU'}/>,
         },
       ]}
     />

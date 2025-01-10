@@ -1,4 +1,6 @@
 import Icon from '@/components/Icon'
+import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
+import useSmarkTrack from '@/hooks/device/useSmarkTrack'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import Control from '@/pages/right/DeviceDetail/WangLouDetail/components/Control'
 import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouControlRoom.store'
@@ -18,6 +20,10 @@ const TurntableControl: React.FC = () => {
     (s) => s.updateIsCameraChangePosition,
   )
   const hasControlPower = useWangLouControlRoomStore((s) => s.hasControlPower)
+
+  const enableSmartTrack = useWangLouControlRoomStore((s) => s.enableSmartTrack)
+  const updateEnableSmartTrack = useWangLouControlRoomStore((s) => s.updateEnableSmartTrack)
+
   return (
     <div>
       <section className="mx-3 mr-[9px] my-3 flex gap-8 justify-center">
@@ -38,6 +44,7 @@ const TurntableControl: React.FC = () => {
           icon={<Icon id="icon-mubiaojiance" />}
           onClick={() => {
             // TODO 目标跟踪
+            updateEnableSmartTrack(!enableSmartTrack)
           }}
         >
           目标跟踪

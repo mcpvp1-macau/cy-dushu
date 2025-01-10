@@ -36,3 +36,29 @@ export const getUavDeviceAttrBackV2 = (data: {
 }) => {
   return serverDBAPI.post('api/uavDeviceAttrBackV2', data)
 }
+
+/**
+ * 检测数据
+ */
+export const getEventDataTargetList = (data: {
+  sourceType: string[]
+  deviceId: string
+  startTime: string
+  endTime: string
+  objectLabel: string[]
+}) => {
+  return serverDBAPI.post('api/eventDataTargetList', data)
+}
+
+/**
+ * 目标详情
+ */
+export const getTargetDetail = (data: {
+  parentId?: string //父设备id ，没有就是设备id
+  deviceId: string //	设备id
+  targetId: string | number // 目标id
+  sourceType: string
+  time: string
+}) => {
+  return serverDBAPI.post('api/targetDetailV2', data)
+}

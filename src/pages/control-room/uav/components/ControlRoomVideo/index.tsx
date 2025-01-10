@@ -29,10 +29,10 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
   const useLW = searchParams.get('useLW')
 
   const videoQuality = useUavControlRoomStore((s) => s.state.videoQuality)
-
+  const enableSmartTrack = useUavControlRoomStore((s) => s.enableSmartTrack)
   const postService = usePostDeviceService(productKey!, deviceId)
 
-  const { handlePostSmartTrack } = useSmarkTrack(postService)
+  const { handlePostSmartTrack } = useSmarkTrack(enableSmartTrack, postService)
   const liveSetQuality = (quality: string) => {
     postService('liveSetQuality', { quality })
   }

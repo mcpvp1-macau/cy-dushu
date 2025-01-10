@@ -184,6 +184,8 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
           return prev
         }, {})
         updateActionItemStatus(res)
+        break
+  
     }
   })
 

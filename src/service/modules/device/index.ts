@@ -69,6 +69,20 @@ export const setDeviceConfig = (
   )
 }
 
+/** 望楼设置属性 */
+export const setWanglouConfig = (
+  productKey: string,
+  deviceId: string,
+  data: Record<string, any>,
+  xCustomConfig: XCustomConfig = {},
+) => {
+  return serverControlCenter.post(
+    `/v3/service/${productKey}/${deviceId}/config/post`,
+    data,
+    { xCustomConfig },
+  )
+}
+
 export const setProperty = (
   productKey: string,
   deviceId: string,

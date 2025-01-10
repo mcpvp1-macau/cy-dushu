@@ -1,6 +1,7 @@
 import { StatusColorMap, StatusMap } from '@/enum/device'
 import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouControlRoom.store'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
+import { itemsEqual } from '@dnd-kit/sortable/dist/utilities'
 import { Tooltip } from 'antd'
 import { ReactNode } from 'react'
 
@@ -41,7 +42,9 @@ const DeviceInfoCard: FC<PropsType> = memo(({ data, deviceId }) => {
   const { properties, deviceModel } = data
 
   const renderItem = (item, parentIdentifier = '') => {
-    let value = null
+    let value: any = null
+    const type =
+      item.type ?? (item?.dataType?.type as API_DEVICE.domain.DataType['type'])
     if (parentIdentifier) {
       value =
         state[parentIdentifier]?.[item.identifier] ??
@@ -49,10 +52,12 @@ const DeviceInfoCard: FC<PropsType> = memo(({ data, deviceId }) => {
     } else {
       value = state?.[item.identifier] ?? properties?.[item.identifier]
     }
-    if (item.type === 'bool') {
+    if (type === 'bool') {
       value = item.specs[value!]
-    } else if (item.type === 'enum') {
+    } else if (type === 'enum') {
       value = item.specs[value!]
+    } else if (type === 'double' || type === 'float') {
+      value = value === undefined ? '-' : Number(value)?.toFixed(5)
     }
 
     return <I l={item.name} v={value} />
@@ -89,7 +94,11 @@ const DeviceInfoCard: FC<PropsType> = memo(({ data, deviceId }) => {
           }
         />
         {deviceModel?.properties
-          ?.filter((item) => item.identifier !== 'videoList')
+          ?.filter(
+            (item) =>
+              item.identifier !== 'videoList' &&
+              item.identifier !== 'scanRangeProfile',
+          )
           .map(render)}
       </ul>
     </div>

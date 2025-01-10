@@ -28,7 +28,7 @@ const WangLouLiveVideo: React.FC<PropsType> = memo((props) => {
             videoLiveRef={videoRef}
           />
         }
-        rightBottom={<>123</>}
+        // rightBottom={<>123</>}
       />
     </>
   )

@@ -2,11 +2,11 @@ import { Button, Flex, Form, InputNumber, Popconfirm, Table } from 'antd'
 import React, { useEffect, useState } from 'react'
 import styles from './index.module.less'
 import { useDebounceFn, useRafInterval } from 'ahooks'
-import controlBG from '@/assets/imgs/control/buttonBg.png'
-import CircleButton from '../../../UavDetail/components/UavControlPanel/CircleButton'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouControlRoom.store'
 import { setDeviceProp } from '@/service/modules/device'
+import ControlBar from './ControlBar'
+import FormModal from '@/components/XForm/Modal'
 
 export interface presetItem {
   presetPointId: string
@@ -28,27 +28,45 @@ const Control: React.FC<PropsType> = (props) => {
   const [form] = Form.useForm()
   const [editField, setEditField] = useState<string>('')
 
-  const postDevice = usePostDeviceService(data.productKey, data.deviceId)
+  const postDevice = usePostDeviceService(
+    data.deviceModel?.productKey || '',
+    data.deviceId,
+  )
   const disable = useWangLouControlRoomStore((s) => !s.hasControlPower)
   const pitch = useWangLouControlRoomStore((s) => s.state.pitch)
   const yaw = useWangLouControlRoomStore((s) => s.state.yaw)
+  const sendCommand = useWangLouControlRoomStore((s) => s.sendCommand)
   const turnCoefficient = useWangLouControlRoomStore(
     (s) => s.state.turnCoefficient,
   )
   const presetPointList = useWangLouControlRoomStore(
     (s) => s.state.presetPointList,
   )
-  const [downKey, setDownKey] = useState<Record<string, number> | null>(null)
+  const [downKey, setDownKeyFun] = useState<Record<string, number> | null>(null)
+
+  const [isSavePositionOpen, setIsSavePositionOpen] = useState(false)
+
+  const setDownKey = useMemoizedFn((value) => {
+    setDownKeyFun(value)
+  })
   const resetPosition = async (data) => {
-    await postDevice('turn', data, '')
+    // await postDevice('turn', data, '')
+    sendCommand('service.turnBySpeedWithRetract.post', data)
   }
 
   const setPosition = async (data) => {
     await postDevice('goToPresetPoint', data, '')
+    // sendCommand('turn', data)
   }
 
   const deletePosition = async (data) => {
     await postDevice('removePresetPoint', data, '')
+    // sendCommand('turn', data)
+  }
+
+  const savePosition = (values) => {
+    setIsSavePositionOpen(false)
+    postDevice('savePresetPoint', values)
   }
 
   useRafInterval(
@@ -57,13 +75,6 @@ const Control: React.FC<PropsType> = (props) => {
     },
     downKey ? 60 : undefined,
   )
-
-  const controls1 = [
-    ['上', 'left-1/2 -translate-x-1/2', { yaw: 0, pitch: speed }],
-    ['下', 'left-1/2 bottom-0 -translate-x-1/2', { yaw: 0, pitch: -speed }],
-    ['左', 'top-1/2 -translate-y-1/2', { yaw: -speed, pitch: 0 }],
-    ['右', 'top-1/2 right-0 -translate-y-1/2', { yaw: speed, pitch: 0 }],
-  ] as const
 
   const columns = [
     {
@@ -236,29 +247,7 @@ const Control: React.FC<PropsType> = (props) => {
           </Form>
         </Flex>
         <Flex flex={1} justify="center">
-          <div className="relative h-[100px] w-[100px] select-none">
-            <img className="size-full" src={controlBG} alt="" />
-            <div className="absolute inset-1">
-              {controls1.map(([title, className, payload]) => (
-                <CircleButton
-                  key={title}
-                  className={className}
-                  disabled={disable}
-                  onMouseDown={() => {
-                    setDownKey(payload)
-                  }}
-                  onMouseUp={() => {
-                    setDownKey(null)
-                  }}
-                  onMouseLeave={() => {
-                    setDownKey(null)
-                  }}
-                >
-                  {title}
-                </CircleButton>
-              ))}
-            </div>
-          </div>
+          <ControlBar speed={speed} setDownKey={setDownKey} />
         </Flex>
         <Flex flex={1} justify="right" align="end" vertical gap={8}>
           <div>
@@ -273,10 +262,23 @@ const Control: React.FC<PropsType> = (props) => {
               />
             </div>
           </div>
-          <Button className={styles.btn} disabled={disable} onClick={() => {}}>
+          <Button
+            className={styles.btn}
+            disabled={disable}
+            onClick={() =>
+              resetPosition({
+                yaw: 0,
+                pitch: 9000,
+              })
+            }
+          >
             复位
           </Button>
-          <Button className={styles.btn} disabled={disable} onClick={() => {}}>
+          <Button
+            className={styles.btn}
+            disabled={disable}
+            onClick={() => setIsSavePositionOpen(true)}
+          >
             保存预置位
           </Button>
         </Flex>
@@ -288,6 +290,35 @@ const Control: React.FC<PropsType> = (props) => {
           pagination={false}
         ></Table>
       </div>
+
+      <FormModal
+        title="保存预置位"
+        open={isSavePositionOpen}
+        onConfirm={savePosition}
+        items={[
+          {
+            label: '预置位名称',
+            name: 'presetPointName',
+            type: 'input',
+            rules: [{ required: true, message: '请输入预置位名称' }],
+          },
+
+          {
+            label: '停留时间(s)',
+            name: 'stayInterval',
+            type: 'input-number',
+            rules: [{ required: true, message: '请输入停留时间' }],
+            otherProps: { style: { width: '100%' } },
+          },
+          {
+            label: '优先级',
+            name: 'presetPointIndex',
+            type: 'input-number',
+            rules: [{ required: true, message: '请输入优先级' }],
+            otherProps: { style: { width: '100%' } },
+          },
+        ]}
+      ></FormModal>
     </Flex>
   )
 }

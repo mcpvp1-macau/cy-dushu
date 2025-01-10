@@ -1,13 +1,13 @@
 // import config from '@/global/config'
-import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
+// import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 // import useControlRoomStore from '@/store/control-room';
 import { useMemoizedFn } from 'ahooks'
 import { useRef } from 'react'
 
 /** 目标跟踪启用关闭, 发送请求 */
-const useSmarkTrack = (takeService: (type: string, data: any) => unknown) => {
+const useSmarkTrack = (enableSmartTrack, takeService: (type: string, data: any) => unknown) => {
   // const enableSmartTrack = useControlRoomStore((s) => s.enableSmartTrack);
-  const enableSmartTrack = useUavControlRoomStore((s) => s.enableSmartTrack)
+  // const enableSmartTrack = useUavControlRoomStore((s) => s.enableSmartTrack)
   const enableSmartTrackRef = useRef(enableSmartTrack)
 
   if (enableSmartTrack !== enableSmartTrackRef.current) {

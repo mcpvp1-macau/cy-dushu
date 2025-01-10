@@ -29,6 +29,11 @@ const WanglouUpdateRealMarker: FC<PropsType> = memo(() => {
     (item) => item.deviceType === 'VIBRATOR',
   )
 
+  // 
+  const RADAR = data?.childDevice?.find(
+    (item) => item.deviceType === 'RADAR',
+  )
+
   const wsState = useWangLouControlRoomStore(
     useShallow((s) => ({
       longitude: s.state.longitude ?? 0,
@@ -39,6 +44,7 @@ const WanglouUpdateRealMarker: FC<PropsType> = memo(() => {
       [INFRARED_CAMERA?.deviceId || '']: s.state[INFRARED_CAMERA?.deviceId || ''],
       [VISIBLE_LIGHT_CAMERA?.deviceId || '']: s.state[VISIBLE_LIGHT_CAMERA?.deviceId || ''],
       [VIBRATOR?.deviceId || '']: s.state[VIBRATOR?.deviceId || ''],
+      [RADAR?.deviceId || '']: s.state[RADAR?.deviceId || '']
     })),
   )
 
@@ -56,6 +62,7 @@ const WanglouUpdateRealMarker: FC<PropsType> = memo(() => {
       INFRARED_CAMERA: wsState[INFRARED_CAMERA?.deviceId || ''] || INFRARED_CAMERA?.properties,
       VISIBLE_LIGHT_CAMERA: wsState[VISIBLE_LIGHT_CAMERA?.deviceId || ''] || VISIBLE_LIGHT_CAMERA?.properties,
       VIBRATOR: wsState[VIBRATOR?.deviceId || ''] || VIBRATOR?.properties,
+      RADAR: wsState[RADAR?.deviceId || ''] || RADAR?.properties,
       deviceId: data?.deviceId || '',
     }
   }, [data, realProperties, wsState])

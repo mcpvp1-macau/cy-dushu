@@ -48,7 +48,7 @@ const MapDevices: FC<PropsType> = memo(() => {
     updateUavDevices(g[DeviceEnum.UAV] || [])
     updateWangloutDevices(g[DeviceEnum.WANGLOU] || [])
     updateAirportDevices(g[DeviceEnum.UAV_AIRPORT] || [])
-    updateOtherDevices(g['other'])
+    updateOtherDevices(g['other'] || [])
   }, [data])
 
   return null

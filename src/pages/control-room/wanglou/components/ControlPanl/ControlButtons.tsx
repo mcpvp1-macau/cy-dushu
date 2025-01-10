@@ -1,9 +1,11 @@
 import ControlPower from '@/components/ControlPower'
 import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouControlRoom.store'
 import RadarVisLink from './RadarVisLink'
+import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 
 const ControlButtons: React.FC = () => {
-  const productKey = useWangLouControlRoomStore((s) => s.productKey)
+  // const productKey = useWangLouControlRoomStore((s) => s.)
+  const productKey = useDeviceDetailStore(s => s.deviceDetail?.deviceModel?.productKey)
   const deviceId = useWangLouControlRoomStore((s) => s.deviceId)
   const gangedSwitch = useWangLouControlRoomStore((s) => s.state.gangedSwitch)
   const controlTag = useWangLouControlRoomStore((s) => s.state.controlTag)
@@ -13,7 +15,7 @@ const ControlButtons: React.FC = () => {
   return (
     <section className="mx-3 mr-[9px] my-3 flex gap-8 justify-center">
       <RadarVisLink
-        productKey={productKey}
+        productKey={productKey!}
         deviceId={deviceId}
         status={gangedSwitch}
       />

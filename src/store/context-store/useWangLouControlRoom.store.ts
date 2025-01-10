@@ -50,7 +50,7 @@ type ActionsType = {
   resetState: () => void
   updateProdctKeyAndDeviceId: (productKey: string, deviceId: string) => void
   updateWsReadyState: (state: StateType['wsReadyState']) => void
-  updateState: (state: StateType['latestState']) => void
+  updateState: (state: StateType['latestState'], deviceId: string) => void
   updateUUID: (uuid: string) => void
 
   /** 更新云台控制信息 */
@@ -65,7 +65,9 @@ type ActionsType = {
   updateEnableSmartTrack: (enable?: boolean) => void
 
   /** 开启指点定位 */
-  updateIsCameraChangePosition: (value: StateType['isCameraChangePosition']) => void
+  updateIsCameraChangePosition: (
+    value: StateType['isCameraChangePosition'],
+  ) => void
 }
 
 type WsSendersType = {
@@ -125,27 +127,27 @@ export const createWangLouControlRoomStore = (senders: WsSendersType) => {
         updateWsReadyState: (state: StateType['wsReadyState']) => {
           set({ wsReadyState: state }, false, 'updateWsReadyState')
         },
-        updateState: (state: StateType['latestState']) => {
+        updateState: (state: StateType['latestState'], deviceId: string) => {
           let s = { ...get().state }
+          let hasControlPower = get().hasControlPower
           // 子设备信息也走父设备的websocket，所以在消息上根据设备id区分
-          if (state.deviceId === get().deviceId) {
+          if (deviceId === get().deviceId) {
             s = { ...s, ...state }
+            hasControlPower = !!(get().uuid && get().uuid === state?.controlTag)
           } else {
             s = {
               ...s,
-              [state.deviceId]: {
-                ...(get().state[state.deviceId] || {}),
-                ...state.data,
+              [deviceId]: {
+                ...(get().state[deviceId] || {}),
+                ...state,
               },
             }
           }
           set(
             {
-              latestState: state,
+              latestState: get().state,
               state: s,
-              hasControlPower: !!(
-                get().uuid && get().uuid === state?.controlTag
-              ),
+              hasControlPower,
             },
             false,
             'updateState',
@@ -254,7 +256,7 @@ export const useCreateWangLouControlRoomStore = (
     switch (wsData.method) {
       case 'event.property.post':
       case 'properties.state':
-        storeRef.current?.getState().updateState(wsData.data)
+        storeRef.current?.getState().updateState(wsData.data, wsData.deviceId)
         break
 
       case 'event.targetInfo.info':

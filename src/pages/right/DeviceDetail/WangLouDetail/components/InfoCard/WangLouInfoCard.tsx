@@ -27,7 +27,8 @@ const WangLouInfoCard: FC<PropsType> = memo(({ data }) => {
   const status = useRealOnlineStatus(data.deviceId)
   const state = useWangLouControlRoomStore((s) => s.state)
   const { properties = {} } = data || {}
-  const { statusInfo = {} } = properties
+  // const { statusInfo = {} } = properties
+  // console.info('data---', data)
   return (
     <div>
       <ul className="py-[10px] text-sm flex flex-wrap">
@@ -45,14 +46,14 @@ const WangLouInfoCard: FC<PropsType> = memo(({ data }) => {
         <I
           l="经度"
           v={
-            (state.statusInfo?.longitude ?? statusInfo.longitude)?.toFixed(5) ||
+            (state.longitude ?? properties.longitude)?.toFixed(5) ||
             '-'
           }
         />
         <I
           l="纬度"
           v={
-            (state.statusInfo?.latitude ?? statusInfo.latitude)?.toFixed(5) ||
+            (state.latitude ?? properties.latitude)?.toFixed(5) ||
             '-'
           }
         />

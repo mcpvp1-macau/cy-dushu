@@ -5,8 +5,8 @@ import Title from '@/components/Title'
 import { useAsyncEffect } from 'ahooks'
 import {
   getDeviceDetail,
-  setDeviceConfig,
   setProperty,
+  setWanglouConfig,
 } from '@/service/modules/device'
 import { objectToMapString, parseMapString } from '@/utils/other/utils'
 import useRadarMap from '@/utils/map/useRadarMap'
@@ -19,15 +19,18 @@ type PropsType = {
 
 // 其实就是设备配置
 const InitParams: React.FC<PropsType> = ({ open, setOpen, data }) => {
-  const { deviceId, productKey } = data
+  const { deviceId, deviceModel } = data
+  const { productKey } = deviceModel!
   const [form] = Form.useForm()
 
   const [loading, setLoading] = useState(false)
 
   const [radarData, setRadarData] = useState<any>()
 
+  console.info('data---', data)
+
   const save = async (values) => {
-    const { code } = await setDeviceConfig(productKey, deviceId, values)
+    const { code } = await setWanglouConfig(productKey, deviceId, values)
     if (code === 'SUCCESS') {
       msgMitt.emit('open', { type: 'success', content: '保存成功' })
       // 刷新地图设备
@@ -43,6 +46,7 @@ const InitParams: React.FC<PropsType> = ({ open, setOpen, data }) => {
   }
 
   const setRadarRangeProfile = async (data, values, mapString) => {
+    console.info('res----', radarData)
     const res = await setProperty(
       radarData?.deviceModel?.productKey,
       radarData?.deviceModel?.deviceId,
@@ -265,12 +269,10 @@ const InitParams: React.FC<PropsType> = ({ open, setOpen, data }) => {
     // 雷达
     let radarData: API_DEVICE.domain.Device['properties'] = {}
     const radarScanRange = parseMapString(radarData?.properties?.scanRangeJson)
-    setRadarData(radarData)
     // 转台
     let turntableData: API_DEVICE.domain.Device['properties'] = {}
     // 震动仪
     let vibratorData: API_DEVICE.domain.Device['properties'] = {}
-
     if (res?.code === 'SUCCESS') {
       res.data.childDevice?.forEach((item) => {
         if (item.deviceType === 'INFRARED_CAMERA') {
@@ -281,6 +283,7 @@ const InitParams: React.FC<PropsType> = ({ open, setOpen, data }) => {
           vibratorData = item.properties
         } else if (item.deviceType === 'RADAR') {
           radarData = item.properties
+          setRadarData(item)
         }
       })
       turntableData = res.data.properties

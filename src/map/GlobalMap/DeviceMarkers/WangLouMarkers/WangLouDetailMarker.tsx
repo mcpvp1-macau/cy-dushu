@@ -3,6 +3,7 @@ import WangLouModel from '@/components/map/device/WangLouModel'
 import { GetProps } from 'antd'
 import mitt from 'mitt'
 import Frustum from '../../ActionAirline3D/UavPoint/Frustum'
+import Radar from './Radar'
 
 type PropsType = unknown
 
@@ -17,6 +18,8 @@ type StateType =
       VISIBLE_LIGHT_CAMERA: any
       /** 振动仪 */
       VIBRATOR: any
+      /** 雷达 */
+      RADAR: any
     })
   | null
 
@@ -46,7 +49,6 @@ const WangLouDetailMarker: FC<PropsType> = memo(() => {
     altitude: state.altitude || 0,
   }
 
-
   return (
     <>
       <WangLouModel data={data} />
@@ -59,7 +61,7 @@ const WangLouDetailMarker: FC<PropsType> = memo(() => {
             data.altitude + (state.VISIBLE_LIGHT_CAMERA.groundLift || 0),
           ]}
           rotation={{
-            x: 90 + (state.pitch ?? 0),
+            x:  + (state.pitch ?? 0),
             y: state.yaw ?? 0,
             z: 0,
           }}
@@ -78,7 +80,7 @@ const WangLouDetailMarker: FC<PropsType> = memo(() => {
             data.altitude + (state.INFRARED_CAMERA.groundLift || 0),
           ]}
           rotation={{
-            x: 90 + (state.pitch ?? 0),
+            x:  + (state.pitch ?? 0),
             y: state.yaw ?? 0,
             z: 0,
           }}
@@ -87,6 +89,11 @@ const WangLouDetailMarker: FC<PropsType> = memo(() => {
           fov={state.INFRARED_CAMERA.fov}
           far={600}
         />
+      ) : null}
+      {state.RADAR?.scanRangeProfile ? (
+        <>
+          <Radar scanRangeProfile={state.RADAR?.scanRangeProfile} />
+        </>
       ) : null}
     </>
   )

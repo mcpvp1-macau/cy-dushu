@@ -1,5 +1,5 @@
 import { Tabs } from 'antd'
-import CarInfoCard from './WangLouInfoCard'
+import WangLouInfoCard from './WangLouInfoCard'
 import DeviceInfoCard from './DeviceInfoCard'
 import styles from './index.module.less'
 import IconSetting from '@/assets/icons/jsx/IconSetting'
@@ -22,7 +22,7 @@ const InfoCard: FC<PropsType> = memo(({ data }) => {
     {
       label: deviceName,
       key: deviceId,
-      children: <CarInfoCard data={data} />,
+      children: <WangLouInfoCard data={data} />,
     },
     ...(childDevice?.map((item) => {
       return {

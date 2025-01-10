@@ -24,11 +24,10 @@ const WangLouDetailDetail: FC<PropsType> = memo(() => {
     deviceDetail.productKey || deviceDetail.deviceModel?.productKey
   // const videoId = deviceDetail?.properties.videoList?.[0]?.videoId
 
-  const modelName =
-    deviceDetail.deviceTags?.find(
-      (item: { tagName: string }) => item.tagName === 'MODEL_NUMBER',
-    )?.tagValue || '-'
-
+  // const modelName =
+  //   deviceDetail.deviceTags?.find(
+  //     (item: { tagName: string }) => item.tagName === 'MODEL_NUMBER',
+  //   )?.tagValue || '-'
   const controlTag = useWangLouControlRoomStore((s) => s.state.controlTag)
   const uuid = useWangLouControlRoomStore((s) => s.uuid)
   const updateUUID = useWangLouControlRoomStore((s) => s.updateUUID)
@@ -52,19 +51,23 @@ const WangLouDetailDetail: FC<PropsType> = memo(() => {
         />
       </section> */}
       <section className="mx-3 my-3">
-        <WangLouLiveVideo
-          deviceId={deviceId}
-          productKey={productKey!}
-          data={lightCameraData!}
-        />
+        {lightCameraData ? (
+          <WangLouLiveVideo
+            deviceId={lightCameraData?.deviceId}
+            productKey={lightCameraData?.productKey}
+            data={lightCameraData!}
+          />
+        ) : null}
       </section>
 
       <section className="mx-3 my-3">
-        <WangLouLiveVideo
-          deviceId={deviceId}
-          productKey={productKey!}
-          data={infraredCameraData!}
-        />
+        {infraredCameraData ? (
+          <WangLouLiveVideo
+            deviceId={infraredCameraData.deviceId}
+            productKey={infraredCameraData.productKey!}
+            data={infraredCameraData!}
+          />
+        ) : null}
       </section>
       <section className="mx-3 mr-[9px] my-3 flex gap-2">
         <Link className="grow" to={`/control-room/wanglou/${deviceId}`}>
@@ -104,7 +107,7 @@ const WangLouDetailDetail: FC<PropsType> = memo(() => {
             key: 'ai',
             children: (
               <AppViewSuspense>
-                 <DeviceAlgorithmList
+                <DeviceAlgorithmList
                   deviceType={DeviceEnum.WANGLOU}
                   deviceId={deviceId}
                   productKey={productKey!}

@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes } from 'react'
+import React from 'react'
 
 const CircleButton: FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
   children,
@@ -20,4 +21,4 @@ const CircleButton: FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
   )
 }
 
-export default CircleButton
+export default React.memo(CircleButton)

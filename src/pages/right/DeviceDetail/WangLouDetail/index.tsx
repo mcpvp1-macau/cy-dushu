@@ -11,6 +11,7 @@ import {
 } from '@/store/context-store/useWangLouControlRoom.store'
 import useServerEventMsg from '@/pages/control-room/uav/hooks/useServerEventMsg'
 import WanglouUpdateRealMarker from './components/UpdateRealMarker'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -56,7 +57,7 @@ const WangLouDetail: FC<PropsType> = memo(({ data }) => {
 
   return (
     <WangLouControlRoomStoreContext.Provider value={store}>
-      <div>
+      <div className="overflow-y-hidden flex flex-col backdrop-blur-sm">
         <CloseableHeader>{header}</CloseableHeader>
         <div className="px-3 mt-1 mb-3">
           <Segmented
@@ -66,11 +67,17 @@ const WangLouDetail: FC<PropsType> = memo(({ data }) => {
             onChange={setTab}
           />
         </div>
-        <div className="flex-1 overflow-y-auto">
+        {/* <div className="flex-1 overflow-y-auto"> */}
+        <ScrollArea className="grow">
           <AppViewSuspense>
-            {tab === '详情' ? <WangLouDetailDetail /> : <WangLouDetailData />}
+            {tab === '详情' ? (
+              <WangLouDetailDetail />
+            ) : (
+              <WangLouDetailData deviceId={deviceId} />
+            )}
           </AppViewSuspense>
-        </div>
+        </ScrollArea>
+        {/* </div> */}
       </div>
       <WanglouUpdateRealMarker />
     </WangLouControlRoomStoreContext.Provider>

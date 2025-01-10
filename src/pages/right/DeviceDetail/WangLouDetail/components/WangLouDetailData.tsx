@@ -2,10 +2,13 @@ import AppCollapse from '@/components/AppCollapse'
 import { memo, type FC } from 'react'
 import DeviceDetailMediaData, { MediaType } from '../../components/MediaData'
 import LinkSwitch from '@/components/LinkSwitch'
+import AiData from '@/components/AiData'
 
-type PropsType = unknown
+type PropsType = {
+  deviceId: string
+}
 
-const WangLouDetailData: FC<PropsType> = memo(() => {
+const WangLouDetailData: FC<PropsType> = memo(({ deviceId }) => {
   const [mediaType, setMediaType] = useState<MediaType>('PICTURE')
 
   const items = useRef([
@@ -21,6 +24,7 @@ const WangLouDetailData: FC<PropsType> = memo(() => {
 
   return (
     <AppCollapse
+      defaultActiveKey={['PICTURE']}
       items={[
         {
           label: (
@@ -31,6 +35,10 @@ const WangLouDetailData: FC<PropsType> = memo(() => {
             />
           ),
           children: <DeviceDetailMediaData type={mediaType} />,
+        },
+        {
+          label: '检测数据',
+          children: <AiData deviceId={deviceId} deviceType="WANGLOU" />,
         },
       ]}
     ></AppCollapse>

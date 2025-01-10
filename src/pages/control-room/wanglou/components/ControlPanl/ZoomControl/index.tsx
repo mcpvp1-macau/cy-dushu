@@ -20,7 +20,7 @@ const ZoomControl: React.FC<Props> = ({ deviceType }) => {
   })
   const disabled = useWangLouControlRoomStore((s) => !s.hasControlPower)
   const uuid = useWangLouControlRoomStore((s) => s.uuid)
-  const post = usePostDeviceService(data?.productKey || '', data?.deviceId || '')
+  const post = usePostDeviceService(data?.deviceModel?.productKey || '', data?.deviceId || '')
   const run = () => {
     post('autoFocus', {
       controlTag: uuid,
