@@ -23,7 +23,16 @@ export const formatSecMMSS = (sec: number | undefined) => {
     return '00:00'
   }
   sec = Math.floor(sec)
-  const s = sec % 60
-  const m = Math.floor(sec / 60)
-  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+  if (sec < 3600) {
+    const s = sec % 60
+    const m = Math.floor(sec / 60)
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+  } else {
+    const s = sec % 60
+    const m = Math.floor(sec / 60) % 60
+    const h = Math.floor(sec / 3600)
+    return `${h.toString().padStart(2, '0')}:${m
+      .toString()
+      .padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+  }
 }
