@@ -41,6 +41,7 @@ const MapDevices: FC<PropsType> = memo(() => {
       [DeviceEnum.WANGLOU]: DeviceEnum.WANGLOU,
       [DeviceEnum.UAV_AIRPORT]: DeviceEnum.UAV_AIRPORT,
     }
+
     const g = groupBy(
       data.filter((e) => checkGeo(e.longitude, e.latitude)),
       (e) => m[e.deviceType] || 'other',

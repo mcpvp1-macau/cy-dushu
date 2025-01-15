@@ -29,7 +29,7 @@ export default mergeConfig(
         },
         // 设备websocket直连
         '/v3': {
-          target: 'ws://121.196.192.212:32041',
+          target: 'wss://test.dushu.jing-an.com:32591',
           ws: true,
           changeOrigin: true,
         },

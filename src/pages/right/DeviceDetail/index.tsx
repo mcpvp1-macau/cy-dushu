@@ -14,6 +14,7 @@ const UavDetail = lazy(() => import('./UavDetail'))
 const UavAirportDetail = lazy(() => import('./UavAirportDetail'))
 const CameraDetail = lazy(() => import('./CameraDetail'))
 const WangLouDetail = lazy(() => import('./WangLouDetail'))
+const OthersDetail = lazy(() => import('./OthersDetail'))
 
 const route = {
   [DeviceEnum.UAV]: UavDetail,
@@ -47,7 +48,8 @@ const RightDeviceDetail: FC<PropsType> = memo(() => {
   if (isLoading || !deviceDetail) {
     return <AppSpin />
   }
-  const DetailComponent = route[deviceDetail.deviceType] || CameraDetail
+
+  const DetailComponent = route[deviceDetail.deviceType] || OthersDetail
   if (!DetailComponent) {
     return <div className="p-3">404</div>
   }
