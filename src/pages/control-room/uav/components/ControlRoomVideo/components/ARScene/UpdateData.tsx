@@ -97,7 +97,7 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
     if (lastCoordinates.current) {
       const from = turf.point(lastCoordinates.current)
       const distance = turf.distance(from, to, { units: 'meters' })
-      if (distance < DISTANCE / 2) {
+      if (distance < DISTANCE / 4) {
         return
       }
     }
