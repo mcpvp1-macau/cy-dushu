@@ -19,7 +19,7 @@ const PageSituation: FC<PropsType> = memo(() => {
 
   const handleSourceTypeChange = useMemoizedFn((type: string) => {
     setSourceType(type)
-    if (sourceType && type) {
+    if (type) {
       // 确定是 sourceType 变化，才跳转
       navigate(`source/${type}`)
     }
@@ -61,7 +61,7 @@ const PageSituation: FC<PropsType> = memo(() => {
       navigate('action')
     } else if (key === 'events') {
       navigate('situation/events')
-    } else {
+    } else if (key === 'source' && sourceType) {
       navigate(`source/${sourceType}`)
     }
   })
