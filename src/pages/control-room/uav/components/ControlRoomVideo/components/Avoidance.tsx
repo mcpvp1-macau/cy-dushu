@@ -55,17 +55,17 @@ const Avoidance: FC<PropsType> = memo(() => {
         className="absolute inset-0 text-fore bg-opacity-70 text-sm"
         style={{ textShadow: '0 0 1px red' }}
       >
-        {(avoidDistances[0] ?? 0x3f) < 15 && (
+        {(avoidDistances[0] ?? 0x3f) < 15 && avoidDistances[0]! > 0 && (
           <div className="absolute top-0 left-1/2 -translate-x-1/2">
             {avoidDistances[0]!.toFixed(1)} m
           </div>
         )}
-        {(avoidDistances[1] ?? 0x3f) < 15 && (
+        {(avoidDistances[1] ?? 0x3f) < 15 && avoidDistances[1]! > 0 && (
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2">
             {avoidDistances[1]!.toFixed(1)} m
           </div>
         )}
-        {(avoidDistances[2] ?? 0x3f) < 15 && (
+        {(avoidDistances[2] ?? 0x3f) < 15 && avoidDistances[2]! > 0 && (
           <div
             className="absolute left-0 top-1/2 -translate-y-1/2"
             style={{
@@ -75,7 +75,7 @@ const Avoidance: FC<PropsType> = memo(() => {
             {avoidDistances[2]!.toFixed(1)} m
           </div>
         )}
-        {(avoidDistances[3] ?? 0x3f) < 15 && (
+        {(avoidDistances[3] ?? 0x3f) < 15 && avoidDistances[3]! > 0 && (
           <div
             className="absolute right-0 top-1/2 -translate-y-1/2"
             style={{
