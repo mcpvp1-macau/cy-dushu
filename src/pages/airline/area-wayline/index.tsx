@@ -20,8 +20,10 @@ const PageAreaWaylineEdit: FC<PropsType> = memo(() => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [taskName, setTaskName] = useState<string | null>(
-    searchParams.get('name') ?? '航线名称',
+    searchParams.get('name') ?? 'Wayline Name',
   )
+
+  const { t } = useTranslation()
 
   const updateOpen = useAreaWaylineStore((s) => s.updateOpen)
 
@@ -70,9 +72,9 @@ const PageAreaWaylineEdit: FC<PropsType> = memo(() => {
               <FinishActionConfig />
             </div>
             <div className="m-3 flex gap-3">
-              <Button className="flex-1">保存任务</Button>
+              <Button className="flex-1">{t('wayline.saveTask.title')}</Button>
               <Button type="primary" className="flex-1">
-                立即执行
+                {t('wayline.executeTask.title')}
               </Button>
             </div>
           </ScrollArea>

@@ -72,7 +72,7 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
   }
 
   return (
-    <li>
+    <li className="my-1">
       <Link
         className={clsx(
           'flex px-3 p-2 gap-2  cursor-pointer text-sm',

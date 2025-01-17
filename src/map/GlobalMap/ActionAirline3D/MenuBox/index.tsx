@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState, type FC } from 'react'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { Dropdown, MenuProps } from 'antd'
@@ -6,7 +5,6 @@ import { useLatest } from 'ahooks'
 import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
 import { cartesian3ToDegrees } from '@/utils/geoUtils'
 import { useCurrentAirpoint } from '@/store/uav/uav-airline/select'
-import { omit } from 'lodash'
 import { v4 } from 'uuid'
 
 type PropsType = unknown
@@ -32,6 +30,8 @@ const MenuBox: FC<PropsType> = () => {
   const divRef = useRef<HTMLDivElement>(null)
 
   const geoRef = useRef<number[]>([])
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (!viewer?.scene) return
@@ -84,7 +84,9 @@ const MenuBox: FC<PropsType> = () => {
     () => [
       {
         key: 'addBefore',
-        label: `在航点 ${currentIndex + 1} 前添加`,
+        label: t('wayline.waylinePoint.addBefore', {
+          i: currentIndex + 1,
+        }),
         onClick: () => {
           insertAirPoint(
             {
@@ -99,7 +101,9 @@ const MenuBox: FC<PropsType> = () => {
       },
       {
         key: 'addAfter',
-        label: `在航点 ${currentIndex + 1} 后添加`,
+        label: t('wayline.waylinePoint.addAfter', {
+          i: currentIndex + 1,
+        }),
         onClick: () => {
           insertAirPoint(
             {
@@ -114,7 +118,7 @@ const MenuBox: FC<PropsType> = () => {
       },
       {
         key: 'addLast',
-        label: '在最后添加',
+        label: t('wayline.waylinePoint.addLast'),
         onClick: () => {
           addAirPoint({
             pointX: geoRef.current[0],
@@ -126,7 +130,9 @@ const MenuBox: FC<PropsType> = () => {
       },
       {
         key: 'delete',
-        label: `删除航点 ${currentIndex + 1}`,
+        label: t('wayline.waylinePoint.deleteIdx', {
+          i: currentIndex + 1,
+        }),
         onClick: () => {
           deleteAirPoint(currentIndex)
           setOpen(false)
@@ -134,12 +140,16 @@ const MenuBox: FC<PropsType> = () => {
       },
       {
         key: 'copy',
-        label: `复制航点 ${currentIndex + 1}`,
+        label: t('wayline.waylinePoint.copyIdx', {
+          i: currentIndex + 1,
+        }),
         onClick: () => {
           insertAirPoint(
             {
               ...currentAirpoint.current,
-              positionName: `航点 ${currentIndex + 2}`,
+              positionName: `${t('wayline.waylinePoint.title')} ${
+                currentIndex + 2
+              }`,
               xid: v4(),
               positionIndex: currentIndex + 1,
             },
@@ -149,7 +159,7 @@ const MenuBox: FC<PropsType> = () => {
         },
       },
     ],
-    [currentIndex],
+    [currentIndex, t],
   )
 
   const renderItems = useMemo(() => {

@@ -7,6 +7,7 @@ import useAreaWaylineStore from '@/store/uav/uav-area-wayline/useAreaWayline.sto
 
 type PropsType = unknown
 
+/** 计算面状航线 */
 const CalcAreaPath: FC<PropsType> = memo(() => {
   // 起飞点
   const takeOffRefPoint = useAreaWaylineStore(
@@ -24,6 +25,8 @@ const CalcAreaPath: FC<PropsType> = memo(() => {
   const updateAirpointsConfig = useAreaWaylineStore(
     (s) => s.updateAirpointsConfig,
   )
+
+  const updateFirstAirpoint = useAreaWaylineStore((s) => s.updateFirstAirpoint)
 
   const height = useAreaWaylineStore((s) => s.airlineConfig.height)
   const interval = useAreaWaylineStore((s) => s.templateConfig.interval)
@@ -60,16 +63,16 @@ const CalcAreaPath: FC<PropsType> = memo(() => {
           coordinates: [res],
         },
       })
-      updateAirpointsConfig(
-        wgs84Res.geometry.coordinates[0].map((point, index) => ({
-          positionIndex: index,
-          positionName: `航点${index + 1}`,
-          actions: [],
-          pointX: point[0],
-          pointY: point[1],
-          pointZ: height,
-        })),
-      )
+      const points = wgs84Res.geometry.coordinates[0].map((point, index) => ({
+        positionIndex: index,
+        positionName: `航点${index + 1}`,
+        actions: [],
+        pointX: point[0],
+        pointY: point[1],
+        pointZ: height,
+      }))
+      updateAirpointsConfig(points)
+      updateFirstAirpoint(points[0])
     },
     { wait: 500 },
   )

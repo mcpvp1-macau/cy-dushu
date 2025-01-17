@@ -1,4 +1,3 @@
-import { memo, type FC } from 'react'
 import IconButton from './ui/button/IconButton'
 import IconBack from '@/assets/icons/jsx/IconBack'
 import { Form, Input } from 'antd'

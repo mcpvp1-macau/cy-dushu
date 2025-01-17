@@ -571,6 +571,12 @@ wayline:
             msg: Please select a algorithm
       CLOSE_AI:
         title: Close Algorithm
+    addBefore: Add after waypoint {{i}}
+    addAfter: Add before waypoint {{i}}
+    addLast: Add at the end
+    deleteIdx: Delete waypoint {{i}}
+    copyIdx: Copy waypoint {{i}}
+    title: Waypoint
   info:
     length:
       title: Length
@@ -814,6 +820,9 @@ controlRoom:
       title: Command
     flyParamsSetting:
       title: Flight Setting
+      resetingHomePoint:
+        title: Setting home point
+        success: Home point set successfully
     payload:
       title: Payload
     aiList:
@@ -904,6 +913,17 @@ controlRoom:
       title: GImbal Pitch
     healthInfo:
       offline: The current device is offline.
+    pointFlyForecast:
+      distance:
+        title: Distance
+      time:
+        title: Time
+      confirm:
+        msg: Flight path for reference only
+      targetHeight:
+        required_msg: Please input target Altitude
+      flightSpeed:
+        required_msg: Please input flight speed
   control:
     uavTurnLeft:
       title: UAV Turn Left

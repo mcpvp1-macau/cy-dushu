@@ -15,13 +15,15 @@ const ResetHomePointListener: FC<PropsType> = memo(() => {
   const productKey = useDeviceDetailStore((s) => s.productKey)
   const msgApi = useAppMsg()
 
+  const { t } = useTranslation()
+
   const mutate = useMemoizedFn(async (lon: number, lat: number) => {
     updateFlyParams({ ...flyParams, isResetHome: false })
     try {
       msgApi.open({
         key: 'resetHomePoint',
         type: 'loading',
-        content: '正在设置返航点',
+        content: t('controlRoom.uav.flyParamsSetting.resetingHomePoint.title'),
       })
       await setDeviceProp(productKey, deviceId, {
         gohomeLongitude: lon,
@@ -30,7 +32,9 @@ const ResetHomePointListener: FC<PropsType> = memo(() => {
       msgApi.open({
         key: 'resetHomePoint',
         type: 'success',
-        content: '设置返航点成功',
+        content: t(
+          'controlRoom.uav.flyParamsSetting.resetingHomePoint.success',
+        ),
       })
     } catch (error) {
       msgApi.destroy('resetHomePoint')

@@ -7,6 +7,7 @@ import Airpoints from './components/Airpoints'
 import { toMercator } from '@turf/turf'
 import { calcLongestK } from '@/utils/geometry/polygon'
 import useMouseStyle from './useMouseStyle'
+import FirstPoint from './components/FirstPoint'
 
 type PropsType = unknown
 
@@ -63,6 +64,7 @@ const AreaWayline: FC<PropsType> = memo(() => {
         />
       )}
       <Airpoints />
+      <FirstPoint />
     </>
   )
 })

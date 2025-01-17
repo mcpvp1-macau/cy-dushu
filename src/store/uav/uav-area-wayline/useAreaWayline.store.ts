@@ -22,6 +22,7 @@ type StateType = {
     sensorWidth: number
     sensorHeight: number
   }
+  firstAirpoint: AirlinePoint | null
 }
 
 type ActionsType = {
@@ -30,6 +31,7 @@ type ActionsType = {
   updateTemplateConfig: (config: Partial<AirlineTemplateType>) => void
   updateIsDrawHome: (isDrawHome: StateType['isDrawHome']) => void
   updateAirpointsConfig: (config: AirlinePoint[]) => void
+  updateFirstAirpoint: (airpoint: AirlinePoint) => void
 }
 
 const createInitialState = (): StateType => ({
@@ -59,6 +61,7 @@ const createInitialState = (): StateType => ({
     sensorHeight: 30,
   },
   airpointsConfig: [],
+  firstAirpoint: null,
 })
 
 const useAreaWaylineStore = create<StateType & ActionsType>()((set) => ({
@@ -93,6 +96,9 @@ const useAreaWaylineStore = create<StateType & ActionsType>()((set) => ({
   },
   updateAirpointsConfig: (airpoints) => {
     set({ airpointsConfig: airpoints }, false)
+  },
+  updateFirstAirpoint: (airpoint) => {
+    set({ firstAirpoint: airpoint }, false)
   },
 }))
 

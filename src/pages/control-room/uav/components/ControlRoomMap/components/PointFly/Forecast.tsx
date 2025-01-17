@@ -9,12 +9,14 @@ type PropsType = {
 /** 指点飞行预测 */
 const PointFlyForecast: FC<PropsType> = memo(({ displayTarget = true }) => {
   const { tartgetLng, tartgetLat, distance, timeFormat } = useCalcPointFlyInfo()
+  const { t } = useTranslation()
+
   return (
     <>
       <PositionTooltip position={[tartgetLng, tartgetLat]} offset={[0, 30]}>
         <div className="flex flex-col gap-1 text-fore p-1 text-xs">
           <p className="flex justify-between gap-1">
-            任务距离:
+            {t('controlRoom.uav.pointFlyForecast.distance.title')}:
             <span>
               {distance > 1000
                 ? `${(distance / 1000).toFixed(1)} km`
@@ -22,7 +24,7 @@ const PointFlyForecast: FC<PropsType> = memo(({ displayTarget = true }) => {
             </span>
           </p>
           <p className="flex justify-between gap-1">
-            预计时间:
+            {t('controlRoom.uav.pointFlyForecast.time.title')}:
             <span>{timeFormat}</span>
           </p>
         </div>
