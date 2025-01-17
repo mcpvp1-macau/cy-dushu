@@ -12,7 +12,7 @@ const PageAirline: FC<PropsType> = memo(() => {
   return (
     <CollapsedPage>
       <div className="h-full flex flex-col">
-        <header className="flex justify-between items-center p-3 border-b border-solid border-ground-250">
+        <header className="flex justify-between items-center p-3 border-b border-solid border-ground-4">
           <div className="flex gap-1">
             <MenuIconAirline />
             <h2 className="text-white">{t('wayline.title')}</h2>

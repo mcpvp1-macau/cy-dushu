@@ -304,6 +304,10 @@ const DeviceLiveVideo = memo(
           </div>
           <ConfigProvider
             theme={{
+              cssVar: {
+                key: 'dushu',
+              },
+              hashed: false,
               components: {
                 Select: {
                   paddingSM: 0,
@@ -315,7 +319,7 @@ const DeviceLiveVideo = memo(
             {useTopBar && (leftTop || rightTop || useDing) && (
               <aside
                 ref={topBar}
-                className="absolute top-0 inset-x-0 bg-ground-100 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm"
+                className="absolute top-0 inset-x-0 bg-ground-1 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm"
               >
                 <div className="flex justify-between items-center h-full">
                   <section className="flex items-center gap-3">
@@ -338,7 +342,7 @@ const DeviceLiveVideo = memo(
             {useBottomBar && (
               <aside
                 ref={bottomBar}
-                className="absolute bottom-0 inset-x-0 bg-ground-100 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm"
+                className="absolute bottom-0 inset-x-0 bg-ground-2 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm"
               >
                 <div className="flex justify-between items-center h-full">
                   <section className="flex items-center gap-3">

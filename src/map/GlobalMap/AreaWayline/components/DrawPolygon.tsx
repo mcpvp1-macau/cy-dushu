@@ -108,7 +108,7 @@ const DrawPolygon: FC<PropsType> = memo(
               />
               {showDistance && (
                 <PositionHTML position={getMidPoint(p, path[i + 1])}>
-                  <div className="p-0.5 px-1 bg-ground-100 rounded text-xs bg-opacity-70 whitespace-nowrap">
+                  <div className="p-0.5 px-1 bg-ground-1 rounded text-xs bg-opacity-70 whitespace-nowrap">
                     {formatDistance(getSpaceDistance([p, path[i + 1]]))}
                   </div>
                 </PositionHTML>
@@ -135,7 +135,7 @@ const DrawPolygon: FC<PropsType> = memo(
                 className="pointer-events-none"
                 position={getMidPoint(mousePoint, path[0])}
               >
-                <div className="p-0.5 px-1 bg-ground-100 rounded text-xs bg-opacity-70 whitespace-nowrap">
+                <div className="p-0.5 px-1 bg-ground-1 rounded text-xs bg-opacity-70 whitespace-nowrap">
                   {formatDistance(getSpaceDistance([mousePoint, path[0]]))}
                 </div>
               </PositionHTML>
@@ -145,7 +145,7 @@ const DrawPolygon: FC<PropsType> = memo(
                 className="pointer-events-none"
                 position={getMidPoint(mousePoint, path[path.length - 1])}
               >
-                <div className="p-0.5 px-1 bg-ground-100 rounded text-xs bg-opacity-70 whitespace-nowrap">
+                <div className="p-0.5 px-1 bg-ground-1 rounded text-xs bg-opacity-70 whitespace-nowrap">
                   {formatDistance(
                     getSpaceDistance([mousePoint, path[path.length - 1]]),
                   )}

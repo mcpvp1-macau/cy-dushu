@@ -211,7 +211,7 @@ const ControlRoomUavHeader: FC = memo(() => {
   const productKey = useDeviceDetailStore((s) => s.productKey)
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
   return createPortal(
-    <header className="h-7 flex justify-between gap-3 bg-ground-100 px-3 items-center text-sm">
+    <header className="h-7 flex justify-between gap-3 bg-ground-1 px-3 items-center text-sm">
       <HeaderLeft />
       <section className="grow">
         <ul className="flex justify-center gap-1 xl:gap-3 2xl:gap-5 whitespace-nowrap">

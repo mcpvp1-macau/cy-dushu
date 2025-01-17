@@ -297,6 +297,9 @@ const ScheduleModal: FC<PropsType> = memo(
       >
         <ConfigProvider
           theme={{
+            cssVar: {
+              key: 'dushu',
+            },
             components: {
               Form: {
                 labelFontSize: 12,

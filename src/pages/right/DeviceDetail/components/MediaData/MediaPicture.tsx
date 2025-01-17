@@ -87,7 +87,7 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(({ deviceList }) => {
                   <Col key={e.id} span={8}>
                     <div className="relative w-full aspect-[4_/_3]">
                       <div className="absolute top-0 left-0 right-0 z-10 pointer-events-none">
-                        <p className="text-xs p-1 py-0.5 bg-ground-100 bg-opacity-60">
+                        <p className="text-xs p-1 py-0.5 bg-ground-1 bg-opacity-60">
                           {dayjs(e.startTime).format(timeOnly)}
                         </p>
                       </div>

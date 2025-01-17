@@ -20,7 +20,7 @@ const VRSetting = lazy(() => import('@/components/Header/setting/VRSetting'))
 type PropsType = unknown
 
 export const borderedBtnClassName =
-  'border border-solid border-ground-300 bg-ground-200 rounded-sm  w-[25px] h-[25px]'
+  'border border-solid border-ground-5 bg-ground-3 rounded-sm  w-[25px] h-[25px]'
 
 const AsideToolBar: FC<PropsType> = memo(() => {
   const { t } = useTranslation()

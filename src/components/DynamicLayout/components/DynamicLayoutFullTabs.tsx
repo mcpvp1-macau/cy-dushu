@@ -26,9 +26,7 @@ const DynamicLayoutFullTabs: FC<PropsType> = memo(
 
     return (
       <div
-        className={clsx(
-          'flex justify-between items-center bg-ground-200 gap-2',
-        )}
+        className={clsx('flex justify-between items-center bg-ground-3 gap-2')}
       >
         <ScrollArea className="flex-1 flex-shrink-0">
           <ul
@@ -40,11 +38,11 @@ const DynamicLayoutFullTabs: FC<PropsType> = memo(
             {layout.children.map((e, i) => (
               <Fragment key={e.key}>
                 {/* 分割线 */}
-                {i > 0 && <li className={clsx('bg-ground-300 h-3 w-[1px]')} />}
+                {i > 0 && <li className={clsx('bg-ground-5 h-3 w-[1px]')} />}
                 {/* Tab 标签 */}
                 <li
                   className={clsx(
-                    'px-1.5 py-0.5 cursor-pointer font-medium hover:bg-ground-250 rounded flex flex-shrink-0 gap-1 items-center text-white',
+                    'px-1.5 py-0.5 cursor-pointer font-medium hover:bg-ground-4 rounded flex flex-shrink-0 gap-1 items-center text-white',
                     {
                       'text-opacity-70': e.key !== layout.activeKey,
                     },
@@ -72,7 +70,7 @@ const DynamicLayoutFullTabs: FC<PropsType> = memo(
         {/* 右侧小按钮 */}
         <div
           className={clsx(
-            'text-sm flex gap-2 animate-in fade-in duration-500 items-center text-ground-300 pr-2',
+            'text-sm flex gap-2 animate-in fade-in duration-500 items-center text-ground-5 pr-2',
           )}
         >
           <IconButton

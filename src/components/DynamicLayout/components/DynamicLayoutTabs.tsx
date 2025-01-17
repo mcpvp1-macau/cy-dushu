@@ -68,12 +68,9 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
   return (
     <div className={clsx('size-full flex flex-col group')}>
       <div
-        className={clsx(
-          'flex justify-between items-center bg-ground-200 gap-2',
-          {
-            'flex-col h-full': isVertical,
-          },
-        )}
+        className={clsx('flex justify-between items-center bg-ground-3 gap-2', {
+          'flex-col h-full': isVertical,
+        })}
         onDoubleClick={handleCollapseToggle}
       >
         <ScrollArea className="flex-1 flex-shrink-0">
@@ -91,7 +88,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
                 {i > 0 && (
                   <li
                     className={clsx(
-                      ' bg-ground-300',
+                      'bg-ground-5',
                       isVertical ? 'h-[1px] w-3' : 'h-3 w-[1px]',
                     )}
                   />
@@ -99,7 +96,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
                 {/* Tab 标签 */}
                 <li
                   className={clsx(
-                    'cursor-pointer font-medium hover:bg-ground-250 rounded flex flex-shrink-0 gap-1 items-center text-white',
+                    'cursor-pointer font-medium hover:bg-ground-5 rounded flex flex-shrink-0 gap-1 items-center text-white',
                     isVertical ? 'px-0.5 py-1.5' : 'px-1.5 py-0.5',
                     {
                       'flex-col': isVertical,
@@ -152,7 +149,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
         {/* 右侧的按钮们 */}
         <div
           className={clsx(
-            'text-sm hidden group-hover:flex gap-2 animate-in fade-in duration-500 items-center text-ground-300',
+            'text-sm hidden group-hover:flex gap-2 animate-in fade-in duration-500 items-center text-ground-5',
             isVertical ? 'pb-2' : 'pr-2',
             {
               'flex-col w-full': isVertical,
@@ -193,7 +190,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
 
       <div
         ref={containerRef}
-        className={clsx('flex-1 w-full relative bg-ground-180')}
+        className={clsx('flex-1 w-full relative bg-ground-2')}
       />
     </div>
   )

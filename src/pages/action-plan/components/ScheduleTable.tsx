@@ -131,7 +131,7 @@ const ScheduleTable: FC<PropsType> = memo(() => {
         />
       </section>
       <section className="grow mx-3 mb-3 flex flex-col overflow-y-hidden">
-        <ScrollArea className="grow border border-solid border-ground-200 rounded">
+        <ScrollArea className="grow border border-solid border-ground-3 rounded">
           <XTable
             key={i18n.language}
             table={table}

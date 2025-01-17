@@ -6,15 +6,21 @@ export default {
     extend: {
       colors: {
         ground: {
-          100: '#1b222b',
-          140: '#16202B',
-          180: '#262e36',
-          200: '#27303b',
-          250: '#37414d',
-          300: '#424b54',
+          1: 'var(--ja-dark-gray-1)',
+          2: 'var(--ja-dark-gray-2)',
+          3: 'var(--ja-dark-gray-3)',
+          4: 'var(--ja-dark-gray-4)',
+          5: 'var(--ja-dark-gray-5)',
         },
-        fore: '#c7d1dc',
-        primary: '#4c90f0',
+        fore: 'var(--ja-light-gray-1)',
+        primary: 'var(--primary-color)',
+        ['primary-color']: {
+          1: 'var(--primary-color-1)',
+          2: 'var(--primary-color-2)',
+          3: 'var(--primary-color-3)',
+          4: 'var(--primary-color-4)',
+          5: 'var(--primary-color-5)',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',

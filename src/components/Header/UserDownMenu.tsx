@@ -17,12 +17,12 @@ const UserDownMenu: FC<PropsType> = memo(() => {
   const { t } = useTranslation()
 
   return (
-    <ul className="border border-solid border-ground-300 rounded text-fore">
+    <ul className="border border-solid border-ground-5 rounded text-fore">
       <li className="p-2 flex items-center gap-2">
         <UserOutlined />
         <span>{username}</span>
       </li>
-      <div className="bg-ground-300 h-[1px]" />
+      <div className="bg-ground-5 h-[1px]" />
       <li>
         <button
           className="p-2 flex items-center gap-2"

@@ -99,7 +99,7 @@ const MainKConfig: FC<PropsType> = memo(() => {
       {windowPosition &&
         createPortal(
           <div
-            className="fixed z-10 -translate-x-1/2 -translate-y-1/2 bg-ground-100 bg-opacity-60 w-32 h-32 rounded-full"
+            className="fixed z-10 -translate-x-1/2 -translate-y-1/2 bg-ground-1 bg-opacity-60 w-32 h-32 rounded-full"
             style={{ left: windowPosition.x, top: windowPosition.y }}
           >
             <div className="abs-center">

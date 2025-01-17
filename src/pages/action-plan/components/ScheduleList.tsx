@@ -39,9 +39,9 @@ const ScheduleList: FC<PropsType> = memo(() => {
   }
 
   return (
-    <div className="h-full min-w-[350px] w-[350px] border-r border-solid border-ground-250 flex flex-col">
+    <div className="h-full min-w-[350px] w-[350px] border-r border-solid border-ground-4 flex flex-col">
       <h2 className="p-3 py-2 text-white">{t('schedue.list.title')}</h2>
-      <div className="h-[1px] bg-ground-250" />
+      <div className="h-[1px] bg-ground-4" />
       <ScrollArea className="grow">
         {isLoading || !data ? (
           <AppSpin />

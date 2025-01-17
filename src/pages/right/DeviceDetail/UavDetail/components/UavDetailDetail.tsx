@@ -45,6 +45,9 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
 
   const controlTag = useUavControlRoomStore((s) => s.state.controlTag)
   const uuid = useUavControlRoomStore((s) => s.uuid)
+
+  console.log('controlTag', controlTag)
+  console.log('uuid', uuid)
   const videoSource = useUavControlRoomStore((s) => s.state.videoSource)
 
   const { t } = useTranslation()
@@ -64,7 +67,10 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
       />
 
       <section className="m-3 rounded overflow-hidden">
-        <UavDetailVideo videoSource={videoSource ?? ''} sn={isRtcDemo ? data.sn: undefined}/>
+        <UavDetailVideo
+          videoSource={videoSource ?? ''}
+          sn={isRtcDemo ? data.sn : undefined}
+        />
       </section>
 
       <section className="mx-3 mr-[9px] my-3 flex gap-2">

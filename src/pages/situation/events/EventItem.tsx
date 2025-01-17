@@ -25,8 +25,8 @@ const EventItem: FC<PropsType> = memo(({ data, active }) => {
   return (
     <li
       className={clsx(
-        'p-3 bg-ground-100 rounded-[3px] transition-colors cursor-pointer',
-        'border border-solid border-ground-200 hover:border-primary text-sm',
+        'p-3 bg-ground-1 rounded-[3px] transition-colors cursor-pointer',
+        'border border-solid border-ground-3 hover:border-primary text-sm',
         {
           'border-primary': active,
         },

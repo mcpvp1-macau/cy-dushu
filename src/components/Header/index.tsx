@@ -20,10 +20,10 @@ const Header: FC<PropsType> = memo(() => {
   const { i18n } = useTranslation()
 
   return (
-    <header className="h-[38px] bg-ground-100 flex items-center justify-between border-b border-solid border-ground-300 z-20">
+    <header className="h-[38px] bg-ground-1 flex items-center justify-between border-b border-solid border-ground-5 z-20">
       {/* 左边 */}
       <div className="pl-1 flex items-center gap-3">
-        <div className="w-[30px] max-w-[30px] h-[30px] max-h-[30px] p-1.5 bg-ground-200 text-fore text-center flex items-center justify-center rounded">
+        <div className="w-[30px] max-w-[30px] h-[30px] max-h-[30px] p-1.5 bg-ground-3 text-fore text-center flex items-center justify-center rounded">
           <img
             src={globalConfig.logo ?? '/logo.svg'}
             className="w-full h-full object-contain select-none"

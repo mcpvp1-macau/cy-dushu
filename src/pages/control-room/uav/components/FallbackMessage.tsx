@@ -82,7 +82,7 @@ const FallbackMessage: FC<PropsType> = memo(() => {
             placement="bottomLeft"
           >
             <div className="flex gap-3">
-              <div className="px-2 py-1 text-white text-sm rounded-[3px] bg-ground-180">
+              <div className="px-2 py-1 text-white text-sm rounded-[3px] bg-ground-2">
                 {renderMsgs.length}
               </div>
               <div className="max-w-64">{renderMsgs[0]}</div>
@@ -91,7 +91,7 @@ const FallbackMessage: FC<PropsType> = memo(() => {
         </>
       )}
       {mode && (
-        <div className="text-sm px-2 py-1 bg-ground-200 bg-opacity-80 rounded-[3px]">
+        <div className="text-sm px-2 py-1 bg-ground-3 bg-opacity-80 rounded-[3px]">
           {mode}
         </div>
       )}

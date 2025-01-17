@@ -19,7 +19,7 @@ const useRobControlPower = () => {
         deviceId,
         {
           controlTag: uuid,
-          oeprator: username,
+          operator: username,
         },
         { msgPrefix: '控制权获取失败' },
       ),

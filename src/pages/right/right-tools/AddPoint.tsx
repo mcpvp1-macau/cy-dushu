@@ -62,7 +62,7 @@ const AddPoint: FC<PropsType> = memo(() => {
                 {presetColors.map((color) => (
                   <button
                     key={color}
-                    className="flex items-center gap-2 justify-center hover:bg-ground-300 p-1 rounded-md hover:scale-125 transition-all"
+                    className="flex items-center gap-2 justify-center hover:bg-ground-5 p-1 rounded-md hover:scale-125 transition-all"
                     onClick={() => {
                       updateDrawing(DrawType.Point)
                       updateDrawingColor(color)

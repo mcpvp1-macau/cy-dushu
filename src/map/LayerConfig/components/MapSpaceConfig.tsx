@@ -113,7 +113,7 @@ const MapSpaceConfig: FC<PropsType> = memo(({ data }) => {
         className="h-full w-full object-cover select-none pointer-events-none"
       />
 
-      <div className="absolute bottom-0 left-0 right-0 px-3 bg-ground-100 bg-opacity-70 backdrop-blur flex justify-between">
+      <div className="absolute bottom-0 left-0 right-0 px-3 bg-ground-1 bg-opacity-70 backdrop-blur flex justify-between">
         <p>
           <Checkbox
             checked={activeSpaceIds.has(data.spaceId)}

@@ -90,7 +90,7 @@ const PageOrganization: FC<PropsType> = memo(() => {
   const { handleValueChange, handlePaginationChange } = usePageSearchParams()
 
   return (
-    <div className="page-full p-3 bg-ground-180 flex flex-col overflow-y-hidden">
+    <div className="page-full p-3 bg-ground-2 flex flex-col overflow-y-hidden">
       <h2 className="text-white">组织</h2>
       <section className="mt-3 flex gap-2">
         <Input.Search
@@ -109,7 +109,7 @@ const PageOrganization: FC<PropsType> = memo(() => {
         />
       </section>
       <section className="mt-3 grow flex flex-col overflow-hidden">
-        <div className="flex-1 border border-solid border-ground-100 rounded-[3px] overflow-hidden">
+        <div className="flex-1 border border-solid border-ground-1 rounded-[3px] overflow-hidden">
           <ScrollArea className="size-full x-table">
             <XTable table={table} loading={isLoading || isRefetching} />
             <ScrollBar orientation="horizontal" />

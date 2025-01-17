@@ -76,7 +76,7 @@ const App = () => {
           <div className="flex-grow overflow-hidden">
             <div className="h-full flex overflow-hidden">
               <AppNavigator />
-              <main className="flex-grow bg-ground-100 relative overflow-hidden z-10">
+              <main className="flex-grow bg-ground-1 relative overflow-hidden z-10">
                 <div className="absolute h-full z-20 overflow-hidden">
                   <AppViewSuspense>
                     <Outlet />

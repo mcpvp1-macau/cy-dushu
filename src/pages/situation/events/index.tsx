@@ -105,7 +105,7 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
           tooltipProps={{ title: t('events.filter.title') }}
           trigger={['click']}
           dropdownRender={() => (
-            <div className="bg-ground-200 p-3 rounded">
+            <div className="bg-ground-3 p-3 rounded">
               <div className="flex gap-2 items-center">
                 <div className="h-[10px] w-[2px] bg-green-500 rounded-sm" />
                 <span className="text-white">

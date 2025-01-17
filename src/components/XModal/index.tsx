@@ -29,10 +29,10 @@ const XModal: FC<PropsType> = ({
   return (
     <ConfigProvider
       theme={{
-        token: {
-          borderRadius: 3,
-          controlHeight: 30,
+        cssVar: {
+          key: 'dushu',
         },
+        hashed: false,
         components: {
           Modal: {
             contentBg: '#1c2630',

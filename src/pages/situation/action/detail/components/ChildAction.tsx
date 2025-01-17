@@ -140,8 +140,8 @@ const ChildAction: FC<PropsType> = memo(({ data }) => {
   return (
     <li
       className={clsx(
-        'flex flex-col p-3 text-fore rounded-[3px] bg-ground-100',
-        'border border-ground-250 border-solid',
+        'flex flex-col p-3 text-fore rounded-[3px] bg-ground-1',
+        'border border-ground-4 border-solid',
       )}
     >
       <div className="flex items-center justify-between mb-0.5">

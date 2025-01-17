@@ -104,7 +104,7 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
               <Row gutter={[12, 12]}>
                 {records.map((e) => (
                   <Col key={e.id} span={24} md={12} lg={8}>
-                    <div className="h-20 p-2 flex items-center gap-2 border border-solid border-ground-300 rounded-[3px]">
+                    <div className="h-20 p-2 flex items-center gap-2 border border-solid border-ground-5 rounded-[3px]">
                       <div className="h-full aspect-[4/3]">
                         <Image
                           src={`/storage/${e.url}`}

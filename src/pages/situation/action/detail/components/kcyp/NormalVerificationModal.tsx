@@ -14,15 +14,15 @@ import { memo, ReactNode, type FC } from 'react'
 const HeadLine: FC<{ title: string; suc?: boolean }> = memo(
   ({ title, suc }) => {
     return (
-      <ul className="bg-ground-200 flex text-white h-[38px]">
+      <ul className="bg-ground-3 flex text-white h-[38px]">
         <li className="w-[160px] px-3 py-1 flex items-center gap-1">
           {title}
           {suc === true && <CheckCircleFilled className="text-green-400" />}
           {suc === false && <CloseCircleFilled className="text-red-400" />}
         </li>
-        <li className="flex-1 border-l border-solid border-ground-300"></li>
-        <li className="w-[160px] px-3 py-1 flex items-center border-l border-solid border-ground-300"></li>
-        <li className="flex-1 border-l border-solid border-ground-300"></li>
+        <li className="flex-1 border-l border-solid border-ground-5"></li>
+        <li className="w-[160px] px-3 py-1 flex items-center border-l border-solid border-ground-5"></li>
+        <li className="flex-1 border-l border-solid border-ground-5"></li>
       </ul>
     )
   },
@@ -31,17 +31,17 @@ const HeadLine: FC<{ title: string; suc?: boolean }> = memo(
 const Line: FC<{ items: [ReactNode, ReactNode, ReactNode, ReactNode] }> = memo(
   ({ items }) => {
     return (
-      <ul className="bg-ground-100 flex text-white">
+      <ul className="bg-ground-1 flex text-white">
         <li className="w-[160px] flex-shrink-0 px-3 py-1 flex items-center">
           {items[0]}
         </li>
-        <li className="flex-1 border-l px-3 py-1 border-solid border-ground-300">
+        <li className="flex-1 border-l px-3 py-1 border-solid border-ground-5">
           {items[1]}
         </li>
-        <li className="w-[160px] flex-shrink-0 px-3 py-1 flex items-center border-l border-solid border-ground-300">
+        <li className="w-[160px] flex-shrink-0 px-3 py-1 flex items-center border-l border-solid border-ground-5">
           {items[2]}
         </li>
-        <li className="flex-1 border-l px-3 py-1 border-solid border-ground-300">
+        <li className="flex-1 border-l px-3 py-1 border-solid border-ground-5">
           {items[3]}
         </li>
       </ul>
@@ -369,7 +369,7 @@ const KCYPNormalVerificationModal: FC<PropsType> = memo(
                       />
                     </Form.Item>
                   </div>
-                  <div className="w-full overflow-hidden aspect-video border border-solid border-ground-300">
+                  <div className="w-full overflow-hidden aspect-video border border-solid border-ground-5">
                     <ImageContainBox
                       src={`/storage${e.image || e.sourceImage}`}
                     />

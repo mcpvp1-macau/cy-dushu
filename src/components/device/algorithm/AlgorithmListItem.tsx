@@ -121,7 +121,7 @@ const AlgorithmListItem: FC<PropsType> = memo(
     )
 
     return (
-      <div className="flex bg-ground-200 p-2 gap-2 rounded-[3px]">
+      <div className="flex bg-ground-3 p-2 gap-2 rounded-[3px]">
         <div>
           <Icon className="text-fore" />
         </div>

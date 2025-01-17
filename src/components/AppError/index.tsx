@@ -40,7 +40,7 @@ const Content = () => {
       <div className="flex flex-col items-center gap-3 text-white">
         <pre className="text-lg">{error.message}</pre>
         {import.meta.env.DEV && (
-          <pre className="text-sm text-red-600 my-3 bg-ground-200 p-2 rounded-lg border border-solid border-red-800">
+          <pre className="text-sm text-red-600 my-3 bg-ground-3 p-2 rounded-lg border border-solid border-red-800">
             {error.stack}
           </pre>
         )}
@@ -64,7 +64,7 @@ const Content = () => {
 
 const AppErrorBoundary: FC<ErrorBoundaryProps> = memo(() => {
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-ground-100">
+    <div className="w-screen h-screen flex items-center justify-center bg-ground-1">
       <Content />
     </div>
   )

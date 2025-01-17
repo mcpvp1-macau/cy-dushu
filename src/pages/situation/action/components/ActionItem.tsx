@@ -29,8 +29,8 @@ const ActionItem: FC<PropsType> = memo(({ data }) => {
     <Link
       to={`/action/${data.id}`}
       className={clsx(
-        'p-3 bg-ground-100 rounded-[3px] transition-colors cursor-pointer',
-        'border border-solid border-ground-200 hover:border-primary',
+        'p-3 bg-ground-1 rounded-[3px] transition-colors cursor-pointer',
+        'border border-solid border-ground-3 hover:border-primary',
       )}
     >
       <div className="flex items-center">

@@ -6,7 +6,7 @@ type PropsType = unknown
 
 const PageSchedule: FC<PropsType> = memo(() => {
   return (
-    <div className="page-full bg-ground-140">
+    <div className="page-full bg-ground-2">
       <div className="h-full flex">
         <ScheduleList />
         <AppViewSuspense>

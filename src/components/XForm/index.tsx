@@ -143,6 +143,10 @@ const XForm: FC<PropsType> = memo(
     return (
       <ConfigProvider
         theme={{
+          cssVar: {
+            key: 'dushu',
+          },
+          hashed: false,
           components: {
             Form: themeConfig,
           },

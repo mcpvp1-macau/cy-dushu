@@ -70,7 +70,7 @@ const AppNavigator: FC<PropsType> = memo(() => {
   const usedKey = useMemo(() => new Set(matches.map((m) => m.id)), [matches])
 
   return (
-    <nav className="h-full w-[38px] bg-ground-100 z-20 shadow-[0_2px_4px_#00000080]">
+    <nav className="h-full w-[38px] bg-ground-1 z-20 shadow-[0_2px_4px_#00000080]">
       <ul className="flex flex-col items-center py-3 gap-3">
         {renderMenus.map((e) => (
           <li key={e.id}>
@@ -78,7 +78,7 @@ const AppNavigator: FC<PropsType> = memo(() => {
               to={e.path}
               className={twMerge(
                 clsx(
-                  'w-[28px] h-[28px] bg-ground-200 border border-solid border-ground-300 rounded',
+                  'w-[28px] h-[28px] bg-ground-3 border border-solid border-ground-5 rounded',
                   'flex justify-center items-center',
                   'hover:border-fore transition-all duration-500',
                   {

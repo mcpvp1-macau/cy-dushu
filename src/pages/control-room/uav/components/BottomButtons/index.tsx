@@ -218,14 +218,14 @@ const BottomButtons: FC<PropsType> = memo(() => {
     <div className={clsx('flex items-center select-none font-[Consolas]')}>
       {/* 左 */}
       <div className="flex flex-col gap-1">
-        <div className="border border-solid rounded bg-ground-100 border-ground-300 flex overflow-hidden">
+        <div className="border border-solid rounded bg-ground-1 border-ground-5 flex overflow-hidden">
           {buttons.slice(0, 3).map((e) => (
             <Tooltip key={e.btn} title={e.label} placement="top">
               <button
                 disabled={!hasControlPower || isLimitedFly}
                 className={clsx(
                   'flex flex-col gap-1 items-center p-1 px-2 hover:bg-primary hover:text-white',
-                  'disabled:opacity-50 disabled:hover:bg-ground-100 disabled:cursor-not-allowed',
+                  'disabled:opacity-50 disabled:hover:bg-ground-1 disabled:cursor-not-allowed',
                   {
                     'bg-primary text-white':
                       uavControlInfo[e.identifier] * e.value[e.identifier]! > 0,
@@ -249,14 +249,14 @@ const BottomButtons: FC<PropsType> = memo(() => {
           </span>
           <span className="text-lg">{speed?.toFixed?.(1)}</span>
         </div>
-        <div className="border border-solid rounded bg-ground-100 border-ground-300 flex overflow-hidden">
+        <div className="border border-solid rounded bg-ground-1 border-ground-5 flex overflow-hidden">
           {buttons.slice(3, 6).map((e) => (
             <Tooltip key={e.btn} title={e.label} placement="top">
               <button
                 disabled={!hasControlPower || isLimitedFly}
                 className={clsx(
                   'flex flex-col gap-1 items-center p-1 px-2 hover:bg-primary hover:text-white',
-                  'disabled:opacity-50 disabled:hover:bg-ground-100 disabled:cursor-not-allowed',
+                  'disabled:opacity-50 disabled:hover:bg-ground-1 disabled:cursor-not-allowed',
                   {
                     'bg-primary text-white':
                       uavControlInfo[e.identifier] * e.value[e.identifier]! > 0,
@@ -292,12 +292,12 @@ const BottomButtons: FC<PropsType> = memo(() => {
       <div className="flex flex-col gap-1">
         <div className="flex gap-3">
           <Tooltip title={buttons[6].label} placement="top">
-            <div className="border border-solid rounded bg-ground-100 border-ground-300 flex overflow-hidden">
+            <div className="border border-solid rounded bg-ground-1 border-ground-5 flex overflow-hidden">
               <button
                 disabled={!hasControlPower || isLimitedFly}
                 className={clsx(
                   'flex flex-col gap-1 items-center p-1 px-2 hover:bg-primary hover:text-white',
-                  'disabled:opacity-50 disabled:hover:bg-ground-100 disabled:cursor-not-allowed',
+                  'disabled:opacity-50 disabled:hover:bg-ground-1 disabled:cursor-not-allowed',
                   {
                     'bg-primary text-white':
                       uavControlInfo.z! * buttons[6].value.z! > 0,
@@ -311,14 +311,14 @@ const BottomButtons: FC<PropsType> = memo(() => {
               </button>
             </div>
           </Tooltip>
-          <div className="border border-solid rounded bg-ground-100 border-ground-300 flex flex-col overflow-hidden">
+          <div className="border border-solid rounded bg-ground-1 border-ground-5 flex flex-col overflow-hidden">
             {gimbalButtons.slice(0, 2).map((e) => (
               <Tooltip key={e.btn} title={e.label} placement="top">
                 <button
                   disabled={!isGimbalSource}
                   className={clsx(
                     'flex-1 px-2 hover:bg-primary hover:text-white',
-                    'disabled:opacity-50 disabled:hover:bg-ground-100 disabled:cursor-not-allowed',
+                    'disabled:opacity-50 disabled:hover:bg-ground-1 disabled:cursor-not-allowed',
                     {
                       'bg-primary text-white':
                         gimbalControlInfo[e.identifier] *
@@ -345,12 +345,12 @@ const BottomButtons: FC<PropsType> = memo(() => {
         </div>
         <div className="flex gap-3">
           <Tooltip title={buttons[7].label} placement="top">
-            <div className="border border-solid rounded bg-ground-100 border-ground-300 flex overflow-hidden">
+            <div className="border border-solid rounded bg-ground-1 border-ground-5 flex overflow-hidden">
               <button
                 disabled={!hasControlPower || isLimitedFly}
                 className={clsx(
                   'flex flex-col gap-1 items-center p-1 px-2 hover:bg-primary hover:text-white',
-                  'disabled:opacity-50 disabled:hover:bg-ground-100 disabled:cursor-not-allowed',
+                  'disabled:opacity-50 disabled:hover:bg-ground-1 disabled:cursor-not-allowed',
                   {
                     'bg-primary text-white':
                       uavControlInfo.z! * buttons[7].value.z! > 0,
@@ -364,14 +364,14 @@ const BottomButtons: FC<PropsType> = memo(() => {
               </button>
             </div>
           </Tooltip>
-          <div className="border border-solid rounded bg-ground-100 border-ground-300 flex flex-col overflow-hidden">
+          <div className="border border-solid rounded bg-ground-1 border-ground-5 flex flex-col overflow-hidden">
             {gimbalButtons.slice(2, 4).map((e) => (
               <Tooltip key={e.btn} title={e.label} placement="top">
                 <button
                   disabled={!isGimbalSource}
                   className={clsx(
                     'flex-1 px-2 hover:bg-primary hover:text-white',
-                    'disabled:opacity-50 disabled:hover:bg-ground-100 disabled:cursor-not-allowed',
+                    'disabled:opacity-50 disabled:hover:bg-ground-1 disabled:cursor-not-allowed',
                     {
                       'bg-primary text-white':
                         gimbalControlInfo[e.identifier] *

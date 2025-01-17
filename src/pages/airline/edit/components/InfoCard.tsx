@@ -66,7 +66,7 @@ const AirlineInfoCard: FC<PropsType> = memo(() => {
   }, [totalDistance])
 
   return (
-    <ul className="card-border flex p-3 px-1 text-xs text-center bg-[#1c2630] divide-x divide-ground-300">
+    <ul className="card-border flex p-3 px-1 text-xs text-center bg-[#1c2630] divide-x divide-ground-5">
       <li className="grow">
         <p>{t('wayline.info.length.title')}</p>
         <p className="mt-1 text-white text-sm">{distanceFmt}</p>

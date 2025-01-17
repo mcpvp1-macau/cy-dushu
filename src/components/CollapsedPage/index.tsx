@@ -23,7 +23,7 @@ const CollapsedPage: FC<PropsType> = memo(({ children }) => {
         {children}
       </div>
       <button
-        className="bg-[#141d28e6] h-12 border border-solid border-ground-250 rounded-r mt-12 text-fore hover:text-primary origin-top-left scale-90"
+        className="bg-[#141d28e6] h-12 border border-solid border-ground-4 rounded-r mt-12 text-fore hover:text-primary origin-top-left scale-90"
         onClick={() => setOpen(!open)}
       >
         {open ? (
