@@ -1,8 +1,9 @@
+import { hmsTransMap } from '@/constant/trans_map/hms'
+import { uavDisplayModeTransMap } from '@/constant/trans_map/uav_display_mode'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
 import { Popover } from 'antd'
-import { memo, type FC } from 'react'
 
 type PropsType = unknown
 
@@ -15,7 +16,19 @@ const FallbackMessage: FC<PropsType> = memo(() => {
   const isONLINE = onlineStatus === 'ONLINE'
   const wsReadyState = useUavControlRoomStore((s) => s.wsReadyState)
 
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+
+  const getColor = (type: string) => {
+    if (type === 'Error') {
+      return '#DD4444'
+    } else if (type === 'Warn') {
+      return '#F29D49'
+    } else if (type === 'Info') {
+      return '#262e36'
+    } else {
+      return undefined
+    }
+  }
 
   const formatMsg = useMemoizedFn((msg: string) => {
     let info = '',
@@ -23,10 +36,19 @@ const FallbackMessage: FC<PropsType> = memo(() => {
     if (!msg) {
       return { info, color }
     }
+
     if (!isONLINE) {
       info = t('controlRoom.uav.healthInfo.offline')
       color = '#DD4444'
     }
+
+    if (msg.includes('||')) {
+      const [type, message] = msg.split('||')
+      info = hmsTransMap[message]?.[i18n.language] || message
+      color = getColor(type)
+      return { info, color }
+    }
+
     let i = msg.indexOf('Error')
     if (i >= 0) {
       info = msg.slice(i + 5)
@@ -69,9 +91,14 @@ const FallbackMessage: FC<PropsType> = memo(() => {
     if (!displayMode) {
       return ''
     }
-    const isFly = (displayMode as string).includes?.('指点飞行')
-    return isFly ? '指点飞行' : displayMode
-  }, [wsReadyState, isONLINE, displayMode])
+    const isFly =
+      (displayMode as string).startsWith?.('指点飞行') ||
+      (displayMode as string).startsWith?.('10000')
+    return isFly
+      ? t('controlRoom.uav.service.tapToFly.title')
+      : uavDisplayModeTransMap[displayMode || '']?.[i18n.language] ||
+          displayMode
+  }, [wsReadyState, isONLINE, displayMode, i18n.language])
 
   return (
     <>

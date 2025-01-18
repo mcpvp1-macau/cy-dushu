@@ -46,8 +46,6 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
   const controlTag = useUavControlRoomStore((s) => s.state.controlTag)
   const uuid = useUavControlRoomStore((s) => s.uuid)
 
-  console.log('controlTag', controlTag)
-  console.log('uuid', uuid)
   const videoSource = useUavControlRoomStore((s) => s.state.videoSource)
 
   const { t } = useTranslation()

@@ -1,5 +1,10 @@
 import config from '@/global/config'
-import { shouldShowError, unAuthorized, withToken } from './interceptors'
+import {
+  shouldShowError,
+  unAuthorized,
+  withInternational,
+  withToken,
+} from './interceptors'
 import LiqunAxios from './liqunAxios'
 
 const serverVideo = new LiqunAxios<'common'>({
@@ -8,6 +13,7 @@ const serverVideo = new LiqunAxios<'common'>({
 })
 
 serverVideo.interceptors.request.use(withToken)
+serverVideo.interceptors.request.use(withInternational)
 
 serverVideo.interceptors.response.use(unAuthorized, unAuthorized)
 

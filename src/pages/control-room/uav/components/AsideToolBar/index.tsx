@@ -2,7 +2,7 @@ import IconLaser from '@/assets/icons/jsx/uav/IconLaser'
 import IconPositionZoom from '@/assets/icons/jsx/uav/IconPositionZoom'
 import IconButton from '@/components/ui/button/IconButton'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import { lazy, memo, type FC } from 'react'
+import { lazy } from 'react'
 import CameraMode from './CameraMode'
 import TakePhoto from './TakePhoto'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
@@ -12,8 +12,8 @@ import IconSetting from '@/assets/icons/jsx/IconSetting'
 import { ConfigProvider, Drawer } from 'antd'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import ZoomFocusMode from './ZoomFucusMode'
-import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import IconSmartTrack from '@/assets/icons/jsx/uav/IconSmartTrack'
+import usePostDeviceService from '../../hooks/usePostDeviceService'
 
 const VRSetting = lazy(() => import('@/components/Header/setting/VRSetting'))
 
@@ -28,9 +28,12 @@ const AsideToolBar: FC<PropsType> = memo(() => {
   const openLarser = useUavControlRoomStore((s) => s.openLarser)
   const updateOpenLarser = useUavControlRoomStore((s) => s.updateOpenLarser)
   const openPositionZoom = useUavControlRoomStore((s) => s.openPointZoom)
+
+  const enableSmartTrack = useUavControlRoomStore((s) => s.enableSmartTrack)
   const updateEnableSmartTrack = useUavControlRoomStore(
     (s) => s.updateEnableSmartTrack,
   )
+
   const updateOpenPositionZoom = useUavControlRoomStore(
     (s) => s.updateOpenPointZoom,
   )
@@ -57,9 +60,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
   const [vrSetting, { setTrue: setVRTrue, setFalse: setVRFalse }] =
     useBoolean(false)
 
-  const productKey = useDeviceDetailStore((s) => s.productKey)
-  const deviceId = useDeviceDetailStore((s) => s.deviceId)
-  const postDeviceService = usePostDeviceService(productKey, deviceId)
+  const postDeviceService = usePostDeviceService()
 
   return (
     <div className="px-3 py-1 flex gap-2.5 text-base">
@@ -107,7 +108,15 @@ const AsideToolBar: FC<PropsType> = memo(() => {
             toolTipProps={{
               title: t('controlRoom.uav.service.smartTrack.title'),
             }}
-            onClick={() => updateEnableSmartTrack()}
+            active={enableSmartTrack}
+            onClick={() => {
+              if (!enableSmartTrack) {
+                updateEnableSmartTrack(true)
+                updateOpenPositionZoom(0)
+              } else {
+                updateEnableSmartTrack(false)
+              }
+            }}
           >
             <IconSmartTrack />
           </IconButton>

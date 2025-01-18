@@ -230,6 +230,10 @@ action:
           label: 是否第一现场
         accidentTime:
           label: 事故类型
+        carType:
+          label: 一方车辆种类
+        otherCarType:
+          label: 另一方车辆类型
     task:
       title: 任务列表
       edit:
@@ -365,6 +369,10 @@ common:
   connectionLost: 连接断开
   preparing: 准备中
   arriving: 即将到达
+  autoFit: 自适应
+  default: 默认
+  lowDelay: 低延时
+  highQuality: 高质量
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索

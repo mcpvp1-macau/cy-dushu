@@ -1,0 +1,90 @@
+{
+  "0": {
+    "en": "Standby",
+    "zh": "待机"
+  },
+  "1": {
+    "en": "Takeoff preparation",
+    "zh": "起飞准备"
+  },
+  "10": {
+    "en": "Automatic landing",
+    "zh": "自动降落"
+  },
+  "10000": {
+    "en": "Fly to point",
+    "zh": "指点飞行"
+  },
+  "10001": {
+    "en": "Platform fly",
+    "zh": "平台飞行"
+  },
+  "11": {
+    "en": "Forced landing",
+    "zh": "强制降落"
+  },
+  "12": {
+    "en": "Three-blade landing",
+    "zh": "三桨叶降落"
+  },
+  "13": {
+    "en": "Upgrading",
+    "zh": "升级中"
+  },
+  "14": {
+    "en": "Not connected",
+    "zh": "未连接"
+  },
+  "15": {
+    "en": "APAS",
+    "zh": "APAS"
+  },
+  "16": {
+    "en": "Virtual stick state",
+    "zh": "虚拟摇杆状态"
+  },
+  "17": {
+    "en": "Live flight Controls",
+    "zh": "指令飞行"
+  },
+  "18": {
+    "en": "Airborne RTK fixing mode",
+    "zh": "空中 RTK 收敛模式"
+  },
+  "19": {
+    "en": "Dock address selecting",
+    "zh": "机场选址中"
+  },
+  "2": {
+    "en": "Takeoff preparation completed",
+    "zh": "起飞准备完毕"
+  },
+  "3": {
+    "en": "Manual flight",
+    "zh": "手动飞行"
+  },
+  "4": {
+    "en": "Automatic takeoff",
+    "zh": "自动起飞"
+  },
+  "5": {
+    "en": "Wayline flight",
+    "zh": "航线飞行"
+  },
+  "6": {
+    "en": "Panoramic photography",
+    "zh": "全景拍照"
+  },
+  "7": {
+    "en": "Intelligent tracking",
+    "zh": "智能跟随"
+  },
+  "8": {
+    "en": "ADS-B avoidance",
+    "zh": "ADS-B 躲避"
+  },
+  "9": {
+    "en": "Auto returning to home",
+    "zh": "自动返航"
+  }
+}

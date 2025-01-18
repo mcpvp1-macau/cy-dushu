@@ -1,5 +1,5 @@
 import config from '@/global/config'
-import { unAuthorized, withToken } from './interceptors'
+import { unAuthorized, withInternational, withToken } from './interceptors'
 import LiqunAxios from './liqunAxios'
 
 const serverGeoSearch = new LiqunAxios<'T'>({
@@ -8,6 +8,7 @@ const serverGeoSearch = new LiqunAxios<'T'>({
 })
 
 serverGeoSearch.interceptors.request.use(withToken)
+serverGeoSearch.interceptors.request.use(withInternational)
 
 serverGeoSearch.interceptors.response.use(unAuthorized, unAuthorized)
 

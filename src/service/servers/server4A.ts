@@ -1,4 +1,9 @@
-import { shouldShowError, unAuthorized, withToken } from './interceptors'
+import {
+  shouldShowError,
+  unAuthorized,
+  withInternational,
+  withToken,
+} from './interceptors'
 import LiqunAxios from './liqunAxios'
 
 const server4A = new LiqunAxios<'common'>({
@@ -7,6 +12,7 @@ const server4A = new LiqunAxios<'common'>({
 })
 
 server4A.interceptors.request.use(withToken)
+server4A.interceptors.request.use(withInternational)
 
 server4A.interceptors.response.use(unAuthorized, unAuthorized)
 

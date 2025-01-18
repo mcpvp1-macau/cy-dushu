@@ -10,7 +10,7 @@ const FloatIconButtonGroup: FC<PropsType> = memo(
     return (
       <div
         className={clsx(
-          'flex items-center bg-[#16202BCC] rounded gap-[1px] bg-ground-4 overflow-hidden shadow',
+          'flex items-center rounded gap-[1px] bg-ground-4 overflow-hidden shadow',
           'border border-solid border-ground-4',
           {
             'flex-col': mode === 'vertical',

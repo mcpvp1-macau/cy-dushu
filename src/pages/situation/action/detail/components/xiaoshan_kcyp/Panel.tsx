@@ -1,26 +1,26 @@
 import AppSpin from '@/components/AppSpin'
-import { getKCYPOrder, saveKCYPOrder } from '@/service/modules/action/kcyp'
-import { createFormItems, statusColorMap } from './normal.constant'
+import { getXSKCYPOrder, saveXSKCYPOrder } from '@/service/modules/action/kcyp'
+import { createFormItems } from './constant'
 import XForm from '@/components/XForm'
 import { useDictOptions } from '@/store/useDict.store'
 import { ProcessStatusEnum } from '@/service/modules/action/kcyp/enum'
 import { useDebounceFn } from 'ahooks'
 import { Form } from 'antd'
 import { DictEnum } from '@/enum/dict'
-import useWatch from '@/hooks/useWatch'
 import dayjs from 'dayjs'
+import { statusColorMap } from '../kcyp/normal.constant'
 
 type PropsType = { actionId: string }
 
-/** 快处易赔 基础面板 */
-const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
+/** 萧山 快处易赔 基础面板 */
+const KCYPXSPanel: FC<PropsType> = memo(({ actionId }) => {
   const queryClient = useQueryClient()
   const { t, i18n } = useTranslation()
 
   const { data, isLoading } = useQuery(
     {
       queryKey: ['getKYCPOrder', actionId],
-      queryFn: () => getKCYPOrder({ caseId: actionId }),
+      queryFn: () => getXSKCYPOrder({ caseId: actionId }),
       enabled: !!actionId,
       select: (d) => d.data,
       staleTime: 1000 * 60 * 2,
@@ -29,49 +29,31 @@ const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
   )
   const [form] = Form.useForm()
 
-  useWatch(
-    data,
-    (newData) => {
-      queueMicrotask(() => {
-        if (!newData) {
-          return
-        }
-        form.setFieldsValue({
-          ...data,
-          caseHapTime: dayjs(data?.caseHapTime),
-          brokenPart: data?.brokenPart?.split(','),
-          otherBrokenPart: data?.otherBrokenPart?.split(','),
-        })
-      })
-    },
-    true,
-  )
+  useEffect(() => {
+    if (!data) {
+      return
+    }
+    form.setFieldsValue({
+      ...data,
+      caseHapTime: dayjs(data?.caseHapTime),
+    })
+  }, [data])
 
-  const cardTypeOptions = useDictOptions(DictEnum.KCYP_CARD_TYPE)
-  const brokenPartTypeOptions = useDictOptions(DictEnum.KCYP_BROKEN_PART_TYPE)
-  const firstSceneOptions = useDictOptions(DictEnum.KCYP_FIRSTSCENE)
-  const accidentTypeOptions = useDictOptions(DictEnum.KCYP_ACCIDENT_TYPE)
+  const cardTypeOptions = useDictOptions(DictEnum.XIAOSHAN_KCYP_CARD_TYPE)
+  const carTypeOptions = useDictOptions(DictEnum.XIAOSHAN_KCYP_CAR_TYPE)
 
   const formItems = useMemo(
     () =>
       createFormItems({
         t,
         cardTypeOptions,
-        brokenPartTypeOptions,
-        firstSceneOptions,
-        accidentTypeOptions,
+        carTypeOptions,
       }),
-    [
-      i18n.language,
-      cardTypeOptions,
-      brokenPartTypeOptions,
-      firstSceneOptions,
-      accidentTypeOptions,
-    ],
+    [i18n.language, cardTypeOptions, carTypeOptions],
   )
 
   const saveMutation = useMutation({
-    mutationFn: saveKCYPOrder,
+    mutationFn: saveXSKCYPOrder,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['getKYCPOrder', actionId],
@@ -82,13 +64,11 @@ const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
   const { run: save } = useDebounceFn(
     async (values: any) => {
       await form.validateFields()
-      const { caseHapTime, brokenPart, otherBrokenPart } = values
+      const { caseHapTime } = values
       const caseHapTimeFormat = dayjs(caseHapTime).valueOf()
       saveMutation.mutate({
         ...data,
         ...values,
-        brokenPart: brokenPart.join(','),
-        otherBrokenPart: otherBrokenPart.join(','),
         caseHapTime: caseHapTimeFormat,
       })
     },
@@ -137,6 +117,6 @@ const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
   )
 })
 
-KCYPNormalPanel.displayName = 'KCYPNormalPanel'
+KCYPXSPanel.displayName = 'KCYPXSPanel'
 
-export default KCYPNormalPanel
+export default KCYPXSPanel

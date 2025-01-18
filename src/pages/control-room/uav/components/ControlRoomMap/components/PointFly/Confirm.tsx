@@ -1,7 +1,6 @@
 import PositionTooltip from '@/components/map/PostionTooltip'
 import FormModal from '@/components/XForm/Modal'
-import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
-import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import usePostDeviceService from '@/pages/control-room/uav/hooks/usePostDeviceService'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { getSpaceDistance } from '@/utils/geo-math'
 import { InfoCircleOutlined } from '@ant-design/icons'
@@ -32,9 +31,7 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
 
   const predicateTime = distance / speed / 60
 
-  const deviceId = useDeviceDetailStore((s) => s.deviceId)
-  const productKey = useDeviceDetailStore((s) => s.productKey)
-  const postService = usePostDeviceService(productKey, deviceId)
+  const postService = usePostDeviceService()
 
   const [
     paramsOpen,
@@ -90,14 +87,14 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
               {t('modal.cancel')}
             </Button>
             <Button size="small" type="primary" onClick={setParamsOpenTrue}>
-              {t('controlRoom.uav.service.tapToFly')}
+              {t('controlRoom.uav.service.tapToFly.title')}
             </Button>
           </p>
         </div>
       </PositionTooltip>
       {paramsOpen && (
         <FormModal
-          title={t('controlRoom.uav.service.tapToFly')}
+          title={t('controlRoom.uav.service.tapToFly.title')}
           initialValues={{
             height: 200,
             speed: 10,

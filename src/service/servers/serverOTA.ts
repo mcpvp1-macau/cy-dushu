@@ -1,5 +1,10 @@
 import config from '@/global/config'
-import { shouldShowError, unAuthorized, withToken } from './interceptors'
+import {
+  shouldShowError,
+  unAuthorized,
+  withInternational,
+  withToken,
+} from './interceptors'
 import LiqunAxios from './liqunAxios'
 
 const serverOTA = new LiqunAxios<'common'>({
@@ -8,6 +13,7 @@ const serverOTA = new LiqunAxios<'common'>({
 })
 
 serverOTA.interceptors.request.use(withToken)
+serverOTA.interceptors.request.use(withInternational)
 
 serverOTA.interceptors.response.use(unAuthorized, unAuthorized)
 

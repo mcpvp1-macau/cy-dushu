@@ -117,13 +117,23 @@ ServiceItem.displayName = 'ServiceItem'
 
 // ----------------------------------------------------------------------------
 
-const statusMap: Record<string, string> = {
-  sent: '已下发',
-  in_progress: '执行中',
-  ok: '执行成功',
-  failed: '执行失败',
-  canceled: '执行取消',
-  timeout: '执行超时',
+const statusMap: Record<string, Record<string, string>> = {
+  en: {
+    sent: 'Sent',
+    in_progress: 'In Progress',
+    ok: 'Success',
+    failed: 'Failed',
+    canceled: 'Canceled',
+    timeout: 'Timeout',
+  },
+  zh: {
+    sent: '已下发',
+    in_progress: '执行中',
+    ok: '执行成功',
+    failed: '执行失败',
+    canceled: '执行取消',
+    timeout: '执行超时',
+  },
 }
 
 const colorMap: Record<string, string> = {
@@ -131,18 +141,33 @@ const colorMap: Record<string, string> = {
   failed: '#fe6869',
 }
 
-const processMap: Record<string, string> = {
-  device_reboot: '机场重启',
-  drone_open: '飞行器开启',
-  drone_close: '飞行器关闭',
-  device_format: '机场数据格式化',
-  drone_format: '飞行棋数据格式化',
-  cover_open: '打开舱盖',
-  cover_close: '关闭舱盖',
-  putter_open: '推杆展开',
-  putter_close: '推杆闭合',
-  charge_open: '打开充电',
-  charge_close: '关闭充电',
+const processMap: Record<string, Record<string, string>> = {
+  en: {
+    device_reboot: 'Airport Reboot',
+    drone_open: 'Drone Power On',
+    drone_close: 'Drone Power Off',
+    device_format: 'Airport Data Format',
+    drone_format: 'Drone Data Format',
+    cover_open: 'Open Hatch',
+    cover_close: 'Close Hatch',
+    putter_open: 'Deploy Putter',
+    putter_close: 'Retract Putter',
+    charge_open: 'Start Charging',
+    charge_close: 'Stop Charging',
+  },
+  zh: {
+    device_reboot: '机场重启',
+    drone_open: '飞行器开启',
+    drone_close: '飞行器关闭',
+    device_format: '机场数据格式化',
+    drone_format: '飞行棋数据格式化',
+    cover_open: '打开舱盖',
+    cover_close: '关闭舱盖',
+    putter_open: '推杆展开',
+    putter_close: '推杆闭合',
+    charge_open: '打开充电',
+    charge_close: '关闭充电',
+  },
 }
 
 const iconMap: Record<string, ReactNode> = {
@@ -163,7 +188,7 @@ type PropsType = {
 
 /** 远程调试 */
 const RemoteDebug: FC<PropsType> = ({ state, onClose, data, progress }) => {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const deviceId = data.deviceId
   const productKey = (data.productKey || data.deviceModel?.productKey)!
 
@@ -472,14 +497,20 @@ const RemoteDebug: FC<PropsType> = ({ state, onClose, data, progress }) => {
                 progress.map((item, index) => (
                   <div
                     key={index}
+                    className="whitespace-nowrap"
                     style={{ color: colorMap[item.output.status] ?? '#c7d1dc' }}
                   >
                     <span style={{ marginRight: '6px' }}>
                       {iconMap[item.output.status]}
                     </span>
                     <span>{item.time?.format('MM-DD HH:mm:ss')}: </span>
-                    <span>{processMap[item.name?.toLowerCase()]}</span>
-                    <span>{statusMap[item.output.status]}</span>
+                    <span>
+                      {processMap[i18n.language][item.name?.toLowerCase()]}
+                    </span>
+                    <span>
+                      {i18n.language === 'zh' ? '' : ' '}
+                      {statusMap[i18n.language][item.output.status]}
+                    </span>
                     {item.output.status === 'in_progress' && (
                       <span>{`(${item.output.progress.percent}%)`}</span>
                     )}

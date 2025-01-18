@@ -30,7 +30,11 @@ const BottomButtons: FC<PropsType> = memo(() => {
     if (!displayMode) {
       return false
     }
-    return displayMode.includes('指点飞行') || displayMode.includes('一键起飞')
+    return (
+      displayMode.includes('指点飞行') ||
+      displayMode.includes('一键起飞') ||
+      displayMode.startsWith('10000')
+    )
   }, [displayMode])
 
   const flySpeed = useUavControlRoomStore((s) => s.flyParams.flySpeed)

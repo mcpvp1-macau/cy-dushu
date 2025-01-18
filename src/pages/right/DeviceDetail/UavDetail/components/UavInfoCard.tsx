@@ -1,4 +1,5 @@
 import SignalStrength from '@/components/device/SignalStrength'
+import { uavDisplayModeTransMap } from '@/constant/trans_map/uav_display_mode'
 import { StatusColorMap } from '@/enum/device'
 
 const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
@@ -34,7 +35,7 @@ const UavDetailInfoCard: FC<PropsType> = memo(
     height,
     horizontalSpeed,
   }) => {
-    const { t } = useTranslation()
+    const { t, i18n } = useTranslation()
 
     return (
       <ul className="p-2 mx-3 mr-[9px] card-border text-sm flex flex-wrap">
@@ -50,7 +51,13 @@ const UavDetailInfoCard: FC<PropsType> = memo(
             </p>
           }
         />
-        <I l={t('uav.displayMode.title')} v={displayMode} />
+        <I
+          l={t('uav.displayMode.title')}
+          v={
+            uavDisplayModeTransMap[displayMode || '']?.[i18n.language] ||
+            displayMode
+          }
+        />
         <I l={t('common.electricity')} v={`${electricity || 0} %`} />
         <I l={t('common.longitude')} v={longitude?.toFixed(5) || '-'} />
         <I l={t('common.latitude')} v={latitude?.toFixed(5) || '-'} />

@@ -1,20 +1,4 @@
 import { Select } from 'antd'
-import { memo, type FC } from 'react'
-
-const options = [
-  {
-    label: '自适应',
-    value: '2',
-  },
-  {
-    label: '低延时',
-    value: '1',
-  },
-  {
-    label: '高质量',
-    value: '0',
-  },
-]
 
 type PropsType = {
   value: string
@@ -22,6 +6,26 @@ type PropsType = {
 }
 
 const VideoQuality5G: FC<PropsType> = memo(({ value, onChange }) => {
+  const { t } = useTranslation()
+
+  const options = useMemo(
+    () => [
+      {
+        label: t('common.autoFit'),
+        value: '2',
+      },
+      {
+        label: t('common.lowDelay'),
+        value: '1',
+      },
+      {
+        label: t('common.highQuality'),
+        value: '0',
+      },
+    ],
+    [t],
+  )
+
   return (
     <Select
       variant="borderless"

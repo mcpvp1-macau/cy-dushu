@@ -90,6 +90,7 @@ device:
     takeoffForm:
       takeoffHeight:
         required_msg: Please Input takeoff height
+        title: Target Altitude
       goHomeAltitude:
         title: Go Home Altitude
   uavDock:
@@ -235,6 +236,10 @@ action:
           label: Whether First Scene
         accidentTime:
           label: Case Type
+        carType:
+          label: Vehicle Type
+        otherCarType:
+          label: Another Vehicle Type
     task:
       title: Task List
       edit:
@@ -370,6 +375,10 @@ common:
   connectionLost: Connection Lost
   preparing: Preparing
   arriving: Arriving
+  autoFit: Auto
+  default: Default
+  lowDelay: Low Delay
+  highQuality: High Quality
 events:
   search:
     placeholder: Please search by event name or ID
@@ -414,7 +423,7 @@ events:
   title: Events
 uav:
   displayMode:
-    title: Display Mode
+    title: State
   gimbal:
     title: Gimbal
     zoomMode:
