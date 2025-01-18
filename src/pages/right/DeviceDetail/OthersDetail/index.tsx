@@ -21,6 +21,7 @@ type PropsType = {
 const OthersDetail: React.FC<PropsType> = ({ data }) => {
     const productKey = data.productKey || data.deviceModel?.productKey
     const deviceId = data.deviceId
+    const deviceType = data.deviceType
     const store = useCreateOthersControlRoomStore(
         productKey!,
         deviceId,
@@ -68,7 +69,7 @@ const OthersDetail: React.FC<PropsType> = ({ data }) => {
                     {tab === '详情' ? (
                         <OthersDetailDetail />
                     ) : (
-                        <OthersDetailData deviceId={deviceId} />
+                        <OthersDetailData deviceId={deviceId} deviceType={deviceType} />
                     )}
                 </AppViewSuspense>
             </ScrollArea>

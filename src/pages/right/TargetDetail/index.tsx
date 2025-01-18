@@ -5,6 +5,7 @@ import CloseableHeader from '../components/CloseableHeader'
 import ImageOrVideo from './ImageOrVideo'
 import AppCollapse from '@/components/AppCollapse'
 import { infoFieldFormatter as format } from '@/utils/other/utils'
+import { getProductFieldsByIdentifier } from '@/service/modules/device'
 
 const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
   return (
@@ -54,7 +55,7 @@ const TargetDetail: React.FC = () => {
         getTargetDetail({
           parentId, //父设备id ，没有就是设备id
           deviceId, //设备id
-          targetId, // 目标id
+          targetId: Number(targetId), // 目标id
           sourceType: 'RADAR',
           time: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         }),
@@ -62,6 +63,35 @@ const TargetDetail: React.FC = () => {
     },
     queryClient,
   )
+
+  const { data: labelData, isLoading } = useQuery(
+    {
+      queryKey: ['getProductFieldsByIdentifier', 'targetInfo'],
+      queryFn: () =>
+        getProductFieldsByIdentifier({ functionIdentifier: 'targetInfo' }),
+      select: (d) => d.data.rows,
+    },
+    queryClient,
+  )
+  const labelMap = useMemo(() => {
+    const map = {}
+    labelData?.forEach((item) => {
+      const a = item.fields.find((item) => item.identifier === 'targetType')
+      if (a) {
+        const s = JSON.parse(a.specs)
+        if (Array.isArray(s)) {
+          s.forEach((v) => {
+            map[v.value] = v.label
+          })
+        }
+      }
+    })
+    return map
+  }, [labelData])
+
+  const getLabel = (item) => {
+    return labelMap[item?.targetType]
+  }
 
   const renderSource = (source: string) => {
     let data: any[] = []
@@ -72,7 +102,6 @@ const TargetDetail: React.FC = () => {
     return data.map((item) => item.deviceName).join(',')
   }
 
-  console.info('data----', data)
   return (
     <div className="w-[350px] flex flex-col overflow-y-hidden">
       <div className="overflow-y-hidden flex flex-col backdrop-blur-sm">
@@ -99,7 +128,7 @@ const TargetDetail: React.FC = () => {
             label: '属性',
             children: (
               <ul className="p-2 mx-3 my-3 mr-[9px] card-border text-sm">
-                <I l="类型" v={data?.objectLabel || '未知'} />
+                <I l="类型" v={data?.objectLabel ?? getLabel(data) ?? '未知'} />
                 <I
                   l="速度"
                   v={format({

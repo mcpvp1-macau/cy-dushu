@@ -74,3 +74,31 @@ export const updSpace = (data: any) => {
 export const delLayer = (layerId: number) => {
   return serverJingqi.post('/layer/delete', { layerId })
 }
+
+export async function defence(overlayId: number) {
+  return serverJingqi.post(`/overlay/defense`, {
+    overlayIds: [overlayId],
+  })
+}
+
+export async function undefence(overlayId: number) {
+  return serverJingqi.post(`/overlay/undefense`, {
+    overlayIds: [overlayId],
+  })
+}
+
+export async function getDefenseOverlay(
+  data: {
+    overlayName?: string
+    startTime?: string
+    defenseStatus?: 1 | 0
+    endTime?: string
+  },
+  options?: { [key: string]: any },
+) {
+  return serverJingqi.post(`/overlay/defense/list`, data, options)
+}
+
+export async function getDefenseOverlayHistory(data?: any) {
+  return serverJingqi.post(`/overlay/defense/record/list`, data)
+}

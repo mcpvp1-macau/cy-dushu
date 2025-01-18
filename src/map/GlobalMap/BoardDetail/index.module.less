@@ -1,0 +1,84 @@
+// @import url('/src/assets/css/config.less');
+@color: #4c90f0;
+@hoverColor: #4c90f0;
+@backHoverColor: rgba(76, 144, 240, 0.3); // 4c90f0 30%
+@backColora: rgba(20, 29, 40, 0.9);
+@backColor: rgb(20, 29, 40);
+
+@fontColor: #c7d1dc; // 字体主色调
+@fontColor10: rgba(255, 255, 255, 1);
+@font: #c7d1dc;
+@fontColor8: rgba(255, 255, 255, 0.8);
+@fontColor6: rgba(255, 255, 255, 0.6);
+@modalHeadBgc: #28323c;
+@modalBodyBgc: #1c2630;
+@modalBorderColor: #37414d;
+.panel {
+  padding: 8px 8px 4px 9px;
+  border-radius: 2px;
+  // height: 100px;
+  text-align: center;
+  color: #fff;
+  z-index: 999;
+  cursor: move;
+  position: relative;
+  background-color: @modalBodyBgc;
+  border: 1px solid @modalBorderColor;
+  // .panel();
+
+  .header {
+    color: @fontColor10;
+    width: 100%;
+    font-size: 14px;
+    // padding-top: 4px;
+
+    .icon {
+      color: @fontColor;
+
+      &:hover {
+        color: @hoverColor;
+        cursor: pointer;
+      }
+    }
+
+    .close {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: @fontColor;
+
+      &:hover {
+        color: @hoverColor;
+      }
+
+      &.hasImage {
+        position: absolute;
+        right: 8px;
+        top: 8px;
+      }
+    }
+  }
+
+  .targetInfo {
+    font-size: 12px;
+    line-height: 20px;
+    margin-top: 4px;
+
+    .label {
+      width: 30px;
+      text-align: left;
+      color: @fontColor;
+    }
+
+    .text {
+      text-align: left;
+    }
+  }
+}
+
+.tooltip {
+  :global {
+    // .tooltip();
+  }
+}

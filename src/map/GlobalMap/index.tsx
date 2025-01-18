@@ -15,6 +15,7 @@ import useAreaWaylineStore from '@/store/uav/uav-area-wayline/useAreaWayline.sto
 import AreaWayline from './AreaWayline'
 import UpdateMap from './UpdateMap'
 import TargetPoints from './TargetPoints'
+import BoardCesium from './BoardCesium'
 
 type PropsType = unknown
 
@@ -38,6 +39,7 @@ const GlobalMap: FC<PropsType> = memo(() => {
         <DrawHandler />
         <DeviceHistoryTracks />
         <TargetPoints />
+        <BoardCesium />
         {airlineOpen && <ActionAirline />}
         {areaWaylineOpen && <AreaWayline />}
       </CesiumMap>

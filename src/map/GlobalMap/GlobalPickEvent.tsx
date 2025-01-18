@@ -5,17 +5,33 @@ import { Dropdown, MenuProps } from 'antd'
 import DeviceIcon from '@/components/device/DeviceIcon'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { RightModeEnum } from '@/enum/right-mode'
+import useMapDevicesStore from '@/store/map/useMapDevices.store'
+import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
+import { postDeviceService } from '@/service/modules/device'
+import { msgMitt } from '@/hooks/useAppMsg'
 
 type PropsType = unknown
 
-type SelectOptionType = {
-  kind: string
-  type: string
-  name: string
-  id: string
-  lng: number
-  lat: number
-}
+type SelectOptionType =
+  | {
+      kind: 'device'
+      type: string
+      name: string
+      id: string
+      lng: number
+      lat: number
+    }
+  | {
+      kind: 'radartarget'
+      type: string
+      targetId: string
+      targetPitch: string
+      targetYaw: string
+      parentId: string
+      deviceId: string
+      sourceType: string
+      index: string
+    }
 
 /** 全局选择 实体 */
 const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
@@ -28,11 +44,15 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
   const updateDetailId = useRightMode((s) => s.updateDetailId)
 
   /** 选择事件 (下拉选择, 一个时选择) */
-  const handleSelect = useMemoizedFn((e: SelectOptionType) => {
+  const handleSelect = useMemoizedFn((e: SelectOptionType | any) => {
     switch (e.kind) {
       case 'device':
         updateRightMode(RightModeEnum.DEVICE)
         updateDetailId(e.id)
+        break
+      case 'radartarget':
+        updateRightMode(RightModeEnum.RADAR_TARGET)
+        updateDetailId(`${e.parentId}=${e.deviceId}=${e.targetId}`)
         break
     }
     clearOptions()
@@ -41,11 +61,11 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
   const items = useMemo<MenuProps['items']>(
     () =>
       selectOptions.map((e) => ({
-        key: e.id,
+        key: e.kind === 'device' ? e.id : e.targetId,
         label: (
           <p className="flex gap-2">
             {e.kind === 'device' && <DeviceIcon type={e.type} />}
-            {e.name}
+            {e.kind === 'device' ? e.name : e.targetId}
           </p>
         ),
         onClick: () => handleSelect(e),
@@ -58,8 +78,134 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
     if (open === true) {
       setSelectOptions([])
       setOpen(false)
+      setRightMenuType(null)
     }
   })
+
+  const runDevice = (e) => {
+    const [kind, type, name, id, lng, lat] = e.primitive.id.split('--')
+    return {
+      kind,
+      type,
+      name,
+      id,
+      lng: parseFloat(lng),
+      lat: parseFloat(lat),
+    }
+  }
+
+  const runTarget = (e) => {
+    const [
+      kind,
+      type,
+      targetId,
+      targetPitch,
+      targetYaw,
+      parentId,
+      deviceId,
+      sourceType,
+      index,
+    ] = e.primitive.id.split('--')
+    return {
+      kind,
+      type,
+      targetId,
+      targetPitch,
+      targetYaw,
+      parentId,
+      deviceId,
+      sourceType,
+      index,
+    }
+  }
+
+  const runkind = (e) => {
+    const [kind] = e.primitive.id.split('--')
+    if (kind === 'device') {
+      return runDevice(e)
+    } else if (kind === 'radartarget') {
+      return runTarget(e)
+    }
+  }
+
+  const [rightMenuType, setRightMenuType] = useState<SelectOptionType | null>()
+  const allDevicesMap = useMapDevicesStore((s) => s.allDevicesMap)
+
+
+  /** 引导 */
+  const handleClick1 = async (parentId, targetId) => {
+    const productKey = allDevicesMap[parentId][0]?.productKey
+    if(!productKey) return;
+    const { message } = await postDeviceService(
+      productKey,
+      parentId,
+      'attractByRadar',
+      {
+        targetId: Number(targetId),
+      },
+    )
+    msgMitt.emit('open', {
+      content: message,
+    })
+    setRightMenuType(null)
+  }
+
+  const RightMenus = useMemo<MenuProps['items']>(() => {
+    if (rightMenuType?.kind === 'radartarget') {
+      return [
+        {
+          key: '引导',
+          label: '引导',
+          onClick: () =>
+            handleClick1(rightMenuType.parentId, rightMenuType.targetId),
+        },
+      ]
+    }
+  }, [rightMenuType])
+
+  const listenRightClick = (evt) => {
+    if (!viewer?.scene) {
+      return
+    }
+    const pickedObjs = viewer.scene.drillPick(evt.position)
+    if (!pickedObjs || !pickedObjs.length) {
+      return
+    }
+
+
+
+    const res = pickedObjs
+      .filter(
+        (e) =>
+          (e.primitive instanceof Cesium.Billboard ||
+            e.primitive instanceof Cesium.PointPrimitive) &&
+          e.id &&
+          typeof e.id === 'string' &&
+          (e.id.includes('device--') || e.id.includes('radartarget--')),
+      )
+      .slice(0, 8) // 限制 8 个
+      .map((e) => {
+        return runkind(e)
+      })
+      .filter((item) => !!item)
+
+    if (res?.[0]?.kind === 'radartarget') {
+      setRightMenuType(res[0])
+    } else {
+      setRightMenuType(null)
+    }
+    const position = evt.position
+    const { x, y } = viewer.scene.canvas.getBoundingClientRect()
+    if (divRef.current !== null) {
+      divRef.current.style.left = `${x + 5 + position.x}px`
+      divRef.current.style.top = `${y + 5 + position.y}px`
+    }
+
+    setTimeout(() => {
+      setOpen(true)
+      divRef.current?.click()
+    })
+  }
 
   useEffect(() => {
     if (!viewer?.scene) {
@@ -77,33 +223,27 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
           return
         }
 
+
         const res = pickedObjs
           .filter(
             (e) =>
-              e.primitive instanceof Cesium.Billboard &&
+              (e.primitive instanceof Cesium.Billboard ||
+                e.primitive instanceof Cesium.PointPrimitive) &&
               e.id &&
               typeof e.id === 'string' &&
-              e.id.includes('device--'),
+              (e.id.includes('device--') || e.id.includes('radartarget--')),
           )
           .slice(0, 8) // 限制 8 个
           .map((e) => {
-            const [kind, type, name, id, lng, lat] = e.primitive.id.split('--')
-            return {
-              kind,
-              type,
-              name,
-              id,
-              lng: parseFloat(lng),
-              lat: parseFloat(lat),
-            }
+            return runkind(e)
           })
+          .filter((item) => !!item)
 
         // 只有 1 个时, 直接选择
         if (res.length === 1) {
           handleSelect(res[0])
           return
         }
-
         setSelectOptions(res)
         const position = evt.position
         const { x, y } = viewer.scene.canvas.getBoundingClientRect()
@@ -121,37 +261,46 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
     )
 
     handler.setInputAction(clearOptions, Cesium.ScreenSpaceEventType.LEFT_DOWN)
+    // handler.setInputAction(
+    //   clearOptions,
+    //   Cesium.ScreenSpaceEventType.RIGHT_CLICK,
+    // )
+    handler.setInputAction(clearOptions, Cesium.ScreenSpaceEventType.WHEEL)
+
     handler.setInputAction(
-      clearOptions,
+      listenRightClick,
       Cesium.ScreenSpaceEventType.RIGHT_CLICK,
     )
-    handler.setInputAction(clearOptions, Cesium.ScreenSpaceEventType.WHEEL)
 
     return () => {
       handler.destroy()
     }
   }, [viewer])
 
+
   return (
-    <Dropdown
-      open={open}
-      trigger={['click']}
-      menu={{
-        items,
-      }}
-    >
-      <div
-        style={{
-          position: 'fixed',
-          width: '1px',
-          height: '1px',
-          left: '-1000px',
-          top: '-1000px',
-          display: open ? 'block' : 'none',
+    <>
+      {/** 设备清单 */}
+      <Dropdown
+        open={!!rightMenuType || open}
+        trigger={['click']}
+        menu={{
+          items: RightMenus ?? items,
         }}
-        ref={divRef}
-      />
-    </Dropdown>
+      >
+        <div
+          style={{
+            position: 'fixed',
+            width: '1px',
+            height: '1px',
+            left: '-1000px',
+            top: '-1000px',
+            display: rightMenuType || open ? 'block' : 'none',
+          }}
+          ref={divRef}
+        />
+      </Dropdown>
+    </>
   )
 })
 

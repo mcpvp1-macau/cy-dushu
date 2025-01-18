@@ -46,7 +46,7 @@ const CesiumDefaultConfig: FC<PropsType> = memo(() => {
     })
 
     // 设置分辨率
-    viewer.resolutionScale = 1.4
+    viewer.resolutionScale = 2
   }, [viewer])
 
   useRafInterval(() => {

@@ -1,7 +1,7 @@
 {
   "name": "ja-dushu-front",
   "private": true,
-  "version": "v0.0.33-nightly",
+  "version": "v0.0.33-tianlang",
   "type": "module",
   "scripts": {
     "dev": "vite --config ./vite-config/dev/config.82.ts",

@@ -1,0 +1,172 @@
+import { Flex, Tooltip } from 'antd';
+import clsx from 'clsx';
+import dayjs from 'dayjs';
+import styles from './index.module.less';
+import React from 'react';
+import { useMemoizedFn } from 'ahooks';
+import { infoFieldFormatter } from '@/utils/other/utils';
+import useBoardObjStore from '@/store/map/useBoardObj.store';
+import IconClose from '@/assets/icons/jsx/IconClose';
+
+interface Props {
+  data: {
+    targetId: string;
+    acquireTimestampFormat: string;
+    objectLabel: string;
+    speed: number;
+    distance: number;
+    altitude: number;
+    longitude: number;
+    latitude: number;
+    source: string;
+    sourceType: string;
+    deviceId: string;
+    parentId: string;
+    imageUrl: string | null;
+    deviceInfo: { deviceName: string; deviceId: string }[];
+  };
+}
+
+const BoardDetail: React.FC<Props> = ({ data }) => {
+  const {
+    targetId,
+    acquireTimestampFormat,
+    objectLabel,
+    speed,
+    distance,
+    altitude,
+    longitude,
+    latitude,
+    source,
+    sourceType,
+    deviceId,
+    parentId,
+    imageUrl,
+    deviceInfo,
+  } = data;
+
+
+  const boardOpenMap = useBoardObjStore(s => s.boardOpenMap)
+  const setBoardOpenMap = useBoardObjStore(s => s.setBoardOpenMap)
+
+  const renderNumber = (value: number, unit: string) => {
+    return value ? `${Number(value)?.toFixed(2)}${unit}` : '-';
+  };
+
+  return (
+    <div className={styles.panel}>
+      <Flex>
+        <div style={{ minWidth: 340 }}>
+          <Flex
+            justify="space-between"
+            align="center"
+            className={styles.header}
+          >
+            <Flex gap={8}>
+              {/* <IDIcon /> */}
+              <div>
+                {targetId}（
+                {infoFieldFormatter({
+                  value: objectLabel,
+                  emptyString: '未知',
+                })}
+                ）
+              </div>
+            </Flex>
+            <Flex
+              style={{ minWidth: 40 }}
+              gap={8}
+              justify="space-between"
+              align="center"
+            >
+              {/* <Tooltip
+                className={styles.icon}
+                overlayClassName={styles.tooltip}
+                title={renderDeviceTitle()}
+              >
+                {renderIcon(sourceType)}
+              </Tooltip> */}
+              <div
+                className={clsx(
+                  styles.close,
+                  //   {
+                  //   [styles.hasImage]: hasImage,
+                  // }
+                )}
+                onClick={() => {
+                  setBoardOpenMap({
+                    ...boardOpenMap,
+                    [targetId]: false,
+                  });
+                }}
+              >
+                <Tooltip title="关闭">
+                  {/* <CloseIcon style={{ fontSize: 12 }} /> */}
+                  <IconClose />
+                </Tooltip>
+              </div>
+            </Flex>
+          </Flex>
+          <Flex justify="space-between" align="center">
+            <div style={{ width: 340 }} className={styles.targetInfo}>
+              <Flex gap={12}>
+                <Flex>
+                  <div className={styles.label}>速度</div>
+                  <div className={styles.text} style={{ width: 95 }}>
+                    {renderNumber(speed, 'm/s')}
+                  </div>
+                </Flex>
+                <Flex>
+                  <div className={styles.label}>距离</div>
+                  <div className={styles.text} style={{ width: 80 }}>
+                    {renderNumber(distance, 'm')}
+                  </div>
+                </Flex>
+                <Flex>
+                  <div className={styles.label}>海拔</div>
+                  <div className={styles.text}>
+                    {renderNumber(altitude, 'm')}
+                  </div>
+                </Flex>
+              </Flex>
+              <Flex gap={12}>
+                <Flex>
+                  <div className={styles.label}>时间</div>
+                  <div className={styles.text} style={{ width: 95 }}>
+                    {dayjs(acquireTimestampFormat).format('MM-DD HH:mm:ss')}
+                  </div>
+                </Flex>
+                <Flex>
+                  <div className={styles.label}>位置</div>
+                  <div className={styles.text}>
+                    {Number(longitude)?.toFixed(6)},{' '}
+                    {Number(latitude)?.toFixed(6)}
+                  </div>
+                </Flex>
+              </Flex>
+            </div>
+            {imageUrl ? (
+              <div
+                style={{
+                  minWidth: 60,
+                  maxWidth: 80,
+                  marginTop: 0,
+                  marginLeft: 10,
+                }}
+              >
+                <img
+                  src={'/storage' + imageUrl}
+                  style={{ minHeight: 30, maxHeight: 40 }}
+                />
+              </div>
+            ) : (
+              <></>
+            )}
+          </Flex>
+        </div>
+      </Flex>
+    </div>
+  );
+};
+
+export default React.memo(BoardDetail);

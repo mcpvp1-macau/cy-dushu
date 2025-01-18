@@ -10,14 +10,20 @@ const fmt = (content: string, prefix?: string) => {
 export const usePostDeviceService = (productKey: string, deviceId: string) => {
   const msgApi = useAppMsg()
   const postService = useMemoizedFn(
-    async (identifier: string, data?: any, msgPrefix?: string) => {
+    async (
+      identifier: string,
+      data?: any,
+      msgPrefix?: string,
+      showMsg?: boolean,
+    ) => {
       const id = uniqueId()
-      msgApi.open({
-        type: 'loading',
-        key: id,
-        content: fmt('正在执行操作...', msgPrefix),
-        duration: 0,
-      })
+      if (showMsg !== false)
+        msgApi.open({
+          type: 'loading',
+          key: id,
+          content: fmt('正在执行操作...', msgPrefix),
+          duration: 0,
+        })
       try {
         const { message } = await postDeviceService(
           productKey,
@@ -25,7 +31,7 @@ export const usePostDeviceService = (productKey: string, deviceId: string) => {
           identifier,
           data ?? {},
         )
-        if (message) {
+        if (message && showMsg !== false) {
           msgApi.open({
             type: 'success',
             key: id,

@@ -27,7 +27,6 @@ const InitParams: React.FC<PropsType> = ({ open, setOpen, data }) => {
 
   const [radarData, setRadarData] = useState<any>()
 
-  console.info('data---', data)
 
   const save = async (values) => {
     const { code } = await setWanglouConfig(productKey, deviceId, values)
@@ -46,7 +45,6 @@ const InitParams: React.FC<PropsType> = ({ open, setOpen, data }) => {
   }
 
   const setRadarRangeProfile = async (data, values, mapString) => {
-    console.info('res----', radarData)
     const res = await setProperty(
       radarData?.deviceModel?.productKey,
       radarData?.deviceModel?.deviceId,

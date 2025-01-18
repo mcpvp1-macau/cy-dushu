@@ -1,50 +1,54 @@
 import { Button, Flex } from 'antd'
 import SliderValue from './SliderValue'
 import Icon from '@/components/Icon'
-import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouControlRoom.store'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
-import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
-import { useSliderValue } from '../../../hooks/useSliderValue'
+import React from 'react'
 
 interface Props {
-  deviceType: string
+  item: API_DEVICE.domain.Device
 }
 
-const ZoomControl: React.FC<Props> = ({ deviceType }) => {
-  const data = useDeviceDetailStore((s) => s.deviceDetail)
-  const childData = data?.childDevice?.find(
-    (item: any) => item.deviceType === deviceType,
+const ZoomControl: React.FC<Props> = ({ item }) => {
+  const childData = item
+  const disabled = false // useWangLouControlRoomStore((s) => !s.hasControlPower)
+  // const uuid = useWangLouControlRoomStore((s) => s.uuid)
+  const post = usePostDeviceService(
+    childData?.deviceModel?.productKey || '',
+    childData?.deviceId || '',
   )
-  const { focalProps, zoomProps } = useSliderValue({
-    data: childData!,
-  })
-  const disabled = useWangLouControlRoomStore((s) => !s.hasControlPower)
-  const uuid = useWangLouControlRoomStore((s) => s.uuid)
-  const post = usePostDeviceService(data?.deviceModel?.productKey || '', data?.deviceId || '')
   const run = () => {
     post('autoFocus', {
-      controlTag: uuid,
+      controlTag: '',
+    })
+  }
+
+  const onChangeCompleteZoom = (value: number | null) => {
+    post('zoomByStep', {
+      direction: value,
+      controlTag: '',
+      enable: value ? 'true' : 'false',
+    })
+  }
+  const onChangeCompleteFocal = (value: number | null) => {
+    post('focusByStep', {
+      direction: value,
+      controlTag: '',
+      enable: value ? 'true' : 'false',
     })
   }
   return (
     <Flex gap={12} vertical className={'p-[10px] text-[12px]'}>
       <SliderValue
-        value={zoomProps.value}
         disabled={disabled}
         // disabled={false}
-        onChange={zoomProps?.onChangeComplete}
-        sliderProps={zoomProps}
-        title={'变倍（X）'}
-        unit={'X'}
+        onChange={onChangeCompleteZoom}
+        title={'变倍'}
       />
       <SliderValue
-        value={focalProps.value}
         disabled={disabled}
         // disabled={false}
-        onChange={focalProps?.onChangeComplete}
-        sliderProps={focalProps}
-        title={'调焦（%）'}
-        unit={'%'}
+        onChange={onChangeCompleteFocal}
+        title={'调焦'}
       />
 
       <Button
@@ -61,4 +65,4 @@ const ZoomControl: React.FC<Props> = ({ deviceType }) => {
   )
 }
 
-export default ZoomControl
+export default React.memo(ZoomControl)

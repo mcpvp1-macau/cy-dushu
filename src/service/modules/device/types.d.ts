@@ -189,7 +189,7 @@ declare namespace API_DEVICE {
       childDevice?: Device[]
       parentId: string
       subDevice: boolean
-      deviceModel?: DeviceModel
+      deviceModel: DeviceModel
       videos?: {
         name: string
         videoId: string

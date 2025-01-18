@@ -1,6 +1,8 @@
+import { getProductFieldsByIdentifier } from '@/service/modules/device'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import useUserStore from '@/store/useUser.store'
 import { shouldJson } from '@/utils/json'
+import { useInterval } from 'ahooks'
 import dayjs from 'dayjs'
 import { isEqual } from 'lodash'
 import { type FC } from 'react'
@@ -19,6 +21,35 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
   }, [username])
 
   const queryClient = useQueryClient()
+
+  const { data, isLoading } = useQuery(
+    {
+      queryKey: ['getProductFieldsByIdentifier', 'targetInfo'],
+      queryFn: () =>
+        getProductFieldsByIdentifier({ functionIdentifier: 'targetInfo' }),
+      select: (d) => d.data.rows,
+    },
+    queryClient,
+  )
+  const labelMap = useMemo(() => {
+    const map = {}
+    data?.forEach((item) => {
+      const a = item.fields.find((item) => item.identifier === 'targetType')
+      if (a) {
+        const s = JSON.parse(a.specs)
+        if (Array.isArray(s)) {
+          s.forEach((v) => {
+            map[v.value] = v.label
+          })
+        }
+      }
+    })
+    return map
+  }, [data])
+
+  const getLabel = (item) => {
+    return labelMap[item.targetType]
+  }
 
   // 雷达目标 ------------------------
   const updateRadarTarget = useGlobalWsStore((s) => s.updateRadarTarget)
@@ -49,6 +80,8 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
               source: data?.data?.deviceName,
               sourceType: data?.data?.sourceType || item.sourceType,
               deviceInfo: data?.data?.deviceInfo,
+              objectLabel: item.objectLabel || getLabel(item),
+              distance: item.distance ?? item.radialDistance,
             },
           ]
         }
@@ -62,10 +95,28 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
             source: data?.data?.deviceName,
             sourceType: data?.data?.sourceType || item.sourceType,
             deviceInfo: data?.data?.deviceInfo,
+            objectLabel: item.objectLabel || getLabel(item),
+            distance: item.distance ?? item.radialDistance,
           },
         ]
       }
     })
+
+    // 天朗雷达目标上传方式
+
+    Object.keys(oldmap).forEach((targetId) => {
+      const oldT = oldmap[targetId]
+      const newT = n[targetId]
+      if (newT) {
+        // 如果新的里面已经有了，就不管
+      } else if (oldT[0].uploadMode === 'TIANLANG') {
+        // 还没丢失的
+        if (oldT[oldT.length - 1].targetState !== 0) {
+          n[targetId] = oldT
+        }
+      }
+    })
+
     const targetMap = {
       ...target,
       [parentId]: {
@@ -73,7 +124,6 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         [deviceId]: n,
       },
     }
-
     updateRadarTarget(targetMap)
   })
 
@@ -121,7 +171,6 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         break
       case 'DEVICE_EVENT':
         if (data.method === 'event.targetInfo.info') {
-          // TODO: 更新设备信息
           handleRadarTarget(obj)
         }
         break
@@ -185,7 +234,6 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         }, {})
         updateActionItemStatus(res)
         break
-  
     }
   })
 
@@ -196,6 +244,32 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
     reconnectInterval: 5_000,
     shouldReconnect: () => true,
   })
+
+  // 1分钟清除一次目标
+  useInterval(() => {
+    const target = useGlobalWsStore.getState().radarTarget || {}
+    const newObj = {}
+    Object.keys(target).forEach((parentId) => {
+      const parentDevice = target[parentId] || {}
+      Object.keys(parentDevice).forEach((deviceId) => {
+        const oldmap = parentDevice?.[deviceId] || {}
+        Object.keys(oldmap).forEach((targetId) => {
+          const t = oldmap[targetId]
+          const last = t[t.length - 1]
+          if (dayjs().diff(dayjs(last.acquireTimestampFormat), 's') < 30) {
+            if (!newObj[parentId]) {
+              newObj[parentId] = {}
+            }
+            if (!newObj[parentId][deviceId]) {
+              newObj[parentId][deviceId] = {}
+            }
+            newObj[parentId][deviceId][targetId] = t
+          }
+        })
+      })
+    })
+    updateRadarTarget(newObj)
+  }, 10 * 1000)
 
   return null
 })

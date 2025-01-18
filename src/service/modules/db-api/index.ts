@@ -62,3 +62,4 @@ export const getTargetDetail = (data: {
 }) => {
   return serverDBAPI.post('api/targetDetailV2', data)
 }
+

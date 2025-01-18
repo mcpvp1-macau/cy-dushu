@@ -16,7 +16,7 @@ type PropsType = {
 const AiData: React.FC<PropsType> = ({ deviceId, height = 500 }) => {
   const queryClient = useQueryClient()
 
-  const { data, isLoading } = useQuery(
+  const { data = [], isLoading } = useQuery(
     {
       queryKey: ['eventDataTargetList', deviceId],
       queryFn: () =>
@@ -33,7 +33,6 @@ const AiData: React.FC<PropsType> = ({ deviceId, height = 500 }) => {
     queryClient,
   )
 
-
   return (
     <Flex vertical gap={12}>
       <div>
@@ -43,7 +42,6 @@ const AiData: React.FC<PropsType> = ({ deviceId, height = 500 }) => {
             height={data.length * 112}
             itemHeight={112}
             itemKey={'id'}
-            
           >
             {(item) => <WanglouTarget data={item} />}
           </VirtualList>

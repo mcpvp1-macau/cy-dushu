@@ -8,6 +8,13 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // 监听整个页面的右键点击事件
+      document.addEventListener('contextmenu', function (event) {
+        // 阻止默认的右键菜单
+        event.preventDefault()
+      })
+    </script>
     <script src="/js/config.js"></script>
     <script src="/iconfonts/iconfont.js"></script>
     <script src="/js/JessibucaPro/jessibuca-pro.js"></script>

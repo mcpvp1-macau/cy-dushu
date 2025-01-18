@@ -12,6 +12,8 @@ type StateType = {
   otherDevices: API_DEVICE.domain.Device[]
   /** 所有设备 */
   allDevices: API_DEVICE.domain.Device[]
+  /** 所有设备 */
+  allDevicesMap: { [key: string]: API_DEVICE.domain.Device[] }
 }
 
 type ActionsType = {
@@ -20,6 +22,7 @@ type ActionsType = {
   updateWangloutDevices: (wangloutDevices: StateType['wangloutDevices']) => void
   updateOtherDevices: (otherDevices: StateType['otherDevices']) => void
   updateAllDevices: (allDevices: StateType['allDevices']) => void
+  updateAllDevicesMap: (allDevicesMap: StateType['allDevicesMap']) => void
 }
 
 const useMapDevicesStore = create<StateType & ActionsType>()(
@@ -30,6 +33,7 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       wangloutDevices: [],
       otherDevices: [],
       allDevices: [],
+      allDevicesMap: {},
       updateUavDevices: (uavDevices) => {
         set({ uavDevices }, false, 'updateUavDevices')
       },
@@ -44,6 +48,9 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       },
       updateAllDevices: (allDevices) => {
         set({ allDevices }, false, 'updateAllDevices')
+      },
+      updateAllDevicesMap: (allDevicesMap) => {
+        set({ allDevicesMap }, false, 'updateAllDevices')
       },
     }),
     {

@@ -119,6 +119,12 @@ export const updateOtaDevice = async (data?: { deviceId: string }) => {
   })
 }
 
+export const getProductFieldsByIdentifier = async (data: {
+  functionIdentifier: string
+}) => {
+  return serverControlCenter.post('/manage/product/field/list/search', data)
+}
+
 /** 获取历史视频 */
 export const getHistoryVideo = async (
   productKey: string,

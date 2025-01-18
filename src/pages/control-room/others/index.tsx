@@ -5,7 +5,7 @@ import {
   DeviceDetailStoreContext,
   useCreateDeviceDetailStore,
 } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
-import { useLocalStorageState } from 'ahooks'
+import { useDeepCompareEffect, useLocalStorageState } from 'ahooks'
 import React from 'react'
 import { useStore } from 'zustand'
 import useServerEventMsg from '../uav/hooks/useServerEventMsg'
@@ -14,8 +14,15 @@ import ControlRoomVideo from './components/ControlRoomVideo'
 import StatusInfo from './components/StatusInfo'
 import ControlPanl from './components/ControlPanl'
 import DataPanl from './components/DataPanl'
-import { OthersControlRoomStoreContext, useCreateOthersControlRoomStore } from '@/store/context-store/useOthersControlRoom.store'
+import {
+  OthersControlRoomStoreContext,
+  useCreateOthersControlRoomStore,
+} from '@/store/context-store/useOthersControlRoom.store'
+import { DynamicLayoutTabsType } from '@/components/DynamicLayout/components/DynamicLayoutTabs'
+import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
+import * as _ from 'lodash'
 
+// TODO 后续根据产品自定义
 const initialLayout: DynamicLayoutType = {
   type: 'row',
   size: 1,
@@ -37,22 +44,7 @@ const initialLayout: DynamicLayoutType = {
         {
           type: 'tabs',
           size: 3,
-          children: [
-            {
-              key: 'video',
-              title: '可见光视频',
-            },
-          ],
-        },
-        {
-          type: 'tabs',
-          size: 3,
-          children: [
-            {
-              key: 'video2',
-              title: '红外视频',
-            },
-          ],
+          children: [{ key: 'status', title: '地图' }],
         },
       ],
     },
@@ -92,53 +84,118 @@ const PageControlRoomWangLou: React.FC = () => {
     useServerEventMsg(),
   )
 
+  const isHaveTapZoomAtTarget = useStore(
+    store,
+    (s) => !!s.deviceDetail?.deviceModel?.services?.['tapZoomAtTarget'],
+  )
+  const post = usePostDeviceService(productKey!, deviceId)
+  const videoList = useStore(
+    store,
+    (s) => s.deviceDetail?.properties?.videoList || [],
+  )
   // 子设备
   const childDevice = useStore(store, (s) => s.deviceDetail?.childDevice)
 
-  // const { infraredData, visibleData } = useMemo(() => {
-  //   let infraredData = {} as API_DEVICE.domain.Device
-  //   let visibleData = {} as API_DEVICE.domain.Device
-  //   childDevice?.forEach((item) => {
-  //     if (item.deviceType === 'INFRARED_CAMERA') {
-  //       infraredData = item
-  //     } else if (item.deviceType === 'VISIBLE_LIGHT_CAMERA') {
-  //       visibleData = item
-  //     }
-  //   })
-  //   return {
-  //     infraredData, //.videoList?.[0],
-  //     visibleData, //.videoList?.[0],
-  //   }
-  // }, [childDevice])
+  const childDeviceVideos = useMemo(() => {
+    const arr: API_DEVICE.domain.Device[] = []
+    childDevice?.forEach((item) => {
+      if (item?.properties?.videoList?.length) arr.push(item)
+    })
+    return arr
+  }, [childDevice])
+
+  const videoTabs: {
+    type: 'tabs'
+    activeKey?: string
+    children: DynamicLayoutTabsType
+    size: number
+  }[] = []
+
+  const videoMap = {}
+
+  /** 设备自身的视频 */
+  for (let index = 0; index < videoList?.length; index++) {
+    const item = videoList[index]
+    const key = `${item.name}-${item.videoId}-${deviceId}`
+    videoTabs.push({
+      type: 'tabs',
+      size: 3,
+      children: [
+        {
+          key: key,
+          title: item.name,
+        },
+      ],
+    })
+    videoMap[key] = (
+      <ControlRoomVideo
+        productKey={productKey!}
+        deviceId={deviceId}
+        videoId={item.videoId}
+        parentPost={post}
+        isHaveTapZoomAtTarget={isHaveTapZoomAtTarget}
+      />
+    )
+  }
+  /** 子设备的视频 */
+  for (let index = 0; index < childDeviceVideos.length; index++) {
+    const item = childDeviceVideos[index]
+    for (
+      let index = 0;
+      index < (item.properties?.videoList?.length || 0);
+      index++
+    ) {
+      const video = item.properties.videoList?.[index]
+      const key = `${video?.name}-${video?.videoId}-${item.deviceId}`
+      video &&
+        videoTabs.push({
+          type: 'tabs',
+          size: 3,
+          children: [
+            {
+              key: key,
+              title: item.deviceName || item.name || video.name,
+            },
+          ],
+        })
+
+      videoMap[key] = (
+        <ControlRoomVideo
+          productKey={item.deviceModel.productKey!}
+          deviceId={item.deviceId}
+          videoId={video?.videoId || ''}
+          parentPost={post}
+          isHaveTapZoomAtTarget={isHaveTapZoomAtTarget}
+        />
+      )
+    }
+  }
 
   const [layout, setLayout] = useLocalStorageState<DynamicLayoutType>(
     'others-control-room-layout',
     { defaultValue: initialLayout },
   )
 
-  const componentMap = useMemo(
-    () => ({
+  const componentMap = useMemo(() => {
+    const map = {
       map: <ControlRoomWanglouMap />,
-      // video: (
-      //   <ControlRoomVideo
-      //     productKey={visibleData.productKey}
-      //     deviceId={visibleData.deviceId}
-      //     videoId={visibleData.properties?.videoList?.[0]?.videoId || ''}
-      //   />
-      // ),
-      // video2: (
-      //   <ControlRoomVideo
-      //     productKey={infraredData.productKey}
-      //     deviceId={infraredData.deviceId}
-      //     videoId={infraredData.properties?.videoList?.[0]?.videoId || ''}
-      //   />
-      // ),
-      // status: <StatusInfo />,
-      // ['device-control']: <ControlPanl />,
-      // ['ai-list']: <DataPanl />,
-    }),
-    [productKey, deviceId],
-  )
+      ...videoMap,
+      status: <StatusInfo />,
+      ['device-control']: <ControlPanl />,
+    }
+    return map
+  }, [productKey, deviceId, videoMap])
+
+  // useEffect(() => {
+  //   setLayout(initialLayout)
+  // }, [JSON.stringify(initialLayout)])
+
+  useDeepCompareEffect(() => {
+    const l = _.cloneDeep(layout)
+    if (l && l.children[1])
+      (l.children[1] as DynamicLayoutType).children = videoTabs
+    setLayout(layout)
+  }, [videoTabs])
 
   return (
     <DeviceDetailStoreContext.Provider value={store}>

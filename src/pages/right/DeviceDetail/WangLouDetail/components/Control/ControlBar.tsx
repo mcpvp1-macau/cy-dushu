@@ -16,7 +16,6 @@ const ControlBar: React.FC<PropsType> = ({ speed, setDownKey }) => {
     ['右', 'top-1/2 right-0 -translate-y-1/2', { yaw: speed, pitch: 0 }],
   ] as const
   const disable = useWangLouControlRoomStore((s) => !s.hasControlPower)
-  console.info('dis----', disable)
   return (
     <div className="relative h-[100px] w-[100px] select-none">
       <img className="size-full" src={controlBG} alt="" />

@@ -7,6 +7,7 @@ import MenuIconSource from '@/assets/icons/jsx/menus/MenuIconSource'
 import MenuIconSchedule from '@/assets/icons/jsx/menus/MenuIconSchedule'
 import useUserStore from '@/store/useUser.store'
 import MenuIconEvents from '@/assets/icons/jsx/menus/MenuIconEvents'
+import MenuIconDefence from '@/assets/icons/jsx/menus/MenuIconDefence'
 
 type PropsType = unknown
 
@@ -47,6 +48,11 @@ const menus = [
     path: '/schedule',
     auth: 'actionPlan',
     component: <MenuIconSchedule className="text-lg text-[#B86C6C]" />,
+  },
+  {
+    path: '/defence',
+    auth: 'defence',
+    component: <MenuIconDefence className="text-lg text-[#4F81D7]" />,
   },
 ]
 

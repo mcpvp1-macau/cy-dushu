@@ -15,7 +15,7 @@ const ControlBar: React.FC<PropsType> = ({ speed, setDownKey }) => {
     ['左', 'top-1/2 -translate-y-1/2', { yaw: -speed, pitch: 0 }],
     ['右', 'top-1/2 right-0 -translate-y-1/2', { yaw: speed, pitch: 0 }],
   ] as const
-  const disable = useOthersControlRoomStore((s) => !s.hasControlPower)
+  const disable = false // useOthersControlRoomStore((s) => !s.hasControlPower)
   return (
     <div className="relative h-[100px] w-[100px] select-none">
       <img className="size-full" src={controlBG} alt="" />

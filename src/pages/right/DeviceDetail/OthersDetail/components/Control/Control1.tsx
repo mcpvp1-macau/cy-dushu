@@ -15,7 +15,7 @@ export interface presetItem {
   stayInterval: number
 }
 
-const speed = window.globalThis.wanglouSpeed || 1000
+const speed = window.globalThis.wanglouSpeed || 50
 
 type PropsType = {
   /** 详情数据 */
@@ -32,33 +32,45 @@ const Control1: React.FC<PropsType> = (props) => {
     data.deviceModel?.productKey || '',
     data.deviceId,
   )
-  const disable = useOthersControlRoomStore((s) => !s.hasControlPower)
+  const disable = false // useOthersControlRoomStore((s) => !s.hasControlPower)
   const pitch = useOthersControlRoomStore((s) => s.state.pitch)
   const yaw = useOthersControlRoomStore((s) => s.state.yaw)
   const sendCommand = useOthersControlRoomStore((s) => s.sendCommand)
 
-  const [downKey, setDownKeyFun] = useState<Record<string, number> | null>(null)
-
+  // const [downKey, setDownKeyFun] = useState<Record<string, number> | null>(null)
 
   const setDownKey = useMemoizedFn((value) => {
-    setDownKeyFun(value)
+    // setDownKeyFun(value)
+    sendCommand(
+      'service.turnBySpeed.post',
+      value
+        ? {
+            ...value,
+            enable: 'true',
+          }
+        : {
+            pitch: 0,
+            yaw: 0,
+            enable: 'false',
+          },
+    )
   })
   const resetPosition = async (data) => {
     // await postDevice('turn', data, '')
-    sendCommand('service.turnBySpeed.post', data)
+    // sendCommand('service.turnBySpeed.post', data)
+    setDownKey(data)
   }
 
   const turn = (data) => {
     sendCommand('service.turnBySpeed.post', data)
   }
 
-
-  useRafInterval(
-    () => {
-      resetPosition(downKey)
-    },
-    downKey ? 60 : undefined,
-  )
+  // useRafInterval(
+  //   () => {
+  //     resetPosition(downKey)
+  //   },
+  //   downKey ? 60 : undefined,
+  // )
 
   useEffect(() => {
     let values = {}
@@ -113,7 +125,7 @@ const Control1: React.FC<PropsType> = (props) => {
               />
             </Form.Item>
             <Form.Item
-              label="俯仰角（45-135°）"
+              label="俯仰角（-25-80°）"
               name="pitch"
               style={{ marginTop: 24 }}
             >
@@ -139,8 +151,7 @@ const Control1: React.FC<PropsType> = (props) => {
         <Flex flex={1} justify="center">
           <ControlBar speed={speed} setDownKey={setDownKey} />
         </Flex>
-        <Flex flex={1} justify="right" align="end" vertical gap={8}>
-         
+        {/* <Flex flex={1} justify="right" align="end" vertical gap={8}>
           <Button
             className={styles.btn}
             disabled={disable}
@@ -153,11 +164,8 @@ const Control1: React.FC<PropsType> = (props) => {
           >
             复位
           </Button>
-        </Flex>
+        </Flex> */}
       </Flex>
-
-
-     
     </Flex>
   )
 }

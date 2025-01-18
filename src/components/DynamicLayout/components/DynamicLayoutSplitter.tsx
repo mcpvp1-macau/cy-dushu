@@ -22,7 +22,7 @@ const DynamicLayoutSplitter: FC<PropsType> = memo(
     const [startPos, setStartPos] = useState(0)
     const [operateIndex, setOperateIndex] = useState(-1)
 
-    const [sizes, setSizes] = useState(() => layout.children.map((e) => e.size))
+    const [sizes, setSizes] = useState(() => layout?.children?.map((e) => e.size))
     const startSizes = useRef(sizes)
 
     // 当容器大小变化时，重新计算子元素的大小
@@ -120,7 +120,7 @@ const DynamicLayoutSplitter: FC<PropsType> = memo(
           'flex-col': layout.type === 'col',
         })}
       >
-        {layout.children.map((e, i) => (
+        {layout.children?.map((e, i) => (
           <Fragment key={i}>
             {i > 0 && (
               <SplitBar

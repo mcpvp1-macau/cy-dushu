@@ -10,6 +10,7 @@ import airline from './modules/airline'
 import demo from './modules/demo'
 import events from './modules/events'
 import backtracking from './modules/backtracking'
+import defence from './modules/defence'
 import AppErrorBoundary from '@/components/AppError'
 
 export const rootRoute = {
@@ -24,6 +25,7 @@ export const rootRoute = {
     actionPlan,
     airline,
     backtracking,
+    defence,
     // 测试页面
     ...(import.meta.env.DEV ? [demo] : []),
   ],

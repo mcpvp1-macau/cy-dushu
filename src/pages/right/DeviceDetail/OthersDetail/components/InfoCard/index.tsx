@@ -2,7 +2,7 @@ import { Tabs } from 'antd'
 import DeviceInfoCard from './DeviceInfoCard'
 import styles from './index.module.less'
 import IconSetting from '@/assets/icons/jsx/IconSetting'
-// import InitParams from './InitParams'
+import InitParams from './InitParams'
 
 type PropsType = {
   /** 详情数据 */
@@ -17,6 +17,9 @@ const InfoCard: FC<PropsType> = memo(({ data }) => {
   const onClick = () => {
     setOpen(true)
   }
+
+
+  const isHaveRadar = childDevice?.find((item) => item.deviceType === 'RADAR')
   const items = [
     {
       label: deviceName,
@@ -49,7 +52,10 @@ const InfoCard: FC<PropsType> = memo(({ data }) => {
           ),
         }}
       />
-      {/* <InitParams open={open} setOpen={setOpen} data={data} /> */}
+      {/** // TODO 暂时是子设备有雷达才需要 */}
+      {isHaveRadar ? (
+        <InitParams open={open} setOpen={setOpen} data={data} />
+      ) : null}
     </div>
   )
 })

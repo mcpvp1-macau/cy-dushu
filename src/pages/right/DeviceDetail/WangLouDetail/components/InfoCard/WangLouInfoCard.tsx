@@ -28,7 +28,6 @@ const WangLouInfoCard: FC<PropsType> = memo(({ data }) => {
   const state = useWangLouControlRoomStore((s) => s.state)
   const { properties = {} } = data || {}
   // const { statusInfo = {} } = properties
-  // console.info('data---', data)
   return (
     <div>
       <ul className="py-[10px] text-sm flex flex-wrap">

@@ -23,7 +23,7 @@ const RenderBox: FC<PropsType> = memo(
 
       const dfs = (layout: DynamicLayoutType) => {
         if (layout.type === 'tabs') {
-          activeKeys.add(layout.activeKey ?? layout.children[0].key)
+          activeKeys.add(layout.activeKey ?? layout.children[0]?.key)
           for (const e of layout.children) {
             if (e.keeyRenderOnHidden === false) {
               notKeeyRenders.add(e.key)
@@ -31,7 +31,7 @@ const RenderBox: FC<PropsType> = memo(
           }
           return
         } else {
-          for (const e of layout.children) {
+          for (const e of (layout?.children || [])) {
             dfs(e)
           }
         }

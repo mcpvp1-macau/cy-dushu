@@ -27,7 +27,7 @@ const MapDevices: FC<PropsType> = memo(() => {
   const updateAirportDevices = useMapDevicesStore((s) => s.updateAirportDevices)
   const updateOtherDevices = useMapDevicesStore((s) => s.updateOtherDevices)
   const updateAllDevices = useMapDevicesStore((s) => s.updateAllDevices)
-
+  const updateAllDevicesMap = useMapDevicesStore((s) => s.updateAllDevicesMap)
   useEffect(() => {
     if (!data) {
       return
@@ -46,10 +46,14 @@ const MapDevices: FC<PropsType> = memo(() => {
       data.filter((e) => checkGeo(e.longitude, e.latitude)),
       (e) => m[e.deviceType] || 'other',
     )
+
     updateUavDevices(g[DeviceEnum.UAV] || [])
     updateWangloutDevices(g[DeviceEnum.WANGLOU] || [])
     updateAirportDevices(g[DeviceEnum.UAV_AIRPORT] || [])
     updateOtherDevices(g['other'] || [])
+
+    const gm = groupBy(data, (e) => e.deviceId)
+    updateAllDevicesMap(gm)
   }, [data])
 
   return null

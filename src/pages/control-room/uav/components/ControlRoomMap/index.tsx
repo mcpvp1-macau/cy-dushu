@@ -13,6 +13,9 @@ import useMixARStore from '@/store/control-room/useMixAR.store'
 import MapMixAR from './components/MapMixAR'
 import AppSpin from '@/components/AppSpin'
 import UAVControlRoomPOIResolver from './components/POIResolver'
+import OtherMarkers from '@/map/GlobalMap/DeviceMarkers/OtherMarkers'
+import TargetPoints from '@/map/GlobalMap/TargetPoints'
+import BoardCesium from '@/map/GlobalMap/BoardCesium'
 
 type PropsType = unknown
 
@@ -48,6 +51,11 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
       <HomeMarker />
       <UavRealTrack />
       <UAVControlRoomPOIResolver />
+
+      {/** 演示完删除 */}
+      <TargetPoints />
+      <BoardCesium />
+      <OtherMarkers />
     </CesiumMap>
   )
 })

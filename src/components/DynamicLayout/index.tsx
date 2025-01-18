@@ -99,7 +99,7 @@ const DynamicLayoutRoot: FC<PropsType> = memo(
             return path
           }
         } else {
-          for (let i = 0; i < layout.children.length; i++) {
+          for (let i = 0; i < layout.children?.length; i++) {
             res =
               res ||
               dfs(layout.children[i], `${path}${path ? '.' : ''}children[${i}]`)

@@ -1,5 +1,5 @@
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
-import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouControlRoom.store'
+import { useOthersControlRoomStore } from '@/store/context-store/useOthersControlRoom.store'
 import { useDebounceFn, useDeepCompareEffect, useMemoizedFn } from 'ahooks'
 import dayjs from 'dayjs'
 import { useMemo, useRef, useState } from 'react'
@@ -7,8 +7,8 @@ import { useMemo, useRef, useState } from 'react'
 export const useSliderValue = (props: { data: API_DEVICE.domain.Device }) => {
   const { data } = props
   const { productKey, deviceId } = data || {}
-  const state = useWangLouControlRoomStore((s) => s.state[deviceId])
-  const uuid = useWangLouControlRoomStore((s) => s.uuid)
+  const state = useOthersControlRoomStore((s) => s.state[deviceId])
+  const uuid = '' // useOthersControlRoomStore((s) => s.uuid)
   const run = usePostDeviceService(productKey, deviceId)
   const [zoom, setZoomt] = useState(0)
   const [focalLength, setFocalLengtht] = useState(0)
