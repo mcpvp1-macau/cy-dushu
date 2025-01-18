@@ -1,17 +1,20 @@
+function isDomainOrIP() {
+  var hostname = window.location.hostname
+  var ipRegex =
+    /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+  return ipRegex.test(hostname) ? 'IP' : 'Domain'
+}
+
+function isPublic() {
+  return isDomainOrIP() === 'Domain'
+}
+
 window.config = {
   title: '牍术·无人装备智能引擎',
-  systemName: 'jingqi-v3', // 应用名称
-  loginUrl: 'http://test.4a.jing-an.com:32712/login',
-  globalWs: 'ws', // 全局
-  defDeviceType: 'UAV',
-  isHaveATAK: false,
-  distanceDisplayCondition: [0, 3280000],
-  voiceConfig: {
-    voiceUrl: 'wss://jingqi.jing-an.com:32012/signaling',
-    voiceStun: 'stun:jingqi.jing-an.com:3478',
-    voiceTurn: 'turn:jingqi.jing-an.com:3478',
-  },
-  RadarRangeForm: true,
+  systemName: 'jingqi-v3',
+  loginUrl: isPublic() ? 'https://test.4a.jing-an.com:32712/login' : '',
+  loginHttps: true,
+  globalWs: 'wss',
   defaultImageries: [
     {
       url: '/data/maptiler-satellite-lowres/{z}/{x}/{y}.jpg',
@@ -23,27 +26,33 @@ window.config = {
       min: 6,
       max: 12,
     },
-    {
-      url: 'https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png',
-      min: 13,
-      max: 18,
-    },
   ],
-  cesiumToken:
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJlNDk1M2U1NC03Y2YzLTRjNGQtYmNlZi0zYzIyOWExYzJjNjQiLCJpZCI6NTI2ODcsImlhdCI6MTYxOTQxOTk2MX0.wsOPCgRigh9oNFv5jQSwLP_amHEytiEMktVXiMy7taY',
-  // mapboxToken:
-  //   'pk.eyJ1IjoicWlhb2Jhbmd6aHUiLCJhIjoiY2twNGQwdDYzMDd1aDJvb3VzY3plemhqYSJ9.P6BGwgvFq9y8aDZ8RjJByQ',
-  showSite: false, // 水库相关功能
   videoBuffer: 0,
   videoBufferDelay: 0.2,
-  maptilerUrl: '', // 公网
-  vodVideoUrl: 'http://172.21.30.201:31118',
-  controlServerUploadUrl: 'http://172.21.30.201:32041',
-  isPublicNetwork: false,
-  videoProxy: false,
-  addPublicTerr: true,
-  originDeviceLng: 120,
-  originDeviceLat: 30,
-  wanglouSpeed: 500,
-  isPublic: true, // 是否公网
+  videoProxy: true,
+  daotongServer: 'http://135.100.11.130:18099/'
 }
+
+if (isPublic()) {
+  window.config.defaultImageries.push({
+    url: 'https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png',
+    min: 13,
+    max: 18,
+  })
+} else {
+  window.config.defaultImageries.push(
+    ...[
+      {
+        url: '/data/jingan/{z}/{x}/{y}.jpg',
+        min: 13,
+        max: 18,
+      },
+      {
+        url: '/data/jingan-poi/{z}/{x}/{y}.jpg',
+        min: 13,
+        max: 18,
+      },
+    ],
+  )
+}
+

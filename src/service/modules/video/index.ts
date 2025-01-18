@@ -1,4 +1,4 @@
-import serverVideo from '@/service/servers/serverVideo'
+import serverVideo, { serverVod } from '@/service/servers/serverVideo'
 
 /** 获取视频质量 */
 export const getStreamQualityLevel = (data) => {
@@ -7,4 +7,9 @@ export const getStreamQualityLevel = (data) => {
       autoShowMessageOnNotSuccess: false,
     },
   })
+}
+
+/** 获取下载地址 */
+export const getVodUrl = (hlsUrl: string) => {
+  return serverVod.post('/vod/getVodUrl', { hlsUrl })
 }

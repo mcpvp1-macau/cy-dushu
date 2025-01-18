@@ -24,6 +24,9 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
   const videoId = useDeviceDetailStore(
     (s) => s.deviceDetail?.properties.videoList?.[0]?.videoId,
   )!
+  const sn = useDeviceDetailStore((s) => s.deviceDetail?.sn)
+
+  const deviceTags = useDeviceDetailStore((s) => s.deviceDetail?.deviceTags)!
 
   const [searchParams] = useSearchParams()
   const useLW = searchParams.get('useLW')
@@ -44,6 +47,11 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
   const handlePropertiesSei = (data: any) => {
     updateUavProperties(data)
   }
+
+  /** 是否道通播放器 */
+  const isRtcDemo = !!deviceTags?.find(
+    (item: any) => item.tagName === 'PLAY_TYPE' && item.tagValue === 'DT_RTC',
+  )?.tagValue
 
   const handleSeiClick = useMemoizedFn((e: AiObject) => {
     const { sourceFrameWidth: fw, sourceFrameHeight: fh, seq } = e
@@ -85,6 +93,7 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
           // setAspectRatio(v)
           onAspectRatioChange?.(v)
         }}
+        sn={isRtcDemo ? sn : undefined}
         onUavProperties={handlePropertiesSei}
         onClickSeiBox={handleSeiClick}
         videoChildren={
