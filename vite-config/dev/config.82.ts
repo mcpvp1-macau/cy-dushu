@@ -59,6 +59,7 @@ export default mergeConfig(
       __DEV_MERGE_CONFIG__: {
         systemName: 'jingqi-v3',
         loginUrl: 'http://test.4a.jing-an.com:32712/login',
+        globalWs: 'ws',
       },
     },
   }),

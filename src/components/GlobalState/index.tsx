@@ -1,6 +1,7 @@
 import LayerAndOverlay from './LayerAndOverlay'
 import GlobalWebSocket from './GlobalWebSocket'
 import MapDevices from './MapDevices'
+import GlobalMessage from './GlobalMessage'
 
 type PropsType = unknown
 
@@ -11,6 +12,7 @@ const GlobalState: FC<PropsType> = memo(() => {
       <GlobalWebSocket />
       <MapDevices />
       <LayerAndOverlay />
+      <GlobalMessage />
     </>
   )
 })

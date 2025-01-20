@@ -44,7 +44,7 @@ const initialLayout: DynamicLayoutType = {
         {
           type: 'tabs',
           size: 3,
-          children: [{ key: 'status', title: '地图' }],
+          children: [{ key: 'status', title: '视频' }],
         },
       ],
     },
@@ -194,7 +194,7 @@ const PageControlRoomWangLou: React.FC = () => {
     const l = _.cloneDeep(layout)
     if (l && l.children[1])
       (l.children[1] as DynamicLayoutType).children = videoTabs
-    setLayout(layout)
+    setLayout(l)
   }, [videoTabs])
 
   return (

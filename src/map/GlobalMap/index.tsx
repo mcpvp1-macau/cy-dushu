@@ -16,6 +16,7 @@ import AreaWayline from './AreaWayline'
 import UpdateMap from './UpdateMap'
 import TargetPoints from './TargetPoints'
 import BoardCesium from './BoardCesium'
+import EventMarkers from './EventMarkers'
 
 type PropsType = unknown
 
@@ -40,6 +41,7 @@ const GlobalMap: FC<PropsType> = memo(() => {
         <DeviceHistoryTracks />
         <TargetPoints />
         <BoardCesium />
+        <EventMarkers />
         {airlineOpen && <ActionAirline />}
         {areaWaylineOpen && <AreaWayline />}
       </CesiumMap>

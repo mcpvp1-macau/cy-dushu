@@ -25,6 +25,8 @@ type SelectOptionType =
       kind: 'radartarget'
       type: string
       targetId: string
+      id: string
+      name: string
       targetPitch: string
       targetYaw: string
       parentId: string
@@ -54,24 +56,26 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
         updateRightMode(RightModeEnum.RADAR_TARGET)
         updateDetailId(`${e.parentId}=${e.deviceId}=${e.targetId}`)
         break
+      case 'event':
+        updateRightMode(RightModeEnum.EVENT_DETAIL)
+        updateDetailId(e.id)
+        break
     }
     clearOptions()
   })
 
-  const items = useMemo<MenuProps['items']>(
-    () =>
-      selectOptions.map((e) => ({
-        key: e.kind === 'device' ? e.id : e.targetId,
-        label: (
-          <p className="flex gap-2">
-            {e.kind === 'device' && <DeviceIcon type={e.type} />}
-            {e.kind === 'device' ? e.name : e.targetId}
-          </p>
-        ),
-        onClick: () => handleSelect(e),
-      })),
-    [selectOptions],
-  )
+  const items = useMemo<MenuProps['items']>(() => {
+    return selectOptions.map((e) => ({
+      key: e.id,
+      label: (
+        <p className="flex gap-2">
+          {e.kind === 'device' && <DeviceIcon type={e.type} />}
+          {e.name}
+        </p>
+      ),
+      onClick: () => handleSelect(e),
+    }))
+  }, [selectOptions])
 
   /** 关闭和清空选项 */
   const clearOptions = useMemoizedFn(() => {
@@ -109,13 +113,28 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
     return {
       kind,
       type,
-      targetId,
+      id: targetId,
       targetPitch,
       targetYaw,
       parentId,
       deviceId,
+      name: targetId,
+      targetId,
       sourceType,
       index,
+    }
+  }
+
+  const runEvent = (e) => {
+    // `event--${eventType}--${data.deviceName}--${eventId}--${longitude}--${latitude}`
+    const [kind, type, name, id, lng, lat] = e.primitive.id.split('--')
+    return {
+      kind,
+      type,
+      name,
+      id,
+      lng: parseFloat(lng),
+      lat: parseFloat(lat),
     }
   }
 
@@ -125,17 +144,18 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
       return runDevice(e)
     } else if (kind === 'radartarget') {
       return runTarget(e)
+    } else if (kind === 'event') {
+      return runEvent(e)
     }
   }
 
   const [rightMenuType, setRightMenuType] = useState<SelectOptionType | null>()
   const allDevicesMap = useMapDevicesStore((s) => s.allDevicesMap)
 
-
   /** 引导 */
   const handleClick1 = async (parentId, targetId) => {
     const productKey = allDevicesMap[parentId][0]?.productKey
-    if(!productKey) return;
+    if (!productKey) return
     const { message } = await postDeviceService(
       productKey,
       parentId,
@@ -171,8 +191,6 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
     if (!pickedObjs || !pickedObjs.length) {
       return
     }
-
-
 
     const res = pickedObjs
       .filter(
@@ -223,7 +241,6 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
           return
         }
 
-
         const res = pickedObjs
           .filter(
             (e) =>
@@ -231,7 +248,9 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
                 e.primitive instanceof Cesium.PointPrimitive) &&
               e.id &&
               typeof e.id === 'string' &&
-              (e.id.includes('device--') || e.id.includes('radartarget--')),
+              (e.id.includes('device--') ||
+                e.id.includes('radartarget--') ||
+                e.id.includes('event--')),
           )
           .slice(0, 8) // 限制 8 个
           .map((e) => {
@@ -276,7 +295,6 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
       handler.destroy()
     }
   }, [viewer])
-
 
   return (
     <>

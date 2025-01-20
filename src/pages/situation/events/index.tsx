@@ -12,6 +12,7 @@ import IconFilter from '@/assets/icons/jsx/IconFilter'
 import { LoadingOutlined } from '@ant-design/icons'
 import useEventTypeAndSourceOptions from './hooks/useEventTypeAndSourceOptions'
 
+
 type PropsType = unknown
 
 /** 态势事件列表 */
@@ -22,6 +23,7 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
 
   const [[eventSourceOptions, eventTypeOptions], tsIsLoading] =
     useEventTypeAndSourceOptions()
+
 
   const [eventLevelList, setEventLevelList] = useState<string[]>([])
   const [eventTypeList, setEventTypeList] = useState<string[]>([])

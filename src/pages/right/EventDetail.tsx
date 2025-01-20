@@ -5,6 +5,7 @@ import EventDetail from '../events/components/EventDetail'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { getEventDetail } from '@/service/modules/events'
 import { QuestionCircleFilled } from '@ant-design/icons'
+import { bigFlyEmitter } from '@/map/GlobalMap/BigFlyListener'
 
 type PropsType = unknown
 
@@ -24,6 +25,19 @@ const RightEventDetail: FC<PropsType> = memo(() => {
 
   const Icon =
     algorithmIconMap[data?.eventType ?? 'unknown'] ?? QuestionCircleFilled
+
+      // big fly
+  useEffect(() => {
+    if (!data) {
+      return
+    }
+    if (data.longitude && data.latitude) {
+      bigFlyEmitter.emit('bigFly', {
+        lng: data.longitude,
+        lat: data.latitude,
+      })
+    }
+  }, [data])
 
   return (
     <div className="w-[350px] backdrop-blur">

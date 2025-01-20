@@ -5,6 +5,7 @@ import { shouldJson } from '@/utils/json'
 import { isNil } from 'lodash'
 
 export const handleStorageURL = (url: string) => {
+  if (!url) return ''
   // 如果是相对路径，加上前缀
   if (url?.startsWith('/storage')) {
     return url

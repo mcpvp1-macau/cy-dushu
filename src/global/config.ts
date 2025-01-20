@@ -17,7 +17,10 @@ export type ConfigType = {
   logo?: string
   enableElectricScale?: boolean
   vodVideoUrl?: string
+  /** 道通服务 */
   daotongServer?: string
+  /** 告警提示音 */
+  warnAudioUrl?: string
 }
 
 type WindowType = Window & { config: ConfigType }

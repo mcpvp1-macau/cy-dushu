@@ -1,3 +1,5 @@
+import AppEmpty from './AppEmpty'
+
 type PropsType = {
   src: string
   alt?: string
@@ -26,13 +28,19 @@ const ImageContainBox2: FC<PropsType> = memo(({ src, alt, children }) => {
         className="absolute inset-0 m-auto max-w-full max-h-full"
         style={{ aspectRatio }}
       >
-        <img
-          ref={imgRef}
-          className="size-full object-contain"
-          src={src}
-          alt={alt}
-          onLoad={handleOnLoad}
-        />
+        {src ? (
+          <img
+            ref={imgRef}
+            className="size-full object-contain"
+            src={src}
+            alt={alt}
+            onLoad={handleOnLoad}
+          />
+        ) : (
+          <>
+            <AppEmpty description="暂无图片" />
+          </>
+        )}
         {children}
       </div>
     </div>

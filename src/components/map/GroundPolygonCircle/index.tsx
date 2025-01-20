@@ -44,8 +44,8 @@ const GroundPolygonCircle: React.FC<PropsType> = ({
       position: Cesium.Cartesian3.fromDegrees(lng, lat),
       name: '雷达扫描',
       ellipse: {
-        semiMajorAxis: 10000.0,
-        semiMinorAxis: 10000.0,
+        semiMajorAxis: scope,
+        semiMinorAxis: scope,
         material: new RadarScanMaterialProperty({
           color: Cesium.Color.fromCssColorString(color),
           speed: 20.0,
@@ -59,11 +59,13 @@ const GroundPolygonCircle: React.FC<PropsType> = ({
 
     return () => {
       // circleScan.clear()
-      a && viewer?.entities.remove(a)
+      try {
+        a && viewer?.entities.remove(a)
+      } catch (error) {}
     }
   }, [lng, lat, scope])
 
-  return null;
+  return null
 
   // 计算竖直扇形
   function calculateSector(x1: number, y1: number, x2: number, y2: number) {
