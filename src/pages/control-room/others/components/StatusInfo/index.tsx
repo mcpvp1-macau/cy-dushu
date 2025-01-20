@@ -26,4 +26,5 @@ const StatusInfo: React.FC<PropsType> = () => {
   )
 }
 
+/** 状态面板 */
 export default StatusInfo

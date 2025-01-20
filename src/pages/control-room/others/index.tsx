@@ -182,13 +182,10 @@ const PageControlRoomWangLou: React.FC = () => {
       ...videoMap,
       status: <StatusInfo />,
       ['device-control']: <ControlPanl />,
+      ['ai-list']: <DataPanl />
     }
     return map
   }, [productKey, deviceId, videoMap])
-
-  // useEffect(() => {
-  //   setLayout(initialLayout)
-  // }, [JSON.stringify(initialLayout)])
 
   useDeepCompareEffect(() => {
     const l = _.cloneDeep(layout)
