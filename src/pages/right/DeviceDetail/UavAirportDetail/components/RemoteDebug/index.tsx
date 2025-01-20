@@ -1,7 +1,6 @@
-import { ReactNode, memo, useMemo, type FC } from 'react'
 import styles from './index.module.less'
 import IconButton from '@/components/ui/button/IconButton'
-import { Button, Popconfirm, Spin, Switch, message } from 'antd'
+import { Button, Popconfirm, Spin, Switch } from 'antd'
 import icons from './icons'
 import {
   CheckCircleFilled,
@@ -9,14 +8,11 @@ import {
   InfoCircleFilled,
   LoadingOutlined,
 } from '@ant-design/icons'
-// import DownIcon from '@/components/Icon/DownIcon'
 import IconExpand from '@/assets/icons/jsx/IconExpand'
 import { useBoolean } from 'ahooks'
-import { postDeviceService } from '@/service/modules/device'
-import dayjs from 'dayjs'
-// import { getValueLable } from '@/utils/thingModel'
 import AppEmpty from '@/components/AppEmpty'
 import IconClose from '@/assets/icons/jsx/IconClose'
+import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 
 const getValueLable = (identifier: string, map: any, data: any) => {
   const props = map[identifier] || {}
@@ -26,9 +22,9 @@ const getValueLable = (identifier: string, map: any, data: any) => {
   if (type === 'struct') {
     return identifier
   } else if (type === 'enum') {
-    return specs?.[value] || '--'
+    return specs?.[value] || '-'
   } else if (type === 'float' || type === 'double' || type === 'int') {
-    return `${value || '--'} ${specs?.unit}`
+    return `${value || '-'} ${specs?.unit}`
   }
 
   return null
@@ -53,6 +49,8 @@ const _ServiceItem: FC<ServiceItemProps> = ({
   disabled,
   btnLabel,
 }) => {
+  const { t } = useTranslation()
+
   return (
     <div className={styles.item}>
       <Icon
@@ -68,17 +66,17 @@ const _ServiceItem: FC<ServiceItemProps> = ({
         <p className={styles.title}>{title}</p>
       </div>
       {!loading ? (
-        title === '舱盖' && btnLabel === '打开' ? (
+        btnLabel &&
+        (title === t('device.uavDock.remoteDebug.cover.title') &&
+        btnLabel === t('device.uavDock.remoteDebug.cover.open.title') ? (
           <Popconfirm
-            title="开盖前请确认机场周边环境，无障碍物或人员靠近"
-            okText="确定"
-            cancelText="取消"
+            title={t('device.uavDock.remoteDebug.cover.openWarning')}
             onConfirm={onClick}
           >
             <Button
               size="small"
               style={{
-                width: '44px',
+                width: '48px',
                 padding: '0',
                 backgroundColor: '#28323C',
                 fontSize: '12px',
@@ -93,7 +91,7 @@ const _ServiceItem: FC<ServiceItemProps> = ({
           <Button
             size="small"
             style={{
-              width: '44px',
+              width: '48px',
               padding: '0',
               backgroundColor: '#28323C',
               fontSize: '12px',
@@ -104,7 +102,7 @@ const _ServiceItem: FC<ServiceItemProps> = ({
           >
             {btnLabel}
           </Button>
-        )
+        ))
       ) : (
         <Spin
           style={{ width: '44px' }}
@@ -119,13 +117,23 @@ ServiceItem.displayName = 'ServiceItem'
 
 // ----------------------------------------------------------------------------
 
-const statusMap: Record<string, string> = {
-  sent: '已下发',
-  in_progress: '执行中',
-  ok: '执行成功',
-  failed: '执行失败',
-  canceled: '执行取消',
-  timeout: '执行超时',
+const statusMap: Record<string, Record<string, string>> = {
+  en: {
+    sent: 'Sent',
+    in_progress: 'In Progress',
+    ok: 'Success',
+    failed: 'Failed',
+    canceled: 'Canceled',
+    timeout: 'Timeout',
+  },
+  zh: {
+    sent: '已下发',
+    in_progress: '执行中',
+    ok: '执行成功',
+    failed: '执行失败',
+    canceled: '执行取消',
+    timeout: '执行超时',
+  },
 }
 
 const colorMap: Record<string, string> = {
@@ -133,18 +141,33 @@ const colorMap: Record<string, string> = {
   failed: '#fe6869',
 }
 
-const processMap: Record<string, string> = {
-  device_reboot: '机场重启',
-  drone_open: '飞行器开启',
-  drone_close: '飞行器关闭',
-  device_format: '机场数据格式化',
-  drone_format: '飞行棋数据格式化',
-  cover_open: '打开舱盖',
-  cover_close: '关闭舱盖',
-  putter_open: '推杆展开',
-  putter_close: '推杆闭合',
-  charge_open: '打开充电',
-  charge_close: '关闭充电',
+const processMap: Record<string, Record<string, string>> = {
+  en: {
+    device_reboot: 'Airport Reboot',
+    drone_open: 'Drone Power On',
+    drone_close: 'Drone Power Off',
+    device_format: 'Airport Data Format',
+    drone_format: 'Drone Data Format',
+    cover_open: 'Open Hatch',
+    cover_close: 'Close Hatch',
+    putter_open: 'Deploy Putter',
+    putter_close: 'Retract Putter',
+    charge_open: 'Start Charging',
+    charge_close: 'Stop Charging',
+  },
+  zh: {
+    device_reboot: '机场重启',
+    drone_open: '飞行器开启',
+    drone_close: '飞行器关闭',
+    device_format: '机场数据格式化',
+    drone_format: '飞行棋数据格式化',
+    cover_open: '打开舱盖',
+    cover_close: '关闭舱盖',
+    putter_open: '推杆展开',
+    putter_close: '推杆闭合',
+    charge_open: '打开充电',
+    charge_close: '关闭充电',
+  },
 }
 
 const iconMap: Record<string, ReactNode> = {
@@ -165,9 +188,9 @@ type PropsType = {
 
 /** 远程调试 */
 const RemoteDebug: FC<PropsType> = ({ state, onClose, data, progress }) => {
-  const [messageApi, contextHolder] = message.useMessage()
+  const { t, i18n } = useTranslation()
   const deviceId = data.deviceId
-  const productKey = data.productKey || data.deviceModel?.productKey
+  const productKey = (data.productKey || data.deviceModel?.productKey)!
 
   // 属性映射
   const propertiesMap = useMemo(() => {
@@ -183,268 +206,248 @@ const RemoteDebug: FC<PropsType> = ({ state, onClose, data, progress }) => {
   // 控制执行进度的展开收起
   const [open, { toggle }] = useBoolean(false)
 
-  const runService = async (identifier: string, params: any) => {
-    const key = dayjs().valueOf()
-    if (productKey && deviceId) {
-      messageApi.open({
-        key,
-        type: 'loading',
-        content: '操作中...',
-      })
-      const { code } = await postDeviceService(
-        productKey,
-        deviceId,
-        identifier,
-        params,
-      )
-      if ('SUCCESS' === code) {
-        messageApi.open({
-          key,
-          type: 'success',
-          content: '操作成功',
-          duration: 2,
-        })
-      } else {
-        messageApi.open({
-          key,
-          type: 'error',
-          content: '操作失败',
-          duration: 2,
-        })
-      }
-    }
-  }
+  const runService = usePostDeviceService(productKey, deviceId)
 
-  const serviceItems: ServiceItemProps[] = [
-    {
-      icon: icons.JCXT,
-      title: '机场系统',
-      info: getValueLable('modeCode', propertiesMap, state),
-      disabled: state['modeCode'] !== 2 || state['deviceRebootProcess'] === 0,
-      loading: state['deviceRebootProcess'] === 0,
-      btnLabel: state['deviceRebootProcess'] === 0 ? '重启中' : '重启',
-      onClick: () => runService('deviceReboot', {}),
-    },
-    {
-      icon: icons.FXQ,
-      title: '飞行器',
-      info: (() => {
-        switch (state['droneOpenProcess']) {
-          case 0:
-            return '开机中'
-          case 1:
-            return '关机中'
-          case 2:
-            return '已开机'
-          case 3:
-            return '已关机'
-          default:
+  const serviceItems: ServiceItemProps[] = useMemo(
+    () => [
+      {
+        icon: icons.JCXT,
+        title: t('device.uavDock.remoteDebug.jcxt.title'),
+        info: getValueLable('modeCode', propertiesMap, state),
+        disabled: state['modeCode'] !== 2 || state['deviceRebootProcess'] === 0,
+        loading: state['deviceRebootProcess'] === 0,
+        btnLabel: t('device.uavDock.remoteDebug.jcxt.restart.title'),
+        onClick: () => runService('deviceReboot', {}),
+      },
+      {
+        icon: icons.FXQ,
+        title: t('device.uavDock.remoteDebug.uav.title'),
+        info: (() => {
+          switch (state['droneOpenProcess']) {
+            case 0:
+              return t('device.uavDock.remoteDebug.uav.booting.title')
+            case 1:
+              return t('device.uavDock.remoteDebug.uav.Halting.title')
+            case 2:
+              return t('device.uavDock.remoteDebug.uav.powerOn.title')
+            case 3:
+              return t('device.uavDock.remoteDebug.uav.powerDown.title')
+            default:
+              return '-'
+          }
+        })(),
+        disabled:
+          state['modeCode'] !== 2 || [0, 1].includes(state['droneOpenProcess']),
+        loading: [0, 1].includes(state['droneOpenProcess']),
+        btnLabel: (() => {
+          switch (state['droneOpenProcess']) {
+            case 2:
+              return t('device.uavDock.remoteDebug.uav.off.title')
+            case 3:
+              return t('device.uavDock.remoteDebug.uav.on.title')
+            default:
+              break
+          }
+        })(),
+        onClick: () => {
+          runService('droneSwitch', {
+            action: state['droneOpenProcess'] === 2 ? 2 : 1,
+          })
+        },
+      },
+      {
+        icon: icons.CG,
+        title: t('device.uavDock.remoteDebug.cover.title'),
+        info: getValueLable('coverState', propertiesMap, state),
+        disabled:
+          state['modeCode'] !== 2 ||
+          (state['coverState'] !== 0 && state['coverState'] !== 2),
+        loading: [1, 3].includes(state['coverState']),
+        btnLabel: (() => {
+          switch (state['coverState']) {
+            case 0:
+              return t('device.uavDock.remoteDebug.cover.open.title')
+            case 2:
+              return t('device.uavDock.remoteDebug.cover.close.title')
+            case 4:
+              return t('common.error')
+            default:
+              break
+          }
+          return ''
+        })(),
+        onClick: () => {
+          if (state['coverState'] === 0 || state['coverState'] === 2)
+            runService('coverSwitch', {
+              action: state['coverState'] === 0 ? 1 : 2,
+            })
+        },
+      },
+      {
+        icon: icons.TG,
+        title: t('device.uavDock.remoteDebug.putter.title'),
+        info: getValueLable('putterState', propertiesMap, state),
+        disabled:
+          state['modeCode'] !== 2 || [1, 3, 4].includes(state['putterState']),
+        loading: [1, 3].includes(state['putterState']),
+        btnLabel: (() => {
+          switch (state['putterState']) {
+            case 0:
+              return t('device.uavDock.remoteDebug.cover.open.title')
+            case 2:
+              return t('device.uavDock.remoteDebug.cover.close.title')
+            case 4:
+              return t('common.error')
+            default:
+              break
+          }
+          return state['putterState']
+        })(),
+        onClick: () => {
+          if ([0, 2].includes(state['putterState']))
+            runService('putterSwitch', {
+              action: state['putterState'] === 0 ? 1 : 2,
+            })
+        },
+      },
+      {
+        icon: icons.FXQCD,
+        title: t('device.uavDock.remoteDebug.aircraftCharging.title'),
+        info: (() => {
+          if (!state.droneChargeState?.capacityPercent) {
             return '-'
-        }
-      })(),
-      disabled:
-        state['modeCode'] !== 2 || [0, 1].includes(state['droneOpenProcess']),
-      loading: [0, 1].includes(state['droneOpenProcess']),
-      btnLabel: (() => {
-        switch (state['droneOpenProcess']) {
-          case 0:
-            return '开机中'
-          case 1:
-            return '关机中'
-          case 2:
-            return '关机'
-          case 3:
-            return '开机'
-          default:
-            break
-        }
-      })(),
-      onClick: () => {
-        runService('droneSwitch', {
-          action: state['droneOpenProcess'] === 2 ? 2 : 1,
-        })
+          }
+          let prefix = ''
+          switch (state['droneChargeStatusProcess']) {
+            case 0:
+              prefix = t(
+                'device.uavDock.remoteDebug.aircraftCharging.idle.title',
+              )
+              break
+            case 1:
+              prefix = t(
+                'device.uavDock.remoteDebug.aircraftCharging.charging.title',
+              )
+              break
+            case 2:
+              prefix = t(
+                'device.uavDock.remoteDebug.aircraftCharging.preparing.title',
+              )
+              break
+            case 3:
+              prefix = t(
+                'device.uavDock.remoteDebug.aircraftCharging.poweringOff.title',
+              )
+          }
+          return `${prefix} ${state.droneChargeState.capacityPercent}%`
+        })(),
+        disabled:
+          state['modeCode'] !== 2 ||
+          [2, 3].includes(state['droneChargeStatusProcess']),
+        loading: [2, 3].includes(state['droneChargeStatusProcess']),
+        btnLabel: (() => {
+          switch (state['droneChargeStatusProcess']) {
+            case 0:
+              return t(
+                'device.uavDock.remoteDebug.aircraftCharging.powerOn.title',
+              )
+            case 1:
+              return t(
+                'device.uavDock.remoteDebug.aircraftCharging.powerOff.title',
+              )
+            default:
+              return ''
+          }
+        })(),
+        onClick: () => {
+          if (
+            state['droneChargeStatusProcess'] === 0 ||
+            state['droneChargeStatusProcess'] === 1
+          )
+            runService('chargeSwitch', {
+              action: state['droneChargeStatusProcess'] === 0 ? 1 : 2,
+            })
+        },
       },
-    },
-    {
-      icon: icons.CG,
-      title: '舱盖',
-      info: getValueLable('coverState', propertiesMap, state),
-      disabled:
-        state['modeCode'] !== 2 ||
-        (state['coverState'] !== 0 && state['coverState'] !== 2),
-      loading: state['coverState'] === 1 || state['coverState'] === 3,
-      btnLabel: (() => {
-        switch (state['coverState']) {
-          case 0:
-            return '打开'
-          case 1:
-            return '打开中'
-          case 2:
-            return '关闭'
-          case 3:
-            return '关闭中'
-          case 4:
-            return '舱盖状态异常'
-          default:
-            break
-        }
-        return ''
-      })(),
-      onClick: () => {
-        if (state['coverState'] === 0 || state['coverState'] === 2)
-          runService('coverSwitch', {
-            action: state['coverState'] === 0 ? 1 : 2,
-          })
+      {
+        icon: icons.YJFC,
+        title: t('device.uavDock.remoteDebug.goHome.title'),
+        info: '-',
+        disabled: state['modeCode'] !== 2,
+        btnLabel: t('device.uavDock.remoteDebug.goHome.btn.title'),
+        onClick: () => runService('returnHome', {}),
       },
-    },
-    {
-      icon: icons.TG,
-      title: '推杆',
-      info: getValueLable('putterState', propertiesMap, state),
-      disabled:
-        state['modeCode'] !== 2 || [1, 3, 4].includes(state['putterState']),
-      loading: [1, 3].includes(state['putterState']),
-      btnLabel: (() => {
-        switch (state['putterState']) {
-          case 0:
-            return '打开'
-          case 1:
-            return '打开中'
-          case 2:
-            return '关闭'
-          case 3:
-            return '关闭中'
-          case 4:
-            return '推杆状态异常'
-          default:
-            break
-        }
-        return state['putterState']
-      })(),
-      onClick: () => {
-        if ([0, 2].includes(state['putterState']))
-          runService('putterSwitch', {
-            action: state['putterState'] === 0 ? 1 : 2,
-          })
+      {
+        icon: icons.JCCC,
+        title: t('device.uavDock.dockStorage.title'),
+        info:
+          (
+            (100 * (state?.storage?.used ?? 0)) /
+            (state?.storage?.used ?? 1)
+          ).toFixed(2) + '%',
+        disabled: state['modeCode'] !== 2 || state['deviceFormatProcess'] === 1,
+        loading: state['deviceFormatProcess'] === 1,
+        btnLabel:
+          state['deviceFormatProcess'] === 0
+            ? t('device.uavDock.dockStorage.format.title')
+            : t('device.uavDock.dockStorage.formatting.title'),
+        onClick: () => {
+          if (state['deviceFormatProcess'] === 0) runService('deviceFormat', {})
+        },
       },
-    },
-    {
-      icon: icons.FXQCD,
-      title: '飞行器充电',
-      info: (() => {
-        let prefix = ''
-        switch (state['droneChargeStatusProcess']) {
-          case 0:
-            prefix = '空闲'
-            break
-          case 1:
-            prefix = '充电中'
-            break
-          case 2:
-            prefix = '准备中'
-            break
-          case 3:
-            prefix = '断电中'
-        }
-        return `${prefix}${
-          state['droneChargeState']?.['capacityPercent'] || '-'
-        }%`
-      })(),
-      disabled:
-        state['modeCode'] !== 2 ||
-        state['droneChargeStatusProcess'] === 2 ||
-        state['droneChargeStatusProcess'] === 3,
-      loading:
-        state['droneChargeStatusProcess'] === 2 ||
-        state['droneChargeStatusProcess'] === 3,
-      btnLabel: (() => {
-        switch (state['droneChargeStatusProcess']) {
-          case 0:
-            return '充电'
-          case 1:
-            return '结束'
-          case 2:
-            return '准备中'
-          case 3:
-            return '断电中'
-          default:
-            return ''
-        }
-      })(),
-      onClick: () => {
-        if (
-          state['droneChargeStatusProcess'] === 0 ||
-          state['droneChargeStatusProcess'] === 1
-        )
-          runService('chargeSwitch', {
-            action: state['droneChargeStatusProcess'] === 0 ? 1 : 2,
-          })
+      {
+        icon: icons.FXQCC,
+        title: t('device.uavDock.aircraftStorage.title'),
+        info: '-',
+        disabled: state['modeCode'] !== 2 || state['droneFormatProcess'] === 1,
+        loading: state['droneFormatProcess'] === 1,
+        btnLabel:
+          state['droneFormatProcess'] === 0
+            ? t('device.uavDock.dockStorage.format.title')
+            : t('device.uavDock.dockStorage.formatting.title'),
+        onClick: () => {
+          if (state['droneFormatProcess'] === 0) runService('droneFormat', {})
+        },
       },
-    },
-    {
-      icon: icons.YJFC,
-      title: '一键返航',
-      info: '-',
-      disabled: state['modeCode'] !== 2,
-      btnLabel: '返航',
-      onClick: () => runService('returnHome', {}),
-    },
-    {
-      icon: icons.JCCC,
-      title: '机场存储',
-      info:
-        (
-          (100 * (state?.storage?.used ?? 0)) /
-          (state?.storage?.used ?? 1)
-        ).toFixed(2) + '%',
-      disabled: state['modeCode'] !== 2 || state['deviceFormatProcess'] === 1,
-      loading: state['deviceFormatProcess'] === 1,
-      btnLabel: state['deviceFormatProcess'] === 0 ? '格式化' : '格式化中',
-      onClick: () => {
-        if (state['deviceFormatProcess'] === 0) runService('deviceFormat', {})
+      {
+        icon: icons.BGD,
+        title: t('device.uavDock.supplementLight.title'),
+        info: getValueLable('supplementLightState', propertiesMap, state),
+        disabled: state['modeCode'] !== 2,
+        btnLabel:
+          state['supplementLightState'] === 0
+            ? t('device.uavDock.remoteDebug.cover.open.title')
+            : t('device.uavDock.remoteDebug.cover.close.title'),
+        onClick: () =>
+          runService('supplementLight', {
+            action: state['supplementLightState'] === 0 ? 0 : 1,
+          }),
       },
-    },
-    {
-      icon: icons.FXQCC,
-      title: '飞行器存储',
-      info: '-',
-      disabled: state['modeCode'] !== 2 || state['droneFormatProcess'] === 1,
-      loading: state['droneFormatProcess'] === 1,
-      btnLabel: state['droneFormatProcess'] === 0 ? '格式化' : '格式化中',
-      onClick: () => {
-        if (state['droneFormatProcess'] === 0) runService('droneFormat', {})
+      {
+        icon: icons.SGBJ,
+        title: t('device.uavDock.alarmState.title'),
+        info: getValueLable('alarmState', propertiesMap, state),
+        disabled: state['modeCode'] !== 2,
+        btnLabel:
+          state['alarmState'] === 0
+            ? t('device.uavDock.remoteDebug.cover.open.title')
+            : t('device.uavDock.remoteDebug.cover.close.title'),
+        onClick: () =>
+          runService('alarmStateSwitch', {
+            action: state['alarmState'] === 0 ? 1 : 0,
+          }),
       },
-    },
-    {
-      icon: icons.BGD,
-      title: '补光灯',
-      info: getValueLable('supplementLightState', propertiesMap, state),
-      disabled: state['modeCode'] !== 2,
-      btnLabel: state['supplementLightState'] === 0 ? '开启' : '关闭',
-      onClick: () =>
-        runService('supplementLight', {
-          action: state['supplementLightState'] === 0 ? 0 : 1,
-        }),
-    },
-    {
-      icon: icons.SGBJ,
-      title: '声光报警',
-      info: getValueLable('alarmState', propertiesMap, state),
-      disabled: state['modeCode'] !== 2,
-      btnLabel: state['alarmState'] === 0 ? '开启' : '关闭',
-      onClick: () =>
-        runService('alarmStateSwitch', {
-          action: state['alarmState'] === 0 ? 1 : 0,
-        }),
-    },
-  ]
+    ],
+    [t, state, propertiesMap],
+  )
 
   return (
     <div className={styles.remoteDebug}>
-      {contextHolder}
       <div className={styles.header}>
         <div className={styles.title}>
-          <span style={{ marginRight: '6px' }}>远程调试</span>
+          <span style={{ marginRight: '6px' }}>
+            {t('device.uavDock.remoteDebug.title')}
+          </span>
           <Switch
             size="small"
             disabled={[1, 3, 4].includes(state['modeCode'])}
@@ -477,7 +480,7 @@ const RemoteDebug: FC<PropsType> = ({ state, onClose, data, progress }) => {
                 : '1px solid transparent',
             }}
           >
-            <p>执行进度</p>
+            <p>{t('device.uavDock.remoteDebug.processProgress.title')}</p>
             <IconButton onClick={toggle}>
               <IconExpand
                 style={{
@@ -494,14 +497,20 @@ const RemoteDebug: FC<PropsType> = ({ state, onClose, data, progress }) => {
                 progress.map((item, index) => (
                   <div
                     key={index}
+                    className="whitespace-nowrap"
                     style={{ color: colorMap[item.output.status] ?? '#c7d1dc' }}
                   >
                     <span style={{ marginRight: '6px' }}>
                       {iconMap[item.output.status]}
                     </span>
                     <span>{item.time?.format('MM-DD HH:mm:ss')}: </span>
-                    <span>{processMap[item.name?.toLowerCase()]}</span>
-                    <span>{statusMap[item.output.status]}</span>
+                    <span>
+                      {processMap[i18n.language][item.name?.toLowerCase()]}
+                    </span>
+                    <span>
+                      {i18n.language === 'zh' ? '' : ' '}
+                      {statusMap[i18n.language][item.output.status]}
+                    </span>
                     {item.output.status === 'in_progress' && (
                       <span>{`(${item.output.progress.percent}%)`}</span>
                     )}

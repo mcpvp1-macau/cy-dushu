@@ -6,46 +6,13 @@ import { DeviceEnum } from '@/enum/device'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { uploadAirlineTemplate } from '@/service/modules/airline'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
-import { DefaultOptionType } from 'antd/es/select'
 
 type PropsType = unknown
-
-const createUploadAirlineItems = (deviceOptions: DefaultOptionType) =>
-  [
-    {
-      name: 'deviceId',
-      label: '设备',
-      type: 'select',
-      options: deviceOptions,
-      rules: [{ required: true, message: '请选择设备' }],
-    },
-    {
-      name: 'kmzFile',
-      label: '上传文件',
-      type: 'upload',
-      valuePropName: 'file',
-      otherProps: {
-        accept: '.kmz',
-        beforeUpload: () => false,
-      },
-      rules: [{ required: true, message: '请上传航线文件' }],
-    },
-    {
-      name: 'isThird',
-      label: '第三方',
-      type: 'checkbox',
-      options: [
-        {
-          value: true,
-          label: '是',
-        },
-      ],
-    },
-  ] as XFormItem[]
 
 /** 上传航线 */
 const UploadAirlineTemplte: FC<PropsType> = memo(() => {
   const [open, { setTrue, setFalse }] = useBoolean()
+  const { t, i18n } = useTranslation()
 
   const allDevices = useMapDevicesStore((s) => s.allDevices)
 
@@ -56,8 +23,48 @@ const UploadAirlineTemplte: FC<PropsType> = memo(() => {
         label: e.deviceName,
         value: e.deviceId,
       }))
-    return createUploadAirlineItems(deviceOptions)
-  }, [allDevices])
+    return [
+      {
+        name: 'deviceId',
+        label: t('wayline.upload.form.device.label'),
+        type: 'select',
+        options: deviceOptions,
+        rules: [
+          {
+            required: true,
+            message: t('wayline.upload.form.device.required_msg'),
+          },
+        ],
+      },
+      {
+        name: 'kmzFile',
+        label: t('wayline.upload.form.kmzFile.label'),
+        type: 'upload',
+        valuePropName: 'file',
+        otherProps: {
+          accept: '.kmz',
+          beforeUpload: () => false,
+        },
+        rules: [
+          {
+            required: true,
+            message: t('wayline.upload.form.kmzFile.required_msg'),
+          },
+        ],
+      },
+      {
+        name: 'isThird',
+        label: t('wayline.upload.form.isThird.label'),
+        type: 'checkbox',
+        options: [
+          {
+            value: true,
+            label: t('common.yes'),
+          },
+        ],
+      },
+    ] as XFormItem[]
+  }, [i18n.language, allDevices])
 
   const msgApi = useAppMsg()
   const queryClient = useQueryClient()
@@ -65,7 +72,7 @@ const UploadAirlineTemplte: FC<PropsType> = memo(() => {
     const { deviceId } = data
     const device = allDevices.find((e) => deviceId === e.deviceId)
     if (!device) {
-      msgApi.error('设备不存在')
+      msgApi.error(t('wayline.upload.error.deviceNotExist.msg'))
       return
     }
     const file = data.kmzFile.file
@@ -77,9 +84,9 @@ const UploadAirlineTemplte: FC<PropsType> = memo(() => {
     )
 
     if (data.isThird?.includes(true)) {
-      msgApi.warning('上传成功: 上传第三方航线，请检查后再飞行!')
+      msgApi.success(t('wayline.upload.success.third'))
     } else {
-      msgApi.success('上传成功')
+      msgApi.success(t('wayline.upload.success.msg'))
     }
 
     setFalse()
@@ -92,13 +99,16 @@ const UploadAirlineTemplte: FC<PropsType> = memo(() => {
   return (
     <>
       <IconButton
-        toolTipProps={{ title: '上传航线', mouseEnterDelay: 0.5 }}
+        toolTipProps={{
+          title: t('wayline.upload.title'),
+          mouseEnterDelay: 0.5,
+        }}
         onClick={setTrue}
       >
         <IconUpload />
       </IconButton>
       <FormModal
-        title="上传航线"
+        title={t('wayline.upload.title')}
         clearOnDestroy
         open={open}
         items={formItems}

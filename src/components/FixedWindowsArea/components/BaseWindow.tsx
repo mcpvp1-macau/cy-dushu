@@ -192,7 +192,7 @@ const BaseWindow: FC<PropsType> = memo((props) => {
 
   return (
     <div
-      className="absolute pointer-events-auto bg-ground-100 rounded border border-solid border-[#37414d]"
+      className="absolute pointer-events-auto bg-ground-1 rounded border border-solid border-[#37414d]"
       style={{
         width: props.width,
         height: props.height,

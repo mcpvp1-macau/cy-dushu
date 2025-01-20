@@ -19,6 +19,8 @@ const DrawRangingArea: FC<PropsType> = memo(() => {
   const [endPoint, setEndPoint] = useState<number[] | null>(null)
   const endPointRef = useLatest(endPoint)
 
+  const { t } = useTranslation()
+
   useEffect(() => {
     if (!viewer) {
       return
@@ -126,7 +128,7 @@ const DrawRangingArea: FC<PropsType> = memo(() => {
   return (
     <PositionTooltip position={[endPoint[0], endPoint[1]]} offset={[0, 20]}>
       <div>
-        面积: {areaFmt}
+        {t('common.area')}: {areaFmt}
         <sup>2</sup>
       </div>
     </PositionTooltip>

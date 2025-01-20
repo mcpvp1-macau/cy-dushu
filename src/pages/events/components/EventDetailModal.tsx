@@ -8,11 +8,12 @@ type PropsType = {
 
 const EventDetailModal: FC<PropsType> = memo(({ data }) => {
   const [open, { setTrue, setFalse }] = useBoolean()
+  const { t } = useTranslation()
 
   return (
     <>
       <Button type="link" onClick={setTrue}>
-        详情
+        {t('common.detail')}
       </Button>
       {open && (
         <XModal

@@ -19,19 +19,20 @@ const PageSituation: FC<PropsType> = memo(() => {
 
   const handleSourceTypeChange = useMemoizedFn((type: string) => {
     setSourceType(type)
-    if (sourceType && type) {
+    if (type) {
       // 确定是 sourceType 变化，才跳转
       navigate(`source/${type}`)
     }
   })
 
+  const { t } = useTranslation()
   const menus: GetProps<typeof Tabs>['items'] = [
     {
       key: 'action',
       label: (
         <p className="flex gap-2">
           <MenuIconAction />
-          行动
+          {t('situation.menus.action')}
         </p>
       ),
     },
@@ -49,7 +50,7 @@ const PageSituation: FC<PropsType> = memo(() => {
       label: (
         <p className="flex gap-2">
           <MenuIconEvents />
-          事件
+          {t('situation.menus.events')}
         </p>
       ),
     },
@@ -60,7 +61,7 @@ const PageSituation: FC<PropsType> = memo(() => {
       navigate('action')
     } else if (key === 'events') {
       navigate('situation/events')
-    } else {
+    } else if (key === 'source' && sourceType) {
       navigate(`source/${sourceType}`)
     }
   })

@@ -1,0 +1,22 @@
+{
+  "0": {
+    "en": "Idle",
+    "zh": "空闲中"
+  },
+  "1": {
+    "en": "On-site debugging",
+    "zh": "现场调试"
+  },
+  "2": {
+    "en": "Remote debugging",
+    "zh": "远程调试"
+  },
+  "3": {
+    "en": "Firmware upgrade in progress",
+    "zh": "固件升级中"
+  },
+  "4": {
+    "en": "In operation",
+    "zh": "作业中"
+  }
+}

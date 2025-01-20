@@ -13,6 +13,8 @@ type PropsType = {
 }
 
 const GetPicture: FC<PropsType> = ({ config, onChange }) => {
+  const { t } = useTranslation()
+
   const airlineImageFormat = useAirlineConfigStore(
     (s) => s.airlineConfig.imageFormat,
   )
@@ -20,7 +22,9 @@ const GetPicture: FC<PropsType> = ({ config, onChange }) => {
     <div>
       <div className={styles.subTitle}>
         <PZ />
-        <span className={styles.text}>拍照</span>
+        <span className={styles.text}>
+          {t('wayline.waylinePoint.actions.GET_PICTURE.title')}
+        </span>
       </div>
       <div className={styles.takePhoto}>
         <div className={styles.left}>
@@ -50,7 +54,7 @@ const GetPicture: FC<PropsType> = ({ config, onChange }) => {
                 }
               }}
             >
-              {item.label}
+              {t(`wayline.imageFormat.${item.value}.title`)}
             </div>
           ))}
         </div>
@@ -67,7 +71,7 @@ const GetPicture: FC<PropsType> = ({ config, onChange }) => {
               })
             }
           >
-            跟随航线
+            {t('wayline.useGlobalPayloadLensIndex.title')}
           </div>
         </div>
       </div>

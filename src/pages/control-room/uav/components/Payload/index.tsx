@@ -1,4 +1,5 @@
 import AppCollapse from '@/components/AppCollapse'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { emtpyArray } from '@/constant/data'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { CollapseProps } from 'antd'
@@ -109,7 +110,11 @@ const UavPayload: FC<PropsType> = memo(() => {
       }
     }) || emtpyArray
 
-  return <AppCollapse items={collapseItems} />
+  return (
+    <ScrollArea className="size-full">
+      <AppCollapse items={collapseItems} className="border-0" />
+    </ScrollArea>
+  )
 })
 
 UavPayload.displayName = 'UavPayload'

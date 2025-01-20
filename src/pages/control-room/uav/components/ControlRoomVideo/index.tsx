@@ -11,6 +11,7 @@ import ARScene from './components/ARScene'
 import { AiObject } from '@/components/Video/Jessibuca/sei-types/ai-data'
 import useSmarkTrack from '@/hooks/device/useSmarkTrack'
 import ZoomFocus from './components/ZoomFocus'
+import AITrackBoxSelect from './components/AITrackBoxSelect'
 
 type PropsType = {
   onAspectRatioChange?: (aspectRatio: number) => void
@@ -19,8 +20,9 @@ type PropsType = {
 const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
   const deviceId = useDeviceDetailStore((s) => s.deviceDetail?.deviceId)!
   const productKey = useDeviceDetailStore(
-    (s) => s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey,
-  )
+    (s) =>
+      s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey,
+  )!
   const videoId = useDeviceDetailStore(
     (s) => s.deviceDetail?.properties.videoList?.[0]?.videoId,
   )!
@@ -43,6 +45,7 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
   // const enableMixAR = useControlRoomStore((s) => s.state.ar);
   const enableAR = useMixARStore((s) => s.enable)
   const updateUavProperties = useMixARStore((s) => s.updateUavProperties)
+
 
   const handlePropertiesSei = (data: any) => {
     updateUavProperties(data)
@@ -90,7 +93,6 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
           onDRCChange: liveSetQuality,
         }}
         onAspectRatioChange={(v) => {
-          // setAspectRatio(v)
           onAspectRatioChange?.(v)
         }}
         sn={isRtcDemo ? sn : undefined}
@@ -107,6 +109,7 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
                 <ARScene />
               </div>
             )}
+            {enableSmartTrack && <AITrackBoxSelect />}
           </>
         }
         videoSafeAreaChildren={<Avoidance />}

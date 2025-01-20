@@ -1,5 +1,4 @@
 import { flexRender, Table } from '@tanstack/react-table'
-import { memo, type FC } from 'react'
 import AppEmpty from '../AppEmpty.tsx'
 import { Spin } from 'antd'
 

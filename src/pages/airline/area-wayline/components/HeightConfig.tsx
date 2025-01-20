@@ -8,9 +8,10 @@ type PropsType = unknown
 const HeightConfig: FC<PropsType> = memo(() => {
   const height = useAreaWaylineStore((s) => s.airlineConfig.height)
   const setAirlineConfig = useAreaWaylineStore((s) => s.updateAirlineConfig)
+  const { t } = useTranslation()
 
   return (
-    <XCard title="航线相对高度模式">
+    <XCard title={t('wayline.waylineConfig.atl.title')}>
       <HNumber
         className="mt-3"
         negatives={[-100, -10]}

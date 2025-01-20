@@ -10,6 +10,7 @@ type PropsType = {
 
 /** 预报下一个航点的时间和距离 */
 const Forecats: FC<PropsType> = memo(({ positions }) => {
+  const { t } = useTranslation()
   const waypointIndex = useUavControlRoomStore((s) => s.state.waypointIndex)
   const { viewer } = useCesium()
 
@@ -58,17 +59,17 @@ const Forecats: FC<PropsType> = memo(({ positions }) => {
 
   const timeFormat = useMemo(() => {
     if (isNil(speed) || speed < 1e-1) {
-      return '准备中'
+      return t('common.preparing')
     }
     if (boardInfo.remainDistance < 20) {
-      return '即将到达'
+      return t('common.arriving')
     }
     const time = boardInfo.remainDistance / (speed ?? 1)
     if (time < 60) {
       return `${time.toFixed(1)} s`
     }
     return `${(time / 60).toFixed(1)} min`
-  }, [boardInfo.remainDistance, speed])
+  }, [boardInfo.remainDistance, speed, t])
 
   return (
     <>
@@ -88,8 +89,13 @@ const Forecats: FC<PropsType> = memo(({ positions }) => {
                 textAlign: 'left',
               }}
             >
-              <div>剩余距离：{boardInfo.remainDistance.toFixed(0)}m</div>
-              <div>预计时间：{timeFormat}</div>
+              <div>
+                {t('forecast.remainDistance.title')}:{' '}
+                {boardInfo.remainDistance.toFixed(0)}m
+              </div>
+              <div>
+                {t('forecast.remainTime.title')}: {timeFormat}
+              </div>
             </div>
           </PositionTooltip>
         )}

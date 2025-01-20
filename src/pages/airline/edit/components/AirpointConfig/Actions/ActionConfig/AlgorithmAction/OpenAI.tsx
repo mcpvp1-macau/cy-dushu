@@ -12,6 +12,7 @@ import IconAIEnable from '@/assets/icons/jsx/IconAIEnable'
 import XModal from '@/components/XModal'
 import { getAlgorithmList } from '@/service/modules/algorithm'
 import { DeviceEnum } from '@/enum/device'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 type ConfigType = {
   algorithmId: number
@@ -26,6 +27,7 @@ type PropsType = {
 }
 
 const OpenAI: FC<PropsType> = memo(({ config, onChange }) => {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
 
   const queryClient = useQueryClient()
@@ -74,7 +76,9 @@ const OpenAI: FC<PropsType> = memo(({ config, onChange }) => {
   const [activeId, setActiveId] = useState<number | null>(null)
   const handleConfirm = useMemoizedFn(() => {
     if (!activeId) {
-      msgApi.warning('请选择算法')
+      msgApi.warning(
+        t('wayline.waylinePoint.actions.OPEN_AI.error.noSelect.msg'),
+      )
       return
     }
     onChange({
@@ -100,7 +104,7 @@ const OpenAI: FC<PropsType> = memo(({ config, onChange }) => {
       <div className="mt-3 flex justify-between items-center text-fore-base">
         <div className="flex gap-2">
           <IconAIEnable />
-          <span>开启算法</span>
+          <span>{t('wayline.waylinePoint.actions.OPEN_AI.title')}</span>
         </div>
         {activeAlgorithm && (
           <Button
@@ -109,7 +113,7 @@ const OpenAI: FC<PropsType> = memo(({ config, onChange }) => {
             className="p-0 h-4 leading-4"
             onClick={() => setOpen(true)}
           >
-            选择算法
+            {t('wayline.waylinePoint.actions.OPEN_AI.select.title')}
           </Button>
         )}
       </div>
@@ -122,11 +126,23 @@ const OpenAI: FC<PropsType> = memo(({ config, onChange }) => {
           // 存在算法
           <>
             <div className="flex gap-3 items-center">
-              <span className="text-fore-base">执行时机</span>
+              <span className="text-fore-base">
+                {t('wayline.waylinePoint.actions.OPEN_AI.timing.title')}
+              </span>
               <Radio.Group
                 options={[
-                  { label: '到达时', value: 'ARRIVE' },
-                  { label: '离开时', value: 'LEAVE' },
+                  {
+                    label: t(
+                      'wayline.waylinePoint.actions.OPEN_AI.ARRIVE.title',
+                    ),
+                    value: 'ARRIVE',
+                  },
+                  {
+                    label: t(
+                      'wayline.waylinePoint.actions.OPEN_AI.LEAVE.title',
+                    ),
+                    value: 'LEAVE',
+                  },
                 ]}
                 value={config.actionTiming}
                 onChange={handleTimingChange}
@@ -157,7 +173,7 @@ const OpenAI: FC<PropsType> = memo(({ config, onChange }) => {
             icon={<PlusOutlined />}
             onClick={() => setOpen(true)}
           >
-            选择算法
+            {t('wayline.waylinePoint.actions.OPEN_AI.select.title')}
           </Button>
         )}
 
@@ -168,7 +184,7 @@ const OpenAI: FC<PropsType> = memo(({ config, onChange }) => {
           title={
             <div className="flex gap-2">
               <PlusCircleOutlined />
-              选择算法
+              {t('wayline.waylinePoint.actions.OPEN_AI.select.title')}
             </div>
           }
           open={open}
@@ -182,28 +198,30 @@ const OpenAI: FC<PropsType> = memo(({ config, onChange }) => {
               value={activeId}
               onChange={(e) => setActiveId(e.target.value)}
             >
-              <div
-                className="flex flex-wrap gap-3 text-sm max-h-[336px] overflow-y-auto p-3 pr-[9px]"
-                style={{ scrollbarGutter: 'stable' }}
-              >
-                {data?.map((item) => (
-                  <div
-                    key={item.id}
-                    className="w-[300px] border border-solid border-[#37414D] p-1.5 rounded-[3px] flex"
-                  >
-                    <div className="overflow-hidden">
-                      <Radio value={item.id} />
+              <ScrollArea className="mb-3">
+                <div
+                  className="flex flex-wrap gap-3 text-sm max-h-[400px] p-3"
+                  style={{ scrollbarGutter: 'stable' }}
+                >
+                  {data?.map((item) => (
+                    <div
+                      key={item.id}
+                      className="w-[300px] border border-solid border-[#37414D] p-1.5 rounded-[3px] flex"
+                    >
+                      <div className="overflow-hidden">
+                        <Radio value={item.id} />
+                      </div>
+                      <div className="flex-1">
+                        <AlgorithmItem
+                          data={item}
+                          config={algorithmConfigMap[item.id] ?? {}}
+                          onConfigChange={(e) => handleConfigChange(item.id, e)}
+                        />
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <AlgorithmItem
-                        data={item}
-                        config={algorithmConfigMap[item.id] ?? {}}
-                        onConfigChange={(e) => handleConfigChange(item.id, e)}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              </ScrollArea>
             </Radio.Group>
           )}
         </XModal>

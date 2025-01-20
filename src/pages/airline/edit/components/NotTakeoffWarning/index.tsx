@@ -1,6 +1,5 @@
 import SnackBar from '@/components/ui/SnackBar'
 import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
-import { memo, type FC } from 'react'
 
 type PropsType = unknown
 
@@ -10,7 +9,13 @@ const NotTakeoffWarning: FC<PropsType> = () => {
     (s) => !!s.airlineConfig.takeOffRefPoint,
   )
 
-  return <SnackBar open={!takeOff}>点击地图设置参考起飞点</SnackBar>
+  const { t } = useTranslation()
+
+  return (
+    <SnackBar open={!takeOff}>
+      {t('wayline.waylineConfig.noTakeoffPointError.msg')}
+    </SnackBar>
+  )
 }
 
 export default memo(NotTakeoffWarning)

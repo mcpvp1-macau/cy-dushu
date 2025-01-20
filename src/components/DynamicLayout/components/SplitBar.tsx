@@ -42,7 +42,7 @@ const SplitBar: FC<PropsType> = memo(
     return (
       <div
         className={clsx(
-          'group bg-ground-140 relative flex-shrink-0 flex-grow-0',
+          'group bg-ground-1 relative flex-shrink-0 flex-grow-0',
           {
             'h-full w-2 cursor-ew-resize': !vertical,
             'w-full h-2 cursor-ns-resize': vertical,
@@ -56,7 +56,7 @@ const SplitBar: FC<PropsType> = memo(
               'h-6 w-0.5': !vertical,
               'w-6 h-0.5': vertical,
             },
-            'abs-center bg-ground-300 group-hover:bg-primary rounded',
+            'abs-center bg-ground-5 group-hover:bg-primary rounded',
           )}
         />
         <div

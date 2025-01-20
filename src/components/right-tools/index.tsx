@@ -15,6 +15,8 @@ const RightTools: FC<PropsType> = memo(() => {
   const rightMode = useRightMode((s) => s.rightMode)
   const updateRightMode = useRightMode((s) => s.updateRightMode)
 
+  const { t } = useTranslation()
+
   return (
     <div className="absolute top-3 right-3">
       <div className="flex flex-col gap-3">
@@ -22,7 +24,7 @@ const RightTools: FC<PropsType> = memo(() => {
           <>
             <FloatIconButton
               toolTipProps={{
-                title: '打点',
+                title: t('overlay.marker.title'),
                 placement: 'left',
                 mouseEnterDelay: 0.5,
               }}
@@ -34,7 +36,7 @@ const RightTools: FC<PropsType> = memo(() => {
             </FloatIconButton>
             <FloatIconButton
               toolTipProps={{
-                title: '画区',
+                title: t('overlay.drawing.title'),
                 placement: 'left',
                 mouseEnterDelay: 0.5,
               }}
@@ -46,7 +48,7 @@ const RightTools: FC<PropsType> = memo(() => {
             </FloatIconButton>
             <FloatIconButton
               toolTipProps={{
-                title: '测距',
+                title: t('overlay.measure.title'),
                 placement: 'left',
                 mouseEnterDelay: 0.5,
               }}
@@ -60,7 +62,10 @@ const RightTools: FC<PropsType> = memo(() => {
         </FloatIconButtonGroup>
         <WirelessSituationTool />
         <FloatIconButton
-          toolTipProps={{ title: '保存地图视角', placement: 'left' }}
+          toolTipProps={{
+            title: t('tools.saveMapView.title'),
+            placement: 'left',
+          }}
           onClick={() => mapViewSaveEmitter.emit('save')}
         >
           <IconSave />

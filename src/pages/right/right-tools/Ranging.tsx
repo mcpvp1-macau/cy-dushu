@@ -11,25 +11,40 @@ import { useUnmount } from 'ahooks'
 
 type PropsType = unknown
 
-const items = [
-  [DrawType.RangingLine, '测线', <IconRangingLine />],
-  [DrawType.RangingArea, '测面', <IconRangingArea />],
-  [DrawType.RangingCircle, '测圆', <IconRangingCircle />],
-  [DrawType.RangingAngle, '测角', <IconRangingAngle />],
-] as const
-
-const header = (
-  <div className="flex gap-2 items-center">
-    <IconRangeFinder className="device-detail-icon" />
-    <h6 className="text-white text-base">测距</h6>
-  </div>
-)
-
 /** 测距工具面板 */
 const RightRangingPanel: FC<PropsType> = memo(() => {
   const drawingType = useMapDrawStore((s) => s.drawing)
   const updateDrawing = useMapDrawStore((s) => s.updateDrawing)
   const updateDrawingColor = useMapDrawStore((s) => s.updateDrawingColor)
+
+  const { t } = useTranslation()
+
+  const items = useMemo(
+    () =>
+      [
+        [
+          DrawType.RangingLine,
+          t('overlay.measure.polyline.title'),
+          <IconRangingLine />,
+        ],
+        [
+          DrawType.RangingArea,
+          t('overlay.measure.polygon.title'),
+          <IconRangingArea />,
+        ],
+        [
+          DrawType.RangingCircle,
+          t('overlay.measure.circle.title'),
+          <IconRangingCircle />,
+        ],
+        [
+          DrawType.RangingAngle,
+          t('overlay.measure.angle.title'),
+          <IconRangingAngle />,
+        ],
+      ] as const,
+    [t],
+  )
 
   useUnmount(() => {
     updateDrawing(DrawType.None)
@@ -37,7 +52,12 @@ const RightRangingPanel: FC<PropsType> = memo(() => {
 
   return (
     <div className="w-[350px] backdrop-blur">
-      <CloseableHeader>{header}</CloseableHeader>
+      <CloseableHeader>
+        <div className="flex gap-2 items-center">
+          <IconRangeFinder className="device-detail-icon" />
+          <h6 className="text-white text-base">{t('overlay.measure.title')}</h6>
+        </div>
+      </CloseableHeader>
       <div className="mx-3 mb-3 flex justify-between gap-3">
         {items.map(([type, text, icon], index) => (
           <VerticalIconButton

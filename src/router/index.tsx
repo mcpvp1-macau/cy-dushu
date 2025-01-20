@@ -12,6 +12,7 @@ import events from './modules/events'
 import backtracking from './modules/backtracking'
 import defence from './modules/defence'
 import AppErrorBoundary from '@/components/AppError'
+import Page404 from '@/pages/404'
 
 export const rootRoute = {
   element: <App />,
@@ -28,6 +29,10 @@ export const rootRoute = {
     defence,
     // 测试页面
     ...(import.meta.env.DEV ? [demo] : []),
+    {
+      path: '*',
+      element: <Page404 />,
+    },
   ],
   ErrorBoundary: AppErrorBoundary,
 } as RouteObject

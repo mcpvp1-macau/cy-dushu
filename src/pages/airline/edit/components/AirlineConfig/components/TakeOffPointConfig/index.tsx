@@ -11,10 +11,14 @@ const TakeOffPointConfig: FC<PropsType> = () => {
     (s) => s.airlineConfig.takeOffRefPoint,
   )
   const setIsDrawHome = useAirlineConfigStore((s) => s.updateIsDrawHome)
-
+  const { t } = useTranslation()
   return (
     <XCard
-      title={takeOffRefPoint ? '已设置参考起飞点' : '未设置起飞点'}
+      title={
+        takeOffRefPoint
+          ? t('wayline.takeoffRefPoint.setted.title')
+          : t('wayline.takeoffRefPoint.notSetted.title')
+      }
       topRight={
         <Button
           type="link"
@@ -22,7 +26,7 @@ const TakeOffPointConfig: FC<PropsType> = () => {
           size="small"
           onClick={() => setIsDrawHome(true)}
         >
-          {takeOffRefPoint ? '重设' : '设置'}起飞点
+          {takeOffRefPoint ? t('common.reset') : t('common.set')}
         </Button>
       }
     />

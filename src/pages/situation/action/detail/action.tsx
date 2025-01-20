@@ -8,6 +8,7 @@ import KCYPNormalModal from './components/kcyp/NormalModal'
 import useActionDetail from './context'
 import AppSpin from '@/components/AppSpin'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import KCYPXSPanel from './components/xiaoshan_kcyp/Panel'
 
 const ChildActions = lazy(() => import('./components/ChildActions'))
 const ActionLogList = lazy(() => import('./components/ActionLogList'))
@@ -33,60 +34,75 @@ const PageActionDetailSub: FC<PropsType> = memo(() => {
 
   const actionDetail = useActionDetail()
 
+  const { t } = useTranslation()
+
+  const items = useMemo(() => {
+    if (!actionDetail?.type) {
+      return []
+    }
+    const kcyp = {
+      label: t('action.detail.kcyp.title'),
+      key: '1',
+      children: (
+        <AppViewSuspense>
+          {actionDetail.type === 'kcyp_action' ? (
+            <KCYPNormalPanel actionId={actionId!} />
+          ) : (
+            <KCYPXSPanel actionId={actionId!} />
+          )}
+        </AppViewSuspense>
+      ),
+    }
+    const task = {
+      label: t('action.detail.task.title'),
+      key: '2',
+      extra: <AddTask actionId={actionId!} />,
+      children: (
+        <AppViewSuspense>
+          <ChildActions actionId={actionId!} />
+        </AppViewSuspense>
+      ),
+    }
+    const aiResult = {
+      label: t('action.detail.ai_result.title'),
+      key: '3',
+      extra: <KCYPNormalModal actionId={actionId!} />,
+      children: (
+        <AppViewSuspense>
+          <AIResult actionId={actionId!} />
+        </AppViewSuspense>
+      ),
+    }
+    const log = {
+      label: t('action.detail.log.title'),
+      key: '4',
+      children: (
+        <AppViewSuspense>
+          <ActionLogList actionId={actionId!} />
+        </AppViewSuspense>
+      ),
+    }
+    if (actionDetail.type === 'kcyp_action') {
+      return [kcyp, task, aiResult, log]
+    }
+    if (actionDetail.type === 'xiaoshan_kcyp_action') {
+      return [kcyp, task, aiResult, log]
+    }
+    return [task, aiResult, log]
+  }, [actionDetail?.type])
+
   return (
     <div className="pt-3 h-full flex flex-col overflow-y-hidden">
       {actionDetail ? (
         <ScrollArea className="grow">
-          <AppCollapse
-            defaultActiveKey={['2']}
-            items={[
-              {
-                label: '事故信息',
-                key: '1',
-                children: (
-                  <AppViewSuspense>
-                    <KCYPNormalPanel actionId={actionId!} />
-                  </AppViewSuspense>
-                ),
-              },
-              {
-                label: '任务列表',
-                key: '2',
-                extra: <AddTask actionId={actionId!} />,
-                children: (
-                  <AppViewSuspense>
-                    <ChildActions actionId={actionId!} />
-                  </AppViewSuspense>
-                ),
-              },
-              {
-                label: '检测结果',
-                key: '3',
-                extra: <KCYPNormalModal actionId={actionId!} />,
-                children: (
-                  <AppViewSuspense>
-                    <AIResult actionId={actionId!} />
-                  </AppViewSuspense>
-                ),
-              },
-              {
-                label: '行动记录',
-                key: '4',
-                children: (
-                  <AppViewSuspense>
-                    <ActionLogList actionId={actionId!} />
-                  </AppViewSuspense>
-                ),
-              },
-            ]}
-          />
+          <AppCollapse defaultActiveKey={['2']} items={items} />
         </ScrollArea>
       ) : (
         <AppSpin />
       )}
       <div className="text-center p-3">
         <Button type="primary" className="w-28" onClick={handleEndActionClick}>
-          结束行动
+          {t('action.detail.end.title')}
         </Button>
       </div>
     </div>

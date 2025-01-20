@@ -16,6 +16,8 @@ const AirlineTemplateList: FC<PropsType> = memo(() => {
   const [searchParams, setSearchParams] = useSearchParams()
   const kw = searchParams.get('kw')
 
+  const { t } = useTranslation()
+
   const queryClient = useQueryClient()
   const {
     data,
@@ -66,7 +68,7 @@ const AirlineTemplateList: FC<PropsType> = memo(() => {
     <div className="py-3 grow flex flex-col overflow-hidden">
       <div className="mx-3">
         <Input.Search
-          placeholder="请输入关键词搜索"
+          placeholder={t('wayline.searcher.placeholder')}
           defaultValue={kw || undefined}
           onSearch={handleSearch}
         />

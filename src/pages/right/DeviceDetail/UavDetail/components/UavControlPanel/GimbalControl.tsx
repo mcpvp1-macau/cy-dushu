@@ -1,4 +1,4 @@
-import { Button, InputNumber } from 'antd'
+import { Button, InputNumber, Tooltip } from 'antd'
 import controlBG from '@/assets/imgs/control/buttonBg.png'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import CircleButton from './CircleButton'
@@ -7,15 +7,12 @@ import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import { useDeviceDetailStore } from '../../../hooks/useDeviceDetail.store'
 import useUavZoomFactorChange from '@/pages/control-room/uav/hooks/useZoomFactorChange'
 import { isNil, round } from 'lodash'
+import IconUp from '@/assets/icons/jsx/IconUp'
+import IconDown from '@/assets/icons/jsx/IconDown'
+import IconLeft from '@/assets/icons/jsx/IconLeft'
+import IconRight from '@/assets/icons/jsx/IconRight'
 
 type PropsType = unknown
-
-const controls1 = [
-  ['上', 'left-1/2 -translate-x-1/2', { pitch: 15 }],
-  ['下', 'left-1/2 bottom-0 -translate-x-1/2', { pitch: -15 }],
-  ['左', 'top-1/2 -translate-y-1/2', { yaw: -15 }],
-  ['右', 'top-1/2 right-0 -translate-y-1/2', { yaw: 15 }],
-] as const
 
 /** 云台模式控制按钮 */
 const GimbalButton: FC<{
@@ -55,10 +52,42 @@ const GimbalButton: FC<{
 )
 
 const UavDetailGimbalControl: FC<PropsType> = memo(() => {
+  const { t } = useTranslation()
   const wsReadyState = useUavControlRoomStore((s) => s.wsReadyState)
   const lensType = useUavControlRoomStore((s) => s.state.lensType)
 
   const canControl = wsReadyState === WebSocket.OPEN
+
+  const controls1 = [
+    [
+      <IconUp />,
+      'left-1/2 -translate-x-1/2',
+      { pitch: 15 },
+      t('controlRoom.control.gimbalTiltUp.title'),
+      'top',
+    ],
+    [
+      <IconDown />,
+      'left-1/2 bottom-0 -translate-x-1/2',
+      { pitch: -15 },
+      t('controlRoom.control.gimbalTiltDown.title'),
+      'bottom',
+    ],
+    [
+      <IconLeft />,
+      'top-1/2 -translate-y-1/2',
+      { yaw: -15 },
+      t('controlRoom.control.gimbalTurnLeft.title'),
+      'left',
+    ],
+    [
+      <IconRight />,
+      'top-1/2 right-0 -translate-y-1/2',
+      { yaw: 15 },
+      t('controlRoom.control.gimbalTurnRight.title'),
+      'right',
+    ],
+  ] as const
 
   const sendCommand = useUavControlRoomStore((s) => s.sendCommand)
   const [downKey, setDownKey, reset] = useResetState<Record<
@@ -87,11 +116,11 @@ const UavDetailGimbalControl: FC<PropsType> = memo(() => {
   const isGimbalSource =
     useUavControlRoomStore((s) => s.state.videoSource) === 'gimbal'
 
-  const gimbalTypes = useRef([
-    ['zoom', '变焦模式'],
-    ['ir', '红外模式'],
-    ['wide', '广角模式'],
-  ] as const).current
+  const gimbalTypes = [
+    ['zoom', t('uav.gimbal.zoomMode.title')],
+    ['ir', t('uav.gimbal.irMode.title')],
+    ['wide', t('uav.gimbal.wideMode.title')],
+  ]
 
   const handleLensTypeChange = useMemoizedFn((type: string) => {
     postService('liveLensChange', { lensType: type, videoId })
@@ -106,7 +135,7 @@ const UavDetailGimbalControl: FC<PropsType> = memo(() => {
           <GimbalButton
             key={type}
             lensType={lensType as any}
-            type={type}
+            type={type as any}
             label={label}
             canControl={canControl}
             isGimbalSource={isGimbalSource}
@@ -115,7 +144,7 @@ const UavDetailGimbalControl: FC<PropsType> = memo(() => {
           />
         ))}
         <div className="flex gap-1 whitespace-nowrap">
-          <span>焦距:</span>{' '}
+          <span>{t('uav.gimbal.focalLength.title')}:</span>{' '}
           <InputNumber
             size="small"
             min={2}
@@ -130,18 +159,21 @@ const UavDetailGimbalControl: FC<PropsType> = memo(() => {
         <div className="relative h-[100px] w-[100px] select-none">
           <img className="size-full" src={controlBG} alt="" />
           <div className="absolute inset-1">
-            {controls1.map(([title, className, payload]) => (
-              <CircleButton
-                key={title}
-                className={className}
-                disabled={!canControl || !isGimbalSource}
-                onMouseDown={() => setDownKey(payload)}
-                onMouseUp={reset}
-                onMouseLeave={reset}
-              >
-                {title}
-              </CircleButton>
-            ))}
+            {controls1.map(
+              ([title, className, payload, tooltip, placement], i) => (
+                <Tooltip key={i} title={tooltip} placement={placement}>
+                  <CircleButton
+                    className={className}
+                    disabled={!canControl || !isGimbalSource}
+                    onMouseDown={() => setDownKey(payload)}
+                    onMouseUp={reset}
+                    onMouseLeave={reset}
+                  >
+                    {title}
+                  </CircleButton>
+                </Tooltip>
+              ),
+            )}
           </div>
         </div>
         <div>
@@ -152,7 +184,7 @@ const UavDetailGimbalControl: FC<PropsType> = memo(() => {
             disabled={!canControl || !isGimbalSource}
             onClick={() => postService('resetGimbal')}
           >
-            复位
+            {t('uav.gimbal.reset.title')}
           </Button>
         </div>
       </div>

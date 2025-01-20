@@ -21,7 +21,7 @@ const HeaderSetting: FC<PropsType> = memo(() => {
   const options = useRef([
     {
       value: '',
-      label: '默认',
+      label: 'Default',
     },
     {
       value: 'useWCS',
@@ -46,13 +46,15 @@ const HeaderSetting: FC<PropsType> = memo(() => {
 
   const [settingOpen, { setTrue, setFalse }] = useBoolean(false)
 
+  const { t } = useTranslation()
+
   return (
     <>
       <IconButton onClick={setTrue}>
         <SettingFilled />
       </IconButton>
       <XModal
-        title="设置"
+        title={t('setting.title')}
         open={settingOpen}
         noPadding
         onClose={setFalse}
@@ -60,7 +62,7 @@ const HeaderSetting: FC<PropsType> = memo(() => {
         footer={false}
       >
         <div className="p-3">
-          <p>本机视频解码器</p>
+          <p>{t('setting.video_decoder.title')}</p>
           <Radio.Group
             className="mt-1"
             options={options.current}
@@ -68,10 +70,8 @@ const HeaderSetting: FC<PropsType> = memo(() => {
             onChange={(e) => setValue(e.target.value)}
           />
           <div>
-            <p className="py-1">注意</p>
-            <p className="text-xs">
-              默认会根据浏览器是否支持，按照WCS、MSE、Simd、Wasm的顺序自动选择解码器
-            </p>
+            <p className="py-1">{t('setting.video_decoder.attention')}</p>
+            <p className="text-xs">{t('setting.video_decoder.description')}</p>
           </div>
         </div>
         {/* <div className="p-3">

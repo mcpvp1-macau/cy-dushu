@@ -2,41 +2,59 @@ import { XFormItem } from '@/components/XForm/types'
 import { ProcessStatusEnum } from '@/service/modules/action/kcyp/enum'
 import { idCardReg, phoneReg } from '@/constant/regExp'
 import { ReactNode } from 'react'
+import { TFunction } from 'i18next'
 
 export const statusColorMap: Record<
   ProcessStatusEnum,
-  { color: string; label: string }
+  { color: string; label: Record<string, string> }
 > = {
   INIT: {
     color: '#BFCCD6',
-    label: '未提交',
+    label: {
+      en: 'Not Submitted',
+      zh: '未提交',
+    },
   },
   PROCESSING: {
     color: '#4C90F0',
-    label: '处理中',
+    label: {
+      en: 'Processing',
+      zh: '处理中',
+    },
   },
   TIMEOUT: {
     color: '#DD4444',
-    label: '超时',
+    label: {
+      en: 'Timeout',
+      zh: '超时',
+    },
   },
   COMPLETE: {
     color: '#15B371',
-    label: '已完成',
+    label: {
+      en: 'Completed',
+      zh: '已完成',
+    },
   },
   RESP_ERROR: {
     color: '#DD4444',
-    label: '处理错误',
+    label: {
+      en: 'Error',
+      zh: '处理错误',
+    },
   },
 }
 
 type Option = { label: ReactNode; value: any }
 
 export const createFormItems = ({
+  t,
   cardTypeOptions,
   brokenPartTypeOptions,
   firstSceneOptions,
   accidentTypeOptions,
 }: {
+  t: TFunction
   cardTypeOptions: Option[]
   brokenPartTypeOptions: Option[]
   firstSceneOptions: Option[]
@@ -44,81 +62,95 @@ export const createFormItems = ({
 }) =>
   [
     {
-      label: '一方姓名',
+      label: t('action.detail.kcyp.form.driverName.label'),
       name: 'driverName',
       type: 'input',
     },
     {
-      label: '一方手机号',
+      label: t('action.detail.kcyp.form.phone.label'),
       name: 'phone',
       type: 'input',
-      rules: [{ pattern: phoneReg, message: '请输入手机号' }],
+      rules: [
+        { pattern: phoneReg, message: t('action.detail.kcyp.form.phone.msg') },
+      ],
     },
     {
-      label: '一方证件类型',
+      label: t('action.detail.kcyp.form.idType.label'),
       name: 'idType',
       type: 'select',
       options: cardTypeOptions,
     },
     {
-      label: '一方证件号码',
+      label: t('action.detail.kcyp.form.cardNo.label'),
       name: 'cardNo',
       type: 'input',
-      rules: [{ pattern: idCardReg, message: '请输入正确的身份证号码' }],
+      rules: [
+        {
+          pattern: idCardReg,
+          message: t('action.detail.kcyp.form.cardNo.msg'),
+        },
+      ],
     },
     {
-      label: '另一方姓名',
+      label: t('action.detail.kcyp.form.otherDriverName.label'),
       name: 'otherDriverName',
       type: 'input',
     },
     {
-      label: '另一方手机号',
+      label: t('action.detail.kcyp.form.otherPhone.label'),
       name: 'otherPhone',
       type: 'input',
-      rules: [{ pattern: phoneReg, message: '请输入手机号' }],
+      rules: [
+        { pattern: phoneReg, message: t('action.detail.kcyp.form.phone.msg') },
+      ],
     },
     {
-      label: '另一方证件类型',
+      label: t('action.detail.kcyp.form.otherIdType.label'),
       name: 'otherIdType',
       type: 'select',
       options: cardTypeOptions,
     },
     {
-      label: '另一方证件号码',
+      label: t('action.detail.kcyp.form.otherCardNo.label'),
       name: 'otherCardNo',
       type: 'input',
-      rules: [{ pattern: idCardReg, message: '请输入正确的身份证号码' }],
+      rules: [
+        {
+          pattern: idCardReg,
+          message: t('action.detail.kcyp.form.cardNo.msg'),
+        },
+      ],
     },
     {
-      label: '一方车辆受损部位',
+      label: t('action.detail.kcyp.form.brokenPart.label'),
       name: 'brokenPart',
       type: 'select',
       options: brokenPartTypeOptions,
     },
     {
-      label: '另一方车辆受损部位',
+      label: t('action.detail.kcyp.form.otherBrokenPart.label'),
       name: 'otherBrokenPart',
       type: 'select',
       options: brokenPartTypeOptions,
     },
     {
-      label: '一方车牌号',
+      label: t('action.detail.kcyp.form.carNo.label'),
       name: 'carNo',
       type: 'input',
     },
     {
-      label: '另一方车牌号',
+      label: t('action.detail.kcyp.form.otherCarNo.label'),
       name: 'otherCarNo',
       type: 'input',
     },
     {
-      label: '是否第一现场',
+      label: t('action.detail.kcyp.form.firstScene.label'),
       name: 'firstScene',
       type: 'select',
       options: firstSceneOptions,
     },
     {
-      label: '事故类型',
+      label: t('action.detail.kcyp.form.accidentTime.label'),
       name: 'accidentType',
       type: 'select',
       options: accidentTypeOptions,

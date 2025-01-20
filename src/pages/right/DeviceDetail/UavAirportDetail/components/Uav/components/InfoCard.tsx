@@ -1,11 +1,11 @@
-import { StatusColorMap, StatusMap } from '@/enum/device'
+import { StatusColorMap } from '@/enum/device'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
 import { memo, type FC } from 'react'
 
 const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
   return (
-    <li className="w-1/2 flex gap-1">
+    <li className="w-1/2 flex gap-1 whitespace-nowrap">
       <div>{l}:</div>
       {v}
     </li>
@@ -18,6 +18,8 @@ type PropsType = {
 
 /** 信息卡片 */
 const UavAirportUavDetailInfoCard: FC<PropsType> = memo(({ taskStatus }) => {
+  const { t } = useTranslation()
+
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
 
   const modelNumber = useMemo(
@@ -33,7 +35,9 @@ const UavAirportUavDetailInfoCard: FC<PropsType> = memo(({ taskStatus }) => {
     if (!taskStatus) {
       return '-'
     }
-    return taskStatus === 'RUNNING' ? '任务中' : '无任务'
+    return taskStatus === 'RUNNING'
+      ? t('device.status.task.RUNNING')
+      : t('device.status.task.IDLE')
   }, [taskStatus])
 
   const reportedStatus = useMemo(
@@ -41,24 +45,24 @@ const UavAirportUavDetailInfoCard: FC<PropsType> = memo(({ taskStatus }) => {
       deviceDetail?.deviceTags?.find(
         (e: any) => 'FLIGHT_REPORTING_STATUS' === e.tagName,
       )?.tagValue === 'REPORTED'
-        ? '已报备'
-        : '未报备',
-    [deviceDetail],
+        ? t('common.yes')
+        : t('common.no'),
+    [t, deviceDetail],
   )
 
   return (
     <ul className="flex card-border p-2 flex-wrap text-sm">
-      <I l="设备型号" v={modelNumber || '-'} />
+      <I l={t('common.modelNumber')} v={modelNumber || '-'} />
       <I
-        l="在线状态"
+        l={t('common.onlineStatus')}
         v={
           <span style={{ color: StatusColorMap[onlineStatus] }}>
-            {StatusMap[onlineStatus]}
+            {onlineStatus ? t(`device.status.online.${onlineStatus}`) : '-'}
           </span>
         }
       />
-      <I l="任务状态" v={taskStatusText} />
-      <I l="报备状态" v={reportedStatus} />
+      <I l={t('device.status.task.title')} v={taskStatusText} />
+      <I l={t('device.status.reported.title')} v={reportedStatus} />
     </ul>
   )
 })

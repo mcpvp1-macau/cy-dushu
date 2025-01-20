@@ -9,7 +9,6 @@ import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.
 import { useAsyncEffect, useDebounceEffect } from 'ahooks'
 import { Button, ConfigProvider, Form, Input, InputNumber } from 'antd'
 import { FormInstance, useForm } from 'antd/es/form/Form'
-import { memo, type FC } from 'react'
 
 const useComposeFormAndState = (
   key: string,
@@ -36,6 +35,8 @@ type PropsType = unknown
 
 /** 飞行参数设置 */
 const FlyParamsSetting: FC<PropsType> = memo(() => {
+  const { t } = useTranslation()
+
   const flyParams = useUavControlRoomStore((s) => s.flyParams)
   const updateFlyParams = useUavControlRoomStore((s) => s.updateFlyParams)
 
@@ -122,10 +123,6 @@ const FlyParamsSetting: FC<PropsType> = memo(() => {
     form.setFieldValue('targetAltitude', flyParams.targetHeight)
   }, [flyParams.targetHeight])
 
-  // if (!flyParams.open) {
-  //   return null
-  // }
-
   return (
     <>
       <div className="p-3 pb-0">
@@ -146,16 +143,26 @@ const FlyParamsSetting: FC<PropsType> = memo(() => {
             }}
             labelAlign="left"
           >
-            <Form.Item label="返航高度 (20 - 1600 m)" name="gohomeAltitude">
+            <Form.Item
+              label={`${t(
+                'controlRoom.uav.goHome.height.title',
+              )} (20 - 1600 m)`}
+              name="gohomeAltitude"
+            >
               <InputNumber className="w-full" suffix="m" />
             </Form.Item>
-            <Form.Item label="返航点" name="gohomePosition">
+            <Form.Item
+              label={t('controlRoom.uav.goHome.point.title')}
+              name="gohomePosition"
+            >
               <Input
                 addonAfter={
                   <IconButton
                     active={flyParams.isResetHome}
                     className="text-sm scale-90 px-1"
-                    toolTipProps={{ title: '重置返航点(在地图上点击设置)' }}
+                    toolTipProps={{
+                      title: t('controlRoom.uav.goHome.reset.msg'),
+                    }}
                     onClick={() =>
                       updateFlyParams({
                         ...flyParams,
@@ -168,35 +175,53 @@ const FlyParamsSetting: FC<PropsType> = memo(() => {
                 }
               />
             </Form.Item>
-            <Form.Item label="避障" name="horizontalAvoidEnable">
+            <Form.Item
+              label={t('controlRoom.uav.avoidDistance.title')}
+              name="horizontalAvoidEnable"
+            >
               <Select
                 options={[
-                  { label: '开启', value: '1' },
-                  { label: '关闭', value: '0' },
+                  { label: t('common.open'), value: '1' },
+                  { label: t('common.close'), value: '0' },
                 ]}
               />
             </Form.Item>
-            <Form.Item label="失联动作" name="lostAction">
+            <Form.Item
+              label={t('controlRoom.uav.loseAction.title')}
+              name="lostAction"
+            >
               <Select
                 options={[
-                  { label: '返航', value: '2' },
-                  { label: '悬停', value: '0' },
-                  { label: '降落', value: '1' },
+                  {
+                    label: t('controlRoom.uav.service.goHome.title'),
+                    value: '2',
+                  },
+                  {
+                    label: t('controlRoom.uav.service.hover.title'),
+                    value: '0',
+                  },
+                  {
+                    label: t('controlRoom.uav.service.autoland.title'),
+                    value: '1',
+                  },
                 ]}
               />
             </Form.Item>
             {hasDisconnectTimeProps && (
-              <Form.Item label="平台断连触发失联时间" name="disconnectTime">
+              <Form.Item
+                label={t('controlRoom.uav.disconnectTime.title')}
+                name="disconnectTime"
+              >
                 <InputNumber
-                  placeholder="请输入"
+                  placeholder={t('common.form.pleaseInput')}
                   className="w-full"
                   suffix="s"
                 />
               </Form.Item>
             )}
-            <Form.Item label="飞行速度" name="flySpeed">
+            <Form.Item label={t('common.flightSpeed')} name="flySpeed">
               <InputNumber
-                placeholder="请输入"
+                placeholder={t('common.form.pleaseInput')}
                 min={1}
                 max={15}
                 className="w-full"
@@ -204,9 +229,12 @@ const FlyParamsSetting: FC<PropsType> = memo(() => {
               />
             </Form.Item>
             {openPointFly && (
-              <Form.Item label="目标高度" name="targetAltitude">
+              <Form.Item
+                label={t('controlRoom.uav.targetAltitude.title')}
+                name="targetAltitude"
+              >
                 <InputNumber
-                  placeholder="请输入"
+                  placeholder={t('common.form.pleaseInput')}
                   value={flyParams.targetHeight}
                   min={20}
                   max={1000}

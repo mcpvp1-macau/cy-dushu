@@ -1,5 +1,5 @@
 import config from '@/global/config'
-import { unAuthorized, withToken } from './interceptors'
+import { unAuthorized, withInternational, withToken } from './interceptors'
 import LiqunAxios from './liqunAxios/liqun-axios'
 import { Responses } from './liqunAxios'
 import { msgMitt } from '@/hooks/useAppMsg'
@@ -10,6 +10,7 @@ const serverDBAPI = new LiqunAxios<'dbApi'>({
 })
 
 serverDBAPI.interceptors.request.use(withToken)
+serverDBAPI.interceptors.request.use(withInternational)
 
 serverDBAPI.interceptors.response.use(unAuthorized, unAuthorized)
 serverDBAPI.interceptors.response.use((resp) => resp.data)

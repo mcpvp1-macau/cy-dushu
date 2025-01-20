@@ -24,9 +24,11 @@ const ControlPower: FC<PropsType> = memo(({ open, updateUUID }) => {
     }
   }
 
+  const { t } = useTranslation()
+
   return (
     <div className="flex items-center gap-1 whitespace-nowrap">
-      <span className="text-sm">控制权</span>
+      <span className="text-sm">{t('device.controlPower.title')}</span>
       <Switch
         size="small"
         checked={open}

@@ -12,6 +12,7 @@ import IconLeft from '@/assets/icons/jsx/IconLeft'
 import IconRight from '@/assets/icons/jsx/IconRight'
 import AirpointAddAction from './Actions/AddAction'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
+import { StopOutlined } from '@ant-design/icons'
 
 type PropsType = {
   info: ReactNode
@@ -55,22 +56,32 @@ const AirpointConfig: FC<PropsType> = ({ info }) => {
     setAirpointsConfig([])
   })
 
+  const { t } = useTranslation()
+
   return (
     <div className={styles.mainContent}>
       {info}
       <XCard
         title={
-          <Popconfirm
-            title="一键删除所有航点"
-            description="删除后航点内容将不可恢复, 确定删除航点吗?"
-            placement="right"
-            onConfirm={handleDelteAllConfirm}
-          >
-            <span style={{ marginRight: '4px' }}>航点列表</span>
-            <IconButton toolTipProps={{ title: '一键删除所有航点' }}>
-              <IconDelete />
-            </IconButton>
-          </Popconfirm>
+          <>
+            <span style={{ marginRight: '4px' }}>
+              {t('wayline.waylinePoint.waypointList.title')}
+            </span>
+            <Popconfirm
+              title={t('wayline.waylinePoint.deleteAllWaypoint.title')}
+              description={t('wayline.waylinePoint.deleteAllWaypoint.question')}
+              placement="right"
+              onConfirm={handleDelteAllConfirm}
+            >
+              <IconButton
+                toolTipProps={{
+                  title: t('wayline.waylinePoint.deleteAllWaypoint.title'),
+                }}
+              >
+                <IconDelete />
+              </IconButton>
+            </Popconfirm>
+          </>
         }
         style={{ flex: 1 }}
         topRight={
@@ -82,11 +93,15 @@ const AirpointConfig: FC<PropsType> = ({ info }) => {
               disabled={!takeOffRefPoint}
               onClick={handleTakeoffClick}
             >
-              {takeOffRefPoint
-                ? isDrawPoint
-                  ? '取消新增'
-                  : '新增航点'
-                : '请先设置起飞点'}
+              {takeOffRefPoint ? (
+                isDrawPoint ? (
+                  t('wayline.waylinePoint.cancelCreateWaypoint.title')
+                ) : (
+                  t('wayline.waylinePoint.createWaypoint.title')
+                )
+              ) : (
+                <StopOutlined />
+              )}
             </Button>
           </>
         }

@@ -1,7 +1,7 @@
 import Select from '@/components/AntdOverride/Select'
 import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
-import { pictureSourceTypeOptions } from '@/constant/options/device-media'
+import usePicutreSourceTypeOptions from '@/constant/options/pictureSourceTypeOptions'
 import { beginDay, dft, timeOnly } from '@/constant/time-fmt'
 import { getPlatformCapture } from '@/service/modules/db-api'
 import { Col, Image, Pagination, Row, Spin } from 'antd'
@@ -56,6 +56,8 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(({ deviceList }) => {
     queryClient,
   )
 
+  const pictureSourceTypeOptions = usePicutreSourceTypeOptions()
+
   return (
     <div>
       <section className="m-3 flex gap-2">
@@ -85,7 +87,7 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(({ deviceList }) => {
                   <Col key={e.id} span={8}>
                     <div className="relative w-full aspect-[4_/_3]">
                       <div className="absolute top-0 left-0 right-0 z-10 pointer-events-none">
-                        <p className="text-xs p-1 py-0.5 bg-ground-100 bg-opacity-60">
+                        <p className="text-xs p-1 py-0.5 bg-ground-1 bg-opacity-60">
                           {dayjs(e.startTime).format(timeOnly)}
                         </p>
                       </div>

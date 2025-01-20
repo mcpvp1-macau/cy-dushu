@@ -6,6 +6,7 @@ import { XFormItem } from '@/components/XForm/types'
 import { createActionItem } from '@/service/modules/action-item'
 import { getAirlineTemplateList } from '@/service/modules/airline'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
+import { TFunction } from 'i18next'
 import { pick } from 'lodash'
 
 type PropsType = {
@@ -18,34 +19,45 @@ type Option = {
 }
 
 const createTaskConfig = (
+  t: TFunction,
   airlineTemplateOptions: Option[],
   deviceOptions: Option[],
 ) =>
   [
     {
-      label: '任务名称',
+      label: t('action.detail.task.add.form.name.label'),
       name: 'actionItemName',
       type: 'input',
-      rules: [{ required: true, message: '请输入任务名称' }],
+      rules: [
+        {
+          required: true,
+          message: t('action.detail.task.add.form.name.required_msg'),
+        },
+      ],
     },
     {
-      label: '选择航线',
+      label: t('action.detail.task.add.form.airline.label'),
       name: 'airlineIndex',
       type: 'select',
       options: airlineTemplateOptions,
     },
     {
-      label: '选择设备',
+      label: t('action.detail.task.add.form.device.label'),
       name: 'deviceIds',
       type: 'select',
       options: deviceOptions,
       otherProps: {
         optionFilterProp: 'deviceName',
       },
-      rules: [{ required: true, message: '请选择设备' }],
+      rules: [
+        {
+          required: true,
+          message: t('action.detail.task.add.form.device.required_msg'),
+        },
+      ],
     },
     {
-      label: '选择飞手',
+      label: t('action.detail.task.add.form.staff.label'),
       name: 'feishou',
       type: 'tree-select',
       treeData: [],
@@ -60,6 +72,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
   const [open, setOpen] = useState(false)
 
   const queryClient = useQueryClient()
+  const { t, i18n } = useTranslation()
 
   const { data: airlineTemplateList } = useQuery(
     {
@@ -125,8 +138,8 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
   })
 
   const formItems = useMemo(
-    () => createTaskConfig(airlineTemplateOptions, deviceOptions),
-    [airlineTemplateOptions, deviceOptions],
+    () => createTaskConfig(t, airlineTemplateOptions, deviceOptions),
+    [i18n.language, airlineTemplateOptions, deviceOptions],
   )
 
   return (
@@ -135,7 +148,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
         <IconPlus />
       </IconButton>
       <FormModal
-        title="创建任务"
+        title={t('action.detail.task.add.title')}
         items={formItems}
         open={open}
         confirmLoading={confirmLoading}

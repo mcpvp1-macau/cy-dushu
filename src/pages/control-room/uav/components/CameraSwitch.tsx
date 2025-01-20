@@ -19,6 +19,8 @@ const ControlRoomUavCameraSwitch: FC<PropsType> = memo(() => {
     postDeviceService('liveSourcesChange', { videoId, sourceType: v })
   })
 
+  const { t } = useTranslation()
+
   return (
     <div className="flex gap-2">
       <FloatIconButton
@@ -33,7 +35,7 @@ const ControlRoomUavCameraSwitch: FC<PropsType> = memo(() => {
         className="text-xs h-7 leading-7 font-bold"
         onClick={() => handleVideoSourceChange('gimbal')}
       >
-        云台
+        {t('controlRoom.uav.btn.gimbal.title')}
       </FloatIconButton>
     </div>
   )

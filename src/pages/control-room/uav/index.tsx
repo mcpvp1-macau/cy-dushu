@@ -22,13 +22,10 @@ import useServerEventMsg from './hooks/useServerEventMsg'
 import type { DynamicLayoutType } from '@/components/DynamicLayout'
 import IconCameraVideo from '@/assets/icons/jsx/IconCameraVideo'
 import IconMap from '@/assets/icons/jsx/IconMap'
-import { FormOutlined } from '@ant-design/icons'
 import DeviceIconUAV2 from '@/assets/icons/jsx/device/DeviceIconUAV2'
-import IconGamepad from '@/assets/icons/jsx/uav/IconGamepad'
 import IconAISwitch from '@/assets/icons/jsx/IconAISwitch'
 import DeviceAlgorithmList from '@/components/device/algorithm/DeviceAlgorithmList'
 import { DeviceEnum } from '@/enum/device'
-import IconData from '@/assets/icons/jsx/IconData'
 import UavDetailData from '@/pages/right/DeviceDetail/UavDetail/components/UavDetailData'
 import StateResolver from './components/StateResolver'
 import DynamicLayoutRoot from '@/components/DynamicLayout'
@@ -37,6 +34,9 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import GimbalLeft from './components/GimbalLeft'
 import IconPayload from '@/assets/icons/jsx/IconPayload'
 import UavPayload from './components/Payload'
+import IconFlightParams from '@/assets/icons/jsx/uav/IconFlightParams'
+import IconDeviceData from '@/assets/icons/jsx/IconDeviceData'
+import IconFlightOperation from '@/assets/icons/jsx/uav/IconFlightOperation'
 
 type PropsType = unknown
 
@@ -50,7 +50,6 @@ const initialLayout: DynamicLayoutType = {
       children: [
         {
           key: 'map',
-          title: '地图',
         },
       ],
     },
@@ -64,7 +63,6 @@ const initialLayout: DynamicLayoutType = {
           children: [
             {
               key: 'video',
-              title: '视频',
             },
           ],
         },
@@ -78,7 +76,6 @@ const initialLayout: DynamicLayoutType = {
               children: [
                 {
                   key: 'flyParams',
-                  title: '飞行操控',
                 },
               ],
             },
@@ -88,11 +85,9 @@ const initialLayout: DynamicLayoutType = {
               children: [
                 {
                   key: 'flyButtons',
-                  title: '操作',
                 },
                 {
                   key: 'flyParamsSetting',
-                  title: '飞行参数',
                 },
               ],
             },
@@ -106,15 +101,12 @@ const initialLayout: DynamicLayoutType = {
       isCollapsed: true,
       children: [
         {
-          title: '负载',
           key: 'payload',
         },
         {
-          title: 'AI 算法',
           key: 'ai-list',
         },
         {
-          title: '设备数据',
           key: 'device-data',
         },
       ],
@@ -128,7 +120,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
   const productKey = useStore(
     store,
     (s) =>
-      s.deviceDetail?.productKey || s.deviceDetail?.deviceModel.productKey,
+      (s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey)!,
   )
 
   const controlRoomStore = useCreateUavControlRoomStore(
@@ -141,19 +133,33 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
     'uav-control-room-layout',
     { defaultValue: initialLayout },
   )
-
+  const { t } = useTranslation()
   const iconMap = useMemo(
     () => ({
       map: <IconMap className="text-blue-500" />,
       video: <IconCameraVideo className="text-blue-500" />,
-      flyParams: <IconGamepad className="text-orange-500" />,
+      flyParams: <IconFlightOperation className="text-orange-500" />,
       flyButtons: <DeviceIconUAV2 className="text-purple-500" />,
-      flyParamsSetting: <FormOutlined className="text-emerald-500" />,
-      payload: <IconPayload className="text-emerald-500" />,
+      flyParamsSetting: <IconFlightParams className="text-emerald-500" />,
+      payload: <IconPayload className="text-orange-500" />,
       'ai-list': <IconAISwitch className="text-violet-500" />,
-      'device-data': <IconData className="text-emerald-500" />,
+      'device-data': <IconDeviceData className="text-emerald-500" />,
     }),
     [],
+  )
+
+  const titleMap = useMemo(
+    () => ({
+      map: t('common.map'),
+      video: t('common.video'),
+      flyParams: t('controlRoom.uav.flyParams.title'),
+      flyButtons: t('controlRoom.uav.flyButtons.title'),
+      flyParamsSetting: t('controlRoom.uav.flyParamsSetting.title'),
+      payload: t('controlRoom.uav.payload.title'),
+      ['ai-list']: t('controlRoom.uav.aiList.title'),
+      ['device-data']: t('controlRoom.uav.deviceData.title'),
+    }),
+    [t],
   )
 
   const componentMap = useMemo(
@@ -214,6 +220,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
               layout={layout!}
               onLayoutChange={setLayout}
               iconMap={iconMap}
+              titleMap={titleMap}
               componentMap={componentMap}
             />
           </main>

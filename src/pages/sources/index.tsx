@@ -1,14 +1,14 @@
 import { getAllDeviceType } from '@/service/modules/device'
-import { Segmented, Skeleton } from 'antd'
+import { Skeleton, Tabs } from 'antd'
 import { memo, type FC } from 'react'
 import SourceTable from './components/SourceTable'
 import { useSearchParams } from 'react-router-dom'
-import DeviceIcon from '@/components/device/DeviceIcon'
 import { isNil } from 'lodash'
 
 type PropsType = unknown
 
 const PageSources: FC<PropsType> = memo(() => {
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
 
   const [searchParams, setSearchParams] = useSearchParams()
@@ -30,21 +30,20 @@ const PageSources: FC<PropsType> = memo(() => {
   }, [data])
 
   return (
-    <div className="page-full p-3 bg-ground-180 flex flex-col overflow-y-hidden">
-      <h2 className="text-white">资源</h2>
+    <div className="page-full p-3 bg-ground-2 flex flex-col overflow-y-hidden">
+      <h2 className="text-white">{t('resource.title')}</h2>
       <div>
         {isLoading || !data ? (
           <div className="w-64">
             <Skeleton.Button block className="py-3 h-[42px]" active />
           </div>
         ) : (
-          <Segmented
+          <Tabs
             className="mt-3"
-            value={searchParams.get('type')}
-            options={data.map((e) => ({
+            activeKey={searchParams.get('type') ?? undefined}
+            items={data.map((e) => ({
+              key: e.type,
               label: e.name,
-              value: e.type,
-              icon: <DeviceIcon type={e.type} />,
             }))}
             onChange={(e) => !isNil(e) && setSearchParams({ type: e })}
           />

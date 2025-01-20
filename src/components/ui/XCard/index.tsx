@@ -1,4 +1,3 @@
-import { type ReactNode, type FC, useState } from 'react'
 import styles from './index.module.less'
 import IconButton from '../button/IconButton'
 import IconDown from '@/assets/icons/jsx/IconDown'

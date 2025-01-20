@@ -1,4 +1,5 @@
 import MenuIconAction from '@/assets/icons/jsx/menus/MenuIconAction'
+import TextButton from '@/components/ui/button/TextButton'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import XTable from '@/components/ui/XTable.tsx'
 import { emtpyArray } from '@/constant/data'
@@ -13,9 +14,8 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { Button, DatePicker, Input, Pagination } from 'antd'
+import { DatePicker, Input, Pagination } from 'antd'
 import { Dayjs } from 'dayjs'
-import { memo, type FC } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 type PropsType = unknown
@@ -24,6 +24,7 @@ const h = createColumnHelper<API_ACTION.domain.ActionRecord>()
 
 const PageActionRecord: FC<PropsType> = memo(() => {
   const [searchParams, setSearchParams] = useSearchParams()
+  const { t, i18n } = useTranslation()
 
   const kw = searchParams.get('kw') || undefined
 
@@ -61,7 +62,7 @@ const PageActionRecord: FC<PropsType> = memo(() => {
   const columns = useMemo(
     () => [
       h.accessor('name', {
-        header: '行动名称',
+        header: t('actionRecord.table.actionName.title'),
         maxSize: 200,
         size: 200,
         minSize: 200,
@@ -73,30 +74,29 @@ const PageActionRecord: FC<PropsType> = memo(() => {
         ),
       }),
       h.accessor('startTime', {
-        header: '开始时间',
+        header: t('common.startTime'),
         minSize: 200,
         maxSize: 500,
       }),
       h.accessor('endTime', {
-        header: '结束时间',
+        header: t('common.endTime'),
         minSize: 200,
         maxSize: 500,
       }),
       h.accessor('description', {
-        header: '描述',
+        header: t('common.description'),
         minSize: 200,
         maxSize: 500,
       }),
       h.display({
         id: 'actions',
-        header: '操作',
+        header: t('common.operation'),
         cell: (cell) => {
           const item = cell.row.original
           return (
-            <div>
-              <Button type="link">回溯</Button>
-              <Button
-                type="link"
+            <div className="flex gap-3">
+              <TextButton>{t('common.backTracking')}</TextButton>
+              <TextButton
                 onClick={() =>
                   downloadAndRename(
                     `${serverJingqi.baseURL}/action/signal/${item.actionId}/record.csv`,
@@ -107,14 +107,14 @@ const PageActionRecord: FC<PropsType> = memo(() => {
                   )
                 }
               >
-                信号下载
-              </Button>
+                {t('actionRecord.signalDownload.title')}
+              </TextButton>
             </div>
           )
         },
       }),
     ],
-    [],
+    [t],
   )
 
   const table = useReactTable<API_ACTION.domain.ActionRecord>({
@@ -125,12 +125,12 @@ const PageActionRecord: FC<PropsType> = memo(() => {
   })
 
   return (
-    <div className="page-full p-3 bg-ground-180 flex flex-col overflow-y-hidden">
-      <h2 className="text-white">行动记录</h2>
+    <div className="page-full p-3 bg-ground-2 flex flex-col overflow-y-hidden">
+      <h2 className="text-white">{t('actionRecord.title')}</h2>
       <section className="mt-3 flex gap-2">
         <Input.Search
           defaultValue={kw}
-          placeholder="行动名称"
+          placeholder={t('actionRecord.table.actionName.title')}
           className="w-56"
           onSearch={(e) => handleValueChange('kw', e)}
         />
@@ -146,9 +146,13 @@ const PageActionRecord: FC<PropsType> = memo(() => {
         />
       </section>
       <section className="mt-3 grow flex flex-col overflow-hidden">
-        <div className="flex-1 border border-solid border-ground-100 rounded-[3px] overflow-hidden">
+        <div className="flex-1 border border-solid border-ground-1 rounded-[3px] overflow-hidden">
           <ScrollArea className="size-full x-table">
-            <XTable table={table} loading={isLoading || isRefetching} />
+            <XTable
+              key={i18n.language}
+              table={table}
+              loading={isLoading || isRefetching}
+            />
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </div>

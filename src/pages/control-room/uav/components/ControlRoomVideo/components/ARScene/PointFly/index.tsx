@@ -42,7 +42,8 @@ type PropsType = unknown
 
 const ARScenePointFly: FC<PropsType> = memo(() => {
   const displayMode = useUavControlRoomStore((s) => s.state.displayMode)
-  const isPointFlying = displayMode?.startsWith('指点飞行')
+  const isPointFlying =
+    displayMode?.startsWith('指点飞行') || displayMode?.startsWith('10000')
 
   if (!isPointFlying) {
     return null

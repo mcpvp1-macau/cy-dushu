@@ -128,7 +128,7 @@ const Timeline: FC<PropsType> = memo(
             <DatePicker.RangePicker
               value={timeRange}
               size="small"
-              className="border border-solid border-ground-300"
+              className="border border-solid border-ground-5"
               onChange={(dates) => {
                 if (!dates || !dates[0] || !dates[1]) {
                   return
@@ -199,7 +199,7 @@ const Timeline: FC<PropsType> = memo(
             />
           </div>
         </div>
-        <div className="h-[1px] w-full bg-ground-300" />
+        <div className="h-[1px] w-full bg-ground-5" />
         <TimelineContext.Provider
           value={{
             timeline: timeline,

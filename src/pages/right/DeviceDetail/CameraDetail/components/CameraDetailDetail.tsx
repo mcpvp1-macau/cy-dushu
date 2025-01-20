@@ -10,8 +10,8 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
 
   const deviceId = deviceDetail.deviceId
-  const productKey =
-    deviceDetail.productKey || deviceDetail.deviceModel?.productKey
+  const productKey = (deviceDetail.productKey ||
+    deviceDetail.deviceModel?.productKey)!
   const videoId = deviceDetail?.properties.videoList?.[0]?.videoId
 
   const modelName =

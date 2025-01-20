@@ -1,10 +1,9 @@
-import { memo, type FC } from 'react'
 import IconButton from './ui/button/IconButton'
 import IconBack from '@/assets/icons/jsx/IconBack'
 import { Form, Input } from 'antd'
 import IconEdit from '@/assets/icons/jsx/IconEdit'
-import IconSave from '@/assets/icons/jsx/IconSave'
 import { LoadingOutlined } from '@ant-design/icons'
+import IconTick from '@/assets/icons/jsx/IconTick'
 
 type PropsType = {
   value: string
@@ -20,6 +19,7 @@ type PropsType = {
 const EditableNameHeader: FC<PropsType> = memo(
   ({ value, className, loading, onFinish, onBackClick }) => {
     const [isEdit, setIsEdit] = useState(false)
+    const { t } = useTranslation()
 
     const [form] = Form.useForm()
 
@@ -46,7 +46,10 @@ const EditableNameHeader: FC<PropsType> = memo(
         )}
       >
         <div>
-          <IconButton toolTipProps={{ title: '返回' }} onClick={onBackClick}>
+          <IconButton
+            toolTipProps={{ title: t('common.back') }}
+            onClick={onBackClick}
+          >
             <IconBack />
           </IconButton>
         </div>
@@ -68,14 +71,14 @@ const EditableNameHeader: FC<PropsType> = memo(
         <div className="text-sm">
           {isEdit ? (
             <IconButton
-              toolTipProps={{ title: '保存' }}
+              toolTipProps={{ title: t('common.save') }}
               onClick={handleSaveClick}
             >
-              <IconSave />
+              <IconTick />
             </IconButton>
           ) : (
             <IconButton
-              toolTipProps={{ title: '编辑' }}
+              toolTipProps={{ title: t('common.edit') }}
               onClick={() => setIsEdit(true)}
             >
               <IconEdit />

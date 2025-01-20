@@ -17,3 +17,16 @@ export const commitKYCPOrder = (data: {
 }) => {
   return serverJingqi.post<API_KCYP.res.CommitKCYPRes>('/kcyp/commit', data)
 }
+
+/** 查询萧山工单暂存记录 */
+export const getXSKCYPOrder = (data: API_KCYP.req.GetKCYPOrderReq) => {
+  return serverJingqi.post<API_KCYP.res.GetKCYPOrderRes>(
+    '/xiaoshan/kcyp/get',
+    data,
+  )
+}
+
+/** 保存萧山工单 */
+export const saveXSKCYPOrder = (data: any) => {
+  return serverJingqi.post('/xiaoshan/kcyp/save', data)
+}

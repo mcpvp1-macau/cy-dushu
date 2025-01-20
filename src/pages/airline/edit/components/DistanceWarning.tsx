@@ -1,4 +1,3 @@
-import { memo, type FC } from 'react'
 import { getDistance } from '@/utils/other/utils'
 import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
 import SnackBar from '@/components/ui/SnackBar'
@@ -29,13 +28,15 @@ const DistanceWarning: FC<PropsType> = () => {
     [pointX, pointY, pointZ],
   ])
 
+  const { t } = useTranslation()
+
   return (
     <>
       <SnackBar
         open={!isNaN(d) && d > 2000}
         background="rgba(212, 107, 30, 0.75)"
       >
-        航点间距离超过 2000 米
+        {t('wayline.distanceWarning.msg', { meters: 2000 })}
       </SnackBar>
     </>
   )

@@ -40,7 +40,7 @@ const ARSceneAirline: FC<PropsType> = memo(({ data }) => {
         positions,
         shape: computeCircle(6),
         material: new Cesium.ImageMaterialProperty({
-          image: '/images/liner.png',
+          image: '/images/mask/liner.png',
           color: Cesium.Color.fromCssColorString('#22c55e').withAlpha(0.4),
         }),
         cornerType: Cesium.CornerType.ROUNDED,

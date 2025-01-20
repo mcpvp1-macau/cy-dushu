@@ -199,7 +199,8 @@ export const createUavControlRoomStore = (senders: WsSendersType) => {
               isLimitedFly: !!(
                 state.displayMode &&
                 (state.displayMode.includes('指点飞行') ||
-                  state.displayMode.includes('一键起飞'))
+                  state.displayMode.includes('一键起飞') ||
+                  state.displayMode.startsWith('10000'))
               ),
             },
             false,

@@ -12,12 +12,16 @@ type PropsType = {
 }
 
 const CameraPositionY: FC<PropsType> = ({ config, onChange }) => {
+  const { t } = useTranslation()
+
   return (
     <div>
       <div className={styles.titleHeader}>
         <div className={styles.subTitle}>
           <YTPHJ />
-          <span className={styles.text}>云台俯仰角</span>
+          <span className={styles.text}>
+            {t('wayline.waylinePoint.actions.CAMERA_POSITION_Y.title')}
+          </span>
         </div>
         <div>
           <span className={styles.important}>

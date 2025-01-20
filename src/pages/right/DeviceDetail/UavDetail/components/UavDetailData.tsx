@@ -1,26 +1,24 @@
 import AppCollapse from '@/components/AppCollapse'
-import { memo, type FC } from 'react'
-
-import LinkSwitch from '@/components/LinkSwitch'
-import DeviceDetailMediaData, { MediaType } from '../../components/MediaData'
+import { lazy } from 'react'
 import usePrevDayHisTrack from '../hooks/usePrevDayHisTrack'
-import AppEmpty from '@/components/AppEmpty'
+import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
+import useDeviceChildrenList from '@/hooks/device/useDeviceChildrenList'
+import AppViewSuspense from '@/components/AppViewSuspense'
+
+const DeviceDetailMediaDataPicture = lazy(
+  () => import('../../components/MediaData/MediaPicture'),
+)
+const DeviceDetailMediaHistoryVideo = lazy(
+  () => import('../../components/MediaData/MediaHistoryVideo'),
+)
 
 type PropsType = {}
 
 const UavDetailData: FC<PropsType> = memo(() => {
-  const [mediaType, setMediaType] = useState<MediaType>('PICTURE')
+  const { t } = useTranslation()
 
-  const items = useRef([
-    {
-      label: '图片',
-      value: 'PICTURE',
-    },
-    {
-      label: '视频',
-      value: 'HISTORY_VIDEO',
-    },
-  ]).current
+  const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
+  const deviceList = useDeviceChildrenList(deviceDetail)
 
   usePrevDayHisTrack()
 
@@ -29,19 +27,25 @@ const UavDetailData: FC<PropsType> = memo(() => {
       className="border-x-0 border-b-0"
       items={[
         {
-          label: (
-            <LinkSwitch
-              value={mediaType}
-              items={items}
-              onChange={(e) => setMediaType(e as MediaType)}
-            />
+          label: t('common.picture'),
+          children: (
+            <AppViewSuspense>
+              <DeviceDetailMediaDataPicture deviceList={deviceList} />
+            </AppViewSuspense>
           ),
-          children: <DeviceDetailMediaData type={mediaType} />,
         },
         {
-          label: '检测数据',
-          children: <AppEmpty />,
+          label: t('common.video'),
+          children: (
+            <AppViewSuspense>
+              <DeviceDetailMediaHistoryVideo deviceList={deviceList} />
+            </AppViewSuspense>
+          ),
         },
+        // {
+        //   label: '检测数据',
+        //   children: <AppEmpty />,
+        // },
       ]}
     />
   )

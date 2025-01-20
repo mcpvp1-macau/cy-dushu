@@ -2,6 +2,7 @@ import { memo, type FC } from 'react'
 import styles from './index.module.less'
 import HSlider from '../../../HSlider'
 import XJBJ from '../../icons/XJBJ'
+import { t } from 'i18next'
 
 type ConfigType = {
   focalLength: number
@@ -18,7 +19,9 @@ const ZoomFocalLength: FC<PropsType> = ({ config, onChange }) => {
       <div className={styles.titleHeader}>
         <div className={styles.subTitle}>
           <XJBJ />
-          <span className={styles.text}>相机变焦</span>
+          <span className={styles.text}>
+            {t('wayline.waylinePoint.actions.ZOOM.title')}
+          </span>
         </div>
         <div>
           <span className={styles.important}>
@@ -38,6 +41,6 @@ const ZoomFocalLength: FC<PropsType> = ({ config, onChange }) => {
 }
 
 const memorizedCpn = memo(ZoomFocalLength)
-memorizedCpn.displayName = 'AircraftHeading'
+memorizedCpn.displayName = 'ZoomFocalLength'
 
 export default memorizedCpn

@@ -11,24 +11,25 @@ import { useUnmount } from 'ahooks'
 
 type PropsType = unknown
 
-const items = [
-  [DrawType.Circle, '圆形', <IconDrawCircle />],
-  [DrawType.Rect, '矩形', <IconDrawRect />],
-  [DrawType.Polygon, '多边形', <IconDrawPolygon />],
-  [DrawType.Fan, '扇形', <IconDrawFan />],
-] as const
-
-const header = (
-  <div className="flex gap-2 items-center">
-    <IconDrawArea className="device-detail-icon" />
-    <h6 className="text-white text-base">画区</h6>
-  </div>
-)
-
 const AddGeometry: FC<PropsType> = memo(() => {
   const drawingType = useMapDrawStore((s) => s.drawing)
   const updateDrawing = useMapDrawStore((s) => s.updateDrawing)
   const updateDrawingColor = useMapDrawStore((s) => s.updateDrawingColor)
+
+  const { t } = useTranslation()
+
+  const items = useMemo(() => {
+    return [
+      [DrawType.Circle, t('overlay.drawing.circle.title'), <IconDrawCircle />],
+      [DrawType.Rect, t('overlay.drawing.rect.title'), <IconDrawRect />],
+      [
+        DrawType.Polygon,
+        t('overlay.drawing.polygon.title'),
+        <IconDrawPolygon />,
+      ],
+      [DrawType.Fan, t('overlay.drawing.sector.title'), <IconDrawFan />],
+    ] as const
+  }, [t])
 
   useUnmount(() => {
     updateDrawing(DrawType.None)
@@ -36,8 +37,13 @@ const AddGeometry: FC<PropsType> = memo(() => {
 
   return (
     <div className="w-[350px] backdrop-blur">
-      <CloseableHeader>{header}</CloseableHeader>
-      <div className="mx-3 mb-3 flex justify-between gap-3">
+      <CloseableHeader>
+        <div className="flex gap-2 items-center">
+          <IconDrawArea className="device-detail-icon" />
+          <h6 className="text-white text-base">{t('overlay.drawing.title')}</h6>
+        </div>
+      </CloseableHeader>
+      <div className="mx-3 mb-3 flex gap-3">
         {items.map(([type, text, icon], index) => (
           <VerticalIconButton
             key={index}

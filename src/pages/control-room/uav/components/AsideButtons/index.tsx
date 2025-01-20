@@ -16,6 +16,8 @@ import Takeoff from './Takeoff'
 type PropsType = unknown
 
 const AsideButtons: FC<PropsType> = memo(() => {
+  const { t } = useTranslation()
+
   const hasControlPower = useUavControlRoomStore((s) => s.hasControlPower)
   const serviceHave = useDeviceDetailStore((s) => s.serviceHave)
   const isLimitedFly = useUavControlRoomStore((s) => s.isLimitedFly)
@@ -63,7 +65,7 @@ const AsideButtons: FC<PropsType> = memo(() => {
           type={openPointZoom === 2 ? 'primary' : 'default'}
           onClick={() => updateOpenPointZoom(openPointZoom === 2 ? 0 : 2)}
         >
-          框选
+          {t('controlRoom.uav.service.boxZoom.title')}
         </Button>
         <IntelligentPhotography postServiceFn={postSerivce} />
         <Gamepad />
@@ -84,7 +86,7 @@ const AsideButtons: FC<PropsType> = memo(() => {
             })
           }}
         >
-          指点飞行
+          {t('controlRoom.uav.service.tapToFly.title')}
         </VerticalIconButton>
         <VerticalIconButton
           className="flex-1 h-10 p-0 text-xs"
@@ -92,7 +94,7 @@ const AsideButtons: FC<PropsType> = memo(() => {
           icon={<IconStopCircle className="text-base" />}
           onClick={() => postSerivce('stopAll')}
         >
-          紧急停止
+          {t('controlRoom.uav.service.stopAll.title')}
         </VerticalIconButton>
         <VerticalIconButton
           className="flex-1 h-10 p-0 text-xs"
@@ -100,7 +102,7 @@ const AsideButtons: FC<PropsType> = memo(() => {
           icon={<IconReturnBase className="text-base" />}
           onClick={() => postSerivce('gohome')}
         >
-          返航
+          {t('controlRoom.uav.service.goHome.title')}
         </VerticalIconButton>
         <VerticalIconButton
           className="flex-1 h-10 p-0 text-xs"
@@ -108,7 +110,7 @@ const AsideButtons: FC<PropsType> = memo(() => {
           icon={<IconLanding className="text-base" />}
           onClick={() => postSerivce('autoland')}
         >
-          降落
+          {t('controlRoom.uav.service.autoland.title')}
         </VerticalIconButton>
       </div>
     </div>

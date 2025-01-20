@@ -1,8 +1,9 @@
+import { hmsTransMap } from '@/constant/trans_map/hms'
+import { uavDisplayModeTransMap } from '@/constant/trans_map/uav_display_mode'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
 import { Popover } from 'antd'
-import { memo, type FC } from 'react'
 
 type PropsType = unknown
 
@@ -15,16 +16,39 @@ const FallbackMessage: FC<PropsType> = memo(() => {
   const isONLINE = onlineStatus === 'ONLINE'
   const wsReadyState = useUavControlRoomStore((s) => s.wsReadyState)
 
+  const { t, i18n } = useTranslation()
+
+  const getColor = (type: string) => {
+    if (type === 'Error') {
+      return '#DD4444'
+    } else if (type === 'Warn') {
+      return '#F29D49'
+    } else if (type === 'Info') {
+      return '#262e36'
+    } else {
+      return undefined
+    }
+  }
+
   const formatMsg = useMemoizedFn((msg: string) => {
     let info = '',
       color: string | undefined = undefined
     if (!msg) {
       return { info, color }
     }
+
     if (!isONLINE) {
-      info = '当前设备已离线'
+      info = t('controlRoom.uav.healthInfo.offline')
       color = '#DD4444'
     }
+
+    if (msg.includes('||')) {
+      const [type, message] = msg.split('||')
+      info = hmsTransMap[message]?.[i18n.language] || message
+      color = getColor(type)
+      return { info, color }
+    }
+
     let i = msg.indexOf('Error')
     if (i >= 0) {
       info = msg.slice(i + 5)
@@ -59,17 +83,22 @@ const FallbackMessage: FC<PropsType> = memo(() => {
 
   const mode = useMemo(() => {
     if (wsReadyState !== WebSocket.OPEN) {
-      return '连接断开'
+      return t('common.connectionLost')
     }
     if (!isONLINE) {
-      return '离线'
+      return t('device.status.online.OFFLINE')
     }
     if (!displayMode) {
       return ''
     }
-    const isFly = (displayMode as string).includes?.('指点飞行')
-    return isFly ? '指点飞行' : displayMode
-  }, [wsReadyState, isONLINE, displayMode])
+    const isFly =
+      (displayMode as string).startsWith?.('指点飞行') ||
+      (displayMode as string).startsWith?.('10000')
+    return isFly
+      ? t('controlRoom.uav.service.tapToFly.title')
+      : uavDisplayModeTransMap[displayMode || '']?.[i18n.language] ||
+          displayMode
+  }, [wsReadyState, isONLINE, displayMode, i18n.language])
 
   return (
     <>
@@ -80,7 +109,7 @@ const FallbackMessage: FC<PropsType> = memo(() => {
             placement="bottomLeft"
           >
             <div className="flex gap-3">
-              <div className="px-2 py-1 text-white text-sm rounded-[3px] bg-ground-180">
+              <div className="px-2 py-1 text-white text-sm rounded-[3px] bg-ground-2">
                 {renderMsgs.length}
               </div>
               <div className="max-w-64">{renderMsgs[0]}</div>
@@ -89,7 +118,7 @@ const FallbackMessage: FC<PropsType> = memo(() => {
         </>
       )}
       {mode && (
-        <div className="text-sm px-2 py-1 bg-ground-200 bg-opacity-80 rounded-[3px]">
+        <div className="text-sm px-2 py-1 bg-ground-3 bg-opacity-80 rounded-[3px]">
           {mode}
         </div>
       )}

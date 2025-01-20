@@ -30,6 +30,12 @@ const CesiumDefaultConfig: FC<PropsType> = memo(() => {
     viewer.scene.highDynamicRange = false // 关闭 HDR
     // viewer.scene.fxaa = false // 关闭抗锯齿
 
+    viewer.scene.globe.enableLighting = false // 关闭光照效果
+
+    viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(
+      Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK,
+    )
+
     // 是否开启抗锯齿
     // @ts-ignore
     // viewer.scene.fxaa = true

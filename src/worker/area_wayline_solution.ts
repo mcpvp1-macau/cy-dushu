@@ -19,7 +19,6 @@ class AreaWaylinePathSolution {
   private pointToPolyon: number[][]
 
   constructor(polygons: Polygon[]) {
-    const start = performance.now()
     this.polygons = polygons
     this.idMap = new Map()
     this.idToPoint = []
@@ -111,8 +110,6 @@ class AreaWaylinePathSolution {
     this.w = w
     this.f = f
     this.pointToPolyon = pointToPolyon
-
-    console.log('init time:', performance.now() - start)
   }
 
   /** 获取从 x 到 y 的最短路径 */

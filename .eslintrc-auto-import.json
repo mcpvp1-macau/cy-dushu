@@ -43,6 +43,7 @@
     "clsx": true,
     "Cesium": true,
     "dayjs": true,
-    "useBoolean": true
+    "useBoolean": true,
+    "useTranslation": true
   }
 }

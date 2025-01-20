@@ -12,7 +12,7 @@ const CircleButton: FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({
         'absolute w-[26px] h-[26px] text-[9px] rounded-full disabled:cursor-not-allowed',
         'border border-solid border-primary text-primary',
         'hover:bg-primary hover:text-white',
-        'disabled:border-ground-300 disabled:bg-ground-200 disabled:text-fore disabled:opacity-60',
+        'disabled:border-ground-5 disabled:bg-ground-3 disabled:text-fore disabled:opacity-60',
         props.className,
       )}
     >

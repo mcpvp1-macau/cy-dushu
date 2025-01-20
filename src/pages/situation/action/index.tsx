@@ -42,6 +42,7 @@ const PageSituationAction: FC<PropsType> = memo(() => {
         }
         return lastPageParam + 1
       },
+      gcTime: 0, // 避免无限轮播, 后续切换页面时, 导致多次请求
     },
     queryClient,
   )
@@ -56,18 +57,20 @@ const PageSituationAction: FC<PropsType> = memo(() => {
     setName(e.currentTarget.value)
   }
 
+  const { t } = useTranslation()
+
   return (
     <div className="h-full flex flex-col my-3 overflow-hidden">
       <div className="px-3">
         <Input
-          placeholder="请根据行动名称搜索"
+          placeholder={t('action.input.placeholder')}
           onPressEnter={handlePressEnter}
         />
       </div>
       <ScrollArea className="grow mt-3 px-3" onScroll={handleScroll}>
         {isLoading || isRefetching || !data ? (
           <AppSpin />
-        ) : data.pages.at(-1)?.rows.length === 0 ? (
+        ) : data.pages?.[0]?.rows.length === 0 ? (
           <AppEmpty />
         ) : (
           <div className="flex flex-col gap-3">

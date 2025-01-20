@@ -17,7 +17,8 @@ const UavMapPointFly: FC<PropsType> = memo(() => {
     updatePointFly({ targetPosition: [longitude, latitude], open: true })
   }
 
-  const isPointFlying = displayMode?.startsWith('指点飞行')
+  const isPointFlying =
+    displayMode?.startsWith('指点飞行') || displayMode?.startsWith('10000')
 
   return (
     <>

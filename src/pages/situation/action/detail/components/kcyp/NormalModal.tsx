@@ -54,7 +54,7 @@ const ResultItem: FC<{ data: API_ACTION.domain.AIResultRecord }> = memo(
 
     return (
       <div className="flex gap-2">
-        <div className="w-[213px] h-[120px] relative border border-solid border-ground-300 box-content bg-ground-100">
+        <div className="w-[213px] h-[120px] relative border border-solid border-ground-5 box-content bg-ground-1">
           <ImageContainBox src={`/storage${data.image || data.sourceImage}`}>
             {data.leftTopX && data.leftTopY && (
               <div
@@ -212,7 +212,7 @@ const KCYPNormalModal: FC<PropsType> = memo(({ actionId }) => {
           >
             <Spin spinning={isRefetching}>
               <div className="p-3">
-                <div className="py-3 bg-ground-200 rounded">
+                <div className="py-3 bg-ground-3 rounded">
                   <p className="px-3 flex gap-3">
                     <Checkbox
                       indeterminate={

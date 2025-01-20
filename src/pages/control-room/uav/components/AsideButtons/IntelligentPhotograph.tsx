@@ -10,33 +10,39 @@ interface IntelligentPhotographyBtn {
   btnAction: string
 }
 
-const autoPhotoStatusMap: Record<number, IntelligentPhotographyBtn> = {
-  0: {
-    key: 0,
-    label: '停止',
-    btnLabel: '',
-    btnAction: 'intelligentPhotography',
-  },
-  1: {
-    key: 1,
-    label: '运行',
-    btnLabel: '暂停',
-    btnAction: 'pauseIntelligentPhotography',
-  },
-  2: {
-    key: 2,
-    label: '暂停',
-    btnLabel: '恢复',
-    btnAction: 'resumeIntelligentPhotography',
-  },
-}
-
 type PropsType = {
   postServiceFn: (identifier: string, data?: any) => Promise<void>
 }
 
 /** 智能拍照 */
 const IntelligentPhotography: FC<PropsType> = memo(({ postServiceFn }) => {
+  const { t, i18n } = useTranslation()
+
+  const autoPhotoStatusMap = useMemo(
+    () =>
+      ({
+        0: {
+          key: 0,
+          label: '停止',
+          btnLabel: '',
+          btnAction: 'intelligentPhotography',
+        },
+        1: {
+          key: 1,
+          label: '运行',
+          btnLabel: t('common.pause'),
+          btnAction: 'pauseIntelligentPhotography',
+        },
+        2: {
+          key: 2,
+          label: '暂停',
+          btnLabel: t('common.recover'),
+          btnAction: 'resumeIntelligentPhotography',
+        },
+      } as Record<string, IntelligentPhotographyBtn>),
+    [t],
+  )
+
   const hasControlPower = useUavControlRoomStore((s) => s.hasControlPower)
   const serviceHave = useDeviceDetailStore((s) => s.serviceHave)
   const autoPhotoStatus = useUavControlRoomStore((s) => s.state.autoPhotoStatus)
@@ -64,7 +70,11 @@ const IntelligentPhotography: FC<PropsType> = memo(({ postServiceFn }) => {
       icon={<IconSmartTakingPhoto />}
       onClick={handleIntelligentPhotography}
     >
-      智能拍照{autoPhotoStatus && autoPhotoStatusMap[autoPhotoStatus]?.label}
+      {t('controlRoom.uav.service.aiPhoto.title')}
+      {autoPhotoStatus &&
+        `${i18n.language === 'en' ? ' ' : ''}${
+          autoPhotoStatusMap[autoPhotoStatus]?.btnLabel
+        }`}
     </Button>
   )
 })

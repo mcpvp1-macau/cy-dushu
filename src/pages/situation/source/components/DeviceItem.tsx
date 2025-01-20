@@ -19,7 +19,11 @@ type PropsType = {
 
 /** 任务状态 */
 const TaskStatusTag: FC<{ taskStatus: string }> = ({ taskStatus }) => {
-  const label = taskStatus === 'RUNNING' ? '任务中' : '无任务'
+  const { t } = useTranslation()
+  const label =
+    taskStatus === 'RUNNING'
+      ? t('device.status.task.RUNNING')
+      : t('device.status.task.IDLE')
   const color =
     taskStatus === 'RUNNING' ? 'rgb(21, 179, 113)' : 'rgb(199, 209, 220)'
   const bgColor =
@@ -71,6 +75,8 @@ const DeviceItem: FC<PropsType> = memo(({ data }) => {
     (s) => s.updateHiddenDeviceIds,
   )
 
+  const { t } = useTranslation()
+
   return (
     <div onClick={handleClick}>
       <div className="w-[350px] px-3 py-1 flex items-center justify-between text-fore">
@@ -109,11 +115,11 @@ const DeviceItem: FC<PropsType> = memo(({ data }) => {
         data.deviceTags?.find(
           (tag) => 'FLIGHT_REPORTING_STATUS' === tag.tagName,
         )?.tagValue ? (
-          <Tooltip title="已报备">
+          <Tooltip title={t('device.status.reported.ok')}>
             <IconReported className="text-xs ml-2 text-[#15B371]" />
           </Tooltip>
         ) : (
-          <Tooltip title="未报备">
+          <Tooltip title={t('device.status.reported.no')}>
             <IconNotReported className="text-xs ml-2 text-fore" />
           </Tooltip>
         )}

@@ -29,6 +29,7 @@ const AlgorithmSettingModal: FC<PropsType> = memo(
     onClose,
     onConfirm,
   }) => {
+    const { t } = useTranslation()
     const { algorithmConfigList } = aiData
 
     const overlay = useMapLayerAndOverlayStore((s) => s.overlayList)
@@ -238,7 +239,7 @@ const AlgorithmSettingModal: FC<PropsType> = memo(
         title={
           <div className="flex gap-2">
             <IconSetting />
-            <span>AI 模型配置</span>
+            <span>{t('device.algorithm.aiModelSetting.title')}</span>
           </div>
         }
         open={open}
@@ -247,30 +248,32 @@ const AlgorithmSettingModal: FC<PropsType> = memo(
       >
         <div className="bg-[#16202B] p-3 mb-3">
           <div className="flex gap-2">
-            <Icon />
+            <Icon className="text-fore" />
             <span>{aiData.name}</span>
           </div>
           <div className="mt-3 border border-solid border-gray-700 rounded-[3px] p-2 flex text-fore text-sm">
             <div className="grow">
-              <div>已部署设备数量</div>
+              <div>{t('device.algorithm.deviceCountofDeployed.title')}</div>
               <div className="text-white">{aiData.deviceCount}</div>
             </div>
             <div className="grow">
-              <div>来源</div>
+              <div>{t('common.source')}</div>
               <div className="text-white">{envMap['from'] || '-'}</div>
             </div>
             <div className="grow">
-              <div>创建时间</div>
+              <div>{t('common.createTime')}</div>
               <div className="text-white">{aiData.createTime}</div>
             </div>
             <div className="grow">
-              <div>版本</div>
+              <div>{t('common.version')}</div>
               <div className="text-white">{envMap['version'] || '-'}</div>
             </div>
           </div>
           <div className="mt-3 border border-solid border-gray-700 rounded-[3px] p-2">
             {formItems.length === 0 ? (
-              <AppEmpty description="该算法暂无配置项" />
+              <AppEmpty
+                description={t('device.algorithm.emptyConfig.description')}
+              />
             ) : (
               <XForm
                 form={form}

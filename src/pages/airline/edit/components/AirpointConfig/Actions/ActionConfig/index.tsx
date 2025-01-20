@@ -24,6 +24,7 @@ interface Props {
 }
 
 const ActionConfig: React.FC<Props> = (props) => {
+  const { t } = useTranslation()
   const { activeOperator } = props
   const currentIndex = useAirlineConfigStore((s) => s.currentIndex)
   const currentAirpoint = useCurrentAirpoint()
@@ -227,7 +228,7 @@ const ActionConfig: React.FC<Props> = (props) => {
       <div>
         <div className={styles.titleHeader}>
           <div className={styles.subTitle}>
-            <span className={styles.text}>高度（m）</span>
+            <span className={styles.text}>{t('common.height')} (m)</span>
           </div>
           <div>
             <span className={styles.important}></span>
@@ -244,7 +245,7 @@ const ActionConfig: React.FC<Props> = (props) => {
       <div>
         <div className={styles.titleHeader}>
           <div className={styles.subTitle}>
-            <span className={styles.text}>经度</span>
+            <span className={styles.text}>{t('common.longitude')}</span>
           </div>
           <div>
             <span className={styles.important}></span>
@@ -261,7 +262,7 @@ const ActionConfig: React.FC<Props> = (props) => {
       <div>
         <div className={styles.titleHeader}>
           <div className={styles.subTitle}>
-            <span className={styles.text}>纬度</span>
+            <span className={styles.text}>{t('common.latitude')}</span>
           </div>
           <div>
             <span className={styles.important}></span>

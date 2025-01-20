@@ -1,6 +1,6 @@
 import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
-import { pictureSourceTypeOptions } from '@/constant/options/device-media'
+import usePicutreSourceTypeOptions from '@/constant/options/pictureSourceTypeOptions'
 import { dft } from '@/constant/time-fmt'
 import { getPlatformCapture } from '@/service/modules/db-api'
 import { Col, DatePicker, Image, Pagination, Row, Select } from 'antd'
@@ -13,6 +13,7 @@ type PropsType = {
 }
 
 const PictureData: FC<PropsType> = memo(({ deviceList }) => {
+  const { t } = useTranslation()
   const deviceOptions = useMemo(
     () =>
       deviceList.map((e) => ({
@@ -21,6 +22,8 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
       })),
     deviceList,
   )
+
+  const pictureSourceTypeOptions = usePicutreSourceTypeOptions()
 
   const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>([
     dayjs().startOf('day'),
@@ -101,7 +104,7 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
               <Row gutter={[12, 12]}>
                 {records.map((e) => (
                   <Col key={e.id} span={24} md={12} lg={8}>
-                    <div className="h-20 p-2 flex items-center gap-2 border border-solid border-ground-300 rounded-[3px]">
+                    <div className="h-20 p-2 flex items-center gap-2 border border-solid border-ground-5 rounded-[3px]">
                       <div className="h-full aspect-[4/3]">
                         <Image
                           src={`/storage/${e.url}`}
@@ -112,11 +115,11 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
                         <p>{e.startTime}</p>
                         <div className="flex">
                           <p className="flex-1">
-                            <span>经度:</span>
+                            <span>{t('common.longitude')}:</span>
                             <span>{e.longitude || '-'}</span>
                           </p>
                           <p className="flex-1">
-                            <span>纬度:</span>
+                            <span>{t('common.latitude')}:</span>
                             <span>{e.latitude || '-'}</span>
                           </p>
                         </div>

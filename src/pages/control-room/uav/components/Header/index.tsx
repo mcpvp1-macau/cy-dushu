@@ -44,6 +44,7 @@ const I: FC<{ l: ReactNode; v: ReactNode; t?: string }> = ({ l, v, t }) => (
 )
 
 const Signal14G = memo(() => {
+  const { t } = useTranslation()
   const signal = useS((s) => s.state.signal)
   const item = signal?.find((s) => s.type === '14G')
   if (isNil(item)) {
@@ -51,7 +52,7 @@ const Signal14G = memo(() => {
   }
   return (
     <I
-      t={'1.4G信号强度'}
+      t={t('controlRoom.uav.header.14g.title')}
       l={'1.4G'}
       v={<SignalStrengthIcon value={item.sqe} max={5} />}
     />
@@ -59,13 +60,14 @@ const Signal14G = memo(() => {
 })
 
 const SDRStrength = memo(() => {
+  const { t } = useTranslation()
   const sdrStrength = useS((s) => s.state?.sdrStrength)
   if (isNil(sdrStrength)) {
     return null
   }
   return (
     <I
-      t={'无线电信号强度'}
+      t={t('controlRoom.uav.header.sdr.title')}
       l={<JCXT />}
       v={<SignalStrengthIcon value={sdrStrength ?? -1} max={5} />}
     ></I>
@@ -73,6 +75,7 @@ const SDRStrength = memo(() => {
 })
 
 const SignalStrength = memo(() => {
+  const { t } = useTranslation()
   const { signalMode, signalStrength } = useS(
     useShallow((m) => {
       const s = m.state ?? {}
@@ -84,7 +87,7 @@ const SignalStrength = memo(() => {
   )
   return (
     <I
-      t="信号强度"
+      t={t('controlRoom.uav.header.signal.title')}
       l={signalMode || '4G'}
       v={<SignalStrengthIcon value={signalStrength ?? -1} max={5} />}
     />
@@ -121,10 +124,11 @@ const Battery = memo(() => {
 })
 
 const HorizontalSpeed = memo(() => {
+  const { t } = useTranslation()
   const horizontalSpeed = useS((s) => s.state?.horizontalSpeed)
   return (
     <I
-      t={'水平速度'}
+      t={t('controlRoom.uav.header.hSpeed.title')}
       l={'H.S'}
       v={<span>{horizontalSpeed?.toFixed(1) ?? '-'} m/s</span>}
     />
@@ -132,24 +136,35 @@ const HorizontalSpeed = memo(() => {
 })
 
 const Height = memo(() => {
+  const { t } = useTranslation()
   const height = useS((s) => s.state?.height)
   return (
-    <I t={'高度'} l={'AGL'} v={<span>{height?.toFixed(1) ?? '-'} m</span>} />
+    <I
+      t={t('common.height')}
+      l={'ATL'}
+      v={<span>{height?.toFixed(1) ?? '-'} m</span>}
+    />
   )
 })
 
 const Altitude = memo(() => {
+  const { t } = useTranslation()
   const altitude = useS((s) => s.state?.altitude)
   return (
-    <I t={'海拔'} l={'ASL'} v={<span>{altitude?.toFixed(1) ?? '-'} m</span>} />
+    <I
+      t={t('controlRoom.uav.header.altitude.title')}
+      l={'ASL'}
+      v={<span>{altitude?.toFixed(1) ?? '-'} m</span>}
+    />
   )
 })
 
 const HomeDistance = memo(() => {
+  const { t } = useTranslation()
   const homeDistance = useS((s) => s.state?.homeDistance)
   return (
     <I
-      t={'距离起飞点'}
+      t={t('controlRoom.uav.header.distanceFromHome.title')}
       l={<IconHome className="text-orange-400" />}
       v={<span>{homeDistance?.toFixed(1) ?? '-'} m</span>}
     />
@@ -157,25 +172,33 @@ const HomeDistance = memo(() => {
 })
 
 const FT = memo(() => {
+  const { t } = useTranslation()
   const flyTime = useS((s) => s.state?.flyTime)
   const ft = useMemo(() => {
     if (!flyTime) {
-      return '未起飞'
+      return t('controlRoom.uav.header.ft.untaken')
     }
     if (flyTime < 60) {
       return '< 1 min'
     }
     return `${(flyTime / (60 * 1000)).toFixed(0)} min`
-  }, [flyTime])
+  }, [flyTime, t])
 
-  return <I t={'飞行时间'} l={'FT'} v={<span>{ft ?? '-'}</span>} />
+  return (
+    <I
+      t={t('controlRoom.uav.header.ft.title')}
+      l={'FT'}
+      v={<span>{ft ?? '-'}</span>}
+    />
+  )
 })
 
 const FD = memo(() => {
+  const { t } = useTranslation()
   const flyDistance = useS((s) => s.state?.flyDistance)
   return (
     <I
-      t={'飞行距离'}
+      t={t('controlRoom.uav.header.fd.title')}
       l={'FD'}
       v={<span>{flyDistance?.toFixed(1) ?? '-'} m</span>}
     />
@@ -188,7 +211,7 @@ const ControlRoomUavHeader: FC = memo(() => {
   const productKey = useDeviceDetailStore((s) => s.productKey)
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
   return createPortal(
-    <header className="h-7 flex justify-between gap-3 bg-ground-100 px-3 items-center text-sm">
+    <header className="h-7 flex justify-between gap-3 bg-ground-1 px-3 items-center text-sm">
       <HeaderLeft />
       <section className="grow">
         <ul className="flex justify-center gap-1 xl:gap-3 2xl:gap-5 whitespace-nowrap">

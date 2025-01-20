@@ -34,14 +34,8 @@ const presetColors = [
   '#f43f5e',
 ]
 
-const header = (
-  <div className="flex gap-2 items-center">
-    <IconAddMark className="device-detail-icon" />
-    <h6 className="text-white text-base">点位标记</h6>
-  </div>
-)
-
 const AddPoint: FC<PropsType> = memo(() => {
+  const { t } = useTranslation()
   const updateDrawing = useMapDrawStore((s) => s.updateDrawing)
   const updateDrawingColor = useMapDrawStore((s) => s.updateDrawingColor)
 
@@ -51,19 +45,24 @@ const AddPoint: FC<PropsType> = memo(() => {
 
   return (
     <div className="w-[350px] backdrop-blur">
-      <CloseableHeader>{header}</CloseableHeader>
+      <CloseableHeader>
+        <div className="flex gap-2 items-center">
+          <IconAddMark className="device-detail-icon" />
+          <h6 className="text-white text-base">{t('overlay.marker.title')}</h6>
+        </div>
+      </CloseableHeader>
       <AppCollapse
         defaultActiveKey={['point']}
         items={[
           {
             key: 'point',
-            label: '点位',
+            label: t('overlay.marker.point.title'),
             children: (
               <div className="flex flex-wrap gap-2 gap-x-3.5 m-3">
                 {presetColors.map((color) => (
                   <button
                     key={color}
-                    className="flex items-center gap-2 justify-center hover:bg-ground-300 p-1 rounded-md hover:scale-125 transition-all"
+                    className="flex items-center gap-2 justify-center hover:bg-ground-5 p-1 rounded-md hover:scale-125 transition-all"
                     onClick={() => {
                       updateDrawing(DrawType.Point)
                       updateDrawingColor(color)

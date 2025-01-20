@@ -13,6 +13,7 @@ import useProtobufSei from './hooks/useProtobufSei'
 import useWebSocket from 'react-use-websocket'
 import { heartbeat } from '@/constant/websocket'
 import useUserStore from '@/store/useUser.store'
+import useDeviceStats from './hooks/useDeviceStats'
 
 type VideoInfo = {
   width: number
@@ -114,6 +115,8 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
     return metricsURL
   }, [src])
 
+  const deviceStatus = useDeviceStats()
+
   const { sendJsonMessage, sendMessage } = useWebSocket(
     metricsURL,
     {
@@ -130,7 +133,7 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
   )
 
   const handleStats = (stats) => {
-    sendJsonMessage(stats)
+    sendJsonMessage(Object.assign(stats, deviceStatus))
   }
 
   // 创建播放器
@@ -165,6 +168,7 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
       operateBtns: {},
       timeout: 5000,
       heartTimeoutReplayUseLastFrameShow: false,
+      replayUseLastFrameShow: false,
       audioEngine: 'worklet',
       isNotMute: false,
       heartTimeout: 10,

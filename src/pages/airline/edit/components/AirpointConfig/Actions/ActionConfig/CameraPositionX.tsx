@@ -13,6 +13,7 @@ type PropsType = {
 }
 
 const CameraPositionX: FC<PropsType> = ({ config, onChange }) => {
+  const { t } = useTranslation()
   const currentBearing = useAirlineConfigStore((s) => s.bearing)
 
   let diff = Math.abs(currentBearing - (config.x ?? 0))
@@ -28,7 +29,9 @@ const CameraPositionX: FC<PropsType> = ({ config, onChange }) => {
       <div className={styles.titleHeader}>
         <div className={styles.subTitle}>
           <YTPHJ />
-          <span className={styles.text}>云台偏航角</span>
+          <span className={styles.text}>
+            {t('wayline.waylinePoint.actions.CAMERA_POSITION_X.title')}
+          </span>
         </div>
         <div>
           <span className={styles.important}>

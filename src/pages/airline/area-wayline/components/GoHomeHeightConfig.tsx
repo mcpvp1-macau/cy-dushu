@@ -9,8 +9,10 @@ const GoHomeHeightConfig: FC<PropsType> = memo(() => {
   const height = useAreaWaylineStore((s) => s.airlineConfig.globalRTHHeight)
   const setAirlineConfig = useAreaWaylineStore((s) => s.updateAirlineConfig)
 
+  const { t } = useTranslation()
+
   return (
-    <XCard title="航线返航高度">
+    <XCard title={t('wayline.waylineConfig.returnHeight.title')}>
       <HNumber
         className="mt-3"
         negatives={[-100, -10]}

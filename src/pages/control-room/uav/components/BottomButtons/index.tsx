@@ -5,7 +5,6 @@ import IconUp from '@/assets/icons/jsx/IconUp'
 import IconTurnLeft from '@/assets/icons/jsx/uav/IconTurnLeft'
 import IconTurnRight from '@/assets/icons/jsx/uav/IconTurnRight'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import { memo, type FC } from 'react'
 import GimbalPitchBar from './GimbalPitchBar'
 import Compass from './Compass'
 import AvoidDistanceBar from './AvoidDistanceBar'
@@ -31,118 +30,124 @@ const BottomButtons: FC<PropsType> = memo(() => {
     if (!displayMode) {
       return false
     }
-    return displayMode.includes('指点飞行') || displayMode.includes('一键起飞')
+    return (
+      displayMode.includes('指点飞行') ||
+      displayMode.includes('一键起飞') ||
+      displayMode.startsWith('10000')
+    )
   }, [displayMode])
 
   const flySpeed = useUavControlRoomStore((s) => s.flyParams.flySpeed)
+  const { t } = useTranslation()
+  const buttons = useMemo(
+    () =>
+      [
+        {
+          value: { yaw: -15 },
+          btn: 'Q',
+          identifier: 'yaw',
+          icon: <IconTurnLeft />,
+          method: 'service.moveUav.post',
+          label: t('controlRoom.control.uavTurnLeft.title'),
+        },
+        {
+          value: { y: 15 },
+          btn: 'W',
+          identifier: 'y',
+          icon: <IconUp />,
+          method: 'service.moveUav.post',
+          label: t('controlRoom.control.uavForward.title'),
+        },
+        {
+          value: { yaw: 15 },
+          btn: 'E',
+          identifier: 'yaw',
+          icon: <IconTurnRight />,
+          method: 'service.moveUav.post',
+          label: t('controlRoom.control.uavTurnRight.title'),
+        },
+        {
+          value: { x: -15 },
+          btn: 'A',
+          identifier: 'x',
+          icon: <IconLeft />,
+          method: 'service.moveUav.post',
+          label: t('controlRoom.control.uavLeft.title'),
+        },
+        {
+          value: { y: -15 },
+          btn: 'S',
+          identifier: 'y',
+          icon: <IconDown />,
+          method: 'service.moveUav.post',
+          label: t('controlRoom.control.uavBack.title'),
+        },
+        {
+          value: { x: 15 },
+          btn: 'D',
+          identifier: 'x',
+          icon: <IconRight />,
+          method: 'service.moveUav.post',
+          label: t('controlRoom.control.uavRight.title'),
+        },
+        {
+          value: { z: 8 },
+          btn: 'C',
+          identifier: 'z',
+          icon: <IconUpStraight />,
+          method: 'service.moveUav.post',
+          label: t('controlRoom.control.uavFlyUp.title'),
+        },
+        {
+          value: { z: -5 },
+          btn: 'Z',
+          identifier: 'z',
+          icon: <IconDownStraight />,
+          method: 'service.moveUav.post',
+          label: t('controlRoom.control.uavFlyDown.title'),
+        },
+      ] as Btn[],
+    [t],
+  )
 
-  const buttons = useRef<Btn[] | null>(null)
-  if (!buttons.current) {
-    buttons.current = [
-      {
-        value: { yaw: -15 },
-        btn: 'Q',
-        identifier: 'yaw',
-        icon: <IconTurnLeft />,
-        method: 'service.moveUav.post',
-        label: '无人机左转',
-      },
-      {
-        value: { y: 15 },
-        btn: 'W',
-        identifier: 'y',
-        icon: <IconUp />,
-        method: 'service.moveUav.post',
-        label: '无人机前进',
-      },
-      {
-        value: { yaw: 15 },
-        btn: 'E',
-        identifier: 'yaw',
-        icon: <IconTurnRight />,
-        method: 'service.moveUav.post',
-        label: '无人机右转',
-      },
-      {
-        value: { x: -15 },
-        btn: 'A',
-        identifier: 'x',
-        icon: <IconLeft />,
-        method: 'service.moveUav.post',
-        label: '无人机左移',
-      },
-      {
-        value: { y: -15 },
-        btn: 'S',
-        identifier: 'y',
-        icon: <IconDown />,
-        method: 'service.moveUav.post',
-        label: '无人机后退',
-      },
-      {
-        value: { x: 15 },
-        btn: 'D',
-        identifier: 'x',
-        icon: <IconRight />,
-        method: 'service.moveUav.post',
-        label: '无人机右移',
-      },
-      {
-        value: { z: 8 },
-        btn: 'C',
-        identifier: 'z',
-        icon: <IconUpStraight />,
-        method: 'service.moveUav.post',
-        label: '无人机上升',
-      },
-      {
-        value: { z: -5 },
-        btn: 'Z',
-        identifier: 'z',
-        icon: <IconDownStraight />,
-        method: 'service.moveUav.post',
-        label: '无人机下降',
-      },
-    ]
-  }
-
-  const gimbalButtons = useRef<Btn[] | null>(null)
-  if (!gimbalButtons.current) {
-    gimbalButtons.current = [
-      {
-        btn: 'arrowup',
-        identifier: 'pitch',
-        icon: <IconUp />,
-        value: { pitch: 15 },
-        method: 'service.moveGimbal.post',
-        label: '云台上仰',
-      },
-      {
-        btn: 'arrowdown',
-        icon: <IconDown />,
-        identifier: 'pitch',
-        value: { pitch: -15 },
-        method: 'service.moveGimbal.post',
-        label: '云台下俯',
-      },
-      {
-        btn: 'arrowleft',
-        identifier: 'yaw',
-        icon: <IconLeft />,
-        value: { yaw: -15 },
-        method: 'service.moveGimbal.post',
-        label: '云台左转',
-      },
-      {
-        btn: 'arrowright',
-        identifier: 'yaw',
-        icon: <IconRight />,
-        value: { yaw: 15 },
-        method: 'service.moveGimbal.post',
-        label: '云台右转',
-      },
-    ]
-  }
+  const gimbalButtons = useMemo(
+    () =>
+      [
+        {
+          btn: 'arrowup',
+          identifier: 'pitch',
+          icon: <IconUp />,
+          value: { pitch: 15 },
+          method: 'service.moveGimbal.post',
+          label: t('controlRoom.control.gimbalTiltUp.title'),
+        },
+        {
+          btn: 'arrowdown',
+          icon: <IconDown />,
+          identifier: 'pitch',
+          value: { pitch: -15 },
+          method: 'service.moveGimbal.post',
+          label: t('controlRoom.control.gimbalTiltDown.title'),
+        },
+        {
+          btn: 'arrowleft',
+          identifier: 'yaw',
+          icon: <IconLeft />,
+          value: { yaw: -15 },
+          method: 'service.moveGimbal.post',
+          label: t('controlRoom.control.gimbalTurnLeft.title'),
+        },
+        {
+          btn: 'arrowright',
+          identifier: 'yaw',
+          icon: <IconRight />,
+          value: { yaw: 15 },
+          method: 'service.moveGimbal.post',
+          label: t('controlRoom.control.gimbalTurnRight.title'),
+        },
+      ] as Btn[],
+    [t],
+  )
 
   const handleUp = useMemoizedFn(() => {
     updateActiveMouseBtn(null)
@@ -169,8 +174,8 @@ const BottomButtons: FC<PropsType> = memo(() => {
   const keyMap = useRef<Record<string, Btn> | null>(null)
   if (!keyMap.current) {
     keyMap.current = Object.fromEntries([
-      ...buttons.current.map((e) => [e.btn.toLowerCase(), e]),
-      ...gimbalButtons.current.map((e) => [e.btn.toLowerCase(), e]),
+      ...buttons.map((e) => [e.btn.toLowerCase(), e]),
+      ...gimbalButtons.map((e) => [e.btn.toLowerCase(), e]),
     ])
   }
 
@@ -214,17 +219,17 @@ const BottomButtons: FC<PropsType> = memo(() => {
     useUavControlRoomStore((s) => s.state.videoSource) === 'gimbal'
 
   return (
-    <div className={clsx('flex items-center select-none')}>
+    <div className={clsx('flex items-center select-none font-[Consolas]')}>
       {/* 左 */}
       <div className="flex flex-col gap-1">
-        <div className="border border-solid rounded bg-ground-100 border-ground-300 flex overflow-hidden">
-          {buttons.current.slice(0, 3).map((e) => (
+        <div className="border border-solid rounded bg-ground-1 border-ground-5 flex overflow-hidden">
+          {buttons.slice(0, 3).map((e) => (
             <Tooltip key={e.btn} title={e.label} placement="top">
               <button
                 disabled={!hasControlPower || isLimitedFly}
                 className={clsx(
                   'flex flex-col gap-1 items-center p-1 px-2 hover:bg-primary hover:text-white',
-                  'disabled:opacity-50 disabled:hover:bg-ground-100 disabled:cursor-not-allowed',
+                  'disabled:opacity-50 disabled:hover:bg-ground-1 disabled:cursor-not-allowed',
                   {
                     'bg-primary text-white':
                       uavControlInfo[e.identifier] * e.value[e.identifier]! > 0,
@@ -248,14 +253,14 @@ const BottomButtons: FC<PropsType> = memo(() => {
           </span>
           <span className="text-lg">{speed?.toFixed?.(1)}</span>
         </div>
-        <div className="border border-solid rounded bg-ground-100 border-ground-300 flex overflow-hidden">
-          {buttons.current.slice(3, 6).map((e) => (
+        <div className="border border-solid rounded bg-ground-1 border-ground-5 flex overflow-hidden">
+          {buttons.slice(3, 6).map((e) => (
             <Tooltip key={e.btn} title={e.label} placement="top">
               <button
                 disabled={!hasControlPower || isLimitedFly}
                 className={clsx(
                   'flex flex-col gap-1 items-center p-1 px-2 hover:bg-primary hover:text-white',
-                  'disabled:opacity-50 disabled:hover:bg-ground-100 disabled:cursor-not-allowed',
+                  'disabled:opacity-50 disabled:hover:bg-ground-1 disabled:cursor-not-allowed',
                   {
                     'bg-primary text-white':
                       uavControlInfo[e.identifier] * e.value[e.identifier]! > 0,
@@ -290,19 +295,19 @@ const BottomButtons: FC<PropsType> = memo(() => {
       </div>
       <div className="flex flex-col gap-1">
         <div className="flex gap-3">
-          <Tooltip title="无人机上升" placement="top">
-            <div className="border border-solid rounded bg-ground-100 border-ground-300 flex overflow-hidden">
+          <Tooltip title={buttons[6].label} placement="top">
+            <div className="border border-solid rounded bg-ground-1 border-ground-5 flex overflow-hidden">
               <button
                 disabled={!hasControlPower || isLimitedFly}
                 className={clsx(
                   'flex flex-col gap-1 items-center p-1 px-2 hover:bg-primary hover:text-white',
-                  'disabled:opacity-50 disabled:hover:bg-ground-100 disabled:cursor-not-allowed',
+                  'disabled:opacity-50 disabled:hover:bg-ground-1 disabled:cursor-not-allowed',
                   {
                     'bg-primary text-white':
-                      uavControlInfo.z! * buttons.current[6].value.z! > 0,
+                      uavControlInfo.z! * buttons[6].value.z! > 0,
                   },
                 )}
-                onMouseDown={() => updateActiveMouseBtn(buttons.current![6])}
+                onMouseDown={() => updateActiveMouseBtn(buttons[6])}
                 onMouseLeave={handleUp}
                 onMouseUp={handleUp}
               >
@@ -310,14 +315,14 @@ const BottomButtons: FC<PropsType> = memo(() => {
               </button>
             </div>
           </Tooltip>
-          <div className="border border-solid rounded bg-ground-100 border-ground-300 flex flex-col overflow-hidden">
-            {gimbalButtons.current.slice(0, 2).map((e) => (
+          <div className="border border-solid rounded bg-ground-1 border-ground-5 flex flex-col overflow-hidden">
+            {gimbalButtons.slice(0, 2).map((e) => (
               <Tooltip key={e.btn} title={e.label} placement="top">
                 <button
                   disabled={!isGimbalSource}
                   className={clsx(
                     'flex-1 px-2 hover:bg-primary hover:text-white',
-                    'disabled:opacity-50 disabled:hover:bg-ground-100 disabled:cursor-not-allowed',
+                    'disabled:opacity-50 disabled:hover:bg-ground-1 disabled:cursor-not-allowed',
                     {
                       'bg-primary text-white':
                         gimbalControlInfo[e.identifier] *
@@ -338,24 +343,24 @@ const BottomButtons: FC<PropsType> = memo(() => {
         <div className="flex justify-center gap-2 items-center text-green-500 text-shadow pointer-events-none">
           <span className="text-lg">{height?.toFixed?.(1)}</span>
           <span className="text-sm">
-            AGL
+            ATL
             <br />m
           </span>
         </div>
         <div className="flex gap-3">
-          <Tooltip title="无人机下降" placement="top">
-            <div className="border border-solid rounded bg-ground-100 border-ground-300 flex overflow-hidden">
+          <Tooltip title={buttons[7].label} placement="top">
+            <div className="border border-solid rounded bg-ground-1 border-ground-5 flex overflow-hidden">
               <button
                 disabled={!hasControlPower || isLimitedFly}
                 className={clsx(
                   'flex flex-col gap-1 items-center p-1 px-2 hover:bg-primary hover:text-white',
-                  'disabled:opacity-50 disabled:hover:bg-ground-100 disabled:cursor-not-allowed',
+                  'disabled:opacity-50 disabled:hover:bg-ground-1 disabled:cursor-not-allowed',
                   {
                     'bg-primary text-white':
-                      uavControlInfo.z! * buttons.current[7].value.z! > 0,
+                      uavControlInfo.z! * buttons[7].value.z! > 0,
                   },
                 )}
-                onMouseDown={() => updateActiveMouseBtn(buttons.current![7])}
+                onMouseDown={() => updateActiveMouseBtn(buttons[7])}
                 onMouseLeave={handleUp}
                 onMouseUp={handleUp}
               >
@@ -363,14 +368,14 @@ const BottomButtons: FC<PropsType> = memo(() => {
               </button>
             </div>
           </Tooltip>
-          <div className="border border-solid rounded bg-ground-100 border-ground-300 flex flex-col overflow-hidden">
-            {gimbalButtons.current.slice(2, 4).map((e) => (
+          <div className="border border-solid rounded bg-ground-1 border-ground-5 flex flex-col overflow-hidden">
+            {gimbalButtons.slice(2, 4).map((e) => (
               <Tooltip key={e.btn} title={e.label} placement="top">
                 <button
                   disabled={!isGimbalSource}
                   className={clsx(
                     'flex-1 px-2 hover:bg-primary hover:text-white',
-                    'disabled:opacity-50 disabled:hover:bg-ground-100 disabled:cursor-not-allowed',
+                    'disabled:opacity-50 disabled:hover:bg-ground-1 disabled:cursor-not-allowed',
                     {
                       'bg-primary text-white':
                         gimbalControlInfo[e.identifier] *

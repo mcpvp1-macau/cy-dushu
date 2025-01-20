@@ -43,7 +43,7 @@ const Zoom: FC<PropsType> = memo(() => {
   }, [])
 
   return (
-    <div className="absolute right-3 bottom-11 h-[160px] bg-ground-100 w-[72px] rounded">
+    <div className="absolute right-3 bottom-11 h-[160px] bg-ground-1 w-[72px] rounded">
       <ZoomSlider value={value} onChange={setValue} onWheel={handleWheel} />
     </div>
   )

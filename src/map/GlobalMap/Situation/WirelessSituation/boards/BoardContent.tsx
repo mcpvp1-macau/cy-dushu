@@ -33,10 +33,16 @@ const SignalCellBoardContent: FC<PropsType> = memo((props) => {
     queryClient,
   )
 
+  const { t } = useTranslation()
+
   return (
-    <div style={{ width: '240px' }}>
+    <div>
       <XCard
-        title={isLoading || !data ? '加载中...' : data.data?.deviceName}
+        title={
+          isLoading || !data
+            ? t('common.loading') + '...'
+            : data.data?.deviceName
+        }
         padding="8px"
         iconMarginRight="4px"
         titleIcon={<DeviceIconUAV />}
@@ -46,41 +52,29 @@ const SignalCellBoardContent: FC<PropsType> = memo((props) => {
           </IconButton>
         }
       >
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            marginTop: '4px',
-            fontSize: '12px',
-            color: '#fff',
-            gap: '4px',
-            lineHeight: '14px',
-          }}
-        >
-          <div style={{ display: 'flex', gap: '16px' }}>
+        <div className="flex flex-col mt-1 text-xs text-white gap-1">
+          <div className="flex gap-1 whitespace-nowrap">
             <div>
-              <span style={{ color: '#C7D1DC', marginRight: '2px' }}>
-                信号强度:
+              <span className="text-fore mr-0.5">
+                {t('signalSituation.detail.signalStrength.title')}:
               </span>
               {props.quality}
             </div>
             <div>
-              <span style={{ color: '#C7D1DC', marginRight: '2px' }}>
-                信噪比:
+              <span className="text-fore mr-0.5">
+                {t('signalSituation.detail.sn.title')}:
               </span>
               {props.snr}
             </div>
             <div>
-              <span style={{ color: '#C7D1DC', marginRight: '2px' }}>
-                高度:
+              <span className="text-fore mr-0.5">
+                {t('signalSituation.detail.altitude.title')}:
               </span>
               {props.altitude}
             </div>
           </div>
           <div style={{ display: 'flex' }}>
-            <span style={{ color: '#C7D1DC', marginRight: '2px' }}>
-              信号时间:
-            </span>
+            <span className="text-fore mr-0.5">{t('common.time')}:</span>
             {dayjs(props.ts * 1000).format('YYYY-MM-DD HH:mm:ss')}
           </div>
         </div>

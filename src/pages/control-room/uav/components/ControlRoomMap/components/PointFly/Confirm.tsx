@@ -1,7 +1,6 @@
 import PositionTooltip from '@/components/map/PostionTooltip'
 import FormModal from '@/components/XForm/Modal'
-import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
-import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import usePostDeviceService from '@/pages/control-room/uav/hooks/usePostDeviceService'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { getSpaceDistance } from '@/utils/geo-math'
 import { InfoCircleOutlined } from '@ant-design/icons'
@@ -18,6 +17,8 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
 
   const updatePointFly = useUavControlRoomStore((s) => s.updatePointFly)
 
+  const { t } = useTranslation()
+
   const distance = useMemo(() => {
     if (!uavLon || !uavLat) {
       return 0
@@ -28,11 +29,9 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
     ])
   }, [uavLon, uavLat, position])
 
-  const t = distance / speed / 60
+  const predicateTime = distance / speed / 60
 
-  const deviceId = useDeviceDetailStore((s) => s.deviceId)
-  const productKey = useDeviceDetailStore((s) => s.productKey)
-  const postService = usePostDeviceService(productKey, deviceId)
+  const postService = usePostDeviceService()
 
   const [
     paramsOpen,
@@ -60,7 +59,7 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
       <PositionTooltip offset={[0, 30]} position={position} alwayInViewport>
         <div className="flex flex-col gap-1 text-fore p-1">
           <p className="flex justify-between">
-            任务距离:{' '}
+            {t('controlRoom.uav.pointFlyForecast.distance.title')}:{' '}
             <span>
               {distance > 1_000
                 ? `${(distance / 1_000).toFixed(1)} km`
@@ -68,10 +67,12 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
             </span>
           </p>
           <p className="flex justify-between">
-            执行时长: <span>{t?.toFixed(1)} min</span>
+            {t('controlRoom.uav.pointFlyForecast.time.title')}:{' '}
+            <span>{predicateTime.toFixed(1)} min</span>
           </p>
           <p>
-            <InfoCircleOutlined className="text-orange-400" /> 飞行路线仅供参考
+            <InfoCircleOutlined className="text-orange-400" />{' '}
+            {t('controlRoom.uav.pointFlyForecast.confirm.msg')}
           </p>
           <p className="flex justify-between">
             <Button
@@ -83,34 +84,48 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
                 })
               }}
             >
-              取消
+              {t('modal.cancel')}
             </Button>
             <Button size="small" type="primary" onClick={setParamsOpenTrue}>
-              指点飞行
+              {t('controlRoom.uav.service.tapToFly.title')}
             </Button>
           </p>
         </div>
       </PositionTooltip>
       {paramsOpen && (
         <FormModal
-          title="指点飞行"
+          title={t('controlRoom.uav.service.tapToFly.title')}
           initialValues={{
             height: 200,
             speed: 10,
           }}
           items={[
             {
-              label: '目标高度',
+              label: t('controlRoom.uav.targetAltitude.title'),
               name: 'height',
               type: 'input-number',
-              rules: [{ required: true, message: '请输入目标高度' }],
+              rules: [
+                {
+                  required: true,
+                  message: t(
+                    'controlRoom.uav.pointFlyForecast.targetHeight.required_msg',
+                  ),
+                },
+              ],
               otherProps: { addonAfter: 'm' },
             },
             {
-              label: '飞行速度',
+              label: t('common.flightSpeed'),
               name: 'speed',
               type: 'input-number',
-              rules: [{ required: true, message: '请输入飞行速度' }],
+              rules: [
+                {
+                  required: true,
+                  message: t(
+                    'controlRoom.uav.pointFlyForecast.flightSpeed.required_msg',
+                  ),
+                },
+              ],
               otherProps: { addonAfter: 'm/s', max: 15, min: 1 },
             },
           ]}

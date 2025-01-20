@@ -36,6 +36,8 @@ const DrawRangingAngle: FC<PropsType> = memo(() => {
   const endPoint = useRef<number[] | null>(null)
   const [endPointState, setEndPointState] = useState<number[] | null>(null)
 
+  const { t } = useTranslation()
+
   const drawingColor = useMapDrawStore((s) => s.drawingColor)
 
   useEffect(() => {
@@ -128,7 +130,7 @@ const DrawRangingAngle: FC<PropsType> = memo(() => {
       position={[pivot.current?.[0] ?? 0, pivot.current?.[1] ?? 0]}
       offset={[0, 20]}
     >
-      顺时针角度:{' '}
+      {t('common.angle')}({t('common.clockwise')}):{' '}
       {getBearing(pivot.current!, startPoint.current!, endPointState).toFixed(
         2,
       )}

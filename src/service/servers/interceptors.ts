@@ -7,6 +7,18 @@ import {
 } from 'axios'
 import { LiqunAxiosRequestConfig } from './liqunAxios'
 import { msgMitt } from '@/hooks/useAppMsg'
+import i18n from '@/langs/i18n'
+
+const acceptLanguageMap = new Map<string, string>([
+  ['zh', 'zh-CN'],
+  ['en', 'en-US'],
+])
+
+/** 国际化 */
+export const withInternational = (config: InternalAxiosRequestConfig<any>) => {
+  config.headers['Accept-Language'] = acceptLanguageMap.get(i18n.language)
+  return config
+}
 
 /** token 携带 */
 export const withToken = (config: InternalAxiosRequestConfig<any>) => {

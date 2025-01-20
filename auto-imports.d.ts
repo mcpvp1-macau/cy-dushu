@@ -31,6 +31,7 @@ declare global {
   const useResolvedPath: typeof import('react-router')['useResolvedPath']
   const useRoutes: typeof import('react-router')['useRoutes']
   const useState: typeof import('react')['useState']
+  const useTranslation: typeof import('react-i18next')['useTranslation']
 }
 // for type re-export
 declare global {

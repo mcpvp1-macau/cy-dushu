@@ -1,12 +1,11 @@
-import { StatusColorMap, StatusMap } from '@/enum/device'
+import { StatusColorMap } from '@/enum/device'
 import { getAllDeviceList } from '@/service/modules/device'
 import {
   createColumnHelper,
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { Badge, Button, Input, Pagination } from 'antd'
-import { memo, type FC } from 'react'
+import { Badge, Input, Pagination } from 'antd'
 import { Link, useSearchParams } from 'react-router-dom'
 import OTAUpdateColumn from './OTAUpdateColumn'
 import DeviceData from './DeviceData'
@@ -14,6 +13,7 @@ import XTable from '@/components/ui/XTable.tsx'
 import usePageSearchParams from '@/hooks/useTableSearchParams'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import DeviceIcon from '@/components/device/DeviceIcon'
+import TextButton from '@/components/ui/button/TextButton'
 
 type PropsType = unknown
 
@@ -22,6 +22,7 @@ const columnHelper = createColumnHelper<API_DEVICE.domain.DeviceListItem>()
 const defaultData = []
 const SourceTable: FC<PropsType> = memo(() => {
   const [searchParams] = useSearchParams()
+  const { t, i18n } = useTranslation()
 
   const type = searchParams.get('type')
   const page = Number(searchParams.get('page') ?? 1)
@@ -62,7 +63,7 @@ const SourceTable: FC<PropsType> = memo(() => {
   const columns = useMemo(() => {
     const columns = [
       columnHelper.accessor('deviceName', {
-        header: '设备名称',
+        header: t('resource.table.deviceName.title'),
         cell: (cell) => (
           <div className="flex gap-2">
             <DeviceIcon type={cell?.row.original.deviceType} />
@@ -71,35 +72,38 @@ const SourceTable: FC<PropsType> = memo(() => {
         ),
       }),
       columnHelper.accessor('username', {
-        header: '使用者',
+        header: t('resource.table.username.title'),
         cell: (cell) => cell?.getValue() || '-',
       }),
       columnHelper.accessor('deviceModel', {
-        header: '设备型号',
+        header: t('resource.table.deviceModel.title'),
       }),
       columnHelper.accessor('otaInfo.artifactName', {
-        header: '固件版本',
+        header: t('resource.table.otaInfo.title'),
         cell: (cell) => cell?.getValue() || '-',
       }),
       columnHelper.accessor('otaInfo', {
-        header: '固件升级',
+        header: t('resource.table.otaUpgrade.title'),
         cell: (cell) => <OTAUpdateColumn data={cell?.row.original} />,
       }),
       columnHelper.accessor('sn', {
-        header: '设备序列号',
+        header: t('resource.table.sn.title'),
       }),
       columnHelper.accessor('deviceId', {
-        header: '设备编码',
+        header: t('resource.table.deviceId.title'),
       }),
       columnHelper.accessor('status', {
-        header: '设备状态',
+        header: t('common.onlineStatus'),
         cell: (cell) => {
           return (
             <Badge
               color={StatusColorMap[cell.getValue()]}
               text={
                 <span className="text-white">
-                  {StatusMap[cell?.getValue()]}
+                  {/* {StatusMap[cell?.getValue()]} */}
+                  {cell?.getValue()
+                    ? t(`device.status.online.${cell?.getValue()}`)
+                    : '-'}
                 </span>
               }
             />
@@ -107,24 +111,22 @@ const SourceTable: FC<PropsType> = memo(() => {
         },
       }),
       columnHelper.accessor('remainingPower', {
-        header: '电量',
+        header: t('common.electricity'),
         cell: (cell) => {
           return <span>{cell?.getValue()}%</span>
         },
       }),
       columnHelper.display({
         id: 'actions',
-        header: '操作',
+        header: t('common.operation'),
         cell: (cell) => {
           const data = cell.row.original
           return (
-            <div className="flex justify-center">
+            <div className="flex gap-3">
               <DeviceData deviceData={cell?.row.original} />
               {data.deviceType === 'UAV' && (
                 <Link to={`/backtracking/device/${data.deviceId}`}>
-                  <Button type="link" size="small">
-                    回溯
-                  </Button>
+                  <TextButton>{t('common.backTracking')}</TextButton>
                 </Link>
               )}
             </div>
@@ -133,7 +135,7 @@ const SourceTable: FC<PropsType> = memo(() => {
       }),
     ]
     return columns
-  }, [searchParams.get('type')])
+  }, [i18n.language, searchParams.get('type')])
 
   const table = useReactTable({
     data: data?.rows ?? defaultData,
@@ -148,7 +150,7 @@ const SourceTable: FC<PropsType> = memo(() => {
     <div className="grow mt-3 overflow-y-hidden flex flex-col">
       <div className="w-72">
         <Input.Search
-          placeholder="设备名称"
+          placeholder={t('resource.table.deviceName.title')}
           defaultValue={kw ?? undefined}
           onSearch={(e) => handleValueChange('kw', e)}
         />

@@ -8,6 +8,8 @@ const fmt = (content: string, prefix?: string) => {
 
 /** 调用设备服务 */
 export const usePostDeviceService = (productKey: string, deviceId: string) => {
+  const { t } = useTranslation()
+
   const msgApi = useAppMsg()
   const postService = useMemoizedFn(
     async (
@@ -17,13 +19,12 @@ export const usePostDeviceService = (productKey: string, deviceId: string) => {
       showMsg?: boolean,
     ) => {
       const id = uniqueId()
-      if (showMsg !== false)
-        msgApi.open({
-          type: 'loading',
-          key: id,
-          content: fmt('正在执行操作...', msgPrefix),
-          duration: 0,
-        })
+      msgApi.open({
+        type: 'loading',
+        key: id,
+        content: fmt(t('common.requsting'), msgPrefix),
+        duration: 0,
+      })
       try {
         const { message } = await postDeviceService(
           productKey,
@@ -43,7 +44,7 @@ export const usePostDeviceService = (productKey: string, deviceId: string) => {
         msgApi.open({
           type: 'error',
           key: id,
-          content: fmt('操作失败', msgPrefix),
+          content: fmt(t('api.error.msg'), msgPrefix),
           duration: 3,
         })
         throw e

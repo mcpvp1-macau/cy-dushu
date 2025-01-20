@@ -2,23 +2,21 @@ import { theme, type ThemeConfig } from 'antd'
 
 export const themeConfig: ThemeConfig = {
   algorithm: theme.darkAlgorithm,
+  cssVar: {
+    key: 'dushu',
+  },
+  hashed: false,
   token: {
-    colorPrimary: '#4C90F0',
     colorFillTertiary: 'rgba(112, 163, 251, 0.3)',
     colorBorder: '#37414D',
     boxShadow: 'none',
-    controlItemBgActive: '#70A3FB',
-    controlItemBgHover: '#70A3FB',
     colorBgSpotlight: 'rgba(0,0,0,1)',
     colorBgContainer: 'rgba(0,0,0,0)',
-    colorPrimaryBg: '#4C90F0',
     borderRadius: 3,
     controlHeight: 30,
     colorBgElevated: '#28323C',
     colorBgContainerDisabled: '#262e36',
-    colorLinkHover: '#3c89e8',
   },
-
   components: {
     Message: {
       margin: 100,

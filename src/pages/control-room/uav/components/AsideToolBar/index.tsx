@@ -1,9 +1,8 @@
-import IconIntelligentTrack from '@/assets/icons/jsx/uav/IconIntelligentTrack'
 import IconLaser from '@/assets/icons/jsx/uav/IconLaser'
 import IconPositionZoom from '@/assets/icons/jsx/uav/IconPositionZoom'
 import IconButton from '@/components/ui/button/IconButton'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import { lazy, memo, type FC } from 'react'
+import { lazy } from 'react'
 import CameraMode from './CameraMode'
 import TakePhoto from './TakePhoto'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
@@ -13,22 +12,28 @@ import IconSetting from '@/assets/icons/jsx/IconSetting'
 import { ConfigProvider, Drawer } from 'antd'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import ZoomFocusMode from './ZoomFucusMode'
-import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
+import IconSmartTrack from '@/assets/icons/jsx/uav/IconSmartTrack'
+import usePostDeviceService from '../../hooks/usePostDeviceService'
 
 const VRSetting = lazy(() => import('@/components/Header/setting/VRSetting'))
 
 type PropsType = unknown
 
 export const borderedBtnClassName =
-  'border border-solid border-ground-300 bg-ground-200 rounded-sm  w-[25px] h-[25px]'
+  'border border-solid border-ground-5 bg-ground-3 rounded-sm  w-[25px] h-[25px]'
 
 const AsideToolBar: FC<PropsType> = memo(() => {
+  const { t } = useTranslation()
+
   const openLarser = useUavControlRoomStore((s) => s.openLarser)
   const updateOpenLarser = useUavControlRoomStore((s) => s.updateOpenLarser)
   const openPositionZoom = useUavControlRoomStore((s) => s.openPointZoom)
+
+  const enableSmartTrack = useUavControlRoomStore((s) => s.enableSmartTrack)
   const updateEnableSmartTrack = useUavControlRoomStore(
     (s) => s.updateEnableSmartTrack,
   )
+
   const updateOpenPositionZoom = useUavControlRoomStore(
     (s) => s.updateOpenPointZoom,
   )
@@ -55,9 +60,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
   const [vrSetting, { setTrue: setVRTrue, setFalse: setVRFalse }] =
     useBoolean(false)
 
-  const productKey = useDeviceDetailStore((s) => s.productKey)
-  const deviceId = useDeviceDetailStore((s) => s.deviceId)
-  const postDeviceService = usePostDeviceService(productKey, deviceId)
+  const postDeviceService = usePostDeviceService()
 
   return (
     <div className="px-3 py-1 flex gap-2.5 text-base">
@@ -74,7 +77,9 @@ const AsideToolBar: FC<PropsType> = memo(() => {
         {hasLaserDistance && (
           <IconButton
             className={borderedBtnClassName}
-            toolTipProps={{ title: '激光测距' }}
+            toolTipProps={{
+              title: t('controlRoom.uav.service.laserRanging.title'),
+            }}
             active={openLarser}
             onClick={() => updateOpenLarser(!openLarser)}
           >
@@ -84,7 +89,9 @@ const AsideToolBar: FC<PropsType> = memo(() => {
         {hasTapZoomAtTarget && (
           <IconButton
             className={borderedBtnClassName}
-            toolTipProps={{ title: '指点变焦' }}
+            toolTipProps={{
+              title: t('controlRoom.uav.service.gimbalToPoint.title'),
+            }}
             active={openPositionZoom === 1}
             onClick={() =>
               updateOpenPositionZoom(openPositionZoom === 1 ? 0 : 1)
@@ -98,17 +105,29 @@ const AsideToolBar: FC<PropsType> = memo(() => {
         {hasSmartTrack && (
           <IconButton
             className={borderedBtnClassName}
-            toolTipProps={{ title: '智能追踪' }}
-            onClick={() => updateEnableSmartTrack()}
+            toolTipProps={{
+              title: t('controlRoom.uav.service.smartTrack.title'),
+            }}
+            active={enableSmartTrack}
+            onClick={() => {
+              if (!enableSmartTrack) {
+                updateEnableSmartTrack(true)
+                updateOpenPositionZoom(0)
+              } else {
+                updateEnableSmartTrack(false)
+              }
+            }}
           >
-            <IconIntelligentTrack />
+            <IconSmartTrack />
           </IconButton>
         )}
         {hasAr && (
           <IconButton
             className={borderedBtnClassName}
             active={arEnable}
-            toolTipProps={{ title: '虚实融合' }}
+            toolTipProps={{
+              title: t('controlRoom.uav.service.ar.title'),
+            }}
             onClick={handleToggleMixAR}
           >
             <IconAR />
@@ -117,14 +136,16 @@ const AsideToolBar: FC<PropsType> = memo(() => {
         {arEnable && (
           <>
             <IconButton
-              toolTipProps={{ title: '虚实融合设置' }}
+              toolTipProps={{
+                title: t('controlRoom.uav.service.ar.setting.title'),
+              }}
               onClick={setVRTrue}
             >
               <IconSetting className="scale-95" />
             </IconButton>
             <Drawer
               open={vrSetting}
-              title="虚实融合设置"
+              title={t('controlRoom.uav.service.ar.setting.title')}
               mask={false}
               onClose={setVRFalse}
             >

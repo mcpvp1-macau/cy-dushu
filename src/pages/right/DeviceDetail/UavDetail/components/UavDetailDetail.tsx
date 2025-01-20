@@ -39,14 +39,17 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
   const status = useRealOnlineStatus(data.deviceId)
 
   const deviceId = data.deviceId
-  const productKey = data.productKey || data.deviceModel?.productKey
+  const productKey = (data.productKey || data.deviceModel?.productKey)!
   const state = useUavControlRoomStore((s) => s.state)
   const displayMode = state.displayMode?.split('￥')?.[0] || '-'
 
   const controlTag = useUavControlRoomStore((s) => s.state.controlTag)
   const uuid = useUavControlRoomStore((s) => s.uuid)
+
   const videoSource = useUavControlRoomStore((s) => s.state.videoSource)
   const updateUUID = useUavControlRoomStore((s) => s.updateUUID)
+
+  const { t } = useTranslation()
 
   return (
     <div>
@@ -63,13 +66,16 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
       />
 
       <section className="m-3 rounded overflow-hidden">
-        <UavDetailVideo videoSource={videoSource ?? ''} sn={isRtcDemo ? data.sn: undefined}/>
+        <UavDetailVideo
+          videoSource={videoSource ?? ''}
+          sn={isRtcDemo ? data.sn : undefined}
+        />
       </section>
 
       <section className="mx-3 mr-[9px] my-3 flex gap-2">
         <Link className="grow" to={`/control-room/uav/${deviceId}`}>
           <Button block className="h-7" icon={<IconControlRoom />}>
-            进入驾驶舱
+            {t('device.enterControlRoom.title')}
           </Button>
         </Link>
         <ControlPower
@@ -82,7 +88,7 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
         defaultActiveKey={['gimbal', 'flight']}
         items={[
           {
-            label: '云台控制',
+            label: t('uav.gimbalControl.title'),
             key: 'gimbal',
             children: (
               <AppViewSuspense>
@@ -91,7 +97,7 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
             ),
           },
           {
-            label: '飞行控制',
+            label: t('uav.flightControl.title'),
             key: 'flight',
             children: (
               <AppViewSuspense>
@@ -100,7 +106,7 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
             ),
           },
           {
-            label: 'AI模型',
+            label: t('device.aiModel.title'),
             children: (
               <AppViewSuspense>
                 <DeviceAlgorithmList

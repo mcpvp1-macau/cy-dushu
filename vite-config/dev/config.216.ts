@@ -31,7 +31,7 @@ export default mergeConfig(
         },
         // 设备websocket直连
         '/v3': {
-          target: 'ws://121.196.192.216:32041',
+          target: 'ws://172.27.95.216:32041',
           ws: true,
           changeOrigin: true,
         },

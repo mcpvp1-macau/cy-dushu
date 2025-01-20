@@ -19,6 +19,8 @@
       "@/*": ["./src/*"]
     },
 
+    "types": ["@modyfi/vite-plugin-yaml/modules", "node"],
+
     /* Linting */
     "strict": true,
     "noUnusedLocals": false,

@@ -102,7 +102,7 @@ const PageBackTrackingDevice: FC<PropsType> = memo(() => {
           className={clsx(
             'absolute top-3 right-3 z-10',
             'bg-[#16202be6] rounded-[3px]',
-            'border border-solid border-ground-300',
+            'border border-solid border-ground-5',
             'flex flex-col',
             'overflow-y-hidden',
           )}

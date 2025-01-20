@@ -12,12 +12,16 @@ type PropsType = {
 }
 
 const AircraftHeading: FC<PropsType> = ({ config, onChange }) => {
+  const { t } = useTranslation()
+
   return (
     <div>
       <div className={styles.titleHeader}>
         <div className={styles.subTitle}>
           <FXQPHJ />
-          <span className={styles.text}>飞行器偏航角</span>
+          <span className={styles.text}>
+            {t('wayline.waylinePoint.actions.ROTATE_YAW.title')}
+          </span>
         </div>
         <div>
           <span className={styles.important}>

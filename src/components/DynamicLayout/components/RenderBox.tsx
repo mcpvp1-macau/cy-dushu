@@ -63,7 +63,7 @@ const RenderBox: FC<PropsType> = memo(
         })}
       >
         {fullTabsPath && (
-          <div className="absolute inset-0 bg-ground-180 rounded overflow-hidden pointer-events-auto">
+          <div className="absolute inset-0 bg-ground-2 rounded overflow-hidden pointer-events-auto">
             <DynamicLayoutFullTabs
               layout={get(layout, fullTabsPath)}
               onLayoutChange={(l) => {

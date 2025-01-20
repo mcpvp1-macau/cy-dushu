@@ -10,11 +10,7 @@ export const gimbalSwitchEmitter = mitt<{
   switch: number
 }>()
 
-const gimbalTypes = [
-  ['wide', '广角'],
-  ['ir', '红外'],
-  ['zoom', '变焦'],
-]
+const gimbalTypes = ['wide', 'ir', 'zoom']
 
 /** 镜头切换 */
 const GimbalSwitch: FC<PropsType> = memo(() => {
@@ -72,9 +68,11 @@ const GimbalSwitch: FC<PropsType> = memo(() => {
     }
   }, [])
 
+  const { t } = useTranslation()
+
   return (
     <>
-      {gimbalTypes.map(([type, label]) => (
+      {gimbalTypes.map((type) => (
         <Button
           key={type}
           className={clsx(
@@ -90,7 +88,7 @@ const GimbalSwitch: FC<PropsType> = memo(() => {
           }
           onClick={() => handleClick(type)}
         >
-          {label}
+          {t(`device.lens.${type}.title`)}
         </Button>
       ))}
     </>

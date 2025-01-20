@@ -8,40 +8,6 @@ import { Form } from 'antd'
 import { DefaultOptionType } from 'antd/es/cascader'
 import { isNil } from 'lodash'
 
-const createAddAirlineFormItems = (
-  modelOptions: DefaultOptionType,
-  cameraOptions: DefaultOptionType,
-) =>
-  [
-    {
-      name: 'airlineName',
-      label: '航线名称',
-      type: 'input',
-      rules: [{ required: true, message: '请输入航线名称' }],
-    },
-    {
-      name: 'type',
-      label: '航线类型',
-      type: 'select',
-      options: [
-        { label: '航点航线', value: 0 },
-        { label: '面状航线', value: 1 },
-      ],
-    },
-    {
-      name: 'uavType',
-      label: '选择飞行器型号',
-      type: 'select',
-      options: modelOptions,
-    },
-    {
-      name: 'gimbalType',
-      label: '选择负载型号',
-      type: 'select',
-      options: cameraOptions,
-    },
-  ] as XFormItem[]
-
 type PropsType = unknown
 
 /** 创建航线模板 */
@@ -50,6 +16,8 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
   const navigate = useNavigate()
 
   const queryClient = useQueryClient()
+
+  const { t, i18n } = useTranslation()
 
   const { data: modelsData } = useQuery(
     {
@@ -91,8 +59,47 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
   )
 
   const addItems = useMemo(() => {
-    return createAddAirlineFormItems(modelOptions, gimbalOptions)
-  }, [modelOptions, gimbalOptions])
+    return [
+      {
+        name: 'airlineName',
+        label: t('wayline.create.form.waylineName.label'),
+        type: 'input',
+        rules: [
+          {
+            required: true,
+            message: t('wayline.create.form.waylineName.required_msg'),
+          },
+        ],
+      },
+      {
+        name: 'type',
+        label: t('wayline.create.form.waylineType.label'),
+        type: 'select',
+        options: [
+          {
+            label: t('wayline.create.form.waylineType.options.point.title'),
+            value: 0,
+          },
+          {
+            label: t('wayline.create.form.waylineType.options.area.title'),
+            value: 1,
+          },
+        ],
+      },
+      {
+        name: 'uavType',
+        label: t('wayline.create.form.uavType.label'),
+        type: 'select',
+        options: modelOptions,
+      },
+      {
+        name: 'gimbalType',
+        label: t('wayline.create.form.gimbalType.label'),
+        type: 'select',
+        options: gimbalOptions,
+      },
+    ] as XFormItem[]
+  }, [i18n.language, modelOptions, gimbalOptions])
 
   useEffect(() => {
     form.setFieldsValue({ gimbalType: undefined })
@@ -121,14 +128,17 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
   return (
     <>
       <IconButton
-        toolTipProps={{ title: '创建航线', mouseEnterDelay: 0.5 }}
+        toolTipProps={{
+          title: t('wayline.create.title'),
+          mouseEnterDelay: 0.5,
+        }}
         onClick={() => setOpen(true)}
       >
         <IconPlus />
       </IconButton>
       <FormModal
         form={form}
-        title="创建航线"
+        title={t('wayline.create.title')}
         open={open}
         items={addItems}
         initialValues={{

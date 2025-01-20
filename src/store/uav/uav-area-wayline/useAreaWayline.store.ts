@@ -14,8 +14,15 @@ type StateType = {
     polygon: number[][] | null
     mainK: number
     interval: number
+    coverage: number
   }
   isDrawHome: boolean
+  cameraInfo: {
+    focal: number
+    sensorWidth: number
+    sensorHeight: number
+  }
+  firstAirpoint: AirlinePoint | null
 }
 
 type ActionsType = {
@@ -24,6 +31,7 @@ type ActionsType = {
   updateTemplateConfig: (config: Partial<AirlineTemplateType>) => void
   updateIsDrawHome: (isDrawHome: StateType['isDrawHome']) => void
   updateAirpointsConfig: (config: AirlinePoint[]) => void
+  updateFirstAirpoint: (airpoint: AirlinePoint) => void
 }
 
 const createInitialState = (): StateType => ({
@@ -44,9 +52,16 @@ const createInitialState = (): StateType => ({
     polygon: null,
     mainK: 0,
     interval: 0,
+    coverage: 10,
   },
   isDrawHome: false,
+  cameraInfo: {
+    focal: 24,
+    sensorWidth: 40,
+    sensorHeight: 30,
+  },
   airpointsConfig: [],
+  firstAirpoint: null,
 })
 
 const useAreaWaylineStore = create<StateType & ActionsType>()((set) => ({
@@ -81,6 +96,9 @@ const useAreaWaylineStore = create<StateType & ActionsType>()((set) => ({
   },
   updateAirpointsConfig: (airpoints) => {
     set({ airpointsConfig: airpoints }, false)
+  },
+  updateFirstAirpoint: (airpoint) => {
+    set({ firstAirpoint: airpoint }, false)
   },
 }))
 

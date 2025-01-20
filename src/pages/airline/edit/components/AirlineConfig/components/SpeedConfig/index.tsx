@@ -9,9 +9,10 @@ type PropsType = unknown
 const AirlineSpeedConfig: FC<PropsType> = () => {
   const speed = useAirlineConfigStore((s) => Number(s.airlineConfig.speed))
   const setAirlineConfig = useAirlineConfigStore((s) => s.updateAirlineConfig)
+  const { t } = useTranslation()
 
   return (
-    <XCard title="全局航线速度">
+    <XCard title={t('wayline.waylineConfig.speed.title')}>
       <div style={{ marginTop: '12px' }}>
         <HNumber
           value={speed}

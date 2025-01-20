@@ -1,4 +1,3 @@
-import { memo, type FC } from 'react'
 import CloseableHeader from '../../components/CloseableHeader'
 import DeviceIconUAV from '@/assets/icons/jsx/device/DeviceIconUAV'
 import { Segmented } from 'antd'
@@ -39,7 +38,7 @@ type PropsType = {
 }
 
 const UavDetail: FC<PropsType> = memo(({ data }) => {
-  const productKey = data.productKey || data.deviceModel?.productKey
+  const productKey = (data.productKey || data.deviceModel?.productKey)!
   const deviceId = data.deviceId
   const store = useCreateUavControlRoomStore(
     productKey!,
@@ -52,7 +51,9 @@ const UavDetail: FC<PropsType> = memo(({ data }) => {
     store?.getState()?.updateProdctKeyAndDeviceId(productKey!, deviceId)
   }, [deviceId])
 
-  const [tab, setTab] = useState('详情')
+  const [tab, setTab] = useState(0)
+
+  const { t } = useTranslation()
 
   return (
     <UavControlRoomStoreContext.Provider value={store}>
@@ -67,13 +68,13 @@ const UavDetail: FC<PropsType> = memo(({ data }) => {
             // options={segmentOptions.current!}
             options={[
               {
-                label: '详情',
-                value: '详情',
+                label: t('common.detail'),
+                value: 0,
                 icon: <IconDetail />,
               },
               {
-                label: '数据',
-                value: '数据',
+                label: t('common.data'),
+                value: 1,
                 icon: <IconData />,
               },
             ]}
@@ -81,7 +82,7 @@ const UavDetail: FC<PropsType> = memo(({ data }) => {
           />
         </div>
         <ScrollArea className="grow">
-          {tab === '详情' ? <UavDetailDetail data={data} /> : <UavDetailData />}
+          {tab === 0 ? <UavDetailDetail data={data} /> : <UavDetailData />}
         </ScrollArea>
       </div>
       <UavUpdateRealMarker />

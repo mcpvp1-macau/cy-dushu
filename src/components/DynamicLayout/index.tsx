@@ -1,4 +1,4 @@
-import { memo, ReactNode, type FC } from 'react'
+import { memo, ReactNode, useLayoutEffect, type FC } from 'react'
 import DynamicLayoutSplitter from './components/DynamicLayoutSplitter'
 import DynamicLayoutTabs, {
   DynamicLayoutTabsType,
@@ -73,22 +73,29 @@ type PropsType = {
   onLayoutChange: (layout: DynamicLayoutType) => void
   componentMap?: Record<string, ReactNode>
   iconMap?: Record<string, ReactNode>
+  titleMap?: Record<string, ReactNode>
 }
 
 /** 动态布局 */
 const DynamicLayoutRoot: FC<PropsType> = memo(
-  ({ layout, iconMap, componentMap, onLayoutChange }) => {
+  ({ layout, iconMap, componentMap, titleMap, onLayoutChange }) => {
     const store = useRef<DynamicLayoutStore | null>(null)
 
     if (!store.current) {
       store.current = createDynamicLayoutStore()
     }
 
-    useEffect(() => {
+    useLayoutEffect(() => {
       if (iconMap) {
         store.current?.getState().updateIconMap(iconMap || {})
       }
     }, [iconMap])
+
+    useLayoutEffect(() => {
+      if (titleMap) {
+        store.current?.getState().updateTitleMap(titleMap || {})
+      }
+    }, [titleMap])
 
     // 计算全屏 Tabs 的路径
     const fullTabsPath = useMemo(() => {
@@ -112,7 +119,7 @@ const DynamicLayoutRoot: FC<PropsType> = memo(
 
     return (
       <DynamicLayoutStoreContext.Provider value={store.current}>
-        <div className="relative size-full p-2">
+        <div className={clsx('relative size-full p-2')}>
           <DynamicLayout layout={layout} onLayoutChange={onLayoutChange} />
           {componentMap && (
             <RenderBox

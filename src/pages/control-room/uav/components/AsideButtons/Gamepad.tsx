@@ -27,6 +27,7 @@ const GamePadUser = () => {
 
 /** 摇杆 */
 const Gamepad: FC<PropsType> = memo(() => {
+  const { t } = useTranslation()
   const enableGamepad = useUavControlRoomStore((s) => s.enableGamepad)
   const updateEnableGamepad = useUavControlRoomStore(
     (s) => s.updateEnableGamepad,
@@ -72,7 +73,7 @@ const Gamepad: FC<PropsType> = memo(() => {
           updateEnableGamepad(true)
         }}
       >
-        摇杆
+        {t('controlRoom.uav.gamepad.title')}
       </Button>
       {enableGamepad && <GamePadUser />}
     </>

@@ -9,9 +9,10 @@ type PropsType = unknown
 const AirlineHeightConfig: FC<PropsType> = () => {
   const height = useAirlineConfigStore((s) => s.airlineConfig.height)
   const setAirlineConfig = useAirlineConfigStore((s) => s.updateAirlineConfig)
+  const { t } = useTranslation()
 
   return (
-    <XCard title="航线相对高度模式">
+    <XCard title={t('wayline.waylineConfig.atl.title')}>
       {/* <Radio.Group
           style={{ width: '100%' }}
           options={['绝对高度', '相对起飞点高度', '相对地面高度']}

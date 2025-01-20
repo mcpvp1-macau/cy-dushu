@@ -11,6 +11,7 @@ type PropsType = {
 
 /** 一键起飞 */
 const Takeoff: FC<PropsType> = memo(({ postServiceFn }) => {
+  const { t } = useTranslation()
   const isLimitedFly = useUavControlRoomStore((s) => s.isLimitedFly)
   const hasControlPower = useUavControlRoomStore((s) => s.hasControlPower)
   const hasService = useDeviceDetailStore((s) => s.serviceHave['takeoff'])
@@ -31,7 +32,7 @@ const Takeoff: FC<PropsType> = memo(({ postServiceFn }) => {
         icon={<IconTakeoff className="text-base" />}
         onClick={setTrue}
       >
-        一键起飞
+        {t('controlRoom.uav.service.takeoff.title')}
       </VerticalIconButton>
       {open && (
         <FormModal

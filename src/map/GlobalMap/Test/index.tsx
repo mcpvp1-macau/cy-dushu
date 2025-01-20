@@ -44,7 +44,7 @@ const MapTest: FC<PropsType> = memo(() => {
   }, [viewer, heading, pitch])
 
   return (
-    <div className="fixed right-0 top-10 w-96 bg-ground-200 bg-opacity-80 p-3">
+    <div className="fixed right-0 top-10 w-96 bg-ground-3 bg-opacity-80 p-3">
       Heading:{' '}
       <Slider min={0} max={360} value={heading} onChange={setHeading} />
       Pitch: <Slider min={-90} max={90} value={pitch} onChange={setPitch} />

@@ -52,6 +52,8 @@ const UAVControlRoomPOIResolver: FC<PropsType> = memo(() => {
 
   const updatePointFly = useUavControlRoomStore((s) => s.updatePointFly)
 
+  const { t } = useTranslation()
+
   if (!activePOI) {
     return null
   }
@@ -107,7 +109,7 @@ const UAVControlRoomPOIResolver: FC<PropsType> = memo(() => {
           menu={{
             items: [
               {
-                label: '指点飞行',
+                label: t('controlRoom.uav.service.tapToFly.title'),
                 key: 'position',
                 icon: <IconPointFly />,
                 disabled: !canPointFly,

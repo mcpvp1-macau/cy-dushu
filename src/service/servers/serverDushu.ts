@@ -1,5 +1,10 @@
 import config from '@/global/config'
-import { shouldShowError, unAuthorized, withToken } from './interceptors'
+import {
+  shouldShowError,
+  unAuthorized,
+  withInternational,
+  withToken,
+} from './interceptors'
 import LiqunAxios from './liqunAxios'
 
 const serverDushu = new LiqunAxios<'common'>({
@@ -8,6 +13,7 @@ const serverDushu = new LiqunAxios<'common'>({
 })
 
 serverDushu.interceptors.request.use(withToken)
+serverDushu.interceptors.request.use(withInternational)
 
 serverDushu.interceptors.response.use(unAuthorized, unAuthorized)
 

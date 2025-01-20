@@ -11,10 +11,9 @@ function isPublic() {
 
 window.config = {
   title: '牍术·无人装备智能引擎',
-  systemName: 'jingqi-v3',
-  loginUrl: isPublic() ? 'https://test.4a.jing-an.com:32712/login' : '',
-  loginHttps: true,
-  globalWs: 'wss',
+  systemName: 'jingqi-v3', // 应用名称
+  loginUrl: 'http://test.4a.jing-an.com:32712/login',
+  globalWs: 'ws', // 全局
   defaultImageries: [
     {
       url: '/data/maptiler-satellite-lowres/{z}/{x}/{y}.jpg',
@@ -29,8 +28,7 @@ window.config = {
   ],
   videoBuffer: 0,
   videoBufferDelay: 0.2,
-  videoProxy: true,
-  daotongServer: 'http://135.100.11.130:18099/'
+  daotongServer: 'http://135.100.11.130:18099/',
 }
 
 if (isPublic()) {
@@ -55,4 +53,3 @@ if (isPublic()) {
     ],
   )
 }
-

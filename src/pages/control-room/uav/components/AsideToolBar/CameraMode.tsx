@@ -13,6 +13,8 @@ type PropsType = unknown
 
 /** 相机模式 */
 const CameraMode: FC<PropsType> = memo(() => {
+  const { t } = useTranslation()
+
   const videoSource = useUavControlRoomStore((s) => s.state.videoSource)
   const hasCameraMode = useDeviceDetailStore((s) => s.propsHave['cameraMode'])
   const cameraMode = useUavControlRoomStore((s) => s.state.cameraMode)
@@ -25,7 +27,7 @@ const CameraMode: FC<PropsType> = memo(() => {
     await setDeviceProp(productKey, deviceId, {
       cameraMode: key,
     })
-    msgApi.success('设置成功')
+    msgApi.success(t('api.success.msg'))
   }
 
   const cameraModeMenuItems = useMemo<GetProps<typeof Menu>['items']>(() => {
@@ -36,10 +38,15 @@ const CameraMode: FC<PropsType> = memo(() => {
       {
         key: '0',
         label: (
-          <Tooltip title="拍照模式" placement="right">
+          <Tooltip
+            title={t('controlRoom.uav.service.cameraMode.photo.title')}
+            placement="right"
+          >
             <div className={clsx('flex flex-col items-center')}>
               <IconCamera />
-              <span className="text-[8px] h-[10px] leading-[10px]">拍照</span>
+              <span className="text-[8px] h-[10px] leading-[10px]">
+                {t('controlRoom.uav.service.takePhoto.title')}
+              </span>
             </div>
           </Tooltip>
         ),
@@ -47,10 +54,15 @@ const CameraMode: FC<PropsType> = memo(() => {
       {
         key: '1',
         label: (
-          <Tooltip title="录像模式" placement="right">
+          <Tooltip
+            title={t('controlRoom.uav.service.cameraMode.record.title')}
+            placement="right"
+          >
             <div className={clsx('flex flex-col items-center')}>
               <IconCameraVideo />
-              <span className="text-[8px] h-[10px] leading-[10px]">录像</span>
+              <span className="text-[8px] h-[10px] leading-[10px]">
+                {t('controlRoom.uav.service.videoRecord.title')}
+              </span>
             </div>
           </Tooltip>
         ),

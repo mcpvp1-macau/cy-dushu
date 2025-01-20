@@ -13,6 +13,8 @@ const MapViewSave: FC<PropsType> = memo(() => {
   const { viewer } = useCesium()
   const msgApi = useAppMsg()
 
+  const { t } = useTranslation()
+
   useEffect(() => {
     const view = localStorage.getItem('map-view')
     if (!view || !viewer) {
@@ -46,7 +48,7 @@ const MapViewSave: FC<PropsType> = memo(() => {
         roll: camera.roll,
       }
       localStorage.setItem('map-view', JSON.stringify(view))
-      msgApi.success('地图视角保存成功')
+      msgApi.success(t('message.success.saveMapView'))
     }
     mapViewSaveEmitter.on('save', fn)
     return () => {

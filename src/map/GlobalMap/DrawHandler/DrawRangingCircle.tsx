@@ -16,6 +16,8 @@ const DrawRangingCircle: FC<PropsType> = memo(() => {
   const [radius, setRadius] = useState<number>(1e-5)
   const radiusRef = useLatest(radius)
 
+  const { t } = useTranslation()
+
   const { viewer } = useCesium()
 
   useEffect(() => {
@@ -127,7 +129,7 @@ const DrawRangingCircle: FC<PropsType> = memo(() => {
 
   return (
     <PositionTooltip position={[circleCenter[0], circleCenter[1]]}>
-      面积：{areaFmt}
+      {t('common.area')}: {areaFmt}
       <sup>2</sup>
     </PositionTooltip>
   )

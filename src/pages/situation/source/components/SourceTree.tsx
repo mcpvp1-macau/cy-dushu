@@ -23,11 +23,11 @@ const SourceTree: FC<PropsType> = memo(({ isLoading, data }) => {
     })),
   )
 
-  const resolveGroup = (data: API_DEVICE.domain.DeviceTreeItem) => {
+  const resolveGroup = (data: API_DEVICE.domain.DeviceTreeItem, depth = 0) => {
     const { children, devices } = data
     return {
       key: data.groupId,
-      title: <GroupHeader data={data} />,
+      title: <GroupHeader data={data} depth={depth} />,
       children: [
         ...devices
           .filter((e) => deviceStatusFilter(e, isOnline, isTask, isNotTask))
@@ -38,7 +38,7 @@ const SourceTree: FC<PropsType> = memo(({ isLoading, data }) => {
               isLeaf: true,
             }
           }),
-        ...(children?.map(resolveGroup) ?? []).filter(
+        ...(children?.map((e) => resolveGroup(e, depth + 1)) ?? []).filter(
           (e: any) => e.children.length > 0,
         ),
       ],

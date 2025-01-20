@@ -9,13 +9,16 @@ const SpeedConfig: FC<PropsType> = memo(() => {
   const speed = useAreaWaylineStore((s) => s.airlineConfig.speed)
   const setAirlineConfig = useAreaWaylineStore((s) => s.updateAirlineConfig)
 
+  const { t } = useTranslation()
+
   return (
-    <XCard title="航线速度">
+    <XCard title={t('wayline.waylineConfig.speed.title')}>
       <HNumber
         className="mt-3"
         value={speed}
         unit="m"
-        max={500}
+        min={5}
+        max={15}
         onChange={(e) => {
           setAirlineConfig({
             speed: Math.max(e, 0),

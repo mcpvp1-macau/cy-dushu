@@ -1,9 +1,10 @@
-import { createContext } from 'react'
+import { createContext, ReactNode } from 'react'
 import { createStore, useStore } from 'zustand'
 
 type StateType = {
   bounds: Record<string, [number, number, number, number]>
-  iconMap?: Record<string, ReactNode>
+  iconMap: Record<string, ReactNode>
+  titleMap: Record<string, ReactNode>
   updateBound: (key: string, bound: [number, number, number, number]) => void
   updateBounds: (
     bounds: Record<string, [number, number, number, number]>,
@@ -11,6 +12,7 @@ type StateType = {
   updateMergeBounds: (
     bounds: Record<string, [number, number, number, number]>,
   ) => void
+  updateTitleMap: (titleMap: Record<string, ReactNode>) => void
   updateIconMap: (iconMap: Record<string, ReactNode>) => void
 }
 
@@ -18,6 +20,7 @@ export const createDynamicLayoutStore = () => {
   return createStore<StateType>((set, get) => ({
     bounds: {},
     iconMap: {},
+    titleMap: {},
     updateBound: (key, bound) => {
       set({ bounds: { ...get().bounds, [key]: bound } }, false)
     },
@@ -26,6 +29,9 @@ export const createDynamicLayoutStore = () => {
     },
     updateMergeBounds: (bounds) => {
       set({ bounds: { ...get().bounds, ...bounds } }, false)
+    },
+    updateTitleMap: (titleMap) => {
+      set({ titleMap }, false)
     },
     updateIconMap: (iconMap) => {
       set({ iconMap }, false)

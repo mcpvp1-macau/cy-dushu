@@ -24,13 +24,15 @@ const XModal: FC<PropsType> = ({
   onConfirm,
   ...restProps
 }) => {
+  const { t } = useTranslation()
+
   return (
     <ConfigProvider
       theme={{
-        token: {
-          borderRadius: 3,
-          controlHeight: 30,
+        cssVar: {
+          key: 'dushu',
         },
+        hashed: false,
         components: {
           Modal: {
             contentBg: '#1c2630',
@@ -65,7 +67,7 @@ const XModal: FC<PropsType> = ({
                   onClose?.()
                 }}
               >
-                取消
+                {t('modal.cancel')}
               </Button>
               <Button
                 loading={confirmLoading}
@@ -76,7 +78,7 @@ const XModal: FC<PropsType> = ({
                   onConfirm?.()
                 }}
               >
-                确认
+                {t('modal.confirm')}
               </Button>
             </div>
           ) : null}

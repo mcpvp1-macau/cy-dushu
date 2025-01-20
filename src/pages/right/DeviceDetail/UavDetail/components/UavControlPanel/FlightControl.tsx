@@ -1,22 +1,16 @@
-import { Button } from 'antd'
+import { Button, Tooltip } from 'antd'
 import controlBG from '@/assets/imgs/control/buttonBg.png'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import CircleButton from './CircleButton'
 import { useRafInterval } from 'ahooks'
-
-const controls1 = [
-  ['前进', 'left-1/2 -translate-x-1/2', { y: 15 }],
-  ['后退', 'left-1/2 bottom-0 -translate-x-1/2', { y: -15 }],
-  ['左移', 'top-1/2 -translate-y-1/2', { x: -15 }],
-  ['右移', 'top-1/2 right-0 -translate-y-1/2', { x: 15 }],
-] as const
-
-const controls2 = [
-  ['上飞', 'left-1/2 -translate-x-1/2', { z: 5 }],
-  ['下飞', 'left-1/2 bottom-0 -translate-x-1/2', { z: -5 }],
-  ['左转', 'top-1/2 -translate-y-1/2', { yaw: -15 }],
-  ['右转', 'top-1/2 right-0 -translate-y-1/2', { yaw: 15 }],
-] as const
+import IconUp from '@/assets/icons/jsx/IconUp'
+import IconDown from '@/assets/icons/jsx/IconDown'
+import IconLeft from '@/assets/icons/jsx/IconLeft'
+import IconRight from '@/assets/icons/jsx/IconRight'
+import IconTurnLeft from '@/assets/icons/jsx/uav/IconTurnLeft'
+import IconTurnRight from '@/assets/icons/jsx/uav/IconTurnRight'
+import IconDownStraight from '@/assets/icons/jsx/IconDownStraight'
+import IconUpStraight from '@/assets/icons/jsx/IconUpStraight'
 
 type PropsType = unknown
 
@@ -39,17 +33,89 @@ const UavDetailFlightControl: FC<PropsType> = memo(() => {
 
   const canControl = uuid && controlTag === uuid && wsReadyState === 1
 
+  const { t } = useTranslation()
+
+  const controls1 = useMemo(
+    () =>
+      [
+        [
+          <IconUp />,
+          'left-1/2 -translate-x-1/2',
+          { y: 15 },
+          t('controlRoom.control.uavForward.title'),
+          'top',
+        ],
+        [
+          <IconDown />,
+          'left-1/2 bottom-0 -translate-x-1/2',
+          { y: -15 },
+          t('controlRoom.control.uavBack.title'),
+          'bottom',
+        ],
+        [
+          <IconLeft />,
+          'top-1/2 -translate-y-1/2',
+          { x: -15 },
+          t('controlRoom.control.uavLeft.title'),
+          'left',
+        ],
+        [
+          <IconRight />,
+          'top-1/2 right-0 -translate-y-1/2',
+          { x: 15 },
+          t('controlRoom.control.uavRight.title'),
+          'right',
+        ],
+      ] as const,
+    [t],
+  )
+
+  const controls2 = useMemo(
+    () =>
+      [
+        [
+          <IconUpStraight />,
+          'left-1/2 -translate-x-1/2',
+          { z: 5 },
+          t('controlRoom.control.uavFlyUp.title'),
+          'top',
+        ],
+        [
+          <IconDownStraight />,
+          'left-1/2 bottom-0 -translate-x-1/2',
+          { z: -5 },
+          t('controlRoom.control.uavFlyDown.title'),
+          'bottom',
+        ],
+        [
+          <IconTurnLeft />,
+          'top-1/2 -translate-y-1/2',
+          { yaw: -15 },
+          t('controlRoom.control.uavTurnLeft.title'),
+          'left',
+        ],
+        [
+          <IconTurnRight />,
+          'top-1/2 right-0 -translate-y-1/2',
+          { yaw: 15 },
+          t('controlRoom.control.uavTurnRight.title'),
+          'right',
+        ],
+      ] as const,
+    [t],
+  )
+
   return (
     <div className="p-3 flex items-center justify-between gap-3">
       <div className="flex flex-col gap-3 w-[90px]">
         <Button type="primary" block size="small" disabled={!canControl}>
-          起飞
+          {t('uav.takeOff.title')}
         </Button>
         <Button type="primary" block size="small" disabled={!canControl}>
-          降落
+          {t('uav.land.title')}
         </Button>
         <Button type="primary" block size="small" disabled={!canControl}>
-          返程
+          {t('uav.return.title')}
         </Button>
       </div>
 
@@ -57,18 +123,21 @@ const UavDetailFlightControl: FC<PropsType> = memo(() => {
       <div className="relative h-[100px] w-[100px]">
         <img className="size-full" src={controlBG} alt="" />
         <div className="absolute inset-1">
-          {controls1.map(([title, className, payload]) => (
-            <CircleButton
-              key={title}
-              className={className}
-              disabled={!canControl}
-              onMouseDown={() => setDownKey(payload)}
-              onMouseUp={() => setDownKey(null)}
-              onMouseLeave={() => setDownKey(null)}
-            >
-              {title}
-            </CircleButton>
-          ))}
+          {controls1.map(
+            ([title, className, payload, tooltip, placement], i) => (
+              <Tooltip key={i} title={tooltip} placement={placement}>
+                <CircleButton
+                  className={className}
+                  disabled={!canControl}
+                  onMouseDown={() => setDownKey(payload)}
+                  onMouseUp={() => setDownKey(null)}
+                  onMouseLeave={() => setDownKey(null)}
+                >
+                  {title}
+                </CircleButton>
+              </Tooltip>
+            ),
+          )}
         </div>
       </div>
 
@@ -76,18 +145,21 @@ const UavDetailFlightControl: FC<PropsType> = memo(() => {
       <div className="relative h-[100px] w-[100px]">
         <img className="size-full" src={controlBG} alt="" />
         <div className="absolute inset-1">
-          {controls2.map(([title, className, payload]) => (
-            <CircleButton
-              key={title}
-              className={className}
-              disabled={!canControl}
-              onMouseDown={() => setDownKey(payload)}
-              onMouseUp={() => setDownKey(null)}
-              onMouseLeave={() => setDownKey(null)}
-            >
-              {title}
-            </CircleButton>
-          ))}
+          {controls2.map(
+            ([title, className, payload, tooltip, placement], i) => (
+              <Tooltip key={i} title={tooltip} placement={placement}>
+                <CircleButton
+                  className={className}
+                  disabled={!canControl}
+                  onMouseDown={() => setDownKey(payload)}
+                  onMouseUp={() => setDownKey(null)}
+                  onMouseLeave={() => setDownKey(null)}
+                >
+                  {title}
+                </CircleButton>
+              </Tooltip>
+            ),
+          )}
         </div>
       </div>
     </div>

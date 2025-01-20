@@ -1,7 +1,6 @@
 import IconClose from '@/assets/icons/jsx/IconClose'
 import IconButton from '@/components/ui/button/IconButton'
 import useRightMode from '@/store/layout/useRightMode.store'
-import { memo, ReactNode, type FC } from 'react'
 
 type PropsType = {
   children?: ReactNode
