@@ -116,33 +116,31 @@ const UavAirportUavDetail: FC<PropsType> = memo(({ deviceId }) => {
 
   return (
     <DeviceDetailStoreContext.Provider value={deviceDetailStore}>
-      <div>
-        <div className="px-3">{header}</div>
-        {isLoading || !data ? (
-          <AppSpin />
-        ) : (
-          <div>
-            <Segmented
-              className="mx-3 mt-2"
-              block
-              value={tab}
-              options={segmentOptions}
-              onChange={setTab}
-            />
-            <div className="flex-1 overflow-y-auto">
-              <AppViewSuspense>
-                {tab === 0 ? (
-                  <UavAirportUavDetailDetail state={state} />
-                ) : (
-                  <div className="mt-3">
-                    <UavDetailData />
-                  </div>
-                )}
-              </AppViewSuspense>
-            </div>
+      <div className="px-3">{header}</div>
+      {isLoading || !data ? (
+        <AppSpin />
+      ) : (
+        <div>
+          <Segmented
+            className="mx-3 mt-2"
+            block
+            value={tab}
+            options={segmentOptions}
+            onChange={setTab}
+          />
+          <div className="flex-1 overflow-y-auto">
+            <AppViewSuspense>
+              {tab === 0 ? (
+                <UavAirportUavDetailDetail state={state} />
+              ) : (
+                <div className="mt-3">
+                  <UavDetailData />
+                </div>
+              )}
+            </AppViewSuspense>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </DeviceDetailStoreContext.Provider>
   )
 })

@@ -100,7 +100,7 @@ const PageActionRecord: FC<PropsType> = memo(() => {
                 onClick={() =>
                   downloadAndRename(
                     `${serverJingqi.baseURL}/action/signal/${item.actionId}/record.csv`,
-                    `${item.name}_信号记录.csv`,
+                    `${item.name}_Signal_Records.csv`,
                     {
                       Authorization: `Bearer ${useUserStore.getState().token}`,
                     },
