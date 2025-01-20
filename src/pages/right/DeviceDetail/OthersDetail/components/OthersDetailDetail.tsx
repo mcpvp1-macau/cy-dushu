@@ -11,24 +11,13 @@ import AppViewSuspense from '@/components/AppViewSuspense'
 import InfoCard from './InfoCard'
 import Control from './Control'
 import DeviceAlgorithmList from '@/components/device/algorithm/DeviceAlgorithmList'
-
-/** // TODO 这个每个设备类型的配置都不一样 */
-const deviceConfigs = {
-  /** 是否有驾驶舱 */
-  isHaveControlRoom: true,
-  /** 是否有视频 */
-  isHaveVideo: true,
-  /** 是否有转台 */
-  isHaveControl: true,
-  /** 是否有控制权 */
-  isHaveControlPower: false,
-  /** 是否有AI */
-  isHaveAI: true,
-}
+import deviceConfigsMap from './deviceConfigsMap'
 
 const OthersDetailDetail: React.FC = () => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
   const deviceId = deviceDetail.deviceId
+  const deviceType = deviceDetail.deviceType
+  const deviceConfigs = deviceConfigsMap[deviceType] ?? deviceConfigsMap.default
   const productKey =
     deviceDetail.productKey || deviceDetail.deviceModel?.productKey
   const videoList = deviceDetail?.properties?.videoList
@@ -81,10 +70,12 @@ const OthersDetailDetail: React.FC = () => {
               进入驾驶舱
             </Button>
           </Link>
-          {/* <ControlPower
-                    open={!!(uuid && uuid === controlTag)}
-                    updateUUID={updateUUID}
-                /> */}
+          {deviceConfigs.isHaveControlPower ? (
+            <ControlPower
+              open={!!(uuid && uuid === controlTag)}
+              updateUUID={updateUUID}
+            />
+          ) : null}
         </section>
       ) : null}
 
@@ -101,31 +92,35 @@ const OthersDetailDetail: React.FC = () => {
               </AppViewSuspense>
             ),
           },
-          {
-            label: '转台控制',
-            key: 'flight',
-            children: (
-              <AppViewSuspense>
-                {/** // TODO 后续要确认一下怎么判断是否有转台控制 */}
-                <Control data={deviceDetail} />
-              </AppViewSuspense>
-            ),
-          },
-          {
-            label: 'AI 模型',
-            key: 'ai',
-            children: (
-              <AppViewSuspense>
-                {/** // TODO 后续要确认一下怎么判断是否有AI 模型 */}
-                <DeviceAlgorithmList
-                  deviceType={deviceDetail.deviceType}
-                  deviceId={deviceId}
-                  productKey={productKey!}
-                />
-              </AppViewSuspense>
-            ),
-          },
-        ]}
+          deviceConfigs.isHaveControl
+            ? {
+                label: '转台控制',
+                key: 'flight',
+                children: (
+                  <AppViewSuspense>
+                    {/** // TODO 后续要确认一下怎么判断是否有转台控制 */}
+                    <Control data={deviceDetail} />
+                  </AppViewSuspense>
+                ),
+              }
+            : null,
+          deviceConfigs.isHaveAI
+            ? {
+                label: 'AI 模型',
+                key: 'ai',
+                children: (
+                  <AppViewSuspense>
+                    {/** // TODO 后续要确认一下怎么判断是否有AI 模型 */}
+                    <DeviceAlgorithmList
+                      deviceType={deviceDetail.deviceType}
+                      deviceId={deviceId}
+                      productKey={productKey!}
+                    />
+                  </AppViewSuspense>
+                ),
+              }
+            : null,
+        ].filter((item) => !!item)}
       />
     </div>
   )
