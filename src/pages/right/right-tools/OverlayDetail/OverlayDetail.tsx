@@ -25,6 +25,8 @@ type PropsType = unknown
 const RightOverlayDetail: FC<PropsType> = memo(() => {
   const detailId = useRightMode((s) => s.detailId)
 
+  const { t } = useTranslation()
+
   const overlayList = useMapLayerAndOverlayStore((s) => s.overlayList)
 
   const overlay = useMemo(() => {
@@ -165,7 +167,7 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                   {isEdit ? (
                     <>
                       <IconButton
-                        toolTipProps={{ title: '保存' }}
+                        toolTipProps={{ title: t('common.save') }}
                         onClick={handleSave}
                       >
                         <IconTick className="scale-90" />
@@ -173,7 +175,7 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                     </>
                   ) : (
                     <IconButton
-                      toolTipProps={{ title: '编辑' }}
+                      toolTipProps={{ title: t('common.edit') }}
                       onClick={() => {
                         toggle()
                         setTimeout(() => {
@@ -188,7 +190,7 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                   <IconShare className="scale-90" />
                 </IconButton> */}
                   <IconButton
-                    toolTipProps={{ title: '删除点位' }}
+                    toolTipProps={{ title: t('common.delete') }}
                     onClick={handleDelete}
                   >
                     <IconDelete className="scale-90" />
@@ -204,13 +206,15 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
         ) : overlay ? (
           <div className="mx-3 mb-3 flex flex-col gap-2 text-sm">
             <p className="flex gap-2">
-              创建时间:<span className="text-white">{overlay.gmtCreate}</span>
+              {t('common.createTime')}:
+              <span className="text-white">{overlay.gmtCreate}</span>
             </p>
             <p className="flex gap-2">
-              创建人员:<span className="text-white">{overlay.name}</span>
+              {t('overlay.detail.createUser.title')}:
+              <span className="text-white">{overlay.name}</span>
             </p>
             <p className="flex gap-2">
-              创建位置:
+              {t('overlay.detail.position.title')}:
               <span className="text-white">
                 {shouldJson(overlay.overlayPositions)?.[0]
                   ?.slice(0, 2)
@@ -219,7 +223,7 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
             </p>
 
             <div className="flex gap-2 items-center">
-              点位颜色:
+              {t('overlay.detail.color.title')}:
               <Form.Item noStyle name="color">
                 {isEdit ? (
                   <ColorPicker size="small" disabledAlpha />
@@ -237,7 +241,9 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
             </div>
 
             <p className="flex gap-2">
-              <span className="whitespace-nowrap">备注信息:</span>
+              <span className="whitespace-nowrap">
+                {t('overlay.detail.mark.title')}:
+              </span>
               <Form.Item noStyle name="remarks">
                 {isEdit ? (
                   <Input size="small" className="h-5" />

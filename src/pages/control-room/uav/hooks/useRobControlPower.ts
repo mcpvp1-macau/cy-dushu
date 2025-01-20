@@ -6,6 +6,8 @@ import useUserStore from '@/store/useUser.store'
 const useRobControlPower = (updateUUID) => {
   const username = useUserStore((s) => s.user?.username)
 
+  const { t } = useTranslation()
+
   const productKey = useDeviceDetailStore((s) => s.productKey)
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
   const hasControlTag = useDeviceDetailStore((s) => s.propsHave['controlTag'])
@@ -20,7 +22,7 @@ const useRobControlPower = (updateUUID) => {
           controlTag: uuid,
           operator: username,
         },
-        { msgPrefix: '控制权获取失败' },
+        { msgPrefix: t('controlRoom.service.robControlPowerError.msg') },
       ),
     onSuccess: ({ data }, uuid) => {
       if (uuid === 'ANY') {

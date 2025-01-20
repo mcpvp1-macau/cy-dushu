@@ -1,19 +1,16 @@
 import { useRafInterval } from 'ahooks'
-import { useRef } from 'react'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
-import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import usePostDeviceService from './usePostDeviceService'
 
 /** 校验自动降落 */
 const useCheckAutoland = () => {
-  const productKey = useDeviceDetailStore((s) => s.productKey)
-  const deviceId = useDeviceDetailStore((s) => s.deviceId)
+  const postService = usePostDeviceService()
   const zSpeed = useUavControlRoomStore((s) => s.uavControlInfo.z) ?? 0
   const height = useUavControlRoomStore((s) => s.state.height) ?? 200
   const clock = useRef(0)
   const lastHeight = useRef(-0x3f)
 
-  const postService = usePostDeviceService(productKey, deviceId)
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (zSpeed >= -1) {
@@ -30,7 +27,7 @@ const useCheckAutoland = () => {
         clock.current = 0
       }
       if (clock.current >= 3) {
-        postService('autoland', {}, '自动降落')
+        postService('autoland', {}, t('controlRoom.uav.service.autoland.title'))
         clock.current = -0x3f
       }
       lastHeight.current = height
