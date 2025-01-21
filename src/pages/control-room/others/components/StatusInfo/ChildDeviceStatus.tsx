@@ -1,5 +1,6 @@
 import { Tooltip, Typography } from 'antd'
 import { useOthersControlRoomStore } from '@/store/context-store/useOthersControlRoom.store'
+import React from 'react'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -52,4 +53,4 @@ const ChildDeviceStatus: React.FC<PropsType> = ({ data }) => {
   )
 }
 
-export default ChildDeviceStatus
+export default React.memo(ChildDeviceStatus)

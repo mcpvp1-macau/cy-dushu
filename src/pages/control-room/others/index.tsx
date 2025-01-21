@@ -109,13 +109,15 @@ const PageControlRoomWangLou: React.FC = () => {
 
   const videoMap = {}
 
+  const { t } = useTranslation()
+
   const titleMap = useMemo(
     () => ({
-      map: '地图',
-      video: '视频',
-      ['ai-list']: 'AI 数据',
-      ['device-control']: '设备控制',
-      ['status']: '设备状态',
+      map: t('common.map'),
+      video: t('common.video'),
+      ['ai-list']: t('ja-ai-shu-ju'),
+      ['device-control']: t('ja-she-bei-kong-zhi'),
+      ['status']: t('common.deviceStatus'),
     }),
     [],
   )
@@ -224,4 +226,4 @@ const PageControlRoomWangLou: React.FC = () => {
 
 PageControlRoomWangLou.displayName = 'PageControlRoomWangLou'
 
-export default PageControlRoomWangLou
+export default React.memo(PageControlRoomWangLou)

@@ -32,6 +32,7 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
     },
     queryClient,
   )
+
   const labelMap = useMemo(() => {
     const map = {}
     data?.forEach((item) => {

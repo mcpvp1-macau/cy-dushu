@@ -1,30 +1,30 @@
-import { Flex, Tooltip } from 'antd';
-import clsx from 'clsx';
-import dayjs from 'dayjs';
-import styles from './index.module.less';
-import React from 'react';
-import { useMemoizedFn } from 'ahooks';
-import { infoFieldFormatter } from '@/utils/other/utils';
-import useBoardObjStore from '@/store/map/useBoardObj.store';
-import IconClose from '@/assets/icons/jsx/IconClose';
+import { Flex, Tooltip } from 'antd'
+import clsx from 'clsx'
+import dayjs from 'dayjs'
+import styles from './index.module.less'
+import React from 'react'
+import { useMemoizedFn } from 'ahooks'
+import { infoFieldFormatter } from '@/utils/other/utils'
+import useBoardObjStore from '@/store/map/useBoardObj.store'
+import IconClose from '@/assets/icons/jsx/IconClose'
 
 interface Props {
   data: {
-    targetId: string;
-    acquireTimestampFormat: string;
-    objectLabel: string;
-    speed: number;
-    distance: number;
-    altitude: number;
-    longitude: number;
-    latitude: number;
-    source: string;
-    sourceType: string;
-    deviceId: string;
-    parentId: string;
-    imageUrl: string | null;
-    deviceInfo: { deviceName: string; deviceId: string }[];
-  };
+    targetId: string
+    acquireTimestampFormat: string
+    objectLabel: string
+    speed: number
+    distance: number
+    altitude: number
+    longitude: number
+    latitude: number
+    source: string
+    sourceType: string
+    deviceId: string
+    parentId: string
+    imageUrl: string | null
+    deviceInfo: { deviceName: string; deviceId: string }[]
+  }
 }
 
 const BoardDetail: React.FC<Props> = ({ data }) => {
@@ -43,15 +43,16 @@ const BoardDetail: React.FC<Props> = ({ data }) => {
     parentId,
     imageUrl,
     deviceInfo,
-  } = data;
+  } = data
 
-
-  const boardOpenMap = useBoardObjStore(s => s.boardOpenMap)
-  const setBoardOpenMap = useBoardObjStore(s => s.setBoardOpenMap)
+  const { t } = useTranslation()
+  const boardOpenMap = useBoardObjStore((s) => s.boardOpenMap)
+  const setBoardOpenMap = useBoardObjStore((s) => s.setBoardOpenMap)
 
   const renderNumber = (value: number, unit: string) => {
-    return value ? `${Number(value)?.toFixed(2)}${unit}` : '-';
-  };
+    return value ? `${Number(value)?.toFixed(2)}${unit}` : '-'
+  }
+
 
   return (
     <div className={styles.panel}>
@@ -68,7 +69,7 @@ const BoardDetail: React.FC<Props> = ({ data }) => {
                 {targetId}（
                 {infoFieldFormatter({
                   value: objectLabel,
-                  emptyString: '未知',
+                  emptyString: t('common.unknown'),
                 })}
                 ）
               </div>
@@ -97,10 +98,10 @@ const BoardDetail: React.FC<Props> = ({ data }) => {
                   setBoardOpenMap({
                     ...boardOpenMap,
                     [targetId]: false,
-                  });
+                  })
                 }}
               >
-                <Tooltip title="关闭">
+                <Tooltip title={t('common.close')}>
                   {/* <CloseIcon style={{ fontSize: 12 }} /> */}
                   <IconClose />
                 </Tooltip>
@@ -109,35 +110,34 @@ const BoardDetail: React.FC<Props> = ({ data }) => {
           </Flex>
           <Flex justify="space-between" align="center">
             <div style={{ width: 340 }} className={styles.targetInfo}>
-              <Flex gap={12}>
+              <Flex className="flex-warp gap-x-12" wrap>
                 <Flex>
-                  <div className={styles.label}>速度</div>
-                  <div className={styles.text} style={{ width: 95 }}>
+                  <div className={styles.label}>{t('common.speed')}</div>
+                  <div className={styles.text}>
                     {renderNumber(speed, 'm/s')}
                   </div>
                 </Flex>
                 <Flex>
-                  <div className={styles.label}>距离</div>
-                  <div className={styles.text} style={{ width: 80 }}>
+                  <div className={styles.label}>{t('common.distance')}</div>
+                  <div className={styles.text}>
                     {renderNumber(distance, 'm')}
                   </div>
                 </Flex>
                 <Flex>
-                  <div className={styles.label}>海拔</div>
+                  <div className={styles.label}>{t('common.altitude')}</div>
                   <div className={styles.text}>
                     {renderNumber(altitude, 'm')}
                   </div>
                 </Flex>
-              </Flex>
-              <Flex gap={12}>
+
                 <Flex>
-                  <div className={styles.label}>时间</div>
-                  <div className={styles.text} style={{ width: 95 }}>
+                  <div className={styles.label}>{t('action.item.time')}</div>
+                  <div className={styles.text}>
                     {dayjs(acquireTimestampFormat).format('MM-DD HH:mm:ss')}
                   </div>
                 </Flex>
                 <Flex>
-                  <div className={styles.label}>位置</div>
+                  <div className={styles.label}>{t('common.position')}</div>
                   <div className={styles.text}>
                     {Number(longitude)?.toFixed(6)},{' '}
                     {Number(latitude)?.toFixed(6)}
@@ -166,7 +166,7 @@ const BoardDetail: React.FC<Props> = ({ data }) => {
         </div>
       </Flex>
     </div>
-  );
-};
+  )
+}
 
-export default React.memo(BoardDetail);
+export default React.memo(BoardDetail)

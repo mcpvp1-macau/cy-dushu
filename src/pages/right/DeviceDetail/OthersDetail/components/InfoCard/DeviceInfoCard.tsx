@@ -1,4 +1,5 @@
-import { StatusColorMap, StatusMap } from '@/enum/device'
+import { StatusColorMap } from '@/enum/device'
+import useConfig from '@/pages/control-room/wanglou/components/StatusInfo/useConfig'
 import { useOthersControlRoomStore } from '@/store/context-store/useOthersControlRoom.store'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
 import { Tooltip } from 'antd'
@@ -39,7 +40,8 @@ const DeviceInfoCard: FC<PropsType> = memo(({ data, deviceId }) => {
   const status = useRealOnlineStatus(data.deviceId)
   const state = useOthersControlRoomStore((s) => s.state[deviceId]) || {}
   const { properties, deviceModel } = data
-
+  const { t } = useTranslation()
+  const { StatusMap } = useConfig()
   const renderItem = (item, parentIdentifier = '') => {
     let value: any = null
     const type =
@@ -81,9 +83,9 @@ const DeviceInfoCard: FC<PropsType> = memo(({ data, deviceId }) => {
   return (
     <div>
       <ul className="py-[10px] text-sm flex flex-wrap">
-        <I l="设备型号" v={modelName} />
+        <I l={t('resource.table.deviceModel.title')} v={modelName} />
         <I
-          l="在线状态"
+          l={t('common.onlineStatus')}
           v={
             <p className="flex gap-2">
               <span style={{ color: StatusColorMap[status!] }}>

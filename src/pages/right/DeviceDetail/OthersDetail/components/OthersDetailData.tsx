@@ -11,17 +11,7 @@ type PropsType = {
 
 const OthersDetailData: FC<PropsType> = memo(({ deviceId, deviceType }) => {
   const [mediaType, setMediaType] = useState<MediaType>('PICTURE')
-
-  const items = useRef([
-    {
-      label: '图片',
-      value: 'PICTURE',
-    },
-    {
-      label: '视频',
-      value: 'HISTORY_VIDEO',
-    },
-  ]).current
+  const { t } = useTranslation()
 
   return (
     <AppCollapse
@@ -31,16 +21,23 @@ const OthersDetailData: FC<PropsType> = memo(({ deviceId, deviceType }) => {
           label: (
             <LinkSwitch
               value={mediaType}
-              items={items}
+              items={[
+                {
+                  label: t('common.picture'),
+                  value: 'PICTURE',
+                },
+                {
+                  label: t('common.video'),
+                  value: 'HISTORY_VIDEO',
+                },
+              ]}
               onChange={(e: string) => setMediaType(e as MediaType)}
             />
           ),
-          //   children: <>123</>,
           children: <DeviceDetailMediaData type={mediaType} />,
         },
         {
-          label: '检测数据',
-          //   children: <>123</>,
+          label: t('common.aiData'),
           children: <AiData deviceId={deviceId} deviceType={deviceType} />,
         },
       ]}

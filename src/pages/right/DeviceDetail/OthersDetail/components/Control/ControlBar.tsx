@@ -1,7 +1,6 @@
 import React from 'react'
 import controlBG from '@/assets/imgs/control/buttonBg.png'
 import CircleButton from '../../../UavDetail/components/UavControlPanel/CircleButton'
-import { useOthersControlRoomStore } from '@/store/context-store/useOthersControlRoom.store'
 
 type PropsType = {
   speed: number
@@ -9,11 +8,12 @@ type PropsType = {
 }
 
 const ControlBar: React.FC<PropsType> = ({ speed, setDownKey }) => {
+  const { t } = useTranslation()
   const controls1 = [
-    ['上', 'left-1/2 -translate-x-1/2', { yaw: 0, pitch: speed }],
-    ['下', 'left-1/2 bottom-0 -translate-x-1/2', { yaw: 0, pitch: -speed }],
-    ['左', 'top-1/2 -translate-y-1/2', { yaw: -speed, pitch: 0 }],
-    ['右', 'top-1/2 right-0 -translate-y-1/2', { yaw: speed, pitch: 0 }],
+    [t('common.up'), 'left-1/2 -translate-x-1/2', { yaw: 0, pitch: speed }],
+    [t('common.down'), 'left-1/2 bottom-0 -translate-x-1/2', { yaw: 0, pitch: -speed }],
+    [t('common.left'), 'top-1/2 -translate-y-1/2', { yaw: -speed, pitch: 0 }],
+    [t('common.right'), 'top-1/2 right-0 -translate-y-1/2', { yaw: speed, pitch: 0 }],
   ] as const
   const disable = false // useOthersControlRoomStore((s) => !s.hasControlPower)
   return (

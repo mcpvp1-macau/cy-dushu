@@ -28,7 +28,6 @@ const VideoAreaPickerDrawer: React.FC<Props> = (props) => {
   const drawingRef = useRef(false)
 
   const onClick = (e) => {
-    console.info('isDraw----', isDraw)
     e.preventDefault()
     e.stopPropagation()
     if (isDraw) {

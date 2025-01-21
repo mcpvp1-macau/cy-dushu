@@ -1,5 +1,6 @@
 import { SelectProps } from 'antd'
 import { WANGLOUTargetName } from './config' // Adjust the import path as necessary
+import { DeviceStatusEnum } from '@/enum/device'
 
 const useConfig = () => {
   const { t } = useTranslation()
@@ -263,7 +264,7 @@ const useConfig = () => {
         formatter: (value) => `${value}°`,
       },
       {
-        label: `${t('device.wanglou.child.turntable')}${t('commoin.pose')}`,
+        label: `${t('device.wanglou.child.turntable')}${t('common.pose')}`,
         propertyName: 'turntablePose',
         getValue: (properties) => {
           return `${(properties?.['yaw'] || 0) / 100}°; ${
@@ -381,7 +382,13 @@ const useConfig = () => {
     ],
   }
 
-  return { wanglouDeviceOptions, wanglouDeviceInfo }
+  const StatusMap = {
+    [DeviceStatusEnum.ONLINE]: t('device.status.online.ONLINE'),
+    [DeviceStatusEnum.OFFLINE]: t('device.status.online.OFFLINE'),
+  }
+  
+
+  return { wanglouDeviceOptions, wanglouDeviceInfo, StatusMap }
 }
 
 export default useConfig

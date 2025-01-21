@@ -11,6 +11,7 @@ interface Props {
 const ZoomControl: React.FC<Props> = ({ item }) => {
   const childData = item
   const disabled = false // useWangLouControlRoomStore((s) => !s.hasControlPower)
+  const { t } = useTranslation()
   // const uuid = useWangLouControlRoomStore((s) => s.uuid)
   const post = usePostDeviceService(
     childData?.deviceModel?.productKey || '',
@@ -42,13 +43,13 @@ const ZoomControl: React.FC<Props> = ({ item }) => {
         disabled={disabled}
         // disabled={false}
         onChange={onChangeCompleteZoom}
-        title={'变倍'}
+        title={t('common.zoom.title')}
       />
       <SliderValue
         disabled={disabled}
         // disabled={false}
         onChange={onChangeCompleteFocal}
-        title={'调焦'}
+        title={t('common.zoom.focal')}
       />
 
       <Button
@@ -59,7 +60,7 @@ const ZoomControl: React.FC<Props> = ({ item }) => {
         }}
       >
         <Icon id="icon-suofnagzishiying" />
-        自动聚焦
+        {t('common.zoom.auto')}
       </Button>
     </Flex>
   )

@@ -1,10 +1,6 @@
-import { Button, Flex, Form, InputNumber, Popconfirm, Table } from 'antd'
+import { Flex, Form, InputNumber } from 'antd'
 import React, { useEffect, useState } from 'react'
 import styles from './index.module.less'
-import { useDebounceFn, useRafInterval } from 'ahooks'
-import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
-import { setDeviceProp } from '@/service/modules/device'
-import FormModal from '@/components/XForm/Modal'
 import ControlBar from './ControlBar'
 import { useOthersControlRoomStore } from '@/store/context-store/useOthersControlRoom.store'
 
@@ -22,25 +18,21 @@ type PropsType = {
   data: API_DEVICE.domain.Device
 } & Partial<{}>
 
-const Control1: React.FC<PropsType> = (props) => {
-  const { data } = props
+const Control1: React.FC<PropsType> = () => {
 
   const [form] = Form.useForm()
   const [editField, setEditField] = useState<string>('')
 
-  const postDevice = usePostDeviceService(
-    data.deviceModel?.productKey || '',
-    data.deviceId,
-  )
+  const { t } = useTranslation()
+
+
   const disable = false // useOthersControlRoomStore((s) => !s.hasControlPower)
   const pitch = useOthersControlRoomStore((s) => s.state.pitch)
   const yaw = useOthersControlRoomStore((s) => s.state.yaw)
   const sendCommand = useOthersControlRoomStore((s) => s.sendCommand)
 
-  // const [downKey, setDownKeyFun] = useState<Record<string, number> | null>(null)
 
   const setDownKey = useMemoizedFn((value) => {
-    // setDownKeyFun(value)
     sendCommand(
       'service.turnBySpeed.post',
       value
@@ -56,21 +48,12 @@ const Control1: React.FC<PropsType> = (props) => {
     )
   })
   const resetPosition = async (data) => {
-    // await postDevice('turn', data, '')
-    // sendCommand('service.turnBySpeed.post', data)
     setDownKey(data)
   }
 
-  const turn = (data) => {
-    sendCommand('service.turnBySpeed.post', data)
-  }
-
-  // useRafInterval(
-  //   () => {
-  //     resetPosition(downKey)
-  //   },
-  //   downKey ? 60 : undefined,
-  // )
+  // const turn = (data) => {
+  //   sendCommand('service.turnBySpeed.post', data)
+  // }
 
   useEffect(() => {
     let values = {}
@@ -103,7 +86,7 @@ const Control1: React.FC<PropsType> = (props) => {
             layout="vertical"
           >
             <Form.Item
-              label="水平角（0-360°）"
+              label={`${t('common.yaw')}（0-360°）`}
               name="yaw"
               style={{ marginTop: 12 }}
             >
@@ -125,7 +108,7 @@ const Control1: React.FC<PropsType> = (props) => {
               />
             </Form.Item>
             <Form.Item
-              label="俯仰角（-25-80°）"
+              label={`${t('common.pitch')}（-25-80°）`}
               name="pitch"
               style={{ marginTop: 24 }}
             >

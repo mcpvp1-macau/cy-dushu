@@ -43,7 +43,7 @@ export type TargetDetailType = {
 
 const TargetDetail: React.FC = () => {
   const detailId = useRightMode((s) => s.detailId)
-  console.log(detailId)
+  const { t } = useTranslation()
   const [parentId, deviceId, targetId] =
     (String(detailId) || '')?.split('=') || []
   const queryClient = useQueryClient()
@@ -109,7 +109,7 @@ const TargetDetail: React.FC = () => {
           <div className="flex justify-between">
             <div className="flex gap-2 items-center">
               {/* <DeviceIconUAV className="device-detail-icon" /> */}
-              <h6 className="text-white text-base">目标 {targetId}</h6>
+              <h6 className="text-white text-base">{t('common.target')} {targetId}</h6>
             </div>
           </div>
         </CloseableHeader>
@@ -125,37 +125,37 @@ const TargetDetail: React.FC = () => {
         items={[
           {
             key: '1',
-            label: '属性',
+            label: t('common.props'),
             children: (
               <ul className="p-2 mx-3 my-3 mr-[9px] card-border text-sm">
-                <I l="类型" v={data?.objectLabel ?? getLabel(data) ?? '未知'} />
+                <I l={t('common.type')} v={data?.objectLabel ?? getLabel(data) ?? t('common.unknown')} />
                 <I
-                  l="速度"
+                  l={t('common.speed')}
                   v={format({
                     value: data?.speed,
                     unit: 'm/s',
                   })}
                 />
                 <I
-                  l="距离"
+                  l={t('common.distance')}
                   v={format({
                     value: data?.distance,
                     unit: 'm',
                   })}
                 />
                 <I
-                  l="海拔"
+                  l={t('common.altitude')}
                   v={format({
                     value: data?.altitude,
                     unit: 'm',
                   })}
                 />
                 <I
-                  l="时间"
+                  l={t('common.time')}
                   v={format({ value: data?.acquireTimestampFormat })}
                 />
                 <I
-                  l="位置"
+                  l={t('common.position')}
                   v={format({
                     value: [data?.longitude, data?.latitude],
                     valueFormatter(value) {
@@ -163,8 +163,8 @@ const TargetDetail: React.FC = () => {
                     },
                   })}
                 />
-                <I l="来源" v={renderSource(data?.source || '')} />
-                <I l="置信度" v={data?.confidence?.toFixed(2) || '-'} />
+                <I l={t('common.source')} v={renderSource(data?.source || '')} />
+                <I l={t('common.confidence')} v={data?.confidence?.toFixed(2) || '-'} />
               </ul>
             ),
           },

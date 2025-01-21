@@ -24,6 +24,7 @@ const OthersDetailDetail: React.FC = () => {
   const controlTag = useOthersControlRoomStore((s) => s.state.controlTag)
   const uuid = useOthersControlRoomStore((s) => s.uuid)
   const updateUUID = useOthersControlRoomStore((s) => s.updateUUID)
+  const { t } = useTranslation()
 
   const childDeviceVideos = useMemo(() => {
     const arr: API_DEVICE.domain.Device[] = []
@@ -67,7 +68,7 @@ const OthersDetailDetail: React.FC = () => {
         <section className="mx-3 mr-[9px] my-3 flex gap-2">
           <Link className="grow" to={`/control-room/others/${deviceId}`}>
             <Button block className="h-7" icon={<IconControlRoom />}>
-              进入驾驶舱
+             {t('device.enterControlRoom.title')}
             </Button>
           </Link>
           {deviceConfigs.isHaveControlPower ? (
@@ -84,7 +85,7 @@ const OthersDetailDetail: React.FC = () => {
         defaultActiveKey={['status', 'flight']}
         items={[
           {
-            label: '设备状态',
+            label: t('common.deviceStatus'),
             key: 'status',
             children: (
               <AppViewSuspense>
@@ -94,7 +95,7 @@ const OthersDetailDetail: React.FC = () => {
           },
           deviceConfigs.isHaveControl
             ? {
-                label: '转台控制',
+                label: t('ja-zhuan-tai-kong-zhi'),
                 key: 'flight',
                 children: (
                   <AppViewSuspense>
@@ -106,7 +107,7 @@ const OthersDetailDetail: React.FC = () => {
             : null,
           deviceConfigs.isHaveAI
             ? {
-                label: 'AI 模型',
+                label: t('device.aiModel.title'),
                 key: 'ai',
                 children: (
                   <AppViewSuspense>

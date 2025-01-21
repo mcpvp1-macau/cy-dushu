@@ -471,7 +471,13 @@ common:
   autoSmartTrack: target tracking
   autoVideoRadar: Thundervision linkage
   smartTrack: Pointing and positioning
-  aiData: Test data
+  aiData: Detection Data
+  pose: attitude
+  confidence: Confidence
+  control: control
+  props: property
+  target: Target
+  unknown: unknown
 events:
   search:
     placeholder: Please search by event name or ID
@@ -1112,5 +1118,3 @@ ja-ke-jian-guang-shi-pin: Visible light video
 ja-she-bei-kong-zhi: Device control
 ja-she-bei-zhuang-tai: Device status
 ja-zhuan-tai-kong-zhi: Turntable control
-commoin:
-  pose: attitude

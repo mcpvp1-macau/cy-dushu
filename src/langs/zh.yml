@@ -200,6 +200,7 @@ device:
       turntableStatus: 转台状态
       turntablePose: 转台姿态
       visibleLightStatus: 可见光状态
+      computer: 边缘计算
   battery:
     current: 电流
     electricity: 电量百分比
@@ -466,6 +467,12 @@ common:
   autoSmartTrack: 目标跟踪
   autoVideoRadar: 雷视联动
   aiData: 检测数据
+  pose: 姿态
+  control: 控制
+  unknown: 未知
+  target: 目标
+  props: 属性
+  confidence: 置信度
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -1102,5 +1109,3 @@ ja-she-bei-zhuang-tai: 设备状态
 ja-hong-wai-shi-pin: 红外视频
 ja-ke-jian-guang-shi-pin: 可见光视频
 ja-zhuan-tai-kong-zhi: 转台控制
-commoin:
-  pose: 姿态

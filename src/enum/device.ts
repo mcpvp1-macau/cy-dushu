@@ -43,10 +43,6 @@ export enum DeviceStatusEnum {
   OFFLINE = 'OFFLINE',
 }
 
-export const StatusMap = {
-  [DeviceStatusEnum.ONLINE]: '在线',
-  [DeviceStatusEnum.OFFLINE]: '离线',
-}
 
 export const StatusColorMap = {
   [DeviceStatusEnum.ONLINE]: 'rgb(21, 179, 113)',

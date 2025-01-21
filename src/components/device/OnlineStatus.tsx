@@ -1,4 +1,5 @@
-import { StatusColorMap, StatusMap } from '@/enum/device'
+import { StatusColorMap } from '@/enum/device'
+import useConfig from '@/pages/control-room/wanglou/components/StatusInfo/useConfig'
 import { memo, type FC } from 'react'
 
 type PropsType = {
@@ -6,6 +7,7 @@ type PropsType = {
 }
 
 const DeviceOnlineStatus: FC<PropsType> = memo(({ status }) => {
+  const { StatusMap } = useConfig()
   return (
     <span style={{ color: StatusColorMap[status] }}>{StatusMap[status]}</span>
   )

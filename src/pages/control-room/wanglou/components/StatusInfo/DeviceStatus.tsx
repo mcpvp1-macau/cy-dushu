@@ -21,6 +21,8 @@ const DeviceStatusInfo: React.FC<PropsType> = () => {
     return childDevice?.find((item: any) => item.productKey === TypeMap[value])
   })
 
+  const { t } = useTranslation()
+
   const beidouStatus = getChildDevice(Name.BeiDou)?.status
   const turntableStatus = state.status
   const infraredStatus = getChildDevice(Name.Infrared)?.status
@@ -101,7 +103,7 @@ const DeviceStatusInfo: React.FC<PropsType> = () => {
       <IconButton
         style={{ marginLeft: 6 }}
         toolTipProps={{
-          title: '在线',
+          title: t('source.status.online'),
         }}
       >
         <Icon id="icon-tishi" className="text-[#15B371]" />
@@ -138,24 +140,24 @@ const DeviceStatusInfo: React.FC<PropsType> = () => {
         top: 30,
         left: `calc(50% - 74px - 74px)`,
       })}
-      {render('红外', 'infraredStatus', {
+      {render(t('device.wanglou.child.ir'), 'infraredStatus', {
         top: 74,
         left: `calc(50% - 74px - 74px)`,
       })}
-      {render('电池', 'remainingPower', {
+      {render(t('device.wanglou.child.battery'), 'remainingPower', {
         top: 160,
         left: `calc(50% - 74px - 74px)`,
       })}
-      {render('边缘计算', 'edgeComputeDeviceStatus', {
+      {render(t('device.wanglou.child.computer'), 'edgeComputeDeviceStatus', {
         top: 30,
         left: `calc(50% + 80px)`,
       })}
-      {render('可见光', 'visibleLightStatus', {
+      {render(t('device.wanglou.child.visiblelight'), 'visibleLightStatus', {
         top: 65,
         left: `calc(50% + 80px)`,
       })}
-      {render('雷达', 'radarStatus', { top: 96, left: `calc(50% + 80px)` })}
-      {render('震动仪', 'vibratorStatus', {
+      {render(t('device.wanglou.child.radar'), 'radarStatus', { top: 96, left: `calc(50% + 80px)` })}
+      {render(t('device.wanglou.child.vibrator'), 'vibratorStatus', {
         top: 144,
         left: `calc(50% + 80px)`,
       })}

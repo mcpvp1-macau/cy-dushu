@@ -1,6 +1,7 @@
 import AppCollapse from '@/components/AppCollapse'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import ChildDeviceStatus from './ChildDeviceStatus'
+import React from 'react'
 
 type PropsType = {}
 
@@ -27,4 +28,4 @@ const StatusInfo: React.FC<PropsType> = () => {
 }
 
 /** 状态面板 */
-export default StatusInfo
+export default React.memo(StatusInfo)

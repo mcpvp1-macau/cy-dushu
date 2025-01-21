@@ -27,6 +27,8 @@ const WanglouTarget: React.FC<PropsType> = ({ data }) => {
     imageSource,
     deviceInfo,
   } = data
+
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const sourceList = useMemo(() => {
     let info: any[] = deviceInfo as any
@@ -81,22 +83,22 @@ const WanglouTarget: React.FC<PropsType> = ({ data }) => {
         </Typography.Text>
         <Flex wrap>
           <Typography.Text className="min-w-[160px] bottom-[8px] mr-[10px]">
-            距离：{distance !== null ? `${distance}m` : '-'}
+            {t('common.distance')}：{distance !== null ? `${distance}m` : '-'}
           </Typography.Text>
           <Typography.Text className="min-w-[160px] bottom-[8px] mr-[10px]">
-            速度：{speed !== null ? `${speed.toFixed(1)}m/s` : '-'}
+            {t('common.speed')}：{speed !== null ? `${speed.toFixed(1)}m/s` : '-'}
           </Typography.Text>
           <Typography.Text className="min-w-[160px] bottom-[8px] mr-[10px]">
-            时间：{timestampFormat || '-'}
+            {t('action.item.time')}：{timestampFormat || '-'}
           </Typography.Text>
           <Typography.Text className="min-w-[160px] bottom-[8px] mr-[10px]">
-            位置：
+            {t('common.position')}：
             {targetLongitude !== null && targetLatitude !== null
               ? `${targetLongitude}, ${targetLatitude}`
               : '-'}
           </Typography.Text>
           <Typography.Text className="min-w-[160px] bottom-[8px] mr-[10px]">
-            来源：{sourceList || source || '-'}
+            {t('common.source')}：{sourceList || source || '-'}
           </Typography.Text>
         </Flex>
       </Flex>

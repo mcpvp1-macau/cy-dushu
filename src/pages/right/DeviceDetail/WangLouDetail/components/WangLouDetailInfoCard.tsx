@@ -19,12 +19,13 @@ type PropsType = {
 
 const WangLouDetailInfoCard: FC<PropsType> = memo(
   ({ modelNumber, onlineStatus, longitude, latitude }) => {
+    const { t } = useTranslation()
     return (
       <ul className="flex flex-wrap text-sm card-border p-3">
-        <I l="型号" v={modelNumber || '-'} />
-        <I l="在线状态" v={<DeviceOnlineStatus status={onlineStatus} />} />
-        <I l="经度" v={longitude ?? '-'} />
-        <I l="纬度" v={latitude ?? '-'} />
+        <I l={t('common.modelNumber')} v={modelNumber || '-'} />
+        <I l={t('common.onlineStatus')} v={<DeviceOnlineStatus status={onlineStatus} />} />
+        <I l={t('common.longitude')} v={longitude ?? '-'} />
+        <I l={t('common.latitude')} v={latitude ?? '-'} />
       </ul>
     )
   },

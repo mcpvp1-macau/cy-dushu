@@ -5,6 +5,7 @@ import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDevice
 import React from 'react'
 
 const ControlPanl: React.FC = () => {
+  const { t } = useTranslation()
   const data = useDeviceDetailStore((s) => s.deviceDetail)
   const zoomDevices = data?.childDevice?.filter((item) => {
     // TODO 判断是否有zoom ，这里的zoomByStep 不同的设备可能不同
@@ -17,13 +18,13 @@ const ControlPanl: React.FC = () => {
       defaultActiveKey={['1', '2', '3', '4']}
       items={[
         {
-          label: '转台控制',
+          label: t('ja-zhuan-tai-kong-zhi'),
           key: '2',
           children: <TurntableControl />,
         },
         ...(zoomDevices?.map((item) => {
           return {
-            label: `${item.deviceName || item.name}控制`,
+            label: `${item.deviceName || item.name} ${t('common.control')}`,
             key: item.deviceId,
             children: <ZoomControl item={item} />,
           }
