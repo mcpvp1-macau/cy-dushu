@@ -1,4 +1,4 @@
-import { memo, useDeferredValue, type FC } from 'react'
+import { Fragment, memo, useDeferredValue, type FC } from 'react'
 import SeiEnum, { SEI_TYPE } from '../Video/Jessibuca/sei-enum'
 import { AiObject } from '../Video/Jessibuca/sei-types/ai-data'
 
@@ -23,35 +23,38 @@ const Inner: FC<PropsType> = memo(({ data, onClickSeiBox }) => {
   return (
     <div className="absolute inset-0">
       {objList.map((item) => (
-        <div
-          key={item.objectId}
-          className="absolute z-[9999] pointer-events-auto border border-solid border-green-600 group hover:border-red-600 cursor-pointer"
-          style={{
-            left: `${((item.bboxLeft ?? 0) / data.sourceFrameWidth) * 100}%`,
-            top: `${((item.bboxTop ?? 0) / data.sourceFrameHeight) * 100}%`,
-            width: `${((item.bboxWidth ?? 0) / data.sourceFrameWidth) * 100}%`,
-            height: `${
-              ((item.bboxHeight ?? 0) / data.sourceFrameHeight) * 100
-            }%`,
-          }}
-          onContextMenu={(e) => {
-            e.preventDefault()
-          }}
-          onMouseUp={(e) => {
-            if (e.button === 0) {
-              onClickSeiBox?.({
-                ...item,
-                seq: data.seq,
-                sourceFrameWidth: data.sourceFrameWidth,
-                sourceFrameHeight: data.sourceFrameHeight,
-              })
-            }
-          }}
-        >
-          <div className="w-full text-nowrap mt-[-16px] bg-green-600 text-center text-xs group-hover:bg-red-600 text-white transition-colors duration-300">
-            {item.objectLabel}({item.objectId})
+        <Fragment key={item.objectId}>
+          <div
+            className="absolute z-[9999] pointer-events-auto border border-solid border-green-700 group hover:border-red-700 cursor-pointer"
+            style={{
+              left: `${((item.bboxLeft ?? 0) / data.sourceFrameWidth) * 100}%`,
+              top: `${((item.bboxTop ?? 0) / data.sourceFrameHeight) * 100}%`,
+              width: `${
+                ((item.bboxWidth ?? 0) / data.sourceFrameWidth) * 100
+              }%`,
+              height: `${
+                ((item.bboxHeight ?? 0) / data.sourceFrameHeight) * 100
+              }%`,
+            }}
+            onContextMenu={(e) => {
+              e.preventDefault()
+            }}
+            onMouseUp={(e) => {
+              if (e.button === 0) {
+                onClickSeiBox?.({
+                  ...item,
+                  seq: data.seq,
+                  sourceFrameWidth: data.sourceFrameWidth,
+                  sourceFrameHeight: data.sourceFrameHeight,
+                })
+              }
+            }}
+          >
+            <div className="absolute  -mt-4 text-nowrap bg-green-700 bg-opacity-70 text-center text-xs group-hover:bg-red-700 text-white">
+              {item.objectLabel}({item.objectId})
+            </div>
           </div>
-        </div>
+        </Fragment>
       ))}
     </div>
   )
