@@ -26,19 +26,22 @@ const InitParams: React.FC<PropsType> = ({ open, setOpen, data }) => {
   const [loading, setLoading] = useState(false)
 
   const [radarData, setRadarData] = useState<any>()
-
+  const { t } = useTranslation()
 
   const save = async (values) => {
     const { code } = await setWanglouConfig(productKey, deviceId, values)
     if (code === 'SUCCESS') {
-      msgMitt.emit('open', { type: 'success', content: '保存成功' })
+      msgMitt.emit('open', {
+        type: 'success',
+        content: t('message.success.save'),
+      })
       // 刷新地图设备
       queryClient.refetchQueries({
         queryKey: ['map-device-list'],
       })
       // refreshData?.();
     } else {
-      msgMitt.emit('open', { type: 'error', content: '保存失败' })
+      msgMitt.emit('open', { type: 'error', content: t('message.error.save') })
     }
     setLoading(false)
     setOpen(false)
@@ -57,12 +60,12 @@ const InitParams: React.FC<PropsType> = ({ open, setOpen, data }) => {
     if (code === 'SUCCESS') {
       msgMitt.emit('open', {
         type: 'success',
-        content: `入库成功`,
+        content: t('message.success.savefile'),
       })
     } else {
       msgMitt.emit('open', {
         type: 'error',
-        content: `上传失败`,
+        content: t('message.error.savefile'),
       })
     }
     await save({
@@ -122,14 +125,14 @@ const InitParams: React.FC<PropsType> = ({ open, setOpen, data }) => {
             msgMitt.emit('open', {
               type: 'success',
               key: 'radar-comp',
-              content: `雷达范围检测完成`,
+              content: t('device.radar.range.success'),
             })
           },
           (pross) => {
             msgMitt.emit('open', {
               type: 'loading',
               key: 'radar-comp',
-              content: `雷达范围检测中${(pross * 100).toFixed(3)}%`,
+              content: `${t('device.radar.range.loading')}${(pross * 100).toFixed(3)}%`,
             })
           },
         )
@@ -139,77 +142,77 @@ const InitParams: React.FC<PropsType> = ({ open, setOpen, data }) => {
   const onValuesChange = (v, values) => {}
   const formFields = [
     {
-      label: '基础信息配置',
+      label: t('device.setting.base'),
       type: 'title',
     },
     {
-      label: '经度',
+      label: t('common.longitude'),
       name: 'longitude',
     },
     {
-      label: '纬度',
+      label: t('common.latitude'),
       name: 'latitude',
     },
     {
-      label: '海拔高度',
+      label: t('common.altitude'),
       name: 'altitude',
       suffix: 'm',
     },
     {
-      label: '红外离地高度',
+      label: t('common.tiCameraGroundLift'),
       name: 'tiCameraGroundLift',
       suffix: 'm',
     },
     {
-      label: '可见光离地高度',
+      label: t('common.cameraGroundLift'),
       name: 'cameraGroundLift',
       suffix: 'm',
     },
     {
-      label: '雷达离地高度',
+      label: t('common.radarGroundLift'),
       name: 'radarGroundLift',
       suffix: 'm',
     },
     {
-      label: '转台离地高度',
+      label: t('common.turnGroundLift'),
       name: 'turnGroundLift',
       suffix: 'm',
     },
     {
-      label: '转台俯仰角设置',
+      label: t('common.turnHorizontalAngle'),
       name: 'turnHorizontalAngle',
       suffix: '°',
     },
     {
-      label: '转台偏北角设置',
+      label: t('common.turnNorthCorner'),
       name: 'turnNorthCorner',
       suffix: '°',
     },
     {
-      label: '雷达偏北角设置',
+      label: t('common.radar.northCorner'),
       name: 'radarNorthCorner',
       suffix: '°',
     },
     {
-      label: '雷达范围设置',
+      label: t('device.setting.radraRange'),
       type: 'title',
       suffix: 'm',
     },
     {
-      label: '雷达检测半径',
+      label: t('common.radar.radius'),
       name: 'r',
       suffix: 'm',
     },
     {
-      label: '海拔半径插值',
+      label: t('common.radar.rSum'),
       name: 'rSum',
     },
     {
-      label: '方向插值',
+      label: t('common.radar.angleSum'),
       name: 'angleSum',
     },
     {
-      label: '威力图角度 1',
+      label: t('common.radar.angle1'),
       name: 'angle1',
       suffix: '°',
     },
@@ -224,26 +227,26 @@ const InitParams: React.FC<PropsType> = ({ open, setOpen, data }) => {
     //   suffix: '°',
     // },
     {
-      label: '震动仪范围设置',
+      label: t('device.setting.vibrator.range'),
       type: 'title',
       suffix: '°',
     },
     {
-      label: '经度',
+      label: t('common.longitude'),
       name: 'vibratorLongitude',
     },
     {
-      label: '纬度',
+      label: t('common.latitude'),
       name: 'vibratorLatitude',
     },
     {
-      label: '检测半径',
+      label: t('common.detectionRadius'),
       name: 'detectionRadius',
       type: 'string',
       suffix: 'm',
     },
     {
-      label: '海拔',
+      label: t('common.altitude'),
       name: 'vibratorAltitude',
       suffix: 'm',
     },
@@ -315,7 +318,7 @@ const InitParams: React.FC<PropsType> = ({ open, setOpen, data }) => {
   return (
     <XModal
       open={open}
-      title="望楼配置"
+      title={t('device.setting.wanglou')}
       onCancel={() => setOpen(false)}
       onClose={() => setOpen(false)}
       onConfirm={onOk}

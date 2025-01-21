@@ -4,11 +4,11 @@ import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDevice
 import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouControlRoom.store'
 import clsx from 'clsx'
 import {
-  wanglouDeviceInfo,
   WANGLOUTargetName as Name,
   WanglouDeviceTypeMap as TypeMap,
 } from './config'
 import useDeviceState from '../../hooks/useDeviceState'
+import useConfig from './useConfig'
 
 type PropsType = {}
 
@@ -16,7 +16,7 @@ const DeviceStatusInfo: React.FC<PropsType> = () => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
   const state = useWangLouControlRoomStore((s) => s.state)
   const { deviceModel, childDevice, properties } = deviceDetail || {}
-
+  const { wanglouDeviceInfo } = useConfig()
   const getChildDevice = useMemoizedFn((value: string) => {
     return childDevice?.find((item: any) => item.productKey === TypeMap[value])
   })

@@ -40,20 +40,8 @@ const WangLouDetail: FC<PropsType> = memo(({ data }) => {
     ),
     [data.deviceName],
   )
-
-  const [tab, setTab] = useState('详情')
-  const segmentOptions = useRef([
-    {
-      label: '详情',
-      value: '详情',
-      icon: <IconDetail />,
-    },
-    {
-      label: '数据',
-      value: '数据',
-      icon: <IconData />,
-    },
-  ]).current
+  const { t } = useTranslation()
+  const [tab, setTab] = useState(0)
 
   return (
     <WangLouControlRoomStoreContext.Provider value={store}>
@@ -63,14 +51,25 @@ const WangLouDetail: FC<PropsType> = memo(({ data }) => {
           <Segmented
             block
             value={tab}
-            options={segmentOptions}
+            options={[
+              {
+                label: t('common.detail'),
+                value: 0,
+                icon: <IconDetail />,
+              },
+              {
+                label: t('common.data'),
+                value: 1,
+                icon: <IconData />,
+              },
+            ]}
             onChange={setTab}
           />
         </div>
         {/* <div className="flex-1 overflow-y-auto"> */}
         <ScrollArea className="grow">
           <AppViewSuspense>
-            {tab === '详情' ? (
+            {tab === 0 ? (
               <WangLouDetailDetail />
             ) : (
               <WangLouDetailData deviceId={deviceId} />

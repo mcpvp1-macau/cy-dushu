@@ -29,12 +29,12 @@ const Target: React.FC<Props> = (props) => {
     leafer,
     center,
     point,
-    R,
+    R = 1,
     left = 10,
     // right = 10,
     top = 10,
     // bottom = 10,
-    max,
+    max = 1000,
     color,
     fill,
     radis = 10,
@@ -45,6 +45,9 @@ const Target: React.FC<Props> = (props) => {
   }
 
   useDeepCompareEffect(() => {
+    if (!leafer) {
+      return
+    }
     const centerPoint = turf.point([center.lng, center.lat]);
     const thepoint = turf.point([point.lng, point.lat]);
     const bearing = turf.rhumbBearing(centerPoint, thepoint);

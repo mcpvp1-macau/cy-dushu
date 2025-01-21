@@ -2,12 +2,13 @@ import { useMemoizedFn } from 'ahooks'
 import {
   WANGLOUTargetName as Name,
   WanglouDeviceTypeMap as TypeMap,
-  wanglouDeviceInfo,
 } from '../components/StatusInfo/config'
 import { useMemo } from 'react'
+import useConfig from '../components/StatusInfo/useConfig'
 
 const useDeviceState = (data: any, state: any, name: Name) => {
   const { childDevice } = data || {}
+  const { wanglouDeviceInfo } = useConfig()
   const getDeviceInfo = useMemoizedFn((targetName: Name) => {
     const device =
       targetName === Name.Turntable

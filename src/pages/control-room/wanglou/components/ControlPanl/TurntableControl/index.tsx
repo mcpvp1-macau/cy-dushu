@@ -22,8 +22,10 @@ const TurntableControl: React.FC = () => {
   const hasControlPower = useWangLouControlRoomStore((s) => s.hasControlPower)
 
   const enableSmartTrack = useWangLouControlRoomStore((s) => s.enableSmartTrack)
-  const updateEnableSmartTrack = useWangLouControlRoomStore((s) => s.updateEnableSmartTrack)
-
+  const updateEnableSmartTrack = useWangLouControlRoomStore(
+    (s) => s.updateEnableSmartTrack,
+  )
+  const { t } = useTranslation()
   return (
     <div>
       <section className="mx-3 mr-[9px] my-3 flex gap-8 justify-center">
@@ -38,7 +40,7 @@ const TurntableControl: React.FC = () => {
             })
           }}
         >
-          指点定位
+          {t('common.smartTrack')}
         </Button>
         <Button
           icon={<Icon id="icon-mubiaojiance" />}
@@ -47,7 +49,7 @@ const TurntableControl: React.FC = () => {
             updateEnableSmartTrack(!enableSmartTrack)
           }}
         >
-          目标跟踪
+          {t('common.autoSmartTrack')}
         </Button>
       </section>
       {deviceDetail && <Control data={deviceDetail!} />}

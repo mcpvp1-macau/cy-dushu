@@ -38,19 +38,8 @@ const OthersDetail: React.FC<PropsType> = ({ data }) => {
         [data.deviceName],
     )
 
-    const [tab, setTab] = useState('详情')
-    const segmentOptions = useRef([
-        {
-            label: '详情',
-            value: '详情',
-            icon: <IconDetail />,
-        },
-        {
-            label: '数据',
-            value: '数据',
-            icon: <IconData />,
-        },
-    ]).current
+    const [tab, setTab] = useState(0)
+    const { t } = useTranslation()
 
     return <OthersControlRoomStoreContext.Provider value={store}>
         <div className="overflow-y-hidden flex flex-col backdrop-blur-sm">
@@ -59,14 +48,25 @@ const OthersDetail: React.FC<PropsType> = ({ data }) => {
                 <Segmented
                     block
                     value={tab}
-                    options={segmentOptions}
+                    options={[
+                        {
+                          label: t('common.detail'),
+                          value: 0,
+                          icon: <IconDetail />,
+                        },
+                        {
+                          label: t('common.data'),
+                          value: 1,
+                          icon: <IconData />,
+                        },
+                      ]}
                     onChange={setTab}
                 />
             </div>
             {/* <div className="flex-1 overflow-y-auto"> */}
             <ScrollArea className="grow">
                 <AppViewSuspense>
-                    {tab === '详情' ? (
+                    {tab === 0 ? (
                         <OthersDetailDetail />
                     ) : (
                         <OthersDetailData deviceId={deviceId} deviceType={deviceType} />

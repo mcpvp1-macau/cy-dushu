@@ -35,6 +35,7 @@ device:
     online:
       ONLINE: Online
       OFFLINE: Offline
+    def: Device offline
   enterControlRoom:
     title: Go To Cockpit
   controlPower:
@@ -178,6 +179,49 @@ device:
       title: ALarm
   aiList:
     title: AI List
+  radar:
+    range:
+      loading: Radar range checking
+      success: Radar range detection completed
+      title: radar range
+    northCorner: radar north angle
+  setting:
+    base: Basic information configuration
+    radraRange: Radar range settings
+    vibrator:
+      range: Vibrator range settings
+    wanglou: Watchtower configuration
+  battery:
+    chargeState: charging status
+    current: current
+    dischargeState: discharge state
+    electricity: Battery percentage
+    soh: health percentage
+    voltage: Voltage
+  wanglou:
+    child:
+      battery: Battery
+      beidou: Beidou
+      beidouStatus: Beidou status
+      ir: infrared
+      radar: radar
+      turntable: turntable
+      turntablePose: turntable attitude
+      turntableStatus: Turntable status
+      vibrator: Vibrator
+      visibleLightStatus: visible light state
+      visiblelight: visible light
+    status:
+      title: Condition monitoring
+  beidou:
+    dbCourse: Azimuth
+    dbMagDegree: Magnetic declination
+  ir:
+    control:
+      title: Infrared control
+  vl:
+    control:
+      title: visible light control
 action:
   input:
     placeholder: Please search by action name
@@ -379,6 +423,55 @@ common:
   default: Default
   lowDelay: Low Delay
   highQuality: High Quality
+  altitude: altitude
+  cameraGroundLift: Visible light height above ground
+  detectionRadius: Detection radius
+  radar:
+    angle1: Power diagram angle 1
+    angleSum: Directional interpolation
+    northCorner: Radar north angle setting
+    rSum: Altitude radius interpolation
+    radius: Radar detection radius
+  radarGroundLift: Radar height above ground
+  tiCameraGroundLift: Infrared height above ground
+  turnGroundLift: Turntable height from ground
+  turnHorizontalAngle: Turntable pitch angle setting
+  turnNorthCorner: Turntable north corner setting
+  horizontalAngle: horizontal angle
+  name: name
+  orderNo: serial number
+  pitch: pitch
+  savePosition: Save preset
+  stepNum: step value
+  use: call
+  yaw: yaw
+  deviceStatus: Device status
+  focalDistance: focal length value
+  fov:
+    x: horizontal field of view
+    'y': vertical field of view
+  groundLift: height above ground
+  northCorner: North point
+  preset:
+    index:
+      name: priority
+      tip: Please enter priority
+    name:
+      tip: Please enter the preset name
+      title: Preset position name
+    stay:
+      name: Residence time(s)
+      tip: Please enter your stay time
+  remainingPower: Current battery level
+  zoomRadio: Zoom value
+  zoom:
+    auto: auto focus
+    focal: focusing
+    title: Zoom
+  autoSmartTrack: target tracking
+  autoVideoRadar: Thundervision linkage
+  smartTrack: Pointing and positioning
+  aiData: Test data
 events:
   search:
     placeholder: Please search by event name or ID
@@ -821,6 +914,13 @@ mapLayer:
 message:
   success:
     saveMapView: Map view saved successfully
+    save: Saved successfully
+    savefile: Storage successful
+  error:
+    save: Save failed
+    savefile: Upload failed
+  warnning:
+    delete: Delete or not!
 controlRoom:
   uav:
     flyParams:
@@ -989,3 +1089,11 @@ forecast:
     title: Distance
   remainTime:
     title: Time
+ja-ai-shu-ju: AI data
+ja-hong-wai-shi-pin: Infrared video
+ja-ke-jian-guang-shi-pin: Visible light video
+ja-she-bei-kong-zhi: Device control
+ja-she-bei-zhuang-tai: Device status
+ja-zhuan-tai-kong-zhi: Turntable control
+commoin:
+  pose: attitude

@@ -33,7 +33,6 @@ const initialLayout: DynamicLayoutType = {
       children: [
         {
           key: 'map',
-          title: '地图',
         },
       ],
     },
@@ -44,7 +43,7 @@ const initialLayout: DynamicLayoutType = {
         {
           type: 'tabs',
           size: 3,
-          children: [{ key: 'status', title: '视频' }],
+          children: [{ key: 'status' }],
         },
       ],
     },
@@ -54,15 +53,12 @@ const initialLayout: DynamicLayoutType = {
       isCollapsed: true,
       children: [
         {
-          title: '设备状态',
           key: 'status',
         },
         {
-          title: '设备控制',
           key: 'device-control',
         },
         {
-          title: 'AI 数据',
           key: 'ai-list',
         },
       ],
@@ -113,6 +109,17 @@ const PageControlRoomWangLou: React.FC = () => {
 
   const videoMap = {}
 
+  const titleMap = useMemo(
+    () => ({
+      map: '地图',
+      video: '视频',
+      ['ai-list']: 'AI 数据',
+      ['device-control']: '设备控制',
+      ['status']: '设备状态',
+    }),
+    [],
+  )
+
   /** 设备自身的视频 */
   for (let index = 0; index < videoList?.length; index++) {
     const item = videoList[index]
@@ -123,10 +130,10 @@ const PageControlRoomWangLou: React.FC = () => {
       children: [
         {
           key: key,
-          title: item.name,
         },
       ],
     })
+    titleMap[key] = item.name
     videoMap[key] = (
       <ControlRoomVideo
         productKey={productKey!}
@@ -147,27 +154,29 @@ const PageControlRoomWangLou: React.FC = () => {
     ) {
       const video = item.properties.videoList?.[index]
       const key = `${video?.name}-${video?.videoId}-${item.deviceId}`
-      video &&
+      if (video) {
         videoTabs.push({
           type: 'tabs',
           size: 3,
           children: [
             {
               key: key,
-              title: item.deviceName || item.name || video.name,
             },
           ],
         })
 
-      videoMap[key] = (
-        <ControlRoomVideo
-          productKey={item.deviceModel.productKey!}
-          deviceId={item.deviceId}
-          videoId={video?.videoId || ''}
-          parentPost={post}
-          isHaveTapZoomAtTarget={isHaveTapZoomAtTarget}
-        />
-      )
+        titleMap[key] = item.deviceName || item.name || video.name
+
+        videoMap[key] = (
+          <ControlRoomVideo
+            productKey={item.deviceModel.productKey!}
+            deviceId={item.deviceId}
+            videoId={video?.videoId || ''}
+            parentPost={post}
+            isHaveTapZoomAtTarget={isHaveTapZoomAtTarget}
+          />
+        )
+      }
     }
   }
 
@@ -182,7 +191,7 @@ const PageControlRoomWangLou: React.FC = () => {
       ...videoMap,
       status: <StatusInfo />,
       ['device-control']: <ControlPanl />,
-      ['ai-list']: <DataPanl />
+      ['ai-list']: <DataPanl />,
     }
     return map
   }, [productKey, deviceId, videoMap])
@@ -204,6 +213,7 @@ const PageControlRoomWangLou: React.FC = () => {
               onLayoutChange={setLayout}
               //   iconMap={iconMap}
               componentMap={componentMap}
+              titleMap={titleMap}
             />
           </main>
         </div>

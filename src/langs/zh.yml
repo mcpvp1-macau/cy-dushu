@@ -33,6 +33,7 @@ device:
     online:
       ONLINE: 在线
       OFFLINE: 离线
+    def: 设备离线
   enterControlRoom:
     title: 进入驾驶舱
   controlPower:
@@ -172,6 +173,49 @@ device:
       title: 声光报警
   aiList:
     title: 算法库
+  radar:
+    range:
+      success: 雷达范围检测完成
+      loading: 雷达范围检测中
+      title: 雷达范围
+    northCorner: 雷达偏北角
+  setting:
+    wanglou: 望楼配置
+    base: 基础信息配置
+    radraRange: 雷达范围设置
+    vibrator:
+      range: 震动仪范围设置
+  wanglou:
+    status:
+      title: 状态监测
+    child:
+      beidou: 北斗
+      battery: 电池
+      turntable: 转台
+      visiblelight: 可见光
+      ir: 红外
+      radar: 雷达
+      vibrator: 振动仪
+      beidouStatus: 北斗状态
+      turntableStatus: 转台状态
+      turntablePose: 转台姿态
+      visibleLightStatus: 可见光状态
+  battery:
+    current: 电流
+    electricity: 电量百分比
+    chargeState: 充电状态
+    soh: 健康度百分比
+    dischargeState: 放电状态
+    voltage: 电压
+  beidou:
+    dbMagDegree: 磁偏角
+    dbCourse: 方位角
+  ir:
+    control:
+      title: 红外控制
+  vl:
+    control:
+      title: 可见光控制
 action:
   input:
     placeholder: 请根据行动名称搜索
@@ -373,6 +417,55 @@ common:
   default: 默认
   lowDelay: 低延时
   highQuality: 高质量
+  altitude: 海拔
+  cameraGroundLift: 可见光离地高度
+  tiCameraGroundLift: 红外离地高度
+  radarGroundLift: 雷达离地高度
+  turnGroundLift: 转台离地高度
+  turnHorizontalAngle: 转台俯仰角设置
+  turnNorthCorner: 转台偏北角设置
+  radar:
+    northCorner: 雷达偏北角设置
+    radius: 雷达检测半径
+    rSum: 海拔半径插值
+    angleSum: 方向插值
+    angle1: 威力图角度 1
+  detectionRadius: 检测半径
+  orderNo: 序号
+  name: 名称
+  use: 调用
+  horizontalAngle: 水平角
+  yaw: 水平角
+  pitch: 俯仰角
+  stepNum: 步进值
+  savePosition: 保存预置位
+  preset:
+    name:
+      title: 预置位名称
+      tip: 请输入预置位名称
+    stay:
+      name: 停留时间(s)
+      tip: 请输入停留时间
+    index:
+      name: 优先级
+      tip: 请输入优先级
+  remainingPower: 当前电量
+  deviceStatus: 设备状态
+  groundLift: 离地高度
+  zoomRadio: 变倍值
+  fov:
+    'y': 垂直视场角
+    x: 水平视场角
+  focalDistance: 焦距值
+  northCorner: 偏北角
+  zoom:
+    title: 变倍
+    auto: 自动聚焦
+    focal: 调焦
+  smartTrack: 指点定位
+  autoSmartTrack: 目标跟踪
+  autoVideoRadar: 雷视联动
+  aiData: 检测数据
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -811,6 +904,13 @@ mapLayer:
 message:
   success:
     saveMapView: 地图视角保存成功
+    save: 保存成功
+    savefile: 入库成功
+  error:
+    save: 保存失败
+    savefile: 上传失败
+  warnning:
+    delete: 是否删除!
 controlRoom:
   uav:
     flyParams:
@@ -979,3 +1079,11 @@ forecast:
     title: 剩余距离
   remainTime:
     title: 剩余时间
+ja-ai-shu-ju: AI 数据
+ja-she-bei-kong-zhi: 设备控制
+ja-she-bei-zhuang-tai: 设备状态
+ja-hong-wai-shi-pin: 红外视频
+ja-ke-jian-guang-shi-pin: 可见光视频
+ja-zhuan-tai-kong-zhi: 转台控制
+commoin:
+  pose: 姿态

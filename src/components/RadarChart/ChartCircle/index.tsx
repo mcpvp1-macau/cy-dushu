@@ -26,7 +26,7 @@ interface Props {
 const ChartCircle: React.FC<Props> = (props) => {
   const {
     leafer,
-    R,
+    R = 1,
     point,
     center,
     max = 1000,
@@ -44,6 +44,9 @@ const ChartCircle: React.FC<Props> = (props) => {
   }
 
   useDeepCompareEffect(() => {
+    if (!leafer) {
+      return
+    }
     const centerPoint = turf.point([center.lng, center.lat]);
     const thepoint = turf.point([point.lng, point.lat]);
     const bearing = turf.rhumbBearing(centerPoint, thepoint);

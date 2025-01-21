@@ -15,6 +15,7 @@ const ZoomControl: React.FC<Props> = ({ deviceType }) => {
   const childData = data?.childDevice?.find(
     (item: any) => item.deviceType === deviceType,
   )
+  const { t } = useTranslation()
   const { focalProps, zoomProps } = useSliderValue({
     data: childData!,
   })
@@ -34,7 +35,7 @@ const ZoomControl: React.FC<Props> = ({ deviceType }) => {
         // disabled={false}
         onChange={zoomProps?.onChangeComplete}
         sliderProps={zoomProps}
-        title={'变倍（X）'}
+        title={`${t('common.zoom.title')}（X）`}
         unit={'X'}
       />
       <SliderValue
@@ -43,7 +44,7 @@ const ZoomControl: React.FC<Props> = ({ deviceType }) => {
         // disabled={false}
         onChange={focalProps?.onChangeComplete}
         sliderProps={focalProps}
-        title={'调焦（%）'}
+        title={`${t('common.zoom.focal')}（%）`}
         unit={'%'}
       />
 
@@ -55,7 +56,7 @@ const ZoomControl: React.FC<Props> = ({ deviceType }) => {
         }}
       >
         <Icon id="icon-suofnagzishiying" />
-        自动聚焦
+        {t('common.zoom.auto')}
       </Button>
     </Flex>
   )

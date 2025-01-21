@@ -1,7 +1,6 @@
-import { StatusColorMap, StatusMap } from '@/enum/device'
+import { StatusColorMap } from '@/enum/device'
 import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouControlRoom.store'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
-import { itemsEqual } from '@dnd-kit/sortable/dist/utilities'
 import { Tooltip } from 'antd'
 import { ReactNode } from 'react'
 
@@ -53,9 +52,9 @@ const DeviceInfoCard: FC<PropsType> = memo(({ data, deviceId }) => {
       value = state?.[item.identifier] ?? properties?.[item.identifier]
     }
     if (type === 'bool') {
-      value = item.specs[value!]
+      value = item.specs?.[value!]
     } else if (type === 'enum') {
-      value = item.specs[value!]
+      value = item.specs?.[value!]
     } else if (type === 'double' || type === 'float') {
       value = value === undefined ? '-' : Number(value)?.toFixed(5)
     }
@@ -79,16 +78,18 @@ const DeviceInfoCard: FC<PropsType> = memo(({ data, deviceId }) => {
     }
   }
 
+  const { t } = useTranslation()
+
   return (
     <div>
       <ul className="py-[10px] text-sm flex flex-wrap">
-        <I l="设备型号" v={modelName} />
+        <I l={t('resource.table.deviceModel.title')} v={modelName} />
         <I
-          l="在线状态"
+          l={t('common.onlineStatus')}
           v={
             <p className="flex gap-2">
               <span style={{ color: StatusColorMap[status!] }}>
-                {StatusMap[status!] || '-'}
+                {t(`device.status.online.${status}`) || '-'}
               </span>
             </p>
           }

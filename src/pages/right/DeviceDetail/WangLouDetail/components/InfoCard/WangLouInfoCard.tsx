@@ -1,4 +1,4 @@
-import { StatusColorMap, StatusMap } from '@/enum/device'
+import { StatusColorMap } from '@/enum/device'
 import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouControlRoom.store'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
 import { Tooltip } from 'antd'
@@ -26,35 +26,30 @@ const WangLouInfoCard: FC<PropsType> = memo(({ data }) => {
     )?.tagValue || '-'
   const status = useRealOnlineStatus(data.deviceId)
   const state = useWangLouControlRoomStore((s) => s.state)
+  const { t } = useTranslation()
   const { properties = {} } = data || {}
   // const { statusInfo = {} } = properties
   return (
     <div>
       <ul className="py-[10px] text-sm flex flex-wrap">
-        <I l="设备型号" v={modelName} />
+        <I l={t('resource.table.deviceModel.title')} v={modelName} />
         <I
-          l="在线状态"
+          l={t('common.onlineStatus')}
           v={
             <p className="flex gap-2">
               <span style={{ color: StatusColorMap[status!] }}>
-                {StatusMap[status!] || '-'}
+                {t(`device.status.online.${status}`) || '-'}
               </span>
             </p>
           }
         />
         <I
-          l="经度"
-          v={
-            (state.longitude ?? properties.longitude)?.toFixed(5) ||
-            '-'
-          }
+          l={t('common.longitude')}
+          v={(state.longitude ?? properties.longitude)?.toFixed(5) || '-'}
         />
         <I
-          l="纬度"
-          v={
-            (state.latitude ?? properties.latitude)?.toFixed(5) ||
-            '-'
-          }
+          l={t('common.latitude')}
+          v={(state.latitude ?? properties.latitude)?.toFixed(5) || '-'}
         />
         {/* <I l="高度" v={`${state.statusInfo?.altitude?.toFixed(2) || 0} m`} />
         <I l="速度" v={`${state.statusInfo?.speed?.toFixed(2) || 0} m/s`} />

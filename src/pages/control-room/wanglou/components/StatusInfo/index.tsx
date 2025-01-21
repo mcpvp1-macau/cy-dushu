@@ -2,13 +2,15 @@ import AppCollapse from '@/components/AppCollapse'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import DeviceStatusInfo from './DeviceStatus'
 import ChildDeviceStatus from './ChildDeviceStatus'
-import { wanglouDeviceInfo, WanglouDeviceProductMap } from './config'
+import { WanglouDeviceProductMap } from './config'
+import useConfig from './useConfig'
 
 type PropsType = {}
 
 const StatusInfo: React.FC<PropsType> = () => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
   const { childDevice } = deviceDetail || {}
+  const { wanglouDeviceInfo } = useConfig()
   const items =
     childDevice
       ?.filter(
@@ -22,6 +24,8 @@ const StatusInfo: React.FC<PropsType> = () => {
         }
       }) || []
 
+  const { t } = useTranslation()
+
   return (
     <AppCollapse
       className="border-x-0 border-b-0 overflow-y-auto h-full"
@@ -29,7 +33,7 @@ const StatusInfo: React.FC<PropsType> = () => {
       defaultActiveKey={['1', ...items.map((item) => item.key)]}
       items={[
         {
-          label: '状态监测',
+          label: t('device.wanglou.status.title'),
           key: '1',
           children: <DeviceStatusInfo />,
         },

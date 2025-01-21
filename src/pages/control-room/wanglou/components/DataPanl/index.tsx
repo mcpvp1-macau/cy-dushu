@@ -7,6 +7,7 @@ import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDevice
 const DataPanl: React.FC = () => {
   const productKey = useDeviceDetailStore((s) => s.productKey)
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
+  const { t } = useTranslation()
   return (
     <AppCollapse
       className="border-x-0 border-b-0 overflow-y-auto h-full"
@@ -14,7 +15,7 @@ const DataPanl: React.FC = () => {
       defaultActiveKey={['1', '2', '3', '4']}
       items={[
         {
-          label: 'AI 模型',
+          label: t('device.aiModel.title'),
           key: '1',
           children: (
             <>
@@ -27,7 +28,7 @@ const DataPanl: React.FC = () => {
           ),
         },
         {
-          label: '检测数据',
+          label: t('common.aiData'),
           key: '2',
           children: <AiData deviceId={deviceId} deviceType={'WANGLOU'}/>,
         },

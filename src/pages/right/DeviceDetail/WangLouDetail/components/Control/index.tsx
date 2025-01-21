@@ -7,6 +7,7 @@ import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouCont
 import { setDeviceProp } from '@/service/modules/device'
 import ControlBar from './ControlBar'
 import FormModal from '@/components/XForm/Modal'
+import { use } from 'i18next'
 
 export interface presetItem {
   presetPointId: string
@@ -76,6 +77,8 @@ const Control: React.FC<PropsType> = (props) => {
     downKey ? 60 : undefined,
   )
 
+  const { t } = useTranslation()
+
   const columns = [
     {
       title: '',
@@ -91,7 +94,7 @@ const Control: React.FC<PropsType> = (props) => {
       ),
     },
     {
-      title: '序号',
+      title: t('common.orderNo'),
       dataIndex: 'presetPointId',
       key: 'presetPointId',
       width: 80,
@@ -111,13 +114,13 @@ const Control: React.FC<PropsType> = (props) => {
       ),
     },
     {
-      title: '名称',
+      title: t('common.name'),
       dataIndex: 'presetPointName',
       key: 'presetPointName',
       width: 100,
     },
     {
-      title: '操作',
+      title: t('common.operation'),
       dataIndex: 'control',
       key: 'control',
       width: 100,
@@ -134,16 +137,16 @@ const Control: React.FC<PropsType> = (props) => {
                 setPosition({ presetPointId: item.presetPointId })
               }}
             >
-              调用
+              {t('common.use')}
             </Button>
             <Popconfirm
-              title="是否删除!"
+              title={t('message.warnning.delete')}
               onConfirm={() => {
                 deletePosition({ presetPointId: item.presetPointId })
               }}
             >
               <Button danger type="link" size="small" disabled={disable}>
-                删除
+                {t('common.delete')}
               </Button>
             </Popconfirm>
           </div>
@@ -201,7 +204,7 @@ const Control: React.FC<PropsType> = (props) => {
             layout="vertical"
           >
             <Form.Item
-              label="水平角（0-360°）"
+              label={`${t('common.yaw')}（0-360°）`}
               name="yaw"
               style={{ marginTop: 12 }}
             >
@@ -223,7 +226,7 @@ const Control: React.FC<PropsType> = (props) => {
               />
             </Form.Item>
             <Form.Item
-              label="俯仰角（45-135°）"
+              label={`${t('common.pitch')}（45-135°）`}
               name="pitch"
               style={{ marginTop: 24 }}
             >
@@ -251,7 +254,7 @@ const Control: React.FC<PropsType> = (props) => {
         </Flex>
         <Flex flex={1} justify="right" align="end" vertical gap={8}>
           <div>
-            <div style={{ color: '#c7d1dc', fontSize: 12 }}>步进值</div>
+            <div style={{ color: '#c7d1dc', fontSize: 12 }}>{t('common.stepNum')}</div>
             <div>
               <InputNumber
                 size="small"
@@ -272,14 +275,14 @@ const Control: React.FC<PropsType> = (props) => {
               })
             }
           >
-            复位
+            {t('uav.gimbal.reset.title')}
           </Button>
           <Button
             className={styles.btn}
             disabled={disable}
             onClick={() => setIsSavePositionOpen(true)}
           >
-            保存预置位
+            {t('common.savePosition')}
           </Button>
         </Flex>
       </Flex>
@@ -292,29 +295,29 @@ const Control: React.FC<PropsType> = (props) => {
       </div>
 
       <FormModal
-        title="保存预置位"
+        title={t('common.savePosition')}
         open={isSavePositionOpen}
         onConfirm={savePosition}
         items={[
           {
-            label: '预置位名称',
+            label: t('common.preset.name.title'),
             name: 'presetPointName',
             type: 'input',
-            rules: [{ required: true, message: '请输入预置位名称' }],
+            rules: [{ required: true, message: t('common.preset.name.tip') }],
           },
 
           {
-            label: '停留时间(s)',
+            label: t('common.preset.stay.name'),
             name: 'stayInterval',
             type: 'input-number',
-            rules: [{ required: true, message: '请输入停留时间' }],
+            rules: [{ required: true, message: t('common.preset.stay.tip') }],
             otherProps: { style: { width: '100%' } },
           },
           {
-            label: '优先级',
+            label: t('common.preset.index.name'),
             name: 'presetPointIndex',
             type: 'input-number',
-            rules: [{ required: true, message: '请输入优先级' }],
+            rules: [{ required: true, message: t('common.preset.index.tip') }],
             otherProps: { style: { width: '100%' } },
           },
         ]}

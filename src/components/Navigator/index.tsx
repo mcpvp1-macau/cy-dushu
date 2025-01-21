@@ -88,7 +88,7 @@ const AppNavigator: FC<PropsType> = memo(() => {
                   'flex justify-center items-center',
                   'hover:border-fore transition-all duration-500',
                   {
-                    'border-fore': usedKey.has(e.id),
+                    'border-fore': usedKey.has(e.id ?? ''),
                   },
                 ),
               )}

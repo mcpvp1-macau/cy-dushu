@@ -29,7 +29,6 @@ const initialLayout: DynamicLayoutType = {
       children: [
         {
           key: 'map',
-          title: '地图',
         },
       ],
     },
@@ -43,7 +42,6 @@ const initialLayout: DynamicLayoutType = {
           children: [
             {
               key: 'video',
-              title: '可见光视频',
             },
           ],
         },
@@ -53,7 +51,6 @@ const initialLayout: DynamicLayoutType = {
           children: [
             {
               key: 'video2',
-              title: '红外视频',
             },
           ],
         },
@@ -65,15 +62,12 @@ const initialLayout: DynamicLayoutType = {
       isCollapsed: true,
       children: [
         {
-          title: '设备状态',
           key: 'status',
         },
         {
-          title: '设备控制',
           key: 'device-control',
         },
         {
-          title: 'AI 数据',
           key: 'ai-list',
         },
       ],
@@ -94,7 +88,7 @@ const PageControlRoomWangLou: React.FC = () => {
     deviceId,
     useServerEventMsg(),
   )
-
+  const { t } = useTranslation()
   // 子设备
   const childDevice = useStore(store, (s) => s.deviceDetail?.childDevice)
 
@@ -118,7 +112,17 @@ const PageControlRoomWangLou: React.FC = () => {
     'wanglou-control-room-layout',
     { defaultValue: initialLayout },
   )
-
+  const titleMap = useMemo(
+    () => ({
+      map: t('common.map'),
+      video: t('ja-ke-jian-guang-shi-pin'),
+      video2: t('ja-hong-wai-shi-pin'),
+      ['ai-list']: t('ja-ai-shu-ju'),
+      ['device-control']: t('ja-she-bei-kong-zhi'),
+      ['status']: t('ja-she-bei-zhuang-tai'),
+    }),
+    [],
+  )
   const componentMap = useMemo(
     () => ({
       map: <ControlRoomWanglouMap />,
@@ -155,6 +159,7 @@ const PageControlRoomWangLou: React.FC = () => {
               onLayoutChange={setLayout}
               //   iconMap={iconMap}
               componentMap={componentMap}
+              titleMap={titleMap}
             />
           </main>
         </div>

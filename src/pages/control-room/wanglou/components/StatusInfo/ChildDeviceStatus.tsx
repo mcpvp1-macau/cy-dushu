@@ -1,8 +1,9 @@
 import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouControlRoom.store'
-import { wanglouDeviceInfo, WanglouDeviceProductMap } from './config'
 import IconButton from '@/components/ui/button/IconButton'
 import Icon from '@/components/Icon'
 import { Tooltip, Typography } from 'antd'
+import useConfig from './useConfig'
+import { WanglouDeviceProductMap } from './config'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -18,16 +19,18 @@ const ChildDeviceStatus: React.FC<PropsType> = ({ data }) => {
     }
   })
 
+  const { wanglouDeviceInfo } = useConfig()
   const infoList = useMemo(
     () => wanglouDeviceInfo[WanglouDeviceProductMap[data.productKey]],
-    [],
+    [data.productKey],
   )
   const properties = useMemo(() => getDeviceInfo(), [state])
+  const { t } = useTranslation()
 
   return (
     <div className="flex flex-wrap p-[10px] gap-0">
       {infoList?.map(
-        ({ label, propertyName, formatter, warnConfig, getValue, width }) => {
+        ({ label, propertyName, formatter, warnConfig, getValue }) => {
           const value = getValue
             ? getValue(properties)
             : properties[propertyName]
@@ -63,7 +66,7 @@ const ChildDeviceStatus: React.FC<PropsType> = ({ data }) => {
                     title:
                       warnConfig?.tooltip ||
                       properties[warnConfig?.warningName || ''] ||
-                      '设备离线',
+                      t('device.status.def'),
                   }}
                 >
                   <Icon id="icon-tishi" className="text-[#F29D49]" />

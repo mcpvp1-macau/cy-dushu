@@ -18,7 +18,7 @@ type PropsType = unknown
 
 const WangLouDetailDetail: FC<PropsType> = memo(() => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
-
+  const { t } = useTranslation()
   const deviceId = deviceDetail.deviceId
   const productKey =
     deviceDetail.productKey || deviceDetail.deviceModel?.productKey
@@ -72,7 +72,7 @@ const WangLouDetailDetail: FC<PropsType> = memo(() => {
       <section className="mx-3 mr-[9px] my-3 flex gap-2">
         <Link className="grow" to={`/control-room/wanglou/${deviceId}`}>
           <Button block className="h-7" icon={<IconControlRoom />}>
-            进入驾驶舱
+            {t('device.enterControlRoom.title')}
           </Button>
         </Link>
         <ControlPower
@@ -85,7 +85,7 @@ const WangLouDetailDetail: FC<PropsType> = memo(() => {
         defaultActiveKey={['status', 'flight']}
         items={[
           {
-            label: '设备状态',
+            label: t('ja-she-bei-zhuang-tai'),
             key: 'status',
             children: (
               <AppViewSuspense>
@@ -94,7 +94,7 @@ const WangLouDetailDetail: FC<PropsType> = memo(() => {
             ),
           },
           {
-            label: '转台控制',
+            label: t('ja-zhuan-tai-kong-zhi'),
             key: 'flight',
             children: (
               <AppViewSuspense>
@@ -103,7 +103,7 @@ const WangLouDetailDetail: FC<PropsType> = memo(() => {
             ),
           },
           {
-            label: 'AI 模型',
+            label: t('device.aiModel.title'),
             key: 'ai',
             children: (
               <AppViewSuspense>

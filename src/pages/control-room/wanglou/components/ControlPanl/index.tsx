@@ -4,7 +4,7 @@ import TurntableControl from './TurntableControl'
 import ZoomControl from './ZoomControl'
 
 const ControlPanl: React.FC = () => {
-
+  const { t } = useTranslation()
   return (
     <AppCollapse
       className="border-x-0 border-b-0 overflow-y-auto h-full"
@@ -12,22 +12,22 @@ const ControlPanl: React.FC = () => {
       defaultActiveKey={['1', '2', '3', '4']}
       items={[
         {
-          label: '雷达范围',
+          label: t('device.radar.range.title'),
           key: '1',
           children: <RadarData />,
         },
         {
-          label: '转台控制',
+          label: t('ja-zhuan-tai-kong-zhi'),
           key: '2',
           children: <TurntableControl />,
         },
         {
-          label: '红外控制',
+          label: t('device.ir.control.title'),
           key: '3',
           children: <ZoomControl deviceType={'INFRARED_CAMERA'} />,
         },
         {
-          label: '可见光控制',
+          label: t('device.vl.control.title'),
           key: '4',
           children: <ZoomControl deviceType={'VISIBLE_LIGHT_CAMERA'} />,
         },

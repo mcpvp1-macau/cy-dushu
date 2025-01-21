@@ -28,9 +28,11 @@ const RadarVisLink: React.FC<Props> = (props) => {
     }
   }
 
+  const { t } = useTranslation()
+
   return (
     <Flex gap={6} align="center" onClick={(e) => e.stopPropagation()}>
-      雷视联动
+      {t('common.autoVideoRadar')}
       <Switch
         size="small"
         checked={status === 'open'}

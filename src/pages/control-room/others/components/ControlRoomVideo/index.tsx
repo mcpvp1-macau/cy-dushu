@@ -1,10 +1,6 @@
 import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
 import DrawBox from '@/components/DrawBox'
-import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import { useOthersControlRoomStore } from '@/store/context-store/useOthersControlRoom.store'
-import IconBoxSelect from '@/assets/icons/jsx/uav/IconBoxSelect'
-import { Button } from 'antd'
-import IconIntelligentTrack from '@/assets/icons/jsx/uav/IconIntelligentTrack'
 import IconPositionZoom from '@/assets/icons/jsx/uav/IconPositionZoom'
 import IconButton from '@/components/ui/button/IconButton'
 
