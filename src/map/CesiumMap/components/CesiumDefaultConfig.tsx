@@ -2,11 +2,15 @@ import { memo, type FC } from 'react'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { useRafInterval } from 'ahooks'
+import useMapSettingStore from '@/store/setting/useMapSetting.store'
 
 type PropsType = unknown
 
 const CesiumDefaultConfig: FC<PropsType> = memo(() => {
   const { viewer } = useCesium()
+
+  const resolution = useMapSettingStore((s) => s.resolution)
+
   useEffect(() => {
     if (!viewer) {
       return
@@ -50,10 +54,26 @@ const CesiumDefaultConfig: FC<PropsType> = memo(() => {
         roll: Cesium.Math.toRadians(0),
       },
     })
-
-    // 设置分辨率
-    viewer.resolutionScale = 2
   }, [viewer])
+
+  useEffect(() => {
+    if (!viewer) {
+      return
+    }
+    if (resolution === '0') {
+      viewer.resolutionScale = 0.8
+    } else if (resolution === '1') {
+      viewer.resolutionScale = 1
+    } else if (resolution === '2') {
+      viewer.resolutionScale = 1.2
+    } else if (resolution === '3') {
+      viewer.resolutionScale = 1.4
+    } else if (resolution === '4') {
+      viewer.resolutionScale = 1.7
+    } else if (resolution === '5') {
+      viewer.resolutionScale = 2
+    }
+  }, [resolution])
 
   useRafInterval(() => {
     if (!viewer) {

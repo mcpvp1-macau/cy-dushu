@@ -4,7 +4,7 @@ import en from './en.yml'
 import zh from './zh.yml'
 
 i18n.use(initReactI18next).init({
-  fallbackLng: 'en',
+  fallbackLng: localStorage.getItem('lang') || 'zh',
   resources: {
     en: {
       translation: en,
