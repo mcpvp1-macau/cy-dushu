@@ -60,7 +60,7 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
     const { sourceFrameWidth: fw, sourceFrameHeight: fh, seq } = e
     if (!fw || !fh) return
     let x1 = e.bboxLeft ?? 0
-    let y1 = e.bboxLeft ?? 0
+    let y1 = e.bboxTop ?? 0
     const w = e.bboxWidth
     const h = e.bboxHeight
     if (!x1 && !y1 && !w && !h) return
