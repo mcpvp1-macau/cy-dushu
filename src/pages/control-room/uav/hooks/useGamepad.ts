@@ -75,6 +75,8 @@ const useGamepad = (
 
   const postService = usePostDeviceService(productKey, deviceId)
 
+  const { t } = useTranslation()
+
   const { updateUavControlInfo, updateGimbalControlInfo } =
     useUavControlRoomStore((s) => ({
       updateUavControlInfo: s.updateUavControlInfo,
@@ -133,7 +135,7 @@ const useGamepad = (
         msgApi.info({
           key: 'uavMoveTop',
           duration: 0,
-          content: '无人机正在上升',
+          content: t('controlRoom.gamepad.uavIsAscending.msg'),
           className: 'ant-message-uav-move-top',
           style: {
             marginTop: '20px',
@@ -144,7 +146,7 @@ const useGamepad = (
         msgApi.info({
           key: 'uavMoveBottom',
           duration: 0,
-          content: '无人机正在下降',
+          content: t('controlRoom.gamepad.uavIsDesending.msg'),
           className: 'ant-message-uav-move-bottom',
           style: {
             marginTop: '20px',

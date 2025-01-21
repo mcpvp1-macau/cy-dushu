@@ -5,7 +5,6 @@ import { shouldJson } from '@/utils/json'
 import useWebSocket from 'react-use-websocket'
 import { heartbeat } from '@/constant/websocket'
 import UavAirportWeatherSection from './components/WeatherSection'
-import { enumProperty } from '@/utils/device/property-parse'
 import UavAirportInfoCard from './components/InfoCard'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
 import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
@@ -37,7 +36,7 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
   const deviceId = data.deviceId
   const videoId = data?.properties.videoList?.[0]?.videoId ?? ''
 
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const items = useMemo(
     () =>
@@ -114,11 +113,19 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
   })
 
   /** 降雨量 */
-  const rainfall = useMemo(
-    () =>
-      enumProperty(data.properties, data.deviceModel!.properties, 'rainfall'),
-    [data],
-  )
+  const rainfall = useMemo(() => {
+    return (
+      {
+        zh: { '0': '无雨', '1': '小雨', '2': '中雨', '3': '大雨' },
+        en: {
+          '0': 'No rain',
+          '1': 'Light rain',
+          '2': 'Moderate rain',
+          '3': 'Heavy rain',
+        },
+      }[i18n.language]?.[data?.properties?.rainfall ?? '-1'] ?? '-'
+    )
+  }, [data?.properties?.rainfall, i18n.language])
 
   /** 机型 */
   const modelNumber = useMemo(

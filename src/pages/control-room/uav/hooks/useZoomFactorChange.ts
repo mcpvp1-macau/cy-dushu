@@ -33,16 +33,6 @@ const useUavZoomFactorChange = () => {
     },
   )
 
-  // 变焦功能物模型
-  const deviceModel = useDeviceDetailStore((s) => s.deviceDetail?.deviceModel)
-  const zoomfactor = useMemo(
-    () =>
-      deviceModel?.services?.liveZoomChange?.inputMethodFields?.find(
-        (item: any) => item.identifier === 'zoomFactor',
-      ),
-    [deviceModel],
-  )
-
   const sendCommand = useUavControlRoomStore((s) => s.sendCommand)
   const videoId = useDeviceDetailStore(
     (s) => s.deviceDetail?.properties?.videoList?.[0]?.videoId,

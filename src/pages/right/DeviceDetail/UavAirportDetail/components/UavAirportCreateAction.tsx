@@ -14,6 +14,8 @@ const UavAirportCreateAction: FC<PropsType> = memo(() => {
   const { actionId } = useParams()
   const navigate = useNavigate()
 
+  const { t } = useTranslation()
+
   const createAction = async () => {
     if (!deviceDetail) {
       return
@@ -32,7 +34,7 @@ const UavAirportCreateAction: FC<PropsType> = memo(() => {
       const camera = data
       let params = `?actionId=${actionId}`
       params += `&deviceId=${deviceDetail.deviceId}`
-      params += `&name=${deviceDetail.deviceName}航线任务`
+      params += `&name=${deviceDetail.deviceName} Wayline Task`
       if (longitude || latitude) {
         params += `&takeoffRef=${JSON.stringify([longitude, latitude, 0])}`
       }
@@ -48,7 +50,7 @@ const UavAirportCreateAction: FC<PropsType> = memo(() => {
   return (
     <IconButton
       className="text-sm"
-      toolTipProps={{ title: '行动配置' }}
+      toolTipProps={{ title: t('action.add.title') }}
       onClick={createAction}
     >
       {loading ? <LoadingOutlined /> : <IconSetting />}

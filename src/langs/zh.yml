@@ -809,6 +809,15 @@ schedule:
       FINISHED:
         title: 已结束
 overlay:
+  detail:
+    createUser:
+      title: 创建人员
+    position:
+      title: 创建位置
+    color:
+      title: 点位颜色
+    mark:
+      title: 备注信息
   marker:
     title: 点位标记
     point:
@@ -1060,6 +1069,14 @@ controlRoom:
       title: 跟踪模式
     gimbalFreeMode:
       title: 自由模式
+  gamepad:
+    uavIsAscending:
+      msg: 无人机正在上升
+    uavIsDesending:
+      msg: 无人机正在下降
+  service:
+    robControlPowerError:
+      msg: 获取控制权失败
 dynamicLayout:
   exit:
     title: 退出

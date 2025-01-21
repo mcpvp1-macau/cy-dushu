@@ -819,6 +819,15 @@ schedule:
       FINISHED:
         title: Finished
 overlay:
+  detail:
+    createUser:
+      title: Creator
+    position:
+      title: Position
+    color:
+      title: Color
+    mark:
+      title: Remark
   marker:
     title: Point Marker
     point:
@@ -1070,6 +1079,14 @@ controlRoom:
       title: Follow Mode
     gimbalFreeMode:
       title: Free Mode
+  gamepad:
+    uavIsAscending:
+      msg: The UAV is ascending
+    uavIsDesending:
+      msg: The UAV is descending
+  service:
+    robControlPowerError:
+      msg: Failed to gain control
 dynamicLayout:
   maximize:
     title: Maximize

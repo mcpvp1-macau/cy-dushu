@@ -42,9 +42,9 @@ const Header: FC<PropsType> = memo(() => {
           }}
         >
           {i18n.language === 'en' ? (
-            <IconLanguageChinese />
-          ) : (
             <IconLanguageEnglish />
+          ) : (
+            <IconLanguageChinese />
           )}
         </IconButton>
         <Fullscreen target={document.documentElement} />

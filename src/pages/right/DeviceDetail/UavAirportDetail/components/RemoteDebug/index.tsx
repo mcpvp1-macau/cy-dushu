@@ -1,6 +1,6 @@
 import styles from './index.module.less'
 import IconButton from '@/components/ui/button/IconButton'
-import { Button, Popconfirm, Spin, Switch } from 'antd'
+import { Button, Popconfirm, Spin, Switch, Tooltip } from 'antd'
 import icons from './icons'
 import {
   CheckCircleFilled,
@@ -14,20 +14,61 @@ import AppEmpty from '@/components/AppEmpty'
 import IconClose from '@/assets/icons/jsx/IconClose'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 
-const getValueLable = (identifier: string, map: any, data: any) => {
-  const props = map[identifier] || {}
-  const { dataType } = props || {}
-  const { type, specs } = dataType || {}
-  const value = data[identifier]
-  if (type === 'struct') {
-    return identifier
-  } else if (type === 'enum') {
-    return specs?.[value] || '-'
-  } else if (type === 'float' || type === 'double' || type === 'int') {
-    return `${value || '-'} ${specs?.unit}`
-  }
+const transMap = {
+  en: {
+    modeCode: {
+      '0': 'Idle',
+      '1': 'On-site debugging',
+      '2': 'Remote debugging',
+      '3': 'Firmware upgrade in progress',
+      '4': 'In operation',
+    },
+    supplementLightState: { '0': 'Disable', '1': 'On' },
+    alarmState: { '0': 'Disable', '1': 'Enable' },
+    putterState: {
+      '0': 'Closed',
+      '1': 'Opening',
+      '2': 'Opened',
+      '3': 'Closing',
+      '4': 'Pushrod Status Abnormal',
+    },
+    coverState: {
+      '0': 'Closed',
+      '1': 'Opening',
+      '2': 'Opened',
+      '3': 'Closing',
+      '4': 'Hatch Status Abnormal',
+    },
+  },
+  zh: {
+    modeCode: {
+      '0': '空闲',
+      '1': '现场调试',
+      '2': '远程调试',
+      '3': '固件升级中',
+      '4': '运行中',
+    },
+    supplementLightState: { '0': '关闭', '1': '开启' },
+    alarmState: { '0': '关闭', '1': '开启' },
+    putterState: {
+      '0': '闭合',
+      '1': '展开中',
+      '2': '展开',
+      '3': '闭合中',
+      '4': '推杆状态异常',
+    },
+    coverState: {
+      '0': '关闭',
+      '1': '打开中',
+      '2': '打开',
+      '3': '关闭中',
+      '4': '舱盖状态异常',
+    },
+  },
+}
 
-  return null
+const getEnumValue = (language: string, identifier: string, value: string) => {
+  return transMap[language][identifier]?.[value] || '-'
 }
 
 type ServiceItemProps = {
@@ -62,7 +103,9 @@ const _ServiceItem: FC<ServiceItemProps> = ({
         }}
       />
       <div className={styles.textBox}>
-        <p className={styles.value}>{info}</p>
+        <p className={styles.value}>
+          <Tooltip title={info}>{info}</Tooltip>
+        </p>
         <p className={styles.title}>{title}</p>
       </div>
       {!loading ? (
@@ -213,7 +256,7 @@ const RemoteDebug: FC<PropsType> = ({ state, onClose, data, progress }) => {
       {
         icon: icons.JCXT,
         title: t('device.uavDock.remoteDebug.jcxt.title'),
-        info: getValueLable('modeCode', propertiesMap, state),
+        info: getEnumValue(i18n.language, 'modeCode', state?.modeCode),
         disabled: state['modeCode'] !== 2 || state['deviceRebootProcess'] === 0,
         loading: state['deviceRebootProcess'] === 0,
         btnLabel: t('device.uavDock.remoteDebug.jcxt.restart.title'),
@@ -258,7 +301,7 @@ const RemoteDebug: FC<PropsType> = ({ state, onClose, data, progress }) => {
       {
         icon: icons.CG,
         title: t('device.uavDock.remoteDebug.cover.title'),
-        info: getValueLable('coverState', propertiesMap, state),
+        info: getEnumValue(i18n.language, 'coverState', state?.coverState),
         disabled:
           state['modeCode'] !== 2 ||
           (state['coverState'] !== 0 && state['coverState'] !== 2),
@@ -286,7 +329,7 @@ const RemoteDebug: FC<PropsType> = ({ state, onClose, data, progress }) => {
       {
         icon: icons.TG,
         title: t('device.uavDock.remoteDebug.putter.title'),
-        info: getValueLable('putterState', propertiesMap, state),
+        info: getEnumValue(i18n.language, 'putterState', state?.putterState),
         disabled:
           state['modeCode'] !== 2 || [1, 3, 4].includes(state['putterState']),
         loading: [1, 3].includes(state['putterState']),
@@ -412,7 +455,11 @@ const RemoteDebug: FC<PropsType> = ({ state, onClose, data, progress }) => {
       {
         icon: icons.BGD,
         title: t('device.uavDock.supplementLight.title'),
-        info: getValueLable('supplementLightState', propertiesMap, state),
+        info: getEnumValue(
+          i18n.language,
+          'supplementLightState',
+          state?.supplementLightState,
+        ),
         disabled: state['modeCode'] !== 2,
         btnLabel:
           state['supplementLightState'] === 0
@@ -426,7 +473,7 @@ const RemoteDebug: FC<PropsType> = ({ state, onClose, data, progress }) => {
       {
         icon: icons.SGBJ,
         title: t('device.uavDock.alarmState.title'),
-        info: getValueLable('alarmState', propertiesMap, state),
+        info: getEnumValue(i18n.language, 'alarmState', state?.alarmState),
         disabled: state['modeCode'] !== 2,
         btnLabel:
           state['alarmState'] === 0
