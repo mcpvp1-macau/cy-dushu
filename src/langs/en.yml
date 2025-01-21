@@ -6,11 +6,21 @@ poi_searcher:
 setting:
   title: Setting
   video_decoder:
-    title: Local Video Decoder
+    title: Video Decoder
     description: >-
       By default, the decoder will be automatically selected in the order of
       WCS, MSE, Simd, and Wasm based on browser support.
     attention: Attention
+  map:
+    resolution:
+      smooth: Smooth
+      standard: Standard
+      default: Default
+      high: High
+      super: Super
+      ultra: Ultra
+      title: Resolution
+    title: Map
 situation:
   menus:
     action: Action

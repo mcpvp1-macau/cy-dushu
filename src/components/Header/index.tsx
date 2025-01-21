@@ -39,6 +39,7 @@ const Header: FC<PropsType> = memo(() => {
         <IconButton
           onClick={() => {
             i18n.changeLanguage(i18n.language === 'en' ? 'zh' : 'en')
+            localStorage.setItem('lang', i18n.language)
           }}
         >
           {i18n.language === 'en' ? (

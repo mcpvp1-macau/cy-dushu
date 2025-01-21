@@ -3,14 +3,14 @@ import { Button } from 'antd'
 import { memo, type FC } from 'react'
 import useRobControlPower from '../../hooks/useRobControlPower'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import useUserStore from '@/store/useUser.store'
+// import useUserStore from '@/store/useUser.store'
 import { v4 as uuidv4 } from 'uuid'
 
 type PropsType = unknown
 
 const ControlPower: FC<PropsType> = memo(() => {
   const { t } = useTranslation()
-  const username = useUserStore((s) => s.user?.username)
+  // const username = useUserStore((s) => s.user?.username)
   const { robControlPower, isPending, disabled } = useRobControlPower()
   const operator = useUavControlRoomStore((s) => s.state.operator)
   const hasControlPower = useUavControlRoomStore((s) => s.hasControlPower)
@@ -27,9 +27,7 @@ const ControlPower: FC<PropsType> = memo(() => {
         if (hasControlPower) {
           robControlPower('ANY')
         } else {
-          robControlPower(
-            `${username}-${dayjs().format('YYYYMMDDHHmmss')}-${uuidv4()}`,
-          )
+          robControlPower(uuidv4())
         }
       }}
     >
