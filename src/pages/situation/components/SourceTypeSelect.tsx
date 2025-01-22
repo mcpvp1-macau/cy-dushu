@@ -3,6 +3,7 @@ import DeviceIcon from '@/components/device/DeviceIcon'
 import { DeviceEnum } from '@/enum/device'
 import useWatch from '@/hooks/useWatch'
 import { getAllDeviceType } from '@/service/modules/device'
+import { useLangsDict } from '@/store/useDict.store'
 
 const deviceWeight = new Map<string, number>([
   [DeviceEnum.UAV, 1],
@@ -31,6 +32,8 @@ const SourceTypeSelect: FC<PropsType> = memo(({ value, onChange }) => {
     queryClient,
   )
 
+  const dict = useLangsDict('device_type')
+
   useWatch(
     data,
     (val) => {
@@ -47,11 +50,11 @@ const SourceTypeSelect: FC<PropsType> = memo(({ value, onChange }) => {
     }
     return data
       .map((e) => ({
-        label: e.name,
+        label: dict[e.type] ?? e.name,
         value: e.type,
       }))
       .sort((a, b) => getDeviceWeight(a.value) - getDeviceWeight(b.value))
-  }, [data])
+  }, [data, dict])
 
   const handleSourceTypeChange = useMemoizedFn((type: string) => {
     onChange?.(type)

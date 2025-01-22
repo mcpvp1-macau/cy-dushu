@@ -4,6 +4,7 @@ import { memo, type FC } from 'react'
 import SourceTable from './components/SourceTable'
 import { useSearchParams } from 'react-router-dom'
 import { isNil } from 'lodash'
+import { useLangsDict } from '@/store/useDict.store'
 
 type PropsType = unknown
 
@@ -29,6 +30,8 @@ const PageSources: FC<PropsType> = memo(() => {
     }
   }, [data])
 
+  const dict = useLangsDict('device_type')
+
   return (
     <div className="page-full p-3 bg-ground-2 flex flex-col overflow-y-hidden">
       <h2 className="text-white">{t('resource.title')}</h2>
@@ -43,7 +46,7 @@ const PageSources: FC<PropsType> = memo(() => {
             activeKey={searchParams.get('type') ?? undefined}
             items={data.map((e) => ({
               key: e.type,
-              label: e.name,
+              label: dict[e.type] ?? e.name,
             }))}
             onChange={(e) => !isNil(e) && setSearchParams({ type: e })}
           />
