@@ -31,9 +31,9 @@ const BottomButtons: FC<PropsType> = memo(() => {
       return false
     }
     return (
-      displayMode.includes('指点飞行') ||
-      displayMode.includes('一键起飞') ||
-      displayMode.startsWith('10000')
+      displayMode.startsWith('指点飞行') ||
+      displayMode.startsWith('一键起飞') ||
+      displayMode.startsWith('10000') // 10000 是 指点飞行
     )
   }, [displayMode])
 
@@ -91,7 +91,7 @@ const BottomButtons: FC<PropsType> = memo(() => {
           label: t('controlRoom.control.uavRight.title'),
         },
         {
-          value: { z: 8 },
+          value: { z: 5 },
           btn: 'C',
           identifier: 'z',
           icon: <IconUpStraight />,
@@ -99,7 +99,7 @@ const BottomButtons: FC<PropsType> = memo(() => {
           label: t('controlRoom.control.uavFlyUp.title'),
         },
         {
-          value: { z: -5 },
+          value: { z: -3 },
           btn: 'Z',
           identifier: 'z',
           icon: <IconDownStraight />,
@@ -191,6 +191,8 @@ const BottomButtons: FC<PropsType> = memo(() => {
   const updateGimbalControlInfo = useUavControlRoomStore(
     (s) => s.updateGimbalControlInfo,
   )
+
+  // 处理通过键盘按下的飞行控制指令
   useEffect(() => {
     const uavRes = {
       x: 0,
@@ -205,6 +207,10 @@ const BottomButtons: FC<PropsType> = memo(() => {
     for (const key of activeBtns) {
       const btn = keyMap.current![key]
       if (btn.method === 'service.moveUav.post') {
+        // 不能控制飞行
+        if (!hasControlPower || isLimitedFly) {
+          continue
+        }
         uavRes[btn.identifier] +=
           (btn.value[btn.identifier] ?? 0) * (flySpeed / 15)
       } else {
