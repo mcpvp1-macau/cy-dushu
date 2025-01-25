@@ -68,8 +68,6 @@ const ScheduleTable: FC<PropsType> = memo(() => {
     }))
   }, [t, i18n])
 
-  console.log('statusOptions', statusOptions)
-
   const columns = useMemo(() => {
     return [
       columnHelper.accessor('startTime', {

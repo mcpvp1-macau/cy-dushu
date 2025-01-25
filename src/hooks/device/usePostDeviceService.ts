@@ -1,6 +1,7 @@
 import { postDeviceService } from '@/service/modules/device'
 import { useAppMsg } from '../useAppMsg'
 import { uniqueId } from 'lodash'
+import { isLiqunCommonError } from '@/service/servers/liqunAxios'
 
 const fmt = (content: string, prefix?: string) => {
   return prefix ? `${prefix}: ${content}` : content
@@ -36,10 +37,14 @@ export const usePostDeviceService = (productKey: string, deviceId: string) => {
           })
         }
       } catch (e: any) {
+        let content = t('api.error.msg')
+        if (isLiqunCommonError(e) && e.message) {
+          content = t('api.error.msg') + ': ' + e.message
+        }
         msgApi.open({
           type: 'error',
           key: id,
-          content: fmt(t('api.error.msg'), msgPrefix),
+          content: fmt(content, msgPrefix),
           duration: 3,
         })
         throw e

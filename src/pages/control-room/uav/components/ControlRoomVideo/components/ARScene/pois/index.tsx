@@ -1,23 +1,100 @@
 import useMixARStore from '@/store/control-room/useMixAR.store'
-import { memo, type FC } from 'react'
-import ARScenePOI from './POI'
-import { BillboardCollection, LabelCollection } from 'resium'
+import { wgs84ToDrawingBufferCoordinates } from '@/utils/cesium/sence-transform'
+import * as Cesium from 'cesium'
+import { getPOIIcon } from './icon-map'
+import useSettingStore from '@/store/useSetting.store'
 
 type PropsType = unknown
 
+type Item = {
+  id: React.Key
+  properties: GeoJSON.GeoJsonProperties
+  coordinates: number[]
+}
+
 const ARScenePOIs: FC<PropsType> = memo(() => {
   const pois = useMixARStore((s) => s.pois)
+  const viewer = useMixARStore((s) => s.cesiumViewer)
+  const uav = useMixARStore((s) => s.uavProperties)
+
+  const poiSetting = useSettingStore((s) => s.virtualReal.poi)
+
+  const filterSet = useMemo(
+    () => new Set(poiSetting.filter),
+    [poiSetting.filter],
+  )
+
+  const items = useMemo(() => {
+    if (!viewer?.scene || !pois) {
+      return []
+    }
+
+    const poiItems: Item[] = []
+
+    for (const feature of pois.features) {
+      if (filterSet.size && !filterSet.has(feature.properties?.bigType)) {
+        continue
+      }
+      const coordinates = feature.geometry.coordinates
+      const catesian = Cesium.Cartesian3.fromDegrees(
+        coordinates[0],
+        coordinates[1],
+        0,
+      )
+      // 获取屏幕坐标
+      const screenPostion = wgs84ToDrawingBufferCoordinates(
+        viewer.scene,
+        catesian,
+      )
+      if (!screenPostion) {
+        continue
+      }
+      poiItems.push({
+        id: feature.id as React.Key,
+        properties: feature.properties,
+        coordinates: [
+          screenPostion.x / viewer.resolutionScale,
+          screenPostion.y / viewer.resolutionScale,
+        ],
+      })
+    }
+
+    return poiItems
+  }, [pois, viewer, uav, filterSet])
 
   return (
-    <>
-      <BillboardCollection>
-        <LabelCollection>
-          {pois.map((poi) => {
-            return <ARScenePOI key={poi.id} data={poi} />
-          })}
-        </LabelCollection>
-      </BillboardCollection>
-    </>
+    <div className="absolute inset-0 z-[60] overflow-hidden pointer-events-auto">
+      {items.map((item) => {
+        return (
+          <div
+            key={item.id}
+            className="absolute -translate-x-1/2 -translate-y-full flex flex-col items-center group cursor-pointer"
+            style={{ left: item.coordinates[0], top: item.coordinates[1] }}
+          >
+            <img
+              className="size-4"
+              src={getPOIIcon([
+                item.properties?.midType,
+                item.properties?.bigType,
+              ])}
+            />
+            {
+              <p
+                className={clsx(
+                  'mt-1 absolute -bottom-1 translate-y-full text-xs shadow-sm whitespace-nowrap text-white scale-90',
+                  poiSetting.showName ? 'block' : 'hidden group-hover:block',
+                )}
+                style={{
+                  textShadow: '0 0 2px #000',
+                }}
+              >
+                {item.properties?.name}
+              </p>
+            }
+          </div>
+        )
+      })}
+    </div>
   )
 })
 

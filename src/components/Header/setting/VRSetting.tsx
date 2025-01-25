@@ -1,3 +1,4 @@
+import Select from '@/components/AntdOverride/Select'
 import IconButton from '@/components/ui/button/IconButton'
 import useSettingStore from '@/store/useSetting.store'
 import { UndoOutlined } from '@ant-design/icons'
@@ -6,10 +7,82 @@ import { isNil } from 'lodash'
 
 type PropsType = unknown
 
+const bigTypes = [
+  'GovernmentAndSocialOrganizations', // 政府机构及社会团体
+  'RoadFacilities', // 道路附属设施
+  'CateringService', // 餐饮服务
+  'TransportationFacilities', // 交通设施服务
+  'MedicalCareService', // 医疗保健服务
+  'ShoppingService', // 购物服务
+  'SportsAndLeisure', // 体育休闲服务
+  'CompaniesAndEnterprises', // 公司企业
+  'ScenicSpot', // ⻛景名胜
+  'MotorcycleService', // 摩托⻋服务
+  'CarService', // 汽⻋服务
+  'CarSales', // 汽⻋销售
+  'CarMaintenance', // 汽⻋维修
+  'FinancialAndInsuranceService', // 金融保险服务
+  'BusinessAndResidential', // 商务住宅
+  'ScienceEducationAndCulture', // 科教文化服务
+  'PublicFacilities', // 公共设施
+  'LifeService', // 生活服务
+]
+
+const bigTypeMapping = {
+  en: {
+    GovernmentAndSocialOrganizations: 'GovernmentAndSocialOrganizations',
+    RoadFacilities: 'RoadFacilities',
+    CateringService: 'CateringService',
+    TransportationFacilities: 'TransportationFacilities',
+    MedicalCareService: 'MedicalCareService',
+    ShoppingService: 'ShoppingService',
+    SportsAndLeisure: 'SportsAndLeisure',
+    CompaniesAndEnterprises: 'CompaniesAndEnterprises',
+    ScenicSpot: 'ScenicSpot',
+    MotorcycleService: 'MotorcycleService',
+    CarService: 'CarService',
+    CarSales: 'CarSales',
+    CarMaintenance: 'CarMaintenance',
+    FinancialAndInsuranceService: 'FinancialAndInsuranceService',
+    BusinessAndResidential: 'BusinessAndResidential',
+    ScienceEducationAndCulture: 'ScienceEducationAndCulture',
+    PublicFacilities: 'PublicFacilities',
+    LifeService: 'LifeService',
+  },
+  zh: {
+    GovernmentAndSocialOrganizations: '政府机构及社会团体',
+    RoadFacilities: '道路附属设施',
+    CateringService: '餐饮服务',
+    TransportationFacilities: '交通设施服务',
+    MedicalCareService: '医疗保健服务',
+    ShoppingService: '购物服务',
+    SportsAndLeisure: '体育休闲服务',
+    CompaniesAndEnterprises: '公司企业',
+    ScenicSpot: '⻛景名胜',
+    MotorcycleService: '摩托⻋服务',
+    CarService: '汽⻋服务',
+    CarSales: '汽⻋销售',
+    CarMaintenance: '汽⻋维修',
+    FinancialAndInsuranceService: '金融保险服务',
+    BusinessAndResidential: '商务住宅',
+    ScienceEducationAndCulture: '科教文化服务',
+    PublicFacilities: '公共设施',
+    LifeService: '生活服务',
+  },
+}
+
 /** 虚实融合相关设置 */
 const VRSetting: FC<PropsType> = memo(() => {
   const vr = useSettingStore((s) => s.virtualReal)
   const updVr = useSettingStore((s) => s.updateVirtualReal)
+
+  const { i18n } = useTranslation()
+  const filterOptions = useMemo(() => {
+    return bigTypes.map((type) => ({
+      label: bigTypeMapping[i18n.language][type],
+      value: type,
+    }))
+  }, [i18n.language])
 
   const updateMainRoad = (data: Partial<(typeof vr)['mainRoad']>) => {
     updVr({
@@ -41,11 +114,21 @@ const VRSetting: FC<PropsType> = memo(() => {
     })
   }
 
-  const updateBuilding = (data: Partial<(typeof vr)['building']>) => {
+  const updateaoi = (data: Partial<(typeof vr)['aoi']>) => {
     updVr({
       ...vr,
-      building: {
-        ...vr.building,
+      aoi: {
+        ...vr.aoi,
+        ...data,
+      },
+    })
+  }
+
+  const updatePoi = (data: Partial<(typeof vr)['poi']>) => {
+    updVr({
+      ...vr,
+      poi: {
+        ...vr.poi,
         ...data,
       },
     })
@@ -274,12 +357,12 @@ const VRSetting: FC<PropsType> = memo(() => {
 
         <div className="flex gap-1.5 items-center mb-1">
           <div className="h-[10px] w-[2px] rounded bg-green-500"></div>
-          建筑
+          区域
           <Form.Item noStyle>
             <Switch
-              value={vr.building.enable}
+              value={vr.aoi.enable}
               onChange={(e) =>
-                updateBuilding({
+                updateaoi({
                   enable: e,
                 })
               }
@@ -290,9 +373,9 @@ const VRSetting: FC<PropsType> = memo(() => {
           <Col span={12}>
             <Form.Item label="背景颜色">
               <ColorPicker
-                value={vr.building.color}
+                value={vr.aoi.color}
                 onChange={(e) =>
-                  updateBuilding({
+                  updateaoi({
                     color: e.toHexString(),
                   })
                 }
@@ -303,10 +386,10 @@ const VRSetting: FC<PropsType> = memo(() => {
             <Form.Item label="描边宽度">
               <InputNumber
                 suffix="px"
-                value={vr.building.borderSize}
+                value={vr.aoi.borderSize}
                 onChange={(e) =>
                   e &&
-                  updateBuilding({
+                  updateaoi({
                     borderSize: e,
                   })
                 }
@@ -316,9 +399,9 @@ const VRSetting: FC<PropsType> = memo(() => {
           <Col span={12}>
             <Form.Item label="描边颜色">
               <ColorPicker
-                value={vr.building.borderColor}
+                value={vr.aoi.borderColor}
                 onChange={(e) =>
-                  updateBuilding({
+                  updateaoi({
                     borderColor: e.toHexString(),
                   })
                 }
@@ -327,8 +410,52 @@ const VRSetting: FC<PropsType> = memo(() => {
           </Col>
 
           <Col span={12}>
-            <Form.Item label="点位形式">
-              <Switch />
+            <Form.Item label="展示建筑">
+              <Switch
+                value={vr.aoi.showBuilding}
+                onChange={(e) => {
+                  if (!isNil(e)) {
+                    updateaoi({
+                      showBuilding: e,
+                    })
+                  }
+                }}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <div className="flex gap-1.5 items-center mb-1">
+          <div className="h-[10px] w-[2px] rounded bg-green-500"></div>
+          点位
+          <Form.Item noStyle>
+            <Switch
+              value={vr.poi.enable}
+              onChange={(e) => updatePoi({ enable: e })}
+            />
+          </Form.Item>
+        </div>
+
+        <Row>
+          <Col span={24}>
+            <Form.Item label="过滤条件">
+              <Select
+                options={filterOptions}
+                mode="multiple"
+                value={vr.poi.filter}
+                onChange={(e) => {
+                  updatePoi({ filter: e })
+                }}
+                placeholder="ALL"
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="展示名称">
+              <Switch
+                value={vr.poi.showName}
+                onChange={(e) => updatePoi({ showName: e })}
+              />
             </Form.Item>
           </Col>
         </Row>

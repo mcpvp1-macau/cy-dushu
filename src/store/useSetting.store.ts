@@ -28,11 +28,17 @@ type StateType = {
       borderSize: number
     }
     /** 建筑 */
-    building: {
+    aoi: {
       enable: boolean
       color: string
       borderColor: string
       borderSize: number
+      showBuilding: boolean
+    }
+    poi: {
+      enable: boolean
+      showName: boolean
+      filter: string[]
     }
     shift: {
       gimbalYaw: number
@@ -74,11 +80,12 @@ const useSettingStore = create<StateType & ActionsType>()(
             size: 20,
             borderSize: 2,
           },
-          building: {
+          aoi: {
             enable: true,
             color: '#5159A233',
             borderColor: '#000000',
             borderSize: 2,
+            showBuilding: true,
           },
           shift: {
             gimbalYaw: 0,
@@ -86,6 +93,11 @@ const useSettingStore = create<StateType & ActionsType>()(
             height: 0,
             lng: 0,
             lat: 0,
+          },
+          poi: {
+            enable: true,
+            showName: true,
+            filter: [],
           },
         },
         updateVirtualReal: (data) => {

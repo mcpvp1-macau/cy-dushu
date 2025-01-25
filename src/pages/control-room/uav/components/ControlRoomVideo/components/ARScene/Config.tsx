@@ -1,11 +1,22 @@
 import { useRafInterval } from 'ahooks'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
+import useMixARStore from '@/store/control-room/useMixAR.store'
 
 type PropsType = unknown
 
 const ARSceneConfig: FC<PropsType> = memo(() => {
   const { viewer } = useCesium()
+
+  const updateCeisumViewer = useMixARStore((s) => s.updateCeisumViewer)
+
+  useEffect(() => {
+    updateCeisumViewer(viewer ?? null)
+    return () => {
+      updateCeisumViewer(null)
+    }
+  }, [viewer])
+
   useEffect(() => {
     if (!viewer) {
       return
@@ -44,7 +55,7 @@ const ARSceneConfig: FC<PropsType> = memo(() => {
     viewer.scene.globe.depthTestAgainstTerrain = false
 
     // 设置分辨率
-    viewer.resolutionScale = 2
+    // viewer.resolutionScale = 2
   }, [viewer])
 
   useRafInterval(() => {
