@@ -21,6 +21,8 @@ setting:
       ultra: Ultra
       title: Resolution
     title: Map
+  system:
+    title: System
 situation:
   menus:
     action: Action

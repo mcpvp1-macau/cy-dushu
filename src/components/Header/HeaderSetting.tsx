@@ -3,7 +3,7 @@ import { SettingFilled } from '@ant-design/icons'
 import XModal from '../XModal'
 import { useBoolean } from 'ahooks'
 import VideoDecoder from './setting/VideoDecoder'
-import { Tabs } from 'antd'
+import { Button, Tabs } from 'antd'
 import MapSetting from './setting/MapSetting'
 
 type PropsType = unknown
@@ -38,6 +38,23 @@ const HeaderSetting: FC<PropsType> = memo(() => {
                 key: 'map_setting',
                 label: t('setting.map.title'),
                 children: <MapSetting />,
+              },
+              {
+                key: 'system_setting',
+                label: t('setting.system.title'),
+                children: (
+                  <div className="mt-3 text-center">
+                    <Button
+                      onClick={() => {
+                        localStorage.clear()
+                        sessionStorage.clear()
+                        window.location.reload()
+                      }}
+                    >
+                      清空本地数据
+                    </Button>
+                  </div>
+                ),
               },
             ]}
           />

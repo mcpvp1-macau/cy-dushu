@@ -19,6 +19,8 @@ setting:
       ultra: 超高清
       title: 清晰度
     title: 地图
+  system:
+    title: 系统
 situation:
   menus:
     action: 行动
