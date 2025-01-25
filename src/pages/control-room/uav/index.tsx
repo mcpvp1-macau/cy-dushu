@@ -130,7 +130,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
   )
 
   const [layout, setLayout] = useLocalStorageState<DynamicLayoutType>(
-    'uav-control-room-layout',
+    'uavControlRoomLayoutV2',
     { defaultValue: initialLayout },
   )
   const { t } = useTranslation()
