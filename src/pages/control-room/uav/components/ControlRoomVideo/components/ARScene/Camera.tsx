@@ -1,10 +1,10 @@
 import gimbalMap from '@/constant/uav/gimbal'
 import useMixARStore, { GimbalPick } from '@/store/control-room/useMixAR.store'
-import useSettingStore from '@/store/useSetting.store'
 import { calcFovRadiation } from '@/utils/fov'
 import { isNil } from 'lodash'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
+import useARSettingStore from '@/store/setting/useARSetting.store'
 
 type PropsType = unknown
 
@@ -12,7 +12,7 @@ type PropsType = unknown
 const ARSceneCamera: FC<PropsType> = memo(() => {
   const uav = useMixARStore((s) => s.uavProperties)
   const { viewer } = useCesium()
-  const shiftSetting = useSettingStore((s) => s.virtualReal.shift)
+  const shiftSetting = useARSettingStore((s) => s.shift)
 
   const updateGimbalPick = useMixARStore((s) => s.updateGimbalPick)
 

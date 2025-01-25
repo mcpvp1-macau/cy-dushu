@@ -2,7 +2,7 @@ import useMixARStore from '@/store/control-room/useMixAR.store'
 import { wgs84ToDrawingBufferCoordinates } from '@/utils/cesium/sence-transform'
 import * as Cesium from 'cesium'
 import { getPOIIcon } from './icon-map'
-import useSettingStore from '@/store/useSetting.store'
+import useARSettingStore from '@/store/setting/useARSetting.store'
 
 type PropsType = unknown
 
@@ -17,7 +17,7 @@ const ARScenePOIs: FC<PropsType> = memo(() => {
   const viewer = useMixARStore((s) => s.cesiumViewer)
   const uav = useMixARStore((s) => s.uavProperties)
 
-  const poiSetting = useSettingStore((s) => s.virtualReal.poi)
+  const poiSetting = useARSettingStore((s) => s.poi)
 
   const filterSet = useMemo(
     () => new Set(poiSetting.filter),

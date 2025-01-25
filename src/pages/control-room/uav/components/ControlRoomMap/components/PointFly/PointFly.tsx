@@ -20,6 +20,8 @@ const UavMapPointFly: FC<PropsType> = memo(() => {
   const isPointFlying =
     displayMode?.startsWith('指点飞行') || displayMode?.startsWith('10000')
 
+  console.log('isPointFlying', isPointFlying)
+
   return (
     <>
       {pointFly.open && <PositionPickListener onClick={handleClick} />}

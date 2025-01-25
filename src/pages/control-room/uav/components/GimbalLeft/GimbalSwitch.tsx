@@ -67,8 +67,6 @@ const GimbalSwitch: FC<PropsType> = memo(() => {
 
   const { t } = useTranslation()
 
-  console.log(has, videoSource, gimbalData)
-
   return (
     <>
       {gimbalTypes.map((type) => (

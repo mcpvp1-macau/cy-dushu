@@ -47,7 +47,8 @@ const UavAirportInfoCard: FC<PropsType> = memo((props) => {
         l={t('device.uavDock.status.modeDisplay.title')}
         v={
           props.modeDisplay
-            ? dockDisplayModeTransMap[props.modeDisplay]?.[i18n.language] || '-'
+            ? dockDisplayModeTransMap[props.modeDisplay]?.[i18n.language] ||
+              props.modeDisplay
             : '-'
         }
       />
