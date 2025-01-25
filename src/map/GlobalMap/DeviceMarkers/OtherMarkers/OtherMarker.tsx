@@ -108,7 +108,7 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
           <GroundPolygonCircle lng={lng} lat={lat} scope={properties.scope} />
         </>
       ) : null}
-      {properties.videoList?.length ? <VideoFrustum data={data} /> : null}
+      {properties?.videoList?.length ? <VideoFrustum data={data} /> : null}
     </>
   )
 })
