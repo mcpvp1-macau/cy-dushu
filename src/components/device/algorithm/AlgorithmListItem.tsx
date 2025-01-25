@@ -72,7 +72,7 @@ const AlgorithmListItem: FC<PropsType> = memo(
           : ''
 
       return { btnName, status }
-    }, [aiData.deployRecordList])
+    }, [aiData.deployRecordList, t])
 
     const isRunning = btnName === 'Stop' || btnName === '停止'
     const msgApi = useAppMsg()
@@ -111,7 +111,7 @@ const AlgorithmListItem: FC<PropsType> = memo(
         deviceId: deviceId!,
         algorithmConfig: JSON.stringify(data),
       })
-      msgApi.success(t('api.success'))
+      msgApi.success(t('api.success.msg'))
       setOpen(false)
       onAction?.()
     })
