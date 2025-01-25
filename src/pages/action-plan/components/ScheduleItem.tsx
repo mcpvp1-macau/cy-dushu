@@ -3,6 +3,7 @@ import TagItem from '@/components/TagItem'
 import { Switch } from 'antd'
 import ScheduleModal from './ScheduleModal'
 import {
+  deleteActionPlan,
   startActionPlan,
   stopActionPlan,
   terminateActionPlan,
@@ -12,6 +13,8 @@ import { useAppMsg } from '@/hooks/useAppMsg'
 import IconMore from '@/assets/icons/jsx/IconMore'
 import IconButtonWithDropDown from '@/components/IconButtonWithDropDown'
 import { Link } from 'react-router-dom'
+import IconButton from '@/components/ui/button/IconButton'
+import IconDelete from '@/assets/icons/jsx/IconDelete'
 
 type PropsType = {
   data: API_ACTION_PLAN.domain.Plan
@@ -44,7 +47,7 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
       queryClient.invalidateQueries({
         queryKey: ['getActionPlanList'],
       })
-      msgApi.success(t('api.success'))
+      msgApi.success(t('api.success.msg'))
     } finally {
       setLoading(false)
     }
@@ -55,7 +58,7 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
     queryClient.invalidateQueries({
       queryKey: ['getActionPlanList'],
     })
-    msgApi.success(t('api.success'))
+    msgApi.success(t('api.success.msg'))
   }
 
   const handleChangeValid = async () => {
@@ -68,7 +71,15 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
     queryClient.invalidateQueries({
       queryKey: ['getActionPlanList'],
     })
-    msgApi.success(t('api.success'))
+    msgApi.success(t('api.success.msg'))
+  }
+
+  const handleDelete = async () => {
+    await deleteActionPlan(data.id!)
+    queryClient.invalidateQueries({
+      queryKey: ['getActionPlanList'],
+    })
+    msgApi.success(t('api.success.msg'))
   }
 
   return (
@@ -88,7 +99,7 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
         <div className="flex-1">
           <div className="flex justify-between items-center">
             <span className="text-white">{data.name}</span>
-            {data.status !== 'TERMINATE' && (
+            {data.status !== 'TERMINATE' ? (
               <div
                 className="flex items-center gap-3"
                 onClick={(e) => {
@@ -122,6 +133,13 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
                   onChange={handleChangeValid}
                 />
               </div>
+            ) : (
+              <IconButton
+                toolTipProps={{ title: t('common.delete') }}
+                onClick={handleDelete}
+              >
+                <IconDelete />
+              </IconButton>
             )}
           </div>
           <div className="mt-1 text-xs flex gap-2 justify-between">

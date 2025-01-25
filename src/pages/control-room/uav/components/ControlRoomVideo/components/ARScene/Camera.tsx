@@ -1,6 +1,5 @@
 import gimbalMap from '@/constant/uav/gimbal'
-import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import useMixARStore from '@/store/control-room/useMixAR.store'
+import useMixARStore, { GimbalPick } from '@/store/control-room/useMixAR.store'
 import useSettingStore from '@/store/useSetting.store'
 import { calcFovRadiation } from '@/utils/fov'
 import { isNil } from 'lodash'
@@ -12,21 +11,10 @@ type PropsType = unknown
 /** 更新相机 */
 const ARSceneCamera: FC<PropsType> = memo(() => {
   const uav = useMixARStore((s) => s.uavProperties)
-  // console.log(uav)
-  // const uav = useUavControlRoomStore((s) => ({
-  //   longitude: s.state.longitude,
-  //   latitude: s.state.latitude,
-  //   altitude: s.state.altitude,
-  //   gimbalYaw: s.state.gimbalYaw,
-  //   gimbalPitch: s.state.gimbalPitch,
-  //   zoomFactor: s.state.zoomFactor,
-  //   cameraType: 0,
-  //   width: 1920,
-  //   height: 1440,
-  //   lensType: 0,
-  // }))
   const { viewer } = useCesium()
   const shiftSetting = useSettingStore((s) => s.virtualReal.shift)
+
+  const updateGimbalPick = useMixARStore((s) => s.updateGimbalPick)
 
   useEffect(() => {
     if (!viewer?.camera) {
@@ -49,7 +37,6 @@ const ARSceneCamera: FC<PropsType> = memo(() => {
       destination: Cesium.Cartesian3.fromDegrees(
         uav.longitude,
         uav.latitude,
-        // startInfo.startHeight + uav.altitude! - startInfo.startAGL,
         uav.altitude! + shiftSetting.height,
       ),
       orientation: {
@@ -65,11 +52,91 @@ const ARSceneCamera: FC<PropsType> = memo(() => {
         gimbalMap[uav.cameraType!]?.wide_focal ?? 4.5,
         gimbalMap[uav.cameraType!]?.wide_camera_w ?? 6.4,
         uav.lensType === 2 ? uav.zoomFactor : 1,
-      ), // 75.17455291748047
+      ),
       aspectRatio: (uav.width ?? 1) / (uav.height ?? 1),
       near: 0.1,
       far: 100000,
     })
+
+    // 获取相机四个角的经纬度 ---------------------
+    const frustum = camera.frustum as Cesium.PerspectiveFrustum
+    const tanFovY = Math.tan(camera.frustum.fovy! / 2)
+    const aspectRatio = frustum.aspectRatio
+    const tanFovX = tanFovY * aspectRatio!
+    const cameraDirection = Cesium.Cartesian3.clone(camera.direction)
+    const cameraRight = Cesium.Cartesian3.clone(camera.right)
+    const cameraUp = Cesium.Cartesian3.clone(camera.up)
+
+    const directionTuples = [
+      ['leftBottom', -tanFovX, -tanFovY],
+      ['rightBottom', tanFovX, -tanFovY],
+      ['leftTop', -tanFovX, tanFovY],
+      ['rightTop', tanFovX, tanFovY],
+    ] as const
+
+    const calcDirection = (fovX: number, fovY: number) =>
+      Cesium.Cartesian3.add(
+        Cesium.Cartesian3.multiplyByScalar(
+          cameraDirection,
+          1.0,
+          new Cesium.Cartesian3(),
+        ),
+        Cesium.Cartesian3.add(
+          Cesium.Cartesian3.multiplyByScalar(
+            cameraUp,
+            fovY,
+            new Cesium.Cartesian3(),
+          ),
+          Cesium.Cartesian3.multiplyByScalar(
+            cameraRight,
+            fovX,
+            new Cesium.Cartesian3(),
+          ),
+          new Cesium.Cartesian3(),
+        ),
+        new Cesium.Cartesian3(),
+      )
+
+    // 视锥四个角的经纬度
+    const gimbalPick: GimbalPick = {}
+
+    for (const [key, fovX, fovY] of directionTuples) {
+      let lowFovY = -Math.abs(fovY)
+      let highFovY = fovY
+
+      while (lowFovY + 0.001 < highFovY) {
+        const y = (lowFovY + highFovY) / 2
+        const direction = calcDirection(fovX, y)
+
+        const ray = new Cesium.Ray(camera.position, direction)
+        const intersection = Cesium.IntersectionTests.rayEllipsoid(
+          ray,
+          viewer.scene.globe.ellipsoid,
+        )
+        if (Cesium.defined(intersection)) {
+          lowFovY = y
+        } else {
+          highFovY = y
+        }
+      }
+
+      const direction = calcDirection(fovX, lowFovY)
+      const ray = new Cesium.Ray(camera.position, direction)
+      const intersection = Cesium.IntersectionTests.rayEllipsoid(
+        ray,
+        viewer.scene.globe.ellipsoid,
+      )
+      if (Cesium.defined(intersection)) {
+        const point = Cesium.Ray.getPoint(ray, intersection.start)
+        const cartographic =
+          viewer.scene.globe.ellipsoid.cartesianToCartographic(point)
+        const lon = Cesium.Math.toDegrees(cartographic.longitude)
+        const lat = Cesium.Math.toDegrees(cartographic.latitude)
+        gimbalPick[key] = [lon, lat]
+      }
+    }
+
+    updateGimbalPick(gimbalPick)
   }, [uav, viewer])
 
   return null

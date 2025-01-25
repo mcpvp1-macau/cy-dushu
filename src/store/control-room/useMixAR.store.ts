@@ -2,6 +2,7 @@ import { Feature, GeoJsonProperties, Geometry } from 'geojson'
 import { RBush } from 'geojson-rbush'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
+import { Viewer } from 'cesium'
 
 /** UAV 属性 */
 export type UavProperties = Partial<{
@@ -59,10 +60,15 @@ type StateType = {
   /** 覆盖物 AR */
   overlaiesAR: number[][][]
 
+  cesiumViewer: Viewer | null
+
   /** ====== 3D 虚实融合 ====== */
-  roads: API_GEO_SERACH.domain.Road[]
-  aois: API_GEO_SERACH.domain.AOI[]
-  pois: API_GEO_SERACH.domain.POI[]
+  roads: API_GEO_SERACH.res.RoadDataRes | null
+  aois: API_GEO_SERACH.res.AOIDataRes | null
+  pois: API_GEO_SERACH.res.POIDataRes | null
+  roadsRTree: RBush<GeoJSON.Geometry, GeoJsonProperties> | null
+  aoisRTree: RBush<GeoJSON.Geometry, GeoJsonProperties> | null
+  poisRTree: RBush<GeoJSON.Geometry, GeoJsonProperties> | null
 }
 
 type ActionsType = {
@@ -83,10 +89,16 @@ type ActionsType = {
     airpointPositionsAR: StateType['airpointPositionsAR'],
   ) => void
   updateOverlaiesAR: (overlaiesAR: StateType['overlaiesAR']) => void
+
+  updateCeisumViewer: (cesiumViewer: StateType['cesiumViewer']) => void
+
   /** ====== 3D 虚实融合 ====== */
   updateRoads: (roads: StateType['roads']) => void
   updateAOIs: (aois: StateType['aois']) => void
   updatePOIs: (pois: StateType['pois']) => void
+  updateRoadsRTree: (roadsRTree: StateType['roadsRTree']) => void
+  updateAOIsRTree: (aoisRTree: StateType['aoisRTree']) => void
+  updatePOIsRTree: (poisRTree: StateType['poisRTree']) => void
 }
 
 /** 虚实融合 */
@@ -111,9 +123,13 @@ const useMixARStore = create<StateType & ActionsType>()(
       airpointPositions: [],
       airpointPositionsAR: [],
       overlaiesAR: [],
-      roads: [],
-      aois: [],
-      pois: [],
+      roads: null,
+      aois: null,
+      pois: null,
+      roadsRTree: null,
+      aoisRTree: null,
+      poisRTree: null,
+      cesiumViewer: null,
       updateEnable: (enable) => {
         set({ enable, arData: [], features: [] }, false, 'updateEnable')
       },
@@ -163,6 +179,18 @@ const useMixARStore = create<StateType & ActionsType>()(
       },
       updatePOIs: (pois) => {
         set({ pois }, false, 'updatePOIs')
+      },
+      updateRoadsRTree: (roadsRTree) => {
+        set({ roadsRTree }, false, 'updateRoadsRTree')
+      },
+      updateAOIsRTree: (aoisRTree) => {
+        set({ aoisRTree }, false, 'updateAOIsRTree')
+      },
+      updatePOIsRTree: (poisRTree) => {
+        set({ poisRTree }, false, 'updatePOIsRTree')
+      },
+      updateCeisumViewer: (cesiumViewer) => {
+        set({ cesiumViewer }, false, 'updateCeisumViewer')
       },
     }),
     {

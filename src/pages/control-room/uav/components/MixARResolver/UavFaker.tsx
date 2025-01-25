@@ -17,6 +17,7 @@ import { shouldJson } from '@/utils/json'
 
 type PropsType = unknown
 
+/** @deprecated */
 const UavFaker: FC<PropsType> = memo(() => {
   const uav = useMixARStore((s) => s.uavProperties)
   const updateGimbalPick = useMixARStore((s) => s.updateGimbalPick)

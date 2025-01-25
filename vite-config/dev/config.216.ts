@@ -58,6 +58,15 @@ export default mergeConfig(
           target: 'http://172.27.95.216:31118',
           changeOrigin: true,
         },
+        '/_ws_proxy/': {
+          target: 'ws://video.jing-an.com:10080', // 默认需要动态设置，见 `configure` 部分
+          ws: true, // 启用 WebSocket 支持
+          changeOrigin: true, // 修改请求头中的 `Host` 为目标地址
+          rewrite: (path) => {
+            // 移除 /_ws_proxy/ 前缀
+            return path.replace(/^\/_ws_proxy\//, '')
+          },
+        },
       },
     },
     define: {
@@ -65,6 +74,7 @@ export default mergeConfig(
       __DEV_MERGE_CONFIG__: {
         systemName: 'jingqi',
         loginUrl: 'https://4a.jing-an.com:32712/login',
+        videoProxy: true,
       },
     },
   }),

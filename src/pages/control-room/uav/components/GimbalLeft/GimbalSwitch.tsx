@@ -39,19 +39,16 @@ const GimbalSwitch: FC<PropsType> = memo(() => {
     if (videoSource !== 'gimbal') {
       return
     }
+    const n = gimbalTypes.length
     let idx = gimbalTypes.findIndex((e) => e[0] === lensType)
-    idx =
-      (((idx + delta) % gimbalTypes.length) + gimbalTypes.length) %
-      gimbalTypes.length
+    idx = (((idx + delta) % n) + n) % n
     let isHave = !!gimbalData?.types?.find(
       (item: any) => item.type === gimbalTypes[idx][0],
     )
     if (isHave) {
       handleClick(gimbalTypes[idx][0])
     } else {
-      idx =
-        (((idx + delta) % gimbalTypes.length) + gimbalTypes.length) %
-        gimbalTypes.length
+      idx = (((idx + delta) % n) + n) % n
       isHave = !!gimbalData?.types?.find(
         (item: any) => item.type === gimbalTypes[idx][0],
       )
@@ -69,6 +66,8 @@ const GimbalSwitch: FC<PropsType> = memo(() => {
   }, [])
 
   const { t } = useTranslation()
+
+  console.log(has, videoSource, gimbalData)
 
   return (
     <>

@@ -5,12 +5,16 @@ import {
 } from '@/service/modules/geo'
 import useMixARStore from '@/store/control-room/useMixAR.store'
 import * as turf from '@turf/turf'
+import RBush from 'geojson-rbush'
 
 type PropsType = unknown
 
+/** 负责更新 GEOJSON 路网数据 */
 const ARSenceUpdateData: FC<PropsType> = memo(() => {
   const uav = useMixARStore((s) => s.uavProperties)
-  const DISTANCE = 600
+
+  // 筛选距离
+  const DISTANCE = 1_400 // 1 km
 
   const lastCoordinates = useRef<[number, number] | undefined>(undefined)
   const [range, setRange] = useState<[number, number][] | undefined>()
@@ -28,13 +32,17 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
           lat1: range![1][1],
         }),
       enabled: !!range,
+      select: (d) => d.data,
     },
     queryClient,
   )
-  const updatePOIs = useMixARStore((s) => s.updatePOIs)
+
+  const updatePOIsRTree = useMixARStore((s) => s.updatePOIsRTree)
   useEffect(() => {
-    if (Array.isArray(poiData)) {
-      updatePOIs(poiData)
+    if (poiData) {
+      const rTree = RBush<GeoJSON.Point, GeoJSON.GeoJsonProperties>()
+      rTree.load(poiData)
+      updatePOIsRTree(rTree)
     }
   }, [poiData])
 
@@ -50,20 +58,18 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
           lat1: range![1][1],
         }),
       enabled: !!range,
+      select: (d) => d.data,
     },
     queryClient,
   )
 
-  const updateAOIs = useMixARStore((s) => s.updateAOIs)
+  const updateAOIsRTree = useMixARStore((s) => s.updateAOIsRTree)
 
   useEffect(() => {
-    if (Array.isArray(aoiData)) {
-      aoiData.sort((a, b) => {
-        const ax = a.class === 'building' ? 1 : 0
-        const bx = b.class === 'building' ? 1 : 0
-        return ax - bx
-      })
-      updateAOIs(aoiData)
+    if (aoiData) {
+      const rTree = RBush<GeoJSON.Polygon, GeoJSON.GeoJsonProperties>()
+      rTree.load(aoiData)
+      updateAOIsRTree(rTree)
     }
   }, [aoiData])
 
@@ -79,13 +85,18 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
           lat1: range![1][1],
         }),
       enabled: !!range,
+      select: (d) => d.data,
     },
     queryClient,
   )
-  const updateRoads = useMixARStore((s) => s.updateRoads)
+
+  const updateRoadsRTree = useMixARStore((s) => s.updateRoadsRTree)
+
   useEffect(() => {
-    if (Array.isArray(roadData)) {
-      updateRoads(roadData)
+    if (roadData) {
+      const rTree = RBush<GeoJSON.LineString, GeoJSON.GeoJsonProperties>()
+      rTree.load(roadData)
+      updateRoadsRTree(rTree)
     }
   }, [roadData])
 
