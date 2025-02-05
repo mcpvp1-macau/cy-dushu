@@ -1,5 +1,4 @@
 import DeviceOnlineStatus from '@/components/device/OnlineStatus'
-import { memo, type FC } from 'react'
 
 const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
   return (

@@ -1,7 +1,6 @@
-import Icon from '@ant-design/icons';
-import React from 'react';
+import Icon from '@ant-design/icons'
 
-type IconParams = Omit<Parameters<typeof Icon>[0], 'component'>;
+type IconParams = Omit<Parameters<typeof Icon>[0], 'component'>
 
 const iconSvg = (props: any) => {
   return (
@@ -25,11 +24,11 @@ const iconSvg = (props: any) => {
         </g>
       </g>
     </svg>
-  );
-};
+  )
+}
 
 const IconDisable = (props: IconParams) => (
   <Icon component={iconSvg} {...props} />
-);
+)
 
-export default IconDisable;
+export default IconDisable

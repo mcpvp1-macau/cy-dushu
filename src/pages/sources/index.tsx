@@ -1,6 +1,5 @@
 import { getAllDeviceType } from '@/service/modules/device'
 import { Skeleton, Tabs } from 'antd'
-import { memo, type FC } from 'react'
 import SourceTable from './components/SourceTable'
 import { useSearchParams } from 'react-router-dom'
 import { isNil } from 'lodash'

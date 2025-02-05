@@ -1,5 +1,4 @@
 import { Col, Form, InputNumber, Row } from 'antd'
-import React, { useEffect } from 'react'
 import ControlItemSelect from '../../ControlItem'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { setDeviceProp } from '@/service/modules/device'
@@ -7,7 +6,7 @@ import { useAppMsg } from '@/hooks/useAppMsg'
 
 type Props = unknown
 
-const GimbalControl: React.FC<Props> = () => {
+const GimbalControl: FC<Props> = () => {
   const [form] = Form.useForm()
   const msgApi = useAppMsg()
   const productKey = useUavControlRoomStore((s) => s.productKey)
@@ -55,7 +54,7 @@ const GimbalControl: React.FC<Props> = () => {
   }, [gimbalYaw])
 
   return (
-    <div className='pt-[10px]'>
+    <div className="pt-[10px]">
       <Form
         name="z60r"
         labelCol={{ span: 10 }}
@@ -96,4 +95,4 @@ const GimbalControl: React.FC<Props> = () => {
   )
 }
 
-export default React.memo(GimbalControl)
+export default memo(GimbalControl)

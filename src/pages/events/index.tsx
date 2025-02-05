@@ -14,7 +14,6 @@ import {
 } from '@tanstack/react-table'
 import { DatePicker, Input, Pagination } from 'antd'
 import type { Dayjs } from 'dayjs'
-import { memo, type FC } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import useEventTypeOptions from './hooks/useEventTypeOptions'
 import EventDetailModal from './components/EventDetailModal'

@@ -1,4 +1,4 @@
-import { lazy, memo, type FC } from 'react'
+import { lazy } from 'react'
 import UavFlyInfoCard from './FlyInfoCard'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import UavAirportUavDetailInfoCard from './InfoCard'
