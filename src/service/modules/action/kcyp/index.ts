@@ -30,3 +30,8 @@ export const getXSKCYPOrder = (data: API_KCYP.req.GetKCYPOrderReq) => {
 export const saveXSKCYPOrder = (data: any) => {
   return serverJingqi.post('/xiaoshan/kcyp/save', data)
 }
+
+/** 最终工单提交 */
+export const commitXiaoshanKCYP = (data: any) => {
+  return serverJingqi.post('/xiaoshan/kcyp/commit', data)
+}

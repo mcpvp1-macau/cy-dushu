@@ -8,7 +8,7 @@ import { useDebounceFn } from 'ahooks'
 import { Form } from 'antd'
 import { DictEnum } from '@/enum/dict'
 import dayjs from 'dayjs'
-import { statusColorMap } from '../kcyp/normal.constant'
+import { statusColorMap } from '../shanghai/normal.constant'
 
 type PropsType = { actionId: string }
 
@@ -19,7 +19,7 @@ const KCYPXSPanel: FC<PropsType> = memo(({ actionId }) => {
 
   const { data, isLoading } = useQuery(
     {
-      queryKey: ['getKYCPOrder', actionId],
+      queryKey: ['getXSKYCPOrder', actionId],
       queryFn: () => getXSKCYPOrder({ caseId: actionId }),
       enabled: !!actionId,
       select: (d) => d.data,
@@ -33,6 +33,7 @@ const KCYPXSPanel: FC<PropsType> = memo(({ actionId }) => {
     if (!data) {
       return
     }
+    console.log('data', data)
     form.setFieldsValue({
       ...data,
       caseHapTime: dayjs(data?.caseHapTime),
@@ -56,7 +57,7 @@ const KCYPXSPanel: FC<PropsType> = memo(({ actionId }) => {
     mutationFn: saveXSKCYPOrder,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['getKYCPOrder', actionId],
+        queryKey: ['getXSKYCPOrder', actionId],
       })
     },
   })
