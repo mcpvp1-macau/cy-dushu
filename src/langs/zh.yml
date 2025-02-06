@@ -21,6 +21,7 @@ setting:
     title: 地图
   system:
     title: 系统
+    clearLocalData: 清空本地数据
 situation:
   menus:
     action: 行动

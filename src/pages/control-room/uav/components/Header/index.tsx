@@ -79,6 +79,7 @@ const SignalStrength = memo(() => {
   const { signalMode, signalStrength } = useS(
     useShallow((m) => {
       const s = m.state ?? {}
+      console.log('s', s)
       return {
         signalMode: s.signalMode,
         signalStrength: s.signalStrength,

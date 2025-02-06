@@ -23,6 +23,7 @@ setting:
     title: Map
   system:
     title: System
+    clearLocalData: Clear Local Data
 situation:
   menus:
     action: Action

@@ -32,12 +32,20 @@ const HeaderSetting: FC<PropsType> = memo(() => {
               {
                 key: 'video_decoder',
                 label: t('setting.video_decoder.title'),
-                children: <VideoDecoder />,
+                children: (
+                  <div className="mt-1">
+                    <VideoDecoder />
+                  </div>
+                ),
               },
               {
                 key: 'map_setting',
                 label: t('setting.map.title'),
-                children: <MapSetting />,
+                children: (
+                  <div className="mt-1">
+                    <MapSetting />
+                  </div>
+                ),
               },
               {
                 key: 'system_setting',
@@ -51,7 +59,7 @@ const HeaderSetting: FC<PropsType> = memo(() => {
                         window.location.reload()
                       }}
                     >
-                      清空本地数据
+                      {t('setting.system.clearLocalData')}
                     </Button>
                   </div>
                 ),
