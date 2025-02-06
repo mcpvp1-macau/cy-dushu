@@ -1,14 +1,13 @@
 import { Col, Form, Row } from 'antd'
-import React from 'react'
 import ControlItemSelect from '../../ControlItem'
 
 type Props = unknown
 
-const CameraControl: React.FC<Props> = () => {
+const CameraControl: FC<Props> = () => {
   const [form] = Form.useForm()
 
   return (
-    <div className='pt-[10px]'>
+    <div className="pt-[10px]">
       <Form
         name="z30pro2"
         labelCol={{ span: 10 }}
@@ -98,4 +97,4 @@ const CameraControl: React.FC<Props> = () => {
   )
 }
 
-export default React.memo(CameraControl)
+export default memo(CameraControl)

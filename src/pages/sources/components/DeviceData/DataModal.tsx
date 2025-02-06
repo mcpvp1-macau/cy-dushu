@@ -1,7 +1,7 @@
 import XModal from '@/components/XModal'
 import { getDeviceDetail } from '@/service/modules/device'
 import { Tabs } from 'antd'
-import { lazy, memo, type FC } from 'react'
+import { lazy } from 'react'
 import AppSpin from '@/components/AppSpin'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import useDeviceChildrenList from '@/hooks/device/useDeviceChildrenList'

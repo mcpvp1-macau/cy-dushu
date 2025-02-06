@@ -2,7 +2,6 @@ import { UpdateStatusEnum, UpdateStatusMap } from '@/enum/device'
 import { updateOtaDevice } from '@/service/modules/device'
 import { LoadingOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
-import { memo, type FC } from 'react'
 
 type PropsType = {
   data: API_DEVICE.domain.DeviceListItem

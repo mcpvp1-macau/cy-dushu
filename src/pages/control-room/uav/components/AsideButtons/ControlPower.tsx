@@ -10,6 +10,7 @@ type PropsType = unknown
 
 const ControlPower: FC<PropsType> = memo(() => {
   const { t } = useTranslation()
+  // const username = useUserStore((s) => s.user?.username)
   const updateUUID = useUavControlRoomStore((s) => s.updateUUID)
   const { robControlPower, isPending, disabled } =
     useRobControlPower(updateUUID)

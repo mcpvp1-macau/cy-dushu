@@ -1,19 +1,18 @@
 import { Button } from 'antd'
-import { lazy, memo, type FC } from 'react'
 import { endAction } from '@/service/modules/action'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import AppCollapse from '@/components/AppCollapse'
 import AddTask from './components/AddTask'
-import KCYPNormalModal from './components/kcyp/NormalModal'
+import KCYPModal from './components/kcyp/Modal'
 import useActionDetail from './context'
 import AppSpin from '@/components/AppSpin'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import KCYPXSPanel from './components/xiaoshan_kcyp/Panel'
+import KCYPPanel from './components/kcyp/Panel'
+import { lazy } from 'react'
 
 const ChildActions = lazy(() => import('./components/ChildActions'))
 const ActionLogList = lazy(() => import('./components/ActionLogList'))
 const AIResult = lazy(() => import('./components/AIResult'))
-const KCYPNormalPanel = lazy(() => import('./components/kcyp/NormalPanel'))
 
 type PropsType = unknown
 
@@ -40,17 +39,12 @@ const PageActionDetailSub: FC<PropsType> = memo(() => {
     if (!actionDetail?.type) {
       return []
     }
+
     const kcyp = {
       label: t('action.detail.kcyp.title'),
       key: '1',
       children: (
-        <AppViewSuspense>
-          {actionDetail.type === 'kcyp_action' ? (
-            <KCYPNormalPanel actionId={actionId!} />
-          ) : (
-            <KCYPXSPanel actionId={actionId!} />
-          )}
-        </AppViewSuspense>
+        <KCYPPanel actionId={actionId!} actionType={actionDetail.type} />
       ),
     }
     const task = {
@@ -66,7 +60,9 @@ const PageActionDetailSub: FC<PropsType> = memo(() => {
     const aiResult = {
       label: t('action.detail.ai_result.title'),
       key: '3',
-      extra: <KCYPNormalModal actionId={actionId!} />,
+      extra: ['kcyp_action', 'xiaoshan_kcyp_action'].includes(
+        actionDetail.type,
+      ) && <KCYPModal actionId={actionId!} actionType={actionDetail.type} />,
       children: (
         <AppViewSuspense>
           <AIResult actionId={actionId!} />

@@ -44,6 +44,7 @@ const AddAction: FC<PropsType> = memo(() => {
   const [confirmLoading, setConfirmLoading] = useState(false)
 
   const actionTypeOptions = useDictOptions(DictEnum.ACTION_TYPE)
+  console.log('actionTypeOptions', actionTypeOptions)
   const formItems = useMemo(
     () => createAddActionFormItems(t, actionTypeOptions),
     [i18n.language, actionTypeOptions],

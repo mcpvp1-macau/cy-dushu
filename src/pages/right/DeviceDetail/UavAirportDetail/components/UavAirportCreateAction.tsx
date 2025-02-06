@@ -1,7 +1,6 @@
 import IconSetting from '@/assets/icons/jsx/IconSetting'
 import IconButton from '@/components/ui/button/IconButton'
 import { LoadingOutlined } from '@ant-design/icons'
-import { memo, type FC } from 'react'
 import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import { getCameraByType } from '@/service/modules/airline'

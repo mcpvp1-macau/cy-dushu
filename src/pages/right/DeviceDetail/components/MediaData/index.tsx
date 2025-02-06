@@ -1,5 +1,5 @@
 import AppViewSuspense from '@/components/AppViewSuspense'
-import { lazy, memo, type FC } from 'react'
+import { lazy } from 'react'
 import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
 import useDeviceChildrenList from '@/hooks/device/useDeviceChildrenList'
 

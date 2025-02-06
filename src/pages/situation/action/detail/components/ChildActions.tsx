@@ -1,7 +1,6 @@
 import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
 import { getActionItemList } from '@/service/modules/action-item'
-import { memo, type FC } from 'react'
 import ChildAction from './ChildAction'
 import { Spin } from 'antd'
 import { ScrollArea } from '@/components/ui/scroll-area'

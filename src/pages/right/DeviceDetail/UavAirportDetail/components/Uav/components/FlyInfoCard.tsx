@@ -1,6 +1,5 @@
 import IconHome from '@/assets/icons/jsx/uav/IconHome'
 import IconUavBattery from '@/assets/icons/jsx/uav/IconUavBattery'
-import { memo, type FC } from 'react'
 
 type PropsType = {
   electric?: number

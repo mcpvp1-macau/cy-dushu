@@ -14,15 +14,24 @@ import ImageContainBox from '@/components/ImageContainBox'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import { useDictOptions } from '@/store/useDict.store'
 import { DictEnum } from '@/enum/dict'
-import { getKCYPOrder } from '@/service/modules/action/kcyp'
+import { getKCYPOrder, getXSKCYPOrder } from '@/service/modules/action/kcyp'
 import { ProcessStatusEnum } from '@/service/modules/action/kcyp/enum'
 import { useAppMsg } from '@/hooks/useAppMsg'
-import NormalVerificationModal from './NormalVerificationModal'
+import { ActionEnum } from '@/constant/action/action_type'
+import { lazy, Suspense } from 'react'
+import { LoadingOutlined } from '@ant-design/icons'
 
 type PropsType = {
   actionId: string
+  actionType: string
 }
 
+const NormalVerificationModal = lazy(
+  () => import('./shanghai/NormalVerificationModal'),
+)
+const XSVerificationModal = lazy(() => import('./xiaoshan/VerificationModal'))
+
+/** AI 检测结果 */
 const ResultItem: FC<{ data: API_ACTION.domain.AIResultRecord }> = memo(
   ({ data }) => {
     const [form] = Form.useForm()
@@ -130,7 +139,9 @@ const ResultItem: FC<{ data: API_ACTION.domain.AIResultRecord }> = memo(
 )
 
 /** 快处易赔选择 对话框 */
-const KCYPNormalModal: FC<PropsType> = memo(({ actionId }) => {
+const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
+  const orderKey =
+    actionType === ActionEnum.KCYP ? 'getKYCPOrder' : 'getXSKCYPOrder'
   const [open, setOpen] = useState(false)
   const msgApi = useAppMsg()
 
@@ -168,8 +179,15 @@ const KCYPNormalModal: FC<PropsType> = memo(({ actionId }) => {
 
   const { data: orderData, isLoading: orderLoading } = useQuery(
     {
-      queryKey: ['getKYCPOrder', actionId],
-      queryFn: () => getKCYPOrder({ caseId: actionId }),
+      queryKey: [orderKey, actionId],
+      queryFn: () => {
+        if (actionType === ActionEnum.KCYP) {
+          return getKCYPOrder({ caseId: actionId })
+        } else if (actionType === ActionEnum.KCYPXS) {
+          return getXSKCYPOrder({ caseId: actionId })
+        }
+        return Promise.reject('Unknown action type')
+      },
       enabled: !!actionId,
       select: (d) => d.data,
       staleTime: 1000 * 60 * 2,
@@ -223,12 +241,33 @@ const KCYPNormalModal: FC<PropsType> = memo(({ actionId }) => {
                     >
                       全选
                     </Checkbox>
-                    <IconButton
-                      toolTipProps={{ title: '校验' }}
-                      onClick={handleVerificationClick}
-                    >
-                      <IconKCCheck />
-                    </IconButton>
+
+                    <Suspense fallback={<LoadingOutlined />}>
+                      <IconButton
+                        toolTipProps={{ title: '校验' }}
+                        onClick={handleVerificationClick}
+                      >
+                        <IconKCCheck />
+                      </IconButton>
+                      {actionType === ActionEnum.KCYP ? (
+                        <NormalVerificationModal
+                          open={shareOpen}
+                          orderData={orderData}
+                          aiResultData={data}
+                          checkResultIds={checkIds}
+                          onClose={() => setShareOpen(false)}
+                        />
+                      ) : (
+                        <XSVerificationModal
+                          open={shareOpen}
+                          orderData={orderData}
+                          aiResultData={data}
+                          checkResultIds={checkIds}
+                          onClose={() => setShareOpen(false)}
+                        />
+                      )}
+                    </Suspense>
+
                     <IconButton
                       toolTipProps={{ title: '删除' }}
                       disabled={checkIds.length === 0}
@@ -264,19 +303,12 @@ const KCYPNormalModal: FC<PropsType> = memo(({ actionId }) => {
               </div>
             </Spin>
           </XModal>
-          <NormalVerificationModal
-            open={shareOpen}
-            orderData={orderData}
-            aiResultData={data}
-            checkResultIds={checkIds}
-            onClose={() => setShareOpen(false)}
-          />
         </>
       )}
     </div>
   )
 })
 
-KCYPNormalModal.displayName = 'KCYPNormalModal'
+KCYPModal.displayName = 'KCYPNormalModal'
 
-export default KCYPNormalModal
+export default KCYPModal

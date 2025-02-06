@@ -1,6 +1,6 @@
 import Select from '@/components/AntdOverride/Select'
 import IconButton from '@/components/ui/button/IconButton'
-import useSettingStore from '@/store/useSetting.store'
+import useARSettingStore from '@/store/setting/useARSetting.store'
 import { UndoOutlined } from '@ant-design/icons'
 import { Col, ColorPicker, Form, InputNumber, Row, Slider, Switch } from 'antd'
 import { isNil } from 'lodash'
@@ -72,9 +72,9 @@ const bigTypeMapping = {
 }
 
 /** 虚实融合相关设置 */
-const VRSetting: FC<PropsType> = memo(() => {
-  const vr = useSettingStore((s) => s.virtualReal)
-  const updVr = useSettingStore((s) => s.updateVirtualReal)
+const ARSetting: FC<PropsType> = memo(() => {
+  const ar = useARSettingStore((s) => s)
+  const updAR = useARSettingStore((s) => s.updateAR)
 
   const { i18n } = useTranslation()
   const filterOptions = useMemo(() => {
@@ -84,61 +84,61 @@ const VRSetting: FC<PropsType> = memo(() => {
     }))
   }, [i18n.language])
 
-  const updateMainRoad = (data: Partial<(typeof vr)['mainRoad']>) => {
-    updVr({
-      ...vr,
+  const updateMainRoad = (data: Partial<(typeof ar)['mainRoad']>) => {
+    updAR({
+      ...ar,
       mainRoad: {
-        ...vr.mainRoad,
+        ...ar.mainRoad,
         ...data,
       },
     })
   }
 
-  const updateSubRoad = (data: Partial<(typeof vr)['subRoad']>) => {
-    updVr({
-      ...vr,
+  const updateSubRoad = (data: Partial<(typeof ar)['subRoad']>) => {
+    updAR({
+      ...ar,
       subRoad: {
-        ...vr.subRoad,
+        ...ar.subRoad,
         ...data,
       },
     })
   }
 
-  const updateText = (data: Partial<(typeof vr)['text']>) => {
-    updVr({
-      ...vr,
+  const updateText = (data: Partial<(typeof ar)['text']>) => {
+    updAR({
+      ...ar,
       text: {
-        ...vr.text,
+        ...ar.text,
         ...data,
       },
     })
   }
 
-  const updateaoi = (data: Partial<(typeof vr)['aoi']>) => {
-    updVr({
-      ...vr,
+  const updateaoi = (data: Partial<(typeof ar)['aoi']>) => {
+    updAR({
+      ...ar,
       aoi: {
-        ...vr.aoi,
+        ...ar.aoi,
         ...data,
       },
     })
   }
 
-  const updatePoi = (data: Partial<(typeof vr)['poi']>) => {
-    updVr({
-      ...vr,
+  const updatePoi = (data: Partial<(typeof ar)['poi']>) => {
+    updAR({
+      ...ar,
       poi: {
-        ...vr.poi,
+        ...ar.poi,
         ...data,
       },
     })
   }
 
-  const updateShift = (data: Partial<(typeof vr)['shift']>) => {
-    updVr({
-      ...vr,
+  const updateShift = (data: Partial<(typeof ar)['shift']>) => {
+    updAR({
+      ...ar,
       shift: {
-        ...vr.shift,
+        ...ar.shift,
         ...data,
       },
     })
@@ -152,7 +152,7 @@ const VRSetting: FC<PropsType> = memo(() => {
           主路
           <Form.Item noStyle>
             <Switch
-              value={vr.mainRoad.enable}
+              value={ar.mainRoad.enable}
               onChange={(e) =>
                 updateMainRoad({
                   enable: e,
@@ -165,7 +165,7 @@ const VRSetting: FC<PropsType> = memo(() => {
           <Col span={12}>
             <Form.Item label="主路颜色">
               <ColorPicker
-                value={vr.mainRoad.color}
+                value={ar.mainRoad.color}
                 onChange={(e) =>
                   updateMainRoad({
                     color: e.toHexString(),
@@ -178,7 +178,7 @@ const VRSetting: FC<PropsType> = memo(() => {
             <Form.Item label="主路宽度">
               <InputNumber
                 suffix="px"
-                value={vr.mainRoad.size}
+                value={ar.mainRoad.size}
                 onChange={(e) =>
                   !isNil(e) &&
                   updateMainRoad({
@@ -191,7 +191,7 @@ const VRSetting: FC<PropsType> = memo(() => {
           <Col span={12}>
             <Form.Item label="描边颜色">
               <ColorPicker
-                value={vr.mainRoad.borderColor}
+                value={ar.mainRoad.borderColor}
                 onChange={(e) =>
                   updateMainRoad({
                     borderColor: e.toHexString(),
@@ -204,7 +204,7 @@ const VRSetting: FC<PropsType> = memo(() => {
             <Form.Item label="描边宽度">
               <InputNumber
                 suffix="px"
-                value={vr.mainRoad.borderSize}
+                value={ar.mainRoad.borderSize}
                 onChange={(e) =>
                   !isNil(e) &&
                   updateMainRoad({
@@ -221,7 +221,7 @@ const VRSetting: FC<PropsType> = memo(() => {
           小路
           <Form.Item noStyle>
             <Switch
-              value={vr.subRoad.enable}
+              value={ar.subRoad.enable}
               onChange={(e) =>
                 updateSubRoad({
                   enable: e,
@@ -234,7 +234,7 @@ const VRSetting: FC<PropsType> = memo(() => {
           <Col span={12}>
             <Form.Item label="小路颜色">
               <ColorPicker
-                value={vr.subRoad.color}
+                value={ar.subRoad.color}
                 onChange={(e) =>
                   updateSubRoad({
                     color: e.toHexString(),
@@ -247,7 +247,7 @@ const VRSetting: FC<PropsType> = memo(() => {
             <Form.Item label="小路宽度">
               <InputNumber
                 suffix="px"
-                value={vr.subRoad.size}
+                value={ar.subRoad.size}
                 onChange={(e) =>
                   !isNil(e) &&
                   updateSubRoad({
@@ -260,7 +260,7 @@ const VRSetting: FC<PropsType> = memo(() => {
           <Col span={12}>
             <Form.Item label="描边颜色">
               <ColorPicker
-                value={vr.subRoad.borderColor}
+                value={ar.subRoad.borderColor}
                 onChange={(e) =>
                   updateSubRoad({
                     borderColor: e.toHexString(),
@@ -273,7 +273,7 @@ const VRSetting: FC<PropsType> = memo(() => {
             <Form.Item label="描边宽度">
               <InputNumber
                 suffix="px"
-                value={vr.subRoad.borderSize}
+                value={ar.subRoad.borderSize}
                 onChange={(e) =>
                   !isNil(e) &&
                   updateSubRoad({
@@ -290,7 +290,7 @@ const VRSetting: FC<PropsType> = memo(() => {
           文本
           <Form.Item noStyle>
             <Switch
-              value={vr.text.enable}
+              value={ar.text.enable}
               onChange={(e) =>
                 updateText({
                   enable: e,
@@ -303,7 +303,7 @@ const VRSetting: FC<PropsType> = memo(() => {
           <Col span={12}>
             <Form.Item label="文本颜色">
               <ColorPicker
-                value={vr.text.color}
+                value={ar.text.color}
                 onChange={(e) =>
                   updateText({
                     color: e.toHexString(),
@@ -316,7 +316,7 @@ const VRSetting: FC<PropsType> = memo(() => {
             <Form.Item label="文本大小">
               <InputNumber
                 suffix="px"
-                value={vr.text.size}
+                value={ar.text.size}
                 onChange={(e) =>
                   !isNil(e) &&
                   updateText({
@@ -329,7 +329,7 @@ const VRSetting: FC<PropsType> = memo(() => {
           <Col span={12}>
             <Form.Item label="描边颜色">
               <ColorPicker
-                value={vr.text.borderColor}
+                value={ar.text.borderColor}
                 onChange={(e) =>
                   updateText({
                     borderColor: e.toHexString(),
@@ -343,7 +343,7 @@ const VRSetting: FC<PropsType> = memo(() => {
             <Form.Item label="描边宽度">
               <InputNumber
                 suffix="px"
-                value={vr.text.borderSize}
+                value={ar.text.borderSize}
                 onChange={(e) =>
                   !isNil(e) &&
                   updateText({
@@ -360,7 +360,7 @@ const VRSetting: FC<PropsType> = memo(() => {
           区域
           <Form.Item noStyle>
             <Switch
-              value={vr.aoi.enable}
+              value={ar.aoi.enable}
               onChange={(e) =>
                 updateaoi({
                   enable: e,
@@ -373,7 +373,7 @@ const VRSetting: FC<PropsType> = memo(() => {
           <Col span={12}>
             <Form.Item label="背景颜色">
               <ColorPicker
-                value={vr.aoi.color}
+                value={ar.aoi.color}
                 onChange={(e) =>
                   updateaoi({
                     color: e.toHexString(),
@@ -386,7 +386,7 @@ const VRSetting: FC<PropsType> = memo(() => {
             <Form.Item label="描边宽度">
               <InputNumber
                 suffix="px"
-                value={vr.aoi.borderSize}
+                value={ar.aoi.borderSize}
                 onChange={(e) =>
                   e &&
                   updateaoi({
@@ -399,7 +399,7 @@ const VRSetting: FC<PropsType> = memo(() => {
           <Col span={12}>
             <Form.Item label="描边颜色">
               <ColorPicker
-                value={vr.aoi.borderColor}
+                value={ar.aoi.borderColor}
                 onChange={(e) =>
                   updateaoi({
                     borderColor: e.toHexString(),
@@ -412,7 +412,7 @@ const VRSetting: FC<PropsType> = memo(() => {
           <Col span={12}>
             <Form.Item label="展示建筑">
               <Switch
-                value={vr.aoi.showBuilding}
+                value={ar.aoi.showBuilding}
                 onChange={(e) => {
                   if (!isNil(e)) {
                     updateaoi({
@@ -430,7 +430,7 @@ const VRSetting: FC<PropsType> = memo(() => {
           点位
           <Form.Item noStyle>
             <Switch
-              value={vr.poi.enable}
+              value={ar.poi.enable}
               onChange={(e) => updatePoi({ enable: e })}
             />
           </Form.Item>
@@ -442,7 +442,7 @@ const VRSetting: FC<PropsType> = memo(() => {
               <Select
                 options={filterOptions}
                 mode="multiple"
-                value={vr.poi.filter}
+                value={ar.poi.filter}
                 onChange={(e) => {
                   updatePoi({ filter: e })
                 }}
@@ -453,7 +453,7 @@ const VRSetting: FC<PropsType> = memo(() => {
           <Col span={12}>
             <Form.Item label="展示名称">
               <Switch
-                value={vr.poi.showName}
+                value={ar.poi.showName}
                 onChange={(e) => updatePoi({ showName: e })}
               />
             </Form.Item>
@@ -488,11 +488,11 @@ const VRSetting: FC<PropsType> = memo(() => {
                   min={-45}
                   max={45}
                   step={0.1}
-                  value={vr.shift.gimbalYaw}
+                  value={ar.shift.gimbalYaw}
                   onChange={(e) => updateShift({ gimbalYaw: e })}
                 />
                 <div className="w-11 text-right whitespace-nowrap">
-                  {vr.shift.gimbalYaw} °
+                  {ar.shift.gimbalYaw} °
                 </div>
               </div>
             </Form.Item>
@@ -506,11 +506,11 @@ const VRSetting: FC<PropsType> = memo(() => {
                   min={-30}
                   max={30}
                   step={0.1}
-                  value={vr.shift.gimbalPitch}
+                  value={ar.shift.gimbalPitch}
                   onChange={(e) => updateShift({ gimbalPitch: e })}
                 />
                 <div className="w-11 text-right whitespace-nowrap">
-                  {vr.shift.gimbalPitch} °
+                  {ar.shift.gimbalPitch} °
                 </div>
               </div>
             </Form.Item>
@@ -524,7 +524,7 @@ const VRSetting: FC<PropsType> = memo(() => {
                   min={-120}
                   max={120}
                   step={0.1}
-                  value={vr.shift.height}
+                  value={ar.shift.height}
                   onChange={(e) =>
                     updateShift({
                       height: e,
@@ -532,7 +532,7 @@ const VRSetting: FC<PropsType> = memo(() => {
                   }
                 />
                 <div className="w-11 text-right whitespace-nowrap">
-                  {vr.shift.height} m
+                  {ar.shift.height} m
                 </div>
               </div>
             </Form.Item>
@@ -545,7 +545,7 @@ const VRSetting: FC<PropsType> = memo(() => {
                   className="grow"
                   min={-100}
                   max={100}
-                  value={vr.shift.lat}
+                  value={ar.shift.lat}
                   onChange={(e) =>
                     updateShift({
                       lat: e,
@@ -553,7 +553,7 @@ const VRSetting: FC<PropsType> = memo(() => {
                   }
                 />
                 <div className="w-11 text-right whitespace-nowrap">
-                  {vr.shift.lat} m
+                  {ar.shift.lat} m
                 </div>
               </div>
             </Form.Item>
@@ -566,7 +566,7 @@ const VRSetting: FC<PropsType> = memo(() => {
                   className="grow"
                   min={-100}
                   max={100}
-                  value={vr.shift.lng}
+                  value={ar.shift.lng}
                   onChange={(e) =>
                     updateShift({
                       lng: e,
@@ -574,7 +574,7 @@ const VRSetting: FC<PropsType> = memo(() => {
                   }
                 />
                 <div className="w-11 text-right whitespace-nowrap">
-                  {vr.shift.lng} m
+                  {ar.shift.lng} m
                 </div>
               </div>
             </Form.Item>
@@ -585,6 +585,6 @@ const VRSetting: FC<PropsType> = memo(() => {
   )
 })
 
-VRSetting.displayName = 'VRSetting'
+ARSetting.displayName = 'VRSetting'
 
-export default VRSetting
+export default ARSetting
