@@ -16,8 +16,6 @@ const ARSceneCamera: FC<PropsType> = memo(() => {
 
   const updateGimbalPick = useMixARStore((s) => s.updateGimbalPick)
 
-  const updateGimbalPick = useMixARStore((s) => s.updateGimbalPick)
-
   useEffect(() => {
     if (!viewer?.camera) {
       return
