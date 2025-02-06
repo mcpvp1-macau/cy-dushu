@@ -7,6 +7,7 @@ import { getWindowPostion } from '@/utils/cesium/position-screen'
 import { createPortal } from 'react-dom'
 import { useDebounceFn } from 'ahooks'
 import * as Cesium from 'cesium'
+import { limitNum } from '@/utils/math'
 
 type PropsType = unknown
 
@@ -100,13 +101,24 @@ const MainKConfig: FC<PropsType> = memo(() => {
         createPortal(
           <div
             className="fixed z-10 -translate-x-1/2 -translate-y-1/2 bg-ground-1 bg-opacity-60 w-32 h-32 rounded-full"
-            style={{ left: windowPosition.x, top: windowPosition.y }}
+            style={{
+              left: limitNum(
+                windowPosition.x,
+                200,
+                document.body.clientWidth - 200,
+              ),
+              top: limitNum(
+                windowPosition.y,
+                120,
+                document.body.clientHeight - 120,
+              ),
+            }}
           >
             <div className="abs-center">
               <div
                 className="w-24 h-1 rounded origin-center bg-white "
                 style={{ rotate: `${-kValue - (cameeraHeading ?? 0)}deg` }}
-              ></div>
+              />
             </div>
           </div>,
           document.body,
