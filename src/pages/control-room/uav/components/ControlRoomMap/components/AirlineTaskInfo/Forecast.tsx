@@ -91,7 +91,7 @@ const Forecats: FC<PropsType> = memo(({ positions }) => {
             >
               <div>
                 {t('forecast.remainDistance.title')}:{' '}
-                {boardInfo.remainDistance.toFixed(0)}m
+                {boardInfo.remainDistance.toFixed(0)} m
               </div>
               <div>
                 {t('forecast.remainTime.title')}: {timeFormat}

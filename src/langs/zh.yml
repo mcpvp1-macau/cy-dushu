@@ -6,9 +6,19 @@ poi_searcher:
 setting:
   title: 设置
   video_decoder:
-    title: 本机视频解码器
+    title: 视频解码器
     description: 默认会根据浏览器是否支持，按照WCS、MSE、Simd、Wasm的顺序自动选择解码器。
     attention: 注意
+  map:
+    resolution:
+      smooth: 流畅
+      standard: 标准
+      default: 默认
+      high: 高清
+      super: 超清
+      ultra: 超高清
+      title: 清晰度
+    title: 地图
 situation:
   menus:
     action: 行动

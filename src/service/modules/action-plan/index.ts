@@ -33,6 +33,11 @@ export const startActionPlan = (actionPlanId: number) => {
   return serverJingqi.post(`/action/plan/start/${actionPlanId}`)
 }
 
+/** 删除计划 */
+export const deleteActionPlan = (actionPlanId: number) => {
+  return serverJingqi.post(`/action/plan/delete/${actionPlanId}`)
+}
+
 /** 获取计划记录列表 */
 export const getActionPlanRecordList = (
   data: API_ACTION_PLAN.req.GetPlanRecordListReq,

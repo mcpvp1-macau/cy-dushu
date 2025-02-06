@@ -94,7 +94,7 @@ const MixARCanvas: FC<PropsType> = memo(() => {
 
     const mainRoads: ArFeature[] = []
     const subRoads: ArFeature[] = []
-    const building: ArFeature[] = []
+    const aoi: ArFeature[] = []
 
     for (const data of arData) {
       if (!Array.isArray(data.coodinates) || data.coodinates.length < 2) {
@@ -102,8 +102,8 @@ const MixARCanvas: FC<PropsType> = memo(() => {
       }
       if (data.isClosed) {
         // 建筑
-        if (vrSetting.building.enable) {
-          building.push(data)
+        if (vrSetting.aoi.enable) {
+          aoi.push(data)
         }
       } else {
         const name = data.properties.name ?? data.properties.RoadName
@@ -121,15 +121,15 @@ const MixARCanvas: FC<PropsType> = memo(() => {
       }
     }
 
-    for (const data of building) {
+    for (const data of aoi) {
       drawClosedPolygon(
         ctx,
         data.coodinates,
-        vrSetting.building.color,
-        vrSetting.building.borderColor,
-        vrSetting.building.borderSize,
+        vrSetting.aoi.color,
+        vrSetting.aoi.borderColor,
+        vrSetting.aoi.borderSize,
       )
-      const name = data.properties.name ?? data.properties.building ?? ''
+      const name = data.properties.name ?? data.properties.aoi ?? ''
       if (name) {
         const textPosition = polygonCentroid(
           data.coodinates.map((e) => [e[0], e[1]]),
@@ -215,9 +215,9 @@ const MixARCanvas: FC<PropsType> = memo(() => {
       drawClosedPolygon(
         ctx,
         e,
-        vrSetting.building.color,
-        vrSetting.building.borderColor,
-        vrSetting.building.borderSize,
+        vrSetting.aoi.color,
+        vrSetting.aoi.borderColor,
+        vrSetting.aoi.borderSize,
       )
     })
 

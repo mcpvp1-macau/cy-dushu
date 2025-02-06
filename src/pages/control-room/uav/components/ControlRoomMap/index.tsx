@@ -1,5 +1,5 @@
 import CesiumMap from '@/map/CesiumMap'
-import { lazy, memo, Suspense, type FC } from 'react'
+import { memo, Suspense, type FC } from 'react'
 import UavMarker from './components/UavMarker'
 import ResetHomePointListener from './components/ResetHomePointListener'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
@@ -19,8 +19,7 @@ import BoardCesium from '@/map/GlobalMap/BoardCesium'
 
 type PropsType = unknown
 
-const MixARResolver = lazy(() => import('../MixARResolver'))
-const UavFaker = lazy(() => import('../MixARResolver/UavFaker'))
+// const UavFaker = lazy(() => import('../MixARResolver/UavFaker'))
 
 const ControlRoomUavMap: FC<PropsType> = memo(() => {
   const isResetHome = useUavControlRoomStore((s) => s.flyParams.isResetHome)
@@ -41,8 +40,8 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
             </div>
           }
         >
-          <MixARResolver />
-          <UavFaker />
+          {/* <MixARResolver /> */}
+          {/* <UavFaker /> */}
           <MapMixAR />
         </Suspense>
       )}

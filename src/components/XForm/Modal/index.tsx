@@ -54,6 +54,9 @@ const FormModal: FC<PropsType> = ({
   return (
     <ConfigProvider
       theme={{
+        cssVar: {
+          key: 'dushu',
+        },
         components: {
           Modal: {
             contentBg: '#1c2630',

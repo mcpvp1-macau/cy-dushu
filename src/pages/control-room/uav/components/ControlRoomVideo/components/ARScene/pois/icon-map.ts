@@ -84,6 +84,28 @@ const iconMap = new Map<string, string>([
   ['出租车', qichezulin],
   ['地铁站', gongjiaozhan],
   ['公交车站', gongjiaozhan],
+
+  ['充电站', qichechongdianzhan],
+  ['换电站', qichechongdianzhan],
+
+  ['GovernmentAndSocialOrganizations', zhengfu],
+  ['CarService', qichezulin],
+  ['CarSales', qichezulin],
+  ['RoadFacilities', weizhi],
+  ['CateringService', zaocan],
+  ['TransportationFacilities', jiaotang],
+  ['MedicalCareService', yiliao],
+  ['ShoppingService', shangchang],
+  ['SportsAndLeisure', tiyuchang],
+  ['CompaniesAndEnterprises', weizhi],
+  ['ScenicSpot', jingqu],
+  ['MotorcycleService', qijiandian],
+  ['CarMaintenance', qichezulin],
+  ['FinancialAndInsuranceService', a_yinhang],
+  ['BusinessAndResidential', weizhi],
+  ['ScienceEducationAndCulture', xuexiao],
+  ['PublicFacilities', gongce],
+  ['LifeService', weizhi],
 ])
 
 export const getPOIIcon = (type: string[] | string): string => {

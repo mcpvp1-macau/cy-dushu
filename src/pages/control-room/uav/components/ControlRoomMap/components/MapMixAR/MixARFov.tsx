@@ -56,6 +56,7 @@ const MixARFov: FC<PropsType> = memo(() => {
         gimbalPickRef.current?.leftTop,
         gimbalPickRef.current?.leftBottom,
       ].filter((v) => !!v) as number[][]
+
       if (fovs.length < 2) {
         fovs.push([0, 0], [0, 0])
       }
@@ -109,10 +110,9 @@ const MixARFov: FC<PropsType> = memo(() => {
                 Cesium.Cartesian3.fromDegrees(
                   uavRef.current.longitude,
                   uavRef.current.latitude,
-                  0,
+                  uavRef.current.altitude || 0,
                 ),
               ]
-        // LiqunLog.log(result, positions);
         if (Cesium.defined(result)) {
           result.length = 0 // 清空现有数组
           result.push(...positions)
