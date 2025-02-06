@@ -1,9 +1,11 @@
-import { Tabs } from 'antd'
+import { Popover, Tabs } from 'antd'
 import WangLouInfoCard from './WangLouInfoCard'
 import DeviceInfoCard from './DeviceInfoCard'
 import styles from './index.module.less'
 import IconSetting from '@/assets/icons/jsx/IconSetting'
 import InitParams from './InitParams'
+import Sleep from './Sleep'
+import IconSleep from '@/assets/icons/jsx/IconSleep'
 
 type PropsType = {
   /** 详情数据 */
@@ -42,6 +44,17 @@ const InfoCard: FC<PropsType> = memo(({ data }) => {
         tabBarExtraContent={{
           right: (
             <>
+              <Popover
+                placement="bottom"
+                trigger={['hover']}
+                content={
+                  <div>
+                    <Sleep deviceId={deviceId} />
+                  </div>
+                }
+              >
+                <IconSleep className="w-[14px] h-[14px] mr-[10px] cursor-pointer" />
+              </Popover>
               <IconSetting
                 className="hover:text-[#447dcf] cursor-pointer"
                 onClick={onClick}

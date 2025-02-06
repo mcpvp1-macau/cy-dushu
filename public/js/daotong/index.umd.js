@@ -1942,7 +1942,7 @@
   };
 
   const VERSION = '1.1.1';
-  const BUILD_DATE = 'Fri Dec 13 2024 11:02:01 GMT+0800 (中国标准时间)';
+  const BUILD_DATE = 'Thu Jan 16 2025 20:51:24 GMT+0800 (中国标准时间)';
 
   // Copyright (C) <2018> Intel Corporation
   //
@@ -8611,7 +8611,7 @@
       };
       ZLMediaClient.prototype.getPullStreamUrl = function () {
           var _this = this;
-          var _a = this.options.serverUrl, serverUrl = _a === void 0 ? '' : _a;
+          var _a = this.options, _b = _a.serverUrl, serverUrl = _b === void 0 ? '' : _b, proxyPrefix = _a.proxyPrefix;
           var getPullStreamUrlRequestUrl = serverUrl + '/api/v1/stream/getPullStreamUrl';
           return new Promise(function (resolve, reject) {
               axios
@@ -8630,7 +8630,7 @@
                       var external_1 = data.external;
                       var pull = (external_1 || {}).pull;
                       var url = ((_a = pull[0]) === null || _a === void 0 ? void 0 : _a.url) || '';
-                      resolve({ url: url });
+                      resolve({ url: proxyPrefix ? " ".concat(proxyPrefix).concat(proxyPrefix.endsWith('/') ? '' : '/').concat(url) : url });
                   }
                   else {
                       reject(new Error('获取拉流地址失败'));
@@ -8787,6 +8787,10 @@
       };
       ZLMediaClient.prototype.handleDataChannelClose = function (event) {
           console.log('rtc datachannel 关闭 :', event);
+      };
+      // 设置连接地址代理前缀
+      ZLMediaClient.prototype.setProxyPrefix = function (prefix) {
+          this.options.proxyPrefix = prefix;
       };
       ZLMediaClient.AConnectStatus = AConnectStatus;
       ZLMediaClient.ErrorCode = ErrorCode;

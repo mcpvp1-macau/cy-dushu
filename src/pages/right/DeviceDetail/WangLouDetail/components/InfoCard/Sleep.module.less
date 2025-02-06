@@ -1,0 +1,27 @@
+.switch {
+  margin-bottom: 6px;
+
+  :global {
+    .ant-switch.ant-switch-small {
+      height: 20px;
+      line-height: 20px;
+    }
+
+    .ant-switch .ant-switch-handle {
+      top: 3px;
+    }
+
+    .ant-switch.ant-switch-small .ant-switch-inner .ant-switch-inner-unchecked {
+      margin-top: -19.5px;
+    }
+
+    .ant-switch.ant-switch-small .ant-switch-handle {
+      width: 14px;
+      height: 14px;
+    }
+
+    .ant-switch.ant-switch-small.ant-switch-checked .ant-switch-handle {
+      inset-inline-start: calc(100% - 16px);
+    }
+  }
+}

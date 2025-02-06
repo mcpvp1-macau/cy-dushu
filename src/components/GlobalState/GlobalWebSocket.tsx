@@ -64,58 +64,38 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
 
     const target = useGlobalWsStore.getState().radarTarget || {}
     const parentDevice = target[parentId] || {}
-    const oldmap = parentDevice?.[deviceId] || {}
-    const newArr = data?.data?.targets?.length ? data?.data?.targets : []
-    const n: any = {}
-    newArr.forEach((item: any) => {
-      if (oldmap[item.targetId]) {
-        // 已存在的目标
-        if (item.loss_times > 0) {
-          delete n[item.targetId]
-        } else {
-          n[item.targetId] = [
-            ...oldmap[item.targetId],
-            {
-              ...item,
-              productKey: data?.productKey,
-              acquireTimestampFormat: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-              source: data?.data?.deviceName,
-              sourceType: data?.data?.sourceType || item.sourceType,
-              deviceInfo: data?.data?.deviceInfo,
-              objectLabel: item.objectLabel || getLabel(item),
-              distance: item.distance ?? item.radialDistance,
-            },
-          ]
-        }
-      } else {
-        // 新目标
-        n[item.targetId] = [
-          {
-            ...item,
-            productKey: data?.productKey,
-            acquireTimestampFormat: dayjs().format('YYYY-MM-DD HH:mm:ss'),
-            source: data?.data?.deviceName,
-            sourceType: data?.data?.sourceType || item.sourceType,
-            deviceInfo: data?.data?.deviceInfo,
-            objectLabel: item.objectLabel || getLabel(item),
-            distance: item.distance ?? item.radialDistance,
-          },
-        ]
+    const oldmap: { [key: string]: any[] } = parentDevice?.[deviceId] || {}
+    const newArr = data?.data?.targets || []
+    const n = newArr.reduce((acc, item) => {
+      if (item.loss_times > 0) return acc;
+      
+      const targetData = {
+        ...item,
+        productKey: data?.productKey,
+        acquireTimestampFormat: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+        source: data?.data?.deviceName,
+        sourceType: data?.data?.sourceType || item.sourceType,
+        deviceInfo: data?.data?.deviceInfo,
+        objectLabel: item.objectLabel || getLabel(item),
+        distance: item.distance ?? item.radialDistance,
       }
-    })
+  
+      return {
+        ...acc,
+        [item.targetId]: oldmap[item.targetId] 
+          ? [...oldmap[item.targetId], targetData]
+          : [targetData]
+      }
+    }, {})
 
-    // 天朗雷达目标上传方式
-
-    Object.keys(oldmap).forEach((targetId) => {
-      const oldT = oldmap[targetId]
-      const newT = n[targetId]
-      if (newT) {
-        // 如果新的里面已经有了，就不管
-      } else if (oldT[0].uploadMode === 'TIANLANG') {
-        // 还没丢失的
-        if (oldT[oldT.length - 1].targetState !== 0) {
-          n[targetId] = oldT
-        }
+    // 处理天朗雷达目标
+    Object.entries(oldmap).forEach(([targetId, oldTarget]) => {
+      if (
+        !n[targetId] &&
+        oldTarget[0].uploadMode === 'TIANLANG' &&
+        oldTarget[oldTarget.length - 1].targetState !== 0
+      ) {
+        n[targetId] = oldTarget
       }
     })
 
@@ -198,6 +178,22 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
     updateRefreshTemporary({ ...message, time: dayjs().valueOf() })
   })
 
+  const handleActionItemStatus = useMemoizedFn((message: any) => {
+    const data = shouldJson<any[]>(message)
+    if (!data) {
+      return
+    }
+    const res = data.reduce<Record<string, any>>((prev, e) => {
+      if (e.deviceId) {
+        prev[e.deviceId] = {
+          actionItemId: e.actionItemId,
+          status: e.status,
+        }
+      }
+      return prev
+    }, {})
+    updateActionItemStatus(res)
+  })
   // websocket message
   const handleMessage = useMemoizedFn((event: WebSocketEventMap['message']) => {
     const { type, message } = shouldJson(event.data) ?? {}
@@ -221,20 +217,7 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         handleTemporaryDetectResult(message)
         break
       case 'ACTION_ITEM_STATUS':
-        const data = shouldJson<any[]>(message)
-        if (!data) {
-          break
-        }
-        const res = data.reduce<Record<string, any>>((prev, e) => {
-          if (e.deviceId) {
-            prev[e.deviceId] = {
-              actionItemId: e.actionItemId,
-              status: e.status,
-            }
-          }
-          return prev
-        }, {})
-        updateActionItemStatus(res)
+        handleActionItemStatus(message)
         break
     }
   })
