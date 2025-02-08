@@ -12,6 +12,12 @@ const PageSituation: FC<PropsType> = memo(() => {
   const mathchedSource = useMatch('/source/:sourceType')
   const matchEvents = useMatch('situation/events')
 
+  const activeKey = mathchedSource
+    ? 'source'
+    : matchEvents
+    ? 'events'
+    : 'action'
+
   const navigate = useNavigate()
 
   const params = useParams()
@@ -19,7 +25,7 @@ const PageSituation: FC<PropsType> = memo(() => {
 
   const handleSourceTypeChange = useMemoizedFn((type: string) => {
     setSourceType(type)
-    if (type) {
+    if (type && activeKey === 'source') {
       // 确定是 sourceType 变化，才跳转
       navigate(`source/${type}`)
     }
@@ -74,10 +80,8 @@ const PageSituation: FC<PropsType> = memo(() => {
             className="px-3 mt-2"
             items={menus}
             size="small"
+            activeKey={activeKey}
             onChange={handleTabChange}
-            defaultActiveKey={
-              mathchedSource ? 'source' : matchEvents ? 'events' : 'action'
-            }
           />
         )}
         <AppViewSuspense>
