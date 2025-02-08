@@ -11,7 +11,7 @@ import {
 import RenderBox from './components/RenderBox'
 
 export type DynamicLayoutType = {
-  /** 占用大小 */
+  /** 占用大小 (推荐以 1920 * 1080 为基准 容器大小不足或多余时会按比例自适应) */
   size: number
   /** 是否收起 */
   isCollapsed?: boolean

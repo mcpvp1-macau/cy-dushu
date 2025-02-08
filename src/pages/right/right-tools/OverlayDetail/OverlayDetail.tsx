@@ -2,23 +2,17 @@ import IconAddMark from '@/assets/icons/jsx/right-tools/IconAddMark'
 import { ComponentRef, memo, type FC } from 'react'
 import CloseableHeader from '../../components/CloseableHeader'
 import useRightMode from '@/store/layout/useRightMode.store'
-import useMapLayerAndOverlayStore from '@/store/map/useLayerAndOverlay.store'
 import AppEmpty from '@/components/AppEmpty'
-import AppSpin from '@/components/AppSpin'
 import { shouldJson } from '@/utils/json'
-import { argbToHex, hexToARGB } from '@/utils/color'
 import IconButton from '@/components/ui/button/IconButton'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconEdit from '@/assets/icons/jsx/IconEdit'
 import { ColorPicker, Form, Input } from 'antd'
-import { deleteOverlaies, updateOverlay } from '@/service/modules/layer_overlay'
 import { LoadingOutlined } from '@ant-design/icons'
 import { CotType } from '@/store/map/useDraw.store'
 import IconDrawArea from '@/assets/icons/jsx/right-tools/IconDrawArea'
-import { useForm } from 'antd/es/form/Form'
-import { AggregationColor } from 'antd/es/color-picker/color'
-import { getHexWithAlpha } from '@/utils/other/utils'
 import IconTick from '@/assets/icons/jsx/IconTick'
+import useOverlayDetail from './useOverlayDetail'
 
 type PropsType = unknown
 
@@ -27,111 +21,23 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
 
   const { t } = useTranslation()
 
-  const overlayList = useMapLayerAndOverlayStore((s) => s.overlayList)
-
-  const overlay = useMemo(() => {
-    if (!detailId) return null
-    const d = +detailId
-    return overlayList.find((e) => e.overlayId === d)
-  }, [detailId, overlayList])
-
-  const [isEdit, { toggle, setFalse }] = useBoolean(false)
-
-  const queryClient = useQueryClient()
-
-  const styleConfig = useMemo(
-    () => shouldJson(overlay?.overlayStyleConfig),
-    [overlay],
-  )
-
-  const [isConfirmLoading, setConfirmLoading] = useState(false)
-  const handleSave = async () => {
-    const value = form.getFieldsValue()
-    const hexStr = value.color.toHexString()
-    let overlayStyleConfig: Record<string, any> = {}
-    if (overlay?.cotType === CotType.POINT) {
-      const colorRGBA = hexToARGB(hexStr)
-      overlayStyleConfig = {
-        ...styleConfig,
-        color: {
-          '-argb': colorRGBA,
-          hex: hexStr,
-        },
-        remarks: value.remarks,
-      }
-    } else {
-      const strokeColorHex = getHexWithAlpha(hexStr, 1)
-      const strokeColorARGB = hexToARGB(strokeColorHex)
-      const fillColorHex = getHexWithAlpha(hexStr, 0.5)
-      const fillColorARGB = hexToARGB(fillColorHex)
-      overlayStyleConfig = {
-        ...styleConfig,
-        strokeColor: {
-          '-value': `${strokeColorARGB}`, //描边颜色（argb）
-        },
-        fillColor: {
-          '-value': `${fillColorARGB}`, //填充色（argb）
-        },
-        remarks: value.remarks,
-      }
-    }
-
-    try {
-      setConfirmLoading(true)
-      await updateOverlay({
-        ...overlay!,
-        overlayBindActions: overlay!.overlayBindType,
-        overlayName: (value.overlayName || overlay?.overlayName) ?? '',
-        overlayStyleConfig: JSON.stringify(overlayStyleConfig),
-      })
-      setFalse()
-      queryClient.invalidateQueries({
-        queryKey: ['overlayList'],
-        exact: false,
-      })
-    } finally {
-      setConfirmLoading(false)
-    }
-  }
+  const {
+    isEdit,
+    toggle,
+    handleSave,
+    handleDelete,
+    isConfirmLoading,
+    form,
+    overlay,
+    renderColor,
+    styleConfig,
+  } = useOverlayDetail(detailId!, () => {
+    updateRightMode(null)
+  })
 
   const updateRightMode = useRightMode((s) => s.updateRightMode)
-  const handleDelete = async () => {
-    try {
-      setConfirmLoading(true)
-      await deleteOverlaies([overlay!.overlayId])
-      updateRightMode(null)
-      await queryClient.invalidateQueries({
-        queryKey: ['overlayList'],
-        exact: false,
-      })
-    } finally {
-      setConfirmLoading(false)
-    }
-  }
-
-  const renderColor = useMemo(() => {
-    if (!styleConfig) {
-      return '#fff'
-    }
-    const color =
-      styleConfig?.color?.['-argb'] || styleConfig?.fillColor?.['-value']
-    return argbToHex(String(color))[0]
-  }, [overlay])
 
   const inputRef = useRef<ComponentRef<typeof Input>>(null)
-  const [form] = useForm<{
-    overlayName?: string
-    color: AggregationColor
-    remarks?: string
-  }>()
-
-  useEffect(() => {
-    form.setFieldsValue({
-      overlayName: overlay?.overlayName,
-      color: new AggregationColor(renderColor),
-      remarks: styleConfig?.remarks,
-    })
-  }, [styleConfig, renderColor])
 
   return (
     <div className="w-[350px] backdrop-blur">
@@ -201,9 +107,7 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
           </div>
         </CloseableHeader>
 
-        {overlayList.length === 0 ? (
-          <AppSpin />
-        ) : overlay ? (
+        {overlay ? (
           <div className="mx-3 mb-3 flex flex-col gap-2 text-sm">
             <p className="flex gap-2">
               {t('common.createTime')}:

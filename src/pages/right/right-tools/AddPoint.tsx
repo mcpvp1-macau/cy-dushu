@@ -5,7 +5,9 @@ import AppCollapse from '@/components/AppCollapse'
 import useMapDrawStore, { DrawType } from '@/store/map/useDraw.store'
 import { useUnmount } from 'ahooks'
 
-type PropsType = unknown
+type PropsType = {
+  onClose?: () => void
+}
 
 const presetColors = [
   '#ffffff',
@@ -34,7 +36,7 @@ const presetColors = [
   '#f43f5e',
 ]
 
-const AddPoint: FC<PropsType> = memo(() => {
+const AddPoint: FC<PropsType> = memo(({ onClose }) => {
   const { t } = useTranslation()
   const updateDrawing = useMapDrawStore((s) => s.updateDrawing)
   const updateDrawingColor = useMapDrawStore((s) => s.updateDrawingColor)
@@ -45,7 +47,7 @@ const AddPoint: FC<PropsType> = memo(() => {
 
   return (
     <div className="w-[350px] backdrop-blur">
-      <CloseableHeader>
+      <CloseableHeader onClose={onClose}>
         <div className="flex gap-2 items-center">
           <IconAddMark className="device-detail-icon" />
           <h6 className="text-white text-base">{t('overlay.marker.title')}</h6>

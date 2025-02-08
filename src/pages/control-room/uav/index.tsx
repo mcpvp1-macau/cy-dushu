@@ -19,7 +19,6 @@ import Zoom from './components/Zoom'
 import FlyParamsSetting from './components/FlyParamsSetting'
 import ControlRoomUavMap from './components/ControlRoomMap'
 import useServerEventMsg from './hooks/useServerEventMsg'
-import type { DynamicLayoutType } from '@/components/DynamicLayout'
 import IconCameraVideo from '@/assets/icons/jsx/IconCameraVideo'
 import IconMap from '@/assets/icons/jsx/IconMap'
 import DeviceIconUAV2 from '@/assets/icons/jsx/device/DeviceIconUAV2'
@@ -29,7 +28,6 @@ import { DeviceEnum } from '@/enum/device'
 import UavDetailData from '@/pages/right/DeviceDetail/UavDetail/components/UavDetailData'
 import StateResolver from './components/StateResolver'
 import DynamicLayoutRoot from '@/components/DynamicLayout'
-import { useLocalStorageState } from 'ahooks'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import GimbalLeft from './components/GimbalLeft'
 import IconPayload from '@/assets/icons/jsx/IconPayload'
@@ -37,82 +35,11 @@ import UavPayload from './components/Payload'
 import IconFlightParams from '@/assets/icons/jsx/uav/IconFlightParams'
 import IconDeviceData from '@/assets/icons/jsx/IconDeviceData'
 import IconFlightOperation from '@/assets/icons/jsx/uav/IconFlightOperation'
+import { useUavControlRoomLayoutStore } from './hooks/useUavControlRoomLayout.store'
+import IconDrawArea from '@/assets/icons/jsx/right-tools/IconDrawArea'
+import RightOverlayDetail from './components/right_detail/Overlay'
 
 type PropsType = unknown
-
-const initialLayout: DynamicLayoutType = {
-  type: 'row',
-  size: 1,
-  children: [
-    {
-      type: 'tabs',
-      size: 600,
-      children: [
-        {
-          key: 'map',
-        },
-      ],
-    },
-    {
-      type: 'col',
-      size: 800,
-      children: [
-        {
-          type: 'tabs',
-          size: 3,
-          children: [
-            {
-              key: 'video',
-            },
-          ],
-        },
-        {
-          type: 'row',
-          size: 1,
-          children: [
-            {
-              type: 'tabs',
-              size: 3,
-              children: [
-                {
-                  key: 'flyParams',
-                },
-              ],
-            },
-            {
-              type: 'tabs',
-              size: 3,
-              children: [
-                {
-                  key: 'flyButtons',
-                },
-                {
-                  key: 'flyParamsSetting',
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      type: 'tabs',
-      size: 350,
-      isCollapsed: true,
-      children: [
-        {
-          key: 'payload',
-        },
-        {
-          key: 'ai-list',
-        },
-        {
-          key: 'device-data',
-        },
-      ],
-    },
-  ],
-}
 
 const PageControlRoomUav: FC<PropsType> = memo(() => {
   const deviceId = useParams().deviceId!
@@ -129,10 +56,9 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
     useServerEventMsg(),
   )
 
-  const [layout, setLayout] = useLocalStorageState<DynamicLayoutType>(
-    'uavControlRoomLayoutV2',
-    { defaultValue: initialLayout },
-  )
+  const layout = useUavControlRoomLayoutStore((s) => s.layout)
+  const updateLayout = useUavControlRoomLayoutStore((s) => s.updateLayout)
+
   const { t } = useTranslation()
   const iconMap = useMemo(
     () => ({
@@ -144,6 +70,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       payload: <IconPayload className="text-orange-500" />,
       'ai-list': <IconAISwitch className="text-violet-500" />,
       'device-data': <IconDeviceData className="text-emerald-500" />,
+      overlay: <IconDrawArea className="text-blue-500" />,
     }),
     [],
   )
@@ -158,6 +85,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       payload: t('controlRoom.uav.payload.title'),
       ['ai-list']: t('controlRoom.uav.aiList.title'),
       ['device-data']: t('controlRoom.uav.deviceData.title'),
+      overlay: t('controlRoom.uav.overlay.title'),
     }),
     [t],
   )
@@ -205,6 +133,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
           />
         </div>
       ),
+      overlay: <RightOverlayDetail />,
     }),
     [productKey, deviceId],
   )
@@ -218,7 +147,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
           <main className="grow w-full relative overflow-hidden">
             <DynamicLayoutRoot
               layout={layout!}
-              onLayoutChange={setLayout}
+              onLayoutChange={updateLayout}
               iconMap={iconMap}
               titleMap={titleMap}
               componentMap={componentMap}
