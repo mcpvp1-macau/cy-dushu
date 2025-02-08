@@ -81,7 +81,28 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(({ deviceList }) => {
       ) : (
         <div className="m-3">
           <Spin spinning={isRefetching}>
-            <Image.PreviewGroup>
+            <Image.PreviewGroup
+              preview={{
+                imageRender: (e, info) => {
+                  return (
+                    <>
+                      <div
+                        className="absolute top-10 left-1/2 -translate-x-1/2 z-10 text-fore text-base flex gap-3"
+                        style={{
+                          textShadow: '0 0 1px rgba(0, 0, 0, 0.8)',
+                        }}
+                      >
+                        <p>{data[0][info.current].sourceName}</p>
+                        <p>
+                          {dayjs(data[0][info.current].startTime).format(dft)}
+                        </p>
+                      </div>
+                      {e}
+                    </>
+                  )
+                },
+              }}
+            >
               <Row className="mt-3" gutter={[8, 8]}>
                 {data[0].map((e) => (
                   <Col key={e.id} span={8}>
