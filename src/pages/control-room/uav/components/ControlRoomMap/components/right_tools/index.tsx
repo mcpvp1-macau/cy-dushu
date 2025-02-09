@@ -5,6 +5,7 @@ import IconRangeFinder from '@/assets/icons/jsx/right-tools/IconRangeFinder'
 import { RightModeEnum } from '@/enum/right-mode'
 import FloatIconButton from '@/components/ui/button/FloatIconButton'
 import { useUavControlRoomLayoutStore } from '@/pages/control-room/uav/hooks/useUavControlRoomLayout.store'
+import WirelessSituationTool from '@/components/right-tools/components/WirelessSituationTool'
 
 type PropsType = unknown
 
@@ -57,7 +58,7 @@ const RightTools: FC<PropsType> = memo(() => {
             </FloatIconButton>
           </>
         </FloatIconButtonGroup>
-        {/* <WirelessSituationTool /> */}
+        <WirelessSituationTool />
       </div>
     </div>
   )

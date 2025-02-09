@@ -143,12 +143,12 @@ const WirelessSituationTool: FC<PropsType> = memo((props) => {
         <>
           <div
             className={clsx(
-              'p-3 fixed top-[50px] right-[54px] bg-ground-1 bg-opacity-90 backdrop-blur',
+              'p-3 absolute top-0 right-11 w-[144px] bg-ground-1 bg-opacity-90 backdrop-blur',
               'flex flex-col gap-3',
               'border border-solid border-ground-4 rounded-[3px]',
             )}
           >
-            <div className="flex flex-nowrap gap-3 items-center">
+            <div className="flex flex-nowrap gap-3 items-center justify-between">
               <h5 className="text-base text-white">
                 {t('signalSituation.heightFilter.title')}
               </h5>
