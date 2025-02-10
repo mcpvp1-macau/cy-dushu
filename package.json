@@ -4,7 +4,7 @@
   "version": "v3.13.1.250210",
   "type": "module",
   "scripts": {
-    "check-ts": "tsc --noEmit",
+    "ts": "tsc --noEmit",
     "dev": "vite --config ./vite-config/dev/config.82.ts",
     "dev:82": "vite --config ./vite-config/dev/config.82.ts",
     "dev:103": "vite --config ./vite-config/dev/config.103.ts",

@@ -1,7 +1,6 @@
 import { StatusColorMap } from '@/enum/device'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
-import { memo, type FC } from 'react'
 
 const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
   return (

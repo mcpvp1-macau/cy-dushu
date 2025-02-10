@@ -1,20 +1,9 @@
 import Select from '@/components/AntdOverride/Select'
 import DeviceIcon from '@/components/device/DeviceIcon'
-import { DeviceEnum } from '@/enum/device'
+import { getDeviceWeight } from '@/enum/device'
 import useWatch from '@/hooks/useWatch'
 import { getAllDeviceType } from '@/service/modules/device'
 import { useLangsDict } from '@/store/useDict.store'
-
-const deviceWeight = new Map<string, number>([
-  [DeviceEnum.UAV, 1],
-  [DeviceEnum.UAV_AIRPORT, 10],
-  [DeviceEnum.WANGLOU, 100],
-  [DeviceEnum.CAMERA, 10000],
-  [DeviceEnum.SITE_ENFORCEMENT_RECORDER, 100000],
-])
-
-const getDeviceWeight = (type: string) =>
-  deviceWeight.get(type) ?? Number.MAX_VALUE / 2
 
 type PropsType = {
   value: string

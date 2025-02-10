@@ -1,6 +1,5 @@
 import { dockDisplayModeTransMap } from '@/constant/trans_map/dock_display_mode'
 import { StatusColorMap } from '@/enum/device'
-import { memo, type FC } from 'react'
 
 type PropsType = {
   modelNumber: string
@@ -47,7 +46,8 @@ const UavAirportInfoCard: FC<PropsType> = memo((props) => {
         l={t('device.uavDock.status.modeDisplay.title')}
         v={
           props.modeDisplay
-            ? dockDisplayModeTransMap[props.modeDisplay]?.[i18n.language] || '-'
+            ? dockDisplayModeTransMap[props.modeDisplay]?.[i18n.language] ||
+              props.modeDisplay
             : '-'
         }
       />

@@ -4,16 +4,15 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { emtpyArray } from '@/constant/data'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { CollapseProps } from 'antd'
-import React from 'react'
-import { memo, Suspense, type FC } from 'react'
+import { lazy, Suspense } from 'react'
 
-const MMC_Gimbal_P3 = React.lazy(() => import('./MMC_Gimbal_P3'))
-const MMC_Gimbal_D4 = React.lazy(() => import('./MMC_Gimbal_D4'))
-const MMC_Gimbal_LP12_1 = React.lazy(() => import('./MMC_Gimbal_LP12_1'))
-const MMC_Gimbal_LP12_2 = React.lazy(() => import('./MMC_Gimbal_LP12_2'))
-const MMC_Gimbal_Z30Pro = React.lazy(() => import('./MMC_Gimbal_Z30Pro'))
-const MMC_Gimbal_Z60R = React.lazy(() => import('./MMC_Gimbal_Z60R'))
-const PARACHUTE = React.lazy(() => import('./PARACHUTE'))
+const MMC_Gimbal_P3 = lazy(() => import('./MMC_Gimbal_P3'))
+const MMC_Gimbal_D4 = lazy(() => import('./MMC_Gimbal_D4'))
+const MMC_Gimbal_LP12_1 = lazy(() => import('./MMC_Gimbal_LP12_1'))
+const MMC_Gimbal_LP12_2 = lazy(() => import('./MMC_Gimbal_LP12_2'))
+const MMC_Gimbal_Z30Pro = lazy(() => import('./MMC_Gimbal_Z30Pro'))
+const MMC_Gimbal_Z60R = lazy(() => import('./MMC_Gimbal_Z60R'))
+const PARACHUTE = lazy(() => import('./PARACHUTE'))
 
 type PropsType = unknown
 

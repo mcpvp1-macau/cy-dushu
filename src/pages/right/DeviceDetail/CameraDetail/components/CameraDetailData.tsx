@@ -1,5 +1,4 @@
 import AppCollapse from '@/components/AppCollapse'
-import { memo, type FC } from 'react'
 import DeviceDetailMediaData, { MediaType } from '../../components/MediaData'
 import LinkSwitch from '@/components/LinkSwitch'
 

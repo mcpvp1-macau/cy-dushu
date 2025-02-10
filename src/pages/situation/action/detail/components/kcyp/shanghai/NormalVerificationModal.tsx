@@ -9,7 +9,6 @@ import { idCardReg, phoneReg } from '@/constant/regExp'
 import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons'
 import { Form, Input, Select } from 'antd'
 import { uniqWith } from 'lodash'
-import { memo, ReactNode, type FC } from 'react'
 
 const HeadLine: FC<{ title: string; suc?: boolean }> = memo(
   ({ title, suc }) => {

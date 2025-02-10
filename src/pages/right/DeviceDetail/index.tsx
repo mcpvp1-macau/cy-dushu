@@ -2,7 +2,7 @@ import AppViewSuspense from '@/components/AppViewSuspense'
 import AppSpin from '@/components/AppSpin'
 import { DeviceEnum } from '@/enum/device'
 import useRightMode from '@/store/layout/useRightMode.store'
-import { lazy, memo, type FC } from 'react'
+import { lazy } from 'react'
 import {
   DeviceDetailStoreContext,
   useCreateDeviceDetailStore,

@@ -1,5 +1,5 @@
 import useMixARStore from '@/store/control-room/useMixAR.store'
-import useSettingStore from '@/store/useSetting.store'
+import useARSettingStore from '@/store/setting/useARSetting.store'
 import { wgs84ToDrawingBufferCoordinates } from '@/utils/cesium/sence-transform'
 import * as Cesium from 'cesium'
 
@@ -58,7 +58,7 @@ const ARSceneCanvas: FC<PropsType> = memo(() => {
   const viewer = useMixARStore((s) => s.cesiumViewer)
   const uav = useMixARStore((s) => s.uavProperties)
 
-  const vrSetting = useSettingStore((s) => s.virtualReal)
+  const vrSetting = useARSettingStore((s) => s)
 
   const { aoiItems, roadItems } = useMemo(() => {
     if (!viewer?.scene) {
@@ -68,7 +68,7 @@ const ARSceneCanvas: FC<PropsType> = memo(() => {
       }
     }
     const aoiItems: Item[] = []
-    if (aois) {
+    if (vrSetting.aoi.enable && aois) {
       for (const feature of aois.features) {
         const item: Item = {
           type: 'aoi',

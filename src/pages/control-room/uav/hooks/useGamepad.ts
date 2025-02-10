@@ -1,5 +1,4 @@
 import { useLatest, useRafInterval, useThrottleFn, useUnmount } from 'ahooks'
-import { useMemo, useRef } from 'react'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { limitNum } from '@/utils/math'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'

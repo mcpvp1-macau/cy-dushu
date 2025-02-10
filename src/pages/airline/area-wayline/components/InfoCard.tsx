@@ -26,19 +26,6 @@ const InfoCard: FC<PropsType> = memo(() => {
     )
   }, [takeOffRefPoint, airpointsConfig])
 
-  /** 航线总照片数 */
-  // const totalPhotos = useMemo(() => {
-  //   let ans = 0
-  //   airpointsConfig.forEach((e) => {
-  //     e.actions?.forEach((a: any) => {
-  //       if (a?.type === 'GET_PICTURE') {
-  //         ans += 1
-  //       }
-  //     })
-  //   })
-  //   return ans
-  // }, [airpointsConfig])
-
   const areaFmt = useMemo(() => {
     if (!polygon || polygon.length < 3) {
       return '0 m²'

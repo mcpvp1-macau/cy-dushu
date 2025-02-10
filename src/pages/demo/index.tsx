@@ -1,5 +1,3 @@
-import { type FC } from 'react'
-
 type PropsType = unknown
 
 const Thing: FC<PropsType> = () => {

@@ -1,6 +1,5 @@
 import IconVisible from '@/assets/icons/jsx/IconVisible'
 import CustomExpandIcon from '@/components/CustomExpandIcon'
-import { memo, type FC } from 'react'
 import useSelectedGroup from '../hooks/useSelectedGroup'
 import IconButton from '@/components/ui/button/IconButton'
 import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'

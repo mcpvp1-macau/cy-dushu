@@ -1,7 +1,7 @@
 import AppViewSuspense from '@/components/AppViewSuspense'
 import { RightModeEnum } from '@/enum/right-mode'
 import useRightMode from '@/store/layout/useRightMode.store'
-import { lazy, memo, type FC } from 'react'
+import { lazy } from 'react'
 import OverlayDetail from './right-tools/OverlayDetail/OverlayDetail'
 import RightRangingPanel from './right-tools/Ranging'
 

@@ -27,6 +27,18 @@ export enum DeviceEnum {
   TRACKER = 'TRACKER',
 }
 
+const deviceTypeWeight = new Map<string, number>([
+  [DeviceEnum.UAV, 1],
+  [DeviceEnum.UAV_AIRPORT, 10],
+  [DeviceEnum.WANGLOU, 100],
+  [DeviceEnum.CAMERA, 10000],
+  [DeviceEnum.SITE_ENFORCEMENT_RECORDER, 100000],
+])
+
+/** 获取设备权重 */
+export const getDeviceWeight = (type: string) =>
+  deviceTypeWeight.get(type) ?? Number.MAX_VALUE / 2
+
 /** 图标映射 */
 export const deviceIconMap = {
   [DeviceEnum.UAV]: DeviceIconUAV,
@@ -42,7 +54,6 @@ export enum DeviceStatusEnum {
   ONLINE = 'ONLINE',
   OFFLINE = 'OFFLINE',
 }
-
 
 export const StatusColorMap = {
   [DeviceStatusEnum.ONLINE]: 'rgb(21, 179, 113)',

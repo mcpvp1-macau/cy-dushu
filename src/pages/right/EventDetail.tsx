@@ -1,4 +1,3 @@
-import { memo, type FC } from 'react'
 import CloseableHeader from './components/CloseableHeader'
 import { algorithmIconMap } from '@/components/device/algorithm/AlgorithmListItem'
 import EventDetail from '../events/components/EventDetail'

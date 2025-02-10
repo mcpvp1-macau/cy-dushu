@@ -1,5 +1,5 @@
 import useMixARStore, { ArFeature } from '@/store/control-room/useMixAR.store'
-import useSettingStore from '@/store/useSetting.store'
+import useARSettingStore from '@/store/setting/useARSetting.store'
 import { polygonCentroid } from '@/utils/geometry'
 import { useEffect, useRef } from 'react'
 
@@ -54,7 +54,7 @@ const MixARCanvas: FC<PropsType> = memo(() => {
   const arData = useMixARStore((s) => s.arData)
   const frameWidth = useMixARStore((s) => s.source_frame_width)
   const frameHeight = useMixARStore((s) => s.source_frame_height)
-  const vrSetting = useSettingStore((s) => s.virtualReal)
+  const arSetting = useARSettingStore((s) => s)
 
   const airpointPositionsAR = useMixARStore((s) => s.airpointPositionsAR)
 
@@ -102,7 +102,7 @@ const MixARCanvas: FC<PropsType> = memo(() => {
       }
       if (data.isClosed) {
         // 建筑
-        if (vrSetting.aoi.enable) {
+        if (arSetting.aoi.enable) {
           aoi.push(data)
         }
       } else {
@@ -110,11 +110,11 @@ const MixARCanvas: FC<PropsType> = memo(() => {
         // 路
         if (name && name !== ' ') {
           // 主路
-          if (vrSetting.mainRoad.enable) {
+          if (arSetting.mainRoad.enable) {
             mainRoads.push(data)
           }
         } else {
-          if (vrSetting.subRoad.enable) {
+          if (arSetting.subRoad.enable) {
             subRoads.push(data)
           }
         }
@@ -125,9 +125,9 @@ const MixARCanvas: FC<PropsType> = memo(() => {
       drawClosedPolygon(
         ctx,
         data.coodinates,
-        vrSetting.aoi.color,
-        vrSetting.aoi.borderColor,
-        vrSetting.aoi.borderSize,
+        arSetting.aoi.color,
+        arSetting.aoi.borderColor,
+        arSetting.aoi.borderSize,
       )
       const name = data.properties.name ?? data.properties.aoi ?? ''
       if (name) {
@@ -149,8 +149,8 @@ const MixARCanvas: FC<PropsType> = memo(() => {
       drawLine(
         ctx,
         data.coodinates,
-        vrSetting.mainRoad.borderColor,
-        vrSetting.mainRoad.size + vrSetting.mainRoad.borderSize * 2,
+        arSetting.mainRoad.borderColor,
+        arSetting.mainRoad.size + arSetting.mainRoad.borderSize * 2,
       )
     }
 
@@ -158,8 +158,8 @@ const MixARCanvas: FC<PropsType> = memo(() => {
       drawLine(
         ctx,
         data.coodinates,
-        vrSetting.mainRoad.color,
-        vrSetting.mainRoad.size,
+        arSetting.mainRoad.color,
+        arSetting.mainRoad.size,
       )
       const name = data.properties.name ?? data.properties.RoadName ?? ''
       if (name) {
@@ -181,28 +181,28 @@ const MixARCanvas: FC<PropsType> = memo(() => {
       drawLine(
         ctx,
         data.coodinates,
-        vrSetting.subRoad.borderColor,
-        vrSetting.subRoad.size + vrSetting.subRoad.borderSize * 2,
+        arSetting.subRoad.borderColor,
+        arSetting.subRoad.size + arSetting.subRoad.borderSize * 2,
       )
     }
     for (const data of subRoads) {
       drawLine(
         ctx,
         data.coodinates,
-        vrSetting.subRoad.color,
-        vrSetting.subRoad.size,
+        arSetting.subRoad.color,
+        arSetting.subRoad.size,
       )
     }
 
-    if (vrSetting.text.enable) {
+    if (arSetting.text.enable) {
       // 绘制文字
       for (const row of textBox) {
         for (const cell of row) {
           if (cell.text) {
-            ctx.fillStyle = vrSetting.text.color
-            ctx.strokeStyle = vrSetting.text.borderColor
-            ctx.lineWidth = vrSetting.text.borderSize // 描边的宽度
-            ctx.font = `${vrSetting.text.size}px sans-serif`
+            ctx.fillStyle = arSetting.text.color
+            ctx.strokeStyle = arSetting.text.borderColor
+            ctx.lineWidth = arSetting.text.borderSize // 描边的宽度
+            ctx.font = `${arSetting.text.size}px sans-serif`
             ctx.strokeText(cell.text, cell.position[0], cell.position[1])
             ctx.fillText(cell.text, cell.position[0], cell.position[1])
           }
@@ -215,9 +215,9 @@ const MixARCanvas: FC<PropsType> = memo(() => {
       drawClosedPolygon(
         ctx,
         e,
-        vrSetting.aoi.color,
-        vrSetting.aoi.borderColor,
-        vrSetting.aoi.borderSize,
+        arSetting.aoi.color,
+        arSetting.aoi.borderColor,
+        arSetting.aoi.borderSize,
       )
     })
 
@@ -227,15 +227,15 @@ const MixARCanvas: FC<PropsType> = memo(() => {
       ctx.ellipse(e[0], e[1], 20, 20, 0, 0, Math.PI * 2)
       ctx.fillStyle = '#22c55e'
       ctx.fill()
-      ctx.fillStyle = vrSetting.text.color
-      ctx.strokeStyle = vrSetting.text.borderColor
-      ctx.lineWidth = vrSetting.text.borderSize // 描边的宽度
-      ctx.font = `${vrSetting.text.size}px sans-serif`
+      ctx.fillStyle = arSetting.text.color
+      ctx.strokeStyle = arSetting.text.borderColor
+      ctx.lineWidth = arSetting.text.borderSize // 描边的宽度
+      ctx.font = `${arSetting.text.size}px sans-serif`
       ctx.textAlign = 'center'
       ctx.strokeText(`航点 ${i + 1}`, e[0], e[1])
       ctx.fillText(`航点 ${i + 1}`, e[0], e[1])
     })
-  }, [arData, vrSetting, airpointPositionsAR])
+  }, [arData, arSetting, airpointPositionsAR])
 
   if (!frameWidth || !frameHeight) {
     return null

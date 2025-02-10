@@ -1,4 +1,4 @@
-import { lazy, memo, type FC } from 'react'
+import { lazy } from 'react'
 import CloseableHeader from '../../components/CloseableHeader'
 import DeviceIconCamera from '@/assets/icons/jsx/device/DeviceIconCamera'
 import { Segmented } from 'antd'

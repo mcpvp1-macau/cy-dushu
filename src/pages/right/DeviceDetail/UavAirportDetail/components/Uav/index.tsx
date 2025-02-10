@@ -1,6 +1,6 @@
 import DeviceIconUAV from '@/assets/icons/jsx/device/DeviceIconUAV'
 import { LoadingOutlined } from '@ant-design/icons'
-import { lazy, memo, type FC } from 'react'
+import { lazy } from 'react'
 import {
   DeviceDetailStoreContext,
   useCreateDeviceDetailStore,

@@ -1,7 +1,6 @@
 import { XFormItem } from '@/components/XForm/types'
 import { ProcessStatusEnum } from '@/service/modules/action/kcyp/enum'
 import { idCardReg, phoneReg } from '@/constant/regExp'
-import { ReactNode } from 'react'
 import { TFunction } from 'i18next'
 
 export const statusColorMap: Record<

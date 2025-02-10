@@ -11,9 +11,9 @@ import { useThrottleEffect } from 'ahooks'
 import { Position } from 'geojson'
 import { calcFovRadiation } from '@/utils/fov'
 import gimbalMap from '@/constant/uav/gimbal'
-import useSettingStore from '@/store/useSetting.store'
 import useMapLayerAndOverlayStore from '@/store/map/useLayerAndOverlay.store'
 import { shouldJson } from '@/utils/json'
+import useARSettingStore from '@/store/setting/useARSetting.store'
 
 type PropsType = unknown
 
@@ -27,7 +27,7 @@ const UavFaker: FC<PropsType> = memo(() => {
   const { viewer } = useCesium()
   const cameraRef = useRef<Cesium.Camera | null>(null)
 
-  const shiftSetting = useSettingStore((s) => s.virtualReal.shift)
+  const shiftSetting = useARSettingStore((s) => s.shift)
 
   useEffect(() => {
     if (!viewer) {

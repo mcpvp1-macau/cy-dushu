@@ -1,9 +1,7 @@
-import useRobControlPower from '@/pages/control-room/uav/hooks/useRobControlPower'
+import useRobControlPower from '@/pages/right/DeviceDetail/hooks/useRobControlPower'
 import useUserStore from '@/store/useUser.store'
 import { Switch } from 'antd'
 import { v4 as uuidv4 } from 'uuid'
-
-// const updateUUID = useUavControlRoomStore((s) => s.updateUUID)
 
 type PropsType = {
   open?: boolean

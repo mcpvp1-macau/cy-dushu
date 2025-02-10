@@ -1,11 +1,8 @@
 import DeviceIconUAV2 from '@/assets/icons/jsx/device/DeviceIconUAV2'
 import { Button } from 'antd'
-import { memo, type FC } from 'react'
-import useRobControlPower from '../../hooks/useRobControlPower'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-// import useUserStore from '@/store/useUser.store'
 import { v4 as uuidv4 } from 'uuid'
-// const updateUUID = useUavControlRoomStore((s) => s.updateUUID)
+import useRobControlPower from '@/pages/right/DeviceDetail/hooks/useRobControlPower'
 type PropsType = unknown
 
 const ControlPower: FC<PropsType> = memo(() => {

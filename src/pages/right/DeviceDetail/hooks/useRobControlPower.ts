@@ -1,9 +1,9 @@
-import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import { useDeviceDetailStore } from './useDeviceDetail.store'
 import { setDeviceProp } from '@/service/modules/device'
 import useUserStore from '@/store/useUser.store'
 
-/** 抢夺控制权 */
-const useRobControlPower = (updateUUID) => {
+/** 抢夺控制权: 需要满足上下文有 DeviceDetailStore */
+const useRobControlPower = (updateUUID: Function) => {
   const username = useUserStore((s) => s.user?.username)
 
   const { t } = useTranslation()
@@ -11,7 +11,6 @@ const useRobControlPower = (updateUUID) => {
   const productKey = useDeviceDetailStore((s) => s.productKey)
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
   const hasControlTag = useDeviceDetailStore((s) => s.propsHave['controlTag'])
-  // const updateUUID = useUavControlRoomStore((s) => s.updateUUID)
 
   const { mutate, isPending } = useMutation({
     mutationFn: (uuid: string) =>

@@ -124,6 +124,7 @@ const createInitialState = () =>
       open: false,
       targetPosition: null,
     },
+    uuid: localStorage?.getItem('UavControlTag'),
     uavControlInfo: {},
     gimbalControlInfo: {},
     activeMouseBtn: null,
@@ -208,6 +209,7 @@ export const createUavControlRoomStore = (senders: WsSendersType) => {
           )
         },
         updateUUID: (uuid: string) => {
+          localStorage?.setItem('UavControlTag', uuid)
           set(
             {
               uuid,
