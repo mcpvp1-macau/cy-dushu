@@ -51,6 +51,8 @@ const RadarData: React.FC = () => {
       item.productKey === WanglouDeviceTypeMap[WANGLOUTargetName.Vibrator],
   )
 
+  console.info(state,VisibleLight?.deviceId )
+
   const lightState = useMemo(() => {
     return {
       ...VisibleLight?.properties,
@@ -95,12 +97,12 @@ const RadarData: React.FC = () => {
         <Camera
           fov={lightState.fov || 30}
           dis={1000}
-          yaw={(lightState.yaw || 1000) / 100}
+          yaw={(state.yaw || 1000) / 100}
         />
         <Camera
           fov={redState.fov || 30}
           dis={500}
-          yaw={(redState.yaw || 1000) / 100}
+          yaw={(state.yaw || 1000) / 100}
           color="red"
         />
         {/**
