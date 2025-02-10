@@ -34,6 +34,7 @@ const Control: React.FC<PropsType> = (props) => {
     data.deviceId,
   )
   const disable = useWangLouControlRoomStore((s) => !s.hasControlPower)
+  const controlTag = useWangLouControlRoomStore(s => s.uuid)
   const pitch = useWangLouControlRoomStore((s) => s.state.pitch)
   const yaw = useWangLouControlRoomStore((s) => s.state.yaw)
   const sendCommand = useWangLouControlRoomStore((s) => s.sendCommand)
@@ -134,7 +135,7 @@ const Control: React.FC<PropsType> = (props) => {
               disabled={disable}
               className={styles.btn}
               onClick={() => {
-                setPosition({ presetPointId: item.presetPointId })
+                setPosition({ presetPointId: item.presetPointId, controlTag })
               }}
             >
               {t('common.use')}

@@ -17,13 +17,13 @@ const DeviceDetailMediaHistoryVideo: FC<PropsType> = memo(({ deviceList }) => {
   const [date, setDate] = useState<Dayjs | null>(dayjs())
   const deviceOptions = useMemo(
     () =>
-      deviceList.map((e) => ({
+      deviceList.filter(item => !!item.properties.videoList).map((e) => ({
         label: e.name,
         value: e.deviceId,
       })),
     deviceList,
   )
-  const [deviceId, setDeviceId] = useState(deviceList[0]?.deviceId)
+  const [deviceId, setDeviceId] = useState(deviceOptions?.[0]?.value)
   const { videoId, productKey } = useMemo(() => {
     const device = deviceList.find((e) => e.deviceId === deviceId)!
     return {
