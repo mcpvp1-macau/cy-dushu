@@ -51,7 +51,6 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
       <UavRealTrack />
       <UAVControlRoomPOIResolver />
 
-      {/** 演示完删除 */}
       <TargetPoints />
       <BoardCesium />
       <OtherMarkers />

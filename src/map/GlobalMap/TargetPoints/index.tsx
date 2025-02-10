@@ -2,8 +2,8 @@ import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import React from 'react'
 import { PointPrimitive, PointPrimitiveCollection } from 'resium'
 import * as Cesium from 'cesium'
-import useRightMode from '@/store/layout/useRightMode.store'
-import { RightModeEnum } from '@/enum/right-mode'
+// import useRightMode from '@/store/layout/useRightMode.store'
+// import { RightModeEnum } from '@/enum/right-mode'
 import useBoardObjStore from '@/store/map/useBoardObj.store'
 
 const sourceTypeColorMap: any = {
