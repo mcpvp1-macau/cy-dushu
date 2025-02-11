@@ -143,6 +143,24 @@ export const getHistoryVideo = async (
   )
 }
 
+/** 获取历史视频 */
+export const getHistoryM3u8Video = async (
+  productKey: string,
+  deviceId: string,
+  id: string,
+  data: { startTime: string; endTime: string },
+) => {
+  return serverControlCenter.post<API_DEVICE.res.GetHistoryListRes>(
+    `/v3/service/${productKey}/${deviceId}/m3u8/post`,
+    {
+      videoId: id,
+      begin: data.startTime,
+      end: data.endTime,
+      transport: 'HLS',
+    },
+  )
+}
+
 /** 上传截图 */
 export const uploadPic = (
   productKey: string,

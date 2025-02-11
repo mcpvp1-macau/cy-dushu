@@ -63,3 +63,8 @@ export const getTargetDetail = (data: {
   return serverDBAPI.post('api/targetDetailV2', data)
 }
 
+
+// 检测数据类型字典 [https://jingan.yuque.com/staff-ycgiyb/od1rat/soebmyfa1pgaklzl#QkJH1]
+export async function targetListEnumDict(options: any) {
+  return serverDBAPI.post(`/api/targetListEnumDict`, options);
+}

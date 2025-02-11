@@ -5,6 +5,7 @@ import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import useSmarkTrack from '@/hooks/device/useSmarkTrack'
 import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouControlRoom.store'
 import { AiObject } from '@/components/Video/Jessibuca/sei-types/ai-data'
+import { useSearchParams } from 'react-router-dom'
 
 type PropsType = {
   onAspectRatioChange?: (aspectRatio: number) => void
@@ -23,10 +24,18 @@ const ControlRoomVideo: FC<PropsType> = memo(
       (s) => s.enableSmartTrack,
     )
     const postService = usePostDeviceService(productKey!, deviceId!)
+    const [searchParams] = useSearchParams()
+    const useLW = searchParams.get('useLW')
+
+    const videoQuality = useWangLouControlRoomStore((s) => s.state.videoQuality)
+
+    const liveSetQuality = (quality: string) => {
+      postService('liveSetQuality', { quality })
+    }
 
     const { handlePostSmartTrack } = useSmarkTrack(
       enableSmartTrack,
-      postService,
+      (s, data) => postService('targetTrack', data),
     )
 
     const handleSeiClick = useMemoizedFn((e: AiObject) => {
@@ -61,6 +70,11 @@ const ControlRoomVideo: FC<PropsType> = memo(
           useDing={false}
           onAspectRatioChange={(v) => {
             onAspectRatioChange?.(v)
+          }}
+          useVideoQualityCheck={{
+            open: true,
+            valueDRC: videoQuality ?? (useLW ? 'Unknown' : undefined),
+            onDRCChange: liveSetQuality,
           }}
           onClickSeiBox={handleSeiClick}
           videoChildren={

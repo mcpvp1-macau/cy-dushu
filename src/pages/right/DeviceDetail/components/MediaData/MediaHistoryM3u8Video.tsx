@@ -16,7 +16,6 @@ type PropsType = {
 /** 详情历史视频 */
 const DeviceDetailMediaHistoryVideo: FC<PropsType> = memo(({ deviceList }) => {
   const [date, setDate] = useState<Dayjs | null>(dayjs())
-  const deviceType = useDeviceDetailStore((s) => s.deviceDetail?.deviceType)
   const deviceOptions = useMemo(
     () =>
       deviceList
@@ -42,7 +41,7 @@ const DeviceDetailMediaHistoryVideo: FC<PropsType> = memo(({ deviceList }) => {
     {
       queryKey: ['getHistoryVideo', deviceId, `${date?.format(dateOnly)}`],
       queryFn: () =>
-        getHistoryVideo(productKey, deviceId, videoId!, {
+        getHistoryM3u8Video(productKey, deviceId, videoId!, {
           startTime: date!.startOf('day').format(dft),
           endTime: date!.endOf('day').format(dft),
         }),

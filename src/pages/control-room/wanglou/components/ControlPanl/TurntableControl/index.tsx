@@ -42,7 +42,7 @@ const TurntableControl: React.FC = () => {
         >
           {t('common.smartTrack')}
         </Button>
-        <Button
+        {/* <Button
           icon={<Icon id="icon-mubiaojiance" />}
           onClick={() => {
             // TODO 目标跟踪
@@ -50,7 +50,7 @@ const TurntableControl: React.FC = () => {
           }}
         >
           {t('common.autoSmartTrack')}
-        </Button>
+        </Button> */}
       </section>
       {deviceDetail && <Control data={deviceDetail!} />}
     </div>
