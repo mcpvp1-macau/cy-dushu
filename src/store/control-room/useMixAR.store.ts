@@ -66,9 +66,11 @@ type StateType = {
   roads: API_GEO_SERACH.res.RoadDataRes | null
   aois: API_GEO_SERACH.res.AOIDataRes | null
   pois: API_GEO_SERACH.res.POIDataRes | null
+  overlaies: GeoJSON.FeatureCollection<Geometry, GeoJsonProperties> | null
   roadsRTree: RBush<GeoJSON.Geometry, GeoJsonProperties> | null
   aoisRTree: RBush<GeoJSON.Geometry, GeoJsonProperties> | null
   poisRTree: RBush<GeoJSON.Geometry, GeoJsonProperties> | null
+  overlayRTree: RBush<GeoJSON.Geometry, GeoJsonProperties> | null
 }
 
 type ActionsType = {
@@ -96,9 +98,11 @@ type ActionsType = {
   updateRoads: (roads: StateType['roads']) => void
   updateAOIs: (aois: StateType['aois']) => void
   updatePOIs: (pois: StateType['pois']) => void
+  updateOverlaies: (overlaies: StateType['overlaies']) => void
   updateRoadsRTree: (roadsRTree: StateType['roadsRTree']) => void
   updateAOIsRTree: (aoisRTree: StateType['aoisRTree']) => void
   updatePOIsRTree: (poisRTree: StateType['poisRTree']) => void
+  updateOverlayRTree: (overlayRTree: StateType['overlayRTree']) => void
 }
 
 /** 虚实融合 */
@@ -126,10 +130,13 @@ const useMixARStore = create<StateType & ActionsType>()(
       roads: null,
       aois: null,
       pois: null,
+      overlaies: null,
       roadsRTree: null,
       aoisRTree: null,
       poisRTree: null,
+      overlayRTree: null,
       cesiumViewer: null,
+
       updateEnable: (enable) => {
         set({ enable, arData: [], features: [] }, false, 'updateEnable')
       },
@@ -180,6 +187,9 @@ const useMixARStore = create<StateType & ActionsType>()(
       updatePOIs: (pois) => {
         set({ pois }, false, 'updatePOIs')
       },
+      updateOverlaies: (overlaies) => {
+        set({ overlaies }, false, 'updateOverlaies')
+      },
       updateRoadsRTree: (roadsRTree) => {
         set({ roadsRTree }, false, 'updateRoadsRTree')
       },
@@ -191,6 +201,9 @@ const useMixARStore = create<StateType & ActionsType>()(
       },
       updateCeisumViewer: (cesiumViewer) => {
         set({ cesiumViewer }, false, 'updateCeisumViewer')
+      },
+      updateOverlayRTree: (overlayRTree) => {
+        set({ overlayRTree }, false, 'updateOverlayRTree')
       },
     }),
     {

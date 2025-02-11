@@ -18,6 +18,7 @@ import RightTools from './components/right_tools'
 import Right from './components/right_details'
 import DrawHandler from '@/map/GlobalMap/DrawHandler'
 import MapSituation from '@/map/GlobalMap/Situation'
+import RadarTargets from './components/target/RadarTarget'
 
 type PropsType = unknown
 
@@ -57,6 +58,7 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
       <UavRealTrack />
       <UAVControlRoomPOIResolver />
       <LayerOverlay />
+      <RadarTargets />
     </CesiumMap>
   )
 })

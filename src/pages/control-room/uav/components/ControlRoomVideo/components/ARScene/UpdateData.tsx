@@ -4,6 +4,9 @@ import {
   getGeoSearchRoadData,
 } from '@/service/modules/geo'
 import useMixARStore from '@/store/control-room/useMixAR.store'
+import useMapLayerAndOverlayStore from '@/store/map/useLayerAndOverlay.store'
+import { getOverlayColor } from '@/utils/color'
+import { shouldJson } from '@/utils/json'
 import * as turf from '@turf/turf'
 import RBush from 'geojson-rbush'
 
@@ -120,6 +123,62 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
       [rt.geometry.coordinates[0], rt.geometry.coordinates[1]],
     ])
   }, [uav.longitude, uav.latitude])
+
+  const overlayList = useMapLayerAndOverlayStore((s) => s.overlayList)
+  const updateOverlayRTree = useMixARStore((s) => s.updateOverlayRTree)
+  useEffect(() => {
+    const collection: GeoJSON.FeatureCollection = {
+      type: 'FeatureCollection',
+      features: [],
+    }
+
+    overlayList.forEach((e) => {
+      if (e.overlayType === 'POSITION') {
+        const position = shouldJson(e.overlayPositions)
+        collection.features.push({
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: position?.[0],
+          },
+          id: `overlay-${e.overlayId}`,
+          properties: {
+            name: e.overlayName,
+          },
+        })
+      } else if (e.overlayType === 'POLYGON') {
+        const positions = shouldJson(e.overlayPositions)
+        positions.push(positions[0])
+        collection.features.push({
+          type: 'Feature',
+          geometry: {
+            type: 'Polygon',
+            coordinates: [positions],
+          },
+          id: `overlay-${e.overlayId}`,
+          properties: {
+            name: e.overlayName,
+            color: getOverlayColor(shouldJson(e.overlayStyleConfig), 0.5),
+          },
+        })
+      } else if (e.overlayType === 'CIRCULAR') {
+        const positions = shouldJson(e.overlayPositions)[0]
+        const f = turf.circle([positions[0], positions[1]], positions[3], {
+          units: 'meters',
+        })
+
+        f.properties = {
+          name: e.overlayName,
+          color: getOverlayColor(shouldJson(e.overlayStyleConfig), 0.5),
+        }
+        collection.features.push(f)
+      }
+    })
+
+    const rTree = RBush()
+    rTree.load(collection.features)
+    updateOverlayRTree(rTree)
+  }, [overlayList])
 
   return null
 })

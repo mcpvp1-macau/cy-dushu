@@ -39,6 +39,11 @@ type StateType = {
     showName: boolean
     filter: string[]
   }
+  overlay: {
+    enable: boolean
+    point: boolean
+    area: boolean
+  }
   shift: {
     gimbalYaw: number
     gimbalPitch: number
@@ -88,7 +93,7 @@ const useARSettingStore = create<StateType & ActionsType>()(
         shift: {
           gimbalYaw: 0,
           gimbalPitch: 0,
-          height: 0,
+          height: 15,
           lng: 0,
           lat: 0,
         },
@@ -97,12 +102,17 @@ const useARSettingStore = create<StateType & ActionsType>()(
           showName: true,
           filter: [],
         },
+        overlay: {
+          enable: true,
+          point: true,
+          area: true,
+        },
         updateAR: (data) => {
           set(data)
         },
       }),
       {
-        name: 'ARSetting',
+        name: 'ARSettingV2',
         storage: createJSONStorage(() => localStorage),
       },
     ),

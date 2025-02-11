@@ -1007,7 +1007,7 @@ controlRoom:
       boxZoom:
         title: Box Zoom
       smartTrack:
-        title: AI Track
+        title: Track
       ar:
         title: AR
         setting:
@@ -1023,6 +1023,8 @@ controlRoom:
         title: Video Record
       hover:
         title: Hover
+      autoTrack:
+        title: Track
     gamepad:
       title: Gamepad
     goHome:

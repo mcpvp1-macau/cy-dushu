@@ -134,6 +134,16 @@ const ARSetting: FC<PropsType> = memo(() => {
     })
   }
 
+  const updateOverlay = (data: Partial<(typeof ar)['overlay']>) => {
+    updAR({
+      ...ar,
+      overlay: {
+        ...ar.overlay,
+        ...data,
+      },
+    })
+  }
+
   const updateShift = (data: Partial<(typeof ar)['shift']>) => {
     updAR({
       ...ar,
@@ -455,6 +465,47 @@ const ARSetting: FC<PropsType> = memo(() => {
               <Switch
                 value={ar.poi.showName}
                 onChange={(e) => updatePoi({ showName: e })}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <div className="flex gap-1.5 items-center mb-1">
+          <div className="h-[10px] w-[2px] rounded bg-green-500"></div>
+          标绘
+          <Form.Item noStyle>
+            <Switch
+              value={ar.overlay.enable}
+              onChange={(e) =>
+                updateOverlay({
+                  enable: e,
+                })
+              }
+            />
+          </Form.Item>
+        </div>
+        <Row>
+          <Col span={12}>
+            <Form.Item label="点位">
+              <Switch
+                value={ar.overlay.point}
+                onChange={(e) =>
+                  updateOverlay({
+                    point: e,
+                  })
+                }
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="区域">
+              <Switch
+                value={ar.overlay.area}
+                onChange={(e) =>
+                  updateOverlay({
+                    area: e,
+                  })
+                }
               />
             </Form.Item>
           </Col>

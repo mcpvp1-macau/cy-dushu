@@ -6,5 +6,8 @@
  * @returns
  */
 export const limitNum = (num: number, min: number, max: number) => {
-  return Math.min(Math.max(num, min), max);
-};
+  if (isNaN(num)) {
+    return min
+  }
+  return Math.min(Math.max(num, min), max)
+}

@@ -998,7 +998,7 @@ controlRoom:
       boxZoom:
         title: 框选
       smartTrack:
-        title: 智能追踪
+        title: 追踪
       ar:
         title: 虚实融合
         setting:
@@ -1014,6 +1014,8 @@ controlRoom:
         title: 录像
       hover:
         title: 悬停
+      autoTrack:
+        title: 追踪
     gamepad:
       title: 摇杆
     goHome:

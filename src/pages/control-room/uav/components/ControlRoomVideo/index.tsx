@@ -37,7 +37,11 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
   const enableSmartTrack = useUavControlRoomStore((s) => s.enableSmartTrack)
   const postService = usePostDeviceService(productKey!, deviceId)
 
-  const { handlePostSmartTrack } = useSmarkTrack(enableSmartTrack, postService)
+  const { handlePostSmartTrack } = useSmarkTrack(
+    enableSmartTrack,
+    postService,
+    'autoTrack',
+  )
   const liveSetQuality = (quality: string) => {
     postService('liveSetQuality', { quality })
   }
@@ -45,7 +49,6 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
   // const enableMixAR = useControlRoomStore((s) => s.state.ar);
   const enableAR = useMixARStore((s) => s.enable)
   const updateUavProperties = useMixARStore((s) => s.updateUavProperties)
-
 
   const handlePropertiesSei = (data: any) => {
     updateUavProperties(data)

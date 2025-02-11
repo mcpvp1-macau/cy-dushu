@@ -15,7 +15,7 @@ import ZoomFocusMode from './ZoomFucusMode'
 import IconSmartTrack from '@/assets/icons/jsx/uav/IconSmartTrack'
 import usePostDeviceService from '../../hooks/usePostDeviceService'
 
-const VRSetting = lazy(() => import('@/components/Header/setting/VRSetting'))
+const ARSetting = lazy(() => import('@/components/Header/setting/ar'))
 
 type PropsType = unknown
 
@@ -115,6 +115,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
                 updateOpenPositionZoom(0)
               } else {
                 updateEnableSmartTrack(false)
+                postDeviceService('autoTrack', { enable: false })
               }
             }}
           >
@@ -150,7 +151,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
               onClose={setVRFalse}
             >
               <AppViewSuspense>
-                <VRSetting />
+                <ARSetting />
               </AppViewSuspense>
             </Drawer>
           </>

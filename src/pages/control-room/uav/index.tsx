@@ -38,6 +38,7 @@ import IconFlightOperation from '@/assets/icons/jsx/uav/IconFlightOperation'
 import { useUavControlRoomLayoutStore } from './hooks/useUavControlRoomLayout.store'
 import IconDrawArea from '@/assets/icons/jsx/right-tools/IconDrawArea'
 import RightOverlayDetail from './components/right_detail/Overlay'
+import useControlRoomTargetInfoStore from '@/store/control-room/useTargetInfo.store'
 
 type PropsType = unknown
 
@@ -50,10 +51,18 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       (s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey)!,
   )
 
+  const handleServerEvtMsg = useServerEventMsg()
+
+  const updateTargets = useControlRoomTargetInfoStore((s) => s.updateTargets)
   const controlRoomStore = useCreateUavControlRoomStore(
     productKey!,
     deviceId,
-    useServerEventMsg(),
+    (wsData) => {
+      handleServerEvtMsg(wsData)
+      if (wsData.method === 'event.targetInfo.info') {
+        updateTargets(wsData.data?.targets ?? [])
+      }
+    },
   )
 
   const layout = useUavControlRoomLayoutStore((s) => s.layout)

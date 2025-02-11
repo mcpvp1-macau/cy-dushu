@@ -40,3 +40,17 @@ export function hexToARGB(hexColor: string) {
   // 返回ARGB数字颜色
   return argbValue
 }
+
+export const getOverlayColor = (styleConfig: any, opacity?: number) => {
+  if (!styleConfig) {
+    return '#fff'
+  }
+  const color =
+    styleConfig?.color?.['-argb'] || styleConfig?.fillColor?.['-value']
+  if (opacity) {
+    return `${argbToHex(String(color))[0]}${Math.round(opacity * 255).toString(
+      16,
+    )}`
+  }
+  return argbToHex(String(color))[0]
+}
