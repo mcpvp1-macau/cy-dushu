@@ -1,5 +1,5 @@
 import CesiumMap from '@/map/CesiumMap'
-import { memo, Suspense, type FC } from 'react'
+import { Suspense } from 'react'
 import UavMarker from './components/UavMarker'
 import ResetHomePointListener from './components/ResetHomePointListener'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
@@ -13,9 +13,12 @@ import useMixARStore from '@/store/control-room/useMixAR.store'
 import MapMixAR from './components/MapMixAR'
 import AppSpin from '@/components/AppSpin'
 import UAVControlRoomPOIResolver from './components/POIResolver'
-import OtherMarkers from '@/map/GlobalMap/DeviceMarkers/OtherMarkers'
-import TargetPoints from '@/map/GlobalMap/TargetPoints'
-import BoardCesium from '@/map/GlobalMap/BoardCesium'
+import LayerOverlay from './components/LayerOverlaies'
+import RightTools from './components/right_tools'
+import Right from './components/right_details'
+import DrawHandler from '@/map/GlobalMap/DrawHandler'
+import MapSituation from '@/map/GlobalMap/Situation'
+import RadarTargets from './components/target/RadarTarget'
 
 type PropsType = unknown
 
@@ -28,6 +31,10 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
 
   return (
     <CesiumMap id="uav-control-room-map">
+      <RightTools />
+      <Right />
+      <DrawHandler />
+      <MapSituation />
       <UavMapPointFly />
       <UavViewCombackResolver />
       <LastestTask />
@@ -50,10 +57,8 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
       <HomeMarker />
       <UavRealTrack />
       <UAVControlRoomPOIResolver />
-
-      <TargetPoints />
-      <BoardCesium />
-      <OtherMarkers />
+      <LayerOverlay />
+      <RadarTargets />
     </CesiumMap>
   )
 })

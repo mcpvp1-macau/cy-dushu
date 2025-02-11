@@ -4,9 +4,10 @@ import useRightMode from '@/store/layout/useRightMode.store'
 
 type PropsType = {
   children?: ReactNode
+  onClose?: () => void
 }
 
-const CloseableHeader: FC<PropsType> = memo(({ children }) => {
+const CloseableHeader: FC<PropsType> = memo(({ children, onClose }) => {
   const updateRightMode = useRightMode((s) => s.updateRightMode)
   const updateDetailId = useRightMode((s) => s.updateDetailId)
 
@@ -16,8 +17,12 @@ const CloseableHeader: FC<PropsType> = memo(({ children }) => {
       <div className="flex items-center">
         <IconButton
           onClick={() => {
-            updateRightMode(null)
-            updateDetailId(null)
+            if (onClose) {
+              onClose()
+            } else {
+              updateRightMode(null)
+              updateDetailId(null)
+            }
           }}
         >
           <IconClose className="scale-[130%]" />

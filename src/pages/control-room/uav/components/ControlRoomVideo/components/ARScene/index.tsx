@@ -6,7 +6,6 @@ import ARScenePOIs from './pois'
 import type { ContextOptions } from 'cesium'
 import QueryData from './QueryData'
 import ARSceneCanvas from './canvas'
-import useARSettingStore from '@/store/setting/useARSetting.store'
 import ARSceneUavAirline from './airline'
 
 type PropsType = unknown
@@ -31,11 +30,10 @@ Inner.displayName = 'Inner'
 
 const ARScene: FC<PropsType> = memo(() => {
   const contextOptions = useRef<ContextOptions>({ webgl: { alpha: true } })
-  const poiEnable = useARSettingStore((s) => s.poi.enable)
   return (
     <div className="absolute top-0 left-0 size-full">
       <ARSceneCanvas />
-      {poiEnable && <ARScenePOIs />}
+      <ARScenePOIs />
       <Viewer
         full
         key={'ar-scene'}

@@ -5,7 +5,11 @@ import { useMemoizedFn } from 'ahooks'
 import { useRef } from 'react'
 
 /** 目标跟踪启用关闭, 发送请求 */
-const useSmarkTrack = (enableSmartTrack, takeService: (type: string, data: any) => unknown) => {
+const useSmarkTrack = (
+  enableSmartTrack,
+  takeService: (type: string, data: any) => unknown,
+  identify = 'smartTrack',
+) => {
   // const enableSmartTrack = useControlRoomStore((s) => s.enableSmartTrack);
   // const enableSmartTrack = useUavControlRoomStore((s) => s.enableSmartTrack)
   const enableSmartTrackRef = useRef(enableSmartTrack)
@@ -13,7 +17,7 @@ const useSmarkTrack = (enableSmartTrack, takeService: (type: string, data: any) 
   if (enableSmartTrack !== enableSmartTrackRef.current) {
     enableSmartTrackRef.current = enableSmartTrack
     if (!enableSmartTrack) {
-      takeService('smartTrack', {
+      takeService(identify, {
         enable: false,
       })
     }
@@ -29,9 +33,11 @@ const useSmarkTrack = (enableSmartTrack, takeService: (type: string, data: any) 
       frame_no?: number
       object_label?: string
       label_value?: string
+      object_id?: string
+      objectId?: string
     }) => {
       if (enableSmartTrackRef.current) {
-      takeService('smartTrack', payload)
+        takeService(identify, payload)
       }
     },
   )

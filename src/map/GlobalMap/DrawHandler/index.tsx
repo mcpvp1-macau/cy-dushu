@@ -19,6 +19,8 @@ const DrawHandler: FC<PropsType> = memo(() => {
   const drawingType = useMapDrawStore((s) => s.drawing)
   const updateDrawingType = useMapDrawStore((s) => s.updateDrawing)
 
+  const { t } = useTranslation()
+
   const { viewer } = useCesium()
   useEffect(() => {
     if (drawingType === DrawType.None) {
@@ -34,7 +36,7 @@ const DrawHandler: FC<PropsType> = memo(() => {
   const queryClient = useQueryClient()
   const handleSuccess = useMemoizedFn(async () => {
     updateDrawingType(DrawType.None)
-    msgApi.success('新增成功')
+    msgApi.success(t('common.success'))
     await queryClient.invalidateQueries({
       queryKey: ['overlayList'],
       exact: false,

@@ -58,6 +58,7 @@ const menus = [
     component: <MenuIconSchedule className="text-lg text-[#B86C6C]" />,
   },
   {
+    id: 'defence',
     path: '/defence',
     auth: 'defence',
     component: <MenuIconDefence className="text-lg text-[#4F81D7]" />,

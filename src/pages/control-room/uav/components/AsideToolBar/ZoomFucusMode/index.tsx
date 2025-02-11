@@ -24,7 +24,6 @@ const ZoomFocusMode: FC<PropsType> = memo(({ postSerivce }) => {
     })
   }
 
-  console.log(modeZhMap, zoomFocusMode)
   if (isNil(zoomFocusMode)) {
     return null
   }

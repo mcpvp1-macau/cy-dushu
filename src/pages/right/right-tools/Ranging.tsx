@@ -9,10 +9,12 @@ import IconRangingLine from '@/assets/icons/jsx/IconRangingLine'
 import VerticalIconButton from '@/components/ui/button/VerticalButton'
 import { useUnmount } from 'ahooks'
 
-type PropsType = unknown
+type PropsType = {
+  onClose?: () => void
+}
 
 /** 测距工具面板 */
-const RightRangingPanel: FC<PropsType> = memo(() => {
+const RightRangingPanel: FC<PropsType> = memo(({ onClose }) => {
   const drawingType = useMapDrawStore((s) => s.drawing)
   const updateDrawing = useMapDrawStore((s) => s.updateDrawing)
   const updateDrawingColor = useMapDrawStore((s) => s.updateDrawingColor)
@@ -52,7 +54,7 @@ const RightRangingPanel: FC<PropsType> = memo(() => {
 
   return (
     <div className="w-[350px] backdrop-blur">
-      <CloseableHeader>
+      <CloseableHeader onClose={onClose}>
         <div className="flex gap-2 items-center">
           <IconRangeFinder className="device-detail-icon" />
           <h6 className="text-white text-base">{t('overlay.measure.title')}</h6>

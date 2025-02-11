@@ -4,6 +4,7 @@ import * as Cesium from 'cesium'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { setDeviceProp } from '@/service/modules/device'
+import { Button } from 'antd'
 
 type PropsType = unknown
 
@@ -70,7 +71,24 @@ const ResetHomePointListener: FC<PropsType> = memo(() => {
     }
   }, [flyParams.isResetHome])
 
-  return null
+  return (
+    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 bg-ground-3 text-white p-3 rounded bg-opacity-50 flex items-center gap-3 whitespace-nowrap">
+      {t('controlRoom.uav.flyParamsSetting.resetingHomePoint.clickMapMsg')}
+      <Button
+        size="small"
+        type="primary"
+        danger
+        onClick={() => {
+          updateFlyParams({
+            ...flyParams,
+            isResetHome: false,
+          })
+        }}
+      >
+        {t('common.cancel')}
+      </Button>
+    </div>
+  )
 })
 
 ResetHomePointListener.displayName = 'ResetHomePointListener'

@@ -1,10 +1,9 @@
-import { type FC } from 'react'
 import LayerPOI from './LayerPOI'
-import LayerOverlaies from './Overlaies/Overlaies'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { RightModeEnum } from '@/enum/right-mode'
+import LayerOverlaies from '@/map/CesiumMap/components/service/Overlaies/Overlaies'
 
 type PropsType = unknown
 

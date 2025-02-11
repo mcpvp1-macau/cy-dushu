@@ -8,10 +8,13 @@ import { IconFullscreen2 } from '@/assets/icons/jsx/IconFullscreen2'
 import { DynamicLayoutType } from '..'
 import IconRight from '@/assets/icons/jsx/IconRight'
 import useDynamicLayoutStore from '../store/useDynamicLayout.store'
+import IconClose from '@/assets/icons/jsx/IconClose'
 
 export type DynamicLayoutTabsType = {
   key: string
   keeyRenderOnHidden?: boolean
+  closeable?: boolean
+  params?: Record<string, any>
 }[]
 
 type PropsType = {
@@ -96,7 +99,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
                 {/* Tab 标签 */}
                 <li
                   className={clsx(
-                    'cursor-pointer font-medium hover:bg-ground-5 rounded flex flex-shrink-0 gap-1 items-center text-white',
+                    'cursor-pointer font-medium hover:bg-ground-5 rounded flex flex-shrink-0 gap-1 items-center text-white group/item',
                     isVertical ? 'px-0.5 py-1.5' : 'px-1.5 py-0.5',
                     {
                       'flex-col': isVertical,
@@ -139,6 +142,27 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
                     >
                       {titleMap[e.key] ?? '?'}
                     </div>
+                    {e.closeable && (
+                      <IconButton
+                        onClick={(evt) => {
+                          evt.stopPropagation()
+                          onLayoutChange?.({
+                            ...layout,
+                            children: layout.children.filter(
+                              (e2) => e2.key !== e.key,
+                            ),
+                            activeKey:
+                              layout.activeKey === e.key
+                                ? layout.children.length > 1
+                                  ? layout.children[0].key
+                                  : undefined
+                                : layout.activeKey,
+                          })
+                        }}
+                      >
+                        <IconClose />
+                      </IconButton>
+                    )}
                   </div>
                 </li>
               </Fragment>

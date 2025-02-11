@@ -15,7 +15,7 @@ import ZoomFocusMode from './ZoomFucusMode'
 import IconSmartTrack from '@/assets/icons/jsx/uav/IconSmartTrack'
 import usePostDeviceService from '../../hooks/usePostDeviceService'
 
-const VRSetting = lazy(() => import('@/components/Header/setting/VRSetting'))
+const ARSetting = lazy(() => import('@/components/Header/setting/ar'))
 
 type PropsType = unknown
 
@@ -41,7 +41,6 @@ const AsideToolBar: FC<PropsType> = memo(() => {
   const serviceHave = useDeviceDetailStore((s) => s.serviceHave)
   const propsHave = useDeviceDetailStore((s) => s.propsHave)
 
-  const hasSmartTrack = !!serviceHave['smartTrack']
   const hasTapZoomAtTarget = !!serviceHave['tapZoomAtTarget']
   const hasCameraMode = !!propsHave['cameraMode']
   const hasAr = !!propsHave['ar']
@@ -102,7 +101,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
         )}
         {hasCameraMode && <CameraMode />}
         <TakePhoto />
-        {hasSmartTrack && (
+        {serviceHave['autoTrack'] && (
           <IconButton
             className={borderedBtnClassName}
             toolTipProps={{
@@ -115,6 +114,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
                 updateOpenPositionZoom(0)
               } else {
                 updateEnableSmartTrack(false)
+                postDeviceService('autoTrack', { enable: false })
               }
             }}
           >
@@ -150,7 +150,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
               onClose={setVRFalse}
             >
               <AppViewSuspense>
-                <VRSetting />
+                <ARSetting />
               </AppViewSuspense>
             </Drawer>
           </>

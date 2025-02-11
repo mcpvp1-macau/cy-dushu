@@ -9,7 +9,7 @@ const AITrackBoxSelect: FC<PropsType> = memo(() => {
   const postService = usePostDeviceService()
 
   const handleEnd: GetProps<typeof DrawBox>['onDrawEnd'] = (rect) => {
-    postService('smartTrack', {
+    postService('autoTrack', {
       enable: true,
       x1: rect[0],
       y1: rect[1],

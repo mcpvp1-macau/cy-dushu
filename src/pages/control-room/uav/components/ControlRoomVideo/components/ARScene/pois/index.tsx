@@ -18,6 +18,8 @@ const ARScenePOIs: FC<PropsType> = memo(() => {
   const uav = useMixARStore((s) => s.uavProperties)
 
   const poiSetting = useARSettingStore((s) => s.poi)
+  const overlaySetting = useARSettingStore((s) => s.overlay)
+  const overlaies = useMixARStore((s) => s.overlaies)
 
   const filterSet = useMemo(
     () => new Set(poiSetting.filter),
@@ -25,7 +27,7 @@ const ARScenePOIs: FC<PropsType> = memo(() => {
   )
 
   const items = useMemo(() => {
-    if (!viewer?.scene || !pois) {
+    if (!viewer?.scene || !pois || !poiSetting.enable) {
       return []
     }
 
@@ -62,9 +64,51 @@ const ARScenePOIs: FC<PropsType> = memo(() => {
     return poiItems
   }, [pois, viewer, uav, filterSet])
 
+  const overlayPoints = useMemo(() => {
+    if (
+      !overlaies?.features ||
+      !viewer ||
+      !overlaySetting.enable ||
+      !overlaySetting.point
+    ) {
+      return []
+    }
+
+    const poi: Item[] = []
+
+    for (const feature of overlaies.features) {
+      if (feature.geometry.type === 'Point') {
+        const coordinates = feature.geometry.coordinates
+        const catesian = Cesium.Cartesian3.fromDegrees(
+          coordinates[0],
+          coordinates[1],
+          0,
+        )
+        // 获取屏幕坐标
+        const screenPostion = wgs84ToDrawingBufferCoordinates(
+          viewer.scene,
+          catesian,
+        )
+        if (!screenPostion) {
+          continue
+        }
+        poi.push({
+          id: feature.id as React.Key,
+          properties: feature.properties,
+          coordinates: [
+            screenPostion.x / viewer.resolutionScale,
+            screenPostion.y / viewer.resolutionScale,
+          ],
+        })
+      }
+    }
+
+    return poi
+  }, [overlaies])
+
   return (
     <div className="absolute inset-0 z-[60] overflow-hidden pointer-events-auto">
-      {items.map((item) => {
+      {[...items, ...overlayPoints].map((item) => {
         return (
           <div
             key={item.id}

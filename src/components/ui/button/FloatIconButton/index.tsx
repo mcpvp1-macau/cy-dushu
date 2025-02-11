@@ -13,7 +13,7 @@ const FloatIconButton: FC<PropsType> = memo(
     return (
       <div
         className={clsx(
-          'w-[28px] h-[28px] flex justify-center items-center box-content bg-[#16202BCC] hover:bg-ground-2',
+          'w-[28px] h-[28px] flex justify-center items-center box-content bg-[#16202B] hover:bg-ground-2',
           variant === 'bordered' &&
             'border border-solid border-ground-4 rounded',
           active && 'bg-ground-2',

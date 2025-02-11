@@ -8,8 +8,8 @@ setting:
   video_decoder:
     title: Video Decoder
     description: >-
-      By default, the decoder will be automatically selected in the order of WCS, MSE, Simd, and Wasm based on browser support.
-
+      By default, the decoder will be automatically selected in the order of
+      WCS, MSE, Simd, and Wasm based on browser support.
     attention: Attention
   map:
     resolution:
@@ -145,8 +145,8 @@ device:
         close:
           title: Close
         openWarning: >-
-          Before opening the cover, please ensure the surrounding environment of the airport is clear of obstacles and no personnel are nearby.
-
+          Before opening the cover, please ensure the surrounding environment of
+          the airport is clear of obstacles and no personnel are nearby.
       putter:
         title: Putter
       aircraftCharging:
@@ -491,6 +491,8 @@ common:
   props: property
   target: Target
   unknown: unknown
+  cancel: Cancel
+  success: Success
 events:
   search:
     placeholder: Please search by event name or ID
@@ -606,8 +608,8 @@ wayline:
   deleteWayline:
     title: Delete the Wayline
     description: >-
-      After deletion, the wayline content cannot be recovered. Are you sure you want to delete the wayline?
-
+      After deletion, the wayline content cannot be recovered. Are you sure you
+      want to delete the wayline?
   regenerator:
     title: Regenerator
   create:
@@ -801,8 +803,8 @@ schedule:
   tip:
     mustSetGoHome: End action of wayline must be set to `Go Home`
     20minsInterval: >-
-      The scheduled interval of repeated tasks must exceed the actual execution duration of the previous task by at least 20 minutes
-
+      The scheduled interval of repeated tasks must exceed the actual execution
+      duration of the previous task by at least 20 minutes
   form:
     name:
       title: Name
@@ -960,6 +962,7 @@ controlRoom:
       resetingHomePoint:
         title: Setting home point
         success: Home point set successfully
+        clickMapMsg: Please click on the map to reset the home point
     payload:
       title: Payload
     aiList:
@@ -1004,7 +1007,7 @@ controlRoom:
       boxZoom:
         title: Box Zoom
       smartTrack:
-        title: AI Track
+        title: Track
       ar:
         title: AR
         setting:
@@ -1020,6 +1023,8 @@ controlRoom:
         title: Video Record
       hover:
         title: Hover
+      autoTrack:
+        title: Track
     gamepad:
       title: Gamepad
     goHome:
@@ -1061,6 +1066,8 @@ controlRoom:
         required_msg: Please input target Altitude
       flightSpeed:
         required_msg: Please input flight speed
+    overlay:
+      title: Overlay
   control:
     uavTurnLeft:
       title: UAV Turn Left

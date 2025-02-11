@@ -9,9 +9,11 @@ import useMapDrawStore, { DrawType } from '@/store/map/useDraw.store'
 import IconDrawFan from '@/assets/icons/jsx/IconDrawFan'
 import { useUnmount } from 'ahooks'
 
-type PropsType = unknown
+type PropsType = {
+  onClose?: () => void
+}
 
-const AddGeometry: FC<PropsType> = memo(() => {
+const AddGeometry: FC<PropsType> = memo(({ onClose }) => {
   const drawingType = useMapDrawStore((s) => s.drawing)
   const updateDrawing = useMapDrawStore((s) => s.updateDrawing)
   const updateDrawingColor = useMapDrawStore((s) => s.updateDrawingColor)
@@ -37,7 +39,7 @@ const AddGeometry: FC<PropsType> = memo(() => {
 
   return (
     <div className="w-[350px] backdrop-blur">
-      <CloseableHeader>
+      <CloseableHeader onClose={onClose}>
         <div className="flex gap-2 items-center">
           <IconDrawArea className="device-detail-icon" />
           <h6 className="text-white text-base">{t('overlay.drawing.title')}</h6>

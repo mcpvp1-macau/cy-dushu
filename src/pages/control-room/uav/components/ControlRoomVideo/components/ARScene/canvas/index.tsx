@@ -58,7 +58,8 @@ const ARSceneCanvas: FC<PropsType> = memo(() => {
   const viewer = useMixARStore((s) => s.cesiumViewer)
   const uav = useMixARStore((s) => s.uavProperties)
 
-  const vrSetting = useARSettingStore((s) => s)
+  const arSetting = useARSettingStore((s) => s)
+  const overlaies = useMixARStore((s) => s.overlaies)
 
   const { aoiItems, roadItems } = useMemo(() => {
     if (!viewer?.scene) {
@@ -68,8 +69,43 @@ const ARSceneCanvas: FC<PropsType> = memo(() => {
       }
     }
     const aoiItems: Item[] = []
-    if (vrSetting.aoi.enable && aois) {
+    if (arSetting.aoi.enable && aois) {
       for (const feature of aois.features) {
+        const item: Item = {
+          type: 'aoi',
+          properties: feature.properties,
+          coordinates: [],
+        }
+        for (const coordinates of feature.geometry.coordinates[0]) {
+          const catesian = Cesium.Cartesian3.fromDegrees(
+            coordinates[0],
+            coordinates[1],
+            0,
+          )
+          // 获取屏幕坐标
+          const screenPostion = wgs84ToDrawingBufferCoordinates(
+            viewer.scene,
+            catesian,
+          )
+          if (!screenPostion) {
+            continue
+          }
+          item.coordinates.push([
+            (screenPostion.x / viewer.resolutionScale) * 2,
+            (screenPostion.y / viewer.resolutionScale) * 2,
+          ])
+        }
+        if (item.coordinates.length < 2) {
+          continue
+        }
+        aoiItems.push(item)
+      }
+    }
+    if (arSetting.overlay.area && arSetting.overlay.enable && overlaies) {
+      for (const feature of overlaies.features) {
+        if (feature.geometry.type !== 'Polygon') {
+          continue
+        }
         const item: Item = {
           type: 'aoi',
           properties: feature.properties,
@@ -158,7 +194,7 @@ const ARSceneCanvas: FC<PropsType> = memo(() => {
 
     for (const item of aoiItems) {
       if (
-        !vrSetting.aoi.showBuilding &&
+        !arSetting.aoi.showBuilding &&
         item.properties?.['class'] === 'building'
       ) {
         continue
@@ -166,71 +202,90 @@ const ARSceneCanvas: FC<PropsType> = memo(() => {
       drawClosedPolygon(
         ctx,
         item.coordinates as number[][],
-        vrSetting.aoi.color,
-        vrSetting.aoi.borderColor,
-        vrSetting.aoi.borderSize,
+        item.properties?.color ?? arSetting.aoi.color,
+        arSetting.aoi.borderColor,
+        arSetting.aoi.borderSize,
       )
     }
 
     for (const data of roadItems) {
       const isMain = !!data.properties?.name
       if (
-        (isMain && !vrSetting.mainRoad.enable) ||
-        (!isMain && !vrSetting.subRoad.enable)
+        (isMain && !arSetting.mainRoad.enable) ||
+        (!isMain && !arSetting.subRoad.enable)
       ) {
         continue
       }
       drawLine(
         ctx,
         data.coordinates as number[][],
-        isMain ? vrSetting.mainRoad.borderColor : vrSetting.subRoad.borderColor,
+        isMain ? arSetting.mainRoad.borderColor : arSetting.subRoad.borderColor,
         isMain
-          ? vrSetting.mainRoad.size + vrSetting.mainRoad.borderSize * 2
-          : vrSetting.subRoad.size + vrSetting.subRoad.borderSize * 2,
+          ? arSetting.mainRoad.size + arSetting.mainRoad.borderSize * 2
+          : arSetting.subRoad.size + arSetting.subRoad.borderSize * 2,
       )
     }
 
     for (const item of roadItems) {
       const isMain = !!item.properties?.name
       if (
-        (isMain && !vrSetting.mainRoad.enable) ||
-        (!isMain && !vrSetting.subRoad.enable)
+        (isMain && !arSetting.mainRoad.enable) ||
+        (!isMain && !arSetting.subRoad.enable)
       ) {
         continue
       }
       drawLine(
         ctx,
         item.coordinates as number[][],
-        isMain ? vrSetting.mainRoad.color : vrSetting.subRoad.color,
-        isMain ? vrSetting.mainRoad.size : vrSetting.subRoad.size,
+        isMain ? arSetting.mainRoad.color : arSetting.subRoad.color,
+        isMain ? arSetting.mainRoad.size : arSetting.subRoad.size,
       )
 
       const name = item.properties?.name ?? item.properties?.RoadName
-      if (vrSetting.text.enable && name) {
-        ctx.fillStyle = vrSetting.text.color
-        ctx.strokeStyle = vrSetting.text.borderColor
-        ctx.lineWidth = vrSetting.text.borderSize // 描边的宽度
-        ctx.font = `${vrSetting.text.size}px sans-serif`
+      if (arSetting.text.enable && name) {
+        ctx.fillStyle = arSetting.text.color
+        ctx.strokeStyle = arSetting.text.borderColor
+        ctx.lineWidth = arSetting.text.borderSize // 描边的宽度
+        ctx.font = `${arSetting.text.size}px sans-serif`
         const p = item.coordinates[item.coordinates.length >> 1]
         ctx.strokeText(name, p[0], p[1])
         ctx.fillText(name, p[0], p[1])
       }
     }
+
+    ctx.fillStyle = arSetting.text.color
+    ctx.strokeStyle = arSetting.text.borderColor
+    ctx.lineWidth = arSetting.text.borderSize // 描边的宽度
+    ctx.font = `${arSetting.text.size}px sans-serif`
+
+    for (const item of aoiItems) {
+      if (item.properties?.name) {
+        let min0 = Infinity
+        let min1 = Infinity
+        let max0 = -Infinity
+        let max1 = -Infinity
+        for (const p of item.coordinates) {
+          min0 = Math.min(min0, p[0])
+          min1 = Math.min(min1, p[1])
+          max0 = Math.max(max0, p[0])
+          max1 = Math.max(max1, p[1])
+        }
+        const p = [(min0 + max0) / 2, (min1 + max1) / 2]
+        ctx.strokeText(item.properties.name, p[0], p[1])
+      }
+    }
+
     for (const item of roadItems) {
       const isMain = !!item.properties?.name
       if (
-        (isMain && !vrSetting.mainRoad.enable) ||
-        (!isMain && !vrSetting.subRoad.enable)
+        (isMain && !arSetting.mainRoad.enable) ||
+        (!isMain && !arSetting.subRoad.enable)
       ) {
         continue
       }
 
       const name = item.properties?.name ?? item.properties?.RoadName
-      if (vrSetting.text.enable && name) {
-        ctx.fillStyle = vrSetting.text.color
-        ctx.strokeStyle = vrSetting.text.borderColor
-        ctx.lineWidth = vrSetting.text.borderSize // 描边的宽度
-        ctx.font = `${vrSetting.text.size}px sans-serif`
+      if (arSetting.text.enable && name) {
         const p = item.coordinates[item.coordinates.length >> 1]
         ctx.strokeText(name, p[0], p[1])
         ctx.fillText(name, p[0], p[1])

@@ -5,6 +5,7 @@ import { isNil } from 'lodash'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import useARSettingStore from '@/store/setting/useARSetting.store'
+import { limitNum } from '@/utils/math'
 
 type PropsType = unknown
 
@@ -48,10 +49,14 @@ const ARSceneCamera: FC<PropsType> = memo(() => {
       },
     })
     camera.frustum = new Cesium.PerspectiveFrustum({
-      fov: calcFovRadiation(
-        gimbalMap[uav.cameraType!]?.wide_focal ?? 4.5,
-        gimbalMap[uav.cameraType!]?.wide_camera_w ?? 6.4,
-        uav.lensType === 2 ? uav.zoomFactor : 1,
+      fov: limitNum(
+        calcFovRadiation(
+          gimbalMap[uav.cameraType!]?.wide_focal ?? 4.5,
+          gimbalMap[uav.cameraType!]?.wide_camera_w ?? 6.4,
+          uav.lensType === 2 ? uav.zoomFactor : 1,
+        ),
+        0,
+        Math.PI - 0.0000001,
       ),
       aspectRatio: (uav.width ?? 1) / (uav.height ?? 1),
       near: 0.1,

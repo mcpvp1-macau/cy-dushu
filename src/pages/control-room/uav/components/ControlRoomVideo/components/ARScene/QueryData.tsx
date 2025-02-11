@@ -9,6 +9,7 @@ const QueryData: FC<PropsType> = memo(() => {
   const roadsTree = useMixARStore((s) => s.roadsRTree)
   const poisTree = useMixARStore((s) => s.poisRTree)
   const aoisTree = useMixARStore((s) => s.aoisRTree)
+  const overlayRTree = useMixARStore((s) => s.overlayRTree)
 
   useThrottleEffect(
     () => {
@@ -61,6 +62,16 @@ const QueryData: FC<PropsType> = memo(() => {
           .updateAOIs(
             aoisTree.search(queryFeature) as API_GEO_SERACH.res.AOIDataRes,
           )
+      }
+
+      if (overlayRTree) {
+        useMixARStore
+          .getState()
+          .updateOverlaies(overlayRTree.search(queryFeature))
+        // console.log(
+        //   'overlayRTree.search(queryFeature)',
+        //   overlayRTree.search(queryFeature),
+        // )
       }
     },
     [gimbalPick],

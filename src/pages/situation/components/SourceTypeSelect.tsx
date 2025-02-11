@@ -23,16 +23,6 @@ const SourceTypeSelect: FC<PropsType> = memo(({ value, onChange }) => {
 
   const dict = useLangsDict('device_type')
 
-  useWatch(
-    data,
-    (val) => {
-      if (!value && val?.length) {
-        queueMicrotask(() => onChange?.(val[0].type))
-      }
-    },
-    true,
-  )
-
   const renderItems = useMemo(() => {
     if (!data) {
       return []
@@ -44,6 +34,16 @@ const SourceTypeSelect: FC<PropsType> = memo(({ value, onChange }) => {
       }))
       .sort((a, b) => getDeviceWeight(a.value) - getDeviceWeight(b.value))
   }, [data, dict])
+
+  useWatch(
+    renderItems,
+    (val) => {
+      if (!value && val?.length) {
+        queueMicrotask(() => onChange?.(val[0].value))
+      }
+    },
+    true,
+  )
 
   const handleSourceTypeChange = useMemoizedFn((type: string) => {
     onChange?.(type)

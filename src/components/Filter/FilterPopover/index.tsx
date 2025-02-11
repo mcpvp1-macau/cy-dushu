@@ -1,26 +1,26 @@
-import { Checkbox, Form, FormProps, Popover, PopoverProps, Radio } from 'antd';
-import React, { useState } from 'react';
+import { Checkbox, Form, FormProps, Popover, PopoverProps, Radio } from 'antd'
+import React, { useState } from 'react'
 // import FilterIcon from '../../Icon/FilterIcon';
-import { FilterPopoverFormType, Group, GroupType } from './interface';
-import styles from './index.module.less';
-import Title from '../../Title';
+import { FilterPopoverFormType, Group, GroupType } from './interface'
+import styles from './index.module.less'
+import Title from '../../Title'
 // import { CloseIcon } from '../../Icon';
-import IconButton from '@/components/ui/button/IconButton';
-// import classNames from 'classnames';
-import Icon from '@/components/Icon/index';
+import IconButton from '@/components/ui/button/IconButton'
+import clsx from 'clsx'
+import Icon from '@/components/Icon/index'
 
 export interface FilterPopoverProps {
   /** 标题 */
-  title: React.ReactNode;
+  title: React.ReactNode
   /** 数据组 */
-  groups: Group[];
+  groups: Group[]
   /** 筛选弹窗的类型（是否是独立的 antd-form 标签）*/
-  type?: FilterPopoverFormType;
+  type?: FilterPopoverFormType
   /** antd-popover 的 props */
-  props?: PopoverProps;
+  props?: PopoverProps
   /** antd-form 的 props */
-  formProps?: FormProps;
-  initOpen?: boolean;
+  formProps?: FormProps
+  initOpen?: boolean
 }
 
 const FilterPopover: React.FC<FilterPopoverProps> = ({
@@ -31,18 +31,18 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
   formProps = {},
   initOpen = false,
 }) => {
-  const [open, setOpen] = useState(initOpen);
+  const [open, setOpen] = useState(initOpen)
 
   /** 渲染每组数据 */
   const renderGroupItem = (group: Group) => {
     if (group.type === GroupType.RadioGroup) {
-      return <Radio.Group {...group.props} options={group.items} />;
+      return <Radio.Group {...group.props} options={group.items} />
     } else if (group.type === GroupType.CheckboxGroup) {
-      return <Checkbox.Group {...group.props} options={group.items} />;
+      return <Checkbox.Group {...group.props} options={group.items} />
     } else {
-      return null;
+      return null
     }
-  };
+  }
 
   /** 渲染所有数据 */
   const renderGroups = () => {
@@ -56,9 +56,9 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
         >
           {renderGroupItem(group)}
         </Form.Item>
-      );
-    });
-  };
+      )
+    })
+  }
 
   return (
     <Popover
@@ -73,7 +73,7 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
           <IconButton
             style={{ height: '20px' }}
             onClick={() => {
-              setOpen(false);
+              setOpen(false)
             }}
           >
             {/* <CloseIcon style={{ fontSize: '20px' }} /> */}
@@ -94,11 +94,11 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
         id="icon-filter-list"
         className={clsx(styles.icon, open ? styles.open : '')}
         onClick={() => {
-          setOpen((value) => !value);
+          setOpen((value) => !value)
         }}
       />
     </Popover>
-  );
-};
+  )
+}
 
-export default FilterPopover;
+export default FilterPopover

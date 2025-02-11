@@ -486,6 +486,8 @@ common:
   target: 目标
   props: 属性
   confidence: 置信度
+  cancel: 取消
+  success: 成功
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -951,6 +953,7 @@ controlRoom:
       resetingHomePoint:
         title: 正在设置返航点
         success: 设置返航点成功
+        clickMapMsg: 请点击地图重置返航点
     payload:
       title: 负载
     aiList:
@@ -995,7 +998,7 @@ controlRoom:
       boxZoom:
         title: 框选
       smartTrack:
-        title: 智能追踪
+        title: 追踪
       ar:
         title: 虚实融合
         setting:
@@ -1011,6 +1014,8 @@ controlRoom:
         title: 录像
       hover:
         title: 悬停
+      autoTrack:
+        title: 追踪
     gamepad:
       title: 摇杆
     goHome:
@@ -1052,6 +1057,8 @@ controlRoom:
         required_msg: 请输入目标高度
       flightSpeed:
         required_msg: 请输入飞行速度
+    overlay:
+      title: 点位
   control:
     uavTurnLeft:
       title: 无人机左转
