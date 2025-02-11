@@ -11,7 +11,7 @@ const WangLouLiveVideo: React.FC<PropsType> = memo((props) => {
   const { productKey, deviceId, data } = props
 
   const videoRef = useRef<ComponentRef<typeof DeviceLiveVideo>>(null)
-  const video = data?.videos?.[0]
+  const video = data?.properties?.videoList?.[0]
 
   return (
     <>
