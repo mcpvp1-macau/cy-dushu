@@ -1,11 +1,7 @@
 {
   "name": "ja-dushu-front",
   "private": true,
-<<<<<<< HEAD
-  "version": "v3.13.1.240211",
-=======
   "version": "v3.13.2.250211",
->>>>>>> migration
   "type": "module",
   "scripts": {
     "ts": "tsc --noEmit",
