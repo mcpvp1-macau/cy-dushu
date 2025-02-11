@@ -5,8 +5,8 @@ import PositionPickListener from '@/components/map/PositionPickListener'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 
 const DrawMapPosition = () => {
-//   const productKey = useWangLouControlRoomStore((s) => s.)
-const productKey = useDeviceDetailStore(s => s.productKey)
+  //   const productKey = useWangLouControlRoomStore((s) => s.)
+  const productKey = useDeviceDetailStore((s) => s.productKey)
   const deviceId = useWangLouControlRoomStore((s) => s.deviceId)
   const isCameraChangePosition = useWangLouControlRoomStore(
     (s) => s.isCameraChangePosition,
@@ -27,9 +27,12 @@ const productKey = useDeviceDetailStore(s => s.productKey)
       controlTag: uuid,
     })
 
-    updateIsCameraChangePosition({ enabled: false })
+    updateIsCameraChangePosition({
+      deviceId: deviceId!,
+      productKey: productKey!,
+      enabled: false,
+    })
   }
-
 
   if (!isCameraChangePosition?.enabled) return null
 
