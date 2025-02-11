@@ -44,6 +44,8 @@ const DeviceDetailMediaHistoryVideo: FC<PropsType> = memo(({ deviceList }) => {
         getHistoryM3u8Video(productKey, deviceId, videoId!, {
           startTime: date!.startOf('day').format(dft),
           endTime: date!.endOf('day').format(dft),
+          isProxy: true,
+          proxyPrefix: '/_proxy/',
         }),
       enabled: !!videoId && !!date,
       select: (d) => d.data.videoList,

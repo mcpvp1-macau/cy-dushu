@@ -148,7 +148,12 @@ export const getHistoryM3u8Video = async (
   productKey: string,
   deviceId: string,
   id: string,
-  data: { startTime: string; endTime: string },
+  data: {
+    startTime: string
+    endTime: string
+    isProxy: boolean
+    proxyPrefix: string
+  },
 ) => {
   return serverControlCenter.post<API_DEVICE.res.GetHistoryListRes>(
     `/v3/service/${productKey}/${deviceId}/m3u8/post`,
@@ -157,6 +162,8 @@ export const getHistoryM3u8Video = async (
       begin: data.startTime,
       end: data.endTime,
       transport: 'HLS',
+      isProxy: data.isProxy,
+      proxyPrefix: location.origin + data.proxyPrefix,
     },
   )
 }

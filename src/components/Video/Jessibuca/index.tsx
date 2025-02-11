@@ -73,12 +73,14 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
 
   const handleVideoSei = useMemoizedFn((b: Uint8Array) => {
     const n = b.length
+    let flagNum = 0
     for (let i = 0; i < n - 8; ) {
       const flag = (b[i] << 16) | (b[i + 1] << 8) | b[i + 2]
       if (flag !== 0xabcdef) {
         i++
         continue
       }
+      flagNum += 1
       const type = b[i + 3]
       const length =
         b[i + 4] | (b[i + 5] << 8) | (b[i + 6] << 16) | (b[i + 7] << 24)
@@ -94,6 +96,67 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
           break
       }
       i += 8 + length
+    }
+    // console.info('flag----', flagNum)
+    // TODO 适配没有标志位的普通sei，后续拿掉
+    if (flagNum === 0) {
+      const decoder = new TextDecoder()
+      const str = decoder.decode(b)
+      const start = [...str].findIndex((item) => item === '{')
+      const end = [...str].findLastIndex((item) => item === '}')
+      const sei = [...str].filter((s, i) => i >= start && i <= end).join('')
+      let seiJson: any = {}
+      try {
+        seiJson = JSON.parse(sei)
+      } catch (error) {}
+      if (seiJson.object_list?.length) {
+        // console.info('sei解析2--', seiJson)
+        // dataRef.current.push({ ts: value.ts, data: seiJson });
+        props.onSeiAIData?.({
+          batchId: seiJson.batch_id,
+          frameMum: seiJson.frame_mum,
+          displayMetaList: seiJson.display_meta_list,
+          frameTensorList: seiJson.frame_tensor_list,
+          imagePath: seiJson.image_path,
+          inferDone: seiJson.infer_done,
+          ntpTimestamp: seiJson.ntp_timestamp,
+          recordPath: seiJson.record_path,
+          objectList: seiJson.object_list.map((item) => {
+            return {
+              ...item,
+              bboxHeight: item.bbox_height,
+              bboxLeft: item.bbox_left,
+              bboxTop: item.bbox_top,
+              bboxWidth: item.bbox_width,
+              classId: item.class_id,
+              imagePath: item.image_path,
+              inferId: item.infer_id,
+              objLabelList: item.objLabelList,
+              objTensorList: item.objTensorList,
+              objectId: item.object_id,
+              objectLabel: item.object_label,
+              objectSubLabel: item.object_sub_label,
+              radarTargetId: item.radar_target_id,
+              radarDeviceId: item.radar_device_id,
+              videoTime: item.video_time,
+              sourceType: item.source_type,
+              objPayloadList: item.obj_payload_list,
+              labelId: item.label_id,
+            }
+          }),
+          seq: seiJson.seq,
+          pts: seiJson.pts,
+          sourceFrameHeight: seiJson.source_frame_height,
+          sourceFrameWidth: seiJson.source_frame_width,
+          sourceId: seiJson.source_id,
+          videoInferDone: seiJson.video_infer_done,
+          productKey: seiJson.product_key,
+          deviceId: seiJson.device_id,
+          videoPath: seiJson.video_path,
+          ref: seiJson.ref,
+          userMeta: seiJson.user_meta,
+        })
+      }
     }
   })
 
