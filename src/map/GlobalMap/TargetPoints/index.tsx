@@ -67,7 +67,7 @@ const TargetPoints: React.FC = () => {
                   item.targetId
                 }--${item.targetPitch}--${
                   item.targetYaw
-                }--${parentId}--${deviceId}--${item.sourceType}--${i}`
+                }--${parentId}--${deviceId}--${item.sourceType}--${i}--${item.uploadMode}`
                 let color = last
                   ? sourceTypeColorMap[item.sourceType] || '#3855AE'
                   : '#3855AE'

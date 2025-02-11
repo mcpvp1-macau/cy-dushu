@@ -51,7 +51,11 @@ const Control: React.FC<PropsType> = (props) => {
   const setDownKey = useMemoizedFn((value) => {
     setDownKeyFun(value)
   })
-  const resetPosition = async (data) => {
+
+  const resetPosition = (data) => {
+    sendCommand('service.turn.post', data)
+  }
+  const turnBySpeedWithRetract = async (data) => {
     // await postDevice('turn', data, '')
     sendCommand('service.turnBySpeedWithRetract.post', data)
   }
@@ -73,7 +77,7 @@ const Control: React.FC<PropsType> = (props) => {
 
   useRafInterval(
     () => {
-      resetPosition(downKey)
+      turnBySpeedWithRetract(downKey)
     },
     downKey ? 60 : undefined,
   )
@@ -219,7 +223,7 @@ const Control: React.FC<PropsType> = (props) => {
                   setEditField('')
                 }}
                 onPressEnter={() => {
-                  resetPosition({
+                  turnBySpeedWithRetract({
                     yaw: Math.trunc(form.getFieldValue('yaw') * 100),
                     pitch: Math.trunc(form.getFieldValue('pitch') * 100),
                   })
@@ -241,7 +245,7 @@ const Control: React.FC<PropsType> = (props) => {
                   setEditField('')
                 }}
                 onPressEnter={() => {
-                  resetPosition({
+                  turnBySpeedWithRetract({
                     yaw: Math.trunc(form.getFieldValue('yaw') * 100),
                     pitch: Math.trunc(form.getFieldValue('pitch') * 100),
                   })

@@ -9,6 +9,7 @@ import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import { postDeviceService } from '@/service/modules/device'
 import { msgMitt } from '@/hooks/useAppMsg'
+import useBoardObjStore from '@/store/map/useBoardObj.store'
 
 type PropsType = unknown
 
@@ -33,6 +34,7 @@ type SelectOptionType =
       deviceId: string
       sourceType: string
       index: string
+      uploadMode?: 'TIANLANG'
     }
 
 /** 全局选择 实体 */
@@ -109,6 +111,7 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
       deviceId,
       sourceType,
       index,
+      uploadMode,
     ] = e.primitive.id.split('--')
     return {
       kind,
@@ -122,6 +125,7 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
       targetId,
       sourceType,
       index,
+      uploadMode,
     }
   }
 
@@ -170,14 +174,29 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
     setRightMenuType(null)
   }
 
+  const setBoardOpenMap = useBoardObjStore((s) => s.setBoardOpenMap)
+
   const RightMenus = useMemo<MenuProps['items']>(() => {
     if (rightMenuType?.kind === 'radartarget') {
-      return [
-        {
+      const arr: MenuProps['items'] = []
+      if (rightMenuType?.uploadMode === 'TIANLANG') {
+        arr.push({
           key: '引导',
           label: '引导',
           onClick: () =>
             handleClick1(rightMenuType.parentId, rightMenuType.targetId),
+        })
+      }
+      return [
+        ...arr,
+        {
+          key: '标牌',
+          label: '显示标牌',
+          onClick: () => {
+            setBoardOpenMap((s) => ({ ...s, [rightMenuType.targetId]: true }))
+            setRightMenuType(null)
+          },
+          // handleClick1(rightMenuType.parentId, rightMenuType.targetId),
         },
       ]
     }

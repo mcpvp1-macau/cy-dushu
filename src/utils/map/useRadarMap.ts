@@ -40,6 +40,7 @@ const start = async (
   callback1: (pross: number) => void,
 ) => {
   const { r, rSum, angleSum, angle, longitude, latitude, altitude } = params
+  console.info('params----', params)
 
   const endPoints: Position[] = []
 
