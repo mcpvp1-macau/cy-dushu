@@ -1,13 +1,13 @@
 import RadarChart from '@/components/RadarChart'
 import Camera from '@/components/RadarChart/Camera'
-import Radar from '@/components/RadarChart/Radar'
+// import Radar from '@/components/RadarChart/Radar'
 import Target from '@/components/RadarChart/Target'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouControlRoom.store'
 import { WanglouDeviceTypeMap, WANGLOUTargetName } from '../StatusInfo/config'
 import ChartCircle from '@/components/RadarChart/ChartCircle'
 import ControlButtons from './ControlButtons'
-import axios from 'axios'
+// import axios from 'axios'
 
 const RadarData: React.FC = () => {
   const detail = useDeviceDetailStore((s) => s.deviceDetail)
@@ -19,22 +19,22 @@ const RadarData: React.FC = () => {
     (item: any) => item.deviceType === 'RADAR',
   )
 
-  const { data: positions = [] } = useQuery(
-    {
-      queryKey: [
-        'scanRangeProfile',
-        state[radar?.deviceId || '']?.scanRangeProfile,
-      ],
-      queryFn: () =>
-        axios(
-          `/storage/${
-            state[radar?.deviceId || '']?.scanRangeProfile
-          }?timestamp=${dayjs().valueOf()}`,
-        ),
-      select: (res) => res?.data?.data?.[0] || [],
-    },
-    queryClient,
-  )
+  // const { data: positions = [] } = useQuery(
+  //   {
+  //     queryKey: [
+  //       'scanRangeProfile',
+  //       state[radar?.deviceId || '']?.scanRangeProfile,
+  //     ],
+  //     queryFn: () =>
+  //       axios(
+  //         `/storage/${
+  //           state[radar?.deviceId || '']?.scanRangeProfile
+  //         }?timestamp=${dayjs().valueOf()}`,
+  //       ),
+  //     select: (res) => res?.data?.data?.[0] || [],
+  //   },
+  //   queryClient,
+  // )
 
   const Infrared = detail?.childDevice?.find(
     (item: any) =>
@@ -50,6 +50,7 @@ const RadarData: React.FC = () => {
     (item: any) =>
       item.productKey === WanglouDeviceTypeMap[WANGLOUTargetName.Vibrator],
   )
+
 
   const lightState = useMemo(() => {
     return {
@@ -84,23 +85,23 @@ const RadarData: React.FC = () => {
   return (
     <div className="relative">
       <RadarChart id="1" width={350} height={200} max={1000}>
-        <Radar
+        {/* <Radar
           center={{ lng: longitude, lat: latitude }} // 中心点
           radarRangeData={positions} // 雷达范围
           angle={90} // 雷达范围获取时不是从正北开始，这里写90
-        />
+        /> */}
         {/**
          * // 传入实时的视场角fov和偏航角yaw
          */}
         <Camera
           fov={lightState.fov || 30}
           dis={1000}
-          yaw={(lightState.yaw || 1000) / 100}
+          yaw={(state.yaw || 1000) / 100}
         />
         <Camera
           fov={redState.fov || 30}
           dis={500}
-          yaw={(redState.yaw || 1000) / 100}
+          yaw={(state.yaw || 1000) / 100}
           color="red"
         />
         {/**

@@ -1,0 +1,75 @@
+// @import url('/src/assets/css/config.less');
+@modalBodyBgc: #1c2630;
+@hoverColor: #4c90f0;
+@fontColor: #c7d1dc; // 字体主色调
+
+.popover {
+  width: 300px;
+  border-radius: 2px;
+  overflow: hidden;
+
+  :global {
+    .ant-popover-inner {
+      padding: 0;
+    }
+
+    .ant-popover-arrow {
+      display: none;
+    }
+
+    .ant-popover-title {
+      margin-bottom: 0;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 32px;
+      padding: 0 8px 0 12px;
+      background-color: #28323c;
+      border-bottom: 1px solid #37414d;
+
+      .title {
+        color: #fff;
+      }
+    }
+
+    .content {
+      padding: 12px 12px 0;
+      overflow: hidden;
+      background-color: @modalBodyBgc;
+
+      .ant-form-item {
+        margin-bottom: 16px;
+
+        .ant-form-item-label > label,
+        .ant-form-item-control-input {
+          min-height: auto;
+          height: auto;
+          color: @fontColor;
+        }
+
+        .ant-checkbox-group-item {
+          margin-bottom: 4px;
+          color: @fontColor;
+        }
+      }
+    }
+  }
+}
+
+.icon {
+  color: #c7d1dc;
+  margin-top: 5px;
+  margin-right: 10px;
+  font-size: 20px;
+
+  &:hover {
+    color: @hoverColor;
+  }
+}
+
+.open {
+  color: @hoverColor;
+}

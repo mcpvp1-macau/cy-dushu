@@ -23,14 +23,6 @@ const Radar: React.FC<PropsType> = React.memo(({ scanRangeProfile }) => {
     },
     queryClient,
   )
-  // useEffect(() => {
-  //   scanRangeProfile &&
-  //     axios(`/storage/${scanRangeProfile}?timestamp=${dayjs().valueOf()}`).then(
-  //       (res) => {
-  //         setPositions(res?.data?.data?.[0] || [])
-  //       },
-  //     )
-  // }, [scanRangeProfile])
 
   return (
     <>

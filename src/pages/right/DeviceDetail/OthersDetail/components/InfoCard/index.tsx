@@ -20,6 +20,7 @@ const InfoCard: FC<PropsType> = memo(({ data }) => {
 
 
   const isHaveRadar = childDevice?.find((item) => item.deviceType === 'RADAR')
+  const ishaveChild = !!childDevice?.length;
   const items = [
     {
       label: deviceName,
@@ -36,6 +37,7 @@ const InfoCard: FC<PropsType> = memo(({ data }) => {
   ]
   return (
     <div className="w-[350px] p-[10px]">
+      {ishaveChild ? 
       <Tabs
         defaultActiveKey="1"
         tabPosition={'top'}
@@ -44,14 +46,15 @@ const InfoCard: FC<PropsType> = memo(({ data }) => {
         tabBarExtraContent={{
           right: (
             <>
+            {isHaveRadar ? (
               <IconSetting
                 className="hover:text-[#447dcf] cursor-pointer"
                 onClick={onClick}
-              />
+              />):null}
             </>
           ),
         }}
-      />
+      /> : <DeviceInfoCard data={data} deviceId={deviceId} /> }
       {/** // TODO 暂时是子设备有雷达才需要 */}
       {isHaveRadar ? (
         <InitParams open={open} setOpen={setOpen} data={data} />

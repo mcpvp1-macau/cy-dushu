@@ -17,16 +17,15 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(({ deviceList }) => {
 
   const deviceOptions = useMemo(
     () =>
-      deviceList.map((e) => ({
+      deviceList.filter(item => !!item.properties.videoList).map((e) => ({
         label: e.name,
         value: e.deviceId,
       })),
     deviceList,
   )
-
-  const [deviceId, setDeviceId] = useState(deviceList[0]?.deviceId)
+  const [deviceId, setDeviceId] = useState(deviceOptions?.[0]?.value)
   useEffect(() => {
-    setDeviceId(deviceList[0]?.deviceId)
+    setDeviceId(deviceOptions?.[0]?.value)
   }, [deviceOptions])
 
   const queryClient = useQueryClient()
