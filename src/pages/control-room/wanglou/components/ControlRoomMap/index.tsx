@@ -6,18 +6,20 @@ import { lazy, memo, Suspense, type FC } from 'react'
 import TargetPoints from '@/map/GlobalMap/TargetPoints'
 import BoardCesium from '@/map/GlobalMap/BoardCesium'
 import WangLouMarkers from '@/map/GlobalMap/DeviceMarkers/WangLouMarkers/index'
+import DrawMapPosition from './DrawMapPosition'
 
 type PropsType = unknown
 
 const ControlRoomWanglouMap: FC<PropsType> = memo(() => {
   return (
     <CesiumMap id="wanglou-control-room-map">
-       <WangLouMarkers />
+      <WangLouMarkers />
       <WangLouDetailMarker />
       <WanglouUpdateRealMarker />
       <TargetPoints />
       <BoardCesium />
       <UavMapInitial />
+      <DrawMapPosition />
     </CesiumMap>
   )
 })

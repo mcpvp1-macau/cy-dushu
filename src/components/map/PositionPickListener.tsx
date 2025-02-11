@@ -2,7 +2,7 @@ import * as Cesium from 'cesium'
 import { useCesium } from 'resium'
 
 type PropsType = {
-  onClick: (longitude: number, latitude: number) => void
+  onClick: (longitude: number, latitude: number, alt?:number) => void
 }
 
 /** 地图坐标点击获取 */
@@ -31,7 +31,7 @@ const PositionPickListener: FC<PropsType> = ({ onClick }) => {
         const cartographic = Cesium.Cartographic.fromCartesian(cartesian)
         const longitude = Cesium.Math.toDegrees(cartographic.longitude)
         const latitude = Cesium.Math.toDegrees(cartographic.latitude)
-        handleClick(longitude, latitude)
+        handleClick(longitude, latitude, cartographic.height)
       },
       Cesium.ScreenSpaceEventType.LEFT_CLICK,
     )
