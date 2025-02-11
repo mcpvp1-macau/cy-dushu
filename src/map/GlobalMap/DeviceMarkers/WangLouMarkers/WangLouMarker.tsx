@@ -5,7 +5,8 @@ import { Billboard, Label } from 'resium'
 import * as Cesium from 'cesium'
 import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
 import { DeviceStatusEnum } from '@/enum/device'
-import wanglou from '@/assets/marker/wanglou.png'
+// import wanglou from '@/assets/marker/wanglou.png'
+import wanglou from '/images/marker/icon/wanglou.svg'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -28,10 +29,13 @@ const WangLouMarker: FC<PropsType> = memo(({ data }) => {
   const isHidden = useDeviceListConfigStore((s) => s.hiddenDeviceIds[deviceId])
 
   const status = useRealOnlineStatus(deviceId)
+  console.info('望楼--',deviceId)
 
   if (isHidden) return null
 
   if (isOnline && status !== DeviceStatusEnum.ONLINE) return null
+
+  console.info('望楼-222-',deviceId)
 
   return (
     <>
@@ -40,8 +44,8 @@ const WangLouMarker: FC<PropsType> = memo(({ data }) => {
         id={`device--${deviceType}--${data.deviceName}--${deviceId}--${lng}--${lat}`}
         position={Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30)}
         image={wanglou}
-        width={40}
-        height={40}
+        width={26}
+        height={26}
         verticalOrigin={Cesium.VerticalOrigin.BOTTOM}
         horizontalOrigin={Cesium.HorizontalOrigin.CENTER}
         disableDepthTestDistance={50000}
