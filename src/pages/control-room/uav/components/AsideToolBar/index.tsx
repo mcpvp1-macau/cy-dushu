@@ -41,7 +41,6 @@ const AsideToolBar: FC<PropsType> = memo(() => {
   const serviceHave = useDeviceDetailStore((s) => s.serviceHave)
   const propsHave = useDeviceDetailStore((s) => s.propsHave)
 
-  const hasSmartTrack = !!serviceHave['smartTrack']
   const hasTapZoomAtTarget = !!serviceHave['tapZoomAtTarget']
   const hasCameraMode = !!propsHave['cameraMode']
   const hasAr = !!propsHave['ar']
@@ -102,7 +101,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
         )}
         {hasCameraMode && <CameraMode />}
         <TakePhoto />
-        {hasSmartTrack && (
+        {serviceHave['autoTrack'] && (
           <IconButton
             className={borderedBtnClassName}
             toolTipProps={{

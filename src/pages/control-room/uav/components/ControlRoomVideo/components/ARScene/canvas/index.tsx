@@ -260,6 +260,18 @@ const ARSceneCanvas: FC<PropsType> = memo(() => {
 
     for (const item of aoiItems) {
       if (item.properties?.name) {
+        let min0 = Infinity
+        let min1 = Infinity
+        let max0 = -Infinity
+        let max1 = -Infinity
+        for (const p of item.coordinates) {
+          min0 = Math.min(min0, p[0])
+          min1 = Math.min(min1, p[1])
+          max0 = Math.max(max0, p[0])
+          max1 = Math.max(max1, p[1])
+        }
+        const p = [(min0 + max0) / 2, (min1 + max1) / 2]
+        ctx.strokeText(item.properties.name, p[0], p[1])
       }
     }
 

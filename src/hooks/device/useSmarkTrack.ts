@@ -33,6 +33,8 @@ const useSmarkTrack = (
       frame_no?: number
       object_label?: string
       label_value?: string
+      object_id?: string
+      objectId?: string
     }) => {
       if (enableSmartTrackRef.current) {
         takeService(identify, payload)
