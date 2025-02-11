@@ -5,6 +5,7 @@ import WanglouUpdateRealMarker from '@/pages/right/DeviceDetail/WangLouDetail/co
 import { lazy, memo, Suspense, type FC } from 'react'
 import TargetPoints from '@/map/GlobalMap/TargetPoints'
 import BoardCesium from '@/map/GlobalMap/BoardCesium'
+import CesiumGlobalPickEvent from '@/map/GlobalMap/GlobalPickEvent'
 import WangLouMarkers from '@/map/GlobalMap/DeviceMarkers/WangLouMarkers/index'
 import DrawMapPosition from './DrawMapPosition'
 
@@ -20,6 +21,7 @@ const ControlRoomWanglouMap: FC<PropsType> = memo(() => {
       <BoardCesium />
       <UavMapInitial />
       <DrawMapPosition />
+      <CesiumGlobalPickEvent />
     </CesiumMap>
   )
 })
