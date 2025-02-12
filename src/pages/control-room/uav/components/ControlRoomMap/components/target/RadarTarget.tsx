@@ -5,6 +5,9 @@ import useControlRoomTargetInfoStore from '@/store/control-room/useTargetInfo.st
 import styles from './RadarTarget.module.less'
 import dayjs from 'dayjs'
 import BoardMarker3D from '@/components/map/BoardCesium/BoardMarker3D'
+import IconID from '@/assets/icons/jsx/IconID'
+import IconClose from '@/assets/icons/jsx/IconClose'
+import IconButton from '@/components/ui/button/IconButton'
 
 const sourceTypeColorMap: Record<string, string> = {
   RADAR: '#14CCBD',
@@ -17,6 +20,8 @@ type PropsType = unknown
 const RadarTargets: FC<PropsType> = memo(() => {
   const { viewer } = useCesium()
   const targetsRecord = useControlRoomTargetInfoStore((s) => s.targetsRecord)
+  const clearById = useControlRoomTargetInfoStore((s) => s.clearById)
+
   return (
     <>
       <PointPrimitiveCollection>
@@ -66,16 +71,26 @@ const RadarTargets: FC<PropsType> = memo(() => {
               height={height}
             >
               <div className={styles.radarTarget}>
-                <div className={styles.head}>
-                  Id:
-                  {t.targetId} {t.targetType}
+                <div className="flex justify-between items-center">
+                  <div className="flex gap-1 items-center">
+                    <p>
+                      <IconID />:
+                    </p>
+                    <p>
+                      {t.targetId} {t.targetType}
+                    </p>
+                  </div>
+                  <IconButton onClick={() => clearById(String(t.targetId))}>
+                    <IconClose className="scale-125" />
+                  </IconButton>
                 </div>
                 <div className={styles.line}>
                   <div style={{ width: 160 }}>
                     <span className={styles.label}>类型</span> {'-'}
                   </div>
                   <div>
-                    <span className={styles.label}>型号</span> {t.targetType}
+                    <span className={styles.label}>型号</span>{' '}
+                    {t.targetType || '-'}
                   </div>
                 </div>
                 <div className={styles.line}>
