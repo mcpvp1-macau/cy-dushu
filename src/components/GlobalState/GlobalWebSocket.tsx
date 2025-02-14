@@ -23,7 +23,7 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
 
   const queryClient = useQueryClient()
 
-  const { data, isLoading } = useQuery(
+  const { data } = useQuery(
     {
       queryKey: ['getProductFieldsByIdentifier', 'targetInfo'],
       queryFn: () =>

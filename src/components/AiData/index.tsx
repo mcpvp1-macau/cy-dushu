@@ -52,27 +52,26 @@ const AiData: React.FC<PropsType> = ({ deviceId, height = 500 }) => {
     queryClient,
   )
 
-  const [params, setParams] = useState({ sourceTypes: [] })
-  console.info('====', params)
+  const [params, setParams] = useState({ sourceType: [], objectLabel: [], targetId: undefined })
 
   const {
     data = [],
     isLoading,
-    refetch,
+    // refetch,
   } = useQuery(
     {
       queryKey: [
         'eventDataTargetList',
         deviceId,
-        params.sourceTypes,
+        params.sourceType,
         params.objectLabel,
         params.targetId,
       ],
       queryFn: () =>
         getEventDataTargetList({
-          sourceType: [],
+          // sourceType: [],
           deviceId: deviceId,
-          objectLabel: [],
+          // objectLabel: [],
           ...params,
           startTime: dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
           endTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),

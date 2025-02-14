@@ -6,7 +6,7 @@ import styles from './index.module.less'
 import Title from '../../Title'
 // import { CloseIcon } from '../../Icon';
 import IconButton from '@/components/ui/button/IconButton'
-import classNames from 'clsx'
+import clsx from 'clsx'
 import Icon from '@/components/Icon/index'
 
 export interface FilterPopoverProps {
@@ -92,7 +92,7 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
     >
       <Icon
         id="icon-filter-list"
-        className={classNames(styles.icon, open ? styles.open : '')}
+        className={clsx(styles.icon, open ? styles.open : '')}
         onClick={() => {
           setOpen((value) => !value)
         }}
