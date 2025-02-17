@@ -4,6 +4,7 @@ import { notification } from 'antd'
 import './GlobalMessage.less'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { RightModeEnum } from '@/enum/right-mode'
+import useWarnningSettingStore from '@/store/setting/useWarnningSetting.store'
 type MessageInfoType = {
   id: string
   key?: string
@@ -21,12 +22,15 @@ const GlobalMessage: React.FC = () => {
   const updateRightMode = useRightMode((s) => s.updateRightMode)
   const updateDetailId = useRightMode((s) => s.updateDetailId)
   const nav = useNavigate()
+  const isHaveAvdio = useWarnningSettingStore((s) => s.isHaveAvdio)
 
   useEffect(() => {
     if (newEvent) {
       notification.destroy('global-warn')
-      const audio = document.getElementById('warnAudio') as HTMLAudioElement
-      audio?.play()
+      if (isHaveAvdio) {
+        const audio = document.getElementById('warnAudio') as HTMLAudioElement
+        audio?.play()
+      }
       notification.warning({
         message: (
           <span style={{ cursor: 'pointer' }}>
@@ -48,6 +52,8 @@ const GlobalMessage: React.FC = () => {
       })
     }
   }, [newEvent])
+
+  if (!isHaveAvdio) return null
   return (
     <audio
       id="warnAudio"

@@ -5,6 +5,7 @@ import { useBoolean } from 'ahooks'
 import VideoDecoder from './setting/VideoDecoder'
 import { Button, Tabs } from 'antd'
 import MapSetting from './setting/MapSetting'
+import WarnningSetting from './setting/WarnningSetting'
 
 type PropsType = unknown
 
@@ -44,6 +45,15 @@ const HeaderSetting: FC<PropsType> = memo(() => {
                 children: (
                   <div className="mt-1">
                     <MapSetting />
+                  </div>
+                ),
+              },
+              {
+                key: 'warnning_setting',
+                label: t('setting.warnning.title'),
+                children: (
+                  <div className="mt-1">
+                    <WarnningSetting />
                   </div>
                 ),
               },

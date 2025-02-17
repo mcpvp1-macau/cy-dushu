@@ -1,7 +1,7 @@
 import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
 import useReachBottom from '@/hooks/useReachBottom'
-import { getEventList } from '@/service/modules/events'
+import { getEventList, ignoreAllEvent } from '@/service/modules/events'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { Checkbox, Input, Spin } from 'antd'
 import { Fragment } from 'react'
@@ -13,7 +13,8 @@ import { LoadingOutlined } from '@ant-design/icons'
 import useEventTypeAndSourceOptions from './hooks/useEventTypeAndSourceOptions'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { RightModeEnum } from '@/enum/right-mode'
-
+import IconButton from '@/components/ui/button/IconButton'
+import IconClear from '@/assets/icons/jsx/IconClear'
 
 type PropsType = unknown
 
@@ -25,7 +26,6 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
 
   const [[eventSourceOptions, eventTypeOptions], tsIsLoading] =
     useEventTypeAndSourceOptions()
-
 
   const [eventLevelList, setEventLevelList] = useState<string[]>([])
   const [eventTypeList, setEventTypeList] = useState<string[]>([])
@@ -92,6 +92,27 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
 
   const handlePressEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     setEventName(e.currentTarget.value)
+  }
+
+  const handleClear = () => {
+    ignoreAllEvent({}).then((res) => {
+      if (res.code === 'SUCCESS') {
+        queryClient.invalidateQueries({
+          queryKey: [
+            'getEventList',
+            {
+              eventName,
+              eventLevelList,
+              eventTypeList,
+              eventSourceList,
+              processStatusList,
+            },
+          ],
+        })
+      } else {
+        // message.error(res.message)
+      }
+    })
   }
 
   const { t } = useTranslation()
@@ -184,6 +205,10 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
         >
           {tsIsLoading ? <LoadingOutlined /> : <IconFilter />}
         </IconButtonWithDropDown>
+
+        <IconButton toolTipProps={{ title: '全部忽略' }}>
+          <IconClear onClick={handleClear} />
+        </IconButton>
       </div>
       <ScrollArea className="grow mt-3 px-3" onScroll={handleScroll}>
         {isLoading || !data ? (

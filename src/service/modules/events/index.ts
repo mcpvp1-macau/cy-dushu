@@ -27,6 +27,11 @@ export const ignoreEvent = (eventId: string) => {
   return serverJingqi.get('/event/ignore', { params: { eventId } })
 }
 
+/** 忽略全部事件 */
+export const ignoreAllEvent = (data: API_EVENTS.req.GetEventListReq) => {
+  return serverJingqi.post('/event/ignoreAll', data)
+}
+
 /** 获取事件类型和来源列表 */
 export const getEventTypeAndSourceList = () => {
   return serverJingqi.get<API_EVENTS.res.GetEventTypeAndSourceListRes>(

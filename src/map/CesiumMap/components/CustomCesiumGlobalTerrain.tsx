@@ -27,7 +27,7 @@ const CustomCesiumGlobalTerrain = () => {
     }
     if (viewer)
       // 设置 Cesium Viewer 或 Scene 的 terrainProvider 属性
-      viewer.terrainProvider = terrainLayer
+      // viewer.terrainProvider = terrainLayer
 
 
       return () => {
