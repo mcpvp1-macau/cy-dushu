@@ -12,7 +12,7 @@ type PropsType = {
 const UavFlyInfoCard: FC<PropsType> = memo(
   ({ electric, horizontalSpeed, height, homeDistance }) => {
     return (
-      <ul className="flex items-center text-sm">
+      <ul className="flex items-center text-sm whitespace-nowrap">
         <li className="flex-1 flex gap-1 items-center">
           <div>
             <IconUavBattery className="text-green-500" />
