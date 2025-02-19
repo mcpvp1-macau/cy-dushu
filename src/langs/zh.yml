@@ -493,6 +493,7 @@ common:
   confidence: 置信度
   cancel: 取消
   success: 成功
+  live: 实况
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索

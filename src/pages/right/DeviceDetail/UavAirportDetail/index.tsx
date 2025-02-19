@@ -149,7 +149,11 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
 
   const postDeviceService = usePostDeviceService(productKey, deviceId)
   const handleTakeoffOk = async (values: any) => {
-    await postDeviceService('takeoff', values, t(''))
+    await postDeviceService(
+      'takeoff',
+      values,
+      t('controlRoom.uav.service.takeoff.title'),
+    )
     setTakeoffFalse()
   }
 
@@ -186,6 +190,7 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
               productKey={productKey}
               deviceId={deviceId}
               videoId={videoId}
+              leftTop={<div className="text-sm">{t('common.live')}</div>}
             />
           </div>
           <div className="my-3 flex gap-2 px-3">
