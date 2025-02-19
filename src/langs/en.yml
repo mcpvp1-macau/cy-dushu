@@ -493,6 +493,7 @@ common:
   unknown: unknown
   cancel: Cancel
   success: Success
+  live: Live
 events:
   search:
     placeholder: Please search by event name or ID
