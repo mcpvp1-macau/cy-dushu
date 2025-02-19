@@ -69,6 +69,9 @@ const DrawBox: FC<PropsType> = memo(({ onDrawEnd }) => {
   )
 
   const handleMouseUp = useMemoizedFn(() => {
+    if (!isDrawing.current) {
+      return
+    }
     isDrawing.current = false
     onDrawEnd?.(rect)
     setTimeout(() => {
