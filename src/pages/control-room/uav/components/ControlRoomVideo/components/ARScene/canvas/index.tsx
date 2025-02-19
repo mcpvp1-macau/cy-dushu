@@ -272,6 +272,7 @@ const ARSceneCanvas: FC<PropsType> = memo(() => {
         }
         const p = [(min0 + max0) / 2, (min1 + max1) / 2]
         ctx.strokeText(item.properties.name, p[0], p[1])
+        ctx.fillText(item.properties.name, p[0], p[1])
       }
     }
 
