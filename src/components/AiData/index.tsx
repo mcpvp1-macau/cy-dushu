@@ -21,10 +21,7 @@ type PropsType = {
 const AiData: React.FC<PropsType> = ({ deviceId, height = 500 }) => {
   const queryClient = useQueryClient()
 
-  const {
-    data: filterData,
-    refetch: getTypes,
-  } = useQuery(
+  const { data: filterData, refetch: getTypes } = useQuery(
     {
       queryKey: ['targetListEnumDict'],
       queryFn: () =>
@@ -52,7 +49,11 @@ const AiData: React.FC<PropsType> = ({ deviceId, height = 500 }) => {
     queryClient,
   )
 
-  const [params, setParams] = useState({ sourceType: [], objectLabel: [], targetId: undefined })
+  const [params, setParams] = useState({
+    sourceType: [],
+    objectLabel: [],
+    targetId: undefined,
+  })
 
   const {
     data = [],
@@ -90,8 +91,6 @@ const AiData: React.FC<PropsType> = ({ deviceId, height = 500 }) => {
     setParams({ deviceId, ...data, targetId: search })
     // refetch({ deviceId, ...data, targetId: search });
   })
-
-  console.info('=====', filterData)
 
   return (
     <Flex vertical gap={12}>

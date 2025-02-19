@@ -389,13 +389,10 @@ export function parseMapString(str: string) {
   if (!str) {
     return {}
   }
-  console.log('str---', str)
   let obj: any = {}
   try {
     obj = JSON.parse(str)
-  } catch (error) {
-    console.log('error---', error)
-  }
+  } catch (error) {}
 
   return obj
 }

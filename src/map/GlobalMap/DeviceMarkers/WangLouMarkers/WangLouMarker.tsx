@@ -29,13 +29,10 @@ const WangLouMarker: FC<PropsType> = memo(({ data }) => {
   const isHidden = useDeviceListConfigStore((s) => s.hiddenDeviceIds[deviceId])
 
   const status = useRealOnlineStatus(deviceId)
-  console.info('望楼--',deviceId)
 
   if (isHidden) return null
 
   if (isOnline && status !== DeviceStatusEnum.ONLINE) return null
-
-  console.info('望楼-222-',deviceId)
 
   return (
     <>

@@ -3,12 +3,12 @@ import { createStore, useStore } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { v4 as uuidv4 } from 'uuid'
 import { useLatest } from 'ahooks'
-import useUserStore from '../useUser.store'
 import { heartbeat } from '@/constant/websocket'
 import useWebSocket from 'react-use-websocket'
 import { shouldJson } from '@/utils/json'
 import { isEqual } from 'lodash'
 import { Btn } from '@/pages/control-room/uav/components/BottomButtons/type'
+import useDeviceWsURL from '@/hooks/device/useDeviceWsURL'
 
 type StateType = {
   productKey: string
@@ -348,15 +348,7 @@ export const useCreateUavControlRoomStore = (
     onWebSocketData?.(wsData)
   })
 
-  const token = useUserStore((s) => s.token)
-
-  const wsUrl = useMemo(() => {
-    if (!productKey || !deviceId || !token) {
-      return null
-    }
-    return `${globalConfig.globalWs}://${location.host}/v3/${productKey}/${deviceId}?token=${token}`
-    // return `/proxyWsApi/otherWsService/${globalConfig.systemName}/controlServer/v3/${productKey}/${deviceId}?token=${token}`
-  }, [productKey, deviceId, token])
+  const wsUrl = useDeviceWsURL(productKey, deviceId)
 
   const { readyState, sendMessage } = useWebSocket(
     wsUrl,

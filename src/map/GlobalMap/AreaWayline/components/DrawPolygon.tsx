@@ -77,7 +77,6 @@ const DrawPolygon: FC<PropsType> = memo(
 
       // 监听是否为 Esc 键
       const handler = (e: KeyboardEvent) => {
-        console.log('e.key', e.key)
         if (e.key === 'Escape') {
           setPath([])
         }

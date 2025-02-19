@@ -1,6 +1,5 @@
 import CloseableHeader from '../../components/CloseableHeader'
 import DeviceIconAIRPORT from '@/assets/icons/jsx/device/DeviceIconAIRPORT'
-import useUserStore from '@/store/useUser.store'
 import { shouldJson } from '@/utils/json'
 import useWebSocket from 'react-use-websocket'
 import { heartbeat } from '@/constant/websocket'
@@ -18,6 +17,7 @@ import FormModal from '@/components/XForm/Modal'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import HealthInfoMini from '@/components/device/HealthInfoMini'
 import { XFormItem } from '@/components/XForm/types'
+import useDeviceWsURL from '@/hooks/device/useDeviceWsURL'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -94,14 +94,7 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
     }
   })
 
-  const token = useUserStore((s) => s.token)
-  const wsUrl = useMemo(() => {
-    if (!productKey || !deviceId || !token) {
-      return null
-    }
-    return `${globalConfig.globalWs}://${location.host}/v3/${productKey}/${deviceId}?token=${token}`
-    // return `/proxyWsApi/otherWsService/${globalConfig.systemName}/controlServer/v3/${productKey}/${deviceId}?token=${token}`
-  }, [productKey, deviceId, token])
+  const wsUrl = useDeviceWsURL(productKey, deviceId)
 
   useWebSocket(wsUrl, {
     heartbeat,

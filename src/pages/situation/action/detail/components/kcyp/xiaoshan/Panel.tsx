@@ -33,7 +33,6 @@ const KCYPXSPanel: FC<PropsType> = memo(({ actionId }) => {
     if (!data) {
       return
     }
-    console.log('data', data)
     form.setFieldsValue({
       ...data,
       caseHapTime: dayjs(data?.caseHapTime),
