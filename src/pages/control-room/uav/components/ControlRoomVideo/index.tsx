@@ -71,7 +71,6 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
     const y2 = (y1 + h) / fh
     x1 = x1 / fw
     y1 = y1 / fh
-    console.log('e', e)
     handlePostSmartTrack({
       x1,
       y1,

@@ -10,11 +10,17 @@ const useServerEventMsg = (msgApi?: MessageInstance) => {
     const [c, kind, type] = wsData.method?.split('.') ?? []
     if (c === 'event') {
       if (kind === 'commonEvent' || kind === 'pipelineTaskEvent') {
+        const id = uuidv4()
         msgApi.open({
-          key: uuidv4(),
+          key: id,
           type,
           content: wsData.data.message,
           duration: wsData.data.needConfirm ? 0 : 3,
+          onClose: wsData.data.needConfirm
+            ? () => {
+                msgApi.destroy(id)
+              }
+            : undefined,
         })
       }
     }

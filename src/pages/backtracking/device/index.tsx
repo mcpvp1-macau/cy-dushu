@@ -89,11 +89,8 @@ const PageBackTrackingDevice: FC<PropsType> = memo(() => {
     if (!attrData || attrIndexOf < 0) {
       return null
     }
-    console.log('111', 111)
     return shouldJson(attrData[attrIndexOf].properties)
   }, [attrIndexOf, attrData])
-
-  console.log('attrIndexOf', attrIndexOf, curAttr)
 
   return (
     <div className="fixed top-[39px] left-[39px] right-0 bottom-0">

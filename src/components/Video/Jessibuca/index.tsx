@@ -97,7 +97,6 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
       }
       i += 8 + length
     }
-    // console.info('flag----', flagNum)
     // TODO 适配没有标志位的普通sei，后续拿掉
     if (flagNum === 0) {
       const decoder = new TextDecoder()
@@ -110,7 +109,6 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
         seiJson = JSON.parse(sei)
       } catch (error) {}
       if (seiJson.object_list?.length) {
-        // console.info('sei解析2--', seiJson)
         // dataRef.current.push({ ts: value.ts, data: seiJson });
         props.onSeiAIData?.({
           batchId: seiJson.batch_id,

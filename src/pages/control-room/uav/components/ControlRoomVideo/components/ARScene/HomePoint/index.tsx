@@ -12,7 +12,6 @@ const ARSceneHomePoint: FC<PropsType> = memo(() => {
 
   const { viewer } = useCesium()
   useEffect(() => {
-    console.log(goHomeLongitude, goHomeLatitude, goHomeHeight)
     if (!viewer || isNil(goHomeLongitude) || isNil(goHomeLatitude)) {
       return
     }
