@@ -32,7 +32,8 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
 
   const [searchParams] = useSearchParams()
 
-  const rids = (searchParams.get('rids') ?? '').split(',')
+  const ridsStr = searchParams.get('rids')
+  const rids = ridsStr ? ridsStr.split(',') : []
 
   return (
     <CesiumMap id="uav-control-room-map">
