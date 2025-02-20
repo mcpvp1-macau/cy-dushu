@@ -15,6 +15,9 @@ import useRightMode from '@/store/layout/useRightMode.store'
 import { RightModeEnum } from '@/enum/right-mode'
 import IconButton from '@/components/ui/button/IconButton'
 import IconClear from '@/assets/icons/jsx/IconClear'
+import { useEventData } from '@/store/event/useEvent.store'
+import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
+import { useDeepCompareEffect } from 'ahooks'
 
 type PropsType = unknown
 
@@ -31,6 +34,8 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
   const [eventTypeList, setEventTypeList] = useState<string[]>([])
   const [eventSourceList, setEventSourceList] = useState<string[]>([])
   const [processStatusList, setProcessStatusList] = useState<string[]>([])
+
+  const newEvent = useGlobalWsStore((s) => s.newEvent)
 
   const rightDetailId = useRightMode((s) => {
     if (s.rightMode !== RightModeEnum.EVENT_DETAIL) {
@@ -94,26 +99,38 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
     setEventName(e.currentTarget.value)
   }
 
+  const { refetch } = useEventData()
+
+  const refetchEvent = () => {
+    queryClient.invalidateQueries({
+      queryKey: [
+        'getEventList',
+        {
+          eventName,
+          eventLevelList,
+          eventTypeList,
+          eventSourceList,
+          processStatusList,
+        },
+      ],
+    })
+  }
+
   const handleClear = () => {
     ignoreAllEvent({}).then((res) => {
       if (res.code === 'SUCCESS') {
-        queryClient.invalidateQueries({
-          queryKey: [
-            'getEventList',
-            {
-              eventName,
-              eventLevelList,
-              eventTypeList,
-              eventSourceList,
-              processStatusList,
-            },
-          ],
-        })
+        refetchEvent()
+        // 刷新地图上的事件
+        refetch()
       } else {
         // message.error(res.message)
       }
     })
   }
+
+  useDeepCompareEffect(() => {
+    refetchEvent()
+  }, [newEvent])
 
   const { t } = useTranslation()
 

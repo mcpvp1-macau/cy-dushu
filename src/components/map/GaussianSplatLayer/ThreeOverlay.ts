@@ -47,7 +47,7 @@ export default class ThreeOverlay {
 
   // Sync camera code taken from https://github.com/leon-juenemann/cesiumjs-with-threejs
   public render() {
-    this.camera.fov = Cesium.Math.toDegrees(this.cesiumCamera.frustum.fovy)
+    this.camera.fov = Cesium.Math.toDegrees((this.cesiumCamera.frustum as any).fovy)
     this.camera.updateProjectionMatrix()
 
     const cesiumCamera = this.cesiumCamera
