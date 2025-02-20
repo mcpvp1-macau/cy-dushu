@@ -8,6 +8,7 @@ import dayjs from 'dayjs'
 import { isEqual } from 'lodash'
 import { type FC } from 'react'
 import useWebSocket from 'react-use-websocket'
+import { useEventData } from '@/store/event/useEvent.store'
 
 type PropsType = unknown
 
@@ -160,8 +161,11 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
   })
 
   // 事件推送 ------------------------
+  const { refetch } = useEventData();
   const updateNewEvent = useGlobalWsStore((s) => s.updateNewEvent)
   const handleEventPush = useMemoizedFn((message: any) => {
+    //
+    refetch();
     updateNewEvent(message)
   })
 
