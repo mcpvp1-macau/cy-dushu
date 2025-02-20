@@ -9,7 +9,6 @@ import JCXT from '@/pages/right/DeviceDetail/UavAirportDetail/components/RemoteD
 import { useUavControlRoomStore as useS } from '@/store/context-store/useUavControlRoom.store'
 import { Tooltip } from 'antd'
 import { isNil } from 'lodash'
-import { useSearchParams } from 'react-router-dom'
 import { useShallow } from 'zustand/react/shallow'
 import LatestTask from './LatestTask'
 import { createPortal } from 'react-dom'
@@ -36,12 +35,22 @@ const HeaderLeft = memo(() => {
   )
 })
 
-const I: FC<{ l: ReactNode; v: ReactNode; t?: string }> = ({ l, v, t }) => (
-  <li className="flex gap-1 select-none">
-    {t ? <Tooltip title={t}>{l}</Tooltip> : <div>{l}</div>}
-    <div>{v}</div>
-  </li>
-)
+const I: FC<{ l: ReactNode; v: ReactNode; t?: string }> = ({ l, v, t }) => {
+  if (globalConfig.controlRoom?.uav?.particularHeader) {
+    return (
+      <li className="flex gap-1 select-none">
+        {t && `${t} `}
+        {v}
+      </li>
+    )
+  }
+  return (
+    <li className="flex gap-1 select-none">
+      {t ? <Tooltip title={t}>{l}</Tooltip> : <div>{l}</div>}
+      <div>{v}</div>
+    </li>
+  )
+}
 
 const Signal14G = memo(() => {
   const { t } = useTranslation()
@@ -100,6 +109,7 @@ const SatelliteNumber = memo(() => {
 })
 
 const Battery = memo(() => {
+  const { t } = useTranslation()
   const electricity = useS((s) => s.state?.electricity)
 
   const eleColor = useMemo(() => {
@@ -119,6 +129,7 @@ const Battery = memo(() => {
     <I
       l={<IconBattery />}
       v={<span style={{ color: eleColor }}>{electricity ?? '-'} %</span>}
+      t={t('common.electricity')}
     />
   )
 })
@@ -206,22 +217,21 @@ const FD = memo(() => {
 })
 
 const ControlRoomUavHeader: FC = memo(() => {
-  const [searchParams] = useSearchParams()
-  const useLW = searchParams.get('useLW')
   const productKey = useDeviceDetailStore((s) => s.productKey)
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
-  return createPortal(
-    <header className="h-7 flex justify-between gap-3 bg-ground-1 px-3 items-center text-sm">
-      <HeaderLeft />
+
+  const appHeader = document.getElementById('app-header-center')
+
+  const h = (
+    <header className="h-7 flex justify-between gap-3 px-3 items-center text-sm">
+      {appHeader ? <HeaderLeft /> : <div />}
       <section className="grow">
         <ul className="flex justify-center gap-1 xl:gap-3 2xl:gap-5 whitespace-nowrap">
-          {useLW && (
-            <DeviceLinkSwitch
-              productKey={productKey}
-              deviceId={deviceId}
-              className="text-fore"
-            />
-          )}
+          <DeviceLinkSwitch
+            productKey={productKey}
+            deviceId={deviceId}
+            className="text-fore"
+          />
           <Signal14G />
           <SDRStrength />
           <SignalStrength />
@@ -238,9 +248,14 @@ const ControlRoomUavHeader: FC = memo(() => {
       <section>
         <LatestTask deviceId={deviceId} />
       </section>
-    </header>,
-    document.getElementById('app-header-center')!,
+    </header>
   )
+
+  if (appHeader) {
+    return createPortal(h, appHeader)
+  }
+
+  return <div className="bg-ground-3 mx-2 rounded mt-2">{h}</div>
 })
 
 ControlRoomUavHeader.displayName = 'ControlRoomUavHeader'

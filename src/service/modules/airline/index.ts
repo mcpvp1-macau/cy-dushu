@@ -41,7 +41,11 @@ export const delAirlineTempalte = (waylineTemplateId: number) => {
 
 /** 获取设备最新的任务 */
 export const getLatestTask = (deviceId: string) => {
-  return serverControlCenter.get(`/v3/latest/task/${deviceId}`)
+  return serverControlCenter.get(`/v3/latest/task/${deviceId}`, {
+    xCustomConfig: {
+      autoShowMessageOnNotSuccess: false,
+    },
+  })
 }
 
 /** 上传航线模板 */

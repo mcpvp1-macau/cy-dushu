@@ -5,7 +5,7 @@ import { useLatest } from 'ahooks'
 
 type PropsType = {
   value: {
-    lon: number
+    lng: number
     lat: number
   }[]
   useCallback?: boolean
@@ -33,7 +33,7 @@ const HistoryTrack: FC<PropsType> = memo(
       const e = viewer.entities.add({
         polyline: {
           positions: Cesium.Cartesian3.fromDegreesArray(
-            flatten(historyTrack.map((v) => [v.lon, v.lat])),
+            flatten(historyTrack.map((v) => [v.lng, v.lat])),
           ),
           width: 2,
           material: Cesium.Color.fromCssColorString(color),
@@ -45,7 +45,7 @@ const HistoryTrack: FC<PropsType> = memo(
         outline = viewer.entities.add({
           polyline: {
             positions: Cesium.Cartesian3.fromDegreesArray(
-              flatten(historyTrack.map((v) => [v.lon, v.lat])),
+              flatten(historyTrack.map((v) => [v.lng, v.lat])),
             ),
             width: 4,
             material: Cesium.Color.fromCssColorString('#000'),
@@ -68,7 +68,7 @@ const HistoryTrack: FC<PropsType> = memo(
 
       const positions = new Cesium.CallbackProperty((_, result) => {
         const positions = Cesium.Cartesian3.fromDegreesArray(
-          flatten(historyTrackRef.current.map((v) => [v.lon, v.lat])),
+          flatten(historyTrackRef.current.map((v) => [v.lng, v.lat])),
         )
         if (Cesium.defined(result)) {
           result.length = 0 // 清空现有数组

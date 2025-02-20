@@ -42,6 +42,7 @@ const DeviceInfoCard: FC<PropsType> = memo(({ data, deviceId }) => {
   const { properties, deviceModel } = data
   const { t } = useTranslation()
   const { StatusMap } = useConfig()
+
   const renderItem = (item, parentIdentifier = '') => {
     let value: any = null
     const type =

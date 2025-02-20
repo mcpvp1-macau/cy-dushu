@@ -29,12 +29,17 @@ window.config = {
   videoBuffer: 0,
   videoBufferDelay: 0.2,
   daotongServer: 'http://135.100.11.130:18099/',
+  controlRoom: {
+    uav: {
+      particularHeader: true,
+    },
+  },
 }
 
 if (isPublic()) {
   window.config.defaultImageries.push({
     url: 'https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png',
-    min: 13,
+    min: 1,
     max: 18,
   })
 } else {

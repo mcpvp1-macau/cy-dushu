@@ -21,6 +21,11 @@ export type ConfigType = {
   daotongServer?: string
   /** 告警提示音 */
   warnAudioUrl?: string
+  controlRoom?: {
+    uav?: {
+      particularHeader?: boolean
+    }
+  }
 }
 
 type WindowType = Window & { config: ConfigType }

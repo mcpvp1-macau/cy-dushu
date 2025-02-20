@@ -4,7 +4,7 @@ export type Track = {
   id: string
   useCallback?: boolean
   path: {
-    lon: number
+    lng: number
     lat: number
   }[]
 }

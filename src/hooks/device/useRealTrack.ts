@@ -2,12 +2,12 @@ import { useLatest } from 'ahooks'
 import * as turf from '@turf/turf'
 import { isNil } from 'lodash'
 
-type Track = { lon: number; lat: number }[]
+type Track = { lng: number; lat: number }[]
 
 const GROUP_NUMBER = 64
 
 /** 通过更新经度和维度, 实时收集点位, 并缓存分组 */
-const useRealTrack = (lon?: number, lat?: number) => {
+const useRealTrack = (lng?: number, lat?: number) => {
   const [realTrack, setRealTrack] = useState<Track>([])
   // 当实时轨迹到达 GROUP_NUMBER 时, 将实时轨迹添加到历史轨迹中, 历史轨迹不会每帧都计算
   const [historyTrack, setHistoryTrack] = useState<Track[]>([])
@@ -15,30 +15,30 @@ const useRealTrack = (lon?: number, lat?: number) => {
   const historyTrackLatest = useLatest(historyTrack)
 
   useEffect(() => {
-    if (isNil(lon) || isNil(lat)) {
+    if (isNil(lng) || isNil(lat)) {
       return
     }
-    if (lon === 0 && lat === 0) {
+    if (lng === 0 && lat === 0) {
       return
     }
     if (realTrackLastest.current.length === 0) {
-      setRealTrack([{ lon: lon, lat }])
+      setRealTrack([{ lng, lat }])
       return
     }
     const last = realTrackLastest.current.at(-1)!
     let track = realTrackLastest.current
     // 判断距离
-    if (Math.abs(last.lon - lon) < 1e-5 && Math.abs(last.lat - lat) < 1e-5) {
+    if (Math.abs(last.lng - lng) < 1e-5 && Math.abs(last.lat - lat) < 1e-5) {
       return
     }
     // 判断角度
     if (
       track.length > 1 &&
       Math.abs(
-        turf.bearing(turf.point([lon, lat]), turf.point([last.lon, last.lat])) -
+        turf.bearing(turf.point([lng, lat]), turf.point([last.lng, last.lat])) -
           turf.bearing(
-            turf.point([last.lon, last.lat]),
-            turf.point([track.at(-2)!.lon, track.at(-2)!.lat]),
+            turf.point([last.lng, last.lat]),
+            turf.point([track.at(-2)!.lng, track.at(-2)!.lat]),
           ),
       ) < 1e-2
     ) {
@@ -52,12 +52,12 @@ const useRealTrack = (lon?: number, lat?: number) => {
     if (track.length > GROUP_NUMBER) {
       track = [historyTrackLatest.current.at(-1)!.at(-1)!]
     }
-    setRealTrack([...track, { lon: lon, lat }])
-  }, [lon, lat, realTrackLastest])
+    setRealTrack([...track, { lng, lat }])
+  }, [lng, lat, realTrackLastest])
 
   const clear = (saveCurrent = false) => {
     setRealTrack(
-      saveCurrent && !isNil(lon) && !isNil(lat) ? [{ lon, lat }] : [],
+      saveCurrent && !isNil(lng) && !isNil(lat) ? [{ lng, lat }] : [],
     )
     setHistoryTrack([])
   }

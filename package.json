@@ -9,6 +9,7 @@
     "dev:82": "vite --config ./vite-config/dev/config.82.ts",
     "dev:103": "vite --config ./vite-config/dev/config.103.ts",
     "dev:110": "vite --config ./vite-config/dev/config.110.ts",
+    "dev:105": "vite --config ./vite-config/dev/config.105.ts",
     "dev:201": "vite --config ./vite-config/dev/config.201.ts",
     "dev:216": "vite --config ./vite-config/dev/config.216.ts",
     "dev:235": "vite --config ./vite-config/dev/config.235.ts",

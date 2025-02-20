@@ -21,6 +21,7 @@ import schedule from './router/modules/action-plan'
 import organization from './router/modules/organization'
 import FixedWindowArea from './components/FixedWindowsArea'
 import backtracking from './router/modules/backtracking'
+import share from './router/modules/share.tsx'
 
 const hidenSet = new Set([
   controlRoom.id,
@@ -28,6 +29,7 @@ const hidenSet = new Set([
   schedule.id,
   organization.id,
   backtracking.id,
+  share.id,
 ])
 
 const App = () => {
@@ -53,6 +55,11 @@ const App = () => {
     [matcheds],
   )
 
+  const hideAppHeaderAndNavigator = useMemo(
+    () => matcheds.find((e) => e.id === share.id),
+    [matcheds],
+  )
+
   const { i18n } = useTranslation()
 
   return (
@@ -72,10 +79,10 @@ const App = () => {
         <AppMsgContext.Provider value={messageApi}>
           {contextHolder}
           <GlobalState />
-          <AppHeader />
+          {!hideAppHeaderAndNavigator && <AppHeader />}
           <div className="flex-grow overflow-hidden">
             <div className="h-full flex overflow-hidden">
-              <AppNavigator />
+              {!hideAppHeaderAndNavigator && <AppNavigator />}
               <main className="flex-grow bg-ground-1 relative overflow-hidden z-10">
                 <div className="absolute h-full z-20 overflow-hidden">
                   <AppViewSuspense>
