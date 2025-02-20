@@ -10,7 +10,7 @@ type PropsType = {
 }
 
 const UavPointFlyTarget: FC<PropsType> = memo(({ position }) => {
-  const lon = useUavControlRoomStore((s) => s.state.longitude) ?? 0
+  const lng = useUavControlRoomStore((s) => s.state.longitude) ?? 0
   const lat = useUavControlRoomStore((s) => s.state.latitude) ?? 0
 
   return (
@@ -31,8 +31,8 @@ const UavPointFlyTarget: FC<PropsType> = memo(({ position }) => {
         useOutline
         useCallback
         value={[
-          { lon, lat },
-          { lon: position[0], lat: position[1] },
+          { lng, lat },
+          { lng: position[0], lat: position[1] },
         ]}
       />
     </>

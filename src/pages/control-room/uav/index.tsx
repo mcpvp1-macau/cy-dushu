@@ -39,6 +39,7 @@ import { useUavControlRoomLayoutStore } from './hooks/useUavControlRoomLayout.st
 import IconDrawArea from '@/assets/icons/jsx/right-tools/IconDrawArea'
 import RightOverlayDetail from './components/right_detail/Overlay'
 import useControlRoomTargetInfoStore from '@/store/control-room/useTargetInfo.store'
+import { useLocation } from 'react-router'
 
 type PropsType = unknown
 
@@ -147,11 +148,18 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
     [productKey, deviceId],
   )
 
+  const { pathname } = useLocation()
+
   return (
     <DeviceDetailStoreContext.Provider value={store}>
       <UavControlRoomStoreContext.Provider value={controlRoomStore}>
         <StateResolver />
-        <div className="page-full flex flex-col">
+        <div
+          className={clsx(
+            'flex flex-col',
+            pathname.startsWith('/share/') ? 'w-screen h-screen' : 'page-full',
+          )}
+        >
           <ControlRoomUavHeader />
           <main className="grow w-full relative overflow-hidden">
             <DynamicLayoutRoot

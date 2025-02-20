@@ -41,7 +41,7 @@ const usePrevDayHisTrack = () => {
     updateTracks([
       {
         id: res[0].deviceId,
-        path: res.map((item) => ({ lon: item.lng, lat: item.lat })),
+        path: res,
       },
     ])
     return () => {

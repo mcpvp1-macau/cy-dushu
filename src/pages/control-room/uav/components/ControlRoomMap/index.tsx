@@ -1,5 +1,5 @@
 import CesiumMap from '@/map/CesiumMap'
-import { Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 import UavMarker from './components/UavMarker'
 import ResetHomePointListener from './components/ResetHomePointListener'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
@@ -19,15 +19,20 @@ import Right from './components/right_details'
 import DrawHandler from '@/map/GlobalMap/DrawHandler'
 import MapSituation from '@/map/GlobalMap/Situation'
 import RadarTargets from './components/target/RadarTarget'
+import { useSearchParams } from 'react-router-dom'
 
 type PropsType = unknown
 
-// const UavFaker = lazy(() => import('../MixARResolver/UavFaker'))
+const RIDTargets = lazy(() => import('./components/RIDTargets'))
 
 const ControlRoomUavMap: FC<PropsType> = memo(() => {
   const isResetHome = useUavControlRoomStore((s) => s.flyParams.isResetHome)
 
   const enableMixAR = useMixARStore((s) => s.enable)
+
+  const [searchParams] = useSearchParams()
+
+  const rids = (searchParams.get('rids') ?? '').split(',')
 
   return (
     <CesiumMap id="uav-control-room-map">
@@ -59,6 +64,9 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
       <UAVControlRoomPOIResolver />
       <LayerOverlay />
       <RadarTargets />
+      <Suspense fallback={null}>
+        {rids.length > 0 && <RIDTargets targetIds={rids} />}
+      </Suspense>
     </CesiumMap>
   )
 })

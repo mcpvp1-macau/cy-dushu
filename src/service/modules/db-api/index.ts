@@ -63,8 +63,31 @@ export const getTargetDetail = (data: {
   return serverDBAPI.post('api/targetDetailV2', data)
 }
 
-
 // 检测数据类型字典 [https://jingan.yuque.com/staff-ycgiyb/od1rat/soebmyfa1pgaklzl#QkJH1]
 export async function targetListEnumDict(options: any) {
-  return serverDBAPI.post(`/api/targetListEnumDict`, options);
+  return serverDBAPI.post(`/api/targetListEnumDict`, options)
+}
+
+// 无人机属性回溯
+export const getCitySituationUavTrack = (data: {
+  ids: string[]
+  startTime: string
+  endTime: string
+}) => {
+  return serverDBAPI.post<API_DBAPI.res.getCitySituationUavTrack>(
+    'api/citySituationUavTrack',
+    data,
+  )
+}
+
+// 无人机属性详情 [https://jingan.yuque.com/staff-ycgiyb/od1rat/gqun0orpa7cwpzqh#u1Vsq]
+export const getCitySituationUavDetail = (data: {
+  id: string
+  startTime?: string
+  endTime?: string
+}) => {
+  return serverDBAPI.post<API_DBAPI.res.GetCitySituationUavDetail>(
+    'api/citySituationUavDetail',
+    data,
+  )
 }

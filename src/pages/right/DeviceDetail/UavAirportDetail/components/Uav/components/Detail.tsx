@@ -46,7 +46,7 @@ const UavAirportUavDetailDetail: FC<PropsType> = memo(({ state }) => {
         />
       </section>
       <section className="mx-3 mt-3">
-        <Link to={`/control-room/uav/${data.deviceId}?useLW=true`}>
+        <Link to={`/control-room/uav/${data.deviceId}`}>
           <Button block className="h-7" icon={<IconControlRoom />}>
             {t('device.enterControlRoom.title')}
           </Button>

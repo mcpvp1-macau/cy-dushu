@@ -13,6 +13,7 @@ import backtracking from './modules/backtracking'
 import defence from './modules/defence'
 import AppErrorBoundary from '@/components/AppError'
 import Page404 from '@/pages/404'
+import share from './modules/share'
 
 export const rootRoute = {
   element: <App />,
@@ -27,6 +28,7 @@ export const rootRoute = {
     airline,
     backtracking,
     defence,
+    share,
     // 测试页面
     ...(import.meta.env.DEV ? [demo] : []),
     {
