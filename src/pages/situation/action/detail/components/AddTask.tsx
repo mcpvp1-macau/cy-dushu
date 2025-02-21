@@ -95,7 +95,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
       deviceName: e.deviceName,
       value: e.deviceId,
     }))
-  }, [])
+  }, [allDevices])
 
   const airlineTemplateOptions = useMemo(
     () =>
