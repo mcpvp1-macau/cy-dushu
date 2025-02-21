@@ -169,6 +169,9 @@ const RIDTargets: FC<PropsType> = memo(({ targetIds }) => {
     <BillboardCollection>
       <LabelCollection>
         {Object.entries(targets).map(([id, { uav, controlStation }]) => {
+          if (uav.length === 0) {
+            return null
+          }
           return <RIDTarget id={id} key={id} uav={uav} cs={controlStation} />
         })}
       </LabelCollection>

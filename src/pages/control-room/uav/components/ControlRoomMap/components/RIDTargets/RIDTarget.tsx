@@ -37,8 +37,8 @@ const RIDTarget: FC<PropsType> = memo(({ id, uav, cs }) => {
   )
   const postion = Cesium.Cartesian3.fromDegrees(lng, lat)
   const csPosition = Cesium.Cartesian3.fromDegrees(
-    cs.at(-1)!.lng,
-    cs.at(-1)!.lat,
+    cs.at(-1)?.lng ?? 120,
+    cs.at(-1)?.lat ?? 30,
   )
 
   return (
