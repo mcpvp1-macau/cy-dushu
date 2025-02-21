@@ -777,6 +777,8 @@ wayline:
     title: Use Global
   distanceWarning:
     msg: The distance between waypoints exceeds {{meters}} meters
+  defaultTaskName:
+    title: Wayline Task
 schedue:
   list:
     title: Schedule List

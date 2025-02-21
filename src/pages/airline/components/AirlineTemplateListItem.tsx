@@ -1,5 +1,6 @@
 import IconEdit2 from '@/assets/icons/jsx/IconEdit2'
 import IconMore from '@/assets/icons/jsx/IconMore'
+import IconWaylineAirpoint from '@/assets/icons/jsx/IconWaylineAirpoint'
 import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
 import IconButton from '@/components/ui/button/IconButton'
 import { delAirlineTempalte } from '@/service/modules/airline'
@@ -23,11 +24,19 @@ const AirlineTemplateListItem: FC<PropsType> = memo(({ data }) => {
   return (
     <li className="card-border text-sm p-2 bg-[#1C2630]">
       <div className="flex gap-2">
-        <MenuIconAirline />
+        {data.taskType === 'waypoint' ? (
+          <IconWaylineAirpoint />
+        ) : (
+          <MenuIconAirline />
+        )}
         <div className="grow">
           <p className="max-w-60 truncate text-white">{data.taskName}</p>
         </div>
-        <Link to={`/airline/edit/${data.waylineTemplateId}`}>
+        <Link
+          to={`/airline/${
+            data.taskType === 'area_waypoint' ? 'area-wayline-edit' : 'edit'
+          }/${data.waylineTemplateId}`}
+        >
           <IconButton className="text-xs">
             <IconEdit2 />
           </IconButton>

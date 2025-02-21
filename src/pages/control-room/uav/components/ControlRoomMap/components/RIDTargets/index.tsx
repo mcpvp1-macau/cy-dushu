@@ -83,7 +83,6 @@ const RIDTargets: FC<PropsType> = memo(({ targetIds }) => {
       newTargets[id].controlStation = pathCompress(
         newTargets[id].controlStation,
       )
-      console.log(newTargets[id].uav)
     }
 
     setTargets(newTargets)
@@ -123,6 +122,7 @@ const RIDTargets: FC<PropsType> = memo(({ targetIds }) => {
           speedV: uav.location_speed_v ?? 0,
           t: data.timestamp,
         })
+        newTargets[id].uav = pathCompress(newTargets[id].uav)
       }
     }
 
@@ -148,6 +148,9 @@ const RIDTargets: FC<PropsType> = memo(({ targetIds }) => {
           lat: cs.sys_lat,
           t: data.timestamp,
         })
+        newTargets[id].controlStation = pathCompress(
+          newTargets[id].controlStation,
+        )
       }
     }
     setTargets(newTargets)
@@ -161,8 +164,6 @@ const RIDTargets: FC<PropsType> = memo(({ targetIds }) => {
     reconnectInterval: 5_000,
     shouldReconnect: () => true,
   })
-
-  console.log(targets)
 
   return (
     <BillboardCollection>

@@ -775,6 +775,8 @@ wayline:
     title: 跟随航线
   distanceWarning:
     msg: 航点间距离超过 {{meters}} 米
+  defaultTaskName:
+    title: 航线任务
 schedue:
   list:
     title: 计划库

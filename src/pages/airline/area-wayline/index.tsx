@@ -1,6 +1,5 @@
 import CollapsedPage from '@/components/CollapsedPage'
 import EditableNameHeader from '@/components/EditableNameHeader'
-import { useSearchParams } from 'react-router-dom'
 import TakeoffRef from './components/TakeoffRef'
 import useAreaWaylineStore from '@/store/uav/uav-area-wayline/useAreaWayline.store'
 import CalcAreaPath from './components/CalcAreaPath'
@@ -12,20 +11,22 @@ import InfoCard from './components/InfoCard'
 import MainKConfig from './components/MainKConfig'
 import Coverage from './components/Coverage'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Button } from 'antd'
+import BottomButtions from './components/BottomButtions'
+import useAirlineInit from './hooks/useWaylineInit'
 
 type PropsType = unknown
 
 const PageAreaWaylineEdit: FC<PropsType> = memo(() => {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const [taskName, setTaskName] = useState<string | null>(
-    searchParams.get('name') ?? 'Wayline Name',
+  const { t } = useTranslation()
+  const taskName = useAreaWaylineStore((s) => s.templateConfig.taskName)
+  const updateTemplateConfig = useAreaWaylineStore(
+    (s) => s.updateTemplateConfig,
   )
 
-  const { t } = useTranslation()
-
   const updateOpen = useAreaWaylineStore((s) => s.updateOpen)
+
+  useAirlineInit()
 
   useEffect(() => {
     updateOpen(true)
@@ -40,9 +41,12 @@ const PageAreaWaylineEdit: FC<PropsType> = memo(() => {
         <div className="h-full flex flex-col">
           <EditableNameHeader
             className="px-3"
-            value={taskName ?? '-'}
+            value={taskName || t('wayline.defaultTaskName.title')}
             onFinish={(v) => {
-              setTaskName(v)
+              updateTemplateConfig({
+                ...useAreaWaylineStore.getState().templateConfig,
+                taskName: v,
+              })
             }}
             onBackClick={() => navigate(-1)}
           />
@@ -71,11 +75,8 @@ const PageAreaWaylineEdit: FC<PropsType> = memo(() => {
             <div className="m-3">
               <FinishActionConfig />
             </div>
-            <div className="m-3 flex gap-3">
-              <Button className="flex-1">{t('wayline.saveTask.title')}</Button>
-              <Button type="primary" className="flex-1">
-                {t('wayline.executeTask.title')}
-              </Button>
+            <div className="m-3 ">
+              <BottomButtions />
             </div>
           </ScrollArea>
         </div>

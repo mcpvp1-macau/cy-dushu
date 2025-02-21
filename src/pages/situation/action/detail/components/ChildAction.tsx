@@ -89,7 +89,12 @@ const OperatorBtns: FC<PropsType> = ({ data }) => {
                   params += `&camera=${JSON.stringify(info.camera)}`
                 }
               }
-              navigate(`/airline/edit/${data.taskTplId}${params}`)
+              const t = shouldJson(info.taskBasic).waylineType
+              navigate(
+                `/airline/${
+                  t === 'area_waypoint' ? 'area-wayline-edit' : 'edit'
+                }/${data.taskTplId}${params}`,
+              )
             }}
           >
             {t('action.detail.task.edit.title')}
