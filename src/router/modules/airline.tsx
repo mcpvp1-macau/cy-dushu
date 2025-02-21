@@ -33,6 +33,10 @@ export default {
       path: 'area-wayline-edit',
       children: [
         {
+          path: ':waylineTemplateId',
+          element: <PageAreaWaylineEdit />,
+        },
+        {
           path: '',
           element: <PageAreaWaylineEdit />,
         },

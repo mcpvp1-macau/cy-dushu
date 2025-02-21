@@ -4,6 +4,8 @@ import { WorkerAPI } from '@/worker/area_wayline_solution'
 import { useDebounceFn } from 'ahooks'
 import { toMercator, toWgs84 } from '@turf/turf'
 import useAreaWaylineStore from '@/store/uav/uav-area-wayline/useAreaWayline.store'
+import { AirlinePoint } from '@/store/uav/uav-airline/types'
+import { v4 } from 'uuid'
 
 type PropsType = unknown
 
@@ -63,14 +65,23 @@ const CalcAreaPath: FC<PropsType> = memo(() => {
           coordinates: [res],
         },
       })
-      const points = wgs84Res.geometry.coordinates[0].map((point, index) => ({
-        positionIndex: index,
-        positionName: `航点${index + 1}`,
-        actions: [],
-        pointX: point[0],
-        pointY: point[1],
-        pointZ: height,
-      }))
+      const points = wgs84Res.geometry.coordinates[0].map<AirlinePoint>(
+        (point, index) => ({
+          positionIndex: index,
+          positionName: `航点${index + 1}`,
+          actions: [],
+          pointX: point[0],
+          pointY: point[1],
+          pointZ: height,
+        }),
+      )
+
+      points[0].actions.push({
+        config: { y: -90 },
+        type: 'CAMERA_POSITION',
+        xid: v4(),
+      })
+
       updateAirpointsConfig(points)
       updateFirstAirpoint(points[0])
     },
