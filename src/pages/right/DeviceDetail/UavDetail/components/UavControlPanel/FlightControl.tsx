@@ -11,6 +11,8 @@ import IconTurnLeft from '@/assets/icons/jsx/uav/IconTurnLeft'
 import IconTurnRight from '@/assets/icons/jsx/uav/IconTurnRight'
 import IconDownStraight from '@/assets/icons/jsx/IconDownStraight'
 import IconUpStraight from '@/assets/icons/jsx/IconUpStraight'
+import usePostDeviceService from '@/pages/control-room/uav/hooks/usePostDeviceService'
+import { useDeviceDetailStore } from '../../../hooks/useDeviceDetail.store'
 
 type PropsType = unknown
 
@@ -105,18 +107,33 @@ const UavDetailFlightControl: FC<PropsType> = memo(() => {
     [t],
   )
 
+  const serviceHave = useDeviceDetailStore((s) => s.serviceHave)
+  const postService = usePostDeviceService()
+
+  const leftBtns = useMemo(
+    () => [
+      ['takeoff', t('uav.takeOff.title')],
+      ['autoland', t('uav.land.title')],
+      ['gohome', t('uav.return.title')],
+    ],
+    [t],
+  )
+
   return (
     <div className="p-3 flex items-center justify-between gap-3">
       <div className="flex flex-col gap-3 w-[90px]">
-        <Button type="primary" block size="small" disabled={!canControl}>
-          {t('uav.takeOff.title')}
-        </Button>
-        <Button type="primary" block size="small" disabled={!canControl}>
-          {t('uav.land.title')}
-        </Button>
-        <Button type="primary" block size="small" disabled={!canControl}>
-          {t('uav.return.title')}
-        </Button>
+        {leftBtns.map(([service, label]) => (
+          <Button
+            key={service}
+            type="primary"
+            block
+            size="small"
+            disabled={!canControl || !serviceHave[service]}
+            onClick={() => postService(service)}
+          >
+            {label}
+          </Button>
+        ))}
       </div>
 
       {/* 左边控制区 */}
