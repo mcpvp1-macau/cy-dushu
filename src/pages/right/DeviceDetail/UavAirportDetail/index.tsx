@@ -231,7 +231,7 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
           initialValues={{
             height: 100,
           }}
-          title={`${t('device.uavDock.takeoffForm.title')} ATL(m)`}
+          title={`${t('device.uavDock.takeoffForm.title')} ALT(m)`}
           open={takeOffOpen}
           items={items}
           onClose={setTakeoffFalse}

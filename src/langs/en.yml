@@ -494,6 +494,7 @@ common:
   cancel: Cancel
   success: Success
   live: Live
+  parameterError: Parameter Error
 events:
   search:
     placeholder: Please search by event name or ID
@@ -1071,6 +1072,18 @@ controlRoom:
         required_msg: Please input flight speed
     overlay:
       title: Overlay
+    larserError:
+      msg: Laser error detected, please verify the laser's status
+    deviceLiveVideoError:
+      msg: Unable to retrieve live video content
+    gimbalPitchError:
+      msg: Gimbal parameter error
+    autoPhotographSuccess:
+      msg: Calculation successful, please click “AI Photo” to start
+    autoPhotographError:
+      msg: AutoPhotograph Calculation Error
+    snapshotUploadSuccess:
+      msg: Snapshot success
   control:
     uavTurnLeft:
       title: UAV Turn Left

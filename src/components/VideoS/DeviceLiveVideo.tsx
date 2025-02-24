@@ -53,10 +53,7 @@ type PropsType = {
 }
 
 type DeviceLiveVideoRefType = {
-  /**
-   * 截图
-   * @returns base64
-   */
+  /** 截图 */
   snapshot: (mediaTypes?: string, quality?: any) => string
 }
 

@@ -152,7 +152,7 @@ const Height = memo(() => {
   return (
     <I
       t={t('common.height')}
-      l={'ATL'}
+      l={'ALT'}
       v={<span>{height?.toFixed(1) ?? '-'} m</span>}
     />
   )

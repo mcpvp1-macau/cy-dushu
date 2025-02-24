@@ -349,7 +349,7 @@ const BottomButtons: FC<PropsType> = memo(() => {
         <div className="flex justify-center gap-2 items-center text-green-500 text-shadow pointer-events-none">
           <span className="text-lg">{height?.toFixed?.(1)}</span>
           <span className="text-sm">
-            ATL
+            ALT
             <br />m
           </span>
         </div>

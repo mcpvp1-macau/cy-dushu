@@ -1,12 +1,20 @@
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { MessageInstance } from 'antd/es/message/interface'
 import { v4 as uuidv4 } from 'uuid'
+import { takePhotoEventEmitter } from '../components/ControlRoomVideo/hooks/useHandleTakePhotoEvent'
 
 /** 处理 Websocket 服务端来的消息弹窗 */
 const useServerEventMsg = (msgApi?: MessageInstance) => {
   const appMsgAPI = useAppMsg()
   msgApi ??= appMsgAPI
   const handle = useMemoizedFn((wsData) => {
+    if (wsData.method === 'event.takePhotoEvent.info') {
+      takePhotoEventEmitter.emit('takePhotoEvent', {
+        username: wsData.data.username,
+        fileId: wsData.data.fileId,
+      })
+      return
+    }
     const [c, kind, type] = wsData.method?.split('.') ?? []
     if (c === 'event') {
       if (kind === 'commonEvent' || kind === 'pipelineTaskEvent') {
