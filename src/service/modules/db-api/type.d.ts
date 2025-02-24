@@ -40,6 +40,7 @@ declare namespace API_DBAPI {
       lat: number
       objectId: any
       lng_84: any
+      altitude: number
     }
     interface RIDUavData {
       /** 信号强度 (dBm) */

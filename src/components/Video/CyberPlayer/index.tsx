@@ -30,6 +30,7 @@ export type PauseOrBufferEvent = {
 
 type PropsType = {
   src: string
+  autostart?: boolean;
   onVideoInfo?: (event: VideoInfoEvent) => void
   onTimeUpdate?: (event: TimeUpdateEvent) => void
   onPlay?: (event: PlayEvent) => void
@@ -76,7 +77,7 @@ const CyberPlayer = memo(
         title: 'h265点播播放',
         width: '100%',
         height: '100%',
-        autostart: true,
+        autostart: props.autostart ?? true,
         stretching: 'uniform',
         repeat: false,
         volume: 100,

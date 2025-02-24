@@ -37,6 +37,15 @@ export const getUavDeviceAttrBackV2 = (data: {
   return serverDBAPI.post('api/uavDeviceAttrBackV2', data)
 }
 
+/** deviceAttrInfoBack 属性回溯 */
+export const getDeviceAttrInfoBack = (data: {
+  deviceId: string
+  startTime: string
+  endTime: string
+}) => {
+  return serverDBAPI.post('api/deviceAttrInfoBack', data)
+}
+
 /**
  * 检测数据
  */
