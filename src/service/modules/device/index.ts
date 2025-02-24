@@ -176,6 +176,7 @@ export const uploadPic = (
     bid?: string
     bType?: string
     imgData: string
+    fileId?: string
   },
 ) => {
   return serverControlCenter.post('/v3/media/picture/upload', {

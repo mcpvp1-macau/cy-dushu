@@ -494,6 +494,7 @@ common:
   cancel: 取消
   success: 成功
   live: 实况
+  parameterError: 参数错误
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -1067,6 +1068,18 @@ controlRoom:
         required_msg: 请输入飞行速度
     overlay:
       title: 点位
+    larserError:
+      msg: 激光异常，请检查激光是否正常
+    deviceLiveVideoError:
+      msg: 无法获取到直播视频内容
+    gimbalPitchError:
+      msg: 云台参数错误
+    autoPhotographSuccess:
+      msg: 计算成功, 请点击智能拍照开始
+    autoPhotographError:
+      msg: 自动拍照计算失败
+    snapshotUploadSuccess:
+      msg: 截图上传成功
   control:
     uavTurnLeft:
       title: 无人机左转

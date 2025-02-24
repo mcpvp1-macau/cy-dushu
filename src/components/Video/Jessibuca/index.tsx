@@ -232,7 +232,7 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
       replayUseLastFrameShow: false,
       audioEngine: 'worklet',
       isNotMute: false,
-      heartTimeout: 10,
+      heartTimeout: 300,
       ptzClickType: 'mouseDownAndUp',
       forceNoOffscreen: true,
       useCanvasRender: false,
