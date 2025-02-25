@@ -7,6 +7,7 @@ import PZ from '../icons/PZ'
 import IconCameraSwitch from '@/assets/icons/jsx/IconCameraSwitch'
 import IconAIEnable from '@/assets/icons/jsx/IconAIEnable'
 import IconAIDisable from '@/assets/icons/jsx/IconAIDisable'
+import IconFocus from '@/assets/icons/jsx/IconFocus'
 
 export type ActionConfigType = {
   actionName: string
@@ -34,7 +35,10 @@ export enum ActionTypeEnum {
   OPEN_AI = 6,
   /** 关闭AI */
   CLOSE_AI = 7,
+  /** 镜头切换 */
   LEN_CHANGE = 8,
+  /** 对焦 */
+  FOCUS_CENTER = 9,
 }
 
 export const actionMap = new Map<ActionTypeEnum, ActionConfigType>([
@@ -135,6 +139,15 @@ export const actionMap = new Map<ActionTypeEnum, ActionConfigType>([
       type: 'CLOSE_AI',
     },
   ],
+  [
+    ActionTypeEnum.FOCUS_CENTER,
+    {
+      key: 'FOCUS_CENTER',
+      type: 'FOCUS_CENTER',
+      actionName: '对焦',
+      config: {},
+    },
+  ],
 ])
 
 export const iconMap = new Map<ActionTypeEnum, React.ReactNode>([
@@ -156,6 +169,10 @@ export const iconMap = new Map<ActionTypeEnum, React.ReactNode>([
   ],
   [ActionTypeEnum.OPEN_AI, <IconAIEnable key={ActionTypeEnum.OPEN_AI} />],
   [ActionTypeEnum.CLOSE_AI, <IconAIDisable key={ActionTypeEnum.CLOSE_AI} />],
+  [
+    ActionTypeEnum.FOCUS_CENTER,
+    <IconFocus key={ActionTypeEnum.FOCUS_CENTER} />,
+  ],
 ])
 
 export const actionKeys = Array.from(actionMap.keys())

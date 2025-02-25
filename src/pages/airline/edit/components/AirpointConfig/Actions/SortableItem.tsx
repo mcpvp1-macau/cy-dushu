@@ -15,6 +15,7 @@ import IconCameraSwitch from '@/assets/icons/jsx/IconCameraSwitch'
 import IconAIEnable from '@/assets/icons/jsx/IconAIEnable'
 import IconAIDisable from '@/assets/icons/jsx/IconAIDisable'
 import { QuestionCircleOutlined } from '@ant-design/icons'
+import IconFocus from '@/assets/icons/jsx/IconFocus'
 
 interface Props {
   id: string
@@ -54,6 +55,9 @@ const getIcon = (action: any) => {
   }
   if (action?.type === 'UNKNOWN') {
     return <QuestionCircleOutlined />
+  }
+  if (action?.type === 'FOCUS_CENTER') {
+    return <IconFocus />
   }
 }
 
