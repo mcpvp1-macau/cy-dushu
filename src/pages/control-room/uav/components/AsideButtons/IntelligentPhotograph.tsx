@@ -2,6 +2,7 @@ import IconSmartTakingPhoto from '@/assets/icons/jsx/uav/IconSmartTakingPhoto'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
+import useUserStore from '@/store/useUser.store'
 import { Button } from 'antd'
 import mitt from 'mitt'
 
@@ -87,7 +88,10 @@ const IntelligentPhotography: FC<PropsType> = memo(({ postServiceFn }) => {
       msgApi.error(t('common.parameterError'))
       return
     }
-    postServiceFn('startIntelligentPhotography', autoAIPhotoParams)
+    postServiceFn('startIntelligentPhotography', {
+      ...autoAIPhotoParams,
+      username: useUserStore.getState().user?.username,
+    })
     updateOpenPointZoom(0)
   }
 
