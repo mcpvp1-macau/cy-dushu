@@ -641,8 +641,10 @@ wayline:
       msg: 点击地图设置参考起飞点
     mainAxisDirection:
       title: 航线主轴方向
+      tooltip: 预设飞行路径的主要延伸方向
     coverage:
-      title: 航线覆盖率
+      title: 航线重叠率
+      tooltip: 相邻两条航线的拍摄视野重叠部分的比例，云台默认正射角度
   waylinePoint:
     config: 航点设置
     waypointList:
@@ -679,6 +681,8 @@ wayline:
             title: 到达时
           LEAVE:
             title: 离开时
+      FOCUS_CENTER:
+        title: 中心对焦
       OPEN_AI:
         title: 开启算法
         select:
@@ -1080,6 +1084,10 @@ controlRoom:
       msg: 自动拍照计算失败
     snapshotUploadSuccess:
       msg: 截图上传成功
+    exposure:
+      title: 曝光
+    shutter:
+      title: 快门速度
   control:
     uavTurnLeft:
       title: 无人机左转

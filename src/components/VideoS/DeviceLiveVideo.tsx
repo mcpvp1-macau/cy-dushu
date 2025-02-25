@@ -343,12 +343,7 @@ const DeviceLiveVideo = memo(
               >
                 <div className="flex justify-between items-center h-full">
                   <section className="flex items-center gap-3">
-                    <div className="order-10 text-fore text-xs">
-                      {formatTs(ts)}
-                    </div>
-                    {leftBottom}
-                  </section>
-                  <section className="flex items-center gap-3">
+                    <div className="text-fore text-xs">{formatTs(ts)}</div>
                     <VideoStream
                       currentUrl={url}
                       productKey={productKey}
@@ -368,6 +363,9 @@ const DeviceLiveVideo = memo(
                           onChange={useVideoQualityCheck?.onDRCChange}
                         />
                       )}
+                    {leftBottom}
+                  </section>
+                  <section className="flex items-center gap-3">
                     <IconButton
                       toolTipProps={{
                         title: t('common.refresh'),
@@ -404,7 +402,7 @@ const DeviceLiveVideo = memo(
                           (document.fullscreenElement as HTMLElement) ??
                           document.body,
                       }}
-                      className="order-10 text-[13px]"
+                      className="order-20 text-[13px]"
                       onClick={toggleFullscreen}
                     >
                       {!fullScreen ? <IconFull /> : <FullscreenExitOutlined />}

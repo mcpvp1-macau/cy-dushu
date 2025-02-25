@@ -643,8 +643,12 @@ wayline:
       msg: Click on the map to set the reference takeoff point
     mainAxisDirection:
       title: Wayline Main Axis Direction
+      tooltip: The principal axis of the intended flight trajectory
     coverage:
       title: Coverage Rate
+      tooltip: >-
+        Overlap ratio of the shooting field of view between adjacent flight
+        lines, default nadir angle of the gimbal
   waylinePoint:
     config: Waypoints
     waypointList:
@@ -681,6 +685,8 @@ wayline:
             title: Arrival
           LEAVE:
             title: Leaving
+      FOCUS_CENTER:
+        title: Focus Center
       OPEN_AI:
         title: Open Algorithm
         select:
@@ -1084,6 +1090,10 @@ controlRoom:
       msg: AutoPhotograph Calculation Error
     snapshotUploadSuccess:
       msg: Snapshot success
+    exposure:
+      title: Exposure
+    shutter:
+      title: Shutter Speed
   control:
     uavTurnLeft:
       title: UAV Turn Left
