@@ -3,11 +3,10 @@ import AppSpin from '@/components/AppSpin'
 import VideoPreview from '@/components/VideoPreview'
 import { dateOnly, dft } from '@/constant/time-fmt'
 import VideoViewModal from '@/pages/sources/components/DeviceData/VideoViewModal'
-import { getHistoryVideo, getHistoryM3u8Video } from '@/service/modules/device'
+import { getHistoryVideo } from '@/service/modules/device'
 import { Col, DatePicker, Row } from 'antd'
 import Select from 'antd/es/select'
 import { Dayjs } from 'dayjs'
-import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
 
 type PropsType = {
   deviceList: API_DEVICE.domain.Device[]
@@ -16,7 +15,6 @@ type PropsType = {
 /** 详情历史视频 */
 const DeviceDetailMediaHistoryVideo: FC<PropsType> = memo(({ deviceList }) => {
   const [date, setDate] = useState<Dayjs | null>(dayjs())
-  const deviceType = useDeviceDetailStore((s) => s.deviceDetail?.deviceType)
   const deviceOptions = useMemo(
     () =>
       deviceList
@@ -29,10 +27,10 @@ const DeviceDetailMediaHistoryVideo: FC<PropsType> = memo(({ deviceList }) => {
   )
   const [deviceId, setDeviceId] = useState(deviceOptions?.[0]?.value)
   const { videoId, productKey } = useMemo(() => {
-    const device = deviceList.find((e) => e.deviceId === deviceId)!
+    const device = deviceList.find((e) => e.deviceId === deviceId)
     return {
-      videoId: device.properties?.videoList?.[0]?.videoId,
-      productKey: device.deviceModel?.productKey,
+      videoId: device?.properties?.videoList?.[0]?.videoId,
+      productKey: device?.deviceModel?.productKey,
     }
   }, [deviceList, deviceId])
 
@@ -42,11 +40,11 @@ const DeviceDetailMediaHistoryVideo: FC<PropsType> = memo(({ deviceList }) => {
     {
       queryKey: ['getHistoryVideo', deviceId, `${date?.format(dateOnly)}`],
       queryFn: () =>
-        getHistoryVideo(productKey, deviceId, videoId!, {
+        getHistoryVideo(productKey!, deviceId, videoId!, {
           startTime: date!.startOf('day').format(dft),
           endTime: date!.endOf('day').format(dft),
         }),
-      enabled: !!videoId && !!date,
+      enabled: !!videoId && !!date && !!productKey && !!deviceId,
       select: (d) => d.data.videoList,
     },
     queryClient,
