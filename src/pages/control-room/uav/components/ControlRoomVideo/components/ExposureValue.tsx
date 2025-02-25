@@ -1,7 +1,8 @@
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import { Button, Popover, Slider } from 'antd'
+import { Popover, Slider } from 'antd'
 import { isNil } from 'lodash'
-import usePostDeviceService from '../../hooks/usePostDeviceService'
+import usePostDeviceService from '../../../hooks/usePostDeviceService'
+import IconButton from '@/components/ui/button/IconButton'
 
 type PropsType = unknown
 
@@ -77,6 +78,7 @@ const ExposureValue: FC<PropsType> = memo(() => {
   }, [display])
 
   const postService = usePostDeviceService()
+  const { t } = useTranslation()
 
   if (isNil(display)) {
     return null
@@ -85,13 +87,12 @@ const ExposureValue: FC<PropsType> = memo(() => {
   return (
     <Popover
       trigger={['click']}
-      placement="right"
+      placement="top"
       content={
         <Slider
-          className="h-28"
+          className="w-28"
           min={1}
           max={32}
-          vertical
           value={value}
           onChange={setValue}
           tooltip={{
@@ -110,7 +111,12 @@ const ExposureValue: FC<PropsType> = memo(() => {
         />
       }
     >
-      <Button className="w-14 h-7">{display}</Button>
+      <IconButton
+        className="text-xs"
+        toolTipProps={{ title: t('controlRoom.uav.exposure.title') }}
+      >
+        {display}
+      </IconButton>
     </Popover>
   )
 })

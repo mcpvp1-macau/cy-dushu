@@ -2,7 +2,6 @@ import IconButton from '@/components/ui/button/IconButton'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { Dropdown } from 'antd'
-import { borderedBtnClassName } from '..'
 import { isNil } from 'lodash'
 import { Mode, modeMap, modeZhMap } from './constants'
 
@@ -44,8 +43,9 @@ const ZoomFocusMode: FC<PropsType> = memo(({ postSerivce }) => {
         })),
       }}
       disabled={!(lensType === 'wide' || lensType === 'zoom')}
+      placement="top"
     >
-      <IconButton className={clsx(borderedBtnClassName, 'text-xs')}>
+      <IconButton className={clsx('text-xs')}>
         {modeMap.get(zoomFocusMode)}
       </IconButton>
     </Dropdown>

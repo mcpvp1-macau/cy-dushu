@@ -12,8 +12,12 @@ import { AiObject } from '@/components/Video/Jessibuca/sei-types/ai-data'
 import useSmarkTrack from '@/hooks/device/useSmarkTrack'
 import ZoomFocus from './components/ZoomFocus'
 import AITrackBoxSelect from './components/AITrackBoxSelect'
-import { ComponentRef } from 'react'
+import { ComponentRef, lazy, Suspense } from 'react'
 import useHandleTakePhotoEvent from './hooks/useHandleTakePhotoEvent'
+import ZoomFocusMode from '../AsideToolBar/ZoomFucusMode'
+
+const ExposureValue = lazy(() => import('./components/ExposureValue'))
+const ShutterValue = lazy(() => import('./components/ShutterValue'))
 
 type PropsType = {
   onAspectRatioChange?: (aspectRatio: number) => void
@@ -90,7 +94,14 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
   const posizionZoomOpen = useUavControlRoomStore((s) => s.openPointZoom)
   const deviceLiveVideoRef = useRef<ComponentRef<typeof DeviceLiveVideo>>(null)
 
+  const propsHave = useDeviceDetailStore((s) => s.propsHave)
+  const serviceHave = useDeviceDetailStore((s) => s.serviceHave)
+  const hasZoomFocusMode = !!propsHave['zoomFocusMode']
+  const hasExposureSet = !!serviceHave['cameraExposureValueSet']
+  const hasShutterSet = !!serviceHave['shutterSet']
+
   useHandleTakePhotoEvent(deviceLiveVideoRef)
+  const postDeviceService = usePostDeviceService(productKey, deviceId)
 
   return (
     <div className="absolute inset-0  bg-black">
@@ -111,6 +122,24 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
         sn={isRtcDemo ? sn : undefined}
         onUavProperties={handlePropertiesSei}
         onClickSeiBox={handleSeiClick}
+        rightBottom={
+          <div className="order-first flex items-center gap-2">
+            {hasShutterSet && (
+              <Suspense fallback={null}>
+                <ShutterValue />
+              </Suspense>
+            )}
+            {hasExposureSet && (
+              <Suspense fallback={null}>
+                <ExposureValue />
+              </Suspense>
+            )}
+
+            {hasZoomFocusMode && (
+              <ZoomFocusMode postSerivce={postDeviceService} />
+            )}
+          </div>
+        }
         videoChildren={
           <>
             <LaserRanging />
