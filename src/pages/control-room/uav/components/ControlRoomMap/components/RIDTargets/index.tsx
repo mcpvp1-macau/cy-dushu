@@ -66,6 +66,7 @@ const RIDTargets: FC<PropsType> = memo(({ targetIds }) => {
         alt: item.locationAlit,
         speedH: item.speedH,
         speedV: item.speedV,
+        orientation: item.orientation,
         t: t,
       })
 
@@ -121,6 +122,7 @@ const RIDTargets: FC<PropsType> = memo(({ targetIds }) => {
           speedH: uav.location_speed_h ?? 0,
           speedV: uav.location_speed_v ?? 0,
           t: data.timestamp,
+          orientation: uav.location_direc ?? 0,
         })
         newTargets[id].uav = pathCompress(newTargets[id].uav)
       }
