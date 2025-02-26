@@ -37,9 +37,9 @@ const ImageContainBox2: FC<PropsType> = memo(({ src, alt, children }) => {
             onLoad={handleOnLoad}
           />
         ) : (
-          <>
-            <AppEmpty description="暂无图片" />
-          </>
+          <div className="flex size-full justify-center items-center">
+            <AppEmpty />
+          </div>
         )}
         {children}
       </div>

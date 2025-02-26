@@ -93,10 +93,8 @@ const XForm: FC<PropsType> = memo(
         case 'upload':
           newItem.render = (
             <Upload {...item.otherProps}>
-              <Button
-                icon={<UploadOutlined className="pr-2" />}
-                style={{ display: 'block', width: '100%' }}
-              >
+              <Button style={{ display: 'block', width: '100%' }}>
+                <UploadOutlined className="mr-2" />
                 {t('common.upload')}
               </Button>
             </Upload>

@@ -56,13 +56,17 @@ const DeviceDetailMediaHistoryVideo: FC<PropsType> = memo(({ deviceList }) => {
   return (
     <div>
       <section className="m-3 flex gap-2">
-        <DatePicker className="w-36" value={date} onChange={setDate} />
-        <Select
-          className="flex-1"
-          value={deviceId}
-          options={deviceOptions}
-          onChange={setDeviceId}
-        />
+        <div className="flex-1">
+          <DatePicker className="w-full" value={date} onChange={setDate} />
+        </div>
+        <div className="flex-1">
+          <Select
+            className="w-full"
+            value={deviceId}
+            options={deviceOptions}
+            onChange={setDeviceId}
+          />
+        </div>
       </section>
       {isLoading ? (
         <AppSpin />

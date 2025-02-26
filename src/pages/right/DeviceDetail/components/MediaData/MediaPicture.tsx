@@ -17,10 +17,12 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(({ deviceList }) => {
 
   const deviceOptions = useMemo(
     () =>
-      deviceList.filter(item => !!item.properties.videoList).map((e) => ({
-        label: e.name,
-        value: e.deviceId,
-      })),
+      deviceList
+        .filter((item) => !!item.properties.videoList)
+        .map((e) => ({
+          label: e.name,
+          value: e.deviceId,
+        })),
     deviceList,
   )
   const [deviceId, setDeviceId] = useState(deviceOptions?.[0]?.value)
@@ -60,18 +62,22 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(({ deviceList }) => {
   return (
     <div>
       <section className="m-3 flex gap-2">
-        <Select
-          className="grow"
-          value={mode}
-          options={pictureSourceTypeOptions}
-          onChange={setMode}
-        />
-        <Select
-          className="grow"
-          value={deviceId}
-          options={deviceOptions}
-          onChange={setDeviceId}
-        />
+        <div className="flex-1">
+          <Select
+            className="w-full"
+            value={mode}
+            options={pictureSourceTypeOptions}
+            onChange={setMode}
+          />
+        </div>
+        <div className="flex-1">
+          <Select
+            className="w-full"
+            value={deviceId}
+            options={deviceOptions}
+            onChange={setDeviceId}
+          />
+        </div>
       </section>
       {isLoading || !data ? (
         <AppSpin />

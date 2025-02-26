@@ -25,9 +25,11 @@ const UavDetailData: FC<PropsType> = memo(() => {
   return (
     <AppCollapse
       className="border-x-0 border-b-0"
+      defaultActiveKey={[0, 1]}
       items={[
         {
           label: t('common.picture'),
+          key: 0,
           children: (
             <AppViewSuspense>
               <DeviceDetailMediaDataPicture deviceList={deviceList} />
@@ -36,6 +38,7 @@ const UavDetailData: FC<PropsType> = memo(() => {
         },
         {
           label: t('common.video'),
+          key: 1,
           children: (
             <AppViewSuspense>
               <DeviceDetailMediaHistoryVideo deviceList={deviceList} />
