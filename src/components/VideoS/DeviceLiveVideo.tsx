@@ -9,21 +9,21 @@ import { ExpandOutlined, FullscreenExitOutlined } from '@ant-design/icons'
 import { forwardRef, useImperativeHandle } from 'react'
 import { calcStreamId } from '@/utils/video/stream'
 import { getStreamQualityLevel } from '@/service/modules/video'
-import VideoQuality5G from './VideoQuality5G'
-import VideoQualityDRC from './VideoQualityDRC'
+import VideoQuality5G from './components/VideoQuality5G'
+import VideoQualityDRC from './components/VideoQualityDRC'
 import { isNil } from 'lodash'
-import SeiAIData from './SeiAIData'
+import SeiAIData from './components/SeiAIData'
 import DrawBox from '../DrawBox'
 import useElectricScale from './hooks/useElectricScale'
-import { limitNum } from '@/utils/math'
 import { PropertiesData } from '../Video/Jessibuca/sei-types/properties'
-import VideoStream from './VideoStream'
+import VideoStream from './components/VideoStream'
 import { ConfigProvider } from 'antd'
 import useCalcSafeArea from './hooks/useCalcSafeArea'
-import VideoDing from './VideoDing'
+import VideoDing from './components/VideoDing'
 import { AiObject } from '../Video/Jessibuca/sei-types/ai-data'
 import useAIDataState from './hooks/useAIDataState'
 import DaoTongPlayer from '../Video/DaoTongPlayer'
+import SeiAIDataMetaInfo from './components/SeiAIDataMetaInfo'
 
 type PropsType = {
   videoContainerId?: string
@@ -222,20 +222,13 @@ const DeviceLiveVideo = memo(
           ref={wrapperRef}
           style={{ aspectRatio: aspectRatio }}
         >
-          <ul
-            className="absolute left-0 bottom-8 text-sm text-white bg-black bg-opacity-20 rounded-lg backdrop-blur-sm p-1 z-10 pointer-events-none origin-bottom-left"
-            style={{
-              transform: `scale(${limitNum(
-                (size?.width ?? 1440) / 1440,
-                0.5,
-                1,
-              )})`,
-            }}
-          >
-            {aiData?.displayMetaList?.map((e, i) => (
-              <li key={i}>{e?.displayText}</li>
-            ))}
-          </ul>
+          {/* 视频 SEI AI 检测 meta 信息 */}
+          {Array.isArray(aiData?.displayMetaList) && (
+            <SeiAIDataMetaInfo
+              data={aiData.displayMetaList}
+              videoWidth={size?.width}
+            />
+          )}
           <div
             className="absolute inset-0 m-auto max-w-full max-h-full"
             ref={videoWrapper}
@@ -316,7 +309,7 @@ const DeviceLiveVideo = memo(
             {useTopBar && (leftTop || rightTop || useDing) && (
               <aside
                 ref={topBar}
-                className="absolute top-0 inset-x-0 bg-ground-1 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm"
+                className="absolute top-0 inset-x-0 bg-[#1c2630] bg-opacity-70 p-1 px-2 h-8 z-30 backdrop-blur-sm"
               >
                 <div className="flex justify-between items-center h-full">
                   <section className="flex items-center gap-3">
@@ -339,7 +332,7 @@ const DeviceLiveVideo = memo(
             {useBottomBar && (
               <aside
                 ref={bottomBar}
-                className="absolute bottom-0 inset-x-0 bg-ground-2 bg-opacity-80 p-1 px-2 h-8 z-30 backdrop-blur-sm"
+                className="absolute bottom-0 inset-x-0 bg-[#1c2630] bg-opacity-70 p-1 px-2 h-8 z-30 backdrop-blur-sm"
               >
                 <div className="flex justify-between items-center h-full">
                   <section className="flex items-center gap-3">

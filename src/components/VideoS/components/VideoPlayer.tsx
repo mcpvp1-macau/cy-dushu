@@ -2,8 +2,8 @@ import { ComponentRef, memo, ReactNode, type FC } from 'react'
 import CyberPlayer, {
   TimeUpdateEvent,
   VideoInfoEvent,
-} from '../Video/CyberPlayer'
-import IconButton from '../ui/button/IconButton'
+} from '../../Video/CyberPlayer'
+import IconButton from '../../ui/button/IconButton'
 import IconPlay from '@/assets/icons/jsx/IconPlay'
 import IconPause from '@/assets/icons/jsx/IconPause'
 import { Slider, Spin } from 'antd'

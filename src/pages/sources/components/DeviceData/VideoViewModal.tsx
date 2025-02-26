@@ -1,5 +1,5 @@
 import IconButton from '@/components/ui/button/IconButton'
-import VideoPlayer from '@/components/VideoS/VideoPlayer'
+import VideoPlayer from '@/components/VideoS/components/VideoPlayer'
 import XModal from '@/components/XModal'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { getVodUrl } from '@/service/modules/video'
