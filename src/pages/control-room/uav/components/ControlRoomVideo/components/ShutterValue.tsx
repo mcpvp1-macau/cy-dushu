@@ -70,10 +70,6 @@ const shutterMap = new Map<number, string>([
   [60, 'Auto'],
 ])
 
-const revMap = new Map<string, number>(
-  Array.from(shutterMap.entries()).map(([k, v]) => [v, k]),
-)
-
 /** 快门速度 显示 和 设置 */
 const ShutterValue: FC<PropsType> = memo(() => {
   /** 广角镜头曝光值 */
@@ -88,7 +84,7 @@ const ShutterValue: FC<PropsType> = memo(() => {
 
   const lensType = useUavControlRoomStore((s) => s.state.lensType)
 
-  const display = useMemo(() => {
+  const truthValue = useMemo<number | undefined>(() => {
     if (lensType === 'wide') {
       return wideShutterSpeed
     } else if (lensType === 'zoom') {
@@ -96,20 +92,19 @@ const ShutterValue: FC<PropsType> = memo(() => {
     }
   }, [lensType, wideShutterSpeed, zoomShutterSpeed])
 
-  const [value, setValue] = useState(revMap.get(display) ?? 60)
+  const [value, setValue] = useState(truthValue ?? 60)
 
   // state 更新时，更新 value
   useEffect(() => {
-    const v = revMap.get(display) ?? 60
-    if (v !== value) {
-      setValue(v)
+    if (!isNil(truthValue) && truthValue !== value) {
+      setValue(truthValue)
     }
-  }, [display])
+  }, [truthValue])
 
   const postService = usePostDeviceService()
   const { t } = useTranslation()
 
-  if (isNil(display)) {
+  if (isNil(truthValue)) {
     return null
   }
 
@@ -144,7 +139,7 @@ const ShutterValue: FC<PropsType> = memo(() => {
         className="text-xs"
         toolTipProps={{ title: t('controlRoom.uav.shutter.title') }}
       >
-        {shutterMap.get(display)}
+        {shutterMap.get(truthValue)}
       </IconButton>
     </Popover>
   )
