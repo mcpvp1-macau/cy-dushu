@@ -507,8 +507,8 @@ const RemoteDebug: FC<PropsType> = ({ state, onClose, data, progress }) => {
           />
         </div>
         <div className={styles.close} onClick={onClose}>
-          <IconButton>
-            <IconClose style={{ fontSize: '18px' }} />
+          <IconButton className="text-xl">
+            <IconClose />
           </IconButton>
         </div>
       </div>
