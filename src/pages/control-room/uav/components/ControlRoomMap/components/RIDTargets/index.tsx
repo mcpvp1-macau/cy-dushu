@@ -39,7 +39,7 @@ const RIDTargets: FC<PropsType> = memo(({ targetIds }) => {
       queryFn: () => {
         const now = dayjs()
         return getCitySituationUavTrack({
-          ids: targetIds,
+          id: targetIds,
           startTime: now.subtract(120, 'minutes').format(dft),
           endTime: now.format(dft),
         })
