@@ -68,6 +68,7 @@ export type UavInfo = {
   speedV: number
   height: number
   alt: number
+  orientation: number
   t: number
 }
 
