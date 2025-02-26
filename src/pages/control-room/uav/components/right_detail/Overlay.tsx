@@ -1,7 +1,6 @@
 import useRightMode from '@/store/layout/useRightMode.store'
 import AppEmpty from '@/components/AppEmpty'
 import { shouldJson } from '@/utils/json'
-import IconButton from '@/components/ui/button/IconButton'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconEdit from '@/assets/icons/jsx/IconEdit'
 import { Button, ColorPicker, Form, Input } from 'antd'
@@ -36,7 +35,7 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
   const inputRef = useRef<ComponentRef<typeof Input>>(null)
 
   return (
-    <div>
+    <div onKeyDown={(e) => e.stopPropagation()}>
       <Form form={form}>
         {overlay ? (
           <div className="m-3 flex flex-col gap-2 text-sm">
