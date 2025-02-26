@@ -1,4 +1,7 @@
-import UavBackTracking from './uav'
+import { lazy } from 'react'
+
+const UavBackTracking = lazy(() => import('./uav'))
+const WanglouBackTracking = lazy(() => import('./wanglou'))
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -6,6 +9,7 @@ type PropsType = {
 
 const BackTrackCompMap = {
   UAV: UavBackTracking,
+  WANGLOU: WanglouBackTracking,
 }
 const BackTrackWarpper: React.FC<PropsType> = memo(({ data }) => {
   const Comp = useMemo(

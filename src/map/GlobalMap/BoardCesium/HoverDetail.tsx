@@ -19,6 +19,7 @@ interface Props {
     horizontalPosition?: 'center' | 'left' | 'right'
     verticalPosition?: 'bottom' | 'top' | 'center'
   }
+  onClose?: () => void
 }
 
 const BOARD_STYLE = {
@@ -29,7 +30,7 @@ const BOARD_STYLE = {
   verticalPosition: 'bottom',
 }
 
-const HoverDetail = ({ item, option }: Props) => {
+const HoverDetail = ({ item, option, onClose }: Props) => {
   const { viewer } = useCesium()
   const {
     targetAltitude: alt,
@@ -265,6 +266,7 @@ const HoverDetail = ({ item, option }: Props) => {
             latitude: item.targetLatitude,
             imageUrl: item.imagePath || item.imageUrl,
           }}
+          onClose={onClose}
         />
       </div>
     </div>

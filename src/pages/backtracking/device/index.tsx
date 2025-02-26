@@ -9,6 +9,7 @@ import {
   BackTrackingStoreContext,
 } from '@/store/context-store/useBackTracking.store'
 import TimelineWarpper from './TimelineWarpper'
+import TargetBacktracking from '../target'
 
 type PropsType = unknown
 
@@ -42,7 +43,7 @@ const PageBackTrackingDevice: FC<PropsType> = memo(() => {
               'flex flex-col',
               'overflow-y-hidden',
             )}
-            style={{ maxHeight: 'calc(100vh - 62px' }}
+            style={{ maxHeight: 'calc(100vh - 192px' }}
           >
             <AppViewSuspense>
               {isLoading || !data ? (
@@ -57,6 +58,7 @@ const PageBackTrackingDevice: FC<PropsType> = memo(() => {
           <div className="absolute bottom-3 left-3 right-14 z-50">
             <TimelineWarpper />
           </div>
+          <TargetBacktracking deviceId={deviceId!} />
         </CesiumMap>
       </div>
     </BackTrackingStoreContext.Provider>

@@ -107,8 +107,6 @@ const HistoryTrackWithAlt: FC<PropsType> = memo(
       }
     }, [viewer, historyTrackRef, useCallback, useOutline])
 
-    console.info('11111111')
-
     return <></>
   },
 )

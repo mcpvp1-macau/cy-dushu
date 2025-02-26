@@ -5,6 +5,7 @@ import { useMemo } from 'react'
 import VideoPlayerBackTracking from '@/components/VideoS/VideoPlayerBackTracking'
 import { useBackTrackingStore } from '@/store/context-store/useBackTracking.store'
 import { dft } from '@/constant/time-fmt'
+import AppEmpty from '@/components/AppEmpty'
 
 type PropsType = {
   deviceId: string
@@ -55,7 +56,12 @@ const BackTrackingVideo: React.FC<PropsType> = ({
     return { url: '', time: 0 }
   }, [videoList, dataTime])
 
-  if (!url) return <div className="text-center">暂无视频</div>
+  if (!url)
+    return (
+      <div className="text-center aspect-video bg-black m-[12px] pt-[30px]">
+        <AppEmpty description="当前时段暂无视频" />
+      </div>
+    )
 
   return <VideoPlayerBackTracking src={url} playing={playing} time={time} />
 }

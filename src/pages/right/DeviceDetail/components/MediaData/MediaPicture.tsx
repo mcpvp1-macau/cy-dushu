@@ -5,141 +5,147 @@ import usePicutreSourceTypeOptions from '@/constant/options/pictureSourceTypeOpt
 import { beginDay, dft, timeOnly } from '@/constant/time-fmt'
 import { getPlatformCapture } from '@/service/modules/db-api'
 import { Col, Image, Pagination, Row, Spin } from 'antd'
+import { Dayjs } from 'dayjs'
 
 type PropsType = {
   deviceList: API_DEVICE.domain.Device[]
+  timeRange?: [Dayjs, Dayjs]
 }
 
 const pageSize = 9
 
-const DeviceDetailMediaDataPicture: FC<PropsType> = memo(({ deviceList }) => {
-  const [mode, setMode] = useState('ALL')
+const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
+  ({ deviceList, timeRange }) => {
+    const [mode, setMode] = useState('ALL')
 
-  const deviceOptions = useMemo(
-    () =>
-      deviceList.filter(item => !!item.properties.videoList).map((e) => ({
-        label: e.name,
-        value: e.deviceId,
-      })),
-    deviceList,
-  )
-  const [deviceId, setDeviceId] = useState(deviceOptions?.[0]?.value)
-  useEffect(() => {
-    setDeviceId(deviceOptions?.[0]?.value)
-  }, [deviceOptions])
+    const deviceOptions = useMemo(
+      () =>
+        deviceList
+          .filter((item) => !!item.properties.videoList)
+          .map((e) => ({
+            label: e.name,
+            value: e.deviceId,
+          })),
+      deviceList,
+    )
+    const [deviceId, setDeviceId] = useState(deviceOptions?.[0]?.value)
+    useEffect(() => {
+      setDeviceId(deviceOptions?.[0]?.value)
+    }, [deviceOptions])
 
-  const queryClient = useQueryClient()
-  const [page, setPage] = useState(1)
-  const { data, isLoading, isRefetching } = useQuery(
-    {
-      queryKey: [
-        'getPlatformCapture',
-        'PICTURE',
-        mode,
-        deviceId,
-        'today',
-        page,
-      ],
-      queryFn: () =>
-        getPlatformCapture({
+    const queryClient = useQueryClient()
+    const [page, setPage] = useState(1)
+    const { data, isLoading, isRefetching } = useQuery(
+      {
+        queryKey: [
+          'getPlatformCapture',
+          'PICTURE',
+          mode,
           deviceId,
-          type: 'PICTURE',
-          sourceId: mode,
-          startTime: dayjs().format(beginDay),
-          endTime: dayjs().format(dft),
+          'today',
           page,
-          pageSize,
-        }),
-      select: (d) => d.data,
-    },
-    queryClient,
-  )
+        ],
+        queryFn: () =>
+          getPlatformCapture({
+            deviceId,
+            type: 'PICTURE',
+            sourceId: mode,
+            startTime: (timeRange?.[0] || dayjs()).format(beginDay),
+            endTime: (timeRange?.[1] || dayjs()).format(dft),
+            page,
+            pageSize,
+          }),
+        select: (d) => d.data,
+      },
+      queryClient,
+    )
 
-  const pictureSourceTypeOptions = usePicutreSourceTypeOptions()
+    const pictureSourceTypeOptions = usePicutreSourceTypeOptions()
 
-  return (
-    <div>
-      <section className="m-3 flex gap-2">
-        <Select
-          className="grow"
-          value={mode}
-          options={pictureSourceTypeOptions}
-          onChange={setMode}
-        />
-        <Select
-          className="grow"
-          value={deviceId}
-          options={deviceOptions}
-          onChange={setDeviceId}
-        />
-      </section>
-      {isLoading || !data ? (
-        <AppSpin />
-      ) : data[1]?.[0]?.cnt === 0 || !data[0]?.length ? (
-        <AppEmpty />
-      ) : (
-        <div className="m-3">
-          <Spin spinning={isRefetching}>
-            <Image.PreviewGroup
-              preview={{
-                imageRender: (e, info) => {
-                  return (
-                    <>
-                      <div
-                        className="absolute top-10 left-1/2 -translate-x-1/2 z-10 text-fore text-base flex gap-3"
-                        style={{
-                          textShadow: '0 0 1px rgba(0, 0, 0, 0.8)',
-                        }}
-                      >
-                        <p>{data[0][info.current].sourceName}</p>
-                        <p>
-                          {dayjs(data[0][info.current].startTime).format(dft)}
-                        </p>
+    return (
+      <div>
+        <section className="m-3 flex gap-2">
+          <Select
+            className="grow"
+            value={mode}
+            options={pictureSourceTypeOptions}
+            onChange={setMode}
+          />
+          <Select
+            className="grow"
+            value={deviceId}
+            options={deviceOptions}
+            onChange={setDeviceId}
+          />
+        </section>
+        {isLoading || !data ? (
+          <AppSpin />
+        ) : data[1]?.[0]?.cnt === 0 || !data[0]?.length ? (
+          <AppEmpty />
+        ) : (
+          <div className="m-3">
+            <Spin spinning={isRefetching}>
+              <Image.PreviewGroup
+                preview={{
+                  imageRender: (e, info) => {
+                    return (
+                      <>
+                        <div
+                          className="absolute top-10 left-1/2 -translate-x-1/2 z-10 text-fore text-base flex gap-3"
+                          style={{
+                            textShadow: '0 0 1px rgba(0, 0, 0, 0.8)',
+                          }}
+                        >
+                          <p>{data[0][info.current].sourceName}</p>
+                          <p>
+                            {dayjs(data[0][info.current].startTime).format(dft)}
+                          </p>
+                        </div>
+                        {e}
+                      </>
+                    )
+                  },
+                }}
+              >
+                <Row className="mt-3" gutter={[8, 8]}>
+                  {data[0].map((e) => (
+                    <Col key={e.id} span={8}>
+                      <div className="relative w-full aspect-[4_/_3]">
+                        <div className="absolute top-0 left-0 right-0 z-10 pointer-events-none">
+                          <p className="text-xs p-1 py-0.5 bg-ground-1 bg-opacity-60">
+                            {dayjs(e.startTime).format(timeOnly)}
+                          </p>
+                        </div>
+                        <Image
+                          width="100%"
+                          height="100%"
+                          loading="lazy"
+                          className="block size-full object-cover"
+                          src={`/storage/${e.url}`}
+                          preview={{ destroyOnClose: true }}
+                          alt=""
+                        />
                       </div>
-                      {e}
-                    </>
-                  )
-                },
-              }}
-            >
-              <Row className="mt-3" gutter={[8, 8]}>
-                {data[0].map((e) => (
-                  <Col key={e.id} span={8}>
-                    <div className="relative w-full aspect-[4_/_3]">
-                      <div className="absolute top-0 left-0 right-0 z-10 pointer-events-none">
-                        <p className="text-xs p-1 py-0.5 bg-ground-1 bg-opacity-60">
-                          {dayjs(e.startTime).format(timeOnly)}
-                        </p>
-                      </div>
-                      <Image
-                        width="100%"
-                        height="100%"
-                        loading="lazy"
-                        className="block size-full object-cover"
-                        src={`/storage/${e.url}`}
-                        preview={{ destroyOnClose: true }}
-                        alt=""
-                      />
-                    </div>
-                  </Col>
-                ))}
-              </Row>
-            </Image.PreviewGroup>
-          </Spin>
-          <div className="mt-1 flex justify-center">
-            <Pagination
-              size="small"
-              current={page}
-              pageSize={pageSize}
-              total={data[1]?.[0]?.cnt}
-              onChange={(page) => setPage(page)}
-            />
+                    </Col>
+                  ))}
+                </Row>
+              </Image.PreviewGroup>
+            </Spin>
+            <div className="mt-1 flex justify-center">
+              <Pagination
+                size="small"
+                current={page}
+                pageSize={pageSize}
+                total={data[1]?.[0]?.cnt}
+                onChange={(page) => setPage(page)}
+              />
+            </div>
           </div>
-        </div>
-      )}
-    </div>
-  )
-})
+        )}
+      </div>
+    )
+  },
+)
 
 DeviceDetailMediaDataPicture.displayName = 'UavDetailMediaDataPicture'
 

@@ -31,7 +31,6 @@ const BigFlyListener: FC<PropsType> = memo(() => {
   })
 
   const bigFly = useMemoizedFn(({ lng, lat, alt = 4000 }: BigFlyOption) => {
-    console.info('???')
     if (!viewer?.camera) {
       return
     }

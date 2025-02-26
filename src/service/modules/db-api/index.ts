@@ -47,6 +47,20 @@ export const getDeviceAttrInfoBack = (data: {
 }
 
 /**
+ * 目标回溯
+ * @param data 
+ * @returns 
+ */
+export const getTargetPositionBack = (data: {
+  parentId: string
+  startTime: string
+  endTime: string
+}) => {
+  return serverDBAPI.post('api/targetPositionBack', data)
+}
+
+
+/**
  * 检测数据
  */
 export const getEventDataTargetList = (data: {

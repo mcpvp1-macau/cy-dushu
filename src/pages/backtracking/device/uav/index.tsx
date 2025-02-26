@@ -18,6 +18,7 @@ const UavBackTracking: React.FC<PropsType> = memo(({ data }) => {
   const properties = useMemo(() => {
     return shouldJson(curAttr?.properties)?.[deviceId]
   }, [deviceId, curAttr?.properties])
+  
   return (
     <>
       <UavBackTrackingDetail

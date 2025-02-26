@@ -20,6 +20,8 @@ type PropsType = unknown
 const columnHelper = createColumnHelper<API_DEVICE.domain.DeviceListItem>()
 
 const defaultData = []
+
+const backtrackingDeviceType = ['UAV', 'WANGLOU']
 const SourceTable: FC<PropsType> = memo(() => {
   const [searchParams] = useSearchParams()
   const { t, i18n } = useTranslation()
@@ -124,7 +126,7 @@ const SourceTable: FC<PropsType> = memo(() => {
           return (
             <div className="flex gap-3">
               <DeviceData deviceData={cell?.row.original} />
-              {data.deviceType === 'UAV' && (
+              {backtrackingDeviceType.includes(data.deviceType) && (
                 <Link to={`/backtracking/device/${data.deviceId}`}>
                   <TextButton>{t('common.backTracking')}</TextButton>
                 </Link>

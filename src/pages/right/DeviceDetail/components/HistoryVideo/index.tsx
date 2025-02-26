@@ -1,21 +1,21 @@
 import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
 import VideoPreview from '@/components/VideoPreview'
-import { dateOnly, dft } from '@/constant/time-fmt'
 import VideoViewModal from '@/pages/sources/components/DeviceData/VideoViewModal'
-import { getHistoryVideo, getHistoryM3u8Video } from '@/service/modules/device'
-import { Col, DatePicker, Row } from 'antd'
-import Select from 'antd/es/select'
+import { Col, DatePicker, Row, Select } from 'antd'
 import { Dayjs } from 'dayjs'
-import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
+import useVideoList from '../../hooks/useVideoList'
 
 type PropsType = {
   deviceList: API_DEVICE.domain.Device[]
+  deviceType: string
+  timeRange?: [Dayjs, Dayjs]
 }
 
-/** 详情历史视频 */
-const DeviceDetailMediaHistoryVideo: FC<PropsType> = memo(({ deviceList }) => {
+const HistoryVideo: React.FC<PropsType> = memo(({ timeRange, deviceList, deviceType }) => {
   const [date, setDate] = useState<Dayjs | null>(dayjs())
+  const [activeVideo, setActiveVideo] =
+    useState<API_DEVICE.domain.HistoryVideoListItem | null>(null)
   const deviceOptions = useMemo(
     () =>
       deviceList
@@ -35,27 +35,13 @@ const DeviceDetailMediaHistoryVideo: FC<PropsType> = memo(({ deviceList }) => {
     }
   }, [deviceList, deviceId])
 
-  const queryClient = useQueryClient()
-
-  const { data: videoList, isLoading } = useQuery(
-    {
-      queryKey: ['getHistoryVideo', deviceId, `${date?.format(dateOnly)}`],
-      queryFn: () =>
-        getHistoryM3u8Video(productKey, deviceId, videoId!, {
-          startTime: date!.startOf('day').format(dft),
-          endTime: date!.endOf('day').format(dft),
-          isProxy: true,
-          proxyPrefix: '/_proxy/',
-        }),
-      enabled: !!videoId && !!date,
-      select: (d) => d.data.videoList,
-    },
-    queryClient,
+  const { videoList, isLoading } = useVideoList(
+    productKey,
+    deviceId,
+    deviceType,
+    videoId!,
+    timeRange || date,
   )
-
-  const [activeVideo, setActiveVideo] =
-    useState<API_DEVICE.domain.HistoryVideoListItem | null>(null)
-
   return (
     <div>
       <section className="m-3 flex gap-2">
@@ -102,6 +88,4 @@ const DeviceDetailMediaHistoryVideo: FC<PropsType> = memo(({ deviceList }) => {
   )
 })
 
-DeviceDetailMediaHistoryVideo.displayName = 'UavDetailMediaHistoryVideo'
-
-export default DeviceDetailMediaHistoryVideo
+export default HistoryVideo
