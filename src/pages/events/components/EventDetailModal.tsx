@@ -1,6 +1,6 @@
 import XModal from '@/components/XModal'
-import { Button } from 'antd'
 import EventDetail from './EventDetail'
+import TextButton from '@/components/ui/button/TextButton'
 
 type PropsType = {
   data: API_EVENTS.domain.Event
@@ -12,9 +12,7 @@ const EventDetailModal: FC<PropsType> = memo(({ data }) => {
 
   return (
     <>
-      <Button type="link" onClick={setTrue}>
-        {t('common.detail')}
-      </Button>
+      <TextButton onClick={setTrue}>{t('common.detail')}</TextButton>
       {open && (
         <XModal
           title={`${data.eventName}(${data.id})`}

@@ -16,6 +16,9 @@ export const themeConfig: ThemeConfig = {
     controlHeight: 30,
     colorBgElevated: '#28323C',
     colorBgContainerDisabled: '#262e36',
+    colorPrimaryActive: '#4C90F0',
+    colorPrimaryHover: '#4C90F0',
+    colorPrimary: '#4C90F0',
   },
   components: {
     Message: {
