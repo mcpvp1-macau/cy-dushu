@@ -247,6 +247,8 @@ device:
   vl:
     control:
       title: visible light control
+  linkSwitch:
+    title: Link Switch
 action:
   input:
     placeholder: Please search by action name

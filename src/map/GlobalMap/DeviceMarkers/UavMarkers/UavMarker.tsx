@@ -67,7 +67,7 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
         height={28}
         disableDepthTestDistance={50000}
         heightReference={Cesium.HeightReference.NONE}
-        rotation={Cesium.Math.toRadians(realHeading || 0)}
+        rotation={Cesium.Math.toRadians(-realHeading || 0)}
       />
       <DeviceLabel
         text={data.deviceName}

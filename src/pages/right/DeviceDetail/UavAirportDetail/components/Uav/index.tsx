@@ -1,4 +1,3 @@
-import DeviceIconUAV from '@/assets/icons/jsx/device/DeviceIconUAV'
 import { LoadingOutlined } from '@ant-design/icons'
 import { lazy } from 'react'
 import {
@@ -16,6 +15,7 @@ import IconDetail from '@/assets/icons/jsx/IconDetail'
 import IconData from '@/assets/icons/jsx/IconData'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import UavCreateAction from '../../../UavDetail/components/UavCreateAction'
+import DeviceIcon from '@/components/device/DeviceIcon'
 
 const UavAirportUavDetailDetail = lazy(() => import('./components/Detail'))
 const UavDetailData = lazy(
@@ -86,7 +86,7 @@ const UavAirportUavDetail: FC<PropsType> = memo(({ deviceId }) => {
     () => (
       <div className="flex justify-between">
         <div className="flex gap-2 items-center">
-          <DeviceIconUAV className="device-detail-icon" />
+          <DeviceIcon type="UAV" className="device-detail-icon" />
           <h6 className="text-white text-base">
             {isLoading || !data ? <LoadingOutlined /> : data?.deviceName}
           </h6>

@@ -68,7 +68,7 @@ const OthersDetailDetail: React.FC = () => {
         <section className="mx-3 mr-[9px] my-3 flex gap-2">
           <Link className="grow" to={`/control-room/others/${deviceId}`}>
             <Button block className="h-7" icon={<IconControlRoom />}>
-             {t('device.enterControlRoom.title')}
+              {t('device.enterControlRoom.title')}
             </Button>
           </Link>
           {deviceConfigs.isHaveControlPower ? (
@@ -81,7 +81,7 @@ const OthersDetailDetail: React.FC = () => {
       ) : null}
 
       <AppCollapse
-        className="mt-3 border-x-0 border-b-0"
+        className="border-x-0 border-b-0"
         defaultActiveKey={['status', 'flight']}
         items={[
           {

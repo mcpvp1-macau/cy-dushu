@@ -45,7 +45,7 @@ const IconButtonWithDropDownDialog: FC<PropsType> = memo(
       >
         <IconButton
           className={className}
-          toolTipProps={tooltipProps}
+          toolTipProps={open ? undefined : tooltipProps}
           active={open}
         >
           {children}

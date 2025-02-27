@@ -44,25 +44,30 @@ const DeviceInfoCard: FC<PropsType> = memo(({ data, deviceId }) => {
   const { StatusMap } = useConfig()
 
   const renderItem = (item, parentIdentifier = '') => {
-    let value: any = null
-    const type =
-      item.type ?? (item?.dataType?.type as API_DEVICE.domain.DataType['type'])
-    if (parentIdentifier) {
-      value =
-        state[parentIdentifier]?.[item.identifier] ??
-        properties[parentIdentifier]?.[item.identifier]
-    } else {
-      value = state?.[item.identifier] ?? properties?.[item.identifier]
+    try {
+      let value: any = null
+      const type =
+        item.type ??
+        (item?.dataType?.type as API_DEVICE.domain.DataType['type'])
+      if (parentIdentifier) {
+        value =
+          state[parentIdentifier]?.[item.identifier] ??
+          properties[parentIdentifier]?.[item.identifier]
+      } else {
+        value = state?.[item.identifier] ?? properties?.[item.identifier]
+      }
+      if (type === 'bool') {
+        value = item.specs[value!]
+      } else if (type === 'enum') {
+        value = item.specs[value!]
+      } else if (type === 'double' || type === 'float') {
+        value = value === undefined ? '-' : Number(value)?.toFixed(5)
+      }
+      return <I l={item.name} v={value} />
+    } catch (error) {
+      console.error(error)
+      return <I l={item.name} v={'-'} />
     }
-    if (type === 'bool') {
-      value = item.specs[value!]
-    } else if (type === 'enum') {
-      value = item.specs[value!]
-    } else if (type === 'double' || type === 'float') {
-      value = value === undefined ? '-' : Number(value)?.toFixed(5)
-    }
-
-    return <I l={item.name} v={value} />
   }
 
   const render = (item: API_DEVICE.domain.Propertie) => {
@@ -83,7 +88,7 @@ const DeviceInfoCard: FC<PropsType> = memo(({ data, deviceId }) => {
 
   return (
     <div>
-      <ul className="py-[10px] text-sm flex flex-wrap">
+      <ul className="text-sm flex flex-wrap">
         <I l={t('resource.table.deviceModel.title')} v={modelName} />
         <I
           l={t('common.onlineStatus')}

@@ -3,7 +3,7 @@ import DeviceIconCamera from '@/assets/icons/jsx/device/DeviceIconCamera'
 import DeviceIconENFORCEMENT from '@/assets/icons/jsx/device/DeviceIconENFORCEMENT_RECODER'
 import DeviceIconTracker from '@/assets/icons/jsx/device/DeviceIconTracker'
 import DeviceIconTTP_BOX from '@/assets/icons/jsx/device/DeviceIconTTP_BOX'
-import DeviceIconUAV from '@/assets/icons/jsx/device/DeviceIconUAV'
+import DeviceIconUAV2 from '@/assets/icons/jsx/device/DeviceIconUAV2'
 import DeviceIconWANGLOU from '@/assets/icons/jsx/device/DeviceIconWANGLOU'
 
 export enum DeviceEnum {
@@ -41,7 +41,7 @@ export const getDeviceWeight = (type: string) =>
 
 /** 图标映射 */
 export const deviceIconMap = {
-  [DeviceEnum.UAV]: DeviceIconUAV,
+  [DeviceEnum.UAV]: DeviceIconUAV2,
   [DeviceEnum.UAV_AIRPORT]: DeviceIconAIRPORT,
   [DeviceEnum.TTP_BOX]: DeviceIconTTP_BOX,
   [DeviceEnum.CAMERA]: DeviceIconCamera,

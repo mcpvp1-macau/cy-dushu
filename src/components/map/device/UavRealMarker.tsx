@@ -1,4 +1,3 @@
-import { memo, type FC } from 'react'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { useLatest } from 'ahooks'
