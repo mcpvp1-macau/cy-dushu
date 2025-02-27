@@ -48,11 +48,11 @@ const BackTrackingPath: React.FC<PropsType> = memo(({ deviceId }) => {
         alt: item.altitude || 0,
       }))
     return arr || []
-  }, [data, currentTime])
+  }, [data, currentTime, deviceId])
 
   const curAttr = useMemo(
     () => (lineData?.length ? lineData[lineData.length - 1] : null),
-    [lineData],
+    [lineData, deviceId],
   )
 
   // 记录是否定位过

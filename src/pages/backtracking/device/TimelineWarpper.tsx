@@ -12,7 +12,12 @@ const toJulianDate = (timeStr: DayjsInstance | number) => {
   return Cesium.JulianDate.fromDate(timeStr.toDate())
 }
 
-const TimelineWarpper: React.FC = memo(() => {
+type PropsType = {
+  startTime?: string
+  endTime?: string
+}
+
+const TimelineWarpper: React.FC<PropsType> = memo(({ startTime, endTime }) => {
   const currentTime = useBackTrackingStore((s) => s.currentTime)
   const updateCurrentTime = useBackTrackingStore((s) => s.updateCurrentTime)
   const timeRange = useBackTrackingStore((s) => s.timeRange)
@@ -51,6 +56,13 @@ const TimelineWarpper: React.FC = memo(() => {
     viewer.clock.shouldAnimate = playing
     viewer.clock.multiplier = multiple
   }, [multiple, playing])
+
+  useEffect(() => {
+    if(startTime && endTime) {
+      updateCurrentTime(dayjs(endTime))
+      updateTimeRange([dayjs(startTime), dayjs(endTime)])
+    }
+  }, [startTime, endTime])
 
   return (
     <>

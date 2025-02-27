@@ -24,6 +24,8 @@ import { LoadingOutlined } from '@ant-design/icons'
 type PropsType = {
   actionId: string
   actionType: string
+  detail?: API_ACTION.domain.ActionDetail
+  isBacktracking?: boolean
 }
 
 const NormalVerificationModal = lazy(

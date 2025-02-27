@@ -48,8 +48,8 @@ export const getDeviceAttrInfoBack = (data: {
 
 /**
  * 目标回溯
- * @param data 
- * @returns 
+ * @param data
+ * @returns
  */
 export const getTargetPositionBack = (data: {
   parentId: string
@@ -59,6 +59,21 @@ export const getTargetPositionBack = (data: {
   return serverDBAPI.post('api/targetPositionBack', data)
 }
 
+export const getGlobalDeviceLocationRetrieval = (data: {
+  deviceIdArrays?: string[]
+  startTime: string
+  endTime: string
+}) => {
+  return serverDBAPI.post('api/globalDeviceLocationRetrieval', data)
+}
+
+export const getTrackQueryMultiDeviceV2 = (data: {
+  deviceId: string[]
+  startTime: string
+  endTime: string
+}) => {
+  return serverDBAPI.post('api/trackQueryMultiDeviceV2', data)
+}
 
 /**
  * 检测数据

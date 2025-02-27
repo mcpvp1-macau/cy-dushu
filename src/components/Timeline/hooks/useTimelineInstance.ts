@@ -74,7 +74,7 @@ const useTimelineInstance = (
     return () => {
       timeline.destroy()
     }
-  }, [containerRef])
+  }, [containerRef, timeRange])
 
   return {
     timeline,

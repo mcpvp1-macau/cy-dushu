@@ -8,6 +8,7 @@ type StateType = {
   timeRange: [Dayjs, Dayjs]
   playing: boolean
   multiple: number
+  childActions: API_ACTION_ITEM.domain.ActionItem[]
 }
 
 type ActionsType = {
@@ -15,6 +16,7 @@ type ActionsType = {
   updatePlaying: (playing: boolean) => void
   updateMultiple: (multiple: number) => void
   updateTimeRange: (range: [Dayjs, Dayjs]) => void
+  updateChildActions: (actions: API_ACTION_ITEM.domain.ActionItem[]) => void
   resetState: () => void
 }
 
@@ -46,6 +48,9 @@ export const createBackTrackingStore = () => {
         updateTimeRange(range) {
           set({ timeRange: range })
         },
+        updateChildActions(actions) {
+          set({ childActions: actions })
+        }
       }),
       {
         name: 'back-tracking-store',

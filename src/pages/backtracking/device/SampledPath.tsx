@@ -66,7 +66,7 @@ const SampledPath: React.FC<PropsType> = memo(({ value }) => {
         entityRef.current = undefined
       }
     }
-  }, [timeRange[0]])
+  }, [timeRange[0], value])
 
   useEffect(() => {
     if (!viewer || !entityRef.current) return
