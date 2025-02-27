@@ -4,6 +4,7 @@ import usePrevDayHisTrack from '../hooks/usePrevDayHisTrack'
 import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
 import useDeviceChildrenList from '@/hooks/device/useDeviceChildrenList'
 import AppViewSuspense from '@/components/AppViewSuspense'
+import AppSpin from '@/components/AppSpin'
 
 const DeviceDetailMediaDataPicture = lazy(
   () => import('../../components/MediaData/MediaPicture'),
@@ -17,10 +18,14 @@ type PropsType = {}
 const UavDetailData: FC<PropsType> = memo(() => {
   const { t } = useTranslation()
 
-  const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
+  const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)
   const deviceList = useDeviceChildrenList(deviceDetail)
 
   usePrevDayHisTrack()
+
+  if (!deviceDetail) {
+    return <AppSpin />
+  }
 
   return (
     <AppCollapse
