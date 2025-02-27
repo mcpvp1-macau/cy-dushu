@@ -241,6 +241,8 @@ device:
   vl:
     control:
       title: 可见光控制
+  linkSwitch:
+    title: 链路切换
 action:
   input:
     placeholder: 请根据行动名称搜索

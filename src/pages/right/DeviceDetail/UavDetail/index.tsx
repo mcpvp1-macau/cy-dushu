@@ -1,5 +1,4 @@
 import CloseableHeader from '../../components/CloseableHeader'
-import DeviceIconUAV from '@/assets/icons/jsx/device/DeviceIconUAV'
 import { Segmented } from 'antd'
 import UavDetailDetail from './components/UavDetailDetail'
 import UavDetailData from './components/UavDetailData'
@@ -14,6 +13,7 @@ import { useDeviceDetailStore } from '../hooks/useDeviceDetail.store'
 import UavCreateAction from './components/UavCreateAction'
 import UavUpdateRealMarker from './components/UpdateRealMarker'
 import useServerEventMsg from '@/pages/control-room/uav/hooks/useServerEventMsg'
+import DeviceIcon from '@/components/device/DeviceIcon'
 
 const Header: FC = memo(() => {
   const deviceName =
@@ -23,7 +23,7 @@ const Header: FC = memo(() => {
   return (
     <div className="flex justify-between">
       <div className="flex gap-2 items-center">
-        <DeviceIconUAV className="device-detail-icon" />
+        <DeviceIcon type="UAV" className="device-detail-icon" />
         <h6 className="text-white text-base">{deviceName}</h6>
       </div>
       {actionId && <UavCreateAction />}

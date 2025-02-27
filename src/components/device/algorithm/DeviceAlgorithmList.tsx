@@ -1,8 +1,8 @@
 import AppSpin from '@/components/AppSpin'
 import { getAlgorithmList } from '@/service/modules/algorithm'
-import { memo, type FC } from 'react'
 import AlgorithmListItem from './AlgorithmListItem'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
+import AppEmpty from '@/components/AppEmpty'
 
 type PropsType = {
   productKey: string
@@ -38,15 +38,19 @@ const DeviceAlgorithmList: FC<PropsType> = memo(
     return (
       <ScrollArea>
         <div className="p-3 pr-[9px] flex flex-col gap-3 min-w-[320px]">
-          {data.map((item) => (
-            <AlgorithmListItem
-              key={item.id}
-              aiData={item}
-              deviceId={deviceId}
-              productKey={productKey}
-              onAction={handleAction}
-            />
-          ))}
+          {data.length > 0 ? (
+            data.map((item) => (
+              <AlgorithmListItem
+                key={item.id}
+                aiData={item}
+                deviceId={deviceId}
+                productKey={productKey}
+                onAction={handleAction}
+              />
+            ))
+          ) : (
+            <AppEmpty />
+          )}
         </div>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>

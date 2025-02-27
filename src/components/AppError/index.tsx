@@ -1,5 +1,6 @@
+import { themeConfig } from '@/config/theme-config'
 import { postServerLog } from '@/service/modules/logs'
-import { Button } from 'antd'
+import { Button, ConfigProvider } from 'antd'
 import { useRouteError } from 'react-router'
 
 type ErrorBoundaryProps = unknown
@@ -64,9 +65,11 @@ const Content = () => {
 
 const AppErrorBoundary: FC<ErrorBoundaryProps> = memo(() => {
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-ground-1">
-      <Content />
-    </div>
+    <ConfigProvider theme={themeConfig}>
+      <div className="w-screen h-screen flex items-center justify-center bg-ground-1">
+        <Content />
+      </div>
+    </ConfigProvider>
   )
 })
 
