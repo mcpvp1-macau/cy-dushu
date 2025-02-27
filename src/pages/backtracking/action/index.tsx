@@ -62,7 +62,7 @@ const PageBackTrackingAction: FC<PropsType> = memo(() => {
           >
             <AppViewSuspense>
               {/* {isLoading || !data ? <AppSpin /> : <>1243</>} */}
-              <h3 className="text-white text-base truncate mx-3 mt-3">
+              <h3 className="text-white text-base truncate mx-3 mt-3 min-h-6">
                 {data?.name}
               </h3>
               {data && <PageActionDetailSub detail={data} isBacktracking />}
