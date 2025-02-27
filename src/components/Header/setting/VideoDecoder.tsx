@@ -6,6 +6,7 @@ import {
 } from '@/utils/video/video-support'
 import useVideoEncoderStore from '@/store/useVideoEncoder.store'
 import { Radio } from 'antd'
+import IconTip from '@/assets/icons/jsx/IconTip'
 
 type PropsType = unknown
 
@@ -43,13 +44,13 @@ const VideoDecoder: FC<PropsType> = memo(() => {
   return (
     <div>
       <Radio.Group
-        className="mt-1"
+        className="mt-3"
         options={options}
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />
-      <div>
-        <p className="py-1">{t('setting.video_decoder.attention')}</p>
+      <div className="flex gap-2 text-fore mt-3">
+        <IconTip />
         <p className="text-xs">{t('setting.video_decoder.description')}</p>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import IconCamera from '@/assets/icons/jsx/IconCamera'
 import IconCameraMode from '@/assets/icons/jsx/IconCameraMode'
 import IconCameraVideo from '@/assets/icons/jsx/IconCameraVideo'
-import IconButtonWithDropDown from '@/components/IconButtonWithDropDown'
+import IconButtonWithDropDown from '@/components/ui/button/IconButtonWithDropDown'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { setDeviceProp } from '@/service/modules/device'

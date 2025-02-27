@@ -7,7 +7,6 @@ import { Checkbox, Input, Spin } from 'antd'
 import { Fragment } from 'react'
 import EventItem from './EventItem'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import IconButtonWithDropDown from '@/components/IconButtonWithDropDown'
 import IconFilter from '@/assets/icons/jsx/IconFilter'
 import { LoadingOutlined } from '@ant-design/icons'
 import useEventTypeAndSourceOptions from './hooks/useEventTypeAndSourceOptions'
@@ -18,6 +17,7 @@ import IconClear from '@/assets/icons/jsx/IconClear'
 import { useEventData } from '@/store/event/useEvent.store'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import { useDeepCompareEffect } from 'ahooks'
+import IconButtonWithDropDownDialog from '@/components/ui/button/IconButtonWithDropDownDialog'
 
 type PropsType = unknown
 
@@ -141,18 +141,18 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
           placeholder={t('events.search.placeholder')}
           onPressEnter={handlePressEnter}
         />
-        <IconButtonWithDropDown
+        <IconButtonWithDropDownDialog
+          title={t('events.filter.title')}
           tooltipProps={{ title: t('events.filter.title') }}
           trigger={['click']}
           dropdownRender={() => (
-            <div className="bg-ground-3 p-3 rounded">
+            <div className="p-2">
               <div className="flex gap-2 items-center">
                 <div className="h-[10px] w-[2px] bg-green-500 rounded-sm" />
                 <span className="text-white">
                   {t('events.filter.riskLevel.title')}
                 </span>
               </div>
-
               <div>
                 <Checkbox.Group
                   options={[
@@ -221,7 +221,7 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
           )}
         >
           {tsIsLoading ? <LoadingOutlined /> : <IconFilter />}
-        </IconButtonWithDropDown>
+        </IconButtonWithDropDownDialog>
 
         <IconButton toolTipProps={{ title: '全部忽略' }}>
           <IconClear onClick={handleClear} />

@@ -1,5 +1,4 @@
 import MenuIconEvents from '@/assets/icons/jsx/menus/MenuIconEvents'
-import TagItem from '@/components/TagItem'
 import { EventStatusMap } from '@/enum/event'
 import { RightModeEnum } from '@/enum/right-mode'
 import { ignoreEvent } from '@/service/modules/events'
@@ -43,11 +42,17 @@ const EventItem: FC<PropsType> = memo(({ data, active }) => {
             {data.eventName} ({data.id})
           </p>
         </div>
-        <TagItem
-          color={process?.color ?? '#fff'}
-          bgColor={`${process?.color ?? '#ffffff'}44`}
-          label={t(`events.status.${process?.key}.title`)}
-        />
+        <div
+          className={clsx(
+            'px-2 rounded-sm text-xs leading-5 whitespace-nowrap',
+          )}
+          style={{
+            backgroundColor: `${process?.color ?? '#ffffff'}44`,
+            color: process?.color ?? '#fff',
+          }}
+        >
+          {t(`events.status.${process?.key}.title`)}
+        </div>
       </div>
       <ul className="text-xs flex flex-col mt-1">
         <li>

@@ -1,6 +1,6 @@
 import { useLinksSwitch } from '@/hooks/device/useLinksSwitch'
 import { memo, type FC } from 'react'
-import IconButtonWithDropDown from '../IconButtonWithDropDown'
+import IconButtonWithDropDown from '../ui/button/IconButtonWithDropDown'
 
 type PropsType = {
   productKey: string

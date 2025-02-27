@@ -18,15 +18,21 @@ setting:
       super: 超清
       ultra: 超高清
       title: 清晰度
+      description: 为了获得最佳的地图浏览体验，请根据您的电脑性能选择合适的清晰度
     title: 地图
   system:
     title: 系统
     clearLocalData: 清空本地数据
+    clear:
+      description: 点击“一键清理”按钮I将清除所有本地数据恢复默认配置（包括设置内容和AR配置内容），操作前请确保已备份重要信息，以免数据丢失。
+      title: 一键清理
   warnning:
     title: 告警
     isAddMap: 告警上图
     isHaveAvdio: 声音报警
     isHaveLight: 光信号报警
+  warning:
+    description: 根据需要选择开启或关闭以上告警设置
 situation:
   menus:
     action: 行动
