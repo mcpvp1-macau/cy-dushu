@@ -31,7 +31,7 @@ window.config = {
   daotongServer: 'http://135.100.11.130:18099/',
   controlRoom: {
     uav: {
-      particularHeader: true,
+      particularHeader: false,
     },
   },
 }
