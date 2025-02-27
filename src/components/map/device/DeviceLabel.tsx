@@ -12,11 +12,10 @@ const DeviceLabel: FC<PropsType> = memo((props) => {
   return (
     <Label
       scale={0.1}
-      verticalOrigin={Cesium.VerticalOrigin.BOTTOM}
       horizontalOrigin={Cesium.HorizontalOrigin.CENTER}
       outlineColor={Cesium.Color.fromCssColorString('#000')}
-      outlineWidth={5}
-      font="700 128px Helvetica"
+      outlineWidth={4}
+      font="600 128px Helvetica"
       pixelOffset={new Cesium.Cartesian2(0, 32)}
       backgroundColor={Cesium.Color.BLACK}
       fillColor={Cesium.Color.WHITE}
