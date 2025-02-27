@@ -107,7 +107,7 @@ const DeviceItem: FC<PropsType> = memo(({ data }) => {
           </IconButton>
         </div>
       </div>
-      <div className="px-6 mb-2 flex items-center gap-2">
+      <div className="px-6 mb-2 flex items-center gap-2 text-fore">
         <TaskStatusTag taskStatus={data.taskStatus} />
         <BatteryStatusTag battery={data.remainingPower || 0} />
         {/* 判断是否报备 */}
@@ -116,14 +116,14 @@ const DeviceItem: FC<PropsType> = memo(({ data }) => {
           (tag) => 'FLIGHT_REPORTING_STATUS' === tag.tagName,
         )?.tagValue ? (
           <Tooltip title={t('device.status.reported.ok')}>
-            <IconReported className="text-xs ml-2 text-[#15B371]" />
+            <IconReported className="text-xs text-[#15B371]" />
           </Tooltip>
         ) : (
           <Tooltip title={t('device.status.reported.no')}>
-            <IconNotReported className="text-xs ml-2 text-fore" />
+            <IconNotReported className="text-xs text-fore" />
           </Tooltip>
         )}
-        <span>{moduleNumber}</span>
+        <span className="opacity-80">{moduleNumber}</span>
       </div>
     </div>
   )
