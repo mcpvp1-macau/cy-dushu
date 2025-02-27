@@ -40,7 +40,7 @@ const ActionItem: FC<PropsType> = memo(({ data }) => {
         </h4>
         <div
           className={clsx(
-            'px-2 rounded-sm text-xs leading-6 whitespace-nowrap',
+            'px-2 rounded-sm text-xs leading-5 whitespace-nowrap',
             statusMap[data.status]?.[1],
           )}
         >

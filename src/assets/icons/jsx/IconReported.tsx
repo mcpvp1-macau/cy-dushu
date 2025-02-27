@@ -17,8 +17,8 @@ const iconSvg = (props: any) => {
   )
 }
 
-const IconButton = (props: IconParams) => (
+const IconReported = (props: IconParams) => (
   <Icon component={iconSvg} {...props} />
 )
 
-export default IconButton
+export default IconReported

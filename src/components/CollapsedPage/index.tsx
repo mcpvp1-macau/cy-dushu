@@ -13,7 +13,7 @@ const CollapsedPage: FC<PropsType> = memo(({ children }) => {
     <div className="h-full overflow-y-hidden flex">
       <div
         className={clsx(
-          'bg-[#141d28e6] backdrop-blur h-full overflow-hidden',
+          'bg-[#141d28] bg-opacity-90 backdrop-blur-sm h-full overflow-hidden',
           'w-[350px]',
           {
             hidden: !open,

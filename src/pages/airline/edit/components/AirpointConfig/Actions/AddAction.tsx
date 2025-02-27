@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
 import { useCurrentAirpoint } from '@/store/uav/uav-airline/select'
-import IconButtonWithDropDown from '@/components/IconButtonWithDropDown'
+import IconButtonWithDropDown from '@/components/ui/button/IconButtonWithDropDown'
 import IconPlus from '@/assets/icons/jsx/IconPlus'
 import { ItemType } from 'antd/es/menu/interface'
 

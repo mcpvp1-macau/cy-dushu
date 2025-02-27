@@ -1,47 +1,30 @@
+import IconTip from '@/assets/icons/jsx/IconTip'
 import useWarnningSettingStore from '@/store/setting/useWarnningSetting.store'
 import { Switch } from 'antd'
 
 const WarnningSetting = () => {
-  const isAddMap = useWarnningSettingStore((s) => s.isAddMap)
-  const updateIsAddMap = useWarnningSettingStore((s) => s.updateIsAddMap)
-
-  const isHaveAvdio = useWarnningSettingStore((s) => s.isHaveAvdio)
-  const updateIsHaveAvdio = useWarnningSettingStore((s) => s.updateIsHaveAvdio)
-
-  const isHaveLight = useWarnningSettingStore((s) => s.isHaveLight)
-  const updateIsHaveLight = useWarnningSettingStore((s) => s.updateIsHaveLight)
+  const s = useWarnningSettingStore((s) => s)
 
   const { t } = useTranslation()
 
   return (
-    <div className="mt-[10px]">
-      <span>
-        <span className="leading-[30px]">{t('setting.warnning.isAddMap')}</span>
-        <Switch
-          value={isAddMap}
-          onChange={updateIsAddMap}
-          size="small"
-          className="ml-[8px]"
-        />
-      </span>
-      <span className="ml-[20px]">
-        <span>{t('setting.warnning.isHaveAvdio')}</span>
-        <Switch
-          value={isHaveAvdio}
-          onChange={updateIsHaveAvdio}
-          size="small"
-          className="ml-[8px]"
-        />
-      </span>
-      <span className="ml-[20px]">
-        <span>{t('setting.warnning.isHaveLight')}</span>
-        <Switch
-          value={isHaveLight}
-          onChange={updateIsHaveLight}
-          size="small"
-          className="ml-[8px]"
-        />
-      </span>
+    <div className="mt-3">
+      <div className="flex gap-4">
+        {[
+          ['isAddMap', s.isAddMap, s.updateIsAddMap] as const,
+          ['isHaveAvdio', s.isHaveAvdio, s.updateIsHaveAvdio] as const,
+          ['isHaveLight', s.isHaveLight, s.updateIsHaveLight] as const,
+        ].map(([key, value, updateFn]) => (
+          <div key={key} className="flex gap-2 items-center">
+            <span>{t(`setting.warnning.${key}`)}</span>
+            <Switch value={value} onChange={updateFn} size="small" />
+          </div>
+        ))}
+      </div>
+      <div className="flex gap-2 text-fore mt-3">
+        <IconTip />
+        <p className="text-xs">{t('setting.warning.description')}</p>
+      </div>
     </div>
   )
 }
