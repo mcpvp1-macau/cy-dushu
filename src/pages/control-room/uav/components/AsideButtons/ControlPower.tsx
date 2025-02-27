@@ -3,7 +3,13 @@ import { Button } from 'antd'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { v4 as uuidv4 } from 'uuid'
 import useRobControlPower from '@/pages/right/DeviceDetail/hooks/useRobControlPower'
+import mitt from 'mitt'
+
 type PropsType = unknown
+
+export const robControlPowerEmitter = mitt<{
+  rob: undefined
+}>()
 
 const ControlPower: FC<PropsType> = memo(() => {
   const { t } = useTranslation()
@@ -12,6 +18,17 @@ const ControlPower: FC<PropsType> = memo(() => {
     useRobControlPower(updateUUID)
   const operator = useUavControlRoomStore((s) => s.state.operator)
   const hasControlPower = useUavControlRoomStore((s) => s.hasControlPower)
+
+  // 监听 rob 事件
+  useEffect(() => {
+    const fn = () => {
+      robControlPower(uuidv4())
+    }
+    robControlPowerEmitter.on('rob', fn)
+    return () => {
+      robControlPowerEmitter.off('rob', fn)
+    }
+  }, [robControlPower])
 
   return (
     <Button

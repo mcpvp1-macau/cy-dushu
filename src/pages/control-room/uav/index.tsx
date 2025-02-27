@@ -40,6 +40,7 @@ import IconDrawArea from '@/assets/icons/jsx/right-tools/IconDrawArea'
 import RightOverlayDetail from './components/right_detail/Overlay'
 import useControlRoomTargetInfoStore from '@/store/control-room/useTargetInfo.store'
 import { useLocation } from 'react-router'
+import InitialPointFly from './components/InitialPointFly'
 
 type PropsType = unknown
 
@@ -154,6 +155,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
     <DeviceDetailStoreContext.Provider value={store}>
       <UavControlRoomStoreContext.Provider value={controlRoomStore}>
         <StateResolver />
+        <InitialPointFly />
         <div
           className={clsx(
             'flex flex-col',
