@@ -1,7 +1,7 @@
 import useGlobalWsStore, {
   useRealOnlineStatus,
 } from '@/store/useGlobalWebSocket.store'
-import icon from '/images/marker/icon/uav.svg'
+import icon from '/images/marker/icon/uav3.svg'
 import { Billboard, Label } from 'resium'
 import * as Cesium from 'cesium'
 import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
@@ -22,6 +22,9 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
   )
   const realLat = useGlobalWsStore(
     (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.latitude,
+  )
+  const realHeading = useGlobalWsStore(
+    (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.uavYaw,
   )
 
   const lng = realLon || data.longitude
@@ -63,6 +66,7 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
         height={26}
         disableDepthTestDistance={50000}
         heightReference={Cesium.HeightReference.NONE}
+        rotation={Cesium.Math.toRadians(realHeading || 0)}
       />
       <Label
         key={deviceId + '-label'}
