@@ -7,9 +7,7 @@ import IconData from '@/assets/icons/jsx/IconData'
 import DeviceIconWANGLOU from '@/assets/icons/jsx/device/DeviceIconWANGLOU'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import AppViewSuspense from '@/components/AppViewSuspense'
-import WangLouDetailData from './WanglouDetailData'
-// import TargetBacktracking from '../../target'
-// import BoardCesium from '@/map/GlobalMap/BoardCesium'
+import BacktrackingDetailData from '../BacktrackingDetailData'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -66,7 +64,7 @@ const WanglouBackTracking: React.FC<PropsType> = memo(({ data }) => {
                 }
               />
             ) : (
-              <WangLouDetailData deviceId={deviceId} deviceDetail={data} />
+              <BacktrackingDetailData deviceId={deviceId} deviceDetail={data} />
             )}
           </AppViewSuspense>
         </ScrollArea>

@@ -58,7 +58,7 @@ const BackTrackingVideo: React.FC<PropsType> = ({
 
   if (!url)
     return (
-      <div className="text-center aspect-video bg-black m-[12px] pt-[30px]">
+      <div className="flex items-center justify-center aspect-video bg-black m-[12px]">
         <AppEmpty description="当前时段暂无视频" />
       </div>
     )

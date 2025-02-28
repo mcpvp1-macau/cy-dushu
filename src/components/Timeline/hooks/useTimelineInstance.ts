@@ -74,7 +74,19 @@ const useTimelineInstance = (
     return () => {
       timeline.destroy()
     }
-  }, [containerRef, timeRange])
+  }, [containerRef])
+
+  useEffect(() => {
+    if (!timeline) {
+      return
+    }
+    const startTime = timeRange[0].toDate()
+    const endTime = timeRange[1].toDate()
+    timeline.setOptions({
+      start: startTime,
+      end: endTime,
+    })
+  }, [timeline, timeRange])
 
   return {
     timeline,

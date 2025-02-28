@@ -38,7 +38,7 @@ const UavDetailData: FC<PropsType> = memo(() => {
           label: t('common.video'),
           children: (
             <AppViewSuspense>
-              <DeviceDetailMediaHistoryVideo deviceList={deviceList} deviceType={deviceDetail.deviceType}/>
+              <DeviceDetailMediaHistoryVideo deviceList={deviceList} deviceType={deviceDetail?.deviceType}/>
             </AppViewSuspense>
           ),
         },
