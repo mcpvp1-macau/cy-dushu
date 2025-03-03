@@ -108,20 +108,22 @@ const EventDetail: FC<PropsType> = memo(({ eventId, useCol }) => {
       {isTypeLoading ? (
         <AppSpin />
       ) : (
-        <ul className="flex flex-col gap-1 whitespace-nowrap">
-          {properties.map((e) => (
-            <li key={e.label} className="flex gap-3">
-              <label>{e.label}:</label>
-              <span className="text-white">{e.value}</span>
-            </li>
-          ))}
-          {Object.keys(expand).map((e) => (
-            <li key={e} className="flex gap-3">
-              <label>{e}:</label>
-              <span className="text-white">{expand[e]}</span>
-            </li>
-          ))}
-        </ul>
+        properties.length > 0 && (
+          <ul className="flex flex-col gap-1 whitespace-nowrap">
+            {properties.map((e) => (
+              <li key={e.label} className="flex gap-3">
+                <label>{e.label}:</label>
+                <span className="text-white">{e.value}</span>
+              </li>
+            ))}
+            {Object.keys(expand).map((e) => (
+              <li key={e} className="flex gap-3">
+                <label>{e}:</label>
+                <span className="text-white">{expand[e]}</span>
+              </li>
+            ))}
+          </ul>
+        )
       )}
     </div>
   )
