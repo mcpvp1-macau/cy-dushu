@@ -147,7 +147,7 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
           trigger={['click']}
           dropdownRender={() => (
             <div className="p-2">
-              <div className="flex gap-2 items-center">
+              <div className="flex gap-2 items-center mb-1">
                 <div className="h-[10px] w-[2px] bg-green-500 rounded-sm" />
                 <span className="text-white">
                   {t('events.filter.riskLevel.title')}
