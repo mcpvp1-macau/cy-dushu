@@ -7,11 +7,9 @@ import { GetProps } from 'antd'
 import { Billboard, BillboardCollection, Label, LabelCollection } from 'resium'
 import * as Cesium from 'cesium'
 import wanglou from '/images/marker/icon/wanglou.svg'
+import { useBackTrackingStore } from '@/store/context-store/useBackTracking.store'
 
-type PropsType = {
-  data: API_DEVICE.domain.Device
-  curAttr: Record<string, any>
-}
+type PropsType = {}
 
 type StateType =
   | (GetProps<typeof MapRealMarker>['data'] & {
@@ -29,24 +27,28 @@ type StateType =
     })
   | null
 
-const WangLouDetailMarker: FC<PropsType> = memo(({ data, curAttr }) => {
+const WangLouDetailMarker: FC<PropsType> = memo(() => {
   // const [state, setState] = useState<StateType>(null)
+  const data = useBackTrackingStore((s) => s.detail) || {} as API_DEVICE.domain.Device
+  const currentAttribute = useBackTrackingStore((s) => s.currentAttribute)
 
-  const properties = curAttr ? shouldJson(curAttr?.properties) : {}
+  const properties = currentAttribute
+    ? shouldJson(currentAttribute?.properties)
+    : {}
 
   const state = useMemo(() => {
-    if (!curAttr) {
+    if (!currentAttribute) {
       return null
     }
     let s = {}
-    data.childDevice?.forEach((item) => {
+    data?.childDevice?.forEach((item) => {
       const json = properties[item.deviceId]
       s[item.deviceType] = json
     })
-    s = { ...s, ...properties[data.deviceId] }
+    s = { ...s, ...properties[data?.deviceId] }
 
     return s
-  }, [curAttr]) as StateType
+  }, [currentAttribute]) as StateType
 
   const lnglatData = {
     longitude: state?.longitude || data?.longitude || 120,

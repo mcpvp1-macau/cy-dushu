@@ -10,6 +10,8 @@ const useTimelineInstance = (
     typeof vis.DataSet<any>
   > | null>(null)
 
+  const perStartTime = useRef(0)
+  const perEndTime = useRef(0)
   // 创建时间轴
   useEffect(() => {
     if (!containerRef.current) {
@@ -65,6 +67,9 @@ const useTimelineInstance = (
       end: endTime,
     })
 
+    perStartTime.current = startTime.getTime()
+    perEndTime.current = endTime.getTime()
+
     timeline.addCustomTime(startTime, 'current')
     timeline.setCustomTimeTitle('', 'current')
     timeline.setCustomTimeMarker(fmtCurrentTime(startTime), 'current')
@@ -80,12 +85,20 @@ const useTimelineInstance = (
     if (!timeline) {
       return
     }
+
     const startTime = timeRange[0].toDate()
     const endTime = timeRange[1].toDate()
-    timeline.setOptions({
-      start: startTime,
-      end: endTime,
-    })
+    if (
+      perStartTime.current !== startTime.getTime() ||
+      perEndTime.current !== endTime.getTime()
+    ) {
+      perStartTime.current = startTime.getTime()
+      perEndTime.current = endTime.getTime()
+      timeline.setOptions({
+        start: startTime,
+        end: endTime,
+      })
+    }
   }, [timeline, timeRange])
 
   return {

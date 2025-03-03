@@ -10,6 +10,7 @@ import {
 } from '@/store/context-store/useBackTracking.store'
 import TimelineWarpper from './TimelineWarpper'
 import TargetBacktracking from '../target'
+import { useStore } from 'zustand'
 
 type PropsType = unknown
 
@@ -21,12 +22,17 @@ const PageBackTrackingDevice: FC<PropsType> = memo(() => {
 
   const store = useCreateBackTrackingStore()
 
+  const updateDetail = useStore(store, (s) => s.updateDetail)
+
   const { data, isLoading } = useQuery(
     {
       queryKey: ['deviceDetail', deviceId],
       queryFn: () => getDeviceDetail(deviceId!),
       enabled: !!deviceId,
-      select: (d) => d.data,
+      select: (d) => {
+        updateDetail(d.data)
+        return d.data
+      },
     },
     queryClient,
   )

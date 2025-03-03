@@ -9,7 +9,7 @@ const INTERVAL = 1000 * 60 * 10
 /**
  * 属性回溯
  */
-const useBackTrackingInfo = (deviceId) => {
+const useBackTrackingInfo = (deviceId, callbacl?) => {
   const currentTime = useBackTrackingStore((s) => s.currentTime)
   const timeRange = useBackTrackingStore((s) => s.timeRange)
   const [requestTime, setRequestTime] = useState(timeRange[0].valueOf())
@@ -75,6 +75,12 @@ const useBackTrackingInfo = (deviceId) => {
   useEffect(() => {
     handleTimeChange(currentTime)
   }, [currentTime])
+
+  useEffect(() => {
+    if (callbacl) {
+      callbacl(curAttr)
+    }
+  }, [curAttr])
 
 
   return curAttr;

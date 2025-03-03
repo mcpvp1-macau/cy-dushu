@@ -8,19 +8,24 @@ import { useBackTrackingStore } from '@/store/context-store/useBackTracking.stor
 
 type PropsType = {
   actionId: string
+  isBacktracking?: boolean
 }
 
 /** 子任务列表 */
-const ChildActions: FC<PropsType> = memo(({ actionId }) => {
+const ChildActions: FC<PropsType> = memo(({ actionId, isBacktracking }) => {
   const queryClient = useQueryClient()
 
-  const updateChildActions = useBackTrackingStore((s) => s.updateChildActions)
+  const useStore = isBacktracking
+    ? useBackTrackingStore
+    : null
+
+  const updateChildActions = useStore?.((s) => s.updateChildActions)
   const { data, isLoading, isRefetching } = useQuery(
     {
       queryKey: ['action', actionId, 'items'],
       queryFn: () => getActionItemList({ actionId }),
       select: (d) => {
-        updateChildActions(d.data.rows)
+        updateChildActions?.(d.data.rows)
         return d.data.rows
       },
     },

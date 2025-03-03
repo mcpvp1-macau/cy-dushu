@@ -3,6 +3,7 @@ import { memo, type FC } from 'react'
 import TimelineWarpper from './TimelineWarpper'
 import TargetBacktracking from '../target'
 import BackTrackingPath from './BackTrackingPath'
+import WangLouDetailMarker from './wanglou/WangLouDetailMarker'
 
 type PropsType = {
   isControlRoom?: boolean
@@ -11,14 +12,15 @@ type PropsType = {
 /** 设备回溯 */
 const BackTrackingMap: FC<PropsType> = memo(() => {
   const deviceId = useParams().deviceId
-
+  const deviceType = useParams().deviceType
   return (
     <CesiumMap id="backtracking">
-      <BackTrackingPath deviceId={deviceId!} />
+      {deviceType === 'uav' && <BackTrackingPath deviceId={deviceId!} />}
       <div className="absolute bottom-3 left-3 right-14 z-50">
         <TimelineWarpper />
       </div>
-      <TargetBacktracking deviceId={deviceId!} />
+      {deviceType === 'wanglou' && <TargetBacktracking deviceId={deviceId!} />}
+      {deviceType === 'wanglou' && <WangLouDetailMarker />}
     </CesiumMap>
   )
 })

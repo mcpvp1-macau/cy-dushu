@@ -8,6 +8,7 @@ import DeviceIconWANGLOU from '@/assets/icons/jsx/device/DeviceIconWANGLOU'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import BacktrackingDetailData from '../BacktrackingDetailData'
+import { useBackTrackingStore } from '@/store/context-store/useBackTracking.store'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -15,7 +16,8 @@ type PropsType = {
 
 const WanglouBackTracking: React.FC<PropsType> = memo(({ data }) => {
   const { deviceId } = data
-  const curAttr = useBackTrackingInfo(deviceId)
+  const updateCurrentAttribute = useBackTrackingStore(s => s.updateCurrentAttribute)
+  const curAttr = useBackTrackingInfo(deviceId, updateCurrentAttribute)
   const { t } = useTranslation()
   const [tab, setTab] = useState(0)
   
@@ -70,7 +72,7 @@ const WanglouBackTracking: React.FC<PropsType> = memo(({ data }) => {
         </ScrollArea>
       </div>
 
-      <WangLouDetailMarker data={data} curAttr={curAttr} />
+      <WangLouDetailMarker />
 
 
       {/* <BoardCesium /> */}

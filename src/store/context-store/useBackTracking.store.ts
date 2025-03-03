@@ -9,6 +9,10 @@ type StateType = {
   playing: boolean
   multiple: number
   childActions: API_ACTION_ITEM.domain.ActionItem[]
+  /** 当前数据 */
+  currentAttribute: any
+  /** 设备详情 */
+  detail: API_DEVICE.domain.Device | null
 }
 
 type ActionsType = {
@@ -17,6 +21,8 @@ type ActionsType = {
   updateMultiple: (multiple: number) => void
   updateTimeRange: (range: [Dayjs, Dayjs]) => void
   updateChildActions: (actions: API_ACTION_ITEM.domain.ActionItem[]) => void
+  updateCurrentAttribute: (attribute: any) => void
+  updateDetail: (detail: API_DEVICE.domain.Device | null) => void
   resetState: () => void
 }
 
@@ -50,7 +56,13 @@ export const createBackTrackingStore = () => {
         },
         updateChildActions(actions) {
           set({ childActions: actions })
-        }
+        },
+        updateCurrentAttribute(attribute) {
+          set({ currentAttribute: attribute })
+        },
+        updateDetail(detail) {
+          set({ detail })
+        },
       }),
       {
         name: 'back-tracking-store',
