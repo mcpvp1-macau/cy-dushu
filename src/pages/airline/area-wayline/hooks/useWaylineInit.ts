@@ -138,6 +138,12 @@ const useAirlineInit = () => {
     })
   }, [data])
 
+  useEffect(() => {
+    return () => {
+      useAreaWaylineStore.getState().reset()
+    }
+  }, [])
+
   return { isLoading }
 }
 

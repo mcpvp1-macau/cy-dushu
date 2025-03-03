@@ -1,12 +1,12 @@
 import { Dropdown, GetProps, Tooltip } from 'antd'
-import { memo, type FC } from 'react'
-import IconButton from './ui/button/IconButton'
+import IconButton from './IconButton'
 
 type PropsType = GetProps<typeof Dropdown> & {
   tooltipProps?: GetProps<typeof Tooltip>
   className?: string
 }
 
+/** 图标按钮携带下拉菜单 */
 const IconButtonWithDropDown: FC<PropsType> = memo(
   ({ children, tooltipProps, className, ...props }) => {
     const [open, setOpen] = useState(false)
@@ -23,7 +23,7 @@ const IconButtonWithDropDown: FC<PropsType> = memo(
       >
         <IconButton
           className={className}
-          toolTipProps={tooltipProps}
+          toolTipProps={open ? undefined : tooltipProps}
           active={open}
         >
           {children}
@@ -33,6 +33,6 @@ const IconButtonWithDropDown: FC<PropsType> = memo(
   },
 )
 
-IconButtonWithDropDown.displayName = 'MenuIconButton'
+IconButtonWithDropDown.displayName = 'IconButtonWithDropDown'
 
 export default IconButtonWithDropDown

@@ -20,10 +20,22 @@ setting:
       super: Super
       ultra: Ultra
       title: Resolution
+      description: >-
+        For the best map browsing experience, please select an appropriate
+        resolution based on your computer's performance
     title: Map
   system:
     title: System
     clearLocalData: Clear Local Data
+    clear:
+      description: >-
+        Clicking the 'Clear All' button will erase all local data and restore
+        default configurations (including settings and AR configuration
+        content). Before proceeding, please ensure you have backed up important
+        information to prevent data loss
+      title: Clear All
+  warning:
+    description: Enable or disable the above warning settings as needed
 situation:
   menus:
     action: Action
@@ -235,6 +247,8 @@ device:
   vl:
     control:
       title: visible light control
+  linkSwitch:
+    title: Link Switch
 action:
   input:
     placeholder: Please search by action name
@@ -494,6 +508,7 @@ common:
   cancel: Cancel
   success: Success
   live: Live
+  parameterError: Parameter Error
 events:
   search:
     placeholder: Please search by event name or ID
@@ -642,8 +657,12 @@ wayline:
       msg: Click on the map to set the reference takeoff point
     mainAxisDirection:
       title: Wayline Main Axis Direction
+      tooltip: The principal axis of the intended flight trajectory
     coverage:
       title: Coverage Rate
+      tooltip: >-
+        Overlap ratio of the shooting field of view between adjacent flight
+        lines, default nadir angle of the gimbal
   waylinePoint:
     config: Waypoints
     waypointList:
@@ -680,6 +699,8 @@ wayline:
             title: Arrival
           LEAVE:
             title: Leaving
+      FOCUS_CENTER:
+        title: Focus Center
       OPEN_AI:
         title: Open Algorithm
         select:
@@ -1071,6 +1092,22 @@ controlRoom:
         required_msg: Please input flight speed
     overlay:
       title: Overlay
+    larserError:
+      msg: Laser error detected, please verify the laser's status
+    deviceLiveVideoError:
+      msg: Unable to retrieve live video content
+    gimbalPitchError:
+      msg: Gimbal parameter error
+    autoPhotographSuccess:
+      msg: Calculation successful, please click “AI Photo” to start
+    autoPhotographError:
+      msg: AutoPhotograph Calculation Error
+    snapshotUploadSuccess:
+      msg: Snapshot success
+    exposure:
+      title: Exposure
+    shutter:
+      title: Shutter Speed
   control:
     uavTurnLeft:
       title: UAV Turn Left

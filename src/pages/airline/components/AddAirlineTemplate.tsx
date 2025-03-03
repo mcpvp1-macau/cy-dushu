@@ -1,4 +1,6 @@
 import IconPlus from '@/assets/icons/jsx/IconPlus'
+import IconWaylineAirpoint from '@/assets/icons/jsx/IconWaylineAirpoint'
+import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
 import IconButton from '@/components/ui/button/IconButton'
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
@@ -77,11 +79,21 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
         type: 'select',
         options: [
           {
-            label: t('wayline.create.form.waylineType.options.point.title'),
+            label: (
+              <div className="flex gap-2 items-center">
+                <IconWaylineAirpoint />
+                {t('wayline.create.form.waylineType.options.point.title')}
+              </div>
+            ),
             value: 0,
           },
           {
-            label: t('wayline.create.form.waylineType.options.area.title'),
+            label: (
+              <div className="flex gap-2 items-center">
+                <MenuIconAirline />
+                {t('wayline.create.form.waylineType.options.area.title')}
+              </div>
+            ),
             value: 1,
           },
         ],

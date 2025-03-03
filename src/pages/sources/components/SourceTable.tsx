@@ -68,7 +68,10 @@ const SourceTable: FC<PropsType> = memo(() => {
         header: t('resource.table.deviceName.title'),
         cell: (cell) => (
           <div className="flex gap-2">
-            <DeviceIcon type={cell?.row.original.deviceType} />
+            <DeviceIcon
+              type={cell?.row.original.deviceType}
+              className="text-primary"
+            />
             {cell?.getValue()}
           </div>
         ),

@@ -1,7 +1,7 @@
 import { Billboard, useCesium } from 'resium'
 import { ControlStationInfo, UavInfo } from './types'
-import icon from '/images/marker/icon/uav.svg'
-import csIcon from '/images/marker/icon/uav_dock.svg'
+import icon from '/images/marker/icon/uav_rid.svg'
+import csIcon from '/images/marker/icon/controlStation.svg'
 import * as Cesium from 'cesium'
 import BoardMarker3D from '@/components/map/BoardCesium/BoardMarker3D'
 import IconButton from '@/components/ui/button/IconButton'
@@ -54,6 +54,7 @@ const RIDTarget: FC<PropsType> = memo(({ id, uav, cs }) => {
             disableDepthTestDistance={50000}
             heightReference={Cesium.HeightReference.NONE}
             onClick={setTrue}
+            rotation={Cesium.Math.toRadians(uav.at(-1)!.orientation ?? 0)}
           />
           <DeviceLabel id={`uav-${id}-label`} position={postion} text={id} />
           {open && viewer && (

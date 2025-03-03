@@ -1,5 +1,5 @@
 import { memo, type FC } from 'react'
-import IconButton from '../ui/button/IconButton'
+import IconButton from '../../ui/button/IconButton'
 import IconDing from '@/assets/icons/jsx/IconDing'
 import useFixedWindowsStore from '@/store/useFixedWindows.store'
 

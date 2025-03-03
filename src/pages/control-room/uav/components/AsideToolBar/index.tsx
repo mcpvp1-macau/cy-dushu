@@ -11,7 +11,6 @@ import useMixARStore from '@/store/control-room/useMixAR.store'
 import IconSetting from '@/assets/icons/jsx/IconSetting'
 import { ConfigProvider, Drawer } from 'antd'
 import AppViewSuspense from '@/components/AppViewSuspense'
-import ZoomFocusMode from './ZoomFucusMode'
 import IconSmartTrack from '@/assets/icons/jsx/uav/IconSmartTrack'
 import usePostDeviceService from '../../hooks/usePostDeviceService'
 
@@ -45,7 +44,6 @@ const AsideToolBar: FC<PropsType> = memo(() => {
   const hasCameraMode = !!propsHave['cameraMode']
   const hasAr = !!propsHave['ar']
   const hasLaserDistance = !!propsHave['laserDistance']
-  const hasZoomFocusMode = !!propsHave['zoomFocusMode']
 
   const arEnable = useMixARStore((s) => s.enable)
   const updateArEnable = useMixARStore((s) => s.updateEnable)
@@ -155,7 +153,6 @@ const AsideToolBar: FC<PropsType> = memo(() => {
             </Drawer>
           </>
         )}
-        {hasZoomFocusMode && <ZoomFocusMode postSerivce={postDeviceService} />}
       </ConfigProvider>
     </div>
   )

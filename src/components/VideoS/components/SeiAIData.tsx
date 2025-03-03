@@ -1,6 +1,6 @@
 import { Fragment, memo, useDeferredValue, type FC } from 'react'
-import SeiEnum, { SEI_TYPE } from '../Video/Jessibuca/sei-enum'
-import { AiObject } from '../Video/Jessibuca/sei-types/ai-data'
+import SeiEnum, { SEI_TYPE } from '../../Video/Jessibuca/sei-enum'
+import { AiObject } from '../../Video/Jessibuca/sei-types/ai-data'
 
 type PropsType = {
   data: SEI_TYPE[SeiEnum.Protobuf_SEI]

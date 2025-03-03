@@ -492,7 +492,7 @@ const RemoteDebug: FC<PropsType> = ({ state, onClose, data, progress }) => {
     <div className={styles.remoteDebug}>
       <div className={styles.header}>
         <div className={styles.title}>
-          <span style={{ marginRight: '6px' }}>
+          <span className="mr-2 text-white">
             {t('device.uavDock.remoteDebug.title')}
           </span>
           <Switch
@@ -507,8 +507,8 @@ const RemoteDebug: FC<PropsType> = ({ state, onClose, data, progress }) => {
           />
         </div>
         <div className={styles.close} onClick={onClose}>
-          <IconButton>
-            <IconClose style={{ fontSize: '18px' }} />
+          <IconButton className="text-xl">
+            <IconClose />
           </IconButton>
         </div>
       </div>

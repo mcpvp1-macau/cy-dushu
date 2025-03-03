@@ -26,6 +26,7 @@ type StateType = {
 }
 
 type ActionsType = {
+  reset: () => void
   updateOpen: (open: StateType['open']) => void
   updateAirlineConfig: (config: Partial<AirlineConfigType>) => void
   updateTemplateConfig: (config: Partial<AirlineTemplateType>) => void
@@ -66,6 +67,9 @@ const createInitialState = (): StateType => ({
 
 const useAreaWaylineStore = create<StateType & ActionsType>()((set) => ({
   ...createInitialState(),
+  reset: () => {
+    set(createInitialState())
+  },
   updateOpen: (open) => {
     set({ open }, false)
   },

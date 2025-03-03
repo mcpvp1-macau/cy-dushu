@@ -8,6 +8,8 @@ import { createPortal } from 'react-dom'
 import { useDebounceFn } from 'ahooks'
 import * as Cesium from 'cesium'
 import { limitNum } from '@/utils/math'
+import { InfoCircleOutlined } from '@ant-design/icons'
+import { Tooltip } from 'antd'
 
 type PropsType = unknown
 
@@ -86,7 +88,17 @@ const MainKConfig: FC<PropsType> = memo(() => {
 
   return (
     <XCard
-      title={t('wayline.waylineConfig.mainAxisDirection.title')}
+      title={
+        <div className="flex items-center gap-1">
+          {t('wayline.waylineConfig.mainAxisDirection.title')}
+          <Tooltip
+            className="ml-1"
+            title={t('wayline.waylineConfig.mainAxisDirection.tooltip')}
+          >
+            <InfoCircleOutlined />
+          </Tooltip>
+        </div>
+      }
       topRight={<span className="text-primary text-sm">{kValue}°</span>}
     >
       <HSlider

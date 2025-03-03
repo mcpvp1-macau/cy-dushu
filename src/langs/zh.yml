@@ -18,15 +18,21 @@ setting:
       super: 超清
       ultra: 超高清
       title: 清晰度
+      description: 为了获得最佳的地图浏览体验，请根据您的电脑性能选择合适的清晰度
     title: 地图
   system:
     title: 系统
     clearLocalData: 清空本地数据
+    clear:
+      description: 点击“一键清理”按钮I将清除所有本地数据恢复默认配置（包括设置内容和AR配置内容），操作前请确保已备份重要信息，以免数据丢失。
+      title: 一键清理
   warnning:
     title: 告警
     isAddMap: 告警上图
     isHaveAvdio: 声音报警
     isHaveLight: 光信号报警
+  warning:
+    description: 根据需要选择开启或关闭以上告警设置
 situation:
   menus:
     action: 行动
@@ -235,6 +241,8 @@ device:
   vl:
     control:
       title: 可见光控制
+  linkSwitch:
+    title: 链路切换
 action:
   input:
     placeholder: 请根据行动名称搜索
@@ -494,6 +502,7 @@ common:
   cancel: 取消
   success: 成功
   live: 实况
+  parameterError: 参数错误
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -640,8 +649,10 @@ wayline:
       msg: 点击地图设置参考起飞点
     mainAxisDirection:
       title: 航线主轴方向
+      tooltip: 预设飞行路径的主要延伸方向
     coverage:
-      title: 航线覆盖率
+      title: 航线重叠率
+      tooltip: 相邻两条航线的拍摄视野重叠部分的比例，云台默认正射角度
   waylinePoint:
     config: 航点设置
     waypointList:
@@ -678,6 +689,8 @@ wayline:
             title: 到达时
           LEAVE:
             title: 离开时
+      FOCUS_CENTER:
+        title: 中心对焦
       OPEN_AI:
         title: 开启算法
         select:
@@ -1067,6 +1080,22 @@ controlRoom:
         required_msg: 请输入飞行速度
     overlay:
       title: 点位
+    larserError:
+      msg: 激光异常，请检查激光是否正常
+    deviceLiveVideoError:
+      msg: 无法获取到直播视频内容
+    gimbalPitchError:
+      msg: 云台参数错误
+    autoPhotographSuccess:
+      msg: 计算成功, 请点击智能拍照开始
+    autoPhotographError:
+      msg: 自动拍照计算失败
+    snapshotUploadSuccess:
+      msg: 截图上传成功
+    exposure:
+      title: 曝光
+    shutter:
+      title: 快门速度
   control:
     uavTurnLeft:
       title: 无人机左转

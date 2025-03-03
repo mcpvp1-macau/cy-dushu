@@ -11,7 +11,7 @@ import {
 } from '@/service/modules/action-plan'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import IconMore from '@/assets/icons/jsx/IconMore'
-import IconButtonWithDropDown from '@/components/IconButtonWithDropDown'
+import IconButtonWithDropDown from '@/components/ui/button/IconButtonWithDropDown'
 import { Link } from 'react-router-dom'
 import IconButton from '@/components/ui/button/IconButton'
 import IconDelete from '@/assets/icons/jsx/IconDelete'

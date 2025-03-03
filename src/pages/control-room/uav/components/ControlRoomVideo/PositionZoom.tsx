@@ -1,34 +1,91 @@
 import DrawBox from '@/components/DrawBox'
-import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
-import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import { memo, type FC } from 'react'
+import { ComponentRef, RefObject } from 'react'
+import usePostDeviceService from '../../hooks/usePostDeviceService'
+import { useAppMsg } from '@/hooks/useAppMsg'
+import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
+import { isNil } from 'lodash'
+import { autoPhotoGraphCalc } from '@/service/modules/autoPhotograph'
+import { autoAIPhotoParamsEmitter } from '../AsideButtons/IntelligentPhotograph'
 
-type PropsType = unknown
-
-const method: Record<number, string> = {
-  1: 'tapZoomAtTarget',
-  2: 'gimbalToPoint',
+type PropsType = {
+  deviceLiveVideoRef: RefObject<ComponentRef<typeof DeviceLiveVideo>>
 }
 
-const PositionZoom: FC<PropsType> = memo(() => {
-  const productKey = useDeviceDetailStore((s) => s.productKey)
-  const deviceId = useDeviceDetailStore((s) => s.deviceId)
-  const postService = usePostDeviceService(productKey, deviceId)
+/** 指点变焦 / 框选 */
+const PositionZoom: FC<PropsType> = memo(({ deviceLiveVideoRef }) => {
+  const msgApi = useAppMsg()
+  const { t } = useTranslation()
+
+  const postService = usePostDeviceService()
 
   const posizionZoomOpen = useUavControlRoomStore((s) => s.openPointZoom)
+  const state = useUavControlRoomStore((s) => s.state)
+  const speed = useUavControlRoomStore((s) => s.flyParams.flySpeed)
 
-  const handleDrawEnd = ([x1, y1, x2, y2]: [
+  const gimbalPitch = useUavControlRoomStore((s) => s.state.gimbalPitch)
+
+  const larserDistance =
+    useUavControlRoomStore((s) => s.state.laserDistance) ?? -1
+
+  const handleDrawEnd = async ([x1, y1, x2, y2]: [
     number,
     number,
     number,
     number,
   ]) => {
-    postService(method[posizionZoomOpen], { x1, y1, x2, y2 })
-  }
+    // 指点变焦 ------------------------------------------------------------
+    if (posizionZoomOpen === 1) {
+      postService('tapZoomAtTarget', { x1, y1, x2, y2 })
+      return
+    }
 
-  if (posizionZoomOpen === 0) {
-    return null
+    // 框选 ----------------------------------------------------------------
+    if (larserDistance <= 0) {
+      msgApi.error(t('controlRoom.uav.larserError.msg'))
+      return
+    }
+    if (isNil(gimbalPitch)) {
+      msgApi.error(t('controlRoom.uav.gimbalPitchError.msg'))
+      return
+    }
+    if (!deviceLiveVideoRef.current) {
+      msgApi.error(t('controlRoom.uav.deviceLiveVideoError.msg'))
+      return
+    }
+    const base64 = deviceLiveVideoRef.current.snapshot('image/jpeg')
+    if (!base64) {
+      msgApi.error(t('controlRoom.uav.deviceLiveVideoError.msg'))
+      return
+    }
+    // 激光高度
+    const larser_height =
+      Math.sin(Math.abs(gimbalPitch) * (Math.PI / 180)) * larserDistance
+
+    try {
+      const resp = await autoPhotoGraphCalc({
+        photo: base64.split(';base64,')[1],
+        pictureBox: { x1, y1, x2, y2 },
+        uav_parameters: state,
+      })
+      if (resp.status === 200 && resp.data.code === 200) {
+        msgApi.info(t('controlRoom.uav.autoPhotographSuccess.msg'))
+        autoAIPhotoParamsEmitter.emit('autoAIPhotoParams', {
+          ...resp.data.data,
+          larser_height,
+          speed,
+        })
+      } else {
+        throw new Error(resp.data.message)
+      }
+    } catch (e: any) {
+      const msg = (e.response?.data?.message || e) as string | undefined
+      msgApi.error(
+        t('controlRoom.uav.autoPhotographError.msg') + (msg ? `: ${msg}` : ''),
+      )
+
+      return
+    }
   }
 
   return <DrawBox onDrawEnd={handleDrawEnd} />

@@ -28,30 +28,35 @@ const HistoryVideo: React.FC<PropsType> = memo(({ timeRange, deviceList, deviceT
   )
   const [deviceId, setDeviceId] = useState(deviceOptions?.[0]?.value)
   const { videoId, productKey } = useMemo(() => {
-    const device = deviceList.find((e) => e.deviceId === deviceId)!
+    const device = deviceList.find((e) => e.deviceId === deviceId)
     return {
-      videoId: device.properties?.videoList?.[0]?.videoId,
-      productKey: device.deviceModel?.productKey,
+      videoId: device?.properties?.videoList?.[0]?.videoId,
+      productKey: device?.deviceModel?.productKey,
     }
   }, [deviceList, deviceId])
 
   const { videoList, isLoading } = useVideoList(
-    productKey,
+    productKey!,
     deviceId,
     deviceType,
     videoId!,
     timeRange || date,
   )
+
   return (
     <div>
       <section className="m-3 flex gap-2">
-        <DatePicker className="w-36" value={date} onChange={setDate} />
-        <Select
-          className="flex-1"
-          value={deviceId}
-          options={deviceOptions}
-          onChange={setDeviceId}
-        />
+        <div className="flex-1">
+          <DatePicker className="w-full" value={date} onChange={setDate} />
+        </div>
+        <div className="flex-1">
+          <Select
+            className="w-full"
+            value={deviceId}
+            options={deviceOptions}
+            onChange={setDeviceId}
+          />
+        </div>
       </section>
       {isLoading ? (
         <AppSpin />

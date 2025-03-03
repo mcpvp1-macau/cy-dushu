@@ -1,3 +1,4 @@
+import IconTip from '@/assets/icons/jsx/IconTip'
 import useMapSettingStore from '@/store/setting/useMapSetting.store'
 import { Radio } from 'antd'
 
@@ -37,13 +38,16 @@ const MapSetting: FC<PropsType> = memo(() => {
 
   return (
     <div>
-      <p>{t('setting.map.resolution.title')}</p>
       <Radio.Group
-        className="mt-1"
+        className="mt-3"
         options={options}
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />
+      <div className="flex gap-2 text-fore mt-3">
+        <IconTip />
+        <p className="text-xs">{t('setting.map.resolution.description')}</p>
+      </div>
     </div>
   )
 })

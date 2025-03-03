@@ -108,7 +108,7 @@ export async function targetListEnumDict(options: any) {
 
 // 无人机属性回溯
 export const getCitySituationUavTrack = (data: {
-  ids: string[]
+  id: string[]
   startTime: string
   endTime: string
 }) => {

@@ -77,6 +77,8 @@ declare namespace API_DBAPI {
       vertAcc?: number
       /** 水平精度 (米) */
       horiAcc?: number
+      /** 航迹角 (度) */
+      orientation: number
     }
   }
   // ------------------ req ------------------

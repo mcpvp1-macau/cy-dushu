@@ -2,6 +2,7 @@ import AppViewSuspense from '@/components/AppViewSuspense'
 import { lazy } from 'react'
 import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
 import useDeviceChildrenList from '@/hooks/device/useDeviceChildrenList'
+import AppSpin from '@/components/AppSpin'
 
 export type MediaType = 'PICTURE' | 'HISTORY_VIDEO'
 
@@ -13,8 +14,12 @@ const DeviceDetailMediaDataPicture = lazy(() => import('./MediaPicture'))
 const HistoryVideo = lazy(() => import('../HistoryVideo'))
 
 const DeviceDetailMediaData: FC<PropsType> = memo(({ type }) => {
-  const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
-  const deviceList = useDeviceChildrenList(deviceDetail)
+  const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)
+  const deviceList = useDeviceChildrenList(deviceDetail ?? undefined)
+
+  if (!deviceDetail) {
+    return <AppSpin />
+  }
 
   return (
     <AppViewSuspense>
