@@ -40,6 +40,14 @@ const PositionZoom: FC<PropsType> = memo(({ deviceLiveVideoRef }) => {
       return
     }
 
+    // 框选（v1）
+    if (posizionZoomOpen === 2) {
+      postService('gimbalToPoint', { x1, y1, x2, y2 })
+      return
+    }
+
+    // 框选（v1）走不到这下面 ~~~
+
     // 框选 ----------------------------------------------------------------
     if (larserDistance <= 0) {
       msgApi.error(t('controlRoom.uav.larserError.msg'))
