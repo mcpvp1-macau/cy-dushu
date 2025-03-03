@@ -11,10 +11,6 @@ import {
 import TimelineWarpper from './TimelineWarpper'
 import TargetBacktracking from '../target'
 import { useStore } from 'zustand'
-import { shouldJson } from '@/utils/json'
-import { useThrottleFn } from 'ahooks'
-import { DayjsInstance } from '@/components/Timeline/utils/fmt'
-import { sortSearchFnAsc } from '@/utils/sort'
 
 type PropsType = unknown
 
@@ -40,64 +36,6 @@ const PageBackTrackingDevice: FC<PropsType> = memo(() => {
     },
     queryClient,
   )
-
-  const [timeRange, setTimeRange] = useState<[DayjsInstance, DayjsInstance]>([
-    dayjs().subtract(1, 'days'),
-    dayjs(),
-  ])
-
-  const [requestTime, setRequestTime] = useState(timeRange[0].valueOf())
-  const [time, setTime] = useState(timeRange[0].valueOf())
-
-  const { data: attrData } = useQuery({
-    queryKey: ['getUavDeviceAttrBackV2', requestTime, [deviceId]],
-    queryFn: async () => {
-      const m = 1000 * 60
-      const startTime = Math.floor(requestTime / m) * m
-      const endTime = startTime + INTERVAL
-      return getUavDeviceAttrBackV2({
-        deviceId: deviceId!,
-        startTime: dayjs(startTime).format(dft),
-        endTime: dayjs(endTime).format(dft),
-      })
-    },
-    enabled: !!deviceId,
-    select: (d) => d.data,
-  })
-
-  const attrIndexOf = useMemo(() => {
-    if (!Array.isArray(attrData)) {
-      return -1
-    }
-
-    const index =
-      sortSearchFnAsc(
-        attrData,
-        (e) => dayjs(e.acquireTimestampFormat).valueOf() > time,
-      ) - 1
-    return index
-  }, [attrData, time])
-
-  const { run: handleTimeChange } = useThrottleFn(
-    (v: DayjsInstance) => {
-      const t = v.valueOf()
-      setTime(t)
-      if (t - requestTime < 0 || t - requestTime > (INTERVAL / 4) * 3) {
-        setRequestTime(t)
-      }
-    },
-    {
-      wait: 1_000,
-      trailing: true,
-    },
-  )
-
-  const curAttr = useMemo(() => {
-    if (!attrData || attrIndexOf < 0) {
-      return null
-    }
-    return shouldJson(attrData[attrIndexOf].properties)
-  }, [attrIndexOf, attrData])
 
   return (
     <BackTrackingStoreContext.Provider value={store}>
