@@ -10,7 +10,7 @@ const DeviceDetailMediaDataPicture = lazy(
   () => import('../../components/MediaData/MediaPicture'),
 )
 const DeviceDetailMediaHistoryVideo = lazy(
-  () => import('../../components/MediaData/MediaHistoryVideo'),
+  () => import('../../components/HistoryVideo'),
 )
 
 type PropsType = {}
@@ -46,7 +46,7 @@ const UavDetailData: FC<PropsType> = memo(() => {
           key: 1,
           children: (
             <AppViewSuspense>
-              <DeviceDetailMediaHistoryVideo deviceList={deviceList} />
+              <DeviceDetailMediaHistoryVideo deviceList={deviceList} deviceType={deviceDetail?.deviceType}/>
             </AppViewSuspense>
           ),
         },

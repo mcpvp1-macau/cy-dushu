@@ -9,6 +9,7 @@ import { getActionRecordList } from '@/service/modules/action'
 import serverJingqi from '@/service/servers/serverJingqi'
 import useUserStore from '@/store/useUser.store'
 import { downloadAndRename } from '@/utils/download'
+import { itemsEqual } from '@dnd-kit/sortable/dist/utilities'
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -16,7 +17,7 @@ import {
 } from '@tanstack/react-table'
 import { DatePicker, Input, Pagination } from 'antd'
 import { Dayjs } from 'dayjs'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 
 type PropsType = unknown
 
@@ -95,7 +96,9 @@ const PageActionRecord: FC<PropsType> = memo(() => {
           const item = cell.row.original
           return (
             <div className="flex gap-3">
-              <TextButton>{t('common.backTracking')}</TextButton>
+              <Link to={`/backtracking/action/${item.actionId}/${item.startTime}/${item.endTime}`}>
+                  <TextButton>{t('common.backTracking')}</TextButton>
+                </Link>
               <TextButton
                 onClick={() =>
                   downloadAndRename(

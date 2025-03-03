@@ -37,6 +37,44 @@ export const getUavDeviceAttrBackV2 = (data: {
   return serverDBAPI.post('api/uavDeviceAttrBackV2', data)
 }
 
+/** deviceAttrInfoBack 属性回溯 */
+export const getDeviceAttrInfoBack = (data: {
+  deviceId: string
+  startTime: string
+  endTime: string
+}) => {
+  return serverDBAPI.post('api/deviceAttrInfoBack', data)
+}
+
+/**
+ * 目标回溯
+ * @param data
+ * @returns
+ */
+export const getTargetPositionBack = (data: {
+  parentId: string
+  startTime: string
+  endTime: string
+}) => {
+  return serverDBAPI.post('api/targetPositionBack', data)
+}
+
+export const getGlobalDeviceLocationRetrieval = (data: {
+  deviceIdArrays?: string[]
+  startTime: string
+  endTime: string
+}) => {
+  return serverDBAPI.post('api/globalDeviceLocationRetrieval', data)
+}
+
+export const getTrackQueryMultiDeviceV2 = (data: {
+  deviceId: string[]
+  startTime: string
+  endTime: string
+}) => {
+  return serverDBAPI.post('api/trackQueryMultiDeviceV2', data)
+}
+
 /**
  * 检测数据
  */

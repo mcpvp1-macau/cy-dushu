@@ -6,7 +6,7 @@ type PropsType = unknown
 const PageBackTracking: FC<PropsType> = memo(() => {
   return (
     <div className="absolute inset-0">
-      <CesiumMap id="backtracking" />
+      <CesiumMap id="backtracking"></CesiumMap>
     </div>
   )
 })

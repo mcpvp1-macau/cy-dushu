@@ -2,6 +2,7 @@ import DeviceIconUAV from '@/assets/icons/jsx/device/DeviceIconUAV'
 import { memo, type FC } from 'react'
 import UavDetailInfoCard from './InfoCard'
 import HealthInfoMini from '@/components/device/HealthInfoMini'
+import BackTrackingVideo from '../BackTrackingVideo'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -32,6 +33,13 @@ const UavBackTrackingDetail: FC<PropsType> = memo(
             latitude={state.latitude}
             height={state.height}
             horizontalSpeed={state.horizontalSpeed}
+          />
+        </div>
+        <div className="my-2">
+          <BackTrackingVideo
+            productKey={data.deviceModel.productKey}
+            deviceId={data.deviceId}
+            videoId={state.videoList?.[0]?.videoId}
           />
         </div>
         <div className="my-2 px-3 text-xs text-center">
