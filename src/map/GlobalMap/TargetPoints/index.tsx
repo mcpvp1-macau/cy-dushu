@@ -6,7 +6,7 @@ import * as Cesium from 'cesium'
 // import { RightModeEnum } from '@/enum/right-mode'
 import useBoardObjStore from '@/store/map/useBoardObj.store'
 
-const sourceTypeColorMap: any = {
+export const sourceTypeColorMap: Record<string, string> = {
   RADAR: '#14CCBD',
   FUSION: '#4C90F0',
   VISUAL: '#15B371', // 可见光
@@ -67,7 +67,9 @@ const TargetPoints: React.FC = () => {
                   item.targetId
                 }--${item.targetPitch}--${
                   item.targetYaw
-                }--${parentId}--${deviceId}--${item.sourceType}--${i}--${item.uploadMode}`
+                }--${parentId}--${deviceId}--${item.sourceType}--${i}--${
+                  item.uploadMode
+                }`
                 let color = last
                   ? sourceTypeColorMap[item.sourceType] || '#3855AE'
                   : '#3855AE'

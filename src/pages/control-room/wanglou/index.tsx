@@ -18,8 +18,9 @@ import ControlRoomVideo from './components/ControlRoomVideo'
 import StatusInfo from './components/StatusInfo'
 import ControlPanl from './components/ControlPanl'
 import DataPanl from './components/DataPanl'
+import Header from './components/Header'
 
-const initialLayout: DynamicLayoutType = {
+export const initialLayout: DynamicLayoutType = {
   type: 'row',
   size: 1,
   children: [
@@ -83,6 +84,8 @@ const PageControlRoomWangLou: React.FC = () => {
     (s) =>
       s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey,
   )
+
+  const deviceName = useStore(store, (s) => s.deviceDetail?.deviceName)
   const controlRoomStore = useCreateWangLouControlRoomStore(
     productKey!,
     deviceId,
@@ -153,6 +156,7 @@ const PageControlRoomWangLou: React.FC = () => {
         {/* <StateResolver /> */}
         <div className="page-full flex flex-col">
           {/* <ControlRoomUavHeader /> */}
+          <Header deviceName={deviceName!} />
           <main className="grow w-full relative overflow-hidden">
             <DynamicLayoutRoot
               layout={layout!}

@@ -24,7 +24,7 @@ type PropsType = {
   data: API_DEVICE.domain.Device
 }
 
-const deviceIconMap: any = {
+export const deviceIconMap: any = {
   UAV: uav,
   UAV_AIRPORT: jiku,
   ROBOT_DOG: jiqigou,

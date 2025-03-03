@@ -1,22 +1,22 @@
 import AppViewSuspense from '@/components/AppViewSuspense'
 import CesiumMap from '@/map/CesiumMap'
 import { memo, type FC } from 'react'
-import UavBackTrackingDetail from './uav/UavDetail'
 import { getDeviceDetail } from '@/service/modules/device'
 import AppSpin from '@/components/AppSpin'
-import Timeline from '@/components/Timeline'
-import { DayjsInstance } from '@/components/Timeline/utils/fmt'
-import { getUavDeviceAttrBackV2 } from '@/service/modules/db-api'
-import { dft } from '@/constant/time-fmt'
-import { sortSearchFnAsc } from '@/utils/sort'
-import { useThrottleFn } from 'ahooks'
-import MapUavRealMarker from '@/components/map/device/UavRealMarker'
+import BackTrackWarpper from './BackTrackWarpper'
+import {
+  useCreateBackTrackingStore,
+  BackTrackingStoreContext,
+} from '@/store/context-store/useBackTracking.store'
+import TimelineWarpper from './TimelineWarpper'
+import TargetBacktracking from '../target'
+import { useStore } from 'zustand'
 import { shouldJson } from '@/utils/json'
-import { emtpyObject } from '@/constant/data'
+import { useThrottleFn } from 'ahooks'
+import { DayjsInstance } from '@/components/Timeline/utils/fmt'
+import { sortSearchFnAsc } from '@/utils/sort'
 
 type PropsType = unknown
-
-const INTERVAL = 1000 * 60 * 10
 
 /** 设备回溯 */
 const PageBackTrackingDevice: FC<PropsType> = memo(() => {
@@ -24,12 +24,19 @@ const PageBackTrackingDevice: FC<PropsType> = memo(() => {
 
   const deviceId = useParams().deviceId
 
+  const store = useCreateBackTrackingStore()
+
+  const updateDetail = useStore(store, (s) => s.updateDetail)
+
   const { data, isLoading } = useQuery(
     {
       queryKey: ['deviceDetail', deviceId],
       queryFn: () => getDeviceDetail(deviceId!),
       enabled: !!deviceId,
-      select: (d) => d.data,
+      select: (d) => {
+        updateDetail(d.data)
+        return d.data
+      },
     },
     queryClient,
   )
@@ -93,52 +100,36 @@ const PageBackTrackingDevice: FC<PropsType> = memo(() => {
   }, [attrIndexOf, attrData])
 
   return (
-    <div className="fixed top-[39px] left-[39px] right-0 bottom-0">
-      <CesiumMap id="backtracking">
-        <div
-          className={clsx(
-            'absolute top-3 right-3 z-10',
-            'bg-[#16202be6] rounded-[3px]',
-            'border border-solid border-ground-5',
-            'flex flex-col',
-            'overflow-y-hidden',
-          )}
-          style={{ maxHeight: 'calc(100vh - 62px' }}
-        >
-          <AppViewSuspense>
-            {isLoading || !data ? (
-              <AppSpin />
-            ) : (
-              <>
-                <UavBackTrackingDetail
-                  data={data}
-                  state={curAttr ?? emtpyObject}
-                  updateTime={
-                    attrData?.[attrIndexOf]?.acquireTimestampFormat || '-'
-                  }
-                />
-                {curAttr && (
-                  <MapUavRealMarker
-                    data={{
-                      longitude: curAttr.longitude ?? 0,
-                      latitude: curAttr.latitude ?? 0,
-                      uavYaw: curAttr.uavYaw ?? 0,
-                      gimbalYaw: curAttr.gimbalYaw ?? 0,
-                    }}
-                  />
-                )}
-              </>
+    <BackTrackingStoreContext.Provider value={store}>
+      <div className="fixed top-[39px] left-[39px] right-0 bottom-0">
+        <CesiumMap id="backtracking">
+          <div
+            className={clsx(
+              'absolute top-3 right-3 z-10',
+              'bg-[#16202be6] rounded-[3px]',
+              'border border-solid border-ground-5',
+              'flex flex-col',
+              'overflow-y-hidden',
             )}
-          </AppViewSuspense>
-        </div>
-      </CesiumMap>
-      <div className="absolute bottom-3 left-3 right-14 z-50">
-        <Timeline
-          onTimeChange={handleTimeChange}
-          onTimeRangeChange={setTimeRange}
-        />
+            style={{ maxHeight: 'calc(100vh - 192px' }}
+          >
+            <AppViewSuspense>
+              {isLoading || !data ? (
+                <AppSpin />
+              ) : (
+                <>
+                  <BackTrackWarpper data={data} />
+                </>
+              )}
+            </AppViewSuspense>
+          </div>
+          <div className="absolute bottom-3 left-3 right-14 z-50">
+            <TimelineWarpper />
+          </div>
+          <TargetBacktracking deviceId={deviceId!} />
+        </CesiumMap>
       </div>
-    </div>
+    </BackTrackingStoreContext.Provider>
   )
 })
 

@@ -4,19 +4,30 @@ import { getActionItemList } from '@/service/modules/action-item'
 import ChildAction from './ChildAction'
 import { Spin } from 'antd'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { useBackTrackingStore } from '@/store/context-store/useBackTracking.store'
 
 type PropsType = {
   actionId: string
+  isBacktracking?: boolean
 }
 
 /** 子任务列表 */
-const ChildActions: FC<PropsType> = memo(({ actionId }) => {
+const ChildActions: FC<PropsType> = memo(({ actionId, isBacktracking }) => {
   const queryClient = useQueryClient()
+
+  const useStore = isBacktracking
+    ? useBackTrackingStore
+    : null
+
+  const updateChildActions = useStore?.((s) => s.updateChildActions)
   const { data, isLoading, isRefetching } = useQuery(
     {
       queryKey: ['action', actionId, 'items'],
       queryFn: () => getActionItemList({ actionId }),
-      select: (d) => d.data.rows,
+      select: (d) => {
+        updateChildActions?.(d.data.rows)
+        return d.data.rows
+      },
     },
     queryClient,
   )

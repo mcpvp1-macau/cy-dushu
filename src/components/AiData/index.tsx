@@ -7,27 +7,33 @@ import {
 } from '@/service/modules/db-api'
 import Filter from '../Filter/index'
 import { GroupType } from '@/components/Filter/FilterPopover/interface'
+import AppEmpty from '../AppEmpty'
+import { Dayjs } from 'dayjs'
+import { t } from 'i18next'
 
 type PropsType = {
   deviceId: string
   deviceType: string
   height?: number
+  timeRange?: [Dayjs, Dayjs]
 }
 
 /**
  * 检测数据
  * @returns
  */
-const AiData: React.FC<PropsType> = ({ deviceId, height = 500 }) => {
+const AiData: React.FC<PropsType> = ({ deviceId, timeRange, height = 500 }) => {
   const queryClient = useQueryClient()
 
   const { data: filterData, refetch: getTypes } = useQuery(
     {
-      queryKey: ['targetListEnumDict'],
+      queryKey: ['targetListEnumDict', timeRange, deviceId],
       queryFn: () =>
         targetListEnumDict({
-          startTime: dayjs().startOf('day').format('YYYY-MM-DD HH:mm:ss'),
-          endTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+          startTime: (timeRange?.[0] || dayjs())
+            .startOf('day')
+            .format('YYYY-MM-DD HH:mm:ss'),
+          endTime: (timeRange?.[1] || dayjs()).format('YYYY-MM-DD HH:mm:ss'),
           parentId: deviceId,
         }).then((res) => {
           const { success, data } = res
@@ -74,10 +80,12 @@ const AiData: React.FC<PropsType> = ({ deviceId, height = 500 }) => {
           deviceId: deviceId,
           // objectLabel: [],
           ...params,
-          startTime: dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
-          endTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+          startTime: (timeRange?.[0] || dayjs())
+            .subtract(1, 'day')
+            .format('YYYY-MM-DD HH:mm:ss'),
+          endTime: (timeRange?.[1] || dayjs()).format('YYYY-MM-DD HH:mm:ss'),
         }).then((res) => {
-          getTypes()
+          // getTypes()
           return res
         }),
       select: (d) => d.data,
@@ -126,14 +134,20 @@ const AiData: React.FC<PropsType> = ({ deviceId, height = 500 }) => {
           }}
         />
         <List loading={isLoading}>
-          <VirtualList
-            data={data}
-            height={data.length * 112}
-            itemHeight={112}
-            itemKey={'id'}
-          >
-            {(item) => <WanglouTarget data={item} />}
-          </VirtualList>
+          {data.length ? (
+            <VirtualList
+              data={data}
+              height={data.length * 112}
+              itemHeight={112}
+              itemKey={'id'}
+            >
+              {(item) => <WanglouTarget data={item} />}
+            </VirtualList>
+          ) : (
+            <div>
+              <AppEmpty />
+            </div>
+          )}
         </List>
       </div>
     </Flex>

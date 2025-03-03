@@ -11,10 +11,7 @@ type PropsType = {
 }
 
 const DeviceDetailMediaDataPicture = lazy(() => import('./MediaPicture'))
-const DeviceDetailMediaHistoryVideo = lazy(() => import('./MediaHistoryVideo'))
-const DeviceDetailMediaHistoryM3u8Video = lazy(
-  () => import('./MediaHistoryM3u8Video'),
-)
+const HistoryVideo = lazy(() => import('../HistoryVideo'))
 
 const DeviceDetailMediaData: FC<PropsType> = memo(({ type }) => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)
@@ -28,12 +25,12 @@ const DeviceDetailMediaData: FC<PropsType> = memo(({ type }) => {
     <AppViewSuspense>
       {{
         PICTURE: <DeviceDetailMediaDataPicture deviceList={deviceList} />,
-        HISTORY_VIDEO:
-          deviceDetail.deviceType === 'WANGLOU' ? (
-            <DeviceDetailMediaHistoryM3u8Video deviceList={deviceList} />
-          ) : (
-            <DeviceDetailMediaHistoryVideo deviceList={deviceList} />
-          ),
+        HISTORY_VIDEO: (
+          <HistoryVideo
+            deviceList={deviceList}
+            deviceType={deviceDetail.deviceType}
+          />
+        ),
       }[type] || <div>404</div>}
     </AppViewSuspense>
   )

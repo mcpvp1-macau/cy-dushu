@@ -25,9 +25,10 @@ interface Props {
     imageUrl: string | null
     deviceInfo: { deviceName: string; deviceId: string }[]
   }
+  onClose?: () => void
 }
 
-const BoardDetail: React.FC<Props> = ({ data }) => {
+const BoardDetail: React.FC<Props> = ({ data, onClose }) => {
   const {
     targetId,
     acquireTimestampFormat,
@@ -52,7 +53,6 @@ const BoardDetail: React.FC<Props> = ({ data }) => {
   const renderNumber = (value: number, unit: string) => {
     return value ? `${Number(value)?.toFixed(2)}${unit}` : '-'
   }
-
 
   return (
     <div className={styles.panel}>
@@ -95,10 +95,14 @@ const BoardDetail: React.FC<Props> = ({ data }) => {
                   // }
                 )}
                 onClick={() => {
-                  setBoardOpenMap({
-                    ...boardOpenMap,
-                    [targetId]: false,
-                  })
+                  if (onClose) {
+                    onClose()
+                  } else {
+                    setBoardOpenMap({
+                      ...boardOpenMap,
+                      [targetId]: false,
+                    })
+                  }
                 }}
               >
                 <Tooltip title={t('common.close')}>
