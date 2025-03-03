@@ -65,18 +65,22 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
     return (
       <div>
         <section className="m-3 flex gap-2">
-          <Select
-            className="grow"
-            value={mode}
-            options={pictureSourceTypeOptions}
-            onChange={setMode}
-          />
-          <Select
-            className="grow"
-            value={deviceId}
-            options={deviceOptions}
-            onChange={setDeviceId}
-          />
+          <div className="flex-1">
+            <Select
+              className="w-full"
+              value={mode}
+              options={pictureSourceTypeOptions}
+              onChange={setMode}
+            />
+          </div>
+          <div className="flex-1">
+            <Select
+              className="w-full"
+              value={deviceId}
+              options={deviceOptions}
+              onChange={setDeviceId}
+            />
+          </div>
         </section>
         {isLoading || !data ? (
           <AppSpin />

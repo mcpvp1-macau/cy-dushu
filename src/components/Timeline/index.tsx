@@ -81,6 +81,10 @@ const Timeline: FC<PropsType> = memo(
       })
 
       timeline.on('timechange', handleTimeChange)
+
+      // timeline.on('markerchange', () => {
+      //   console.log('markerchange')
+      // })
     }, [timeline])
 
     useEffect(() => {
@@ -115,7 +119,12 @@ const Timeline: FC<PropsType> = memo(
         if (!timeline) {
           return
         }
-        setCurrentTime((prev) => prev.add(1, 'second'))
+        setCurrentTime((prev) => {
+          if(prev.add(1,'second').isAfter(timeRange[1])){
+            return timeRange[0]
+          }
+          return prev.add(1, 'second')
+        })
       },
       playing && !isDraggingTime ? 1000 / multiple : undefined,
     )

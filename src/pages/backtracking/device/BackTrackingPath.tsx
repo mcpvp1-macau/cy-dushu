@@ -92,7 +92,7 @@ const BackTrackingPath: React.FC<PropsType> = memo(({ deviceId }) => {
   return (
     <>
       {/* {lineData?.length && <HistoryTrackWithAlt value={lineData} useCallback />} */}
-      {data?.length && <SampledPath value={data} />}
+      {data?.length ? <SampledPath value={data} /> : null}
       {curAttr && (
         <MapUavRealMarker
           data={{
@@ -100,6 +100,7 @@ const BackTrackingPath: React.FC<PropsType> = memo(({ deviceId }) => {
             latitude: curAttr.lat ?? 0,
             uavYaw: curAttr.attitudeHead ?? 0,
             gimbalYaw: curAttr.gimbalHead ?? 0,
+            altitude: curAttr.altitude?? 0,
           }}
         />
       )}

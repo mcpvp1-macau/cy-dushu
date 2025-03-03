@@ -62,7 +62,7 @@ const useTimelineInstance = (
         },
       },
       max: new Date(2070, 0),
-      min: new Date(1970, 0),
+      min: new Date(2020, 0),
       start: startTime,
       end: endTime,
     })
@@ -77,7 +77,9 @@ const useTimelineInstance = (
     setTimeline(timeline)
 
     return () => {
-      timeline.destroy()
+      if (containerRef.current) {
+        timeline.destroy()
+      }
     }
   }, [containerRef])
 
