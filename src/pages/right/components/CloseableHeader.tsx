@@ -4,29 +4,38 @@ import useRightMode from '@/store/layout/useRightMode.store'
 
 type PropsType = {
   children?: ReactNode
+  /** 默认关闭 right 详情 */
   onClose?: () => void
 }
 
-const CloseableHeader: FC<PropsType> = memo(({ children, onClose }) => {
+const DefaultClose = () => {
   const updateRightMode = useRightMode((s) => s.updateRightMode)
   const updateDetailId = useRightMode((s) => s.updateDetailId)
+  return (
+    <IconButton
+      className="text-xl"
+      onClick={() => {
+        updateRightMode(null)
+        updateDetailId(null)
+      }}
+    >
+      <IconClose />
+    </IconButton>
+  )
+}
 
+const CloseableHeader: FC<PropsType> = memo(({ children, onClose }) => {
   return (
     <div className="flex items-center px-3 py-2 gap-2">
       <div className="flex-1">{children}</div>
       <div className="flex items-center">
-        <IconButton
-          onClick={() => {
-            if (onClose) {
-              onClose()
-            } else {
-              updateRightMode(null)
-              updateDetailId(null)
-            }
-          }}
-        >
-          <IconClose className="scale-[130%]" />
-        </IconButton>
+        {onClose ? (
+          <IconButton className="text-xl" onClick={onClose}>
+            <IconClose />
+          </IconButton>
+        ) : (
+          <DefaultClose />
+        )}
       </div>
     </div>
   )

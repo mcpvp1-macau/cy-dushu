@@ -12,17 +12,16 @@ import {
 import useServerEventMsg from '@/pages/control-room/uav/hooks/useServerEventMsg'
 import WanglouUpdateRealMarker from './components/UpdateRealMarker'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { BaseDeviceDetailProps } from '../routes'
 
-type PropsType = {
-  data: API_DEVICE.domain.Device
-}
+type PropsType = BaseDeviceDetailProps
 
 const WangLouDetailDetail = lazy(
   () => import('./components/WangLouDetailDetail'),
 )
 const WangLouDetailData = lazy(() => import('./components/WangLouDetailData'))
 
-const WangLouDetail: FC<PropsType> = memo(({ data }) => {
+const WangLouDetail: FC<PropsType> = memo(({ data, onClose }) => {
   const productKey = data.productKey || data.deviceModel?.productKey
   const deviceId = data.deviceId
   const store = useCreateWangLouControlRoomStore(
@@ -46,7 +45,7 @@ const WangLouDetail: FC<PropsType> = memo(({ data }) => {
   return (
     <WangLouControlRoomStoreContext.Provider value={store}>
       <div className="overflow-y-hidden flex flex-col backdrop-blur-sm">
-        <CloseableHeader>{header}</CloseableHeader>
+        <CloseableHeader onClose={onClose}>{header}</CloseableHeader>
         <div className="px-3 mt-1 mb-3">
           <Segmented
             block

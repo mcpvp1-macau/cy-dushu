@@ -18,10 +18,10 @@ import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import HealthInfoMini from '@/components/device/HealthInfoMini'
 import { XFormItem } from '@/components/XForm/types'
 import useDeviceWsURL from '@/hooks/device/useDeviceWsURL'
+import useDomRect from '@/hooks/ui/useDomRect'
+import { BaseDeviceDetailProps } from '../routes'
 
-type PropsType = {
-  data: API_DEVICE.domain.Device
-}
+type PropsType = BaseDeviceDetailProps
 
 const map = new Map<string, string>([
   ['device_reboot', '机场重启'],
@@ -31,7 +31,7 @@ const map = new Map<string, string>([
   ['cover_close', '关闭舱盖'],
 ])
 
-const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
+const UavAirportDetail: FC<PropsType> = memo(({ data, onClose }) => {
   const productKey = data.productKey || data.deviceModel!.productKey
   const deviceId = data.deviceId
   const videoId = data?.properties.videoList?.[0]?.videoId ?? ''
@@ -157,17 +157,24 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
     setTakeoffFalse()
   }
 
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const containerRect = useDomRect(containerRef)
+
   return (
-    <>
-      <div className="overflow-y-hidden flex flex-col relative backdrop-blur-sm">
-        <CloseableHeader>
-          <div className="flex gap-2 items-center">
-            {header}
-            {state.healthInfo?.length && (
-              <HealthInfoMini healthInfo={state.healthInfo} />
-            )}
-          </div>
-        </CloseableHeader>
+    <div>
+      <CloseableHeader onClose={onClose}>
+        <div className="flex gap-2 items-center">
+          {header}
+          {state.healthInfo?.length && (
+            <HealthInfoMini healthInfo={state.healthInfo} />
+          )}
+        </div>
+      </CloseableHeader>
+      <div
+        className="overflow-y-hidden flex flex-col relative backdrop-blur-sm"
+        ref={containerRef}
+      >
         <ScrollArea className="grow">
           <div className="mx-3">
             <UavAirportWeatherSection
@@ -224,6 +231,12 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
           state={state}
           progress={progressState}
           onClose={() => setOpenDebug(false)}
+          className="-translate-x-full"
+          style={{
+            position: 'fixed',
+            top: containerRect?.top ? containerRect.top - 1 : undefined,
+            left: containerRect?.left ? containerRect.left - 1 : undefined,
+          }}
         />
       )}
       {takeOffOpen && (
@@ -239,7 +252,7 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
           confirmLoading={state.modeCode !== 0}
         />
       )}
-    </>
+    </div>
   )
 })
 
