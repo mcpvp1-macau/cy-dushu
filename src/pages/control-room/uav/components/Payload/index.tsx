@@ -38,15 +38,16 @@ const labelMap: { [key in MountType]: string } = {
 /** 无人机负载 */
 const UavPayload: FC<PropsType> = memo(() => {
   // TODO mock 挂载
-  const mount: string[] = useUavControlRoomStore((s) => s.state.mounts) || [
-    'PARACHUTE',
-    'MMC_Gimbal_P3',
-    'MMC_Gimbal_Z60R',
-    'MMC_Gimbal_Z30Pro',
-    'MMC_Gimbal_LP12_1',
-    'MMC_Gimbal_LP12_2',
-    'MMC_Gimbal_D4',
-  ]
+  const mount: string[] = useUavControlRoomStore((s) => s.state.mounts) || []
+  // || [
+  //   'PARACHUTE',
+  //   'MMC_Gimbal_P3',
+  //   'MMC_Gimbal_Z60R',
+  //   'MMC_Gimbal_Z30Pro',
+  //   'MMC_Gimbal_LP12_1',
+  //   'MMC_Gimbal_LP12_2',
+  //   'MMC_Gimbal_D4',
+  // ]
 
   const mounts = useMemo(() => {
     const arr: MountType[] = []
