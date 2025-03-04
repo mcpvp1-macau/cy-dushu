@@ -3,6 +3,9 @@ import BackTrackingVideo from '../BackTrackingVideo'
 import InfoCard from './InfoCard'
 import AppCollapse from '@/components/AppCollapse'
 import AppEmpty from '@/components/AppEmpty'
+import { Link } from 'react-router-dom'
+import { Button } from 'antd'
+import IconControlRoom from '@/assets/icons/jsx/IconControlRoom'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -19,6 +22,8 @@ const WanglouBackTrackingDetail: FC<PropsType> = memo(
     const infraredCameraData = data?.childDevice?.find(
       (item) => item.deviceType === 'INFRARED_CAMERA',
     )
+
+    const { t } = useTranslation()
 
     return (
       <>
@@ -56,7 +61,16 @@ const WanglouBackTrackingDetail: FC<PropsType> = memo(
             },
           ]}
         ></AppCollapse>
-
+        <section className="mx-3 mr-[9px] my-3 flex gap-2">
+          <Link
+            className="grow"
+            to={`/backtracking/control-room/wanglou/${data.deviceId}`}
+          >
+            <Button block className="h-7" icon={<IconControlRoom />}>
+              {t('device.enterControlRoom.title')}
+            </Button>
+          </Link>
+        </section>
         <div className="my-2 px-3 text-xs text-center">
           数据时间: {updateTime}
         </div>
