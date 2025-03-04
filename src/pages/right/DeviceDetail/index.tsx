@@ -26,11 +26,18 @@ const route = {
 type PropsType = unknown
 
 const RightDeviceDetail: FC<PropsType> = memo(() => {
+  const updateRightMode = useRightMode((s) => s.updateRightMode)
+  const updateDetailId = useRightMode((s) => s.updateDetailId)
   const detailId = useRightMode((s) => s.detailId)!
 
   const { store: deviceDetailStore, isLoading } =
     useCreateDeviceDetailStore(detailId)
   const deviceDetail = useStore(deviceDetailStore, (s) => s.deviceDetail)
+
+  const handleClose = () => {
+    updateRightMode(null)
+    updateDetailId(null)
+  }
 
   // big fly
   useEffect(() => {
@@ -58,7 +65,11 @@ const RightDeviceDetail: FC<PropsType> = memo(() => {
     <DeviceDetailStoreContext.Provider value={deviceDetailStore}>
       <div className="w-[350px] flex flex-col overflow-y-hidden">
         <AppViewSuspense>
-          <DetailComponent key={deviceDetail.deviceId} data={deviceDetail} />
+          <DetailComponent
+            key={deviceDetail.deviceId}
+            data={deviceDetail}
+            onClose={handleClose}
+          />
         </AppViewSuspense>
       </div>
     </DeviceDetailStoreContext.Provider>

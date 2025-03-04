@@ -22,6 +22,7 @@ import useDomRect from '@/hooks/ui/useDomRect'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
+  onClose?: () => void
 }
 
 const map = new Map<string, string>([
@@ -32,7 +33,7 @@ const map = new Map<string, string>([
   ['cover_close', '关闭舱盖'],
 ])
 
-const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
+const UavAirportDetail: FC<PropsType> = memo(({ data, onClose }) => {
   const productKey = data.productKey || data.deviceModel!.productKey
   const deviceId = data.deviceId
   const videoId = data?.properties.videoList?.[0]?.videoId ?? ''
@@ -163,19 +164,19 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
   const containerRect = useDomRect(containerRef)
 
   return (
-    <>
+    <div>
+      <CloseableHeader onClose={onClose}>
+        <div className="flex gap-2 items-center">
+          {header}
+          {state.healthInfo?.length && (
+            <HealthInfoMini healthInfo={state.healthInfo} />
+          )}
+        </div>
+      </CloseableHeader>
       <div
         className="overflow-y-hidden flex flex-col relative backdrop-blur-sm"
         ref={containerRef}
       >
-        <CloseableHeader>
-          <div className="flex gap-2 items-center">
-            {header}
-            {state.healthInfo?.length && (
-              <HealthInfoMini healthInfo={state.healthInfo} />
-            )}
-          </div>
-        </CloseableHeader>
         <ScrollArea className="grow">
           <div className="mx-3">
             <UavAirportWeatherSection
@@ -253,7 +254,7 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
           confirmLoading={state.modeCode !== 0}
         />
       )}
-    </>
+    </div>
   )
 })
 

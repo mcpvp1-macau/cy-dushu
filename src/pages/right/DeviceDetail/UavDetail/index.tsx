@@ -35,9 +35,10 @@ Header.displayName = 'UavDetailHeader'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
+  onClose?: () => void
 }
 
-const UavDetail: FC<PropsType> = memo(({ data }) => {
+const UavDetail: FC<PropsType> = memo(({ data, onClose }) => {
   const productKey = (data.productKey || data.deviceModel?.productKey)!
   const deviceId = data.deviceId
   const store = useCreateUavControlRoomStore(
@@ -58,7 +59,7 @@ const UavDetail: FC<PropsType> = memo(({ data }) => {
   return (
     <UavControlRoomStoreContext.Provider value={store}>
       <div className="overflow-y-hidden flex flex-col backdrop-blur-sm">
-        <CloseableHeader>
+        <CloseableHeader onClose={onClose}>
           <Header />
         </CloseableHeader>
         <div className="px-3 mt-1 mb-3">
