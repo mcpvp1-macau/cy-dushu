@@ -36,7 +36,7 @@ const AlgorithmListItem: FC<PropsType> = memo(
 
     const Icon = algorithmIconMap[aiData.imageType] || CloudFilled
 
-    const envMap = shouldJson(aiData.envMap)
+    const envMap = shouldJson(aiData.envMap) || {}
 
     const { btnName, status } = useMemo(() => {
       const e = aiData.deployRecordList?.[0]
