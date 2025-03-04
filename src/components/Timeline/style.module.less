@@ -10,7 +10,11 @@
         border: none;
       }
       .time-range {
-        background-color: #14b8a633;
+        background-color: rgba(0, 0, 0, 0);
+        border-radius: 4px;
+      }
+      .time-range2 {
+        background-color: #4c90f0;
         border-radius: 4px;
       }
       .vis-time-axis .vis-text {
@@ -25,9 +29,29 @@
       }
       .vis-time-axis .vis-grid.vis-major {
         border-color: #424b54;
+        display: none;
+      }
+      .vis-major {
+        display: none;
       }
       .vis-panel.vis-center {
-        border-color: #424b54;
+        border-color: rgba(0, 0, 0, 0); // #424b54;
+      }
+      .vis-itemset {
+        height: 12px !important;
+      }
+      .vis-time-axis .vis-text {
+        padding: 0;
+      }
+      .vis-custom-time {
+        background-color: #fff;
+        .vis-custom-time-marker {
+          padding: 0 5px;
+          right: -40px;
+          background-color: #fff;
+          color: #000;
+          margin-top: 14px;
+        }
       }
     }
   }
