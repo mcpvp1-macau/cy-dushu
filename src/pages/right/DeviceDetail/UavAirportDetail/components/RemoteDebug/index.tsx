@@ -502,12 +502,12 @@ const RemoteDebug: FC<PropsType> = ({
   return (
     <div
       className={twMerge(
-        'fixed bg-[#16202be6] backdrop-blur-sm rounded-sm overflow-hidden z-10 w-[400px]',
+        'bg-[#16202be6] backdrop-blur-sm rounded-sm overflow-hidden z-10 w-[400px]',
         className,
       )}
       style={style}
     >
-      <div className="flex justify-between items-center bg-ground-2 h-8 px-3 text-sm border border-solid border-ground-5">
+      {/* <div className="flex justify-between items-center bg-ground-2 h-8 px-3 text-sm border border-solid border-ground-5">
         <div className={styles.title}>
           <span className="mr-2 text-white">
             {t('device.uavDock.remoteDebug.title')}
@@ -528,7 +528,7 @@ const RemoteDebug: FC<PropsType> = ({
             <IconClose />
           </IconButton>
         </div>
-      </div>
+      </div> */}
       <div className="p-3">
         <div className={styles.content}>
           {serviceItems.map((item) => (

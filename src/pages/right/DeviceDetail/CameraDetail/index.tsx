@@ -12,7 +12,7 @@ type PropsType = BaseDeviceDetailProps
 const CameraDetailDetail = lazy(() => import('./components/CameraDetailDetail'))
 const CameraDetailData = lazy(() => import('./components/CameraDetailData'))
 
-const CameraDetail: FC<PropsType> = memo(({ data, onClose }) => {
+const CameraDetail: FC<PropsType> = memo(({ data, headerTools, onClose }) => {
   const header = useMemo(
     () => (
       <div className="flex gap-2 items-center">
@@ -39,7 +39,9 @@ const CameraDetail: FC<PropsType> = memo(({ data, onClose }) => {
 
   return (
     <div>
-      <CloseableHeader onClose={onClose}>{header}</CloseableHeader>
+      <CloseableHeader onClose={onClose} rightTools={headerTools}>
+        {header}
+      </CloseableHeader>
       <div className="px-3 mt-1 mb-3">
         <Segmented
           block

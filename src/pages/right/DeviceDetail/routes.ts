@@ -18,7 +18,12 @@ const route = {
 /** 设备详情组件基础类型 */
 export type BaseDeviceDetailProps = {
   data: API_DEVICE.domain.Device
+  headerTools?: ReactNode
   onClose?: () => void
+  headerProps?: React.DetailedHTMLProps<
+    React.HTMLAttributes<HTMLDivElement>,
+    HTMLDivElement
+  >
 }
 
 /**

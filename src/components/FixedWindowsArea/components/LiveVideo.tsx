@@ -1,11 +1,11 @@
 import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
-import { WindowType } from '@/store/useFixedWindows.store'
+import { LiveVideoParams, WindowType } from '@/store/useFixedWindows.store'
 import BaseWindow from './BaseWindow'
 import { getDeviceDetail } from '@/service/modules/device'
 import { LoadingOutlined } from '@ant-design/icons'
 
 type PropsType = {
-  data: WindowType['type'] extends 'live-video' ? WindowType : never
+  data: WindowType & { params: LiveVideoParams }
 }
 
 /** 窗口 - 实况视频 */
@@ -13,8 +13,8 @@ const FixedWindowLiveVideo: FC<PropsType> = memo(({ data }) => {
   const queryClient = useQueryClient()
   const { data: detail, isLoading } = useQuery(
     {
-      queryKey: ['deviceDetail', data.deviceId],
-      queryFn: () => getDeviceDetail(data.deviceId),
+      queryKey: ['deviceDetail', data.params.deviceId],
+      queryFn: () => getDeviceDetail(data.params.deviceId),
     },
     queryClient,
   )
@@ -29,9 +29,9 @@ const FixedWindowLiveVideo: FC<PropsType> = memo(({ data }) => {
     >
       <DeviceLiveVideo
         useDing={false}
-        productKey={data.productKey}
-        deviceId={data.deviceId}
-        videoId={data.videoId}
+        productKey={data.params.productKey}
+        deviceId={data.params.deviceId}
+        videoId={data.params.videoId}
       />
     </BaseWindow>
   )

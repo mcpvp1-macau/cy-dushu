@@ -15,6 +15,7 @@ import UavUpdateRealMarker from './components/UpdateRealMarker'
 import useServerEventMsg from '@/pages/control-room/uav/hooks/useServerEventMsg'
 import DeviceIcon from '@/components/device/DeviceIcon'
 import { BaseDeviceDetailProps } from '../routes'
+import useIsRightDetail from '../hooks/useIsRightDetail'
 
 const Header: FC = memo(() => {
   const deviceName =
@@ -36,58 +37,66 @@ Header.displayName = 'UavDetailHeader'
 
 type PropsType = BaseDeviceDetailProps
 
-const UavDetail: FC<PropsType> = memo(({ data, onClose }) => {
-  const productKey = (data.productKey || data.deviceModel?.productKey)!
-  const deviceId = data.deviceId
-  const store = useCreateUavControlRoomStore(
-    productKey!,
-    deviceId,
-    useServerEventMsg(),
-  )
+const UavDetail: FC<PropsType> = memo(
+  ({ data, headerTools, headerProps, onClose }) => {
+    const productKey = (data.productKey || data.deviceModel?.productKey)!
+    const deviceId = data.deviceId
+    const store = useCreateUavControlRoomStore(
+      productKey!,
+      deviceId,
+      useServerEventMsg(),
+    )
 
-  useEffect(() => {
-    store?.getState()?.resetState()
-    store?.getState()?.updateProdctKeyAndDeviceId(productKey!, deviceId)
-  }, [deviceId])
+    useEffect(() => {
+      store?.getState()?.resetState()
+      store?.getState()?.updateProdctKeyAndDeviceId(productKey!, deviceId)
+    }, [deviceId])
 
-  const [tab, setTab] = useState(0)
+    const [tab, setTab] = useState(0)
 
-  const { t } = useTranslation()
+    const { t } = useTranslation()
+    const isRightDetail = useIsRightDetail()
 
-  return (
-    <UavControlRoomStoreContext.Provider value={store}>
-      <div className="overflow-y-hidden flex flex-col backdrop-blur-sm">
-        <CloseableHeader onClose={onClose}>
-          <Header />
-        </CloseableHeader>
-        <div className="px-3 mt-1 mb-3">
-          <Segmented
-            block
-            value={tab}
-            // options={segmentOptions.current!}
-            options={[
-              {
-                label: t('common.detail'),
-                value: 0,
-                icon: <IconDetail />,
-              },
-              {
-                label: t('common.data'),
-                value: 1,
-                icon: <IconData />,
-              },
-            ]}
-            onChange={setTab}
-          />
+    return (
+      <UavControlRoomStoreContext.Provider value={store}>
+        <div className="overflow-y-hidden flex flex-col backdrop-blur-sm">
+          <CloseableHeader
+            onClose={onClose}
+            rightTools={headerTools}
+            {...headerProps}
+          >
+            <Header />
+          </CloseableHeader>
+          <div className="px-3 mt-1 mb-3">
+            <Segmented
+              block
+              value={tab}
+              // options={segmentOptions.current!}
+              options={[
+                {
+                  label: t('common.detail'),
+                  value: 0,
+                  icon: <IconDetail />,
+                },
+                {
+                  label: t('common.data'),
+                  value: 1,
+                  icon: <IconData />,
+                },
+              ]}
+              onChange={setTab}
+            />
+          </div>
+          <ScrollArea className="grow">
+            {tab === 0 ? <UavDetailDetail data={data} /> : <UavDetailData />}
+          </ScrollArea>
         </div>
-        <ScrollArea className="grow">
-          {tab === 0 ? <UavDetailDetail data={data} /> : <UavDetailData />}
-        </ScrollArea>
-      </div>
-      <UavUpdateRealMarker />
-    </UavControlRoomStoreContext.Provider>
-  )
-})
+        {/* 比如钉出的设备详情，不需要更新地图上对应的位置 */}
+        {isRightDetail && <UavUpdateRealMarker />}
+      </UavControlRoomStoreContext.Provider>
+    )
+  },
+)
 
 UavDetail.displayName = 'UavDetail'
 

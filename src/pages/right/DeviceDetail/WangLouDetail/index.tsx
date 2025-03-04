@@ -21,66 +21,74 @@ const WangLouDetailDetail = lazy(
 )
 const WangLouDetailData = lazy(() => import('./components/WangLouDetailData'))
 
-const WangLouDetail: FC<PropsType> = memo(({ data, onClose }) => {
-  const productKey = data.productKey || data.deviceModel?.productKey
-  const deviceId = data.deviceId
-  const store = useCreateWangLouControlRoomStore(
-    productKey!,
-    deviceId,
-    useServerEventMsg(),
-  )
+const WangLouDetail: FC<PropsType> = memo(
+  ({ data, headerTools, headerProps, onClose }) => {
+    const productKey = data.productKey || data.deviceModel?.productKey
+    const deviceId = data.deviceId
+    const store = useCreateWangLouControlRoomStore(
+      productKey!,
+      deviceId,
+      useServerEventMsg(),
+    )
 
-  const header = useMemo(
-    () => (
-      <div className="flex gap-2 items-center">
-        <DeviceIconCamera className="device-detail-icon" />
-        <h6 className="text-white text-base">{data.deviceName}</h6>
-      </div>
-    ),
-    [data.deviceName],
-  )
-  const { t } = useTranslation()
-  const [tab, setTab] = useState(0)
-
-  return (
-    <WangLouControlRoomStoreContext.Provider value={store}>
-      <div className="overflow-y-hidden flex flex-col backdrop-blur-sm">
-        <CloseableHeader onClose={onClose}>{header}</CloseableHeader>
-        <div className="px-3 mt-1 mb-3">
-          <Segmented
-            block
-            value={tab}
-            options={[
-              {
-                label: t('common.detail'),
-                value: 0,
-                icon: <IconDetail />,
-              },
-              {
-                label: t('common.data'),
-                value: 1,
-                icon: <IconData />,
-              },
-            ]}
-            onChange={setTab}
-          />
+    const header = useMemo(
+      () => (
+        <div className="flex gap-2 items-center">
+          <DeviceIconCamera className="device-detail-icon" />
+          <h6 className="text-white text-base">{data.deviceName}</h6>
         </div>
-        {/* <div className="flex-1 overflow-y-auto"> */}
-        <ScrollArea className="grow">
-          <AppViewSuspense>
-            {tab === 0 ? (
-              <WangLouDetailDetail />
-            ) : (
-              <WangLouDetailData deviceId={deviceId} />
-            )}
-          </AppViewSuspense>
-        </ScrollArea>
-        {/* </div> */}
-      </div>
-      <WanglouUpdateRealMarker />
-    </WangLouControlRoomStoreContext.Provider>
-  )
-})
+      ),
+      [data.deviceName],
+    )
+    const { t } = useTranslation()
+    const [tab, setTab] = useState(0)
+
+    return (
+      <WangLouControlRoomStoreContext.Provider value={store}>
+        <div className="overflow-y-hidden flex flex-col backdrop-blur-sm">
+          <CloseableHeader
+            onClose={onClose}
+            rightTools={headerTools}
+            {...headerProps}
+          >
+            {header}
+          </CloseableHeader>
+          <div className="px-3 mt-1 mb-3">
+            <Segmented
+              block
+              value={tab}
+              options={[
+                {
+                  label: t('common.detail'),
+                  value: 0,
+                  icon: <IconDetail />,
+                },
+                {
+                  label: t('common.data'),
+                  value: 1,
+                  icon: <IconData />,
+                },
+              ]}
+              onChange={setTab}
+            />
+          </div>
+          {/* <div className="flex-1 overflow-y-auto"> */}
+          <ScrollArea className="grow">
+            <AppViewSuspense>
+              {tab === 0 ? (
+                <WangLouDetailDetail />
+              ) : (
+                <WangLouDetailData deviceId={deviceId} />
+              )}
+            </AppViewSuspense>
+          </ScrollArea>
+          {/* </div> */}
+        </div>
+        <WanglouUpdateRealMarker />
+      </WangLouControlRoomStoreContext.Provider>
+    )
+  },
+)
 
 WangLouDetail.displayName = 'WangLouDetail'
 

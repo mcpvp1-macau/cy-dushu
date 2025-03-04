@@ -19,10 +19,12 @@ const VideoDing: FC<PropsType> = memo((props) => {
       toolTipProps={{ title: t('common.fixedOut') }}
       onClick={() => {
         addWindow({
-          type: 'live-video',
-          productKey: props.productKey,
-          deviceId: props.deviceId,
-          videoId: props.videoId,
+          params: {
+            type: 'live-video',
+            productKey: props.productKey,
+            deviceId: props.deviceId,
+            videoId: props.videoId,
+          },
           allowScale: true,
           layout: {
             x: document.body.clientWidth / 2 - 200,

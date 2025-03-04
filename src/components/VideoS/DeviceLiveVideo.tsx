@@ -218,7 +218,7 @@ const DeviceLiveVideo = memo(
 
       return (
         <div
-          className="size-full overflow-hidden relative"
+          className="size-full overflow-hidden relative bg-black"
           ref={wrapperRef}
           style={{ aspectRatio: aspectRatio }}
         >
