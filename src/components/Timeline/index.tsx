@@ -93,6 +93,19 @@ const Timeline: FC<PropsType> = memo(
       }
       timeline.setCustomTime(currentTime.toDate(), 'current')
       timeline.setCustomTimeMarker(fmtCurrentTime(currentTime), 'current')
+
+      console.info(
+        timeline.setItems([
+          {
+            type: 'background',
+            id: 'time-range2',
+            start: timeRange[0].toDate(),
+            end: currentTime.toDate(),
+            content: '',
+            style: 'background: #4c90f0'
+          },
+        ]),
+      )
     }, [currentTime, timeline])
 
     // 播放倍数
@@ -120,7 +133,7 @@ const Timeline: FC<PropsType> = memo(
           return
         }
         setCurrentTime((prev) => {
-          if(prev.add(1,'second').isAfter(timeRange[1])){
+          if (prev.add(1, 'second').isAfter(timeRange[1])) {
             return timeRange[0]
           }
           return prev.add(1, 'second')

@@ -30,6 +30,14 @@ const useTimelineInstance = (
         className: 'time-range',
         content: '',
       },
+      {
+        id: 'time-range2',
+        type: 'background',
+        start: startTime,
+        end: endTime,
+        className: 'time-range2',
+        content: '',
+      },
     ])
 
     setDataset(dataset)
@@ -61,8 +69,8 @@ const useTimelineInstance = (
           second: 'YYYY-MM-DD HH:mm:ss',
         },
       },
-      max: new Date(2070, 0),
-      min: new Date(2020, 0),
+      max: dayjs(endTime).add(1, 'minutes').toDate(),
+      min: startTime,
       start: startTime,
       end: endTime,
     })
@@ -97,6 +105,8 @@ const useTimelineInstance = (
       perStartTime.current = startTime.getTime()
       perEndTime.current = endTime.getTime()
       timeline.setOptions({
+        max: dayjs(endTime).add(1, 'minutes').toDate(),
+        min: startTime,
         start: startTime,
         end: endTime,
       })
