@@ -19,11 +19,9 @@ import HealthInfoMini from '@/components/device/HealthInfoMini'
 import { XFormItem } from '@/components/XForm/types'
 import useDeviceWsURL from '@/hooks/device/useDeviceWsURL'
 import useDomRect from '@/hooks/ui/useDomRect'
+import { BaseDeviceDetailProps } from '../routes'
 
-type PropsType = {
-  data: API_DEVICE.domain.Device
-  onClose?: () => void
-}
+type PropsType = BaseDeviceDetailProps
 
 const map = new Map<string, string>([
   ['device_reboot', '机场重启'],

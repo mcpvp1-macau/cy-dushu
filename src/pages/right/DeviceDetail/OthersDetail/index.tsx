@@ -11,16 +11,14 @@ import CloseableHeader from '../../components/CloseableHeader'
 import { Segmented } from 'antd'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import AppViewSuspense from '@/components/AppViewSuspense'
+import { BaseDeviceDetailProps } from '../routes'
 
 const OthersDetailDetail = lazy(() => import('./components/OthersDetailDetail'))
 const OthersDetailData = lazy(() => import('./components/OthersDetailData'))
 
-type PropsType = {
-  data: API_DEVICE.domain.Device
-  onClose?: () => void
-}
+type PropsType = BaseDeviceDetailProps
 
-const OthersDetail: React.FC<PropsType> = ({ data, onClose }) => {
+const OthersDetail: FC<PropsType> = memo(({ data, onClose }) => {
   const productKey = data.productKey || data.deviceModel?.productKey
   const deviceId = data.deviceId
   const deviceType = data.deviceType
@@ -81,6 +79,8 @@ const OthersDetail: React.FC<PropsType> = ({ data, onClose }) => {
       {/* <WanglouUpdateRealMarker /> */}
     </OthersControlRoomStoreContext.Provider>
   )
-}
+})
 
-export default React.memo(OthersDetail)
+OthersDetail.displayName = 'OthersDetail'
+
+export default OthersDetail

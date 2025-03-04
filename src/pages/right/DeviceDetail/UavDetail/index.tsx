@@ -14,6 +14,7 @@ import UavCreateAction from './components/UavCreateAction'
 import UavUpdateRealMarker from './components/UpdateRealMarker'
 import useServerEventMsg from '@/pages/control-room/uav/hooks/useServerEventMsg'
 import DeviceIcon from '@/components/device/DeviceIcon'
+import { BaseDeviceDetailProps } from '../routes'
 
 const Header: FC = memo(() => {
   const deviceName =
@@ -33,10 +34,7 @@ const Header: FC = memo(() => {
 
 Header.displayName = 'UavDetailHeader'
 
-type PropsType = {
-  data: API_DEVICE.domain.Device
-  onClose?: () => void
-}
+type PropsType = BaseDeviceDetailProps
 
 const UavDetail: FC<PropsType> = memo(({ data, onClose }) => {
   const productKey = (data.productKey || data.deviceModel?.productKey)!

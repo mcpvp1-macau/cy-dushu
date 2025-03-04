@@ -5,11 +5,9 @@ import { Segmented } from 'antd'
 import IconDetail from '@/assets/icons/jsx/IconDetail'
 import IconData from '@/assets/icons/jsx/IconData'
 import AppViewSuspense from '@/components/AppViewSuspense'
+import { BaseDeviceDetailProps } from '../routes'
 
-type PropsType = {
-  data: API_DEVICE.domain.Device
-  onClose?: () => void
-}
+type PropsType = BaseDeviceDetailProps
 
 const CameraDetailDetail = lazy(() => import('./components/CameraDetailDetail'))
 const CameraDetailData = lazy(() => import('./components/CameraDetailData'))

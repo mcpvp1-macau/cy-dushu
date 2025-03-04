@@ -12,11 +12,9 @@ import {
 import useServerEventMsg from '@/pages/control-room/uav/hooks/useServerEventMsg'
 import WanglouUpdateRealMarker from './components/UpdateRealMarker'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { BaseDeviceDetailProps } from '../routes'
 
-type PropsType = {
-  data: API_DEVICE.domain.Device
-  onClose?: () => void
-}
+type PropsType = BaseDeviceDetailProps
 
 const WangLouDetailDetail = lazy(
   () => import('./components/WangLouDetailDetail'),
