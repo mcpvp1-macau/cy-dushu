@@ -18,6 +18,7 @@ import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import HealthInfoMini from '@/components/device/HealthInfoMini'
 import { XFormItem } from '@/components/XForm/types'
 import useDeviceWsURL from '@/hooks/device/useDeviceWsURL'
+import useDomRect from '@/hooks/ui/useDomRect'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -157,9 +158,16 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
     setTakeoffFalse()
   }
 
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const containerRect = useDomRect(containerRef)
+
   return (
     <>
-      <div className="overflow-y-hidden flex flex-col relative backdrop-blur-sm">
+      <div
+        className="overflow-y-hidden flex flex-col relative backdrop-blur-sm"
+        ref={containerRef}
+      >
         <CloseableHeader>
           <div className="flex gap-2 items-center">
             {header}
@@ -224,6 +232,12 @@ const UavAirportDetail: FC<PropsType> = memo(({ data }) => {
           state={state}
           progress={progressState}
           onClose={() => setOpenDebug(false)}
+          className="-translate-x-full"
+          style={{
+            position: 'fixed',
+            top: containerRect?.top ? containerRect.top - 1 : undefined,
+            left: containerRect?.left ? containerRect.left - 1 : undefined,
+          }}
         />
       )}
       {takeOffOpen && (
