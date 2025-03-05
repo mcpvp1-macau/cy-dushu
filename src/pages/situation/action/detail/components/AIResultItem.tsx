@@ -1,6 +1,5 @@
-import ImageContainBox from '@/components/ImageContainBox'
 import dayjs from 'dayjs'
-import { memo, type FC } from 'react'
+import ImageContainBoxPreview from '@/components/ImageContainBoxPreview'
 
 type PropsType = {
   data: API_ACTION.domain.AIResultRecord
@@ -15,8 +14,12 @@ const AiResultItem: FC<PropsType> = memo(({ data }) => {
         {data.plateNo || t('action.detail.aiResult.empty.title')}
       </p>
       <div className="flex h-24 gap-2">
-        <div className="w-[140px] h-24">
-          <ImageContainBox src={`/storage${data.image || data.sourceImage}`}>
+        <div className="w-[140px] h-24 relative">
+          <ImageContainBoxPreview
+            src={`/storage${data.image || data.sourceImage}`}
+            sourceWidth={data.sourceFrameWidth}
+            sourceHeight={data.sourceFrameHeight}
+          >
             {data.leftTopX && data.leftTopY && (
               <div
                 className="absolute border border-solid border-red-400"
@@ -37,7 +40,7 @@ const AiResultItem: FC<PropsType> = memo(({ data }) => {
                 }}
               />
             )}
-          </ImageContainBox>
+          </ImageContainBoxPreview>
         </div>
         <ul className="flex flex-col justify-between text-fore">
           <li className="flex gap-1">
