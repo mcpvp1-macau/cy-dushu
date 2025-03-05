@@ -8,7 +8,7 @@ export default mergeConfig(
       proxy: {
         // 4A 接口
         '/proxyApi': {
-          target: 'http://172.31.0.19:31851',
+          target: 'http://172.31.0.19:32711',
           // target: 'http://127.0.0.1:7001/',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/proxyApi/, '/'),
