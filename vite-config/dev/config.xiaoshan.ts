@@ -63,6 +63,7 @@ export default mergeConfig(
             max: 18,
           },
         ],
+        videoProxy: true,
       },
     },
   }),
