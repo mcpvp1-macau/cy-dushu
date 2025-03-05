@@ -509,6 +509,7 @@ common:
   success: Success
   live: Live
   parameterError: Parameter Error
+  tanqi: Tanqi
 events:
   search:
     placeholder: Please search by event name or ID

@@ -41,6 +41,8 @@ import RightOverlayDetail from './components/right_detail/Overlay'
 import useControlRoomTargetInfoStore from '@/store/control-room/useTargetInfo.store'
 import { useLocation } from 'react-router'
 import InitialPointFly from './components/InitialPointFly'
+import IconTanQi from '@/assets/icons/jsx/IconTanQi'
+import Tanqi from './components/Tanqi'
 
 type PropsType = unknown
 
@@ -82,6 +84,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       'ai-list': <IconAISwitch className="text-violet-500" />,
       'device-data': <IconDeviceData className="text-emerald-500" />,
       overlay: <IconDrawArea className="text-blue-500" />,
+      tanqi: <IconTanQi className="text-purple-500" />,
     }),
     [],
   )
@@ -97,6 +100,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       ['ai-list']: t('controlRoom.uav.aiList.title'),
       ['device-data']: t('controlRoom.uav.deviceData.title'),
       overlay: t('controlRoom.uav.overlay.title'),
+      tanqi: t('common.tanqi'),
     }),
     [t],
   )
@@ -145,6 +149,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
         </div>
       ),
       overlay: <RightOverlayDetail />,
+      tanqi: <Tanqi />,
     }),
     [productKey, deviceId],
   )

@@ -9,7 +9,6 @@ import GlobalState from './components/GlobalState'
 import Right from './pages/right'
 import AppViewSuspense from './components/AppViewSuspense'
 import RightTools from './components/right-tools'
-import { ConfigProvider } from 'antd'
 import { themeConfig } from './config/theme-config'
 import AppEmpty from './components/AppEmpty.tsx'
 import zh from 'antd/es/locale/zh_CN'
@@ -22,6 +21,7 @@ import organization from './router/modules/organization'
 import FixedWindowArea from './components/FixedWindowsArea'
 import backtracking from './router/modules/backtracking'
 import share from './router/modules/share.tsx'
+import { XProvider } from '@ant-design/x'
 
 const hidenSet = new Set([
   controlRoom.id,
@@ -63,7 +63,7 @@ const App = () => {
   const { i18n } = useTranslation()
 
   return (
-    <ConfigProvider
+    <XProvider
       renderEmpty={() => <AppEmpty />}
       theme={themeConfig}
       locale={i18n.language === 'zh' ? zh : en}
@@ -101,7 +101,7 @@ const App = () => {
           </div>
         </AppMsgContext.Provider>
       </div>
-    </ConfigProvider>
+    </XProvider>
   )
 }
 

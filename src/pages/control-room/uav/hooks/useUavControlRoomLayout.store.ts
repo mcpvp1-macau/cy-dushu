@@ -72,6 +72,9 @@ const initialLayout: DynamicLayoutType = {
         {
           key: 'device-data',
         },
+        {
+          key: 'tanqi',
+        },
       ],
     },
   ],
@@ -101,7 +104,8 @@ export const useUavControlRoomLayoutStore = create<StateType & ActionsType>()(
       updateMapRight: (right) => set({ mapRight: right }),
     }),
     {
-      name: 'uavControlRoomLayoutV2',
+      name: 'uavControlRoomLayout',
+      version: 2,
     },
   ),
 )
