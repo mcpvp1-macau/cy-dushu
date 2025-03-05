@@ -28,6 +28,7 @@ export default mergeConfig(
         '/storage': {
           target: 'http://172.31.0.19:32205',
           changeOrigin: true,
+          // rewrite: (path) => path.replace(/^\/storage/, '/'),
         },
         // 历史视频
         '/stream': {
