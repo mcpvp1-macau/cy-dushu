@@ -5,9 +5,17 @@ import {
 import { useBackTrackingStore } from '@/store/context-store/useBackTracking.store'
 import { useQuery } from '@tanstack/react-query'
 import { memo, useMemo, type FC } from 'react'
-import { Billboard, BillboardCollection, Label, LabelCollection } from 'resium'
+import {
+  Billboard,
+  BillboardCollection,
+  Label,
+  LabelCollection,
+  useCesium,
+} from 'resium'
 import * as Cesium from 'cesium'
+import { attempt } from 'lodash'
 import { deviceIconMap } from '@/map/GlobalMap/DeviceMarkers/OtherMarkers/OtherMarker'
+import useFly from '../hooks/useFly'
 
 type PropsType = {
   deviceId?: string
@@ -32,7 +40,7 @@ const DeviceMarkersBackTracking: FC<PropsType> = memo(
   ({ deviceId, deviceIds, onClick }) => {
     const dataTime = useBackTrackingStore((s) => s.currentTime)
     const startTime = useBackTrackingStore((s) => s.timeRange[0])
-
+    const { viewer } = useCesium()
     const { data } = useQuery({
       queryKey: ['action-devices-back-tracking', dataTime, deviceIds],
       queryFn: async () => {
@@ -43,6 +51,7 @@ const DeviceMarkersBackTracking: FC<PropsType> = memo(
         })
         return response.data || []
       },
+      enabled: !!deviceIds.length,
     })
 
     const featureCollections = useMemo(
@@ -53,10 +62,12 @@ const DeviceMarkersBackTracking: FC<PropsType> = memo(
       [data, deviceId],
     )
 
+    useFly(data?.[0])
+
     return (
       <BillboardCollection>
         <LabelCollection>
-          {featureCollections
+          {(deviceIds.length ? featureCollections : [])
             .filter((item: DeviceBackItem) => deviceId !== item.deviceId)
             .map((item: DeviceBackItem) => {
               const {

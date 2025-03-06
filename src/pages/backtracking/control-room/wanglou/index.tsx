@@ -120,7 +120,6 @@ const BackTrackingWanglouControlRoom: React.FC = () => {
     [deviceId, data],
   )
 
-  console.info('????????', data)
   const { pathname } = useLocation()
   return (
     <BackTrackingStoreContext.Provider value={store}>

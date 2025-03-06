@@ -10,7 +10,9 @@ const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
         <div className="truncate w-[60px]">{l}</div>
       </Tooltip>
       <div>:</div>
-      {v === undefined ? '-' : v}
+      <span className="text-[#fff] text-[14px]">
+        {v === undefined ? '-' : v}
+      </span>
     </li>
   )
 }

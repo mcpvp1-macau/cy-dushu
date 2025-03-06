@@ -9,6 +9,7 @@ import { phoneReg } from '@/constant/regExp'
 import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons'
 import { Form, Input, Select } from 'antd'
 import { uniqWith } from 'lodash'
+import ImageContainBoxPreview from '@/components/ImageContainBoxPreview'
 
 const areaMap = ['(省)', '(市)', '(区)', '(街道)', '(路名/门牌)']
 const areaNameMap = ['a1', 'a2', 'a3', 'a4', 'a5']
@@ -362,7 +363,7 @@ const KCYPXSVerificationModal: FC<PropsType> = memo(
                   />
                 </Form.Item>,
                 '事故形态',
-                <Form.Item name="otherBrokenPart" noStyle>
+                <Form.Item name="accidentFrom" noStyle>
                   <Select className="w-full" options={accidentFromOptions} />
                 </Form.Item>,
               ]}
@@ -370,7 +371,7 @@ const KCYPXSVerificationModal: FC<PropsType> = memo(
             <Line
               items={[
                 '车辆碰撞形态',
-                <Form.Item name="firstScene" className="w-full" noStyle>
+                <Form.Item name="accidCollision" className="w-full" noStyle>
                   <Select
                     className="w-full"
                     options={accidentCollisionOptions}
@@ -396,10 +397,34 @@ const KCYPXSVerificationModal: FC<PropsType> = memo(
                       />
                     </Form.Item>
                   </div>
-                  <div className="w-full overflow-hidden aspect-video border border-solid border-ground-5">
-                    <ImageContainBox
+                  <div className="w-full overflow-hidden aspect-video border border-solid border-ground-5 relative">
+                    <ImageContainBoxPreview
                       src={`/storage${e.image || e.sourceImage}`}
-                    />
+                      sourceWidth={e.sourceFrameWidth}
+                      sourceHeight={e.sourceFrameHeight}
+                    >
+                      {e.leftTopX && e.leftTopY && (
+                        <div
+                          className="absolute border border-solid border-red-400"
+                          style={{
+                            left: `${(e.leftTopX / e.sourceFrameWidth) * 100}%`,
+                            top: `${(e.leftTopY / e.sourceFrameHeight) * 100}%`,
+                            right: `${
+                              100 -
+                              ((e.leftTopX + e.bboxWidth) /
+                                e.sourceFrameWidth) *
+                                100
+                            }%`,
+                            bottom: `${
+                              100 -
+                              ((e.leftTopY + e.bboxHeight) /
+                                e.sourceFrameHeight) *
+                                100
+                            }%`,
+                          }}
+                        ></div>
+                      )}
+                    </ImageContainBoxPreview>
                   </div>
                 </div>
               ))}

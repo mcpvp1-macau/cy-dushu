@@ -10,7 +10,6 @@ import { useDebounceFn, useSize, useUpdateEffect } from 'ahooks'
 import { Checkbox, ConfigProvider, Form, Input, Select, Spin } from 'antd'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconKCCheck from '@/assets/icons/jsx/IconKCCheck'
-import ImageContainBox from '@/components/ImageContainBox'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import { useDictOptions } from '@/store/useDict.store'
 import { DictEnum } from '@/enum/dict'
@@ -20,6 +19,7 @@ import { useAppMsg } from '@/hooks/useAppMsg'
 import { ActionEnum } from '@/constant/action/action_type'
 import { lazy, Suspense } from 'react'
 import { LoadingOutlined } from '@ant-design/icons'
+import ImageContainBoxPreview from '@/components/ImageContainBoxPreview'
 
 type PropsType = {
   actionId: string
@@ -66,7 +66,11 @@ const ResultItem: FC<{ data: API_ACTION.domain.AIResultRecord }> = memo(
     return (
       <div className="flex gap-2">
         <div className="w-[213px] h-[120px] relative border border-solid border-ground-5 box-content bg-ground-1">
-          <ImageContainBox src={`/storage${data.image || data.sourceImage}`}>
+          <ImageContainBoxPreview
+            src={`/storage${data.image || data.sourceImage}`}
+            sourceWidth={data.sourceFrameWidth}
+            sourceHeight={data.sourceFrameHeight}
+          >
             {data.leftTopX && data.leftTopY && (
               <div
                 className="absolute border border-solid border-red-400"
@@ -87,7 +91,29 @@ const ResultItem: FC<{ data: API_ACTION.domain.AIResultRecord }> = memo(
                 }}
               />
             )}
-          </ImageContainBox>
+          </ImageContainBoxPreview>
+          {/* <ImageContainBox src={`/storage${data.image || data.sourceImage}`}>
+            {data.leftTopX && data.leftTopY && (
+              <div
+                className="absolute border border-solid border-red-400"
+                style={{
+                  left: `${(data.leftTopX / data.sourceFrameWidth) * 100}%`,
+                  top: `${(data.leftTopY / data.sourceFrameHeight) * 100}%`,
+                  right: `${
+                    100 -
+                    ((data.leftTopX + data.bboxWidth) / data.sourceFrameWidth) *
+                      100
+                  }%`,
+                  bottom: `${
+                    100 -
+                    ((data.leftTopY + data.bboxHeight) /
+                      data.sourceFrameHeight) *
+                      100
+                  }%`,
+                }}
+              />
+            )}
+          </ImageContainBox> */}
           <div className="absolute left-2 top-2">
             <Checkbox value={data.id} />
           </div>

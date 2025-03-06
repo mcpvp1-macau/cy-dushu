@@ -30,7 +30,6 @@ const WanglouInfo: React.FC = memo(() => {
     }
   }, [currentAttribute])
 
-  console.info('s=====', state)
 
   const { t } = useTranslation()
 

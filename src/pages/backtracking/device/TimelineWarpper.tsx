@@ -58,6 +58,7 @@ const TimelineWarpper: React.FC<PropsType> = memo(({ startTime, endTime }) => {
   }, [multiple, playing])
 
   useEffect(() => {
+    console.log('====startTime, endTime', startTime, endTime)
     if(startTime && endTime) {
       updateCurrentTime(dayjs(endTime))
       updateTimeRange([dayjs(startTime), dayjs(endTime)])
