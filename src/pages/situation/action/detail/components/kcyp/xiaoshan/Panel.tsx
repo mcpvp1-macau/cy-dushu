@@ -56,7 +56,7 @@ const KCYPXSPanel: FC<PropsType> = memo(({ actionId }) => {
     mutationFn: saveXSKCYPOrder,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['getXSKYCPOrder', actionId],
+        queryKey: ['getXSKCYPOrder', actionId],
       })
     },
   })
