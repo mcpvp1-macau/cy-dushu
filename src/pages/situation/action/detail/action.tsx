@@ -109,7 +109,7 @@ const PageActionDetailSub: FC<PropsType> = memo(
       <div className="pt-3 h-full flex flex-col overflow-y-hidden">
         {actionDetail ? (
           <ScrollArea className="grow">
-            <AppCollapse defaultActiveKey={['2']} items={items} />
+            <AppCollapse defaultActiveKey={['2', '3', '4']} items={items} />
           </ScrollArea>
         ) : (
           <AppSpin />

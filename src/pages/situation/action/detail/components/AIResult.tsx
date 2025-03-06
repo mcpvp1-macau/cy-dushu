@@ -50,7 +50,7 @@ const AIResult: FC<PropsType> = memo(
 
     return (
       <Spin spinning={isRefetching}>
-        <ul className="p-3 flex flex-col gap-3">
+        <ul className="p-3 flex flex-col gap-3 max-h-[400px] overflow-y-auto">
           {data.map((e) => (
             <li key={e.id}>
               <AiResultItem data={e} />

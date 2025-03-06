@@ -91,6 +91,8 @@ const useTimelineInstance = (
     }
   }, [containerRef])
 
+  console.log('====1', timeRange)
+
   useEffect(() => {
     if (!timeline) {
       return

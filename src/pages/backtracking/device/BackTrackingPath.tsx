@@ -6,6 +6,7 @@ import SampledPath from './SampledPath'
 import { useCesium } from 'resium'
 import { attempt } from 'lodash'
 import * as Cesium from 'cesium'
+import useFly from '../hooks/useFly'
 
 type PropsType = {
   deviceId: string
@@ -55,39 +56,7 @@ const BackTrackingPath: React.FC<PropsType> = memo(({ deviceId }) => {
     [lineData, deviceId],
   )
 
-  // 记录是否定位过
-  const flyed = useRef(false)
-
-  useEffect(() => {
-    if (viewer && curAttr?.lng && curAttr?.lat) {
-      if (!viewer?.camera) {
-        return
-      }
-      if (flyed.current) {
-        return
-      }
-      const cameraHeight =
-        Math.round(viewer?.camera?.positionCartographic?.height) ||
-        curAttr.altitude + 500
-      let targetHeight = cameraHeight
-      if (cameraHeight > (globalConfig?.disableZoomHeight || 2000)) {
-        targetHeight = curAttr.altitude + 500
-      }
-
-      const destination = Cesium.Cartesian3.fromDegrees(
-        curAttr.lng,
-        curAttr.lat,
-        targetHeight,
-      )
-      attempt(() => {
-        viewer.camera?.flyTo({
-          destination, //相机飞入点
-          duration: 0.8,
-        })
-        flyed.current = true
-      })
-    }
-  }, [viewer, curAttr])
+  useFly(curAttr)
 
   return (
     <>
