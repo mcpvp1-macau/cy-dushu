@@ -26,6 +26,7 @@ export type ConfigType = {
       particularHeader?: boolean
     }
   }
+  isHaveBacktracking?: boolean
 }
 
 type WindowType = Window & { config: ConfigType }

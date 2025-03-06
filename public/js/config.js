@@ -34,6 +34,7 @@ window.config = {
       particularHeader: false,
     },
   },
+  isHaveBacktracking: true,
 }
 
 if (isPublic()) {

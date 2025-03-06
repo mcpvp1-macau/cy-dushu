@@ -129,11 +129,15 @@ const SourceTable: FC<PropsType> = memo(() => {
           return (
             <div className="flex gap-3">
               <DeviceData deviceData={cell?.row.original} />
-              {backtrackingDeviceType.includes(data.deviceType) && (
-                <Link to={`/backtracking/device/${data.deviceId}`}>
-                  <TextButton>{t('common.backTracking')}</TextButton>
-                </Link>
-              )}
+              {globalConfig.isHaveBacktracking ? (
+                <>
+                  {backtrackingDeviceType.includes(data.deviceType) && (
+                    <Link to={`/backtracking/device/${data.deviceId}`}>
+                      <TextButton>{t('common.backTracking')}</TextButton>
+                    </Link>
+                  )}
+                </>
+              ) : null}
             </div>
           )
         },

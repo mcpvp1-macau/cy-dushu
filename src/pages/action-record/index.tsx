@@ -96,9 +96,13 @@ const PageActionRecord: FC<PropsType> = memo(() => {
           const item = cell.row.original
           return (
             <div className="flex gap-3">
-              <Link to={`/backtracking/action/${item.actionId}/${item.startTime}/${item.endTime}`}>
+              {globalConfig.isHaveBacktracking ? (
+                <Link
+                  to={`/backtracking/action/${item.actionId}/${item.startTime}/${item.endTime}`}
+                >
                   <TextButton>{t('common.backTracking')}</TextButton>
                 </Link>
+              ) : null}
               <TextButton
                 onClick={() =>
                   downloadAndRename(
