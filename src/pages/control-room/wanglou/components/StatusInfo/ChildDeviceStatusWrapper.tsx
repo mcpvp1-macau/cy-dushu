@@ -42,9 +42,9 @@ const ChildDeviceStatusItem: React.FC<PropsType> = memo(({ data, state }) => {
           const showWarning = isShowCusWaring || warnConfig?.enable?.(value)
 
           return (
-            <div className="w-1/2 flex" key={propertyName + label}>
+            <div className="w-1/2 flex pl-[12px]" key={propertyName + label}>
               <Tooltip title={label} placement="topLeft">
-                <div className="text-[12px] w-[80px] text-right text-ellipsis overflow-hidden whitespace-nowrap">
+                <div className="text-[12px] w-[80px] text-left text-ellipsis overflow-hidden whitespace-nowrap">
                   {`${label}${'：'}`}
                 </div>
               </Tooltip>

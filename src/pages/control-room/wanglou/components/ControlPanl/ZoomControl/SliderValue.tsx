@@ -44,8 +44,9 @@ const SliderValue: React.FC<Props> = (props) => {
                 onChange?.(value || 0)
               }}
               size="small"
+              style={{ width: 50 }}
             />
-            <div>{unit}</div>
+            <div className='ml-[12px] leading-[24px]'>{unit}</div>
           </Flex>
         </Flex>
         <Flex justify="space-between" gap={12} style={{ width: '100%' }}>
@@ -54,7 +55,8 @@ const SliderValue: React.FC<Props> = (props) => {
             onClick={() => {
               !disabled && onChange?.(value! - 1)
             }}
-            style={{ padding: '0px 6px', marginTop: '4px' }}
+            size='small'
+            style={{ padding: '0px 6px', marginTop: '6px',width:'20px', height:'20px' }}
           >
             <Icon id="icon-cuxian" />
           </Button>
@@ -69,7 +71,8 @@ const SliderValue: React.FC<Props> = (props) => {
             onClick={() => {
               !disabled && onChange?.(value! + 1)
             }}
-            style={{ padding: '0px 6px', marginTop: '4px' }}
+            size='small'
+            style={{ padding: '0px 6px', marginTop: '6px' ,width:'20px', height:'20px' }}
           >
             <Icon id="icon-jia" />
           </Button>
