@@ -3,7 +3,7 @@ import EditableNameHeader from '@/components/EditableNameHeader'
 import { getAction, updAction } from '@/service/modules/action'
 import { GetProps, Tabs } from 'antd'
 import SourceTypeSelect from '../../components/SourceTypeSelect'
-import { Outlet, useMatch } from 'react-router'
+import { Outlet } from 'react-router'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import { Provider } from './context'
 
@@ -11,11 +11,14 @@ type PropsType = unknown
 
 const PageSituationActionDetail: FC<PropsType> = memo(() => {
   const { actionId } = useParams()
+  const location = useLocation()
   const { t } = useTranslation()
 
   const queryClient = useQueryClient()
 
-  const matchedAction = useMatch('/action/:actionId')
+  const defaultActiveTab = /^\/action\/[^/]+\/source.*/.test(location.pathname)
+    ? 'source'
+    : 'action'
 
   const { data, isLoading } = useQuery(
     {
@@ -32,7 +35,7 @@ const PageSituationActionDetail: FC<PropsType> = memo(() => {
 
   const handleSourceTypeChange = useMemoizedFn((type: string) => {
     setSourceType(type)
-    if (sourceType && type) {
+    if (defaultActiveTab === 'source' && sourceType && type) {
       // 确定是 sourceType 变化，才跳转
       navigate(`source/${type}`)
     }
@@ -93,7 +96,7 @@ const PageSituationActionDetail: FC<PropsType> = memo(() => {
         items={menus}
         size="small"
         onChange={handleTabChange}
-        defaultActiveKey={matchedAction ? 'action' : 'source'}
+        activeKey={defaultActiveTab}
       />
       <div className="flex-1 overflow-y-hidden">
         <Provider value={data}>
