@@ -74,7 +74,7 @@ const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
     mutationFn: saveKCYPOrder,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['getKYCPOrder', actionId],
+        queryKey: ['getKCYPOrder', actionId],
       })
     },
   })

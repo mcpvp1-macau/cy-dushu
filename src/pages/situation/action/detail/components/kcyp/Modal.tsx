@@ -143,7 +143,7 @@ const ResultItem: FC<{ data: API_ACTION.domain.AIResultRecord }> = memo(
 /** 快处易赔选择 对话框 */
 const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
   const orderKey =
-    actionType === ActionEnum.KCYP ? 'getKYCPOrder' : 'getXSKCYPOrder'
+    actionType === ActionEnum.KCYP ? 'getKCYPOrder' : 'getXSKCYPOrder'
   const [open, setOpen] = useState(false)
   const msgApi = useAppMsg()
 
