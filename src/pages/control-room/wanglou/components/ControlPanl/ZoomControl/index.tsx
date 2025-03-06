@@ -49,7 +49,7 @@ const ZoomControl: React.FC<Props> = ({ deviceType }) => {
       />
 
       <Button
-        size="small"
+        // size="small"
         disabled={disabled}
         onClick={() => {
           !disabled && run()

@@ -209,7 +209,7 @@ const Control: React.FC<PropsType> = (props) => {
             layout="vertical"
           >
             <Form.Item
-              label={`${t('common.yaw')}（0-360°）`}
+              label={<div className='text-ellipsis whitespace-nowrap'>{`${t('common.yaw')}（0-360°）`}</div>}
               name="yaw"
               style={{ marginTop: 12 }}
             >
