@@ -3,6 +3,9 @@ import { memo, type FC } from 'react'
 import UavDetailInfoCard from './InfoCard'
 import HealthInfoMini from '@/components/device/HealthInfoMini'
 import BackTrackingVideo from '../BackTrackingVideo'
+import { Link } from 'react-router-dom'
+import { Button } from 'antd'
+import IconControlRoom from '@/assets/icons/jsx/IconControlRoom'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -12,6 +15,7 @@ type PropsType = {
 
 const UavBackTrackingDetail: FC<PropsType> = memo(
   ({ data, state, updateTime }) => {
+    const { t } = useTranslation()
     return (
       <div className="w-[350px]">
         <div className="flex justify-between px-3 my-2">
@@ -42,6 +46,14 @@ const UavBackTrackingDetail: FC<PropsType> = memo(
             videoId={state.videoList?.[0]?.videoId}
           />
         </div>
+        <div className="my-2 px-3 text-xs text-center"></div>
+        <section className="mx-3 mr-[9px] my-3 flex gap-2">
+          <Link className="grow" to={`/backtracking/control-room/uav/${data.deviceId}`}>
+            <Button block className="h-7" icon={<IconControlRoom />}>
+              {t('device.enterControlRoom.title')}
+            </Button>
+          </Link>
+        </section>
         <div className="my-2 px-3 text-xs text-center">
           数据时间: {updateTime}
         </div>
