@@ -1,9 +1,11 @@
+import IconClose from '@/assets/icons/jsx/IconClose'
 import Select from '@/components/AntdOverride/Select'
 import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
 import usePicutreSourceTypeOptions from '@/constant/options/pictureSourceTypeOptions'
 import { beginDay, dft, timeOnly } from '@/constant/time-fmt'
 import { getPlatformCapture } from '@/service/modules/db-api'
+import { makeToolbarRender } from '@/utils/antd/image'
 import { Col, Image, Pagination, Row, Spin } from 'antd'
 import { Dayjs } from 'dayjs'
 
@@ -40,8 +42,8 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
         queryKey: [
           'getPlatformCapture',
           'PICTURE',
-          mode,
           deviceId,
+          mode,
           'today',
           page,
         ],
@@ -91,6 +93,7 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
             <Spin spinning={isRefetching}>
               <Image.PreviewGroup
                 preview={{
+                  closeIcon: <IconClose className="scale-125" />,
                   imageRender: (e, info) => {
                     return (
                       <>
@@ -109,6 +112,7 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
                       </>
                     )
                   },
+                  toolbarRender: makeToolbarRender(),
                 }}
               >
                 <Row className="mt-3" gutter={[8, 8]}>
@@ -127,7 +131,7 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
                           className="block size-full object-cover"
                           src={`/storage/${e.url}`}
                           preview={{ destroyOnClose: true }}
-                          alt=""
+                          alt={e.url.slice(e.url.lastIndexOf('/') + 1)}
                         />
                       </div>
                     </Col>

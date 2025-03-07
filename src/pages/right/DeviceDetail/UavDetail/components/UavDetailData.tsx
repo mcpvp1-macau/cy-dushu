@@ -6,6 +6,8 @@ import AppViewSuspense from '@/components/AppViewSuspense'
 import AppSpin from '@/components/AppSpin'
 import UsePrevDayHisTrack from './PrevDayHisTrack'
 import useIsRightDetail from '../../hooks/useIsRightDetail'
+import IconButton from '@/components/ui/button/IconButton'
+import IconRefresh from '@/assets/icons/jsx/IconRefresh'
 
 const DeviceDetailMediaDataPicture = lazy(
   () => import('../../components/MediaData/MediaPicture'),
@@ -24,6 +26,8 @@ const UavDetailData: FC<PropsType> = memo(() => {
 
   const isRightDetail = useIsRightDetail()
 
+  const queryClient = useQueryClient()
+
   if (!deviceDetail) {
     return <AppSpin />
   }
@@ -35,7 +39,27 @@ const UavDetailData: FC<PropsType> = memo(() => {
         defaultActiveKey={[0, 1]}
         items={[
           {
-            label: t('common.picture'),
+            label: (
+              <div className="flex gap-2">
+                {t('common.picture')}
+                <IconButton
+                  className="text-xs"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    queryClient.invalidateQueries({
+                      queryKey: [
+                        'getPlatformCapture',
+                        'PICTURE',
+                        deviceDetail.deviceId,
+                      ],
+                      exact: false,
+                    })
+                  }}
+                >
+                  <IconRefresh />
+                </IconButton>
+              </div>
+            ),
             key: 0,
             children: (
               <AppViewSuspense>
@@ -44,7 +68,23 @@ const UavDetailData: FC<PropsType> = memo(() => {
             ),
           },
           {
-            label: t('common.video'),
+            label: (
+              <div className="flex gap-2">
+                {t('common.video')}
+                <IconButton
+                  className="text-xs"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    queryClient.invalidateQueries({
+                      queryKey: ['getHistoryVideo', deviceDetail.deviceId],
+                      exact: false,
+                    })
+                  }}
+                >
+                  <IconRefresh />
+                </IconButton>
+              </div>
+            ),
             key: 1,
             children: (
               <AppViewSuspense>
@@ -55,10 +95,6 @@ const UavDetailData: FC<PropsType> = memo(() => {
               </AppViewSuspense>
             ),
           },
-          // {
-          //   label: '检测数据',
-          //   children: <AppEmpty />,
-          // },
         ]}
       />
       {isRightDetail && <UsePrevDayHisTrack />}
