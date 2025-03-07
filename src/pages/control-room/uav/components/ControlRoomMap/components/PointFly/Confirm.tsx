@@ -128,6 +128,12 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
               ],
               otherProps: { addonAfter: 'm/s', max: 15, min: 1 },
             },
+            {
+              label: t('device.uav.takeoffForm.goHomeAltitude.title'),
+              name: 'gohomeAltitude',
+              type: 'input-number',
+              otherProps: { addonAfter: 'm', min: 50, max: 500 },
+            },
           ]}
           onClose={setParamsOpenFalse}
           onConfirm={handleConfirm}

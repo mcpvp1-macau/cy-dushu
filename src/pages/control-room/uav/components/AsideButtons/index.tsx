@@ -1,7 +1,6 @@
 import { Button } from 'antd'
 import ControlPower from './ControlPower'
 import VerticalIconButton from '@/components/ui/button/VerticalButton.tsx'
-import IconPointFly from '@/assets/icons/jsx/uav/IconPointFly'
 import IconReturnBase from '@/assets/icons/jsx/uav/IconReturnBase'
 import IconLanding from '@/assets/icons/jsx/uav/IconLanding'
 import IconBoxSelect from '@/assets/icons/jsx/uav/IconBoxSelect'
@@ -12,6 +11,7 @@ import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import Gamepad from './Gamepad'
 import Takeoff from './Takeoff'
 import IntelligentPhotographyV1 from './IntelligentPhotographV1'
+import PointFly from './PointFly'
 
 type PropsType = unknown
 
@@ -24,9 +24,6 @@ const AsideButtons: FC<PropsType> = memo(() => {
 
   const canBoxSelect =
     !isLimitedFly && hasControlPower && serviceHave['gimbalToPoint']
-
-  const canPointFly =
-    !isLimitedFly && hasControlPower && serviceHave['gotoPosition']
 
   const canStopAll = serviceHave['stopAll']
 
@@ -44,13 +41,6 @@ const AsideButtons: FC<PropsType> = memo(() => {
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
 
   const postSerivce = usePostDeviceService(productKey, deviceId)
-
-  const updateFlyParamsOpen = useUavControlRoomStore(
-    (s) => s.updateFlyParamsOpen,
-  )
-
-  const openPointFly = useUavControlRoomStore((s) => s.pointFly.open)
-  const updatePointFly = useUavControlRoomStore((s) => s.updatePointFly)
 
   return (
     <div className="p-3 pt-0.5 flex flex-col gap-2.5">
@@ -72,22 +62,7 @@ const AsideButtons: FC<PropsType> = memo(() => {
       </div>
       <div className="flex justify-between gap-2.5">
         <Takeoff postServiceFn={postSerivce} />
-        <VerticalIconButton
-          className={clsx('flex-1 h-10 p-0 text-xs', {
-            'text-primary': openPointFly,
-          })}
-          disabled={!canPointFly}
-          icon={<IconPointFly className="text-base" />}
-          onClick={() => {
-            updateFlyParamsOpen(true)
-            updatePointFly({
-              open: !openPointFly,
-              targetPosition: null,
-            })
-          }}
-        >
-          {t('controlRoom.uav.service.tapToFly.title')}
-        </VerticalIconButton>
+        <PointFly />
         <VerticalIconButton
           className="flex-1 h-10 p-0 text-xs"
           disabled={!canStopAll}
