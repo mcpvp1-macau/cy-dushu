@@ -61,7 +61,7 @@ const AirlineTemplateList: FC<PropsType> = memo(() => {
     } else {
       searchParams.delete('kw')
     }
-    setSearchParams(searchParams)
+    setSearchParams(searchParams, { replace: true })
   })
 
   return (

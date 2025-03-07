@@ -9,6 +9,7 @@ import { isEqual } from 'lodash'
 import { type FC } from 'react'
 import useWebSocket from 'react-use-websocket'
 import { useEventData } from '@/store/event/useEvent.store'
+import { msgEmitter } from '@/pages/control-room/uav/components/Tanqi'
 
 type PropsType = unknown
 
@@ -68,8 +69,8 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
     const oldmap: { [key: string]: any[] } = parentDevice?.[deviceId] || {}
     const newArr = data?.data?.targets || []
     const n = newArr.reduce((acc, item) => {
-      if (item.loss_times > 0) return acc;
-      
+      if (item.loss_times > 0) return acc
+
       const targetData = {
         ...item,
         productKey: data?.productKey,
@@ -80,12 +81,12 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         objectLabel: item.objectLabel || getLabel(item),
         distance: item.distance ?? item.radialDistance,
       }
-  
+
       return {
         ...acc,
-        [item.targetId]: oldmap[item.targetId] 
+        [item.targetId]: oldmap[item.targetId]
           ? [...oldmap[item.targetId], targetData]
-          : [targetData]
+          : [targetData],
       }
     }, {})
 
@@ -161,11 +162,11 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
   })
 
   // 事件推送 ------------------------
-  const { refetch } = useEventData();
+  const { refetch } = useEventData()
   const updateNewEvent = useGlobalWsStore((s) => s.updateNewEvent)
   const handleEventPush = useMemoizedFn((message: any) => {
     //
-    refetch();
+    refetch()
     updateNewEvent(message)
   })
 
@@ -198,6 +199,11 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
     }, {})
     updateActionItemStatus(res)
   })
+
+  const handleDialogResponse = useMemoizedFn((message: any) => {
+    msgEmitter.emit('message', message)
+  })
+
   // websocket message
   const handleMessage = useMemoizedFn((event: WebSocketEventMap['message']) => {
     const { type, message } = shouldJson(event.data) ?? {}
@@ -222,6 +228,9 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         break
       case 'ACTION_ITEM_STATUS':
         handleActionItemStatus(message)
+        break
+      case 'DIALOG_RESPONSE':
+        handleDialogResponse(message)
         break
     }
   })

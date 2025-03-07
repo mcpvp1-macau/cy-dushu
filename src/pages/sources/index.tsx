@@ -39,7 +39,7 @@ const PageSources: FC<PropsType> = memo(() => {
   // 如果不存在 type, 默认选中第一个
   useEffect(() => {
     if (!searchParams.get('type') && renderItems[0]) {
-      setSearchParams({ type: renderItems[0].value })
+      setSearchParams({ type: renderItems[0].value }, { replace: true })
     }
   }, [renderItems])
 
@@ -59,7 +59,9 @@ const PageSources: FC<PropsType> = memo(() => {
               key: e.value,
               label: e.label,
             }))}
-            onChange={(e) => !isNil(e) && setSearchParams({ type: e })}
+            onChange={(e) =>
+              !isNil(e) && setSearchParams({ type: e }, { replace: true })
+            }
           />
         )}
       </div>

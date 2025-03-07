@@ -12,7 +12,7 @@ const usePageSearchParams = () => {
         searchParams.delete(key)
       }
       searchParams.delete('page')
-      setSearchParams(searchParams)
+      setSearchParams(searchParams, { replace: true })
     },
   )
 
@@ -25,7 +25,7 @@ const usePageSearchParams = () => {
         searchParams.set('page', String(page))
       }
       searchParams.set('size', String(pageSize))
-      setSearchParams(searchParams)
+      setSearchParams(searchParams, { replace: true })
     },
   )
 

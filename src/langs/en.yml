@@ -1179,3 +1179,23 @@ ja-ke-jian-guang-shi-pin: Visible light video
 ja-she-bei-kong-zhi: Device control
 ja-she-bei-zhuang-tai: Device status
 ja-zhuan-tai-kong-zhi: Turntable control
+tanqi:
+  welcome:
+    msg: 有什么可以帮忙的？
+  historyChat:
+    title: 历史对话
+  createChat:
+    title: 新建会话
+  historyChats:
+    today:
+      title: Today
+    yesterday:
+      title: Yesterday
+    last7Days:
+      title: Last 7 Days
+    last30Days:
+      title: Last 30 Days
+    before:
+      title: Earlier
+    delete:
+      title: Are you sure you want to delete this chat?

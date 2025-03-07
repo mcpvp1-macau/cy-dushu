@@ -1167,3 +1167,23 @@ ja-she-bei-zhuang-tai: 设备状态
 ja-hong-wai-shi-pin: 红外视频
 ja-ke-jian-guang-shi-pin: 可见光视频
 ja-zhuan-tai-kong-zhi: 转台控制
+tanqi:
+  welcome:
+    msg: 有什么可以帮忙的？
+  historyChat:
+    title: 历史对话
+  createChat:
+    title: 新建会话
+  historyChats:
+    today:
+      title: 今日
+    yesterday:
+      title: 昨日
+    last7Days:
+      title: 最近7天
+    last30Days:
+      title: 最近30天
+    before:
+      title: 更早
+    delete:
+      title: 你确定要删除这个对话吗？
