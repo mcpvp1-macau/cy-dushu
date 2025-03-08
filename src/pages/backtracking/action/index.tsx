@@ -13,6 +13,8 @@ import TimelineWarpper from '../device/TimelineWarpper'
 import { getAction } from '@/service/modules/action'
 import PageActionDetailSub from '@/pages/situation/action/detail/action'
 import DeviceMarker from './DeviceMarker'
+import IconButton from '@/components/ui/button/IconButton'
+import IconBack from '@/assets/icons/jsx/IconBack'
 
 type PropsType = unknown
 
@@ -45,14 +47,13 @@ const PageBackTrackingAction: FC<PropsType> = memo(() => {
   //     queryClient,
   //   )
 
-
   return (
     <BackTrackingStoreContext.Provider value={store}>
       <div className="fixed top-[39px] left-[39px] right-0 bottom-0">
         <CesiumMap id="backtracking">
           <div
             className={clsx(
-              'absolute top-3 left-3 z-10 w-[350px]',
+              'absolute top-0 left-0 z-10 w-[350px]',
               'bg-[#16202be6] rounded-[3px]',
               'border border-solid border-ground-5',
               'flex flex-col',
@@ -62,7 +63,15 @@ const PageBackTrackingAction: FC<PropsType> = memo(() => {
           >
             <AppViewSuspense>
               {/* {isLoading || !data ? <AppSpin /> : <>1243</>} */}
-              <h3 className="text-white text-base truncate mx-3 mt-3 min-h-6">
+              <h3 className="text-white text-base truncate mx-3 mt-3 min-h-6 flex gap-2">
+                <div className="cursor-pointer">
+                  <IconButton
+                    toolTipProps={{ title: '返回' }}
+                    onClick={() => window.history.back()}
+                  >
+                    <IconBack />
+                  </IconButton>
+                </div>
                 {data?.name}
               </h3>
               {data && <PageActionDetailSub detail={data} isBacktracking />}
@@ -79,7 +88,6 @@ const PageBackTrackingAction: FC<PropsType> = memo(() => {
             style={{ maxHeight: 'calc(100vh - 192px' }}
           >
             <AppViewSuspense>
-          
               <DeviceMarker />
             </AppViewSuspense>
           </div>

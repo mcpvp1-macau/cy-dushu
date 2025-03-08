@@ -165,6 +165,14 @@ const Timeline: FC<PropsType> = memo(
                     id: 'time-range',
                     content: '',
                   },
+                  {
+                    type: 'background',
+                    start: dates[0].toDate(),
+                    end: dates[1].endOf('day').toDate(),
+                    className: 'time-range2',
+                    id: 'time-range2',
+                    content: '',
+                  },
                 ])
                 setCurrentTime(dates[0])
               }}
