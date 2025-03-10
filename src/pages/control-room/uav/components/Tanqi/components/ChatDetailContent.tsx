@@ -10,11 +10,11 @@ const ChatItem: FC<{
   content: string
 }> = memo(({ type, content }) => {
   if (type === 'TEXT') {
-    return <div>{content}</div>
+    return <div dangerouslySetInnerHTML={{ __html: content }} />
   }
 
   if (type === 'IMAGE') {
-    return <img src={content} alt="image" />
+    return <img src={`/storage/${content}`} alt="image" />
   }
 })
 

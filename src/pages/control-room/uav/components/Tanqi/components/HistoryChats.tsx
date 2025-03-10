@@ -3,6 +3,7 @@ import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDevice
 import { getDialogList } from '@/service/modules/tanqi'
 import { HistoryOutlined, LoadingOutlined } from '@ant-design/icons'
 import HistoryChatItem from './HistoryChatItem'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 const HistoryChats: FC = memo(() => {
   const { t } = useTranslation()
@@ -68,7 +69,7 @@ const HistoryChats: FC = memo(() => {
       trigger={['click']}
       dropdownRender={() => {
         return (
-          <div className="flex flex-col gap-3 bg-ground-1 p-2 rounded">
+          <ScrollArea className="flex flex-col gap-3 bg-ground-1 p-2 rounded max-h-[60vh]">
             {historyChatGroup
               .filter(([, value]) => value.length > 0)
               .map(([key, value]) => {
@@ -85,7 +86,7 @@ const HistoryChats: FC = memo(() => {
                   </div>
                 )
               })}
-          </div>
+          </ScrollArea>
         )
       }}
     >

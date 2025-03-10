@@ -17,10 +17,8 @@ const roles: GetProp<typeof Bubble.List, 'roles'> = {
     avatar: {
       icon: <IconTanQi />,
       className: 'bg-ground-4',
-      // style: { background: '#fde3cf' },
-      // size: 'small',
     },
-    typing: { step: 5, interval: 20 },
+    typing: { step: 2, interval: 50 },
     style: {
       maxWidth: 600,
       marginInlineEnd: 44,
@@ -72,7 +70,7 @@ const ChatDetail: FC<PropsType> = memo(({ aiState, bubbles }) => {
   return (
     <Bubble.List
       autoScroll
-      className="flex-1 overflow-y-auto px-2 pt-2"
+      className="tanqi-chat flex-1 overflow-y-auto px-2 pt-2"
       roles={roles}
       items={items}
     />

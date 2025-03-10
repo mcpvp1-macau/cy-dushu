@@ -1,5 +1,3 @@
-import IconButton from '@/components/ui/button/IconButton'
-import { PlusCircleOutlined } from '@ant-design/icons'
 import { Sender } from '@ant-design/x'
 import { useSearchParams } from 'react-router-dom'
 import HistoryChats from './components/HistoryChats'
@@ -13,6 +11,8 @@ import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDevice
 import ChatDetail from './components/ChatDetail'
 import AppSpin from '@/components/AppSpin'
 import mitt from 'mitt'
+import CreateChat from './components/CreateChat'
+import resolveResp from './utils/resolveResp'
 
 export const msgEmitter = mitt<{
   message: { type: string; content: string; dialogId: number }
@@ -25,6 +25,8 @@ const Tanqi = memo(() => {
   const chatId = searchParams.get('chat')
 
   const { t } = useTranslation()
+
+  const [sendValue, setSendValue] = useState('')
 
   // 0 空闲 1 思考中 2 回答中
   const [aiState, setAiState] = useState<0 | 1 | 2>(0)
@@ -63,6 +65,7 @@ const Tanqi = memo(() => {
       res.data.rows = res.data.rows.map((item) => {
         if (item.recordType === 'RESPONSE') {
           item.responseMessage = JSON.parse(item.responseMessage)
+          item.responseMessage = resolveResp(item.responseMessage)
         }
         return item
       })
@@ -72,13 +75,15 @@ const Tanqi = memo(() => {
   })
 
   const [appendedRows, setApendedRows] = useState<any[]>([])
-  const waitReqId = useRef<string>('')
+  const waitDialogId = useRef(0)
+
+  // 发送消息
   const handleSubmit = async (message: string) => {
     let chatId2 = Number(chatId)
     if (!chatId) {
       chatId2 = await handleCreateChat()
     }
-    setSending(true)
+    setSendValue('')
     try {
       const resp = await sendDialogMsg({
         deviceId,
@@ -87,7 +92,7 @@ const Tanqi = memo(() => {
         requestId: 0,
       })
       setApendedRows((prev) => [...prev, resp.data])
-      waitReqId.current = resp.data.requestId
+      waitDialogId.current = resp.data.dialogId
       setAiState(1)
     } catch (e) {
       setSending(false)
@@ -95,12 +100,13 @@ const Tanqi = memo(() => {
     }
   }
 
+  // 停止对话
   const handleStop = async () => {
     await stopDialogReq({
       id: Number(chatId),
     })
     setAiState(0)
-    waitReqId.current = ''
+    waitDialogId.current = 0
     setSending(false)
   }
 
@@ -108,19 +114,21 @@ const Tanqi = memo(() => {
     setApendedRows([])
   }, [chatDetail])
 
+  // 监听 chatId 的变化
   useEffect(() => {
     setApendedRows([])
     setAiState(0)
     setSending(false)
-    waitReqId.current = ''
+    waitDialogId.current = 0
   }, [chatId])
 
+  // 监听全局 websocket 来的消息
   useEffect(() => {
     const handle = (data) => {
-      console.log(data, waitReqId.current)
-      if (data[0]?.requestId !== waitReqId.current) {
+      if (data[0]?.dialogId !== waitDialogId.current) {
         return
       }
+      data = resolveResp(data)
       setApendedRows((prev) => [
         ...prev,
         {
@@ -131,7 +139,7 @@ const Tanqi = memo(() => {
       ])
       setAiState(0)
       setSending(false)
-      waitReqId.current = ''
+      waitDialogId.current = 0
     }
     msgEmitter.on('message', handle)
     return () => {
@@ -139,8 +147,10 @@ const Tanqi = memo(() => {
     }
   }, [])
 
+  console.log('chatDetail', chatDetail)
+
   return (
-    <div className="size-full overflow-hidden flex flex-col">
+    <div className="tanqi size-full overflow-hidden flex flex-col">
       <div className="grow flex flex-col overflow-hidden">
         {creating || isLoading ? (
           <AppSpin />
@@ -158,25 +168,14 @@ const Tanqi = memo(() => {
       <div className="m-2">
         <div className="flex justify-end gap-3 mb-2">
           <HistoryChats />
-          {chatId && (
-            <IconButton
-              toolTipProps={{
-                title: t('tanqi.createChat.title'),
-              }}
-              onClick={() => {
-                const nextSearchParams = new URLSearchParams(searchParams)
-                nextSearchParams.delete('chat')
-                setSearchParams(nextSearchParams, { replace: true })
-              }}
-            >
-              <PlusCircleOutlined />
-            </IconButton>
-          )}
+          {chatId && <CreateChat />}
         </div>
         <div>
           <Sender
+            value={sendValue}
             loading={creating || sending}
             allowSpeech
+            onChange={setSendValue}
             onSubmit={handleSubmit}
             onCancel={handleStop}
           />
