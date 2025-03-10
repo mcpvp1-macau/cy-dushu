@@ -1,9 +1,14 @@
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
+import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { Switch } from 'antd'
 
 const MMC_Gimbal_D4: React.FC = () => {
-  const productKey = useUavControlRoomStore((s) => s.productKey)
+  // const productKey = useUavControlRoomStore((s) => s.productKey)
+  const productKey = useDeviceDetailStore(
+    (s) =>
+      s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey,
+  )!
   const deviceId = useUavControlRoomStore((s) => s.deviceId)
   const postSerivce = usePostDeviceService(productKey, deviceId)
   const throwerMotorBack = useUavControlRoomStore(

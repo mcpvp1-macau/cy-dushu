@@ -7,9 +7,15 @@ import { Slider, Tabs, TabsProps } from 'antd'
 import PitchControl from './PitchControl'
 import TextTo from './TextTo'
 import FileTo from './FileTo'
+import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+
 
 const MMC_Gimbal_P3: React.FC = () => {
-  const productKey = useUavControlRoomStore((s) => s.productKey)
+  const productKey = useDeviceDetailStore(
+    (s) =>
+      s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey,
+  )!
+
   const deviceId = useUavControlRoomStore((s) => s.deviceId)
   const postSerivce = usePostDeviceService(productKey, deviceId)
   const status: string | undefined = useUavControlRoomStore(
