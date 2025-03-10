@@ -1,3 +1,5 @@
+import { makeToolbarRender } from '@/utils/antd/image'
+import { Image } from 'antd'
 import { memo } from 'react'
 
 type PropsType = {
@@ -14,7 +16,19 @@ const ChatItem: FC<{
   }
 
   if (type === 'IMAGE') {
-    return <img src={`/storage/${content}`} alt="image" />
+    return (
+      <div className="my-[0.5em] rounded-[2px] overflow-hidden">
+        <Image
+          className="block"
+          wrapperClassName="block"
+          src={`/storage/${content}`}
+          alt="image"
+          preview={{
+            toolbarRender: makeToolbarRender(),
+          }}
+        />
+      </div>
+    )
   }
 })
 

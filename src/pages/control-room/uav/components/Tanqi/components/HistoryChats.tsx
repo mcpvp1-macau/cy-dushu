@@ -1,27 +1,14 @@
 import IconButtonWithDropDown from '@/components/ui/button/IconButtonWithDropDown'
-import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
-import { getDialogList } from '@/service/modules/tanqi'
-import { HistoryOutlined, LoadingOutlined } from '@ant-design/icons'
+import { HistoryOutlined } from '@ant-design/icons'
 import HistoryChatItem from './HistoryChatItem'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
-const HistoryChats: FC = memo(() => {
-  const { t } = useTranslation()
-  const deviceId = useDeviceDetailStore((s) => s.deviceId)
+type PropsType = {
+  data: API_TANQI.domain.DialogTask[]
+}
 
-  const queryClient = useQueryClient()
-  const { data, isLoading } = useQuery(
-    {
-      queryKey: ['chats', deviceId],
-      queryFn: () =>
-        getDialogList({
-          deviceId: deviceId,
-        }),
-      enabled: !!deviceId,
-      select: (d) => d.data,
-    },
-    queryClient,
-  )
+const HistoryChats: FC<PropsType> = memo(({ data }) => {
+  const { t } = useTranslation()
 
   const historyChatGroup = useMemo(() => {
     const group = [
@@ -54,10 +41,6 @@ const HistoryChats: FC = memo(() => {
 
     return group
   }, [data])
-
-  if (isLoading || !data) {
-    return <LoadingOutlined />
-  }
 
   return (
     <IconButtonWithDropDown

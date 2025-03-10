@@ -53,7 +53,7 @@ declare namespace API_TANQI {
       /**
        * 对话名称，例如 "航线飞行任务01"
        */
-      dialogName: string
+      dialogName?: string
 
       /**
        * 是否开启任务理解，只在需要修改此字段时传递

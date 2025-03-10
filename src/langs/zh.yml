@@ -1187,3 +1187,5 @@ tanqi:
       title: 更早
     delete:
       title: 你确定要删除这个对话吗？
+  taskUnderstanding:
+    title: 任务理解

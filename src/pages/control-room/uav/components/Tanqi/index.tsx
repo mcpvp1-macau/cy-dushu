@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import HistoryChats from './components/HistoryChats'
 import {
   getDialogDetail,
+  getDialogList,
   sendDialogMsg,
   startNewDialog,
   stopDialogReq,
@@ -13,6 +14,8 @@ import AppSpin from '@/components/AppSpin'
 import mitt from 'mitt'
 import CreateChat from './components/CreateChat'
 import resolveResp from './utils/resolveResp'
+import { LoadingOutlined } from '@ant-design/icons'
+import TaskUnderstanding from './components/TaskUnderstanding'
 
 export const msgEmitter = mitt<{
   message: { type: string; content: string; dialogId: number }
@@ -22,7 +25,8 @@ const Tanqi = memo(() => {
   const [searchParams, setSearchParams] = useSearchParams()
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
 
-  const chatId = searchParams.get('chat')
+  const chatIdStr = searchParams.get('chat')
+  const chatId = chatIdStr ? Number(chatIdStr) : undefined
 
   const { t } = useTranslation()
 
@@ -58,7 +62,7 @@ const Tanqi = memo(() => {
     queryKey: ['chatDetail', chatId],
     queryFn: async () => {
       const res = await getDialogDetail({
-        id: Number(chatId),
+        id: chatId!,
         page: 1,
         size: 0x3f3f3f3f,
       })
@@ -75,7 +79,6 @@ const Tanqi = memo(() => {
   })
 
   const [appendedRows, setApendedRows] = useState<any[]>([])
-  const waitDialogId = useRef(0)
 
   // 发送消息
   const handleSubmit = async (message: string) => {
@@ -92,7 +95,6 @@ const Tanqi = memo(() => {
         requestId: 0,
       })
       setApendedRows((prev) => [...prev, resp.data])
-      waitDialogId.current = resp.data.dialogId
       setAiState(1)
     } catch (e) {
       setSending(false)
@@ -103,10 +105,9 @@ const Tanqi = memo(() => {
   // 停止对话
   const handleStop = async () => {
     await stopDialogReq({
-      id: Number(chatId),
+      id: chatId!,
     })
     setAiState(0)
-    waitDialogId.current = 0
     setSending(false)
   }
 
@@ -119,13 +120,12 @@ const Tanqi = memo(() => {
     setApendedRows([])
     setAiState(0)
     setSending(false)
-    waitDialogId.current = 0
   }, [chatId])
 
   // 监听全局 websocket 来的消息
   useEffect(() => {
     const handle = (data) => {
-      if (data[0]?.dialogId !== waitDialogId.current) {
+      if (data[0]?.dialogId !== chatId) {
         return
       }
       data = resolveResp(data)
@@ -139,7 +139,6 @@ const Tanqi = memo(() => {
       ])
       setAiState(0)
       setSending(false)
-      waitDialogId.current = 0
     }
     msgEmitter.on('message', handle)
     return () => {
@@ -147,7 +146,27 @@ const Tanqi = memo(() => {
     }
   }, [])
 
-  console.log('chatDetail', chatDetail)
+  const { data: chats, isLoading: isLoadingChats } = useQuery(
+    {
+      queryKey: ['chats', deviceId],
+      queryFn: () =>
+        getDialogList({
+          deviceId: deviceId,
+        }),
+      enabled: !!deviceId,
+      select: (d) => d.data,
+    },
+    queryClient,
+  )
+
+  const isTaskUnderstanding = useMemo(() => {
+    if (!chats || !chatId) {
+      return false
+    }
+    return (
+      chats.find((item) => item.id === Number(chatId))?.taskUnderstanding === 1
+    )
+  }, [chats, chatId])
 
   return (
     <div className="tanqi size-full overflow-hidden flex flex-col">
@@ -166,10 +185,23 @@ const Tanqi = memo(() => {
         )}
       </div>
       <div className="m-2">
-        <div className="flex justify-end gap-3 mb-2">
-          <HistoryChats />
-          {chatId && <CreateChat />}
+        <div className="flex justify-between">
+          <div>
+            <TaskUnderstanding
+              isTaskUnderstanding={isTaskUnderstanding}
+              chatId={chatId!}
+            />
+          </div>
+          <div className="flex justify-end gap-3 mb-2">
+            {chats && !isLoadingChats ? (
+              <HistoryChats data={chats} />
+            ) : (
+              <LoadingOutlined />
+            )}
+            {chatId && <CreateChat />}
+          </div>
         </div>
+
         <div>
           <Sender
             value={sendValue}
