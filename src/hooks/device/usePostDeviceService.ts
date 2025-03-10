@@ -9,11 +9,24 @@ const fmt = (content: string, prefix?: string) => {
 
 /** 调用设备服务 */
 export const usePostDeviceService = (productKey: string, deviceId: string) => {
-  const { t } = useTranslation()
+  const postService = usePostDeviceServiceHandler()
+  return (
+    identifier: string,
+    data?: any,
+    msgPrefix?: string,
+    showMsg?: boolean,
+  ) => postService(productKey, deviceId, identifier, data, msgPrefix, showMsg)
+}
 
+/** 调用设备服务 (可以后带 productKey 和 deviceId) */
+export const usePostDeviceServiceHandler = () => {
+  const { t } = useTranslation()
   const msgApi = useAppMsg()
+
   const postService = useMemoizedFn(
     async (
+      productKey: string,
+      deviceId: string,
       identifier: string,
       data?: any,
       msgPrefix?: string,
