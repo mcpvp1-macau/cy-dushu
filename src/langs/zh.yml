@@ -979,9 +979,9 @@ controlRoom:
     payload:
       title: 负载
     aiList:
-      title: 算法库
+      title: 算法
     deviceData:
-      title: 设备数据
+      title: 数据
     header:
       14g:
         title: 1.4G信号强度

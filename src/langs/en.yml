@@ -993,7 +993,7 @@ controlRoom:
     aiList:
       title: AI List
     deviceData:
-      title: Device Data
+      title: Data
     header:
       14g:
         title: 1.4G Signal Strength
