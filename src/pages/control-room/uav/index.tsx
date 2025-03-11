@@ -131,7 +131,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
           </ScrollArea>
         </div>
       ),
-      payload: <UavPayload />,
+      payload: <UavPayload productKey={productKey} />,
       ['device-data']: <UavDetailData />,
       flyButtons: (
         <>

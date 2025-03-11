@@ -3,7 +3,7 @@ import VerticalIconButton from '@/components/ui/button/VerticalButton'
 import FormModal from '@/components/XForm/Modal'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import { memo, type FC } from 'react'
+import useIdleControlTag from '../../hooks/useIdleControlTag'
 
 type PropsType = {
   postServiceFn: (identifier: string, data?: any) => Promise<void>
@@ -14,8 +14,11 @@ const Takeoff: FC<PropsType> = memo(({ postServiceFn }) => {
   const { t } = useTranslation()
   const isLimitedFly = useUavControlRoomStore((s) => s.isLimitedFly)
   const hasControlPower = useUavControlRoomStore((s) => s.hasControlPower)
+  const idleControlTag = useIdleControlTag()
   const hasService = useDeviceDetailStore((s) => s.serviceHave['takeoff'])
-  const canTakeoff = !isLimitedFly && hasControlPower && hasService
+
+  const canTakeoff =
+    !isLimitedFly && (idleControlTag || hasControlPower) && hasService
 
   const handleClick = async (data) => {
     await postServiceFn('takeoff', data)
@@ -47,6 +50,12 @@ const Takeoff: FC<PropsType> = memo(({ postServiceFn }) => {
               otherProps: {
                 addonAfter: 'm',
               },
+            },
+            {
+              label: t('device.uav.takeoffForm.goHomeAltitude.title'),
+              name: 'gohomeAltitude',
+              type: 'input-number',
+              otherProps: { addonAfter: 'm', min: 50, max: 500 },
             },
           ]}
           onClose={setFalse}

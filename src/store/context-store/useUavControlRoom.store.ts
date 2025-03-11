@@ -201,6 +201,7 @@ export const createUavControlRoomStore = (senders: WsSendersType) => {
                 state.displayMode &&
                 (state.displayMode.includes('指点飞行') ||
                   state.displayMode.includes('一键起飞') ||
+                  state.displayMode.includes('自动返航') ||
                   state.displayMode.startsWith('10000'))
               ),
             },

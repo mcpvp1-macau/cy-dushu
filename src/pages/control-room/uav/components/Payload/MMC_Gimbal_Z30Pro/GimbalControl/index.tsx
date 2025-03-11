@@ -3,13 +3,18 @@ import ControlItemSelect from '../../ControlItem'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { setDeviceProp } from '@/service/modules/device'
 import { useAppMsg } from '@/hooks/useAppMsg'
+import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 
 type Props = unknown
 
 const GimbalControl: FC<Props> = () => {
   const [form] = Form.useForm()
   const msgApi = useAppMsg()
-  const productKey = useUavControlRoomStore((s) => s.productKey)
+  // const productKey = useUavControlRoomStore((s) => s.productKey)
+  const productKey = useDeviceDetailStore(
+    (s) =>
+      s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey,
+  )!
   const deviceId = useUavControlRoomStore((s) => s.deviceId)
 
   const gimbalPitch = useUavControlRoomStore((s) =>

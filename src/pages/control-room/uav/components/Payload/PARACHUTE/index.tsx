@@ -11,7 +11,11 @@ const PARACHUTE: React.FC = () => {
   const parachuteState = useUavControlRoomStore(
     (s) => s.state.parachute?.parachuteState,
   )
-  const productKey = useUavControlRoomStore((s) => s.productKey)
+  // const productKey = useUavControlRoomStore((s) => s.productKey)
+  const productKey = useDeviceDetailStore(
+    (s) =>
+      s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey,
+  )!
   const deviceId = useUavControlRoomStore((s) => s.deviceId)
 
   const deviceModel = useDeviceDetailStore((s) => s.deviceDetail?.deviceModel)

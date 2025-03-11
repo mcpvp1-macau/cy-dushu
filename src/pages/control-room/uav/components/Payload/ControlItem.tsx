@@ -29,7 +29,11 @@ const ControlItem: React.FC<Props> = (props) => {
   const form = Form.useFormInstance()
   const deviceModel = useDeviceDetailStore((s) => s.deviceDetail?.deviceModel)
 
-  const productKey = useUavControlRoomStore((s) => s.productKey)
+  // const productKey = useUavControlRoomStore((s) => s.productKey)
+  const productKey = useDeviceDetailStore(
+    (s) =>
+      s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey,
+  )!
   const deviceId = useUavControlRoomStore((s) => s.deviceId)
   const postSerivce = usePostDeviceService(productKey, deviceId)
   // const value = useModel('detailUav', (m) => m.state?.[valueName]);

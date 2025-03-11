@@ -89,31 +89,34 @@ const useTimelineInstance = (
         timeline.destroy()
       }
     }
-  }, [containerRef])
+  }, [containerRef, timeRange])
 
-  console.log('====1', timeRange)
 
-  useEffect(() => {
-    if (!timeline) {
-      return
-    }
+  // useEffect(() => {
+  //   if (!timeline) {
+  //     return
+  //   }
 
-    const startTime = timeRange[0].toDate()
-    const endTime = timeRange[1].toDate()
-    if (
-      perStartTime.current !== startTime.getTime() ||
-      perEndTime.current !== endTime.getTime()
-    ) {
-      perStartTime.current = startTime.getTime()
-      perEndTime.current = endTime.getTime()
-      timeline.setOptions({
-        max: dayjs(endTime).add(1, 'minutes').toDate(),
-        min: startTime,
-        start: startTime,
-        end: endTime,
-      })
-    }
-  }, [timeline, timeRange])
+  //   const startTime = timeRange[0].toDate()
+  //   const endTime = timeRange[1].toDate()
+  //   if (
+  //     perStartTime.current !== startTime.getTime() ||
+  //     perEndTime.current !== endTime.getTime()
+  //   ) {
+  //     console.log('timeRange change', timeRange)
+  //     perStartTime.current = startTime.getTime()
+  //     perEndTime.current = endTime.getTime()
+  //     timeline.setOptions({
+  //       // max: dayjs(endTime).add(1, 'minutes').toDate(),
+  //       // min: startTime,
+  //       start: startTime,
+  //       end: endTime,
+  //     })
+  //     // timeline.addCustomTime(endTime, 'current')
+  //     // timeline.setCustomTimeTitle('', 'current')
+  //     // timeline.setCustomTimeMarker(fmtCurrentTime(endTime), 'current')
+  //   }
+  // }, [timeline, timeRange])
 
   return {
     timeline,

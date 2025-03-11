@@ -1,10 +1,13 @@
 import PositionTooltip from '@/components/map/PostionTooltip'
 import FormModal from '@/components/XForm/Modal'
 import usePostDeviceService from '@/pages/control-room/uav/hooks/usePostDeviceService'
+import { usePostDeviceServiceHandler } from '@/hooks/device/usePostDeviceService'
+import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { getSpaceDistance } from '@/utils/geo-math'
 import { InfoCircleOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
+import useQueryDeviceDetail from '@/hooks/device/useQueryDeviceDetail'
 
 type PropsType = {
   position: [number, number]
@@ -33,6 +36,12 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
 
   const postService = usePostDeviceService()
 
+  // 获取父设备的详情信息
+  const parentId = useDeviceDetailStore((s) => s.deviceDetail?.parentId)
+  const { data: parentDeivceDetail } = useQueryDeviceDetail(parentId)
+
+  const postServiceHandler = usePostDeviceServiceHandler()
+
   const [
     paramsOpen,
     { setTrue: setParamsOpenTrue, setFalse: setParamsOpenFalse },
@@ -40,11 +49,27 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
 
   const handleConfirm = async (data) => {
     try {
-      await postService('gotoPosition', {
-        longitude: position[0],
-        latitude: position[1],
-        ...data,
-      })
+      if (parentDeivceDetail) {
+        // 调用父设备的 gotoPosition 服务
+        await postServiceHandler(
+          parentDeivceDetail.deviceModel.productKey,
+          parentDeivceDetail.deviceModel.deviceId,
+          'gotoPosition',
+          {
+            longitude: position[0],
+            latitude: position[1],
+            ...data,
+          },
+        )
+      } else {
+        // 调用本设备的 gotoPosition 服务
+        await postService('gotoPosition', {
+          longitude: position[0],
+          latitude: position[1],
+          ...data,
+        })
+      }
+      // 关闭确认框
       updatePointFly({
         open: false,
         targetPosition: null,
@@ -86,7 +111,12 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
             >
               {t('modal.cancel')}
             </Button>
-            <Button size="small" type="primary" onClick={setParamsOpenTrue}>
+            <Button
+              size="small"
+              type="primary"
+              onClick={setParamsOpenTrue}
+              loading={!!(parentId && !parentDeivceDetail)}
+            >
               {t('controlRoom.uav.service.tapToFly.title')}
             </Button>
           </p>
@@ -127,6 +157,12 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
                 },
               ],
               otherProps: { addonAfter: 'm/s', max: 15, min: 1 },
+            },
+            {
+              label: t('device.uav.takeoffForm.goHomeAltitude.title'),
+              name: 'gohomeAltitude',
+              type: 'input-number',
+              otherProps: { addonAfter: 'm', min: 50, max: 500 },
             },
           ]}
           onClose={setParamsOpenFalse}

@@ -14,7 +14,9 @@ const MMC_Gimbal_Z30Pro = lazy(() => import('./MMC_Gimbal_Z30Pro'))
 const MMC_Gimbal_Z60R = lazy(() => import('./MMC_Gimbal_Z60R'))
 const PARACHUTE = lazy(() => import('./PARACHUTE'))
 
-type PropsType = unknown
+type PropsType = {
+  productKey: string
+}
 
 type MountType =
   | 'PARACHUTE'
@@ -36,7 +38,7 @@ const labelMap: { [key in MountType]: string } = {
 }
 
 /** 无人机负载 */
-const UavPayload: FC<PropsType> = memo(() => {
+const UavPayload: FC<PropsType> = memo(({ productKey }) => {
   // TODO mock 挂载
   const mount: string[] = useUavControlRoomStore((s) => s.state.mounts) || []
   // || [

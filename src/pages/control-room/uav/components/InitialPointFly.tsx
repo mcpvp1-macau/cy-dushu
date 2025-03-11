@@ -3,6 +3,7 @@ import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.
 import { useSearchParams } from 'react-router-dom'
 import { robControlPowerEmitter } from './AsideButtons/ControlPower'
 import { useAppMsg } from '@/hooks/useAppMsg'
+import useIdleControlTag from '../hooks/useIdleControlTag'
 
 const InnerInitialPointFly: FC<{
   targetLng: number
@@ -12,12 +13,14 @@ const InnerInitialPointFly: FC<{
 
   const updatePointFly = useUavControlRoomStore((s) => s.updatePointFly)
 
+  const idleControlTag = useIdleControlTag()
+
   const [searchParams, setSearchParams] = useSearchParams()
 
   const msgApi = useAppMsg()
 
   useEffect(() => {
-    if (!hasControlPower) {
+    if (!hasControlPower && !idleControlTag) {
       robControlPowerEmitter.emit('rob')
     } else {
       updatePointFly({
@@ -31,7 +34,7 @@ const InnerInitialPointFly: FC<{
       setSearchParams(newSearchParams, { replace: true })
       msgApi.info('请在地图上参考目标点和相关信息，并点击确认后开始指点飞行')
     }
-  }, [hasControlPower])
+  }, [hasControlPower, idleControlTag])
 
   return null
 })
