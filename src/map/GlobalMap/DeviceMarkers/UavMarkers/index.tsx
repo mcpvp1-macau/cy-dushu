@@ -1,5 +1,4 @@
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
-import { memo, type FC } from 'react'
 import { BillboardCollection, LabelCollection } from 'resium'
 import UavMarker from './UavMarker'
 import UavDetailMarker from './UavDetailMarker'

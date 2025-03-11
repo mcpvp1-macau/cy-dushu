@@ -6,6 +6,7 @@ const UavAirportDetail = lazy(() => import('./UavAirportDetail'))
 const CameraDetail = lazy(() => import('./CameraDetail'))
 const WangLouDetail = lazy(() => import('./WangLouDetail'))
 const OthersDetail = lazy(() => import('./OthersDetail'))
+const RobotDogDetail = lazy(() => import('./RebotDogDetail'))
 
 /** 设备详情组件路由（需要实现 BaseDeviceDetailProps 类型） */
 const route = {
@@ -13,6 +14,7 @@ const route = {
   [DeviceEnum.UAV_AIRPORT]: UavAirportDetail,
   [DeviceEnum.CAMERA]: CameraDetail,
   [DeviceEnum.WANGLOU]: WangLouDetail,
+  [DeviceEnum.ROBOT_DOG]: RobotDogDetail,
 } as const
 
 /** 设备详情组件基础类型 */
