@@ -51,6 +51,12 @@ export default mergeConfig(
           // secure: false,
           changeOrigin: true,
         },
+        '/asr': {
+          target: 'ws://121.196.145.43:10096',
+          ws: true,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/asr/, '/'),
+        },
       },
     },
     define: {

@@ -16,6 +16,7 @@ import CreateChat from './components/CreateChat'
 import resolveResp from './utils/resolveResp'
 import { LoadingOutlined } from '@ant-design/icons'
 import TaskUnderstanding from './components/TaskUnderstanding'
+import useASR from './utils/asr'
 
 export const msgEmitter = mitt<{
   message: { type: string; content: string; dialogId: number }
@@ -168,6 +169,15 @@ const Tanqi = memo(() => {
     )
   }, [chats, chatId])
 
+  const [isRecording, setIsRecording] = useState(false)
+
+  const {
+    onlineMsg,
+    offlineMsg,
+    handleStart: handleRecordStart,
+    handleStop: handleRecordStop,
+  } = useASR(isRecording)
+
   return (
     <div className="tanqi size-full overflow-hidden flex flex-col">
       <div className="grow flex flex-col overflow-hidden">
@@ -187,10 +197,12 @@ const Tanqi = memo(() => {
       <div className="m-2">
         <div className="flex justify-between">
           <div>
-            <TaskUnderstanding
-              isTaskUnderstanding={isTaskUnderstanding}
-              chatId={chatId!}
-            />
+            {chatId && (
+              <TaskUnderstanding
+                isTaskUnderstanding={isTaskUnderstanding}
+                chatId={chatId!}
+              />
+            )}
           </div>
           <div className="flex justify-end gap-3 mb-2">
             {chats && !isLoadingChats ? (
@@ -204,9 +216,26 @@ const Tanqi = memo(() => {
 
         <div>
           <Sender
-            value={sendValue}
+            value={sendValue + offlineMsg + onlineMsg}
             loading={creating || sending}
-            allowSpeech
+            allowSpeech={{
+              recording: isRecording,
+              onRecordingChange: (recording) => {
+                if (recording === isRecording) {
+                  return
+                }
+                if (recording) {
+                  handleRecordStart()
+                  setIsRecording(recording)
+                } else {
+                  setTimeout(() => {
+                    handleRecordStop()
+                    setIsRecording(recording)
+                    setSendValue(sendValue + offlineMsg + onlineMsg)
+                  }, 1000)
+                }
+              },
+            }}
             onChange={setSendValue}
             onSubmit={handleSubmit}
             onCancel={handleStop}
