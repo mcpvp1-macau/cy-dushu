@@ -1,3 +1,4 @@
+import { makeToolbarRender } from '@/utils/antd/image'
 import { Image } from 'antd'
 import { ReactNode } from 'react'
 
@@ -35,7 +36,7 @@ const ImageContainBoxPreview: FC<PropsType> = memo((props) => {
             const fx = t.flipX ? -1 : 1
             const fy = t.flipY ? -1 : 1
             return (
-              <div className="relative">
+              <div className="absolute inset-0 flex items-center justify-center">
                 {originalNode}
                 <div
                   className="absolute inset-0 pointer-events-none"
@@ -52,6 +53,7 @@ const ImageContainBoxPreview: FC<PropsType> = memo((props) => {
               </div>
             )
           },
+          toolbarRender: makeToolbarRender(0.5, 50),
         }}
       />
     </>

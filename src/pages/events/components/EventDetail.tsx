@@ -1,5 +1,5 @@
 import AppSpin from '@/components/AppSpin'
-import ImageContainBox2 from '@/components/ImageContainBox2'
+import ImageContainBoxPreview from '@/components/ImageContainBoxPreview'
 import { getEventDetail, getEventTypeList } from '@/service/modules/events'
 import { shouldJson } from '@/utils/json'
 import { isNil } from 'lodash'
@@ -72,7 +72,7 @@ const EventDetail: FC<PropsType> = memo(({ eventId, useCol }) => {
   return (
     <div className={clsx('flex gap-3 text-sm', { 'flex-col': useCol })}>
       <div className="w-full aspect-video relative">
-        <ImageContainBox2 src={handleStorageURL(data.sourceImage ?? '')}>
+        {/* <ImageContainBox2 src={handleStorageURL(data.sourceImage ?? '')}>
           {data.objectList?.map((obj, i) => {
             if (
               isNil(obj.leftTopX) ||
@@ -103,7 +103,43 @@ const EventDetail: FC<PropsType> = memo(({ eventId, useCol }) => {
               />
             )
           })}
-        </ImageContainBox2>
+        </ImageContainBox2> */}
+        <ImageContainBoxPreview
+          src={handleStorageURL(data.sourceImage ?? '')}
+          sourceWidth={data.sourceFrameWidth}
+          sourceHeight={data.sourceFrameHeight}
+        >
+          {data.objectList?.map((obj, i) => {
+            if (
+              isNil(obj.leftTopX) ||
+              isNil(obj.leftTopY) ||
+              isNil(obj.bboxWidth) ||
+              isNil(obj.bboxHeight)
+            ) {
+              return null
+            }
+            return (
+              <div
+                key={i}
+                className="absolute border border-solid border-red-400"
+                style={{
+                  left: `${(obj.leftTopX / obj.sourceFrameWidth) * 100}%`,
+                  top: `${(obj.leftTopY / obj.sourceFrameHeight) * 100}%`,
+                  right: `${
+                    100 -
+                    ((obj.leftTopX + obj.bboxWidth) / obj.sourceFrameWidth) *
+                      100
+                  }%`,
+                  bottom: `${
+                    100 -
+                    ((obj.leftTopY + obj.bboxHeight) / obj.sourceFrameHeight) *
+                      100
+                  }%`,
+                }}
+              />
+            )
+          })}
+        </ImageContainBoxPreview>
       </div>
       {isTypeLoading ? (
         <AppSpin />
