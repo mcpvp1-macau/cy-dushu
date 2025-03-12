@@ -67,7 +67,7 @@ const UavDetail: FC<PropsType> = memo(
           >
             <Header />
           </CloseableHeader>
-          <div className="px-3 mt-1 mb-3">
+          <div className="px-3 mb-3">
             <Segmented
               block
               value={tab}

@@ -4,11 +4,12 @@ import { Button } from 'antd'
 
 type PropsType = {
   isTaskUnderstanding: boolean
-  chatId: number
+  chatId?: number
+  onStartNewDialog: (openTaskUnderstanding: boolean) => void
 }
 
 const TaskUnderstanding: FC<PropsType> = memo(
-  ({ isTaskUnderstanding, chatId }) => {
+  ({ isTaskUnderstanding, chatId, onStartNewDialog }) => {
     const { t } = useTranslation()
     const deviceId = useDeviceDetailStore((s) => s.deviceId)
 
@@ -23,10 +24,14 @@ const TaskUnderstanding: FC<PropsType> = memo(
     })
 
     const handleClick = async () => {
-      updateDialogAsync({
-        id: chatId,
-        taskUnderstanding: isTaskUnderstanding ? 0 : 1,
-      })
+      if (!chatId) {
+        onStartNewDialog(true)
+      } else {
+        updateDialogAsync({
+          id: chatId,
+          taskUnderstanding: isTaskUnderstanding ? 0 : 1,
+        })
+      }
     }
 
     return (

@@ -11,7 +11,7 @@ import IconTurnLeft from '@/assets/icons/jsx/uav/IconTurnLeft'
 import IconTurnRight from '@/assets/icons/jsx/uav/IconTurnRight'
 import IconDownStraight from '@/assets/icons/jsx/IconDownStraight'
 import IconUpStraight from '@/assets/icons/jsx/IconUpStraight'
-import usePostDeviceService from '@/pages/control-room/uav/hooks/usePostDeviceService'
+import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 import { useDeviceDetailStore } from '../../../hooks/useDeviceDetail.store'
 
 type PropsType = unknown

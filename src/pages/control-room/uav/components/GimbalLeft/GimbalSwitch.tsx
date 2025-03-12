@@ -2,7 +2,7 @@ import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDevice
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { Button } from 'antd'
 import mitt from 'mitt'
-import usePostDeviceService from '../../hooks/usePostDeviceService'
+import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 
 type PropsType = unknown
 

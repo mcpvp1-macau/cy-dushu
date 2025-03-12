@@ -36,7 +36,7 @@ const ImageContainBoxPreview: FC<PropsType> = memo((props) => {
             const fx = t.flipX ? -1 : 1
             const fy = t.flipY ? -1 : 1
             return (
-              <div className="absolute inset-0 flex items-center justify-center">
+              <div className="relative">
                 {originalNode}
                 <div
                   className="absolute inset-0 pointer-events-none"

@@ -17,6 +17,7 @@ import resolveResp from './utils/resolveResp'
 import { LoadingOutlined } from '@ant-design/icons'
 import TaskUnderstanding from './components/TaskUnderstanding'
 import useASR from './utils/asr'
+import useUserStore from '@/store/useUser.store'
 
 export const msgEmitter = mitt<{
   message: { type: string; content: string; dialogId: number }
@@ -41,11 +42,12 @@ const Tanqi = memo(() => {
   const queryClient = useQueryClient()
 
   // 创建对话
-  const handleCreateChat = async () => {
+  const handleCreateChat = async (openTaskUnderstanding = false) => {
     setCreating(true)
     try {
       const res = await startNewDialog({
         deviceId,
+        taskUnderstanding: openTaskUnderstanding ? 1 : 0,
       })
       const nextSearchParams = new URLSearchParams(searchParams)
       nextSearchParams.set('chat', res.data.toString())
@@ -124,23 +126,23 @@ const Tanqi = memo(() => {
   }, [chatId])
 
   // 监听全局 websocket 来的消息
-  useEffect(() => {
-    const handle = (data) => {
-      if (data[0]?.dialogId !== chatId) {
-        return
-      }
-      data = resolveResp(data)
-      setApendedRows((prev) => [
-        ...prev,
-        {
-          id: dayjs().valueOf(),
-          recordType: 'RESPONSE',
-          responseMessage: data,
-        },
-      ])
-      setAiState(0)
-      setSending(false)
+  const handle = useMemoizedFn((data) => {
+    if (data[0]?.dialogId !== chatId) {
+      return
     }
+    data = resolveResp(data)
+    setApendedRows((prev) => [
+      ...prev,
+      {
+        id: dayjs().valueOf(),
+        recordType: 'RESPONSE',
+        responseMessage: data,
+      },
+    ])
+    setAiState(0)
+    setSending(false)
+  })
+  useEffect(() => {
     msgEmitter.on('message', handle)
     return () => {
       msgEmitter.off('message', handle)
@@ -178,14 +180,17 @@ const Tanqi = memo(() => {
     handleStop: handleRecordStop,
   } = useASR(isRecording)
 
+  const name = useUserStore((s) => s.user?.name)
+
   return (
     <div className="tanqi size-full overflow-hidden flex flex-col">
       <div className="grow flex flex-col overflow-hidden">
         {creating || isLoading ? (
           <AppSpin />
         ) : !chatId || !chatDetail?.rows?.length ? (
-          <div className="text-xl text-fore opacity-80 size-full flex items-center justify-center">
-            <p className="text-center">{t('tanqi.welcome.msg')}</p>
+          <div className="text-xl text-fore opacity-80 size-full flex flex-col items-center justify-center gap-2">
+            <p className="text-center">{`${t('common.hello')}, ${name}`}</p>
+            <p className="text-center">{`${t('tanqi.welcome.msg')}`}</p>
           </div>
         ) : (
           <ChatDetail
@@ -197,12 +202,11 @@ const Tanqi = memo(() => {
       <div className="m-2">
         <div className="flex justify-between">
           <div>
-            {chatId && (
-              <TaskUnderstanding
-                isTaskUnderstanding={isTaskUnderstanding}
-                chatId={chatId!}
-              />
-            )}
+            <TaskUnderstanding
+              isTaskUnderstanding={isTaskUnderstanding}
+              chatId={chatId!}
+              onStartNewDialog={handleCreateChat}
+            />
           </div>
           <div className="flex justify-end gap-3 mb-2">
             {chats && !isLoadingChats ? (

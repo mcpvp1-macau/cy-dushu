@@ -510,6 +510,7 @@ common:
   live: Live
   parameterError: Parameter Error
   tanqi: Tanqi
+  hello: Hello
 events:
   search:
     placeholder: Please search by event name or ID
@@ -1181,7 +1182,7 @@ ja-she-bei-zhuang-tai: Device status
 ja-zhuan-tai-kong-zhi: Turntable control
 tanqi:
   welcome:
-    msg: 有什么可以帮忙的？
+    msg: How Can I Help you today?
   historyChat:
     title: 历史对话
   createChat:
