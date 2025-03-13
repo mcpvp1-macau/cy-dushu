@@ -27,6 +27,7 @@ export type ConfigType = {
     }
   }
   isHaveBacktracking?: boolean
+  useShanghaiBanRoutes?: boolean
 }
 
 type WindowType = Window & { config: ConfigType }
