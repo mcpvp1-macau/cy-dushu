@@ -54,10 +54,10 @@ const ShanghaiBanRoutes: FC<unknown> = memo(() => {
         name: route.route_name,
         polyline: {
           positions,
-          width: 2,
+          width: 1,
           material: new Cesium.PolylineDashMaterialProperty({
             color: routeColor,
-            dashLength: 16.0,
+            dashLength: 8.0,
           }),
           clampToGround: true,
         },
@@ -86,7 +86,10 @@ const ShanghaiBanRoutes: FC<unknown> = memo(() => {
             style: Cesium.LabelStyle.FILL_AND_OUTLINE,
             verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
             pixelOffset: new Cesium.Cartesian2(0, -10),
-            disableDepthTestDistance: Number.POSITIVE_INFINITY,
+            distanceDisplayCondition: new Cesium.DistanceDisplayCondition(
+              0,
+              500_000,
+            ),
           },
         })
 
