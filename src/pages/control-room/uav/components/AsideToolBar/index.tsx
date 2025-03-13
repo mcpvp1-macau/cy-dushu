@@ -13,7 +13,7 @@ import IconSetting from '@/assets/icons/jsx/IconSetting'
 import { ConfigProvider, Drawer } from 'antd'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import IconSmartTrack from '@/assets/icons/jsx/uav/IconSmartTrack'
-import usePostDeviceService from '../../hooks/usePostDeviceService'
+import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 
 const ARSetting = lazy(() => import('@/components/Header/setting/ar'))
 
@@ -74,7 +74,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
   }
 
   return (
-    <div className="px-3 py-1 flex gap-2.5 text-base">
+    <div className="flex gap-2.5 text-base">
       <ConfigProvider
         theme={{
           components: {

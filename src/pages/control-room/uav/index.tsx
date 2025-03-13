@@ -134,10 +134,12 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       payload: <UavPayload productKey={productKey} />,
       ['device-data']: <UavDetailData />,
       flyButtons: (
-        <>
-          <AsideToolBar />
-          <AsideButtons />
-        </>
+        <div className="absolute inset-0 flex justify-center items-center">
+          <div className="w-full max-w-[450px] min-w-[300px] px-2 flex flex-col gap-2.5">
+            <AsideToolBar />
+            <AsideButtons />
+          </div>
+        </div>
       ),
       ['ai-list']: (
         <div className="size-full text-sm overflow-hidden flex flex-col">

@@ -9,6 +9,7 @@ import { shouldJson } from '@/utils/json'
 import { isEqual } from 'lodash'
 import { Btn } from '@/pages/control-room/uav/components/BottomButtons/type'
 import useDeviceWsURL from '@/hooks/device/useDeviceWsURL'
+import { dft } from '@/constant/time-fmt'
 
 type StateType = {
   productKey: string
@@ -165,7 +166,7 @@ export const createUavControlRoomStore = (senders: WsSendersType) => {
                 ...value,
                 controlTag: get().uuid,
                 sendTime: dayjs().valueOf(),
-                sendTimeFormat: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+                sendTimeFormat: dayjs().format(dft),
               },
             }),
           )

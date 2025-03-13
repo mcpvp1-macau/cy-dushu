@@ -505,6 +505,7 @@ common:
   parameterError: 参数错误
   tanqi: 檀棋
   threeMap: 三维图
+  hello: 您好
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索

@@ -1,5 +1,5 @@
 import DrawBox from '@/components/DrawBox'
-import usePostDeviceService from '../../../hooks/usePostDeviceService'
+import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 import { GetProps } from 'antd'
 
 type PropsType = unknown

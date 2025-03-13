@@ -43,6 +43,13 @@ declare namespace API_TANQI {
        * 对话名称，例如 "航线飞行任务01"
        */
       dialogName?: string
+
+      /**
+       * 是否开启任务理解
+       * - 0: 关闭
+       * - 1: 开始
+       */
+      taskUnderstanding?: 0 | 1
     }
     type UpdateDialog = {
       /**

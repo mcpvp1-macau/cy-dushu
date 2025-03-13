@@ -4,6 +4,9 @@ import { BaseDeviceDetailProps } from '../routes'
 import { Segmented } from 'antd'
 import IconDetail from '@/assets/icons/jsx/IconDetail'
 import IconData from '@/assets/icons/jsx/IconData'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import RebotDogDetailDetail from './components/Detail'
+import RebotDogDetailData from './components/Data'
 
 const RobotDogDetail: FC<BaseDeviceDetailProps> = memo(
   ({ data, headerTools, headerProps, onClose }) => {
@@ -22,7 +25,7 @@ const RobotDogDetail: FC<BaseDeviceDetailProps> = memo(
             <h6 className="text-white text-base">{data.deviceName}</h6>
           </div>
         </CloseableHeader>
-        <div className="px-3 mt-1 mb-3">
+        <div className="px-3 mb-3">
           <Segmented
             block
             value={tab}
@@ -41,6 +44,9 @@ const RobotDogDetail: FC<BaseDeviceDetailProps> = memo(
             onChange={setTab}
           />
         </div>
+        <ScrollArea className="grow">
+          {tab === 0 ? <RebotDogDetailDetail /> : <RebotDogDetailData />}
+        </ScrollArea>
       </div>
     )
   },

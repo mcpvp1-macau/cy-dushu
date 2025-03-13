@@ -1,6 +1,6 @@
 import PositionTooltip from '@/components/map/PostionTooltip'
 import FormModal from '@/components/XForm/Modal'
-import usePostDeviceService from '@/pages/control-room/uav/hooks/usePostDeviceService'
+import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 import { usePostDeviceServiceHandler } from '@/hooks/device/usePostDeviceService'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'

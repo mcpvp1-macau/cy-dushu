@@ -1,7 +1,7 @@
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { Popover, Slider } from 'antd'
 import { isNil } from 'lodash'
-import usePostDeviceService from '../../../hooks/usePostDeviceService'
+import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 import IconButton from '@/components/ui/button/IconButton'
 
 type PropsType = unknown
