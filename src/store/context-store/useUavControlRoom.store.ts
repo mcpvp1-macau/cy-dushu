@@ -67,6 +67,8 @@ type StateType = {
   enableGamepad: boolean
   historyTracks: number[][][]
   enableSmartTrack: boolean
+  /**是否开启三维重建 */
+  enableReconstruction: boolean
 }
 
 type ActionsType = {
@@ -96,6 +98,8 @@ type ActionsType = {
   updateHistoryTracks: (tracks: StateType['historyTracks']) => void
 
   updateEnableSmartTrack: (enable?: boolean) => void
+  /**更新三维重建 */
+  updateEnableReconstruction: (enable: boolean) => void
 }
 
 type WsSendersType = {
@@ -136,6 +140,7 @@ const createInitialState = () =>
     enableGamepad: false,
     historyTracks: [],
     enableSmartTrack: false,
+    enableReconstruction: false,
   } as StateType)
 
 export const createUavControlRoomStore = (senders: WsSendersType) => {
@@ -274,6 +279,13 @@ export const createUavControlRoomStore = (senders: WsSendersType) => {
             },
             false,
             'updateEnableSmartTrack',
+          )
+        },
+        updateEnableReconstruction: (enable) => {
+          set(
+            { enableReconstruction: enable },
+            false,
+            'updateEnableReconstruction',
           )
         },
       }),

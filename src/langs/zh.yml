@@ -504,6 +504,7 @@ common:
   live: 实况
   parameterError: 参数错误
   tanqi: 檀棋
+  threeMap: 三维图
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -954,6 +955,8 @@ mapLayer:
   errors:
     previewParse:
       msg: 预览图解析失败
+  reconstructionMap:
+    create: 创建三维图组
 message:
   success:
     saveMapView: 地图视角保存成功
@@ -1025,6 +1028,9 @@ controlRoom:
         title: 虚实融合
         setting:
           title: 虚实融合设置
+      reconstruction:
+        title: 三维重建
+        startInfo: 在地图规划需要重建的区域，每1km²预计需要5分钟，最大支持
       takePhoto:
         title: 拍照
       cameraMode:

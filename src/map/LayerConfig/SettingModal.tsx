@@ -11,6 +11,7 @@ import { useAppMsg } from '@/hooks/useAppMsg'
 import { addSpace } from '@/service/modules/layer_overlay'
 import { v4 } from 'uuid'
 import useAddMapFormItems from './hooks/useAddMapFormItems'
+import ReconstructionMapListConfig from './components/ReconstructionMapListConfig'
 
 type PropsType = {
   open: boolean
@@ -89,6 +90,25 @@ const MapLayerSettingModal: FC<PropsType> = ({ open, onClose }) => {
               </div>
             ),
             children: <MapLayerListConfig />,
+          },
+          {
+            key: 'reconstruction',
+            label: t('common.threeMap'),
+            extra: (
+              <div onClick={(e) => e.stopPropagation()}>
+                <IconButton
+                  toolTipProps={{
+                    title: t('mapLayer.reconstructionMap.create'),
+                  }}
+                  onClick={() => {
+                    console.log('创建三维图组')
+                  }}
+                >
+                  <IconPlus />
+                </IconButton>
+              </div>
+            ),
+            children: <ReconstructionMapListConfig />,
           },
         ]}
       />

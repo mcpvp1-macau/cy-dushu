@@ -7,6 +7,7 @@ import CameraMode from './CameraMode'
 import TakePhoto from './TakePhoto'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import IconAR from '@/assets/icons/jsx/IconAR'
+import IconRebuild3d from '@/assets/icons/jsx/IconRebuild3d'
 import useMixARStore from '@/store/control-room/useMixAR.store'
 import IconSetting from '@/assets/icons/jsx/IconSetting'
 import { ConfigProvider, Drawer } from 'antd'
@@ -58,6 +59,19 @@ const AsideToolBar: FC<PropsType> = memo(() => {
     useBoolean(false)
 
   const postDeviceService = usePostDeviceService()
+
+  // 三维重建
+  //  const hasReconstruction = !!serviceHave['Reconstruction']
+  const hasReconstruction = true
+  const enableReconstruction = useUavControlRoomStore(
+    (s) => s.enableReconstruction,
+  )
+  const updateEnableReconstruction = useUavControlRoomStore(
+    (s) => s.updateEnableReconstruction,
+  )
+  const handleToggleReconstruction = () => {
+    updateEnableReconstruction(!enableReconstruction)
+  }
 
   return (
     <div className="px-3 py-1 flex gap-2.5 text-base">
@@ -152,6 +166,18 @@ const AsideToolBar: FC<PropsType> = memo(() => {
               </AppViewSuspense>
             </Drawer>
           </>
+        )}
+        {hasReconstruction && (
+          <IconButton
+            className={borderedBtnClassName}
+            active={enableReconstruction}
+            toolTipProps={{
+              title: t('controlRoom.uav.service.reconstruction.title'),
+            }}
+            onClick={handleToggleReconstruction}
+          >
+            <IconRebuild3d />
+          </IconButton>
         )}
       </ConfigProvider>
     </div>

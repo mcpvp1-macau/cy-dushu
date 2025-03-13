@@ -20,6 +20,7 @@ import DrawHandler from '@/map/GlobalMap/DrawHandler'
 import MapSituation from '@/map/GlobalMap/Situation'
 import RadarTargets from './components/target/RadarTarget'
 import { useSearchParams } from 'react-router-dom'
+import UavReconstruction from './components/Reconstruction'
 
 type PropsType = unknown
 
@@ -68,6 +69,7 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
       <Suspense fallback={null}>
         {rids.length > 0 && <RIDTargets targetIds={rids} />}
       </Suspense>
+      <UavReconstruction></UavReconstruction>
     </CesiumMap>
   )
 })
