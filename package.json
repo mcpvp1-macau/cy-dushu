@@ -1,7 +1,7 @@
 {
   "name": "ja-dushu-front",
   "private": true,
-  "version": "v3.14.10.250313-dev",
+  "version": "v3.14.11.250313-dev",
   "type": "module",
   "scripts": {
     "ts": "tsc --noEmit",

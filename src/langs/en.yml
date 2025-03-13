@@ -512,6 +512,7 @@ common:
   tanqi: Tanqi
   threeMap: Three-dimensional Map
   hello: Hello
+  params: Params
 events:
   search:
     placeholder: Please search by event name or ID

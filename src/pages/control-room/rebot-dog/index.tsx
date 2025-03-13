@@ -22,6 +22,7 @@ import RebotDogDetailData from '@/pages/right/DeviceDetail/RebotDogDetail/compon
 import RebotDogAsideButtons from './components/AsideButtons'
 import RebotDogControlButtons from './components/ControlButtons'
 import ControlCMDSender from './components/ControlCMDSender'
+import RebotDogParams from './components/Params'
 
 const initialLayout: DynamicLayoutType = {
   type: 'row',
@@ -68,6 +69,9 @@ const initialLayout: DynamicLayoutType = {
               children: [
                 {
                   key: 'buttons',
+                },
+                {
+                  key: 'params',
                 },
               ],
             },
@@ -117,6 +121,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
       control: <IconFlightOperation className="text-orange-500" />,
       buttons: <DeviceIconRebotDog className="text-purple-500" />,
       'device-data': <IconDeviceData className="text-orange-500" />,
+      params: <IconDeviceData className="text-orange-500" />,
     }),
     [],
   )
@@ -128,6 +133,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
       control: t('controlRoom.uav.flyParams.title'),
       buttons: t('controlRoom.uav.flyButtons.title'),
       ['device-data']: t('controlRoom.uav.deviceData.title'),
+      params: t('common.params'),
     }),
     [t],
   )
@@ -143,6 +149,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
       ),
       buttons: <RebotDogAsideButtons />,
       'device-data': <RebotDogDetailData />,
+      params: <RebotDogParams />,
     }),
     [],
   )
