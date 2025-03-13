@@ -1,5 +1,5 @@
 import { Scene, Viewer } from 'resium'
-import { memo, ReactNode, type FC } from 'react'
+import { lazy, memo, ReactNode, Suspense, type FC } from 'react'
 import * as Cesium from 'cesium'
 import DefaultImageryLayer from './components/DefaultImageryLayer'
 import CesiumDefaultConfig from './components/CesiumDefaultConfig'
@@ -7,6 +7,10 @@ import MapLayerConfig from '../LayerConfig/LayerConfig'
 import CustomImageryLayer from './components/CustomImageryLayer'
 import FloatIconButton from '@/components/ui/button/FloatIconButton'
 import CustomCesiumGlobalTerrain from './components/CustomCesiumGlobalTerrain'
+
+const ShanghaiBanRoutes = lazy(
+  () => import('./components/custom/ShanghaiBanRoutes'),
+)
 
 type PropsType = {
   id: string
@@ -59,6 +63,9 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
           <MapLayerConfig />
         </div>
       )}
+      <Suspense fallback={null}>
+        {globalConfig.useShanghaiBanRoutes && <ShanghaiBanRoutes />}
+      </Suspense>
     </Viewer>
   )
 })

@@ -29,6 +29,7 @@ export type ConfigType = {
   isHaveBacktracking?: boolean
   /** 地形服务 */
   terrainUrl?: string
+  useShanghaiBanRoutes?: boolean
 }
 
 type WindowType = Window & { config: ConfigType }
