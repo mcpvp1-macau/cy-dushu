@@ -7,6 +7,9 @@ import AppCollapse from '@/components/AppCollapse'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import { DeviceEnum } from '@/enum/device'
 import { lazy } from 'react'
+import RebotDogInfoCard from './InfoCard'
+import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
+import { useRebotDogControlRoomStore } from '@/store/context-store/useRebotDogControlRoom.store'
 
 const DeviceAlgorithmList = lazy(
   () => import('@/components/device/algorithm/DeviceAlgorithmList'),
@@ -21,14 +24,34 @@ const RebotDogDetailDetail: FC<unknown> = memo(() => {
     (s) => s.deviceDetail?.properties.videoList?.[0]?.videoId ?? '',
   )
 
+  const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)
+
+  const modelNumber =
+    deviceDetail?.deviceTags?.find(
+      (item: { tagName: string }) => item.tagName === 'MODEL_NUMBER',
+    )?.tagValue || '-'
+
+  const status = useRealOnlineStatus(deviceId)
+
+  const lng = useRebotDogControlRoomStore((s) => s.state.longitude)
+  const lat = useRebotDogControlRoomStore((s) => s.state.latitude)
+
   return (
     <div>
-      <div className="mx-3">
+      <RebotDogInfoCard
+        modelNumber={modelNumber}
+        onlineStatus={status}
+        signalStrength={deviceDetail?.properties.signalStrength}
+        longitude={lng}
+        latitude={lat}
+      />
+      <div className="m-3">
         <DeviceLiveVideo
           leftTop={t('common.live')}
           deviceId={deviceId}
           productKey={productKey}
           videoId={videoId}
+          useVideoQualityCheck={{ open: true }}
         />
       </div>
       <div className="m-3">

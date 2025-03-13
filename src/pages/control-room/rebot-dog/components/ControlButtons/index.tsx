@@ -20,7 +20,7 @@ const RebotDogControlButtons: FC = memo(() => {
     () =>
       [
         {
-          value: { yawSpeed: 0.1 },
+          value: { yawSpeed: 0.5 },
           btn: 'Q',
           identifier: 'yawSpeed',
           icon: <IconTurnLeft />,
@@ -28,7 +28,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '左转',
         },
         {
-          value: { xSpeed: 0.1 },
+          value: { xSpeed: 0.5 },
           btn: 'W',
           identifier: 'xSpeed',
           icon: <IconUp />,
@@ -36,7 +36,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '前进',
         },
         {
-          value: { yawSpeed: -0.1 },
+          value: { yawSpeed: -0.5 },
           btn: 'E',
           identifier: 'yawSpeed',
           icon: <IconTurnRight />,
@@ -44,7 +44,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '右转',
         },
         {
-          value: { ySpeed: -0.1 },
+          value: { ySpeed: 0.5 },
           btn: 'A',
           identifier: 'ySpeed',
           icon: <IconLeft />,
@@ -52,7 +52,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '左移',
         },
         {
-          value: { xSpeed: -0.1 },
+          value: { xSpeed: -0.5 },
           btn: 'S',
           identifier: 'xSpeed',
           icon: <IconDown />,
@@ -60,7 +60,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '后退',
         },
         {
-          value: { ySpeed: 0.1 },
+          value: { ySpeed: -0.5 },
           btn: 'D',
           identifier: 'ySpeed',
           icon: <IconRight />,
@@ -68,7 +68,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '右移',
         },
         {
-          value: { yaw: 0.1 },
+          value: { yaw: 0.5 },
           btn: 'U',
           identifier: 'yaw',
           icon: <IconTurnLeft />,
@@ -76,7 +76,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '左转头',
         },
         {
-          value: { pitch: -0.1 },
+          value: { pitch: -0.5 },
           btn: 'I',
           identifier: 'pitch',
           icon: <IconUpStraight />,
@@ -84,7 +84,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '抬头',
         },
         {
-          value: { yaw: -0.1 },
+          value: { yaw: -0.5 },
           btn: 'O',
           identifier: 'yaw',
           icon: <IconTurnLeft />,
@@ -92,7 +92,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '右转头',
         },
         {
-          value: { roll: 0.1 },
+          value: { roll: -0.5 },
           btn: 'J',
           identifier: 'roll',
           icon: <IconTurnRight />,
@@ -100,7 +100,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '左歪头',
         },
         {
-          value: { pitch: 0.1 },
+          value: { pitch: 0.5 },
           btn: 'K',
           identifier: 'pitch',
           icon: <IconDownStraight />,
@@ -108,7 +108,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '低头',
         },
         {
-          value: { roll: -0.1 },
+          value: { roll: 0.5 },
           btn: 'L',
           identifier: 'roll',
           icon: <IconTurnLeft />,

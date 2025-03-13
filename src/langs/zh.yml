@@ -971,7 +971,7 @@ message:
 controlRoom:
   uav:
     flyParams:
-      title: 飞行操控
+      title: 操控
     flyButtons:
       title: 操作
     flyParamsSetting:

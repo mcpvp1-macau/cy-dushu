@@ -1,15 +1,14 @@
 import useGlobalWsStore, {
   useRealOnlineStatus,
 } from '@/store/useGlobalWebSocket.store'
-import icon from '/images/marker/icon/robot_dog.svg'
+import icon from '/images/marker/icon/rebot_dog.svg'
 import { Billboard } from 'resium'
 import * as Cesium from 'cesium'
 import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
 import { DeviceStatusEnum } from '@/enum/device'
 import { deviceStatusFilter } from '@/pages/situation/source/utils'
-import useRightMode from '@/store/layout/useRightMode.store'
-import { RightModeEnum } from '@/enum/right-mode'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
+import directionIcon from '/images/marker/icon/rebot_dog_direction.svg'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -25,9 +24,12 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
   const realLat = useGlobalWsStore(
     (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.latitude,
   )
-  const realHeading = useGlobalWsStore(
-    (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.uavYaw,
-  )
+  const realHeading =
+    useGlobalWsStore(
+      (s) =>
+        s.deviceRealtimeProperties[data.deviceId]?.properties?.headingAngle ??
+        0,
+    ) * -1
 
   const lng = realLon || data.longitude
   const lat = realLat || data.latitude
@@ -39,9 +41,6 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
 
   const status = useRealOnlineStatus(deviceId)
 
-  const rightMode = useRightMode((s) => s.rightMode)
-  const detailDeviceId = useRightMode((s) => s.detailId)
-
   if (
     isHidden || // 隐藏
     (isOnline && status !== DeviceStatusEnum.ONLINE) || // 在线状态不显示
@@ -50,8 +49,7 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
       isOnline,
       isTask,
       isNotTask,
-    ) || // 任务状态不显示（对应设备树中的筛选）
-    (rightMode === RightModeEnum.DEVICE && detailDeviceId === deviceId) // 设备详情模式下不显示
+    )
   ) {
     return null
   }
@@ -63,12 +61,28 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
         id={`device--${data.deviceType}--${data.deviceName}--${data.deviceId}--${lng}--${lat}`}
         position={Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30)}
         image={icon}
-        width={28}
-        height={28}
+        width={25}
+        height={25}
         disableDepthTestDistance={50000}
         heightReference={Cesium.HeightReference.NONE}
         rotation={Cesium.Math.toRadians(-realHeading || 0)}
       />
+      <Billboard
+        position={Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30)}
+        image={directionIcon}
+        width={13}
+        height={13}
+        disableDepthTestDistance={50000}
+        heightReference={Cesium.HeightReference.NONE}
+        rotation={Cesium.Math.toRadians(realHeading)}
+        pixelOffset={
+          new Cesium.Cartesian2(
+            -13 * Math.sin(Cesium.Math.toRadians(realHeading)),
+            -13 * Math.cos(Cesium.Math.toRadians(realHeading)),
+          )
+        }
+      />
+
       <DeviceLabel
         text={data.deviceName}
         id={deviceId}

@@ -14,7 +14,7 @@ window.config = {
   systemName: 'jingqi-v3', // 应用名称
   loginUrl: 'http://test.4a.jing-an.com:32712/login',
   globalWs: 'ws', // 全局
-  useShanghaiBanRoutes: true, // 使用上海禁飞航线
+  useShanghaiBanRoutes: false, // 使用上海禁飞航线
   defaultImageries: [
     {
       url: '/data/maptiler-satellite-lowres/{z}/{x}/{y}.jpg',

@@ -18,6 +18,7 @@ const RebotDogVideo: FC<unknown> = memo(() => {
         productKey={productKey}
         videoId={videoId}
         useDing={false}
+        useVideoQualityCheck={{ open: true }}
       />
     </div>
   )
