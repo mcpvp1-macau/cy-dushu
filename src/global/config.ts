@@ -2,6 +2,7 @@ export type ConfigType = {
   systemName: string
   title: string
   loginUrl?: string
+  version?: string
   globalWs: string
   videoBuffer?: number
   loginHttps?: boolean
