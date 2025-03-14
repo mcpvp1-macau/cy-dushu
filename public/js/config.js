@@ -30,7 +30,7 @@ window.config = {
   ],
   videoBuffer: 0,
   videoBufferDelay: 0.2,
-  daotongServer: 'http://135.100.11.130:18099/',
+  daotongServer: 'http://135.100.11.130:28080',
   controlRoom: {
     uav: {
       particularHeader: false,

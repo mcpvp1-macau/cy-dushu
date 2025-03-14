@@ -38,7 +38,7 @@ const SampledPath: React.FC<PropsType> = memo(
     // 处理轨迹数据变化
     useEffect(() => {
       if (!viewer || !value.length) return
-
+      console.info('value', value)
       // 创建或更新位置属性
       const positionProperty = new Cesium.SampledPositionProperty()
 
@@ -48,7 +48,7 @@ const SampledPath: React.FC<PropsType> = memo(
 
       // 获取轨迹的起止时间
       const startTime = dayjs(value[0].acquisitionTime).toDate()
-      const stopTime = dayjs(value[value.length - 1].acquisitionTime).toDate()
+      const stopTime = dayjs('2099-12-31').toDate()
 
       // 添加位置采样点
       value.forEach((item) => {

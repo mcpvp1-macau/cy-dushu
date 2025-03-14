@@ -1,7 +1,7 @@
-import { formatSecMMSS } from '@/utils/format/time';
-import { useMemoizedFn } from 'ahooks';
-import { Slider, Spin } from 'antd';
-import classNames from 'clsx';
+import { formatSecMMSS } from '@/utils/format/time'
+import { useMemoizedFn } from 'ahooks'
+import { Slider, Spin } from 'antd'
+import classNames from 'clsx'
 import {
   ComponentRef,
   memo,
@@ -10,91 +10,95 @@ import {
   useRef,
   useState,
   type FC,
-} from 'react';
+} from 'react'
 import CyberPlayer, {
   TimeUpdateEvent,
   VideoInfoEvent,
-} from '../Video/CyberPlayer';
+} from '../Video/CyberPlayer'
 
 type PropsType = {
-  src: string;
-  rightTools?: ReactNode;
-  playing?: boolean;
-  time: number;
-  multiple?: number;
-};
+  src: string
+  rightTools?: ReactNode
+  playing?: boolean
+  time: number
+  multiple?: number
+}
 
 const VideoPlayer: FC<PropsType> = memo(
   ({ src, rightTools, playing, time, multiple }) => {
     // const [isPlaying, setIsPlaying] = useState(true);
 
-    const playerRef = useRef<ComponentRef<typeof CyberPlayer>>(null);
-    const [buffering, setBuffering] = useState(true);
+    const playerRef = useRef<ComponentRef<typeof CyberPlayer>>(null)
+    const [buffering, setBuffering] = useState(true)
 
     const handlePlay = useMemoizedFn(() => {
-      playerRef.current?.play();
-    });
+      playerRef.current?.play()
+    })
 
     const handlePause = useMemoizedFn(() => {
-      playerRef.current?.pause();
-    });
+      playerRef.current?.pause()
+    })
 
-    const [aspectRatio, setAspectRatio] = useState(16 / 9);
-    const [duration, setDuration] = useState(0);
+    const [aspectRatio, setAspectRatio] = useState(16 / 9)
+    const [duration, setDuration] = useState(0)
     const handleVideoInfo = useMemoizedFn((e: VideoInfoEvent) => {
-      setAspectRatio(e.width / e.height);
-      setDuration(e.duration);
-    });
+      setAspectRatio(e.width / e.height)
+      setDuration(e.duration)
+    })
 
-    const [currentPosition, setCurrentPosition] = useState(0);
+    const [currentPosition, setCurrentPosition] = useState(0)
     const handleTimeUpdate = useMemoizedFn((e: TimeUpdateEvent) => {
       if (skipTimeEventRef.current) {
-        return;
+        return
       }
-      setCurrentPosition(e.position);
-    });
+      setCurrentPosition(e.position)
+    })
 
     const handlePlayerStateChange = useMemoizedFn(({ type }: any) => {
       if (type === 'buffer') {
-        setBuffering(true);
-        return;
+        setBuffering(true)
+        return
       }
-      setBuffering(false);
+      setBuffering(false)
       // setIsPlaying(type === 'play');
-    });
+    })
 
-    const skipTimeEventRef = useRef(false);
+    const skipTimeEventRef = useRef(false)
     const handleSliderChange = useMemoizedFn((value: number) => {
-      skipTimeEventRef.current = true;
-      setCurrentPosition(value);
-    });
+      skipTimeEventRef.current = true
+      setCurrentPosition(value)
+    })
     const handleSliderChangeComplete = useMemoizedFn((value: number) => {
-      skipTimeEventRef.current = false;
-      playerRef.current?.seek(value);
-    });
+      skipTimeEventRef.current = false
+      playerRef.current?.seek(value)
+    })
 
-    const [mouseIn, setMouseIn] = useState(false);
+    const [mouseIn, setMouseIn] = useState(false)
 
     useEffect(() => {
       if (playing) {
-        handlePlay();
+        handlePlay()
       } else {
-        handlePause();
+        handlePause()
       }
-    }, [playing]);
+    }, [playing])
 
     useEffect(() => {
       if (time - currentPosition > 5 || time - currentPosition < -5) {
-        playerRef.current?.seek(time);
-        playerRef.current?.player?.setPlaybackRate(multiple);
+        playerRef.current?.seek(time)
+        try {
+          playerRef.current?.player?.setPlaybackRate(multiple)
+        } catch (error) {}
       }
-    }, [time]);
+    }, [time])
 
     useEffect(() => {
       if (multiple) {
-        playerRef.current?.player?.setPlaybackRate(multiple);
+        try {
+          playerRef.current?.player?.setPlaybackRate(multiple)
+        } catch (error) {}
       }
-    }, [multiple]);
+    }, [multiple])
 
     return (
       <div
@@ -148,10 +152,10 @@ const VideoPlayer: FC<PropsType> = memo(
           </div>
         </aside>
       </div>
-    );
+    )
   },
-);
+)
 
-VideoPlayer.displayName = 'VideoPlayer';
+VideoPlayer.displayName = 'VideoPlayer'
 
-export default VideoPlayer;
+export default VideoPlayer

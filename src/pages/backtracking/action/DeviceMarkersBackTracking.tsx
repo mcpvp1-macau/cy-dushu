@@ -16,6 +16,7 @@ import * as Cesium from 'cesium'
 import { attempt } from 'lodash'
 import { deviceIconMap } from '@/map/GlobalMap/DeviceMarkers/OtherMarkers/OtherMarker'
 import useFly from '../hooks/useFly'
+import { useRequest } from 'ahooks'
 
 type PropsType = {
   deviceId?: string
@@ -38,21 +39,20 @@ type DeviceBackItem = {
  */
 const DeviceMarkersBackTracking: FC<PropsType> = memo(
   ({ deviceId, deviceIds, onClick }) => {
-    const dataTime = useBackTrackingStore((s) => s.currentTime)
-    const startTime = useBackTrackingStore((s) => s.timeRange[0])
+    const dataTime = useBackTrackingStore((s) => s.currentTime.format('YYYY-MM-DD HH:mm:ss'))
+    const startTime = useBackTrackingStore((s) => s.timeRange[0].format('YYYY-MM-DD HH:mm:ss'))
     const { viewer } = useCesium()
-    const { data } = useQuery({
-      queryKey: ['action-devices-back-tracking', dataTime, deviceIds],
-      queryFn: async () => {
-        const response = await getGlobalDeviceLocationRetrieval({
+    const { data, run } = useRequest(
+      async () => {
+        const res = await getGlobalDeviceLocationRetrieval({
           deviceIdArrays: deviceIds,
-          startTime: startTime.format('YYYY-MM-DD HH:mm:ss'),
-          endTime: dataTime.format('YYYY-MM-DD HH:mm:ss'),
+          startTime: startTime,
+          endTime: dataTime,
         })
-        return response.data || []
+        return res.data || []
       },
-      enabled: !!deviceIds.length,
-    })
+      { manual: true },
+    )
 
     const featureCollections = useMemo(
       () =>
@@ -63,6 +63,10 @@ const DeviceMarkersBackTracking: FC<PropsType> = memo(
     )
 
     useFly(data?.[0])
+
+    useEffect(() => {
+      deviceIds.length && run()
+    }, [deviceIds, startTime, dataTime])
 
     return (
       <BillboardCollection>

@@ -2,10 +2,13 @@
 import { dft } from '@/constant/time-fmt'
 import { getTrackQuery } from '@/service/modules/db-api'
 import { useBackTrackingStore } from '@/store/context-store/useBackTracking.store'
-import SampledPath from './SampledPath'
+// import SampledPath from './SampledPath'
 // import { useCesium } from 'resium'
 // import * as Cesium from 'cesium'
 import useFly from '../hooks/useFly'
+import { out_of_china } from '@/utils/geo/coordtransform'
+import CallbackPath from './CallbackPath'
+import MapUavRealMarker from '@/components/map/device/UavRealMarker'
 
 type PropsType = {
   deviceId: string
@@ -32,6 +35,7 @@ const BackTrackingPath: React.FC<PropsType> = memo(({ deviceId }) => {
           startTime: timeRange[0].format(dft),
           endTime: timeRange[1].format(dft),
         }),
+      enabled: !!deviceId,
       select: (data) => data?.data || [],
     },
     queryClient,
@@ -58,11 +62,23 @@ const BackTrackingPath: React.FC<PropsType> = memo(({ deviceId }) => {
   useFly(curAttr)
 
 
+
+  const newData = useMemo(() => {
+    return data?.filter((item) => !out_of_china(item.lng, item.lat)).map(item => ({
+      ...item,
+      altitude: Number(item.altitude || 0) < 0 ? 0 : Number(item.altitude || 0),
+    })) || []
+  }, [data])
+
+  // console.info(newData.map(item => [item.lng, item.lat, item.altitude]))
+
   return (
     <>
       {/* {lineData?.length && <HistoryTrackWithAlt value={lineData} useCallback />} */}
-      {data?.length && <SampledPath value={data} showMarker={true} />}
-      {/* {curAttr && (
+
+      {data?.length && <CallbackPath value={newData || []} />}
+     
+      {curAttr && (
         <MapUavRealMarker
           data={{
             longitude: curAttr.lng ?? 0,
@@ -71,7 +87,7 @@ const BackTrackingPath: React.FC<PropsType> = memo(({ deviceId }) => {
             gimbalYaw: curAttr.gimbalHead ?? 0,
           }}
         />
-      )} */}
+      )}
     </>
   )
 })

@@ -36,6 +36,7 @@ const DaoTongPlayer: React.FC<PropsType> = (props) => {
         streamId: `${sn}/live`,
         // 服务器地址
         serverUrl: '/_proxy/' + globalConfig.daotongServer,
+        proxyPrefix: '/_proxy',
         // 播放失败的回调  errorcode 错误码  error 错误信息
         onerror: (errorcode, error: any) => {},
         // 播放开始的回调
