@@ -4,7 +4,6 @@ import { getTrackQuery } from '@/service/modules/db-api'
 import { useBackTrackingStore } from '@/store/context-store/useBackTracking.store'
 import SampledPath from './SampledPath'
 import { useCesium } from 'resium'
-import { attempt } from 'lodash'
 import * as Cesium from 'cesium'
 import useFly from '../hooks/useFly'
 
@@ -61,8 +60,8 @@ const BackTrackingPath: React.FC<PropsType> = memo(({ deviceId }) => {
   return (
     <>
       {/* {lineData?.length && <HistoryTrackWithAlt value={lineData} useCallback />} */}
-      {data?.length ? <SampledPath value={data} /> : null}
-      {curAttr && (
+      {data?.length && <SampledPath value={data} showMarker={true} />}
+      {/* {curAttr && (
         <MapUavRealMarker
           data={{
             longitude: curAttr.lng ?? 0,
@@ -72,7 +71,7 @@ const BackTrackingPath: React.FC<PropsType> = memo(({ deviceId }) => {
             altitude: curAttr.altitude?? 0,
           }}
         />
-      )}
+      )} */}
     </>
   )
 })

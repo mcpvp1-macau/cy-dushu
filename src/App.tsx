@@ -22,6 +22,7 @@ import FixedWindowArea from './components/FixedWindowsArea'
 import backtracking from './router/modules/backtracking'
 import share from './router/modules/share.tsx'
 import { XProvider } from '@ant-design/x'
+import Update from './components/Update'
 
 const hidenSet = new Set([
   controlRoom.id,
@@ -68,6 +69,7 @@ const App = () => {
       theme={themeConfig}
       locale={i18n.language === 'zh' ? zh : en}
     >
+      <Update />
       <div
         className={clsx(
           'w-screen h-screen overflow-hidden',

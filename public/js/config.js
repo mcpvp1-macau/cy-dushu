@@ -12,6 +12,7 @@ function isPublic() {
 window.config = {
   title: '牍术·无人装备智能引擎',
   systemName: 'jingqi-v3', // 应用名称
+  version: 'v3.13.0',
   loginUrl: 'http://test.4a.jing-an.com:32712/login',
   globalWs: 'ws', // 全局
   useShanghaiBanRoutes: false, // 使用上海禁飞航线
@@ -36,6 +37,7 @@ window.config = {
     },
   },
   isHaveBacktracking: true,
+  terrainUrl: '/ja-map/terrain/{z}/{x}/{y}.png',
 }
 
 if (isPublic()) {

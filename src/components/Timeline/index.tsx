@@ -91,11 +91,33 @@ const Timeline: FC<PropsType> = memo(
       if (!timeline) {
         return
       }
-      timeline.setCustomTime(currentTime.toDate(), 'current')
-      timeline.setCustomTimeMarker(fmtCurrentTime(currentTime), 'current')
-
+      try {
+        timeline.setCustomTime(currentTime.toDate(), 'current')
+        timeline.setCustomTimeMarker(fmtCurrentTime(currentTime), 'current')
+      } catch (error) {
+        console.error('timeline set custom time error', error)
+      }
     }, [currentTime, timeline])
 
+    useEffect(() => {
+      if (!timeline) {
+        return
+      }
+      try {
+        timeline.setItems([
+          {
+            id: 'time-range2',
+          type: 'background',
+          start: timeRange[0].toDate(),
+          end: currentTime.toDate(),
+          className: 'time-range2',
+          content: '',
+          },
+        ])
+      } catch (error) {
+        console.error('timeline set items error', error)
+      }
+    }, [currentTime, timeline, timeRange[0]])
     // 播放倍数
     const [multiple, setMultiple] = useControllableValue(props, {
       defaultValue: 1,
@@ -107,9 +129,13 @@ const Timeline: FC<PropsType> = memo(
 
     const { run: handleTimeChange } = useThrottleFn(
       (e) => {
-        timeline?.setCustomTimeMarker(fmtCurrentTime(e.time), 'current')
-        setCurrentTime(dayjs(e.time))
-        setIsDraggingTime(true)
+        try {
+          timeline?.setCustomTimeMarker(fmtCurrentTime(e.time), 'current')
+          setCurrentTime(dayjs(e.time))
+          setIsDraggingTime(true)
+        } catch (error) {
+          console.error('timeline set custom time marker error', error)
+        }
       },
       { wait: 100, trailing: false },
     )
@@ -147,33 +173,39 @@ const Timeline: FC<PropsType> = memo(
                 if (!timeline) {
                   return
                 }
-                timeline.setWindow(
-                  dates[0].toDate(),
-                  dates[1].endOf('day').toDate(),
-                )
-                timeline.setCustomTime(dates[0].toDate(), 'current')
-                timeline.setCustomTimeMarker(
-                  dayjs(dates[0]).format(dft),
-                  'current',
-                )
-                timeline.setItems([
-                  {
-                    type: 'background',
-                    start: dates[0].toDate(),
-                    end: dates[1].endOf('day').toDate(),
-                    className: 'time-range',
-                    id: 'time-range',
-                    content: '',
-                  },
-                  {
-                    type: 'background',
-                    start: dates[0].toDate(),
-                    end: dates[1].endOf('day').toDate(),
-                    className: 'time-range2',
-                    id: 'time-range2',
-                    content: '',
-                  },
-                ])
+            
+                try {
+                  timeline.setWindow(
+                    dates[0].toDate(),
+                    dates[1].endOf('day').toDate(),
+                  )
+                  timeline.setCustomTime(dates[0].toDate(), 'current')
+                  timeline.setCustomTimeMarker(
+                    dayjs(dates[0]).format(dft),
+                    'current',
+                  )
+                  timeline.setItems([
+                    {
+                      type: 'background',
+                      start: dates[0].toDate(),
+                      end: dates[1].endOf('day').toDate(),
+                      className: 'time-range',
+                      id: 'time-range',
+                      content: '',
+                    },
+                    {
+                      type: 'background',
+                      start: dates[0].toDate(),
+                      end: dates[1].endOf('day').toDate(),
+                      className: 'time-range2',
+                      id: 'time-range2',
+                      content: '',
+                    },
+                  ])
+                } catch (error) {
+                  console.error('timeline set custom time error', error)
+                }
+               
                 setCurrentTime(dates[0])
               }}
             />

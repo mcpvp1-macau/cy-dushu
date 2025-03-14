@@ -2,6 +2,7 @@ export type ConfigType = {
   systemName: string
   title: string
   loginUrl?: string
+  version?: string
   globalWs: string
   videoBuffer?: number
   loginHttps?: boolean
@@ -27,6 +28,8 @@ export type ConfigType = {
     }
   }
   isHaveBacktracking?: boolean
+  /** 地形服务 */
+  terrainUrl?: string
   useShanghaiBanRoutes?: boolean
 }
 
