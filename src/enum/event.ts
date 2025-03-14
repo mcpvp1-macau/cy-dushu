@@ -4,7 +4,8 @@ export const EventStatusMap: {
     // label: string
     icon: any
     types: any[]
-    color: string
+    bgColor: string
+    textColor?: string
   }
 } = {
   PROCESSING: {
@@ -12,27 +13,31 @@ export const EventStatusMap: {
     // label: '处理中',
     icon: null,
     types: [],
-    color: '#fff',
+    bgColor: '#15B37144',
+    textColor: '#15B371',
   },
   PENDING: {
     key: 'PENDING',
     // label: '未处理',
     icon: null,
     types: [],
-    color: '#e45951',
+    bgColor: '#37414D44',
+    textColor: '#ffffff',
   },
   IGNORE: {
     key: 'IGNORE',
     // label: '已忽略',
     icon: null,
     types: [],
-    color: '#ffffff',
+    bgColor: '#ffffff44',
+    textColor: '#ffffff',
   },
   PROCESSED: {
     key: 'PROCESSED',
     // label: '已处理',
     icon: null,
     types: [],
-    color: 'green',
+    bgColor: '#15B37144',
+    textColor: '#15B371',
   },
 }

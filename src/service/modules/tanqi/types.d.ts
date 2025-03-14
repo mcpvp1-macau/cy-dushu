@@ -33,6 +33,7 @@ declare namespace API_TANQI {
        * 设备ID，例如 "52321231"
        */
       deviceId: string
+      productKey: string
 
       /**
        * 会话ID，例如 "52321231"
@@ -96,7 +97,7 @@ declare namespace API_TANQI {
       /**
        * 对话唯一ID，例如 1
        */
-      requestId: number
+      requestId?: number
 
       /**
        * 提示内容，例如 "帮我关注一下烟花燃放"

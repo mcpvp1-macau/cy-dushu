@@ -26,6 +26,7 @@ export const msgEmitter = mitt<{
 const Tanqi = memo(() => {
   const [searchParams, setSearchParams] = useSearchParams()
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
+  const productKey = useDeviceDetailStore((s) => s.productKey)
 
   const chatIdStr = searchParams.get('chat')
   const chatId = chatIdStr ? Number(chatIdStr) : undefined
@@ -47,6 +48,7 @@ const Tanqi = memo(() => {
     try {
       const res = await startNewDialog({
         deviceId,
+        productKey,
         taskUnderstanding: openTaskUnderstanding ? 1 : 0,
       })
       const nextSearchParams = new URLSearchParams(searchParams)
@@ -83,25 +85,27 @@ const Tanqi = memo(() => {
 
   const [appendedRows, setApendedRows] = useState<any[]>([])
 
+  const willSendMsg = useRef('')
+
   // 发送消息
   const handleSubmit = async (message: string) => {
-    let chatId2 = Number(chatId)
-    if (!chatId) {
-      chatId2 = await handleCreateChat()
-    }
     setSendValue('')
+    if (!chatId) {
+      willSendMsg.current = message
+      await handleCreateChat()
+      return
+    }
     try {
+      setSending(true)
       const resp = await sendDialogMsg({
         deviceId,
-        id: chatId2,
+        id: chatId,
         prompt: message,
-        requestId: 0,
       })
       setApendedRows((prev) => [...prev, resp.data])
       setAiState(1)
     } catch (e) {
       setSending(false)
-    } finally {
     }
   }
 
@@ -114,15 +118,19 @@ const Tanqi = memo(() => {
     setSending(false)
   }
 
-  useEffect(() => {
-    setApendedRows([])
-  }, [chatDetail])
+  // useEffect(() => {
+  //   setApendedRows([])
+  // }, [chatDetail])
 
   // 监听 chatId 的变化
   useEffect(() => {
     setApendedRows([])
     setAiState(0)
     setSending(false)
+    if (willSendMsg.current) {
+      handleSubmit(willSendMsg.current)
+      willSendMsg.current = ''
+    }
   }, [chatId])
 
   // 监听全局 websocket 来的消息
@@ -187,7 +195,7 @@ const Tanqi = memo(() => {
       <div className="grow flex flex-col overflow-hidden">
         {creating || isLoading ? (
           <AppSpin />
-        ) : !chatId || !chatDetail?.rows?.length ? (
+        ) : !chatId || (!chatDetail?.rows?.length && !appendedRows.length) ? (
           <div className="text-xl text-fore opacity-80 size-full flex flex-col items-center justify-center gap-2">
             <p className="text-center">{`${t('common.hello')}, ${name}`}</p>
             <p className="text-center">{`${t('tanqi.welcome.msg')}`}</p>
