@@ -113,7 +113,7 @@ const PageEvents: FC<PropsType> = memo(() => {
             return '-'
           }
           return (
-            <span style={{ color: e.color }}>
+            <span style={{ color: e.textColor ?? '#fff' }}>
               {t(`events.status.${e.key}.title`) || '-'}
             </span>
           )
