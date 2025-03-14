@@ -1,6 +1,7 @@
 import { shanghaiBanRoutes } from '@/assets/custom/shanghai_routes'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
+import { attempt } from 'lodash'
 
 const ShanghaiBanRoutes: FC<unknown> = memo(() => {
   const { viewer } = useCesium()
@@ -100,7 +101,9 @@ const ShanghaiBanRoutes: FC<unknown> = memo(() => {
     // Cleanup function to remove entities when component unmounts
     return () => {
       entities.forEach((entity) => {
-        viewer.entities.remove(entity)
+        attempt(() => {
+          viewer.entities.remove(entity)
+        })
       })
     }
   }, [viewer])
