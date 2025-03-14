@@ -36,6 +36,7 @@ window.config = {
     },
   },
   isHaveBacktracking: true,
+  terrainUrl: '/ja-map/terrain/{z}/{x}/{y}.png',
 }
 
 if (isPublic()) {

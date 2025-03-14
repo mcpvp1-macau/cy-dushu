@@ -31,9 +31,7 @@ const TimelineWarpper: React.FC<PropsType> = memo(({ startTime, endTime }) => {
 
   const handleTimeChange = useMemoizedFn((time: DayjsInstance) => {
     updateCurrentTime(time)
-    if (viewer && viewer.clock) {
-      viewer.clock.currentTime = Cesium.JulianDate.fromDate(time.toDate())
-    }
+  
   })
 
   // 处理时间范围变化
