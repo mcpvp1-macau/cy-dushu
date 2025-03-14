@@ -1048,7 +1048,15 @@ controlRoom:
           title: AR Setting
       reconstruction:
         title: Three-dimensional Reconstruction
-        startInfo: In the area where the map is planned to be rebuilt, it is expected to take 5 minutes for every 1km² and support a maximum of
+        startInfo: In the area where the map is planned to be rebuilt, it is expected to take 30 minutes for every 0.1km² and support a maximum of
+        reconstructingInfo: reconstructing
+        error_max: The planned area exceeds the limit. Please draw again
+        setting:
+          title: Flight parameter setting
+          flightAltitude: Flight Altitude
+          overlapRate: Overlap Rate(0-90%)
+          returnAltitude: Return Altitude(0-500m)
+          taskCompletionAction: Task Completion Action
       takePhoto:
         title: Take Photo
       cameraMode:

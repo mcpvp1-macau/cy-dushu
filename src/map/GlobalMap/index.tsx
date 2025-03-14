@@ -17,7 +17,7 @@ import UpdateMap from './UpdateMap'
 import TargetPoints from './TargetPoints'
 import BoardCesium from './BoardCesium'
 import EventMarkers from './EventMarkers'
-// import GaussianSplatLayerCesium from '@/components/map/GaussianSplatLayer'
+import ReconstructionDraw from '@/map/CesiumMap/components/service/ReconstructionDraw'
 
 type PropsType = unknown
 
@@ -45,7 +45,7 @@ const GlobalMap: FC<PropsType> = memo(() => {
         <EventMarkers />
         {airlineOpen && <ActionAirline />}
         {areaWaylineOpen && <AreaWayline />}
-        {/* <GaussianSplatLayerCesium /> */}
+        <ReconstructionDraw></ReconstructionDraw>
       </CesiumMap>
     </div>
   )

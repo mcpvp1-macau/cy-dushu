@@ -23,11 +23,11 @@ const ReconstructionMapConfig: FC<PropsType> = memo((props) => {
   const rightMode = useRightMode((s) => s.rightMode)
   const rightDetailId = useRightMode((s) => s.detailId)
 
-  const hiddenGroupIds = useReconstructionMapConfigStore(
-    (s) => s.hiddenGroupIds,
+  const hiddenLayerIds = useReconstructionMapConfigStore(
+    (s) => s.hiddenLayerIds,
   )
-  const updateHiddenGroupIds = useReconstructionMapConfigStore(
-    (s) => s.updateHiddenGroupIds,
+  const updateHiddenLayerIds = useReconstructionMapConfigStore(
+    (s) => s.updateHiddenLayerIds,
   )
   const handleDelte = async (overlayId: number) => {
     setLoading(true)
@@ -70,15 +70,15 @@ const ReconstructionMapConfig: FC<PropsType> = memo((props) => {
           <>
             <IconButton
               onClick={() => {
-                if (hiddenGroupIds.has(data.overlayId)) {
-                  hiddenGroupIds.delete(data.overlayId)
+                if (hiddenLayerIds.has(data.overlayId)) {
+                  hiddenLayerIds.delete(data.overlayId)
                 } else {
-                  hiddenGroupIds.add(data.overlayId)
+                  hiddenLayerIds.add(data.overlayId)
                 }
-                updateHiddenGroupIds(new Set(hiddenGroupIds))
+                updateHiddenLayerIds(new Set(hiddenLayerIds))
               }}
             >
-              {hiddenGroupIds.has(data.overlayId) ? (
+              {hiddenLayerIds.has(data.overlayId) ? (
                 <IconNotVisible />
               ) : (
                 <IconVisible />

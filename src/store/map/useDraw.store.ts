@@ -26,6 +26,7 @@ export enum DrawType {
   RangingArea = 7,
   RangingCircle = 8,
   RangingAngle = 9,
+  ReconstructionArea = 10,
 }
 
 export type PointIconType =

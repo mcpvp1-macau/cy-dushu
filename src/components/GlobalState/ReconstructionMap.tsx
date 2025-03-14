@@ -86,14 +86,13 @@ const ReconstructionMap: FC = memo(() => {
         createUid: 'jiangsi',
         useTime: 1131.6474759578705,
         imagesCount: 0,
-        modelLayerLon: 119.95604486111111,
-        modelLayerLat: 30.272159916666666,
-        modelLayerHeight: 139.194,
-        cameraHeading: -84.7,
-        cameraPitchv: -66.9,
-        cameraRoll: 0.0,
-        modelPath:
-          '0644ec8b-1f20-463a-b18d-6377bcae9109/output/point_cloud/iteration_19999/point_cloud_rk0_ws1.splat',
+        modelLayerLon: 119.95741934594605,
+        modelLayerLat: 30.275498080649328,
+        modelLayerHeight: 138.86000061035156,
+        cameraHeading: 24.24420738220215,
+        cameraPitchv: -52.599998474121094,
+        cameraRoll: 0,
+        modelPath: '/demo/output_dn3.splat',
       },
     ]
     updateLayerList(layerList)
