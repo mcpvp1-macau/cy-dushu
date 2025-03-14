@@ -40,8 +40,6 @@ const DeviceMarker: React.FC<PropsType> = memo(() => {
     return shouldJson(curAttr?.properties)?.[currentDeviceId]
   }, [currentDeviceId, curAttr?.properties])
 
-  console.info('currentDeviceId', currentDeviceId)
-
   return (
     <>
       {/** 除了打开了详情的设备 */}

@@ -5,6 +5,7 @@ export default mergeConfig(
   commonConfig,
   defineConfig({
     server: {
+      host: '0.0.0.0',
       proxy: {
         // 4A 接口
         '/proxyApi': {

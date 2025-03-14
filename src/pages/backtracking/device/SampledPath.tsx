@@ -32,7 +32,8 @@ const SampledPath: React.FC<PropsType> = memo(
     }))
     const playing = useBackTrackingStore((s) => s.playing)
 
-    console.log('value', value)
+    const multiple = useBackTrackingStore((s) => s.multiple)
+
 
     // 处理轨迹数据变化
     useEffect(() => {
@@ -56,8 +57,6 @@ const SampledPath: React.FC<PropsType> = memo(
           Cesium.Cartesian3.fromDegrees(item.lng, item.lat, item.altitude || 0),
         )
 
-        // 将角度转换为弧度（如果attitudeHead已经是弧度，则不需要转换）
-        const headingRadians = Cesium.Math.toRadians(item.attitudeHead || 0)
 
         orientationProperty.addSample(
           Cesium.JulianDate.fromDate(dayjs(item.acquisitionTime).toDate()),
@@ -168,7 +167,7 @@ const SampledPath: React.FC<PropsType> = memo(
       // 计算时间差（毫秒）
       const timeDiff = Math.abs(clockTime - currentTime)
 
-      console.log('timeDiff', timeDiff)
+      // console.log('timeDiff', timeDiff)
       
       // 如果时间差超过3秒（3000毫秒），才更新时钟时间
       if (timeDiff > 3000) {
@@ -182,6 +181,11 @@ const SampledPath: React.FC<PropsType> = memo(
       if (!viewer || !entityRef.current) return
       viewer.clock.shouldAnimate = playing
     }, [playing])
+
+    useEffect(() => {
+      if (!viewer || !entityRef.current) return
+      viewer.clock.multiplier = multiple
+    }, [multiple])
 
     return null
   },

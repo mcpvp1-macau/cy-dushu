@@ -23,6 +23,7 @@ const BackTrackingVideo: React.FC<PropsType> = ({
   const timeRange = useBackTrackingStore((s) => s.timeRange)
   const dataTime = useBackTrackingStore((s) => s.currentTime)
   const playing = useBackTrackingStore((s) => s.playing)
+  const multiple = useBackTrackingStore((s) => s.multiple)
 
   const startTime = dayjs(timeRange[0])!.format(dft)
   const endTime = dayjs(timeRange[1])!.format(dft)
@@ -63,7 +64,7 @@ const BackTrackingVideo: React.FC<PropsType> = ({
       </div>
     )
 
-  return <VideoPlayerBackTracking src={url} playing={playing} time={time} />
+  return <VideoPlayerBackTracking src={url} playing={playing} time={time} multiple={multiple} />
 }
 
 export default BackTrackingVideo

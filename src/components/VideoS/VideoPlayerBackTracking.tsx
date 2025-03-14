@@ -21,10 +21,11 @@ type PropsType = {
   rightTools?: ReactNode;
   playing?: boolean;
   time: number;
+  multiple?: number;
 };
 
 const VideoPlayer: FC<PropsType> = memo(
-  ({ src, rightTools, playing, time }) => {
+  ({ src, rightTools, playing, time, multiple }) => {
     // const [isPlaying, setIsPlaying] = useState(true);
 
     const playerRef = useRef<ComponentRef<typeof CyberPlayer>>(null);
@@ -85,8 +86,15 @@ const VideoPlayer: FC<PropsType> = memo(
     useEffect(() => {
       if (time - currentPosition > 5 || time - currentPosition < -5) {
         playerRef.current?.seek(time);
+        playerRef.current?.player?.setPlaybackRate(multiple);
       }
     }, [time]);
+
+    useEffect(() => {
+      if (multiple) {
+        playerRef.current?.player?.setPlaybackRate(multiple);
+      }
+    }, [multiple]);
 
     return (
       <div

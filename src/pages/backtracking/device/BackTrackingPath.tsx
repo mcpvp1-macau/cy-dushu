@@ -1,10 +1,10 @@
-import MapUavRealMarker from '@/components/map/device/UavRealMarker'
+// import MapUavRealMarker from '@/components/map/device/UavRealMarker'
 import { dft } from '@/constant/time-fmt'
 import { getTrackQuery } from '@/service/modules/db-api'
 import { useBackTrackingStore } from '@/store/context-store/useBackTracking.store'
 import SampledPath from './SampledPath'
-import { useCesium } from 'resium'
-import * as Cesium from 'cesium'
+// import { useCesium } from 'resium'
+// import * as Cesium from 'cesium'
 import useFly from '../hooks/useFly'
 
 type PropsType = {
@@ -14,7 +14,7 @@ const BackTrackingPath: React.FC<PropsType> = memo(({ deviceId }) => {
   const queryClient = useQueryClient()
   const timeRange = useBackTrackingStore((s) => s.timeRange)
   const currentTime = useBackTrackingStore((s) => s.currentTime.format(dft))
-  const { viewer } = useCesium()
+  // const { viewer } = useCesium()
 
   const { data } = useQuery(
     {

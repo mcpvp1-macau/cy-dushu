@@ -47,6 +47,7 @@ type CyberPlayerRef = {
   getState: () => 'playing' | 'paused' | 'idle' | 'buffering'
   /** event 有 ready, setupError, playlist, playlistItem, playlistComplete, bufferChange, play, pause, buffer, idle, complete, error, seek, seeked, time, mute, volume, fullscreen, resize, levels, levelsChanged, captionsList, captionsChange, controls, displayClick, meta，performanceInfo, hls_level_updated,rtcEvent,sei_parsed 等  */
   on: (event: string, callback: (event: any) => void) => void
+  player: any
 }
 
 const CyberPlayer = memo(
@@ -65,6 +66,7 @@ const CyberPlayer = memo(
       getDuration: () => playerRef.current?.getDuration(),
       resize: () => playerRef.current?.resize(),
       on: (event, callback) => playerRef.current?.on(event, callback),
+      player: playerRef.current,
     }))
 
     const [loaded, setLoaded] = useState(!!window?.cyberplayer)

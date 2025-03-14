@@ -43,6 +43,7 @@ const useTimelineInstance = (
     setDataset(dataset)
 
     try {
+      const timeDiff = dayjs(endTime).diff(startTime, 'minute')
       const timeline = new vis.Timeline(containerRef.current, dataset, {
         verticalScroll: true,
         showCurrentTime: false,
@@ -70,10 +71,10 @@ const useTimelineInstance = (
             second: 'YYYY-MM-DD HH:mm:ss',
           },
         },
-        max: dayjs(endTime).add(1, 'minutes').toDate(),
-        min: startTime,
-        start: startTime,
-        end: endTime,
+        max: dayjs(endTime).add(timeDiff * 0.1, 'minutes').toDate(),
+        min: dayjs(startTime).subtract(timeDiff * 0.1, 'minutes').toDate(),
+        start: dayjs(startTime).subtract(timeDiff * 0.1, 'minutes').toDate(),
+        end:dayjs(endTime).add(timeDiff * 0.1, 'minutes').toDate(),
       })
 
       perStartTime.current = startTime.getTime()
