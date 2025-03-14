@@ -1,6 +1,6 @@
 import IconTip from '@/assets/icons/jsx/IconTip'
 import useMapSettingStore from '@/store/setting/useMapSetting.store'
-import { Radio } from 'antd'
+import { Checkbox, Radio } from 'antd'
 
 type PropsType = unknown
 
@@ -8,6 +8,9 @@ const MapSetting: FC<PropsType> = memo(() => {
   const { t } = useTranslation()
   const value = useMapSettingStore((s) => s.resolution)
   const setValue = useMapSettingStore((s) => s.updateResolution)
+
+  const webgl1 = useMapSettingStore((s) => s.webgl1)
+  const updateWebgl1 = useMapSettingStore((s) => s.updateWebgl1)
 
   const options = [
     {
@@ -44,6 +47,14 @@ const MapSetting: FC<PropsType> = memo(() => {
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />
+      <div className="my-3">
+        <Checkbox
+          checked={webgl1}
+          onChange={(e) => updateWebgl1(e.target.checked)}
+        >
+          <p>WebGL 1</p>
+        </Checkbox>
+      </div>
       <div className="flex gap-2 text-fore mt-3">
         <IconTip />
         <p className="text-xs">{t('setting.map.resolution.description')}</p>
