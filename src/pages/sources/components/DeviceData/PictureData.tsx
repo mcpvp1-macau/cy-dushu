@@ -3,6 +3,7 @@ import AppSpin from '@/components/AppSpin'
 import usePicutreSourceTypeOptions from '@/constant/options/pictureSourceTypeOptions'
 import { dft } from '@/constant/time-fmt'
 import { getPlatformCapture } from '@/service/modules/db-api'
+import { makeToolbarRender } from '@/utils/antd/image'
 import { Col, DatePicker, Image, Pagination, Row, Select } from 'antd'
 import { Dayjs } from 'dayjs'
 
@@ -100,7 +101,9 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
           <AppEmpty className="my-10" />
         ) : (
           <div>
-            <Image.PreviewGroup>
+            <Image.PreviewGroup
+              preview={{ toolbarRender: makeToolbarRender(1, 50) }}
+            >
               <Row gutter={[12, 12]}>
                 {records.map((e) => (
                   <Col key={e.id} span={24} md={12} lg={8}>

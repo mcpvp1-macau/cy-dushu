@@ -4,6 +4,7 @@ import AppSpin from '@/components/AppSpin'
 import usePicutreSourceTypeOptions from '@/constant/options/pictureSourceTypeOptions'
 import { beginDay, dft, timeOnly } from '@/constant/time-fmt'
 import { getPlatformCapture } from '@/service/modules/db-api'
+import { makeToolbarRender } from '@/utils/antd/image'
 import { Col, Image, Pagination, Row, Spin } from 'antd'
 import { Dayjs } from 'dayjs'
 
@@ -105,6 +106,7 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
                       </>
                     )
                   },
+                  toolbarRender: makeToolbarRender(1, 50),
                 }}
               >
                 <Row className="mt-3" gutter={[8, 8]}>
@@ -122,7 +124,10 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
                           loading="lazy"
                           className="block size-full object-cover"
                           src={`/storage/${e.url}`}
-                          preview={{ destroyOnClose: true }}
+                          preview={{
+                            destroyOnClose: true,
+                            toolbarRender: makeToolbarRender(1, 50),
+                          }}
                           alt=""
                         />
                       </div>
