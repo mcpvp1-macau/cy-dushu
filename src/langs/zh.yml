@@ -1150,6 +1150,13 @@ controlRoom:
   service:
     robControlPowerError:
       msg: 获取控制权失败
+  rebotDog:
+    dogRoll:
+      title: 机器狗横滚角
+    dogPitch:
+      title: 机器狗俯仰角
+    dogYaw:
+      title: 机器狗偏航角
 dynamicLayout:
   exit:
     title: 退出

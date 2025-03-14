@@ -47,8 +47,8 @@ const EventItem: FC<PropsType> = memo(({ data, active }) => {
             'px-2 rounded-sm text-xs leading-5 whitespace-nowrap',
           )}
           style={{
-            backgroundColor: `${process?.color ?? '#ffffff'}44`,
-            color: process?.color ?? '#fff',
+            color: process?.color || '#fff',
+            background: `${process?.color || '#ff0000'}44`,
           }}
         >
           {t(`events.status.${process?.key}.title`)}

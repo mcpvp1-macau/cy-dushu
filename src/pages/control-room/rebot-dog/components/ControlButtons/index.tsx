@@ -16,11 +16,13 @@ import ActionService from './ActionService'
 const keyFilter = ['q', 'w', 'e', 'a', 's', 'd', 'u', 'i', 'o', 'j', 'k', 'l']
 
 const RebotDogControlButtons: FC = memo(() => {
+  const params = useRebotDogControlRoomStore((s) => s.params)
+
   const buttons = useMemo(
     () =>
       [
         {
-          value: { yawSpeed: 0.5 },
+          value: { yawSpeed: params.speed },
           btn: 'Q',
           identifier: 'yawSpeed',
           icon: <IconTurnLeft />,
@@ -28,7 +30,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '左转',
         },
         {
-          value: { xSpeed: 0.5 },
+          value: { xSpeed: params.speed },
           btn: 'W',
           identifier: 'xSpeed',
           icon: <IconUp />,
@@ -36,7 +38,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '前进',
         },
         {
-          value: { yawSpeed: -0.5 },
+          value: { yawSpeed: -params.speed },
           btn: 'E',
           identifier: 'yawSpeed',
           icon: <IconTurnRight />,
@@ -44,7 +46,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '右转',
         },
         {
-          value: { ySpeed: 0.5 },
+          value: { ySpeed: params.speed },
           btn: 'A',
           identifier: 'ySpeed',
           icon: <IconLeft />,
@@ -52,7 +54,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '左移',
         },
         {
-          value: { xSpeed: -0.5 },
+          value: { xSpeed: -params.speed },
           btn: 'S',
           identifier: 'xSpeed',
           icon: <IconDown />,
@@ -60,7 +62,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '后退',
         },
         {
-          value: { ySpeed: -0.5 },
+          value: { ySpeed: -params.speed },
           btn: 'D',
           identifier: 'ySpeed',
           icon: <IconRight />,
@@ -68,7 +70,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '右移',
         },
         {
-          value: { yaw: 0.5 },
+          value: { yaw: params.attitude },
           btn: 'U',
           identifier: 'yaw',
           icon: <IconTurnLeft />,
@@ -76,7 +78,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '左转头',
         },
         {
-          value: { pitch: -0.5 },
+          value: { pitch: -params.attitude },
           btn: 'I',
           identifier: 'pitch',
           icon: <IconUpStraight />,
@@ -84,7 +86,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '抬头',
         },
         {
-          value: { yaw: -0.5 },
+          value: { yaw: -params.attitude },
           btn: 'O',
           identifier: 'yaw',
           icon: <IconTurnLeft />,
@@ -92,7 +94,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '右转头',
         },
         {
-          value: { roll: -0.5 },
+          value: { roll: -params.attitude },
           btn: 'J',
           identifier: 'roll',
           icon: <IconTurnRight />,
@@ -100,7 +102,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '左歪头',
         },
         {
-          value: { pitch: 0.5 },
+          value: { pitch: params.attitude },
           btn: 'K',
           identifier: 'pitch',
           icon: <IconDownStraight />,
@@ -108,7 +110,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '低头',
         },
         {
-          value: { roll: 0.5 },
+          value: { roll: params.attitude },
           btn: 'L',
           identifier: 'roll',
           icon: <IconTurnLeft />,
@@ -116,7 +118,7 @@ const RebotDogControlButtons: FC = memo(() => {
           label: '右歪头',
         },
       ] as Btn[],
-    [],
+    [params],
   )
 
   const dogControlInfo = useRebotDogControlRoomStore((s) => s.dogControlInfo)
@@ -161,6 +163,10 @@ const RebotDogControlButtons: FC = memo(() => {
     updateDogControlInfo(moveDogRes)
   }, [activeBtns.size])
 
+  const speed = useRebotDogControlRoomStore(
+    (s) => s.state.speed?.toFixed?.(1) ?? '-',
+  )
+
   return (
     <div
       className={clsx('flex items-center select-none font-[Consolas] gap-3')}
@@ -191,7 +197,7 @@ const RebotDogControlButtons: FC = memo(() => {
             <br />
             m/s
           </span>
-          <span className="text-lg">{0}</span>
+          <span className="text-lg">{speed}</span>
         </div>
         <div className="border border-solid rounded bg-ground-1 border-ground-5 flex overflow-hidden">
           {buttons.slice(3, 6).map((e) => (

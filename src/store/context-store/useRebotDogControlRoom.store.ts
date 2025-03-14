@@ -22,7 +22,13 @@ type StateType = {
   uuid?: string
   /** 是否有控制权 */
   hasControlPower: boolean
-  /** 无人机的控制信息 */
+  params: {
+    /** 移动速度 */
+    speed: number
+    /** 姿态弧度 */
+    attitude: number
+  }
+  /** 机器狗的控制信息 */
   dogControlInfo: Partial<{
     /** AD */
     y: number
@@ -48,6 +54,7 @@ type ActionsType = {
   updateUUID: (uuid: string) => void
   updateDogControlInfo: (dogControlInfo: StateType['dogControlInfo']) => void
   updateActiveMouseBtn: (activeMouseBtn: StateType['activeMouseBtn']) => void
+  updateParams: (params: StateType['params']) => void
 }
 
 type WsSendersType = {
@@ -76,6 +83,10 @@ const createInitialState = () =>
       roll: 0,
     },
     activeMouseBtn: null,
+    params: {
+      speed: Number(localStorage?.getItem('RebotDogSpeed') || 0.5),
+      attitude: Number(localStorage?.getItem('RebotDogAttitude') || 0.5),
+    },
   } as StateType)
 
 export const createRebotDogControlRoomStore = (senders: WsSendersType) => {
@@ -140,6 +151,11 @@ export const createRebotDogControlRoomStore = (senders: WsSendersType) => {
         },
         updateActiveMouseBtn: (activeMouseBtn: StateType['activeMouseBtn']) => {
           set({ activeMouseBtn }, false, 'updateActiveMouseBtn')
+        },
+        updateParams: (params: StateType['params']) => {
+          set({ params }, false, 'updateParams')
+          localStorage?.setItem('RebotDogSpeed', params.speed.toString())
+          localStorage?.setItem('RebotDogAttitude', params.attitude.toString())
         },
       }),
       {

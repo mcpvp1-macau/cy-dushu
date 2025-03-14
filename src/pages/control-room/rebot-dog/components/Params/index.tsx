@@ -1,8 +1,16 @@
 import XForm from '@/components/XForm'
+import { useRebotDogControlRoomStore } from '@/store/context-store/useRebotDogControlRoom.store'
 import { useForm } from 'antd/es/form/Form'
 
 const RebotDogParams = memo(() => {
   const [form] = useForm()
+
+  const params = useRebotDogControlRoomStore((s) => s.params)
+  const updateParams = useRebotDogControlRoomStore((s) => s.updateParams)
+
+  useEffect(() => {
+    form.setFieldsValue(params)
+  }, [params])
 
   return (
     <div className="p-3">
@@ -12,6 +20,10 @@ const RebotDogParams = memo(() => {
         size="small"
         colon={false}
         form={form}
+        onChange={() => {
+          const values = form.getFieldsValue()
+          updateParams(values)
+        }}
         items={[
           {
             label: '移动速度',
