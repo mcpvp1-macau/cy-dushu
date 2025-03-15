@@ -1,8 +1,10 @@
 import FloatIconButton from '@/components/ui/button/FloatIconButton'
 import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
-import { useRebotDogControlRoomStore } from '@/store/context-store/useRebotDogControlRoom.store'
 import { AppstoreOutlined } from '@ant-design/icons'
-import { Dropdown } from 'antd'
+import { Dropdown, Tooltip } from 'antd'
+import SitDown from './assets/sitDown.svg'
+import LayDown from './assets/layDown.svg'
+import StandUp from './assets/standUp.svg'
 
 type PropsType = unknown
 
@@ -20,15 +22,27 @@ const ActionService: FC<PropsType> = memo(() => {
         items: [
           {
             key: 'actionSit',
-            label: '坐下',
+            label: (
+              <Tooltip title="坐下" placement="left">
+                <img className="size-5" src={SitDown} />
+              </Tooltip>
+            ),
           },
           {
             key: 'actionGetDown',
-            label: '趴下',
+            label: (
+              <Tooltip title="趴下" placement="left">
+                <img className="size-5" src={LayDown} />
+              </Tooltip>
+            ),
           },
           {
             key: 'actionStandUp',
-            label: '站立',
+            label: (
+              <Tooltip title="站立" placement="left">
+                <img className="size-5" src={StandUp} />
+              </Tooltip>
+            ),
           },
         ],
       }}

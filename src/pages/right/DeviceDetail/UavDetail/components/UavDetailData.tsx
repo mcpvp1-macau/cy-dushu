@@ -1,4 +1,4 @@
-import UsePrevDayHisTrack from './PrevDayHisTrack'
+import UsePrevDayHisTrack from '../../components/PrevDayHisTrack'
 import useIsRightDetail from '../../hooks/useIsRightDetail'
 import DataCollapse from '../../components/DataCollapse'
 

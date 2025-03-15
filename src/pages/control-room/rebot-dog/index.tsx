@@ -1,4 +1,3 @@
-import DeviceIconRebotDog from '@/assets/icons/jsx/device/DeviceIconRebotDog'
 import IconCameraVideo from '@/assets/icons/jsx/IconCameraVideo'
 import IconDeviceData from '@/assets/icons/jsx/IconDeviceData'
 import IconMap from '@/assets/icons/jsx/IconMap'
@@ -23,6 +22,9 @@ import RebotDogAsideButtons from './components/AsideButtons'
 import RebotDogControlButtons from './components/ControlButtons'
 import ControlCMDSender from './components/ControlCMDSender'
 import RebotDogParams from './components/Params'
+import IconControlParams from '@/assets/icons/jsx/IconControlParams'
+import IconControl from '@/assets/icons/jsx/IconControl'
+import ControlRoomRebotDogHeader from './components/Header'
 
 const initialLayout: DynamicLayoutType = {
   type: 'row',
@@ -119,9 +121,9 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
       map: <IconMap className="text-blue-500" />,
       video: <IconCameraVideo className="text-blue-500" />,
       control: <IconFlightOperation className="text-orange-500" />,
-      buttons: <DeviceIconRebotDog className="text-purple-500" />,
+      buttons: <IconControl className="text-purple-500" />,
       'device-data': <IconDeviceData className="text-orange-500" />,
-      params: <IconDeviceData className="text-orange-500" />,
+      params: <IconControlParams className="text-orange-500" />,
     }),
     [],
   )
@@ -158,6 +160,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
     <DeviceDetailStoreContext.Provider value={store}>
       <RebotDogControlRoomStoreContext.Provider value={controlRoomStore}>
         <div className="flex flex-col page-full">
+          <ControlRoomRebotDogHeader />
           <main className="grow w-full relative overflow-hidden">
             <DynamicLayoutRoot
               layout={layout!}

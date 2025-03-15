@@ -5,14 +5,20 @@ import IconLeft from '@/assets/icons/jsx/IconLeft'
 import IconTurnRight from '@/assets/icons/jsx/uav/IconTurnRight'
 import IconDown from '@/assets/icons/jsx/IconDown'
 import IconRight from '@/assets/icons/jsx/IconRight'
-import IconUpStraight from '@/assets/icons/jsx/IconUpStraight'
-import IconDownStraight from '@/assets/icons/jsx/IconDownStraight'
 import { Tooltip } from 'antd'
 import Compass from './Compass'
 import { useKeyDownGroup } from '@/hooks/useKeyDownGroup'
 import { useRebotDogControlRoomStore } from '@/store/context-store/useRebotDogControlRoom.store'
 import { ButtonHTMLAttributes } from 'react'
 import ActionService from './ActionService'
+import IconTurnRight2 from '@/assets/icons/jsx/IconTurnRight2'
+import IconTurnDown from '@/assets/icons/jsx/IconTurnDown'
+import IconTurnLeft2 from '@/assets/icons/jsx/IconTurnLeft2'
+import IconTurnOn from '@/assets/icons/jsx/IconTurnOn'
+
+import IconTurnLeft3 from '@/assets/icons/jsx/IconTurnLeft'
+import IconTurnRight3 from '@/assets/icons/jsx/IconTurnRight'
+
 const keyFilter = ['q', 'w', 'e', 'a', 's', 'd', 'u', 'i', 'o', 'j', 'k', 'l']
 
 const RebotDogControlButtons: FC = memo(() => {
@@ -73,7 +79,7 @@ const RebotDogControlButtons: FC = memo(() => {
           value: { yaw: params.attitude },
           btn: 'U',
           identifier: 'yaw',
-          icon: <IconTurnLeft />,
+          icon: <IconTurnLeft3 />,
           method: 'service.moveDog.post',
           label: '左转头',
         },
@@ -81,7 +87,7 @@ const RebotDogControlButtons: FC = memo(() => {
           value: { pitch: -params.attitude },
           btn: 'I',
           identifier: 'pitch',
-          icon: <IconUpStraight />,
+          icon: <IconTurnOn />,
           method: 'service.moveDog.post',
           label: '抬头',
         },
@@ -89,7 +95,7 @@ const RebotDogControlButtons: FC = memo(() => {
           value: { yaw: -params.attitude },
           btn: 'O',
           identifier: 'yaw',
-          icon: <IconTurnLeft />,
+          icon: <IconTurnRight3 />,
           method: 'service.moveDog.post',
           label: '右转头',
         },
@@ -97,7 +103,7 @@ const RebotDogControlButtons: FC = memo(() => {
           value: { roll: -params.attitude },
           btn: 'J',
           identifier: 'roll',
-          icon: <IconTurnRight />,
+          icon: <IconTurnLeft2 />,
           method: 'service.moveDog.post',
           label: '左歪头',
         },
@@ -105,7 +111,7 @@ const RebotDogControlButtons: FC = memo(() => {
           value: { pitch: params.attitude },
           btn: 'K',
           identifier: 'pitch',
-          icon: <IconDownStraight />,
+          icon: <IconTurnDown />,
           method: 'service.moveDog.post',
           label: '低头',
         },
@@ -113,7 +119,7 @@ const RebotDogControlButtons: FC = memo(() => {
           value: { roll: params.attitude },
           btn: 'L',
           identifier: 'roll',
-          icon: <IconTurnLeft />,
+          icon: <IconTurnRight2 />,
           method: 'service.moveDog.post',
           label: '右歪头',
         },

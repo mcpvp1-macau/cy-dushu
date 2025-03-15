@@ -35,6 +35,8 @@ const RebotDogDetailDetail: FC<unknown> = memo(() => {
 
   const lng = useRebotDogControlRoomStore((s) => s.state.longitude)
   const lat = useRebotDogControlRoomStore((s) => s.state.latitude)
+  const electricity = useRebotDogControlRoomStore((s) => s.state.electricity)
+  const speed = useRebotDogControlRoomStore((s) => s.state.speed)
 
   return (
     <div>
@@ -42,6 +44,8 @@ const RebotDogDetailDetail: FC<unknown> = memo(() => {
         modelNumber={modelNumber}
         onlineStatus={status}
         signalStrength={deviceDetail?.properties.signalStrength}
+        electricity={electricity}
+        speed={speed}
         longitude={lng}
         latitude={lat}
       />

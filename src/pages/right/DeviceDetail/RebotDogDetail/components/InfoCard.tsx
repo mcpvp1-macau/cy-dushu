@@ -16,10 +16,20 @@ type PropsType = {} & Partial<{
   signalStrength: number
   longitude: number
   latitude: number
+  electricity: number
+  speed: number
 }>
 
 const RebotDogInfoCard: FC<PropsType> = memo(
-  ({ modelNumber, onlineStatus, signalStrength, longitude, latitude }) => {
+  ({
+    modelNumber,
+    onlineStatus,
+    signalStrength,
+    longitude,
+    latitude,
+    electricity,
+    speed,
+  }) => {
     const { t } = useTranslation()
 
     return (
@@ -36,6 +46,8 @@ const RebotDogInfoCard: FC<PropsType> = memo(
             </p>
           }
         />
+        <I l={t('common.electricity')} v={`${electricity || '-'} %`} />
+        <I l={t('common.speed')} v={`${speed?.toFixed(2) || '-'} m/s`} />
         <I l={t('common.longitude')} v={longitude?.toFixed(5) || '-'} />
         <I l={t('common.latitude')} v={latitude?.toFixed(5) || '-'} />
       </ul>
