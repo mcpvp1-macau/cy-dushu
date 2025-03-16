@@ -51,12 +51,22 @@ const getRGBValue = async (lng, lat, z) => {
   let image = null
   if (images[`${z}/${row}/${col}`]) {
     image = images[`${z}/${row}/${col}`]
+  } else if (images[`${z}/${row}/${col}`] === 0) {
+    image = images[`${z}/${row}/${col}`]
   } else {
-    const url = `/data/maptiler-terrain-rgb/${z}/${row}/${col}.png`
+    let url =
+      globalConfig.terrainUrl || `/data/maptiler-terrain-rgb/{z}/{x}/{y}.png`
+    // const url = `/data/maptiler-terrain-rgb/${z}/${row}/${col}.png`
+    url = url.replace('{z}', z).replace('{x}', col).replace('{y}', row)
     // const url = `http://61.153.111.197:32650/data/maptiler-terrain-rgb/${z}/${row}/${col}.png`;
-    image = await Jimp.read(url)
+    image = await Jimp.read(url).catch((err) => {
+      return 0
+    })
+    console.info('image', image)
     images[`${z}/${row}/${col}`] = image
   }
+
+  if (!image) return 0
 
   const pixelColor = image.getPixelColor(pixelX, pixelY)
   // 使用jimp的getColor方法获取RGB值
@@ -69,10 +79,11 @@ const rgbToElevation = (r, g, b) => {
   return -10000 + (r * 256 * 256 + g * 256 + b) * 0.1
 }
 
-const z = 11 // 瓦片缩放级别
+const z = 10 // 瓦片缩放级别
 
 const queryTerrainElevation = async (lng, lat) => {
   const rgb = await getRGBValue(lng, lat, z)
+  if (!rgb) return 0
   const elevation = rgbToElevation(rgb[0], rgb[1], rgb[2])
   return elevation
 }

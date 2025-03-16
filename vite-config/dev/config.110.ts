@@ -5,6 +5,7 @@ export default mergeConfig(
   commonConfig,
   defineConfig({
     server: {
+      host: '0.0.0.0',
       proxy: {
         // 4A 接口
         '/proxyApi': {
@@ -42,6 +43,16 @@ export default mergeConfig(
         '/vod/download': {
           target: 'http://135.100.11.110:31118',
           changeOrigin: true,
+        },
+        '/_proxy/http://135.100.11.130:28080': {
+          target: 'http://135.100.11.130:28080',
+          changeOrigin: true,
+          rewrite: (path) => path.replace('/_proxy/http://135.100.11.130:28080', ''),
+        },
+        '/_proxy/http://135.100.11.130:8082': {
+          target: 'http://135.100.11.130:8082',
+          changeOrigin: true,
+          rewrite: (path) => path.replace('/_proxy/http://135.100.11.130:8082', ''),
         },
       },
     },

@@ -6,6 +6,9 @@ import useBackTrackingInfo from '../hooks/useBackTrackingInfo'
 import { shouldJson } from '@/utils/json'
 import { emtpyObject } from '@/constant/data'
 import { getDeviceDetail } from '@/service/modules/device'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { memo, useMemo, useState } from 'react'
+import CallbackMarkers from './CallbackMarkers'
 
 type PropsType = unknown
 
@@ -40,15 +43,23 @@ const DeviceMarker: React.FC<PropsType> = memo(() => {
     return shouldJson(curAttr?.properties)?.[currentDeviceId]
   }, [currentDeviceId, curAttr?.properties])
 
-  console.info('currentDeviceId', currentDeviceId)
+  const ids = useMemo(() => {
+    return deviceIds.filter((item) => item !== currentDeviceId)
+  }, [deviceIds, currentDeviceId])
 
   return (
     <>
       {/** 除了打开了详情的设备 */}
       <DeviceMarkersBackTracking
-        deviceIds={deviceIds.filter(item => item !== currentDeviceId)}
+        deviceIds={ids}
         onClick={(device) => setCurrentDeviceId(device.deviceId)}
+        deviceId={currentDeviceId!}
       />
+      {/* <CallbackMarkers
+        deviceIds={ids}
+        deviceId={currentDeviceId!}
+        onClick={(device) => setCurrentDeviceId(device.deviceId)}
+      /> */}
       {/** 打开了详情的设备 */}
       {currentDeviceId ? (
         <BackTrackingPath deviceId={currentDeviceId!} />

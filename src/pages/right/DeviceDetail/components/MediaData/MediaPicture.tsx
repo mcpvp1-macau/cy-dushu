@@ -112,7 +112,7 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
                       </>
                     )
                   },
-                  toolbarRender: makeToolbarRender(),
+                  toolbarRender: makeToolbarRender(1, 50),
                 }}
               >
                 <Row className="mt-3" gutter={[8, 8]}>
@@ -130,8 +130,9 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
                           loading="lazy"
                           className="block size-full object-cover"
                           src={`/storage/${e.url}`}
-                          preview={{ destroyOnClose: true }}
+                          preview={{ destroyOnClose: true, toolbarRender: makeToolbarRender(1, 50), }}
                           alt={e.url.slice(e.url.lastIndexOf('/') + 1)}
+
                         />
                       </div>
                     </Col>

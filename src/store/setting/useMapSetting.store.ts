@@ -3,10 +3,12 @@ import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 
 type StateType = {
   resolution: string
+  webgl1: boolean
 }
 
 type ActionsType = {
   updateResolution: (data: string) => void
+  updateWebgl1: (data: boolean) => void
 }
 
 const useMapSettingStore = create<StateType & ActionsType>()(
@@ -14,6 +16,7 @@ const useMapSettingStore = create<StateType & ActionsType>()(
     persist(
       (set) => ({
         resolution: '2',
+        webgl1: false,
         updateResolution: (data) => {
           set(
             {
@@ -21,6 +24,9 @@ const useMapSettingStore = create<StateType & ActionsType>()(
             },
             false,
           )
+        },
+        updateWebgl1: (data) => {
+          set({ webgl1: data }, false)
         },
       }),
       {

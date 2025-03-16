@@ -31,6 +31,7 @@ const ImageContainBoxPreview: FC<PropsType> = memo((props) => {
         alt={props.alt}
         preview={{
           minScale: 0.5,
+          toolbarRender: makeToolbarRender(1, 50),
           imageRender: (originalNode, info) => {
             const t = info.transform
             const fx = t.flipX ? -1 : 1

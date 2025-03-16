@@ -24,6 +24,7 @@ const UsePrevDayHisTrack = memo(() => {
         },
       ],
       queryFn: () => getTrackQuery({ deviceId: deviceId!, startTime, endTime }),
+      enabled: !!deviceId,
     },
     queryClient,
   )
