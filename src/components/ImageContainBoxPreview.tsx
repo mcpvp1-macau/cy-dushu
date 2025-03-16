@@ -54,7 +54,6 @@ const ImageContainBoxPreview: FC<PropsType> = memo((props) => {
               </div>
             )
           },
-          toolbarRender: makeToolbarRender(0.5, 50),
         }}
       />
     </>
