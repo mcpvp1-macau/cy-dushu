@@ -24,11 +24,11 @@ Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ACCESS_TOKEN
 const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
   const [is2D, { toggle }] = useBoolean(false)
 
-  const webgl1 = useMapSettingStore((s) => s.webgl1)
+  // const webgl1 = useMapSettingStore((s) => s.webgl1)
 
   return (
     <Viewer
-      key={webgl1 ? 'webgl1' : 'webgl2'}
+      // key={webgl1 ? 'webgl1' : 'webgl2'}
       full
       id={id}
       geocoder={false}
@@ -49,9 +49,9 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
       skyBox={false}
       // @ts-ignore
       imageryProvider={false}
-      contextOptions={{
-        requestWebgl1: webgl1,
-      }}
+      // contextOptions={{
+      //   requestWebgl1: webgl1,
+      // }}
     >
       <Scene
         mode={is2D ? Cesium.SceneMode.SCENE2D : Cesium.SceneMode.SCENE3D}

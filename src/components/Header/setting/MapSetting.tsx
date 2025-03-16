@@ -47,14 +47,14 @@ const MapSetting: FC<PropsType> = memo(() => {
         value={value}
         onChange={(e) => setValue(e.target.value)}
       />
-      <div className="my-3">
+      {/* <div className="my-3">
         <Checkbox
           checked={webgl1}
           onChange={(e) => updateWebgl1(e.target.checked)}
         >
           <p>WebGL 1</p>
         </Checkbox>
-      </div>
+      </div> */}
       <div className="flex gap-2 text-fore mt-3">
         <IconTip />
         <p className="text-xs">{t('setting.map.resolution.description')}</p>

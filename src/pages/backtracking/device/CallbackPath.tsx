@@ -101,9 +101,13 @@ const CallbackPath: React.FC<PropsType> = memo(({
     
     return () => {
       // 清理
-      if (primitiveRef.current && viewer.scene) {
-        attempt(() => viewer.scene.primitives.remove(primitiveRef.current!))
-        primitiveRef.current = undefined
+      try {
+        if (primitiveRef.current && viewer?.scene) {
+          attempt(() => viewer.scene.primitives.remove(primitiveRef.current!))
+          primitiveRef.current = undefined
+        }
+      } catch (error) {
+        console.error(error)
       }
       
       // 移除事件监听器
