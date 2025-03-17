@@ -1,7 +1,6 @@
 import markdownit from 'markdown-it'
 
 const resolveResp = (resp: any) => {
-  console.log('resp', resp)
   if (Array.isArray(resp)) {
     resp = resp.map((item) => {
       if (item.type === 'TEXT') {

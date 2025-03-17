@@ -87,6 +87,7 @@ const Tanqi = memo(() => {
 
   const willSendMsg = useRef('')
 
+  const latestRequest = useRef<string | null>(null)
   // 发送消息
   const handleSubmit = async (message: string) => {
     setSendValue('')
@@ -102,6 +103,7 @@ const Tanqi = memo(() => {
         id: chatId,
         prompt: message,
       })
+      latestRequest.current = resp.data.requestId
       setApendedRows((prev) => [...prev, resp.data])
       setAiState(1)
     } catch (e) {
@@ -113,14 +115,11 @@ const Tanqi = memo(() => {
   const handleStop = async () => {
     await stopDialogReq({
       id: chatId!,
+      requestId: latestRequest.current ?? undefined,
     })
     setAiState(0)
     setSending(false)
   }
-
-  // useEffect(() => {
-  //   setApendedRows([])
-  // }, [chatDetail])
 
   // 监听 chatId 的变化
   useEffect(() => {

@@ -3,6 +3,7 @@ import { UserOutlined } from '@ant-design/icons'
 import { Bubble } from '@ant-design/x'
 import { GetProp } from 'antd'
 import ChatDetailContent from './ChatDetailContent'
+import IconLoading from '@/assets/icons/jsx/IconLoading'
 
 type PropsType = {
   aiState: 0 | 1 | 2
@@ -47,7 +48,11 @@ const ChatDetail: FC<PropsType> = memo(({ aiState, bubbles }) => {
         <ChatDetailContent
           type={e.recordType}
           message={
-            e.recordType === 'REQUEST' ? e.sendMessage : e.responseMessage
+            e.recordType === 'REQUEST' ? (
+              <p>{e.sendMessage}</p>
+            ) : (
+              e.responseMessage
+            )
           }
         />
       ),
@@ -61,6 +66,7 @@ const ChatDetail: FC<PropsType> = memo(({ aiState, bubbles }) => {
           role: 'ai',
           header: '檀棋',
           loading: true,
+          loadingRender: () => <IconLoading className="text-fore scale-150" />,
         },
       ]
     }

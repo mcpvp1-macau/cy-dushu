@@ -73,6 +73,6 @@ export const sendDialogMsg = (data: API_TANQI.req.SendDialogMsg) => {
  * https://jingan.yuque.com/staff-ycgiyb/ctubtf/zfyxy99pg2zc60x1#mK8dw
  * @param data
  */
-export const stopDialogReq = (data: { id: number }) => {
+export const stopDialogReq = (data: { id: number; requestId?: string }) => {
   return serverJingqi.post('/dialog/stop', data)
 }
