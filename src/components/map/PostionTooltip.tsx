@@ -1,4 +1,3 @@
-import { memo, type FC } from 'react'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { limitNum } from '@/utils/math'
@@ -50,6 +49,9 @@ const PositionTooltip: FC<PropsType> = memo(
 
         const rect = viewer.scene.canvas.getBoundingClientRect()
 
+        screenPostion.x = Math.floor(screenPostion.x / viewer.resolutionScale)
+        screenPostion.y = Math.floor(screenPostion.y / viewer.resolutionScale)
+
         // 不需要一直在视口内
         if (!alwayInViewport) {
           if (
@@ -65,18 +67,10 @@ const PositionTooltip: FC<PropsType> = memo(
           }
         }
         const left = `${
-          limitNum(
-            Math.floor(screenPostion.x / viewer.resolutionScale),
-            0,
-            rect.width,
-          ) + rect.left
+          limitNum(Math.floor(screenPostion.x), 0, rect.width) + rect.left
         }px`
         const top = `${
-          limitNum(
-            Math.floor(screenPostion.y / viewer.resolutionScale),
-            0,
-            rect.height,
-          ) + rect.top
+          limitNum(Math.floor(screenPostion.y), 0, rect.height) + rect.top
         }px`
         if (
           divRef.current?.style.left === left &&
