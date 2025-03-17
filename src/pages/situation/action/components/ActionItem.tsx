@@ -47,7 +47,7 @@ const ActionItem: FC<PropsType> = memo(({ data }) => {
           {statusMap[data.status][0]}
         </div>
       </div>
-      <div className="text-xs ml-6">
+      <div className="text-xs">
         <p className="mt-1">
           {t('action.item.time')}: {data.gmtCreate}
         </p>

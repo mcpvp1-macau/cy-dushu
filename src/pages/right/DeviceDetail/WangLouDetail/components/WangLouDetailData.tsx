@@ -24,9 +24,10 @@ const WangLouDetailData: FC<PropsType> = memo(({ deviceId }) => {
 
   return (
     <AppCollapse
-      defaultActiveKey={['PICTURE']}
+      defaultActiveKey={[1]}
       items={[
         {
+          key: 1,
           label: (
             <LinkSwitch
               value={mediaType}
