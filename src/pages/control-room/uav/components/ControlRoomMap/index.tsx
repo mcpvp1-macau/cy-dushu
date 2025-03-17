@@ -21,7 +21,7 @@ import MapSituation from '@/map/GlobalMap/Situation'
 import RadarTargets from './components/target/RadarTarget'
 import { useSearchParams } from 'react-router-dom'
 import UavReconstruction from './components/Reconstruction'
-
+import TargetPoints from '@/map/GlobalMap/TargetPoints'
 type PropsType = unknown
 
 const RIDTargets = lazy(() => import('./components/RIDTargets'))
@@ -65,7 +65,8 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
       <UavRealTrack />
       <UAVControlRoomPOIResolver />
       <LayerOverlay />
-      <RadarTargets />
+      {/* <RadarTargets /> */}
+      <TargetPoints />
       <Suspense fallback={null}>
         {rids.length > 0 && <RIDTargets targetIds={rids} />}
       </Suspense>

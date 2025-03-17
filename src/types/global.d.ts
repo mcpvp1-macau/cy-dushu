@@ -5,5 +5,6 @@ export declare global {
     JessibucaPro: typeof JessibucaPro
     cyberplayer: any
     AutelMedia: any
+    queryTerrain: (lng: number, lat: number) => Promise<number>
   }
 }
