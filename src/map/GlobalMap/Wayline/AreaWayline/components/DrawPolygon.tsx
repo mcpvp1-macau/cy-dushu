@@ -90,14 +90,6 @@ const DrawPolygon: FC<PropsType> = memo(
 
     return (
       <>
-        {mousePoint && (
-          <Polygon
-            useCallback
-            polygon={[...path, mousePoint]}
-            fillColor={fillColor}
-            outlineColor={outlineColor}
-          />
-        )}
         <PointPrimitiveCollection>
           {path.slice(0, -1).map((p, i) => (
             <Fragment key={i}>
@@ -124,6 +116,15 @@ const DrawPolygon: FC<PropsType> = memo(
               onClick={() => onDrawEnd?.(path)}
             />
           </PositionHTML>
+        )}
+
+        {mousePoint && (
+          <Polygon
+            useCallback
+            polygon={[...path, mousePoint]}
+            fillColor={fillColor}
+            outlineColor={outlineColor}
+          />
         )}
 
         {/* 鼠标垫前后距离提示 */}

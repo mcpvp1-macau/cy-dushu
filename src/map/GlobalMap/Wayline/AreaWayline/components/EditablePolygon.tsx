@@ -134,7 +134,6 @@ const EditablePolygon: FC<PropsType> = memo(
 
     return (
       <>
-        <Polygon useCallback polygon={polygon} />
         {isEdit && (
           <PointPrimitiveCollection>
             {polygon.map((point, index) => {
@@ -171,6 +170,7 @@ const EditablePolygon: FC<PropsType> = memo(
             })}
           </PointPrimitiveCollection>
         )}
+        <Polygon useCallback polygon={polygon} />
       </>
     )
   },

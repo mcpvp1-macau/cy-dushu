@@ -644,6 +644,10 @@ wayline:
             title: Point Wayline
           area:
             title: Area Wayline
+          swarm:
+            title: Swarm Wayline
+          rebotDog:
+            title: RebotDog Wayline
       uavType:
         label: UAV Model
       gimbalType:
@@ -791,6 +795,7 @@ wayline:
     error:
       waypointNotEnough: At least 2 waypoints are required
       rthHeightNotSet: Return Height is not set
+      polygonNotSet: Please draw polygon on map
     defaultTaskName: Wayline Task
     success:
       stopTask:

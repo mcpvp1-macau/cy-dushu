@@ -1,10 +1,12 @@
 import IconPlus from '@/assets/icons/jsx/IconPlus'
+import IconRebotDogWayline from '@/assets/icons/jsx/IconRebotDogWayline'
+import IconSwarm from '@/assets/icons/jsx/IconSwarm'
 import IconWaylineAirpoint from '@/assets/icons/jsx/IconWaylineAirpoint'
 import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
 import IconButton from '@/components/ui/button/IconButton'
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
-import { UAVWaylineEnum } from '@/constant/uav/wayline'
+import { WaylineEnum } from '@/constant/uav/wayline'
 import { getWaylineTaskModel } from '@/service/modules/airline'
 import { Form } from 'antd'
 import { DefaultOptionType } from 'antd/es/cascader'
@@ -53,7 +55,9 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
   }, [modelsData])
 
   const [form] = Form.useForm()
+
   const uavTypeIdx = Form.useWatch('uavType', form)
+  const type = Form.useWatch('type', form)
 
   const gimbalOptions = useMemo(
     () => cameraOptions[uavTypeIdx] ?? [],
@@ -85,7 +89,7 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
                 {t('wayline.create.form.waylineType.options.point.title')}
               </div>
             ),
-            value: 0,
+            value: WaylineEnum.PointWayline,
           },
           {
             label: (
@@ -94,24 +98,47 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
                 {t('wayline.create.form.waylineType.options.area.title')}
               </div>
             ),
-            value: 1,
+            value: WaylineEnum.AreaWayline,
+          },
+          {
+            label: (
+              <div className="flex gap-2 items-center">
+                <IconSwarm />
+                {t('wayline.create.form.waylineType.options.swarm.title')}
+              </div>
+            ),
+            value: WaylineEnum.SwarmWayline,
+          },
+          {
+            label: (
+              <div className="flex gap-2 items-center">
+                <IconRebotDogWayline />
+                {t('wayline.create.form.waylineType.options.rebotDog.title')}
+              </div>
+            ),
+            value: WaylineEnum.RebotDogWayline,
           },
         ],
       },
-      {
-        name: 'uavType',
-        label: t('wayline.create.form.uavType.label'),
-        type: 'select',
-        options: modelOptions,
-      },
-      {
-        name: 'gimbalType',
-        label: t('wayline.create.form.gimbalType.label'),
-        type: 'select',
-        options: gimbalOptions,
-      },
+      // 「航点航线」和「面状航线」需要选择无人机和相机
+      ...([WaylineEnum.PointWayline, WaylineEnum.AreaWayline].includes(type)
+        ? [
+            {
+              name: 'uavType',
+              label: t('wayline.create.form.uavType.label'),
+              type: 'select',
+              options: modelOptions,
+            },
+            {
+              name: 'gimbalType',
+              label: t('wayline.create.form.gimbalType.label'),
+              type: 'select',
+              options: gimbalOptions,
+            },
+          ]
+        : []),
     ] as XFormItem[]
-  }, [i18n.language, modelOptions, gimbalOptions])
+  }, [i18n.language, modelOptions, type, gimbalOptions])
 
   useEffect(() => {
     form.setFieldsValue({ gimbalType: undefined })
@@ -132,8 +159,15 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
       : `&camera=${JSON.stringify(
           modelsData![v.uavType].cameras[v.gimbalType],
         )}`
+    // 根据航线类型选择不同的编辑页面
     const to =
-      v.type === UAVWaylineEnum.PointWayline ? 'edit' : 'area-wayline-edit'
+      v.type === WaylineEnum.PointWayline
+        ? 'edit'
+        : v.type === WaylineEnum.AreaWayline
+        ? 'area-wayline-edit'
+        : v.type === WaylineEnum.SwarmWayline
+        ? 'swarm-wayline-edit'
+        : 'rebot-dog-wayline-edit'
     navigate(`/airline/${to}?name=${v.airlineName}${modelName}${camera}`)
   }
 
@@ -154,7 +188,7 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
         open={open}
         items={addItems}
         initialValues={{
-          type: UAVWaylineEnum.PointWayline,
+          type: WaylineEnum.PointWayline,
         }}
         onClose={() => setOpen(false)}
         onConfirm={handleConfirm}

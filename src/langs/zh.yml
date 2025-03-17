@@ -636,6 +636,10 @@ wayline:
             title: 航点航线
           area:
             title: 面状航线
+          swarm:
+            title: 蜂群航线
+          rebotDog:
+            title: 巡逻路线
       uavType:
         label: 飞行器型号
       gimbalType:
@@ -781,6 +785,7 @@ wayline:
     error:
       waypointNotEnough: 航点数量至少需要 2 个
       rthHeightNotSet: 请设置返航高度
+      polygonNotSet: 请在地图上绘制作战区域
     defaultTaskName: 航线任务
     success:
       stopTask:

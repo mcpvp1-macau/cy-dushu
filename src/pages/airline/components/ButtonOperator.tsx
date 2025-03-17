@@ -1,6 +1,7 @@
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
 import XModal from '@/components/XModal'
+import { DeviceEnum } from '@/enum/device'
 import { DictEnum } from '@/enum/dict'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import {
@@ -16,6 +17,8 @@ import { DefaultOptionType } from 'antd/es/select'
 import { useSearchParams } from 'react-router-dom'
 
 type PropsType = {
+  deviceType?: DeviceEnum
+  allowMultipleDevice?: boolean
   disabled?: boolean
   generateTaskData: () => Record<string, any>
   invalidate: () => boolean
@@ -23,7 +26,13 @@ type PropsType = {
 
 /** 航线编辑底部按钮栏 */
 const BottomOperator: FC<PropsType> = memo(
-  ({ disabled, generateTaskData, invalidate }) => {
+  ({
+    disabled,
+    deviceType = DeviceEnum.UAV,
+    allowMultipleDevice = false,
+    generateTaskData,
+    invalidate,
+  }) => {
     const msgApi = useAppMsg()
     const { t, i18n } = useTranslation()
 
@@ -93,7 +102,7 @@ const BottomOperator: FC<PropsType> = memo(
         data['type'] = type
         data['deviceIds'] = deviceId
         await createActionItem(data, false)
-        navigate(-1)
+        // navigate(-1)
       } catch (e) {
         if (isLiqunCommonError(e)) {
           // 该设备有正在执行的任务
@@ -115,10 +124,10 @@ const BottomOperator: FC<PropsType> = memo(
     const queryClient = useQueryClient()
     const { data: deviceData } = useQuery(
       {
-        queryKey: ['deviceList', 'uav'],
+        queryKey: ['deviceList', deviceType],
         queryFn: () =>
           getAllDeviceListV3({
-            type: 'UAV',
+            type: deviceType,
             isPage: false,
           }),
         select: (d) => d.data.rows,
@@ -162,10 +171,13 @@ const BottomOperator: FC<PropsType> = memo(
                 message: t('wayline.executeTask.device.required_msg'),
               },
             ],
+            otherProps: {
+              mode: allowMultipleDevice ? 'multiple' : undefined,
+            },
           },
         ] as XFormItem[],
 
-      [i18n.language, actionTypeOptions, deviceOptions],
+      [i18n.language, actionTypeOptions, allowMultipleDevice, deviceOptions],
     )
 
     // 停止任务
@@ -204,9 +216,13 @@ const BottomOperator: FC<PropsType> = memo(
             open={executeOpen}
             items={formItems}
             onClose={() => setExecuteOpen(false)}
-            onConfirm={(values) =>
-              handleExecuteConfirm(values.deviceId, values.type)
-            }
+            onConfirm={(values) => {
+              let deviceId = values.deviceId
+              if (Array.isArray(deviceId)) {
+                deviceId = deviceId.join(',')
+              }
+              handleExecuteConfirm(deviceId, values.type)
+            }}
           />
         )}
         {runningActionPayload && (

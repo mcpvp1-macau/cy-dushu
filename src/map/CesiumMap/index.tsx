@@ -8,6 +8,7 @@ import CustomImageryLayer from './components/CustomImageryLayer'
 import FloatIconButton from '@/components/ui/button/FloatIconButton'
 import CustomCesiumGlobalTerrain from './components/CustomCesiumGlobalTerrain'
 import useMapSettingStore from '@/store/setting/useMapSetting.store'
+import IconLoading from '@/assets/icons/jsx/IconLoading'
 
 const ShanghaiBanRoutes = lazy(
   () => import('./components/custom/ShanghaiBanRoutes'),
@@ -65,7 +66,15 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
       <CustomImageryLayer />
       <CesiumDefaultConfig />
       <CustomCesiumGlobalTerrain />
-      {children}
+      <Suspense
+        fallback={
+          <div className="absolute inset-0 bg-ground-1/20 backdrop-blur-sm">
+            <IconLoading className="text-white text-3xl scale-150" />
+          </div>
+        }
+      >
+        {children}
+      </Suspense>
       {useToolBar && (
         <div className="absolute right-3 bottom-3 flex flex-col gap-3">
           <FloatIconButton onClick={toggle}>
