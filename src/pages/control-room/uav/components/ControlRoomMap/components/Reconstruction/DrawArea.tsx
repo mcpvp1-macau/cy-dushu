@@ -1,5 +1,8 @@
-import useMapDrawStore, { CotType, DrawType } from '@/store/map/useDraw.store'
-import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
+import useMapDrawStore, {
+  CotType,
+  DrawType,
+  drawingMitt,
+} from '@/store/map/useDraw.store'
 import { useBoolean } from 'ahooks'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
@@ -12,9 +15,10 @@ type PropsType = {
   setState: (
     state: 'drawing' | 'setting' | 'error_max' | 'reconstructing',
   ) => void
+  MAX_AREA: number
 }
 
-const DrawArea: FC<PropsType> = memo(({ setState }) => {
+const DrawArea: FC<PropsType> = memo(({ setState, MAX_AREA }) => {
   const { viewer } = useCesium()
   const msgApi = useAppMsg()
 
@@ -24,30 +28,38 @@ const DrawArea: FC<PropsType> = memo(({ setState }) => {
 
   const [open, { setTrue, setFalse }] = useBoolean(false)
 
-  const drawing = useMapDrawStore((s) => s.drawing)
-  const updateDrawing = useMapDrawStore((s) => s.updateDrawing)
-  const updateEnableReconstruction = useUavControlRoomStore(
-    (s) => s.updateEnableReconstruction,
-  )
   const drawingColor = useMapDrawStore((s) => s.drawingColor)
-  const areaPrimitiveRef = useRef<ReconstructionAreaPrimitive | null>(null)
+  const updateDrawing = useMapDrawStore((s) => s.updateDrawing)
+  const quitRecontructionArea = useMapDrawStore((s) => s.quitRecontructionArea)
 
+  const areaPrimitiveRef = useRef<ReconstructionAreaPrimitive | null>(null)
+  const handlerRef = useRef<Cesium.ScreenSpaceEventHandler | null>(null)
+
+  // 地图交互
   useEffect(() => {
     if (!viewer) {
       return
     }
-    if (drawing !== DrawType.None) {
-      msgApi.error('请先取消绘制或测量')
-      updateEnableReconstruction(false)
-      return
-    }
     updateDrawing(DrawType.ReconstructionArea)
-    const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas)
+    drawingMitt.on('reconstruction-to-other', () => {
+      msgApi.error('请先完成或取消三维重建规划才能进行测量绘制操作')
+    })
+
+    handlerRef.current = new Cesium.ScreenSpaceEventHandler(viewer.canvas)
     areaPrimitiveRef.current = new ReconstructionAreaPrimitive(drawingColor)
     viewer?.scene.primitives.add(areaPrimitiveRef.current)
 
+    // 监听绘制面积变化
+    areaPrimitiveRef.current.onAreaChanged = (area) => {
+      if (area > MAX_AREA) {
+        setState('error_max')
+      } else {
+        setState('drawing')
+      }
+    }
+
     // 左键 选点
-    handler.setInputAction((e) => {
+    handlerRef.current.setInputAction((e) => {
       const ray = viewer.camera.getPickRay(e.position)
       if (!ray) return
       const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
@@ -62,7 +74,7 @@ const DrawArea: FC<PropsType> = memo(({ setState }) => {
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
     // 移动
-    handler.setInputAction((e) => {
+    handlerRef.current.setInputAction((e) => {
       const ray = viewer.camera.getPickRay(e.endPosition)
       if (!ray) return
       const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
@@ -77,7 +89,15 @@ const DrawArea: FC<PropsType> = memo(({ setState }) => {
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
 
     // 右键结束
-    handler.setInputAction(() => {
+    handlerRef.current.setInputAction(() => {
+      if (areaPrimitiveRef.current!.area > MAX_AREA) {
+        msgApi.error('规划区域过大，请重新绘制')
+        setState('drawing')
+        paths.current = []
+        endPoint.current = null
+        areaPrimitiveRef.current && (areaPrimitiveRef.current.positions = [])
+        return
+      }
       if (paths.current.length >= 2) {
         setTrue()
         setState('setting')
@@ -85,9 +105,11 @@ const DrawArea: FC<PropsType> = memo(({ setState }) => {
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK)
 
     return () => {
-      updateDrawing(DrawType.None)
       viewer?.scene.primitives.remove(areaPrimitiveRef.current)
-      handler.destroy()
+      handlerRef.current &&
+        (handlerRef.current.destroy(), (handlerRef.current = null))
+      quitRecontructionArea()
+      drawingMitt.off('reconstruction-to-other')
     }
   }, [viewer])
 
@@ -95,7 +117,7 @@ const DrawArea: FC<PropsType> = memo(({ setState }) => {
     if (paths.current.length < 2) {
       return
     }
-
+    console.log(data)
     const strokeColorHex = getHexWithAlpha(drawingColor, 1)
     const strokeColorARGB = hexToARGB(strokeColorHex)
     const fillColorHex = getHexWithAlpha(drawingColor, 0.5)
@@ -136,8 +158,21 @@ const DrawArea: FC<PropsType> = memo(({ setState }) => {
       }),
       cotType: CotType.SHAPE_POLYGON,
     }
+
     setFalse()
     setState('reconstructing')
+    quitRecontructionArea()
+    if (handlerRef.current) {
+      handlerRef.current.removeInputAction(
+        Cesium.ScreenSpaceEventType.RIGHT_CLICK,
+      )
+      handlerRef.current.removeInputAction(
+        Cesium.ScreenSpaceEventType.MOUSE_MOVE,
+      )
+      handlerRef.current.removeInputAction(
+        Cesium.ScreenSpaceEventType.LEFT_CLICK,
+      )
+    }
   }
 
   return (
@@ -147,6 +182,7 @@ const DrawArea: FC<PropsType> = memo(({ setState }) => {
         setFalse()
         paths.current = []
         endPoint.current = null
+        areaPrimitiveRef.current && (areaPrimitiveRef.current.positions = [])
         setState('drawing')
       }}
       onConfirm={handleConfirm}

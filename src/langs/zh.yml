@@ -1040,6 +1040,10 @@ controlRoom:
           overlapRate: 重叠率（0-90%）
           returnAltitude: 返航高度（0-500m）
           taskCompletionAction: 任务完成动作
+          flightAltitude_rule_msg: 请输入正确的飞行高度
+          overlapRate_rule_msg: 请输入正确的重叠率
+          returnAltitude_rule_msg: 请输入正确的返航高度
+          taskCompletionAction_rule_msg: 请选择正确的任务完成动作
       takePhoto:
         title: 拍照
       cameraMode:

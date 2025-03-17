@@ -1,9 +1,8 @@
 type PropsType = {
   state: 'drawing' | 'setting' | 'error_max' | 'reconstructing'
+  MAX_AREA: number
 }
-const MapInfo: FC<PropsType> = memo(({ state }) => {
-  /**最大支持重建面积，单位km² */
-  const MAX_AREA = 1
+const MapInfo: FC<PropsType> = memo(({ state, MAX_AREA }) => {
   const { t } = useTranslation()
 
   const infoMsg = () => {

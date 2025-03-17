@@ -1,5 +1,8 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
+import mitt from 'mitt'
+
+export const drawingMitt = mitt()
 
 export enum CotType {
   POINT = 'b-m-p-s-m', // 小圆点
@@ -45,18 +48,36 @@ type StateType = {
 type ActionsType = {
   updateDrawing: (drawing: DrawType) => void
   updateDrawingColor: (color: string) => void
+  quitRecontructionArea: () => void
 }
 
+// 新增的三维重建也有绘制逻辑，并且其优先级应该最高，也就是无法从三维重建状态转为普通绘制和测量
+// 又因为关闭测量绘制窗口的时候，会将drawing设置为none，在三维重建中点击测量又关闭后会出bug
+// 所以三维重建状态无法通过updateDrawing进行关闭，只能通过quitRecontructionArea关闭
 const useMapDrawStore = create<StateType & ActionsType>()(
   devtools(
-    (set) => ({
+    (set, get) => ({
       drawing: DrawType.None,
       drawingColor: '#0ea5e9',
       updateDrawing: (drawing) => {
-        set({ drawing }, false, 'updateDrawing')
+        // 如果是三维重建转为其他绘制，那么不响应，并且发送事件，在三维重建中收到事件并提醒用户
+        const pre = get().drawing
+        if (pre === DrawType.ReconstructionArea) {
+          if (drawing === DrawType.None) {
+            // 三维测量无法在此关闭，所以不做处理
+          } else {
+            // 三维测量无法转为其他绘制
+            drawingMitt.emit('reconstruction-to-other')
+          }
+        } else {
+          set({ drawing }, false, 'updateDrawing')
+        }
       },
       updateDrawingColor: (drawingColor) => {
         set({ drawingColor }, false, 'updateDrawingColor')
+      },
+      quitRecontructionArea: () => {
+        set({ drawing: DrawType.None }, false, 'quitRecontructionArea')
       },
     }),
     {

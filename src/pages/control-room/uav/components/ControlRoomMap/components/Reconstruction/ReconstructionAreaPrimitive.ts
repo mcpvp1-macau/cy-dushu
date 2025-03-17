@@ -7,6 +7,12 @@ type RecursiveRequired<T> = {
     : Required<T[P]>
 }
 
+/**增强多边形显示，聚合polygon/polyline，折点、边长label、面积label。更新坐标时应该传入一个新数组，否则无法更新
+ * @example
+ * const areaPrimitive = new ReconstructionAreaPrimitive('#22c')
+ * viewer.scene.primitives.add(areaPrimitive)
+ * areaPrimitive.positions = positions
+ */
 export default class ReconstructionAreaPrimitive {
   private _positions: Cesium.Cartesian3[] = []
   positions: Cesium.Cartesian3[] = []
@@ -15,7 +21,8 @@ export default class ReconstructionAreaPrimitive {
   private _centerLabel: Cesium.LabelCollection
   private _polygon: Cesium.Primitive | null = null
   private _polyline: Cesium.Primitive | null = null
-  private drawingColor: string
+  private _drawingColor: string
+  private _area: number = 0
 
   constructor(drawingColor: string) {
     this._pointCollection = new Cesium.PointPrimitiveCollection()
@@ -25,7 +32,7 @@ export default class ReconstructionAreaPrimitive {
     this._centerLabel = new Cesium.LabelCollection({
       blendOption: Cesium.BlendOption.TRANSLUCENT,
     })
-    this.drawingColor = drawingColor
+    this._drawingColor = drawingColor
   }
 
   private update(frameState: any) {
@@ -35,6 +42,7 @@ export default class ReconstructionAreaPrimitive {
       this._polygon = this.createPolygon()
       this._polyline = this.createPolyline()
       this.updatePointAndLabel()
+      this.onAreaChanged && this.onAreaChanged(this._area / 1000000)
     }
     // @ts-ignore
     this._polygon && this._polygon.update(frameState)
@@ -69,7 +77,7 @@ export default class ReconstructionAreaPrimitive {
       }),
       appearance: new Cesium.MaterialAppearance({
         material: Cesium.Material.fromType(Cesium.Material.ColorType, {
-          color: Cesium.Color.fromCssColorString(this.drawingColor).withAlpha(
+          color: Cesium.Color.fromCssColorString(this._drawingColor).withAlpha(
             0.4,
           ),
         }),
@@ -93,7 +101,7 @@ export default class ReconstructionAreaPrimitive {
         material: Cesium.Material.fromType(
           Cesium.Material.PolylineOutlineType,
           {
-            color: Cesium.Color.fromCssColorString(this.drawingColor),
+            color: Cesium.Color.fromCssColorString(this._drawingColor),
             outlineColor: Cesium.Color.fromCssColorString('#fff'),
             outlineWidth: 2,
           },
@@ -133,7 +141,7 @@ export default class ReconstructionAreaPrimitive {
           color: Cesium.Color.fromCssColorString('#fff'),
           pixelSize: 9,
           outlineWidth: 1,
-          outlineColor: Cesium.Color.fromCssColorString(this.drawingColor),
+          outlineColor: Cesium.Color.fromCssColorString(this._drawingColor),
         })
         this._labelCollection.add({
           position: centerPosition,
@@ -145,27 +153,33 @@ export default class ReconstructionAreaPrimitive {
           fillColor: Cesium.Color.fromCssColorString('#fff'),
           horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
           showBackground: true,
-          backgroundColor: Cesium.Color.fromCssColorString('#1e252faa'),
+          backgroundColor: Cesium.Color.fromCssColorString(
+            'rgba(25, 32, 47, 0.7)',
+          ),
           disableDepthTestDistance: Number.POSITIVE_INFINITY,
         })
       }
       prePosition = position
     })
 
-    /**当点大于3开始计算面积并显示 */
+    // 当点大于3开始计算面积并显示
     if (this.positions.length >= 3) {
+      // 没有面积显示的label就创建，有就更新位置和文字
       if (this._centerLabel.length === 0) {
         this._centerLabel.add({
           font: '14px system-ui',
           fillColor: Cesium.Color.fromCssColorString('#fff'),
           showBackground: true,
-          backgroundColor: Cesium.Color.fromCssColorString('#1e252faa'),
+          backgroundColor: Cesium.Color.fromCssColorString(
+            'rgba(25, 32, 47, 0.8)',
+          ),
           disableDepthTestDistance: Number.POSITIVE_INFINITY,
           horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
           verticalOrigin: Cesium.VerticalOrigin.CENTER,
         })
       }
       const [center, area] = this.calcCenterPoint()
+      this._area = area
       const lat = center.geometry.coordinates[0]
       const lon = center.geometry.coordinates[1]
       this._centerLabel.get(0).position = Cesium.Cartesian3.fromDegrees(
@@ -174,6 +188,8 @@ export default class ReconstructionAreaPrimitive {
         0,
       )
       this._centerLabel.get(0).text = `${(area / 1000000).toFixed(2)}km²`
+    } else {
+      this._area = 0
     }
   }
 
@@ -196,4 +212,12 @@ export default class ReconstructionAreaPrimitive {
       turf.area(turf.polygon([coordinates])),
     ] as const
   }
+
+  /**获取当前绘制的面积，单位：km² */
+  get area() {
+    return this._area / 1000000
+  }
+
+  /** 监听面积变化的回调，返回面积单位为km² */
+  onAreaChanged: ((area: number) => void) | null = null
 }

@@ -1,15 +1,10 @@
-import { Button, ConfigProvider, Form, GetProps, Modal } from 'antd'
-import IconButton from '@/components/ui/button/IconButton'
-import IconClose from '@/assets/icons/jsx/IconClose'
+import { GetProps } from 'antd'
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
-import styles from '@/components/XForm/Modal/index.module.less'
 
 type FormModalProps = GetProps<typeof FormModal>
 type PropsType = Partial<FormModalProps> &
-  Pick<FormModalProps, 'open' | 'onConfirm' | 'onClose'> & {
-    onSuccess?: () => void
-  }
+  Pick<FormModalProps, 'open' | 'onConfirm' | 'onClose'>
 
 const ReconstructionSettingModal: FC<PropsType> = (props) => {
   const { t } = useTranslation()
@@ -27,7 +22,6 @@ const ReconstructionSettingModal: FC<PropsType> = (props) => {
             suffix: 'm',
             min: 10,
             max: 500,
-            defaultValue: 200,
           },
           rules: [
             {
@@ -45,7 +39,6 @@ const ReconstructionSettingModal: FC<PropsType> = (props) => {
             suffix: '%',
             min: 0,
             max: 90,
-            defaultValue: 60,
           },
           rules: [
             {
@@ -63,7 +56,6 @@ const ReconstructionSettingModal: FC<PropsType> = (props) => {
             suffix: 'm',
             min: 1,
             max: 500,
-            defaultValue: 200,
           },
           rules: [
             {
@@ -77,13 +69,10 @@ const ReconstructionSettingModal: FC<PropsType> = (props) => {
           ),
           name: 'taskCompletionAction',
           type: 'select',
-          otherProps: {
-            defaultValue: 'goBack',
-            options: [
-              { value: 'goBack', label: '返航' },
-              { value: 'hover', label: '悬停' },
-            ],
-          },
+          options: [
+            { value: 'goBack', label: '返航' },
+            { value: 'hover', label: '悬停' },
+          ],
           rules: [
             {
               required: true,
@@ -95,28 +84,17 @@ const ReconstructionSettingModal: FC<PropsType> = (props) => {
   )
 
   return (
-    // <Modal
-    //   open={props.open}
-    //   closable={false}
-    //   footer={null}
-    //   centered
-    //   width={'318px'}
-    // >
-    //   <div className={styles.addModal}>
-    //     <div className="header">
-    //       <div className="text-white">
-    //         {t('controlRoom.uav.service.reconstruction.setting.title')}
-    //       </div>
-    //       <IconButton style={{ height: '20px' }} onClick={props.onClose}>
-    //         <IconClose style={{ fontSize: '20px' }} />
-    //       </IconButton>
-    //     </div>
-
-    //   </div>
-    // </Modal>
     <FormModal
       title={t('controlRoom.uav.service.reconstruction.setting.title')}
       {...props}
+      initialValues={
+        {
+          flightAltitude: 200,
+          overlapRate: 60,
+          returnAltitude: 200,
+          taskCompletionAction: 'goBack',
+        } as any
+      }
       items={items}
     ></FormModal>
   )

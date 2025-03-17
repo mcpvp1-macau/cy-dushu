@@ -1057,6 +1057,10 @@ controlRoom:
           overlapRate: Overlap Rate(0-90%)
           returnAltitude: Return Altitude(0-500m)
           taskCompletionAction: Task Completion Action
+          flightAltitude_rule_msg: Please enter the correct flight altitude
+          overlapRate_rule_msg: Please enter the correct overlap rate
+          returnAltitude_rule_msg: Please enter the correct return altitude
+          taskCompletionAction_rule_msg: Please select the correct task completion action
       takePhoto:
         title: Take Photo
       cameraMode:
