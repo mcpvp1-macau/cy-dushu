@@ -3,10 +3,13 @@ import ControlPower from './ControlPower'
 import IconTakePhoto from '@/assets/icons/jsx/uav/IconTakePhoto'
 import { Button } from 'antd'
 import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
+import { useRebotDogControlRoomStore } from '@/store/context-store/useRebotDogControlRoom.store'
 
 /** 侧边按钮们 */
 const RebotDogAsideButtons: FC<unknown> = memo(() => {
   const postDeviceService = usePostDeviceService()
+
+  const dogMode = useRebotDogControlRoomStore((s) => s.state.dogMode)
 
   return (
     <div className="absolute inset-0 flex justify-center items-center">
@@ -25,11 +28,14 @@ const RebotDogAsideButtons: FC<unknown> = memo(() => {
           <div className="flex gap-2">
             <Button
               className="flex-1"
+              type={dogMode === 3 ? 'primary' : 'default'}
               onClick={() => {
-                postDeviceService('actionWorship')
+                postDeviceService(
+                  dogMode === 3 ? 'stopClimbStairs' : 'startClimbStairs',
+                )
               }}
             >
-              拜年
+              爬梯模式
             </Button>
             <Button
               className="flex-1"
