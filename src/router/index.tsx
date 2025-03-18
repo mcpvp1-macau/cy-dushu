@@ -6,7 +6,7 @@ import actionRecord from './modules/action-record'
 import organization from './modules/organization'
 import controlRoom from './modules/control-room'
 import actionPlan from './modules/action-plan'
-import airline from './modules/airline'
+import wayline from './modules/wayline'
 import demo from './modules/demo'
 import events from './modules/events'
 import backtracking from './modules/backtracking'
@@ -25,7 +25,7 @@ export const rootRoute = {
     organization,
     controlRoom,
     actionPlan,
-    airline,
+    wayline,
     backtracking,
     defence,
     share,

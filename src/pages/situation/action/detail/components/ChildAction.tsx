@@ -91,7 +91,7 @@ const OperatorBtns: FC<PropsType> = ({ data }) => {
               }
               const t = shouldJson(info.taskBasic).waylineType
               navigate(
-                `/airline/${
+                `/wayline/${
                   t === 'area_waypoint' ? 'area-wayline-edit' : 'edit'
                 }/${data.taskTplId}${params}`,
               )

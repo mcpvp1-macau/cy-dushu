@@ -1,4 +1,4 @@
-import { resolvePositions } from '@/pages/airline/edit/utils'
+import { resolvePositions } from '@/pages/wayline/edit/utils'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { getLatestTask } from '@/service/modules/airline'
 import { shouldJson } from '@/utils/json'

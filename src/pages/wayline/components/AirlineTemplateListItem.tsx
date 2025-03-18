@@ -33,7 +33,7 @@ const AirlineTemplateListItem: FC<PropsType> = memo(({ data }) => {
           <p className="max-w-60 truncate text-white">{data.taskName}</p>
         </div>
         <Link
-          to={`/airline/${
+          to={`/wayline/${
             data.taskType === 'area_waypoint' ? 'area-wayline-edit' : 'edit'
           }/${data.waylineTemplateId}`}
         >
