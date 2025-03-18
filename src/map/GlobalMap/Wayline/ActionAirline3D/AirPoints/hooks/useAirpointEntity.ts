@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
-import { AirlinePoint } from '@/store/uav/uav-airline/types'
+import { AirlinePoint } from '@/store/wayline/uav-airline/types'
 
 export const useAirpointEntity = (
   point: AirlinePoint,

@@ -1,4 +1,4 @@
-import useAreaWaylineStore from '@/store/uav/uav-area-wayline/useAreaWayline.store'
+import useAreaWaylineStore from '@/store/wayline/uav-area-wayline/useAreaWayline.store'
 import DrawTakeoffRef from './components/DrawTakeoffRef'
 import DrawPolygon from './components/DrawPolygon'
 import EditablePolygon from './components/EditablePolygon'

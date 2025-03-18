@@ -11,7 +11,6 @@ import { Tooltip } from 'antd'
 import { isNil } from 'lodash'
 import { useShallow } from 'zustand/react/shallow'
 import LatestTask from './LatestTask'
-import { createPortal } from 'react-dom'
 import { useTitle } from 'ahooks'
 import { lazy } from 'react'
 
@@ -251,9 +250,9 @@ const ControlRoomUavHeader: FC = memo(() => {
     </header>
   )
 
-  if (appHeader) {
-    return createPortal(h, appHeader)
-  }
+  // if (appHeader) {
+  //   return createPortal(h, appHeader)
+  // }
 
   return <div className="bg-ground-3 mx-2 rounded mt-2">{h}</div>
 })

@@ -1,5 +1,5 @@
 import useRightMode from '@/store/layout/useRightMode.store'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 
 /** 航线编辑开关状态 */
 const useAirlineEditOpen = () => {

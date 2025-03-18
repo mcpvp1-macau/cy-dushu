@@ -4,7 +4,7 @@ import { pick } from 'lodash'
 import { moreFormItems } from './constant'
 import { CaretDownOutlined } from '@ant-design/icons'
 import XCard from '@/components/ui/XCard'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 
 type PropsType = unknown
 

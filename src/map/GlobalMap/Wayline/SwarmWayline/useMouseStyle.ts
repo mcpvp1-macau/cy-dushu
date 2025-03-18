@@ -1,4 +1,4 @@
-import useSwarmWaylineStore from '@/store/uav/uav-swarm-wayline/useSwarmWayline.store'
+import useSwarmWaylineStore from '@/store/wayline/uav-swarm-wayline/useSwarmWayline.store'
 import { useCesium } from 'resium'
 
 const useMouseStyle = () => {

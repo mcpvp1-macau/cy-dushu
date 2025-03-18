@@ -3,7 +3,7 @@ import HNumber from '../../edit/components/HNumber'
 import { InfoCircleOutlined } from '@ant-design/icons'
 import { Tooltip } from 'antd'
 import coverageImg from '../../area-wayline/assets/coverage.png'
-import useSwarmWaylineStore from '@/store/uav/uav-swarm-wayline/useSwarmWayline.store'
+import useSwarmWaylineStore from '@/store/wayline/uav-swarm-wayline/useSwarmWayline.store'
 
 type PropsType = unknown
 

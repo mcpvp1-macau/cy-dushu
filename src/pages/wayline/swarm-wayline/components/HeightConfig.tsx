@@ -1,6 +1,6 @@
 import XCard from '@/components/ui/XCard'
 import HNumber from '../../edit/components/HNumber'
-import useSwarmWaylineStore from '@/store/uav/uav-swarm-wayline/useSwarmWayline.store'
+import useSwarmWaylineStore from '@/store/wayline/uav-swarm-wayline/useSwarmWayline.store'
 
 type PropsType = unknown
 

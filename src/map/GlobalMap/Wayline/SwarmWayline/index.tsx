@@ -1,4 +1,4 @@
-import useSwarmWaylineStore from '@/store/uav/uav-swarm-wayline/useSwarmWayline.store'
+import useSwarmWaylineStore from '@/store/wayline/uav-swarm-wayline/useSwarmWayline.store'
 import useMouseStyle from './useMouseStyle'
 import DrawPolygon from '../AreaWayline/components/DrawPolygon'
 import EditablePolygon from '../AreaWayline/components/EditablePolygon'

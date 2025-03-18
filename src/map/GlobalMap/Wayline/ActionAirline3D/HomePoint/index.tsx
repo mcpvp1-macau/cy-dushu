@@ -3,7 +3,7 @@ import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import image from '@/assets/imgs/takeoff-active.ea7a1012.svg'
 import { emiter } from '../hooks/useMouseStyle'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import { cartesian3ToDegrees } from '@/utils/geoUtils'
 
 type PropsType = unknown
@@ -39,7 +39,7 @@ const HomePoint: FC<PropsType> = () => {
         })
 
         // 设置相机位置
-        viewer?.camera?.lookAt(
+        viewer.camera?.lookAt(
           cartesian,
           new Cesium.HeadingPitchRange(
             Cesium.Math.toRadians(0),
@@ -48,7 +48,7 @@ const HomePoint: FC<PropsType> = () => {
           ),
         )
         // 取消目标锁定
-        viewer?.camera?.lookAtTransform(Cesium.Matrix4.IDENTITY)
+        viewer.camera?.lookAtTransform(Cesium.Matrix4.IDENTITY)
 
         viewer.scene.screenSpaceCameraController.enableRotate = true
 

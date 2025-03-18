@@ -1,7 +1,7 @@
 import CollapsedPage from '@/components/CollapsedPage'
 import EditableNameHeader from '@/components/EditableNameHeader'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import useSwarmWaylineStore from '@/store/uav/uav-swarm-wayline/useSwarmWayline.store'
+import useSwarmWaylineStore from '@/store/wayline/uav-swarm-wayline/useSwarmWayline.store'
 import MainKConfig from './components/MainKConfig'
 import Coverage from './components/Coverage'
 import HeightConfig from './components/HeightConfig'

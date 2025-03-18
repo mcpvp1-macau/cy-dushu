@@ -1,7 +1,7 @@
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { useSearchParams } from 'react-router-dom'
 import BO from '../../components/ButtonOperator'
-import useSwarmWaylineStore from '@/store/uav/uav-swarm-wayline/useSwarmWayline.store'
+import useSwarmWaylineStore from '@/store/wayline/uav-swarm-wayline/useSwarmWayline.store'
 
 type PropsType = unknown
 

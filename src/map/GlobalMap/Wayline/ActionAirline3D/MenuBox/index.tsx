@@ -2,9 +2,9 @@ import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { Dropdown, MenuProps } from 'antd'
 import { useLatest } from 'ahooks'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import { cartesian3ToDegrees } from '@/utils/geoUtils'
-import { useCurrentAirpoint } from '@/store/uav/uav-airline/select'
+import { useCurrentAirpoint } from '@/store/wayline/uav-airline/select'
 import { v4 } from 'uuid'
 
 type PropsType = unknown

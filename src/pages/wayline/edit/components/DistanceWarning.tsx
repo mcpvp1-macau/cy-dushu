@@ -1,5 +1,5 @@
 import { getDistance } from '@/utils/other/utils'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import SnackBar from '@/components/ui/SnackBar'
 
 type PropsType = unknown

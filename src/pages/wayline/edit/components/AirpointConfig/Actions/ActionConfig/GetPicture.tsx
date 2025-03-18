@@ -2,8 +2,8 @@ import { memo, type FC } from 'react'
 import styles from './index.module.less'
 import PZ from '../../icons/PZ'
 import { imageFormats } from '../../../AirlineConfig/components/TakePhotoConfig/constant'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
-import { ActionGetPictureType } from '@/store/uav/uav-airline/types'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
+import { ActionGetPictureType } from '@/store/wayline/uav-airline/types'
 
 type ConfigType = ActionGetPictureType['config']
 

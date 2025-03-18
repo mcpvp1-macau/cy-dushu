@@ -1,5 +1,5 @@
 import { useAppMsg } from '@/hooks/useAppMsg'
-import useAreaWaylineStore from '@/store/uav/uav-area-wayline/useAreaWayline.store'
+import useAreaWaylineStore from '@/store/wayline/uav-area-wayline/useAreaWayline.store'
 import { useSearchParams } from 'react-router-dom'
 import BO from '../../components/ButtonOperator'
 

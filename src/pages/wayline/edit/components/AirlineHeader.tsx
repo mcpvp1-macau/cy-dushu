@@ -1,5 +1,5 @@
 import EditableNameHeader from '@/components/EditableNameHeader'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import { memo, type FC } from 'react'
 
 type PropsType = unknown

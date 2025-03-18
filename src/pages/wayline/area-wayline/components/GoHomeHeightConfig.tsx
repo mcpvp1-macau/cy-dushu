@@ -1,5 +1,5 @@
 import XCard from '@/components/ui/XCard'
-import useAreaWaylineStore from '@/store/uav/uav-area-wayline/useAreaWayline.store'
+import useAreaWaylineStore from '@/store/wayline/uav-area-wayline/useAreaWayline.store'
 import HNumber from '../../edit/components/HNumber'
 
 type PropsType = unknown

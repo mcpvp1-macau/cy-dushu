@@ -3,8 +3,8 @@ import { wrap } from 'comlink'
 import { WorkerAPI } from '@/worker/area_wayline_solution'
 import { useDebounceFn } from 'ahooks'
 import { toMercator, toWgs84 } from '@turf/turf'
-import useAreaWaylineStore from '@/store/uav/uav-area-wayline/useAreaWayline.store'
-import { AirlinePoint } from '@/store/uav/uav-airline/types'
+import useAreaWaylineStore from '@/store/wayline/uav-area-wayline/useAreaWayline.store'
+import { AirlinePoint } from '@/store/wayline/uav-airline/types'
 import { v4 } from 'uuid'
 
 type PropsType = unknown

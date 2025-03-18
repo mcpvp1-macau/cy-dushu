@@ -2,7 +2,7 @@ import { memo, type FC } from 'react'
 import { Switch } from 'antd'
 import { imageFormats } from './constant'
 import styles from './index.module.less'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import XCard from '@/components/ui/XCard'
 
 type PropsType = unknown

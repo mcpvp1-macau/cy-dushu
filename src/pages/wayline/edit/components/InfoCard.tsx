@@ -1,4 +1,4 @@
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import { getSpaceDistance } from '@/utils/other/utils'
 
 type PropsType = unknown

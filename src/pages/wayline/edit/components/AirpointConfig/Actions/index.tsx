@@ -12,8 +12,8 @@ import {
 } from '@dnd-kit/sortable'
 import { restrictToHorizontalAxis } from '@dnd-kit/modifiers'
 import SortableItem from './SortableItem'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
-import { useCurrentAirpoint } from '@/store/uav/uav-airline/select'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
+import { useCurrentAirpoint } from '@/store/wayline/uav-airline/select'
 
 interface Props {
   activeOperator: string

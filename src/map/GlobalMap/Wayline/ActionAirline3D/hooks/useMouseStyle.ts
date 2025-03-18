@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 import * as Cesium from 'cesium'
 import mitt from 'mitt'
 import { useShallow } from 'zustand/react/shallow'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 
 export const emiter = mitt()
 

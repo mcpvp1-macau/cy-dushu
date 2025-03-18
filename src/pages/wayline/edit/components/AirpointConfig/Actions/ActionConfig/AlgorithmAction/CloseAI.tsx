@@ -8,12 +8,12 @@ import { useMemoizedFn } from 'ahooks'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { shouldJson } from '@/utils/json'
 import { getAlgorithmList } from '@/service/modules/algorithm'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import { algorithmIconMap } from '@/components/device/algorithm/AlgorithmListItem'
 import IconAIDisable from '@/assets/icons/jsx/IconAIDisable'
 import XModal from '@/components/XModal'
 import { DeviceEnum } from '@/enum/device'
-import { ActionOpenAIType } from '@/store/uav/uav-airline/types'
+import { ActionOpenAIType } from '@/store/wayline/uav-airline/types'
 
 type ConfigType = {
   algorithmId: number

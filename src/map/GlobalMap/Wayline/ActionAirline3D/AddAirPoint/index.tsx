@@ -2,7 +2,7 @@ import { memo, useEffect, type FC } from 'react'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { useLatest } from 'ahooks'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import { cartesian3ToDegrees } from '@/utils/geoUtils'
 
 type PropsType = unknown

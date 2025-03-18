@@ -2,7 +2,7 @@ import { memo, type FC } from 'react'
 import styles from './index.module.less'
 import HSlider from '../../../HSlider'
 import YTPHJ from '../../icons/YTPHJ'
-import { ActionCameraPositionType } from '@/store/uav/uav-airline/types'
+import { ActionCameraPositionType } from '@/store/wayline/uav-airline/types'
 
 type ConfigType = ActionCameraPositionType['config']
 

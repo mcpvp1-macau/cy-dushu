@@ -2,8 +2,8 @@ import { memo, useRef, type FC } from 'react'
 import { calcFov } from '@/utils/fov'
 import Frustum from './Frustum'
 import { useDeepCompareEffect } from 'ahooks'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
-import { useCurrentAirpoint } from '@/store/uav/uav-airline/select'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
+import { useCurrentAirpoint } from '@/store/wayline/uav-airline/select'
 
 type PropsType = unknown
 

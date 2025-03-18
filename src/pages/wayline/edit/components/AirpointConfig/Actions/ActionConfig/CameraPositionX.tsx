@@ -1,8 +1,8 @@
 import styles from './index.module.less'
 import HSlider from '../../../HSlider'
 import YTPHJ from '../../icons/YTPHJ'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
-import { ActionCameraPositionType } from '@/store/uav/uav-airline/types'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
+import { ActionCameraPositionType } from '@/store/wayline/uav-airline/types'
 import { createPortal } from 'react-dom'
 
 type ConfigType = ActionCameraPositionType['config']

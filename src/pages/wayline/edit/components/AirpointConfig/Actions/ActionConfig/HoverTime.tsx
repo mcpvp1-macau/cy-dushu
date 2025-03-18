@@ -2,7 +2,7 @@ import { memo, type FC } from 'react'
 import styles from './index.module.less'
 import WRJXT from '../../icons/WRJXT'
 import HNumber from '../../../HNumber'
-import { ActionHoverType } from '@/store/uav/uav-airline/types'
+import { ActionHoverType } from '@/store/wayline/uav-airline/types'
 
 type ConfigType = ActionHoverType['config']
 

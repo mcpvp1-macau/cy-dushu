@@ -1,4 +1,4 @@
-import useAreaWaylineStore from '@/store/uav/uav-area-wayline/useAreaWayline.store'
+import useAreaWaylineStore from '@/store/wayline/uav-area-wayline/useAreaWayline.store'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import image from '@/assets/imgs/takeoff-active.ea7a1012.svg'

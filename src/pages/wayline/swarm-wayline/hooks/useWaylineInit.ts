@@ -1,10 +1,10 @@
 import { getAirlineTemplateList } from '@/service/modules/airline'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import { shouldJson } from '@/utils/json'
 import { useSearchParams } from 'react-router-dom'
 import { pick } from 'lodash'
 import { resolveAirlineConifg } from '../../edit/hooks/useAirlineInit'
-import useSwarmWaylineStore from '@/store/uav/uav-swarm-wayline/useSwarmWayline.store'
+import useSwarmWaylineStore from '@/store/wayline/uav-swarm-wayline/useSwarmWayline.store'
 
 /** 航线信息初始化 */
 const useSwarmWaylineInit = () => {

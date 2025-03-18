@@ -1,4 +1,4 @@
-import useAreaWaylineStore from '@/store/uav/uav-area-wayline/useAreaWayline.store'
+import useAreaWaylineStore from '@/store/wayline/uav-area-wayline/useAreaWayline.store'
 import { useCesium } from 'resium'
 
 const useMouseStyle = () => {

@@ -1,6 +1,6 @@
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
-import useAreaWaylineStore from '@/store/uav/uav-area-wayline/useAreaWayline.store'
-import useSwarmWaylineStore from '@/store/uav/uav-swarm-wayline/useSwarmWayline.store'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
+import useAreaWaylineStore from '@/store/wayline/uav-area-wayline/useAreaWayline.store'
+import useSwarmWaylineStore from '@/store/wayline/uav-swarm-wayline/useSwarmWayline.store'
 import { lazy } from 'react'
 
 const ActionAirline = lazy(() => import('./ActionAirline3D'))

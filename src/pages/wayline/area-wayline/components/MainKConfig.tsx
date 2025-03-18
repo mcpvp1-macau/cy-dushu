@@ -1,7 +1,7 @@
 import XCard from '@/components/ui/XCard'
 import HSlider from '../../edit/components/HSlider'
 import { useGlobalCesium } from '@/store/map/useGlobalMap.store'
-import useAreaWaylineStore from '@/store/uav/uav-area-wayline/useAreaWayline.store'
+import useAreaWaylineStore from '@/store/wayline/uav-area-wayline/useAreaWayline.store'
 import * as turf from '@turf/turf'
 import { getWindowPostion } from '@/utils/cesium/position-screen'
 import { createPortal } from 'react-dom'

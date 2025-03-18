@@ -1,5 +1,5 @@
 import { useAppMsg } from '@/hooks/useAppMsg'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import { useSearchParams } from 'react-router-dom'
 import BO from '../../components/ButtonOperator'
 

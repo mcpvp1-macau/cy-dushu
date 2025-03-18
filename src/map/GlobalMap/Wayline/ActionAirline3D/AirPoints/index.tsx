@@ -3,7 +3,7 @@ import { memo } from 'react'
 import Airpoint from './Airpoint'
 import PathLine from './PathLine'
 import HomePathLine from './HomePathLine'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 
 type PropsType = unknown
 

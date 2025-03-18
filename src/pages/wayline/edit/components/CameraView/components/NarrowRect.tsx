@@ -1,7 +1,7 @@
 import { memo, type FC } from 'react'
 import { floor } from 'lodash'
 import InnerNarrowRect from '@/components/NarrowRect'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 
 type PropsType = unknown
 

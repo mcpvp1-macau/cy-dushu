@@ -1,4 +1,4 @@
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import XCard from '@/components/ui/XCard'
 import IconTakeoff from '@/assets/icons/jsx/uav/IconTakeoff'
 import { Button } from 'antd'

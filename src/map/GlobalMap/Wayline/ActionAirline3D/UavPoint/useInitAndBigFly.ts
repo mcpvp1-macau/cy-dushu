@@ -1,8 +1,8 @@
 import * as Cesium from 'cesium'
 import { useCesium } from 'resium'
 import { useEffect } from 'react'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
-import { useCurrentAirpoint } from '@/store/uav/uav-airline/select'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
+import { useCurrentAirpoint } from '@/store/wayline/uav-airline/select'
 
 const flyTo = (camera: Cesium.Camera, target: Cesium.Cartesian3) => {
   const distanceToTarget = 2000

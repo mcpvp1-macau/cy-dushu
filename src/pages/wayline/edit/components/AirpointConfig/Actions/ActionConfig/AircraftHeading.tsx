@@ -2,7 +2,7 @@ import { memo, type FC } from 'react'
 import styles from './index.module.less'
 import FXQPHJ from '../../icons/FXQPHJ'
 import HSlider from '../../../HSlider'
-import { ActionRotateYawType } from '@/store/uav/uav-airline/types'
+import { ActionRotateYawType } from '@/store/wayline/uav-airline/types'
 
 type ConfigType = ActionRotateYawType['config']
 

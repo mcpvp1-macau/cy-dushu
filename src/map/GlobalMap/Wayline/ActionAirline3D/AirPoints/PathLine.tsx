@@ -2,7 +2,7 @@ import { useEffect, type FC } from 'react'
 import { memo } from 'react'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
-import { AirpointsConfigItem } from '@/store/uav/uav-airline/types'
+import { AirpointsConfigItem } from '@/store/wayline/uav-airline/types'
 // import { getColorWithAlpha } from '@/utils/utils';
 
 type PropsType = {

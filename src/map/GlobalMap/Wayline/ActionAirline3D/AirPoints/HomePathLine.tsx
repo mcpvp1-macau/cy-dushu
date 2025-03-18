@@ -3,7 +3,7 @@ import * as Cesium from 'cesium'
 import { useCesium } from 'resium'
 import { useLatest } from 'ahooks'
 import { useShallow } from 'zustand/react/shallow'
-import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.store'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 
 type PropsType = {
   homePoint: number[]
