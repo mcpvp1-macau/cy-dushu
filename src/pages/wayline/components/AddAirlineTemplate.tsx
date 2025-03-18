@@ -168,7 +168,7 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
         : v.type === WaylineEnum.SwarmWayline
         ? 'swarm-wayline-edit'
         : 'rebot-dog-wayline-edit'
-    navigate(`/airline/${to}?name=${v.airlineName}${modelName}${camera}`)
+    navigate(`/wayline/${to}?name=${v.airlineName}${modelName}${camera}`)
   }
 
   return (
