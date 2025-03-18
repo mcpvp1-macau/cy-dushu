@@ -21,7 +21,6 @@ import ControlRoomUavMap from './components/ControlRoomMap'
 import useServerEventMsg from './hooks/useServerEventMsg'
 import IconCameraVideo from '@/assets/icons/jsx/IconCameraVideo'
 import IconMap from '@/assets/icons/jsx/IconMap'
-import DeviceIconUAV2 from '@/assets/icons/jsx/device/DeviceIconUAV2'
 import IconAISwitch from '@/assets/icons/jsx/IconAISwitch'
 import DeviceAlgorithmList from '@/components/device/algorithm/DeviceAlgorithmList'
 import { DeviceEnum } from '@/enum/device'
@@ -43,6 +42,7 @@ import { useLocation } from 'react-router'
 import InitialPointFly from './components/InitialPointFly'
 import IconTanQi from '@/assets/icons/jsx/IconTanQi'
 import Tanqi from './components/Tanqi'
+import IconControl from '@/assets/icons/jsx/IconControl'
 
 type PropsType = unknown
 
@@ -78,7 +78,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       map: <IconMap className="text-blue-500" />,
       video: <IconCameraVideo className="text-blue-500" />,
       flyParams: <IconFlightOperation className="text-orange-500" />,
-      flyButtons: <DeviceIconUAV2 className="text-purple-500" />,
+      flyButtons: <IconControl className="text-purple-500" />,
       flyParamsSetting: <IconFlightParams className="text-emerald-500" />,
       payload: <IconPayload className="text-emerald-500" />,
       'ai-list': <IconAISwitch className="text-violet-500" />,

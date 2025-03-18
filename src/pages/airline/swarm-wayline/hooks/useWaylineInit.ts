@@ -3,19 +3,16 @@ import useAirlineConfigStore from '@/store/uav/uav-airline/useAirlineConfig.stor
 import { shouldJson } from '@/utils/json'
 import { useSearchParams } from 'react-router-dom'
 import { pick } from 'lodash'
-import useAreaWaylineStore from '@/store/uav/uav-area-wayline/useAreaWayline.store'
 import { resolveAirlineConifg } from '../../edit/hooks/useAirlineInit'
+import useSwarmWaylineStore from '@/store/uav/uav-swarm-wayline/useSwarmWayline.store'
 
 /** 航线信息初始化 */
-const useAirlineInit = () => {
-  const updateAirlineTemplateInfo = useAreaWaylineStore(
+const useSwarmWaylineInit = () => {
+  const updateAirlineTemplateInfo = useSwarmWaylineStore(
     (s) => s.updateTemplateConfig,
   )
 
-  const updateAirlineConfig = useAreaWaylineStore((s) => s.updateAirlineConfig)
-
-  // 相机参数
-  const updateCameraInfo = useAreaWaylineStore((s) => s.updateCameraInfo)
+  const updateAirlineConfig = useSwarmWaylineStore((s) => s.updateAirlineConfig)
 
   // 复原由路由参数传递的数据  ------------------------------
   const [searchParams] = useSearchParams()
@@ -28,28 +25,9 @@ const useAirlineInit = () => {
       })
     }
 
-    const camera = shouldJson(searchParams.get('camera') ?? '')
     updateAirlineConfig({
       ...useAirlineConfigStore.getState().airlineConfig,
-      camera,
     })
-    const cameraParams = shouldJson(camera?.defaultParam)
-    if (cameraParams) {
-      updateCameraInfo({
-        focal: cameraParams.focal ?? 24,
-        sensorWidth: cameraParams.sensorWidth ?? 40,
-        sensorHeight: cameraParams.sensorHeight ?? 30,
-      })
-    }
-
-    const takeoffRefQ = searchParams.get('takeoffRef')
-    if (takeoffRefQ) {
-      const takeoffRef = shouldJson(takeoffRefQ)
-      updateAirlineConfig({
-        ...useAirlineConfigStore.getState().airlineConfig,
-        takeOffRefPoint: takeoffRef,
-      })
-    }
 
     const taskBasic = searchParams.get('taskBasic')
     if (taskBasic) {
@@ -69,16 +47,6 @@ const useAirlineInit = () => {
           'globalTransitionalSpeed',
           'globalWaypointTurnMode',
         ])
-        if (t.camera) {
-          const cameraParams = shouldJson(camera?.defaultParam)
-          if (cameraParams) {
-            updateCameraInfo({
-              focal: cameraParams.focal ?? 24,
-              sensorWidth: cameraParams.sensorWidth ?? 40,
-              sensorHeight: cameraParams.sensorHeight ?? 30,
-            })
-          }
-        }
         updateAirlineConfig(resolveAirlineConifg(o))
 
         const o2 = pick(t, ['coverage', 'mainK', 'polygon'])
@@ -123,12 +91,6 @@ const useAirlineInit = () => {
       updateAirlineConfig({ camera, ...resolveAirlineConifg(waylineConfig) })
     }
 
-    updateCameraInfo({
-      focal: camera?.focal ?? 24,
-      sensorWidth: camera?.sensorWidth ?? 40,
-      sensorHeight: camera?.sensorHeight ?? 30,
-    })
-
     const o2 = pick(waylineConfig, ['coverage', 'mainK', 'polygon'])
     updateAirlineTemplateInfo({
       polygon: o2.polygon,
@@ -139,11 +101,11 @@ const useAirlineInit = () => {
 
   useEffect(() => {
     return () => {
-      useAreaWaylineStore.getState().reset()
+      useSwarmWaylineStore.getState().reset()
     }
   }, [])
 
   return { isLoading }
 }
 
-export default useAirlineInit
+export default useSwarmWaylineInit

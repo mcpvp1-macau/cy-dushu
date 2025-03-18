@@ -30,6 +30,7 @@ type ActionsType = {
   updateOpen: (open: StateType['open']) => void
   updateAirlineConfig: (config: Partial<AirlineConfigType>) => void
   updateTemplateConfig: (config: Partial<AirlineTemplateType>) => void
+  updateCameraInfo: (config: StateType['cameraInfo']) => void
   updateIsDrawHome: (isDrawHome: StateType['isDrawHome']) => void
   updateAirpointsConfig: (config: AirlinePoint[]) => void
   updateFirstAirpoint: (airpoint: AirlinePoint) => void
@@ -94,6 +95,9 @@ const useAreaWaylineStore = create<StateType & ActionsType>()((set) => ({
       }),
       false,
     )
+  },
+  updateCameraInfo: (config) => {
+    set({ cameraInfo: config }, false)
   },
   updateIsDrawHome: (isDrawHome) => {
     set({ isDrawHome }, false)

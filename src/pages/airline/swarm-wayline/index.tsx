@@ -9,6 +9,7 @@ import SpeedConfig from './components/SpeedConfig'
 import FinishActionConfig from './components/DoneActionConfig'
 import GoHomeHeightConfig from './components/GoHomeHeightConfig'
 import BottomButtions from './components/BottomButtions'
+import useSwarmWaylineInit from './hooks/useWaylineInit'
 
 type PropsType = unknown
 
@@ -29,6 +30,8 @@ const PageSwarmWaylineEdit: FC<PropsType> = memo(() => {
       updateOpen(false)
     }
   }, [])
+
+  useSwarmWaylineInit()
 
   return (
     <>
