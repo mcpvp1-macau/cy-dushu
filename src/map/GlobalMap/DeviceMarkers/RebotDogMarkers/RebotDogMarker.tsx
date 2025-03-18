@@ -63,7 +63,7 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
         image={icon}
         width={25}
         height={25}
-        disableDepthTestDistance={50000}
+        disableDepthTestDistance={15_000_000}
         heightReference={Cesium.HeightReference.NONE}
         rotation={Cesium.Math.toRadians(-realHeading || 0)}
       />
@@ -72,7 +72,7 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
         image={directionIcon}
         width={13}
         height={13}
-        disableDepthTestDistance={50000}
+        disableDepthTestDistance={15_000_000}
         heightReference={Cesium.HeightReference.NONE}
         rotation={Cesium.Math.toRadians(realHeading)}
         pixelOffset={
