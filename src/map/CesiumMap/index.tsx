@@ -68,7 +68,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
       <CustomCesiumGlobalTerrain />
       <Suspense
         fallback={
-          <div className="absolute inset-0 bg-ground-1/20 backdrop-blur-sm">
+          <div className="absolute inset-0 bg-ground-1/20 backdrop-blur-sm flex justify-center items-center">
             <IconLoading className="text-white text-3xl scale-150" />
           </div>
         }

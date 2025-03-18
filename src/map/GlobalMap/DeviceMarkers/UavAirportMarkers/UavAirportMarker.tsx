@@ -46,7 +46,7 @@ const UavAirportMarker: FC<PropsType> = memo(({ data }) => {
         image={icon}
         width={26}
         height={26}
-        disableDepthTestDistance={15_000_000}
+        disableDepthTestDistance={16_000_000}
         heightReference={Cesium.HeightReference.NONE}
       />
       <DeviceLabel

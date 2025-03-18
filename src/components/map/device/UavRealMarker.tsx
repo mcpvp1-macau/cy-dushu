@@ -41,7 +41,7 @@ const MapUavRealMarker: FC<PropsType> = memo(({ data }) => {
         width: 50,
         height: 50,
         scale: 0.5,
-        disableDepthTestDistance: 15_000_000,
+        disableDepthTestDistance: 16_000_000,
         rotation: new Cesium.CallbackProperty(
           () =>
             (-uavYaw.current * Math.PI) / 180 + (viewer?.camera?.heading ?? 0),
@@ -56,7 +56,7 @@ const MapUavRealMarker: FC<PropsType> = memo(({ data }) => {
         width: 100,
         height: 100,
         scale: 0.6,
-        disableDepthTestDistance: 15_000_000,
+        disableDepthTestDistance: 16_000_000,
         rotation: new Cesium.CallbackProperty(
           () =>
             (-gimbalYaw.current * Math.PI) / 180 +

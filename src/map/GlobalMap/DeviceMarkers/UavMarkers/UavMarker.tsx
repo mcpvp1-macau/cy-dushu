@@ -65,7 +65,7 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
         image={icon}
         width={28}
         height={28}
-        disableDepthTestDistance={15_000_000}
+        disableDepthTestDistance={16_000_000}
         heightReference={Cesium.HeightReference.NONE}
         rotation={Cesium.Math.toRadians(-realHeading || 0)}
       />
