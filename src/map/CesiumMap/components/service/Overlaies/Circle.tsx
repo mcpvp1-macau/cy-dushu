@@ -57,7 +57,6 @@ const OverlayCircle: FC<PropsType> = memo(({ data }) => {
         center,
         radius,
       }),
-
       attributes: {
         color: Cesium.ColorGeometryInstanceAttribute.fromColor(
           Cesium.Color.fromCssColorString(fill).withAlpha(0.4),
@@ -65,17 +64,14 @@ const OverlayCircle: FC<PropsType> = memo(({ data }) => {
       },
     })
 
-    const circlePrimitive = new Cesium.Primitive({
+    const circlePrimitive = new Cesium.GroundPrimitive({
       allowPicking: true,
       geometryInstances: [instance1],
-      appearance: new Cesium.PerInstanceColorAppearance({
-        closed: true,
-        flat: true,
-        renderState: {
-          depthTest: {
-            enabled: true,
-          },
-        },
+      appearance: new Cesium.MaterialAppearance({
+        translucent: true,
+        material: Cesium.Material.fromType(Cesium.Material.ColorType, {
+          color: Cesium.Color.fromCssColorString(fill).withAlpha(0.3),
+        }),
       }),
     })
 
@@ -85,23 +81,14 @@ const OverlayCircle: FC<PropsType> = memo(({ data }) => {
         center,
         radius,
       }),
-      attributes: {
-        color: Cesium.ColorGeometryInstanceAttribute.fromColor(
-          Cesium.Color.fromCssColorString(stroke),
-        ),
-      },
     })
 
-    const CircleOutlinePrimitive = new Cesium.Primitive({
+    const CircleOutlinePrimitive = new Cesium.GroundPolylinePrimitive({
       geometryInstances: [instance2],
-      appearance: new Cesium.PerInstanceColorAppearance({
-        closed: true,
-        flat: true,
-        renderState: {
-          depthTest: {
-            enabled: true,
-          },
-        },
+      appearance: new Cesium.PolylineMaterialAppearance({
+        material: Cesium.Material.fromType(Cesium.Material.ColorType, {
+          color: Cesium.Color.fromCssColorString(stroke),
+        }),
       }),
     })
 
