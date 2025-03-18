@@ -1,11 +1,11 @@
 import { create } from 'zustand'
-import { AirlineConfigType, AirlineTemplateType } from '../uav-airline/types'
+import { AirlineConfigType, WaylineTemplateType } from '../uav-airline/types'
 import { createInitAirlineConfig } from '../uav-airline/helper'
 
 type StateType = {
   open: boolean
   airlineConfig: AirlineConfigType
-  templateConfig: AirlineTemplateType & {
+  templateConfig: WaylineTemplateType & {
     polygon: number[][] | null
     mainK: number
     interval: number
@@ -17,7 +17,7 @@ type ActionsType = {
   reset: () => void
   updateOpen: (open: StateType['open']) => void
   updateAirlineConfig: (config: Partial<AirlineConfigType>) => void
-  updateTemplateConfig: (config: Partial<AirlineTemplateType>) => void
+  updateTemplateConfig: (config: Partial<WaylineTemplateType>) => void
 }
 
 const createInitialState = (): StateType => ({

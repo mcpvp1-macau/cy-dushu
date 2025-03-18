@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import {
   AirlineConfigType,
-  AirlineTemplateType,
+  WaylineTemplateType,
   AirpointsConfigItem,
 } from './types'
 import { devtools } from 'zustand/middleware'
@@ -14,7 +14,7 @@ type StateType = {
   open: boolean
   isDrawHome: boolean
   isDrawPoint: boolean
-  airlineTemplateInfo: AirlineTemplateType
+  airlineTemplateInfo: WaylineTemplateType
   airlineConfig: AirlineConfigType
   airpointsConfig: AirpointsConfigItem[]
   currentIndex: number

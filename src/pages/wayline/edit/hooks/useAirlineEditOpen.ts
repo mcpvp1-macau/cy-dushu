@@ -11,7 +11,6 @@ const useAirlineEditOpen = () => {
     setOpen(true)
     updateRightMode(null)
     return () => {
-      setOpen(false)
       resetState()
     }
   }, [])

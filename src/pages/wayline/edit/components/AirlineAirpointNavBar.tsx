@@ -1,3 +1,5 @@
+import IconWaylineAirpoint from '@/assets/icons/jsx/IconWaylineAirpoint'
+import IconWaypoint from '@/assets/icons/jsx/IconWaypoint'
 import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
 
 type PropsType = {
@@ -34,7 +36,7 @@ const AirlineAirpointNavbar: FC<PropsType> = memo(
           )}
           onClick={() => onActiveNavChange?.(1)}
         >
-          <MenuIconAirline />
+          <IconWaypoint />
           <span className="ml-1.5">{t('wayline.waylinePoint.config')}</span>
         </button>
       </nav>

@@ -1,4 +1,4 @@
-export type AirlineTemplateType = Partial<{
+export type WaylineTemplateType = Partial<{
   waylineTemplateId: number
   taskName: string
   templateId: string
