@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { limitNum } from '@/utils/math'
 import { RebotDogWaylineConfigType, RebotDogWaypointConfigType } from './types'
 import { WaylineTemplateType } from '../uav-airline/types'
+import { v4 } from 'uuid'
 
 type StateType = {
   open: boolean
@@ -121,6 +122,7 @@ const useRebotDogWaylineStore = create<StateType & ActionsType>()(
         pointX: 0,
         pointY: 0,
         pointZ: waylineConfig.speed || 100,
+        xid: v4(),
         ...data,
       }
       set({
@@ -142,6 +144,7 @@ const useRebotDogWaylineStore = create<StateType & ActionsType>()(
         pointX: 0,
         pointY: 0,
         pointZ: waylineConfig.speed || 100,
+        xid: v4(),
         ...data,
       }
       waypointsConfig = [

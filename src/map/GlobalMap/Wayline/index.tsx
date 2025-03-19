@@ -2,22 +2,26 @@ import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.
 import useAreaWaylineStore from '@/store/wayline/uav-area-wayline/useAreaWayline.store'
 import useSwarmWaylineStore from '@/store/wayline/uav-swarm-wayline/useSwarmWayline.store'
 import { lazy } from 'react'
+import useRebotDogWaylineStore from '@/store/wayline/rebot-dog-wayline/useRebotDogWayline.store'
 
 const ActionAirline = lazy(() => import('./ActionAirline3D'))
 const AreaWayline = lazy(() => import('./AreaWayline'))
 const SwarmWayline = lazy(() => import('./SwarmWayline'))
+const RebotDogWayline = lazy(() => import('./RebotDogWayline'))
 
 /** 航线相关 */
 const Waylines: FC<unknown> = memo(() => {
   const airlineOpen = useAirlineConfigStore((s) => s.open)
   const areaWaylineOpen = useAreaWaylineStore((s) => s.open)
   const swarmWaylineOpen = useSwarmWaylineStore((s) => s.open)
+  const rebotDogWaylineOpen = useRebotDogWaylineStore((s) => s.open)
 
   return (
     <>
       {airlineOpen && <ActionAirline />}
       {areaWaylineOpen && <AreaWayline />}
       {swarmWaylineOpen && <SwarmWayline />}
+      {rebotDogWaylineOpen && <RebotDogWayline />}
     </>
   )
 })

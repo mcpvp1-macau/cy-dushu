@@ -16,4 +16,5 @@ export type RebotDogWaypointConfigType = {
   pointX: number
   pointY: number
   pointZ: number
+  xid: string
 }

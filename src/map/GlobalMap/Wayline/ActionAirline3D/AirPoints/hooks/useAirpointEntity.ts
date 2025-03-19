@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { AirlinePoint } from '@/store/wayline/uav-airline/types'
+import { attempt } from 'lodash'
 
 export const useAirpointEntity = (
   point: AirlinePoint,
@@ -72,38 +73,8 @@ export const useAirpointEntity = (
       },
     })
 
-    // const circleGeometry = new Cesium.CircleGeometry({
-    //   center: position,
-    //   height: pointZ,
-    //   radius: 20,
-    // });
-
-    // const circleInstance = new Cesium.GeometryInstance({
-    //   geometry: circleGeometry,
-    //   id: 'circle',
-    //   attributes: {
-    //     color: Cesium.ColorGeometryInstanceAttribute.fromColor(
-    //       Cesium.Color.fromCssColorString('#fff'),
-    //     ),
-    //   },
-    // });
-
-    // const p = new Cesium.Primitive({
-    //   geometryInstances: [circleInstance],
-    //   appearance: new Cesium.PerInstanceColorAppearance({
-    //     flat: true,
-    //     renderState: {
-    //       depthTest: {
-    //         enabled: true,
-    //       },
-    //     },
-    //   }),
-    // });
-
-    // viewer.scene.primitives.add(p);
-
     return () => {
-      try {
+      attempt(() => {
         if (entityRef.current) {
           viewer?.entities?.remove(entityRef.current)
         }
@@ -113,9 +84,7 @@ export const useAirpointEntity = (
         if (lineRef.current) {
           viewer?.entities?.remove(lineRef.current)
         }
-      } catch (error) {}
-
-      // viewer.scene.primitives.remove(p);
+      })
     }
   }, [point, currentIndex])
 
