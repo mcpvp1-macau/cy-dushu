@@ -5,6 +5,9 @@ const PageAirline = lazy(() => import('@/pages/wayline'))
 const PageAirlineEdit = lazy(() => import('@/pages/wayline/edit'))
 const PageAreaWaylineEdit = lazy(() => import('@/pages/wayline/area-wayline'))
 const PageSwarmWaylineEdit = lazy(() => import('@/pages/wayline/swarm-wayline'))
+const RebotDogWaylineEdit = lazy(
+  () => import('@/pages/wayline/rebot-dog-wayline'),
+)
 
 export default {
   id: 'wayline',
@@ -46,7 +49,30 @@ export default {
     {
       id: 'swarm-wayline-edit',
       path: 'swarm-wayline-edit',
-      element: <PageSwarmWaylineEdit />,
+      children: [
+        {
+          path: ':waylineTemplateId',
+          element: <PageSwarmWaylineEdit />,
+        },
+        {
+          path: '',
+          element: <PageSwarmWaylineEdit />,
+        },
+      ],
+    },
+    {
+      id: 'rebot-dog-wayline-edit',
+      path: 'rebot-dog-wayline-edit',
+      children: [
+        {
+          path: ':waylineTemplateId',
+          element: <RebotDogWaylineEdit />,
+        },
+        {
+          path: '',
+          element: <RebotDogWaylineEdit />,
+        },
+      ],
     },
   ],
 } as RouteObject

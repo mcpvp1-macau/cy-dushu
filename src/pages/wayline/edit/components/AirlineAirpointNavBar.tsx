@@ -1,4 +1,3 @@
-import IconWaylineAirpoint from '@/assets/icons/jsx/IconWaylineAirpoint'
 import IconWaypoint from '@/assets/icons/jsx/IconWaypoint'
 import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
 

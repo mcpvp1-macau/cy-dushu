@@ -661,6 +661,9 @@ wayline:
     coverage:
       title: 航线重叠率
       tooltip: 相邻两条航线的拍摄视野重叠部分的比例，云台默认正射角度
+    titleRebotDog: 巡线设置
+    speedRebotDog:
+      title: 行进速度
   waylinePoint:
     config: 航点设置
     waypointList:
@@ -720,6 +723,7 @@ wayline:
     deleteIdx: 删除航点 {{i}}
     copyIdx: 复制航点 {{i}}
     title: 航点
+    configRebotDog: 巡点设置
   info:
     length:
       title: 航线长度

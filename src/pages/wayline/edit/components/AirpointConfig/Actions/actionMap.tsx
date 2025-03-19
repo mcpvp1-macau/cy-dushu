@@ -8,6 +8,7 @@ import IconCameraSwitch from '@/assets/icons/jsx/IconCameraSwitch'
 import IconAIEnable from '@/assets/icons/jsx/IconAIEnable'
 import IconAIDisable from '@/assets/icons/jsx/IconAIDisable'
 import IconFocus from '@/assets/icons/jsx/IconFocus'
+import { QuestionCircleOutlined } from '@ant-design/icons'
 
 export type ActionConfigType = {
   actionName: string
@@ -176,3 +177,38 @@ export const iconMap = new Map<ActionTypeEnum, React.ReactNode>([
 ])
 
 export const actionKeys = Array.from(actionMap.keys())
+
+export const getIcon = (action: any) => {
+  if (!action) return
+  if (action.type === 'HOVER') {
+    return <WRJXT />
+  }
+  if (action?.type === 'ROTATE_YAW') {
+    return <FXQPHJ />
+  }
+  if (action?.type === 'CAMERA_POSITION' && action.config.x !== undefined) {
+    return <YTPHJ />
+  }
+  if (action?.type === 'CAMERA_POSITION' && action.config.y !== undefined) {
+    return <YTFYJ />
+  }
+  if (action?.type === 'GET_PICTURE') {
+    return <PZ />
+  }
+  if (action?.type === 'LEN_CHANGE') {
+    return <IconCameraSwitch />
+  }
+  if (action?.type === 'ZOOM') {
+    return <XJBJ />
+  }
+  if (action?.type === 'OPEN_AI') {
+    return <IconAIEnable />
+  }
+  if (action?.type === 'CLOSE_AI') {
+    return <IconAIDisable />
+  }
+  if (action?.type === 'FOCUS_CENTER') {
+    return <IconFocus />
+  }
+  return <QuestionCircleOutlined />
+}

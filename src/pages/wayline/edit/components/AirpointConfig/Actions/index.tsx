@@ -1,19 +1,8 @@
-import {
-  DndContext,
-  closestCenter,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core'
-import {
-  arrayMove,
-  SortableContext,
-  horizontalListSortingStrategy,
-} from '@dnd-kit/sortable'
-import { restrictToHorizontalAxis } from '@dnd-kit/modifiers'
-import SortableItem from './SortableItem'
 import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import { useCurrentAirpoint } from '@/store/wayline/uav-airline/select'
+import ActionRow from '@/pages/wayline/components/ActionRow'
+import { ActionType } from '@/store/wayline/uav-airline/types'
+import { getIcon } from './actionMap'
 
 interface Props {
   activeOperator: string
@@ -31,65 +20,40 @@ const Actions: React.FC<Props> = ({ activeOperator, setActiveOperator }) => {
   const setCurrentActionIndex = useAirlineConfigStore(
     (s) => s.updateCurrentActionIndex,
   )
-  const SortableContextItems = actions.map((item) => item.xid)
 
-  const sensors = useSensors(useSensor(PointerSensor, {}))
+  const contentMap = useMemo(() => {
+    return actions.reduce((acc, item) => {
+      acc[item.xid] = getIcon(item)
+      return acc
+    }, {} as Record<string, ReactNode>)
+  }, [actions])
 
-  const handleDragStart = (event: any) => {
-    setActiveOperator(event.active.id)
-  }
-
-  const handleDragEnd = (event: any) => {
-    const { active, over } = event
-    if (!over || !active) {
-      return
-    }
-    const oldIndex = actions.findIndex((item) => item.xid === active.id)
-    const newIndex = actions.findIndex((item) => item.xid === over.id)
+  const handleChangeData = (newIds: string[]) => {
     const airpointsConfig = useAirlineConfigStore.getState().airpointsConfig
-    if (active.id !== over.id) {
-      setAirpointsConfig(
-        airpointsConfig.map((item, i) => {
-          if (currentIndex === i) {
-            return {
-              ...item,
-              actions: arrayMove(item.actions, oldIndex, newIndex),
-            }
-          }
-          return item
-        }),
-      )
-    } else {
-      setActiveOperator(actions[Number(oldIndex)].xid)
-      setCurrentActionIndex(Number(oldIndex))
-    }
+    const map = actions.reduce((acc, item) => {
+      acc[item.xid] = item
+      return acc
+    }, {} as Record<string, ActionType>)
+    const airpointsConfig2 = airpointsConfig.map((item, i) => {
+      if (currentIndex === i) {
+        return { ...item, actions: newIds.map((id) => map[id]) }
+      }
+      return item
+    })
+    setAirpointsConfig(airpointsConfig2)
   }
 
   return (
-    <>
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-        onDragStart={handleDragStart}
-        modifiers={[restrictToHorizontalAxis]}
-      >
-        <SortableContext
-          items={SortableContextItems}
-          strategy={horizontalListSortingStrategy}
-        >
-          {actions.map((item) => (
-            <SortableItem
-              key={item.xid}
-              id={item.xid}
-              action={item}
-              activeOperator={activeOperator}
-              setActiveOperator={setActiveOperator}
-            />
-          ))}
-        </SortableContext>
-      </DndContext>
-    </>
+    <ActionRow
+      data={actions.map((item) => item.xid)}
+      activeId={activeOperator}
+      contentMap={contentMap}
+      onChangeActiveId={(id) => {
+        setActiveOperator(id)
+        setCurrentActionIndex(actions.findIndex((item) => item.xid === id))
+      }}
+      onChangeData={handleChangeData}
+    />
   )
 }
 

@@ -10,6 +10,7 @@ type PropsType = {
   max?: number
   negatives?: number[]
   positives?: number[]
+  step?: number
   onChange?: (value: number) => void
   className?: string
 }
@@ -22,6 +23,7 @@ const HNumber: FC<PropsType> = ({
   negatives,
   positives,
   onChange,
+  step = 1,
   className,
 }) => {
   const onChangeValue = (value: number) => {
@@ -58,7 +60,7 @@ const HNumber: FC<PropsType> = ({
         <Button
           size="small"
           icon={<IconMinus />}
-          onClick={() => onChangeValue?.(value - 1)}
+          onClick={() => onChangeValue?.(value - step)}
         />
       )}
       <div className={clsx('flex-1 text-[18px] text-center', 'text-primary')}>
@@ -70,6 +72,7 @@ const HNumber: FC<PropsType> = ({
             onBlur={() => setIsEdit(false)}
             style={{ width: 56, height: 22 }}
             autoFocus
+            step={step}
           />
         ) : (
           <span
@@ -95,7 +98,7 @@ const HNumber: FC<PropsType> = ({
         <Button
           size="small"
           icon={<IconPlus />}
-          onClick={() => onChangeValue?.(value + 1)}
+          onClick={() => onChangeValue?.(value + step)}
         />
       )}
     </div>

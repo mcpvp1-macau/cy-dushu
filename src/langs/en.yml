@@ -671,6 +671,9 @@ wayline:
       tooltip: >-
         Overlap ratio of the shooting field of view between adjacent flight
         lines, default nadir angle of the gimbal
+    titleRebotDog: Wayline Config
+    speedRebotDog:
+      title: Speed
   waylinePoint:
     config: Waypoints
     waypointList:
@@ -730,6 +733,7 @@ wayline:
     deleteIdx: Delete waypoint {{i}}
     copyIdx: Copy waypoint {{i}}
     title: Waypoint
+    configRebotDog: Waypoints Config
   info:
     length:
       title: Length

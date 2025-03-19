@@ -1,40 +1,35 @@
 import { Button, Popconfirm } from 'antd'
 import Actions from './Actions'
-import ActionConfig from './Actions/ActionConfig'
+// import ActionConfig from './Actions/ActionConfig'
 import AppEmpty from '@/components/AppEmpty'
 import { useMemoizedFn } from 'ahooks'
-import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import XCard from '@/components/ui/XCard'
 import IconButton from '@/components/ui/button/IconButton'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconLeft from '@/assets/icons/jsx/IconLeft'
 import IconRight from '@/assets/icons/jsx/IconRight'
-import AirpointAddAction from './Actions/AddAction'
+// import AirpointAddAction from './Actions/AddAction'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
-import { StopOutlined } from '@ant-design/icons'
+import useRebotDogWaylineStore from '@/store/wayline/rebot-dog-wayline/useRebotDogWayline.store'
 
-type PropsType = {
-  info: ReactNode
-}
+type PropsType = unknown
 
-const AirpointConfig: FC<PropsType> = ({ info }) => {
-  const [activeAction, setActiveAction] = useState<string>('')
+const AirpointConfig: FC<PropsType> = () => {
+  const [activeAction, setActiveAction] = useState('')
 
-  const currentIndex = useAirlineConfigStore((s) => s.currentIndex)
-  const airpointsConfig = useAirlineConfigStore((s) => s.airpointsConfig)
-  const isDrawPoint = useAirlineConfigStore((s) => s.isDrawPoint)
-  const takeOffRefPoint = useAirlineConfigStore(
-    (s) => s.airlineConfig.takeOffRefPoint,
-  )
-  const prevAirPoint = useAirlineConfigStore((s) => s.prevAirPoint)
-  const nextAirPoint = useAirlineConfigStore((s) => s.nextAirPoint)
-  const setIsDrawPoint = useAirlineConfigStore((s) => s.updateIsDrawPoint)
-  const setCurrentActionIndex = useAirlineConfigStore(
+  const currentIndex = useRebotDogWaylineStore((s) => s.currentIndex)
+  const airpointsConfig = useRebotDogWaylineStore((s) => s.waypointsConfig)
+  const isDrawPoint = useRebotDogWaylineStore((s) => s.isDrawPoint)
+
+  const prevAirPoint = useRebotDogWaylineStore((s) => s.prevWaypoint)
+  const nextAirPoint = useRebotDogWaylineStore((s) => s.nextWaypoint)
+  const setIsDrawPoint = useRebotDogWaylineStore((s) => s.updateIsDrawPoint)
+  const setCurrentActionIndex = useRebotDogWaylineStore(
     (s) => s.updateCurrentActionIndex,
   )
-  const setIsDrawHome = useAirlineConfigStore((s) => s.updateIsDrawHome)
-  const setAirpointsConfig = useAirlineConfigStore(
-    (s) => s.updateAirpointsConfig,
+
+  const setAirpointsConfig = useRebotDogWaylineStore(
+    (s) => s.updateWaypointsConfig,
   )
 
   useEffect(() => {
@@ -47,7 +42,6 @@ const AirpointConfig: FC<PropsType> = ({ info }) => {
       setIsDrawPoint(false)
     } else {
       setIsDrawPoint(true)
-      setIsDrawHome(false)
     }
   }
 
@@ -58,8 +52,7 @@ const AirpointConfig: FC<PropsType> = ({ info }) => {
   const { t } = useTranslation()
 
   return (
-    <div className="flex flex-col gap-3">
-      {info}
+    <div className="flex flex-col gap-3 mt-3">
       <XCard
         title={
           <>
@@ -89,45 +82,28 @@ const AirpointConfig: FC<PropsType> = ({ info }) => {
               type="link"
               size="small"
               className="p-0"
-              disabled={!takeOffRefPoint}
               onClick={handleTakeoffClick}
             >
-              {takeOffRefPoint ? (
-                isDrawPoint ? (
-                  t('wayline.waylinePoint.cancelCreateWaypoint.title')
-                ) : (
-                  t('wayline.waylinePoint.createWaypoint.title')
-                )
-              ) : (
-                <StopOutlined />
-              )}
+              {isDrawPoint
+                ? t('wayline.waylinePoint.cancelCreateWaypoint.title')
+                : t('wayline.waylinePoint.createWaypoint.title')}
             </Button>
           </>
         }
       >
         {airpointsConfig.length === 0 ? (
-          <>
-            <AppEmpty />
-          </>
+          <AppEmpty />
         ) : (
           <>
             <div className="mt-3 flex justify-center items-center">
-              <Button
-                size="small"
-                icon={<IconLeft />}
-                onClick={() => {
-                  prevAirPoint()
-                }}
-              />
+              <Button size="small" icon={<IconLeft />} onClick={prevAirPoint} />
               <div className="flex-1 text-primary text-lg text-center">
                 {currentIndex + 1}
               </div>
               <Button
                 size="small"
                 icon={<IconRight />}
-                onClick={() => {
-                  nextAirPoint()
-                }}
+                onClick={nextAirPoint}
               />
             </div>
             <div className="flex gap-3 justify-between overflow-hidden">
@@ -140,10 +116,10 @@ const AirpointConfig: FC<PropsType> = ({ info }) => {
                 </div>
                 <ScrollBar orientation="horizontal" />
               </ScrollArea>
-              <AirpointAddAction setActiveOperator={setActiveAction} />
+              {/* <AirpointAddAction setActiveOperator={setActiveAction} /> */}
             </div>
             <div className="h-[1px] bg-ground-5 rounded" />
-            <ActionConfig activeOperator={activeAction} />
+            {/* <ActionConfig activeOperator={activeAction} /> */}
           </>
         )}
       </XCard>
