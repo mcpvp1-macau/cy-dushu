@@ -270,7 +270,18 @@ const DeviceLiveVideo = memo(
                 />
               )}
 
-              {sn && <DaoTongPlayer sn={sn} containerId={videoContainerId} />}
+              {sn && (
+                <DaoTongPlayer
+                  sn={sn}
+                  containerId={videoContainerId}
+                  onVideoInfo={({ videoRatio }) => {
+                    if (Math.abs(videoRatio - aspectRatio) > 1e-5) {
+                      setAspectRatio(videoRatio)
+                      onAspectRatioChange?.(videoRatio)
+                    }
+                  }}
+                />
+              )}
 
               {/* 视频绘制框 */}
               <div className="absolute inset-0 z-20 pointer-events-none">
