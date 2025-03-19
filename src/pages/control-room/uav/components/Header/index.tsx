@@ -14,6 +14,7 @@ import LatestTask from './LatestTask'
 import { createPortal } from 'react-dom'
 import { useTitle } from 'ahooks'
 import { lazy } from 'react'
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 
 const DeviceLinkSwitch = lazy(
   () => import('@/components/device/DeviceLinkSwitch'),
@@ -104,8 +105,15 @@ const SignalStrength = memo(() => {
 })
 
 const SatelliteNumber = memo(() => {
+  const { t } = useTranslation()
   const satelliteNumber = useS((s) => s.state?.satelliteNumber)
-  return <I l={<IconSatellite />} v={satelliteNumber ?? '-'} />
+  return (
+    <I
+      l={<IconSatellite />}
+      v={satelliteNumber ?? '-'}
+      t={t('controlRoom.uav.header.satellite.title')}
+    />
+  )
 })
 
 const Battery = memo(() => {
@@ -223,31 +231,36 @@ const ControlRoomUavHeader: FC = memo(() => {
   const appHeader = document.getElementById('app-header-center')
 
   const h = (
-    <header className="h-7 flex justify-between gap-3 px-3 items-center text-sm">
+    <header className="h-[38px] flex justify-between items-center text-sm">
       {appHeader ? <HeaderLeft /> : <div />}
-      <section className="grow">
-        <ul className="flex justify-center gap-1 xl:gap-3 2xl:gap-5 whitespace-nowrap">
-          <DeviceLinkSwitch
-            productKey={productKey}
-            deviceId={deviceId}
-            className="text-fore"
-          />
-          <Signal14G />
-          <SDRStrength />
-          <SignalStrength />
-          <SatelliteNumber />
-          <Battery />
-          <HorizontalSpeed />
-          <Height />
-          <Altitude />
-          <HomeDistance />
-          <FT />
-          <FD />
-        </ul>
-      </section>
-      <section>
-        <LatestTask deviceId={deviceId} />
-      </section>
+      <ScrollArea className="w-full h-[38px] flex items-center ml-3">
+        <div className="flex items-center gap-3">
+          <section className="grow">
+            <ul className="flex justify-center gap-1 xl:gap-3 2xl:gap-5 whitespace-nowrap">
+              <DeviceLinkSwitch
+                productKey={productKey}
+                deviceId={deviceId}
+                className="text-fore"
+              />
+              <Signal14G />
+              <SDRStrength />
+              <SignalStrength />
+              <SatelliteNumber />
+              <Battery />
+              <HorizontalSpeed />
+              <Height />
+              <Altitude />
+              <HomeDistance />
+              <FT />
+              <FD />
+            </ul>
+          </section>
+          <section>
+            <LatestTask deviceId={deviceId} />
+          </section>
+        </div>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
     </header>
   )
 
