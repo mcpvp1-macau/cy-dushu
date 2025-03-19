@@ -18,103 +18,108 @@ import {
   SplatRenderMode,
 } from '@mkkellogg/gaussian-splats-3d'
 
+type LoadOPtions = {
+  layerAttr: API_RECONSTRUCTION.Layer
+  splatUrl: string
+  lat: number
+  lon: number
+  height: number
+  headingPitchRoll: { heading: number; pitch: number; roll: number }
+  scale: number | { x: number; y: number; z: number }
+  camera:
+    | {
+        offset: { x: number; y: number; z: number } | undefined
+        headingPitchRoll:
+          | { heading: number; pitch: number; roll: number }
+          | undefined
+      }
+    | undefined
+}
+
 // const SCALE_BASE = 1 / 10000;
 const SCALE_BASE = 1 / 1
 
 class CesiumThreeJS3DGS {
-  cesiumViewer: CesiumViewer | null = null
-  threeContainer: HTMLElement | null = null
+  cesiumViewer: CesiumViewer
+  threeContainer: HTMLDivElement
+  hiddenlayerIds: Set<number> = new Set()
+  hiddenGroupIds: Set<number> = new Set()
+  readySplatViewer: number = 0
 
   three: {
     renderer: THREE.WebGLRenderer | null
     camera: THREE.PerspectiveCamera | null
     scene: THREE.Scene | null
     controls: OrbitControls | null
-    splatViewer: any
+    splatViewers: any[]
   } = {
     renderer: null,
     camera: null,
     scene: null,
     controls: null,
-    splatViewer: null,
+    splatViewers: [],
   }
 
-  tc: HTMLElement | null = null
+  constructor(cesiumViewer: CesiumViewer) {
+    this.cesiumViewer = cesiumViewer
 
-  constructor(
-    cesiumViewer: CesiumViewer | null = null,
-    threeContainer: HTMLElement | string | null = null,
-  ) {
-    let tc: HTMLElement | null
-    if (cesiumViewer) {
-      this.initCesium(cesiumViewer)
+    const threeContainer = document.createElement('div')
+    this.threeContainer = threeContainer
+    threeContainer.id = 'threeContainer'
+    cesiumViewer.container.insertAdjacentElement('afterend', threeContainer)
 
-      if (!threeContainer) {
-        tc = document.createElement('div')
-        tc.id = 'threeContainer'
-        cesiumViewer.container.insertAdjacentElement('afterend', tc)
-      } else if (typeof threeContainer === 'string') {
-        tc = document.getElementById(threeContainer)
-      } else {
-        tc = threeContainer
-      }
+    if (threeContainer) {
+      threeContainer.style.inset = '0'
+      threeContainer.style.width = '100%'
+      threeContainer.style.height = '100%'
+      threeContainer.style.position = 'absolute'
+      threeContainer.style.pointerEvents = 'none'
 
-      if (tc) {
-        this.threeContainer = tc
-        tc.style.inset = '0'
-        tc.style.width = '100%'
-        tc.style.height = '100%'
-        tc.style.position = 'absolute'
-        tc.style.pointerEvents = 'none'
+      var fov = 45
+      var width = window.innerWidth
+      var height = window.innerHeight
+      var aspect = width / height
+      var near = 0.1 // * SCALE_BASE;
+      var far = 50000 //* SCALE_BASE;  // TODO
 
-        var fov = 45
-        var width = window.innerWidth
-        var height = window.innerHeight
-        var aspect = width / height
-        var near = 0.1 // * SCALE_BASE;
-        var far = 5000 //* SCALE_BASE;  // TODO
-
-        this.three.scene = new THREE.Scene()
-        this.three.camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
-        this.three.renderer = new THREE.WebGLRenderer({ alpha: true })
-        this.threeContainer.appendChild(this.three.renderer.domElement)
-
-        const onResize = () => {
-          // console.log("fovy", this.cesiumViewer.camera.frustum.fovy)
-          // 获取大小
-          this.three.camera!.fov = CesiumMath.toDegrees(
-            //@ts-ignore
-            this.cesiumViewer.camera.frustum.fovy,
-          ) // ThreeJS FOV is vertical
-          this.three.camera!.updateProjectionMatrix()
-
-          var width = this.threeContainer!.clientWidth
-          var height = this.threeContainer!.clientHeight
-
-          // 调整渲染器大小
-          this.three.renderer!.setPixelRatio(window.devicePixelRatio)
-          this.three.renderer!.setSize(width, height)
-
-          // 矫正照相机的宽高比
-          this.three.camera!.aspect = width / height
-          this.three.camera!.updateProjectionMatrix()
-        }
-
-        // 用于初始化运行
-        onResize()
-        // 调整事件发生时运行
-        window.addEventListener('resize', onResize)
-      }
-      this.three.camera!.matrixAutoUpdate = false
+      this.three.scene = new THREE.Scene()
+      this.three.camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
+      this.three.renderer = new THREE.WebGLRenderer({
+        alpha: true,
+      })
+      // 手动进行清楚操作
+      this.three.renderer.autoClear = false
+      this.threeContainer.appendChild(this.three.renderer.domElement)
     }
+    this.three.camera!.matrixAutoUpdate = false
   }
 
-  initCesium(viewer: CesiumViewer) {
-    this.cesiumViewer = viewer
+  private updateCanvasSize() {
+    if (
+      this.threeContainer.clientWidth === this.three.renderer.domElement &&
+      this.threeContainer.clientHeight === this.three.renderer.domElement
+    ) {
+      return
+    }
+    // 获取大小
+    this.three.camera!.fov = CesiumMath.toDegrees(
+      //@ts-ignore
+      this.cesiumViewer.camera.frustum.fovy,
+    )
+
+    const width = this.threeContainer!.clientWidth
+    const height = this.threeContainer!.clientHeight
+
+    // 调整渲染器大小
+    this.three.renderer!.setPixelRatio(window.devicePixelRatio)
+    this.three.renderer!.setSize(width, height, true)
+    // 矫正照相机的宽高比
+    this.three.camera!.aspect = width / height
+    this.three.camera!.updateProjectionMatrix()
   }
 
-  async initThree() {
-    this.three.splatViewer = new GSViewer({
+  private addSplatViewer(layerAttr: API_RECONSTRUCTION.Layer) {
+    const gsViewer = new GSViewer({
       selfDrivenMode: false,
       renderer: this.three.renderer,
       camera: this.three.camera,
@@ -132,54 +137,55 @@ class CesiumThreeJS3DGS {
       // freeIntermediateSplatData: true,
       // optimizeSplatData: false
     })
+    gsViewer.layerAttr = layerAttr
+    this.three.splatViewers.push(gsViewer)
 
-    // Debug info (根据需要显示坐标等)
-    // this.three.splatViewer.showInfo = true;
-    // this.three.splatViewer.infoPanel.show();
+    return gsViewer
   }
 
-  async remove3dgsAll(showloadingUI = true) {
-    if (!this.three.splatViewer) return
-    const indexesToRemove: any[] = []
-    for (let i = 0; i < this.three.splatViewer.getSceneCount(); i++) {
-      indexesToRemove.push(i)
-    }
-    if (indexesToRemove.length > 0) {
-      await this.three.splatViewer.removeSplatScenes(
-        indexesToRemove,
-        showloadingUI,
-      )
-    } else {
-      if (this.three.splatViewer.isLoadingOrUnloading()) {
-        // 如果正在加载第一个，removeSplatScenes不会运行，所以不会出错。
-        throw new Error(
-          'Cannot add splat scene while another load or unload is already in progress.',
-        )
-      }
-    }
+  async remove3dgsAll() {
+    if (this.three.splatViewers.length === 0) return
 
-    // 以防万一原点也要重置
-    // const splatMesh = this.three.splatViewer.getSplatMesh();
-    // splatMesh.position.set(0, 0, 0)
-    // splatMesh.quaternion.set(0, 0, 0, 0)
-    // splatMesh.scale.set(1, 1, 1)
-
-    // 这也需要隐藏
-    this.three.splatViewer.update()
-    this.three.splatViewer.render()
+    for (const splatViewer of this.three.splatViewers) {
+      await splatViewer.removeSplatScene(0)
+      splatViewer.update()
+      splatViewer.render()
+    }
 
     // 删除一次
     await this.dispose()
-    delete this.three.splatViewer
+    this.three.splatViewers = []
+    this.readySplatViewer = 0
+  }
+
+  async removeById(id: number) {
+    if (this.three.splatViewers.length === 0) return
+
+    let index = -1
+    for (const splatViewer of this.three.splatViewers) {
+      if (splatViewer.layerAttr.id === id) {
+        await splatViewer.removeSplatScene(0)
+        splatViewer.update()
+        splatViewer.render()
+        splatViewer.dispose()
+        index = this.three.splatViewers.indexOf(splatViewer)
+      }
+    }
+    if (index !== -1) {
+      this.three.splatViewers.splice(index, 1)
+      this.readySplatViewer -= 1
+    }
   }
 
   async dispose() {
-    if (this.three.splatViewer) {
-      await this.three.splatViewer.dispose()
+    if (this.three.splatViewers.length === 0) return
+    for (const splatViewer of this.three.splatViewers) {
+      await splatViewer.dispose()
     }
   }
 
   async load3dgs({
+    layerAttr,
     splatUrl,
     lat,
     lon,
@@ -187,23 +193,8 @@ class CesiumThreeJS3DGS {
     headingPitchRoll,
     scale,
     camera,
-  }: {
-    splatUrl: string
-    lat: number
-    lon: number
-    height: number
-    headingPitchRoll: { heading: number; pitch: number; roll: number }
-    scale: number | { x: number; y: number; z: number }
-    camera:
-      | {
-          offset: { x: number; y: number; z: number } | undefined
-          headingPitchRoll:
-            | { heading: number; pitch: number; roll: number }
-            | undefined
-        }
-      | undefined
-  }) {
-    await this.initThree()
+  }: LoadOPtions) {
+    const gsViewer = this.addSplatViewer(layerAttr)
 
     if (typeof scale === 'number') {
       scale = { x: scale, y: scale, z: scale }
@@ -242,27 +233,9 @@ class CesiumThreeJS3DGS {
     )
     q = CesiumQuaternion.multiply(q, q6, new CesiumQuaternion())
 
-    if (!(camera && camera.offset && camera.headingPitchRoll)) {
-      // 通过稍微移动镜头，可以使画面变得更美，所以先拉10m左右
-      this.cesiumViewer?.camera.moveBackward(10)
-    }
+    await gsViewer.addSplatScene(splatUrl)
 
-    await this.three.splatViewer.addSplatScene(splatUrl, {
-      // 如果您要配置多个模型，请考虑此配置方法。
-      // position: [p.x, p.y, p.z],
-      // rotation: [q.x, q.y, q.z, q.w],
-      // scale: [SCALE_BASE * scale.x, SCALE_BASE * scale.y, SCALE_BASE * scale.z],
-    })
-
-    // v0.4.4, v0.4.5 摄像机移动得摇摇晃晃。此设定可同时显示多个画面（需要记忆体）
-    // v0.4.3 也可以设置相同的设置，但也可以设置相同的设置
-    // const splatMesh = this.three.splatViewer.getSplatScene(
-    //   this.three.splatViewer.getSceneCount() - 1
-    // );
-    // console.log(splatMesh);
-    // 在这里可以设定，相机移动也很流畅。但是只能对应一个模型
-    const splatMesh = this.three.splatViewer.getSplatMesh()
-
+    const splatMesh = gsViewer.getSplatMesh()
     splatMesh.position.set(p.x, p.y, p.z)
     splatMesh.quaternion.set(q.x, q.y, q.z, q.w)
     splatMesh.scale.set(
@@ -270,62 +243,17 @@ class CesiumThreeJS3DGS {
       SCALE_BASE * scale.y,
       SCALE_BASE * scale.z,
     )
-
-    // 摄像头位置
-    if (camera && camera.offset && camera.headingPitchRoll) {
-      var nloc = [lon, lat]
-      var targetCartesian = CesiumCartesian3.fromDegrees(
-        nloc[0],
-        nloc[1],
-        height,
-      )
-      // ENU（East-North-Up） 获取转换矩阵
-      var enuMatrix = CesiumTransforms.eastNorthUpToFixedFrame(targetCartesian)
-
-      // 转换相机坐标
-      // 局部坐标（以目标对象为原点））
-      var localPosition = new CesiumCartesian3(
-        camera.offset.x, // * manualScale,
-        camera.offset.y, // * manualScale,
-        camera.offset.z, // * manualScale
-      ) // 本地坐标中的位置
-      // 将本地坐标转换为世界坐标
-      var worldPosition = CesiumMatrix4.multiplyByPoint(
-        enuMatrix,
-        localPosition,
-        new CesiumCartesian3(),
-      )
-
-      this.cesiumViewer?.camera.flyTo({
-        destination: worldPosition,
-        orientation: {
-          heading: CesiumMath.toRadians(
-            camera.headingPitchRoll?.heading - headingPitchRoll.heading,
-          ),
-          pitch: CesiumMath.toRadians(camera.headingPitchRoll?.pitch),
-          roll: CesiumMath.toRadians(camera.headingPitchRoll?.roll),
-        },
-        duration: 3,
-      })
-    } else {
-      // 通过稍微移动镜头，可以使画面变得更美，所以先拉10m左右
-      this.cesiumViewer?.camera.moveForward(10)
-    }
-
-    // v0.4.4 以后 this.three.splatViewer.getSceneCount
-    // return this.three.splatViewer.getSplatScene(this.three.splatViewer.getSplatMesh().getSplatCount() - 1)
-    return 0
+    this.readySplatViewer += 1
   }
 
   renderThreeObj() {
-    if (
-      !this.three.camera ||
-      !this.cesiumViewer ||
-      !this.threeContainer ||
-      !this.three.renderer
-    ) {
-      return
-    }
+    // 如果在没有任何加载完成的数据的时候进行渲染，会导致黑屏，所以定义一个readySplatViewer，当其大于0才会渲染
+    if (this.readySplatViewer === 0) return
+
+    if (this.three.splatViewers.length === 0) return
+
+    this.updateCanvasSize()
+    this.three.renderer.clear()
 
     var civm = this.cesiumViewer.camera.inverseViewMatrix
 
@@ -367,10 +295,27 @@ class CesiumThreeJS3DGS {
       this.three.camera.scale,
     )
 
-    if (this.three.splatViewer) {
-      this.three.splatViewer.update()
-      this.three.splatViewer.render()
-    }
+    this.three.splatViewers.forEach((splatViewer) => {
+      // 图层和所在图层组没被隐藏再渲染
+      if (
+        !this.hiddenlayerIds.has(splatViewer.layerAttr.overlayId) &&
+        !this.hiddenGroupIds.has(splatViewer.layerAttr.layerId)
+      ) {
+        splatViewer.update()
+        splatViewer.render()
+      }
+    })
+  }
+
+  has(id: number) {
+    let has = false
+    this.three.splatViewers.forEach((splatViewer) => {
+      if (splatViewer.layerAttr.overlayId === id) {
+        has = true
+      }
+    })
+
+    return has
   }
 }
 

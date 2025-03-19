@@ -974,7 +974,18 @@ mapLayer:
     previewParse:
       msg: Preview image parsing failed
   reconstructionMap:
-    create: Create a 3D map group
+    create:
+      tooltip: Create a 3D map group
+      layer:
+        title: Create a 3D layer
+      form:
+        groupName: Name of the 3D layer group
+        layerName: Name of the 3D layer
+    edit:
+      layer:
+        title: Edit 3D layer name
+      form:
+        layerName: Name of the 3D layer
 message:
   success:
     saveMapView: Map view saved successfully

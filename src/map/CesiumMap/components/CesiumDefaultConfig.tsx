@@ -23,7 +23,7 @@ const CesiumDefaultConfig: FC<PropsType> = memo(() => {
     viewer.scene.screenSpaceCameraController.inertiaZoom = 0
 
     // 限制地图相机的最大高度最小高度，防止找不到地球或者进入地下
-    viewer.scene.screenSpaceCameraController.minimumZoomDistance = 100
+    viewer.scene.screenSpaceCameraController.minimumZoomDistance = 10
     viewer.scene.screenSpaceCameraController.maximumZoomDistance = 18000000
 
     // @ts-ignore

@@ -52,20 +52,47 @@ const useReconstructionMapConfigStore = create<
   ConfigStateType & ConfigActionsType
 >()(
   devtools(
-    (set) => ({
-      hiddenGroupIds: new Set(),
-      hiddenLayerIds: new Set(),
-      activeLayerIds: new Set(),
-      updateHiddenGroupIds: (hiddenGroupIds) => {
-        set({ hiddenGroupIds }, false, 'updateHiddenGroupIds')
+    persist(
+      (set) => ({
+        hiddenGroupIds: new Set(),
+        hiddenLayerIds: new Set(),
+        activeLayerIds: new Set(),
+        updateHiddenGroupIds: (hiddenGroupIds) => {
+          set({ hiddenGroupIds }, false, 'updateHiddenGroupIds')
+        },
+        updateHiddenLayerIds: (hiddenLayerIds) => {
+          set({ hiddenLayerIds }, false, 'updateHiddenLayerIds')
+        },
+        updateActiveLayerIds: (activeLayerIds) => {
+          set({ activeLayerIds }, false, 'updateActiveLayerIds')
+        },
+      }),
+      {
+        name: 'reconstruction-map-config',
+        storage: createJSONStorage(() => sessionStorage, {
+          replacer: (key: string, value: any) => {
+            if (
+              key === 'hiddenGroupIds' ||
+              key === 'hiddenLayerIds' ||
+              key === 'activeLayerIds'
+            ) {
+              return Array.from(value)
+            }
+            return value
+          },
+          reviver: (key: string, value: any) => {
+            if (
+              key === 'hiddenGroupIds' ||
+              key === 'hiddenLayerIds' ||
+              key === 'activeLayerIds'
+            ) {
+              return new Set(value)
+            }
+            return value
+          },
+        }),
       },
-      updateHiddenLayerIds: (hiddenLayerIds) => {
-        set({ hiddenLayerIds }, false, 'updateHiddenLayerIds')
-      },
-      updateActiveLayerIds: (activeLayerIds) => {
-        set({ activeLayerIds }, false, 'updateActiveLayerIds')
-      },
-    }),
+    ),
     {
       name: 'reconstruction-map-config',
       enabled: import.meta.env.DEV,

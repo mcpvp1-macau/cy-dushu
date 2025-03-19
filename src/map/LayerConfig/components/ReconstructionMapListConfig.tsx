@@ -9,19 +9,19 @@ import useReconstructionMap, {
 import { groupBy } from 'lodash'
 import ReconstructionMapConfig from './ReconstructionMapConfig'
 import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
-import { delLayer } from '@/service/modules/layer_overlay'
 import { useAppMsg } from '@/hooks/useAppMsg'
-
-type PropsType = unknown
+import { deleteLayerGroupList } from '@/service/modules/reconstruction'
 
 const ReconstructionMapListConfig: FC = memo(() => {
+  const { t } = useTranslation()
+
   const layerGroupList = useReconstructionMap((s) => s.layerGroupList)
   const layerList = useReconstructionMap((s) => s.layerList)
 
   const defaultExpandLayerIds = useMemo(() => {
     return layerGroupList
       .filter((e) => e.layerType === 'DEFAULT')
-      .map((e) => e.layerId)
+      .map((e) => e.id)
   }, [layerList])
 
   /**分组后的layerList */
@@ -40,7 +40,11 @@ const ReconstructionMapListConfig: FC = memo(() => {
   const msgApi = useAppMsg()
   const queryClient = useQueryClient()
   const handleDelGroup = async (id: number) => {
-    msgApi.info(`删除id为${id}的三维图层组`)
+    await deleteLayerGroupList(id)
+    await queryClient.invalidateQueries({
+      queryKey: ['reconstruction-groupList'],
+    })
+    msgApi.success(t('api.success.msg'))
   }
 
   return (
@@ -48,21 +52,21 @@ const ReconstructionMapListConfig: FC = memo(() => {
       defaultActiveKey={defaultExpandLayerIds}
       accordion
       items={layerGroupList.map((layerGroup) => ({
-        key: layerGroup.layerId,
+        key: layerGroup.id,
         label: ` - ${layerGroup.layerName}`,
         extra: (
           <div className="flex gap-3" onClick={(e) => e.stopPropagation()}>
             <IconButton
               onClick={() => {
-                if (hiddenGroupIds.has(layerGroup.layerId)) {
-                  hiddenGroupIds.delete(layerGroup.layerId)
+                if (hiddenGroupIds.has(layerGroup.id)) {
+                  hiddenGroupIds.delete(layerGroup.id)
                 } else {
-                  hiddenGroupIds.add(layerGroup.layerId)
+                  hiddenGroupIds.add(layerGroup.id)
                 }
                 updateHiddenGroupIds(new Set(hiddenGroupIds))
               }}
             >
-              {hiddenGroupIds.has(layerGroup.layerId) ? (
+              {hiddenGroupIds.has(layerGroup.id) ? (
                 <IconNotVisible />
               ) : (
                 <IconVisible />
@@ -71,7 +75,7 @@ const ReconstructionMapListConfig: FC = memo(() => {
             {layerGroup.layerType !== 'DEFAULT' && (
               <IconButton
                 className="scale-90"
-                onClick={() => handleDelGroup(layerGroup.layerId)}
+                onClick={() => handleDelGroup(layerGroup.id)}
               >
                 <IconDelete />
               </IconButton>
@@ -80,10 +84,10 @@ const ReconstructionMapListConfig: FC = memo(() => {
         ),
         children: (
           <ul className="p-3 flex flex-col gap-2">
-            {(layerListGroup[layerGroup.layerId] ?? []).length === 0 ? (
+            {(layerListGroup[layerGroup.id] ?? []).length === 0 ? (
               <AppEmpty />
             ) : (
-              (layerListGroup[layerGroup.layerId] ?? []).map((e) => (
+              (layerListGroup[layerGroup.id] ?? []).map((e) => (
                 <ReconstructionMapConfig key={e.overlayId} data={e} />
               ))
             )}

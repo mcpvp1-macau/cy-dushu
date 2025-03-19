@@ -19,10 +19,11 @@ export default class ReconstructionAreaPrimitive {
   private _pointCollection: Cesium.PointPrimitiveCollection
   private _labelCollection: Cesium.LabelCollection
   private _centerLabel: Cesium.LabelCollection
-  private _polygon: Cesium.Primitive | null = null
-  private _polyline: Cesium.Primitive | null = null
+  private _polygon: Cesium.GroundPrimitive | null = null
+  private _polyline: Cesium.GroundPolylinePrimitive | null = null
   private _drawingColor: string
   private _area: number = 0
+  private _completed: boolean = false
 
   constructor(drawingColor: string) {
     this._pointCollection = new Cesium.PointPrimitiveCollection()
@@ -43,6 +44,7 @@ export default class ReconstructionAreaPrimitive {
       this._polyline = this.createPolyline()
       this.updatePointAndLabel()
       this.onAreaChanged && this.onAreaChanged(this._area / 1000000)
+      this._completed = false
     }
     // @ts-ignore
     this._polygon && this._polygon.update(frameState)
@@ -69,7 +71,7 @@ export default class ReconstructionAreaPrimitive {
   private createPolygon() {
     if (this._positions.length < 3) return null
 
-    return new Cesium.Primitive({
+    return new Cesium.GroundPrimitive({
       geometryInstances: new Cesium.GeometryInstance({
         geometry: new Cesium.PolygonGeometry({
           polygonHierarchy: new Cesium.PolygonHierarchy(this._positions),
@@ -90,9 +92,9 @@ export default class ReconstructionAreaPrimitive {
     if (this._positions.length < 2) return null
 
     const closedPositions = [...this._positions, this._positions[0]]
-    return new Cesium.Primitive({
+    return new Cesium.GroundPolylinePrimitive({
       geometryInstances: new Cesium.GeometryInstance({
-        geometry: new Cesium.PolylineGeometry({
+        geometry: new Cesium.GroundPolylineGeometry({
           positions: closedPositions,
           width: 3,
         }),
@@ -211,6 +213,33 @@ export default class ReconstructionAreaPrimitive {
       turf.centerOfMass(trufPolygon),
       turf.area(turf.polygon([coordinates])),
     ] as const
+  }
+
+  /** 调用该方法指示完成绘制，以更改显示状态 */
+  complete() {
+    if (!this._polyline || !this._polygon) return
+
+    this._polyline.appearance.material = Cesium.Material.fromType(
+      Cesium.Material.ColorType,
+      {
+        color: Cesium.Color.fromCssColorString(this._drawingColor),
+      },
+    )
+
+    this._polygon.appearance.material = Cesium.Material.fromType(
+      Cesium.Material.ColorType,
+      {
+        color: Cesium.Color.fromCssColorString(this._drawingColor).withAlpha(
+          0.5,
+        ),
+      },
+    )
+
+    this._labelCollection.removeAll()
+    this._pointCollection.removeAll()
+    this._centerLabel.get(0).text = '规划区域'
+
+    this._completed = true
   }
 
   /**获取当前绘制的面积，单位：km² */

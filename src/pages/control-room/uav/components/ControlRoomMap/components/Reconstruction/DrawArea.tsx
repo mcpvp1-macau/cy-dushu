@@ -10,6 +10,18 @@ import ReconstructionSettingModal from './SettingModal'
 import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
 import ReconstructionAreaPrimitive from './ReconstructionAreaPrimitive'
 import { useAppMsg } from '@/hooks/useAppMsg'
+import {
+  createLayer,
+  startReconstructionTask,
+} from '@/service/modules/reconstruction'
+import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+
+type FlyOptions = {
+  flightAltitude: number
+  overlapRate: number
+  returnAltitude: number
+  taskCompletionAction: 'goBack' | 'hover'
+}
 
 type PropsType = {
   setState: (
@@ -21,6 +33,8 @@ type PropsType = {
 const DrawArea: FC<PropsType> = memo(({ setState, MAX_AREA }) => {
   const { viewer } = useCesium()
   const msgApi = useAppMsg()
+
+  const deviceId = useDeviceDetailStore((s) => s.deviceId)
 
   /** 支点 */
   const paths = useRef<Cesium.Cartesian3[]>([])
@@ -113,31 +127,27 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_AREA }) => {
     }
   }, [viewer])
 
-  const handleConfirm = async (data: any) => {
+  const handleConfirm = async (flyOptions: FlyOptions) => {
     if (paths.current.length < 2) {
       return
     }
-    console.log(data)
+    areaPrimitiveRef.current?.complete()
+
     const strokeColorHex = getHexWithAlpha(drawingColor, 1)
     const strokeColorARGB = hexToARGB(strokeColorHex)
     const fillColorHex = getHexWithAlpha(drawingColor, 0.5)
     const fillColorARGB = hexToARGB(fillColorHex)
 
-    const commitData = {
-      layerId: data.layerId,
-      overlayName: data.overlayName,
+    const createLayerData = {
       overlayType: 'POLYGON',
       overlayPositions: JSON.stringify([...paths.current, endPoint.current]),
       overlayBindType: 'NORMAL',
       overlayStyleConfig: JSON.stringify({
-        contact: {
-          '-callsign': data.overlayName, //多边形名称
-        },
         strokeColor: {
           '-value': `${strokeColorARGB}`, //描边颜色（argb）
         },
         strokeWeight: {
-          '-value': '2.0', //描边宽度
+          '-value': '4.0', //描边宽度
         },
         strokeStyle: {
           '-value': 'solid', //描边样式(solid:实线;dashed:虚线;dotted:斑点线,outlined:轮廓线)
@@ -159,19 +169,32 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_AREA }) => {
       cotType: CotType.SHAPE_POLYGON,
     }
 
-    setFalse()
-    setState('reconstructing')
-    quitRecontructionArea()
-    if (handlerRef.current) {
-      handlerRef.current.removeInputAction(
-        Cesium.ScreenSpaceEventType.RIGHT_CLICK,
-      )
-      handlerRef.current.removeInputAction(
-        Cesium.ScreenSpaceEventType.MOUSE_MOVE,
-      )
-      handlerRef.current.removeInputAction(
-        Cesium.ScreenSpaceEventType.LEFT_CLICK,
-      )
+    try {
+      const data = await createLayer(createLayerData)
+      const overlayId = data.data.overlayId
+      // await startReconstructionTask({
+      //   overlayId,
+      //   deviceId,
+      //   ...flyOptions,
+      // })
+      msgApi.success(`开始重建，区域id为${overlayId}`)
+      setState('reconstructing')
+      quitRecontructionArea()
+      if (handlerRef.current) {
+        handlerRef.current.removeInputAction(
+          Cesium.ScreenSpaceEventType.RIGHT_CLICK,
+        )
+        handlerRef.current.removeInputAction(
+          Cesium.ScreenSpaceEventType.MOUSE_MOVE,
+        )
+        handlerRef.current.removeInputAction(
+          Cesium.ScreenSpaceEventType.LEFT_CLICK,
+        )
+      }
+    } catch (error) {
+      setState('drawing')
+    } finally {
+      setFalse()
     }
   }
 

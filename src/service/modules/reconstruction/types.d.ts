@@ -1,10 +1,14 @@
 declare namespace API_RECONSTRUCTION {
   interface LayerGroup {
-    layerId: number
+    id: number
     layerName: string //分组名称
     createTime: number
     layerUuid: string
     layerType: 'DEFAULT' | 'NORMAL'
+    gmtCreate: string
+    gmtCreateBy: string
+    gmtModified: string
+    gmtModifiedBy: string
   }
 
   interface Layer {
@@ -28,7 +32,7 @@ declare namespace API_RECONSTRUCTION {
     modelLayerLat: number
     modelLayerHeight: number
     cameraHeading: number
-    cameraPitchv: number
+    cameraPitch: number
     cameraRoll: number
     modelPath: string
   }
@@ -68,7 +72,7 @@ declare namespace API_RECONSTRUCTION {
   }
 
   namespace res {
-    type LayerGroupList = API_COMMON.PageRes<LayerGroup>
-    type LayerList = API_COMMON.PageRes<Layer>
+    type LayerGroupList = LayerGroup[]
+    type LayerList = Layer[]
   }
 }

@@ -957,7 +957,18 @@ mapLayer:
     previewParse:
       msg: 预览图解析失败
   reconstructionMap:
-    create: 创建三维图组
+    create:
+      tooltip: 创建三维图组
+      layer:
+        title: 创建三维图层
+      form:
+        groupName: 三维图层组名称
+        layerName: 三维图层名称
+    edit:
+      layer:
+        title: 修改三维图层名称
+      form:
+        layerName: 三维图层名称
 message:
   success:
     saveMapView: 地图视角保存成功
