@@ -40,7 +40,7 @@ const Right: FC<PropsType> = memo(() => {
         'flex flex-col',
         'overflow-y-hidden',
       )}
-      style={{ maxHeight: 'calc(100vh - 62px' }}
+      style={{ maxHeight: 'calc(100vh - 82px' }}
     >
       <AppViewSuspense>{<RightComponent key={rightMode} />}</AppViewSuspense>
     </div>

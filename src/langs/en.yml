@@ -1006,9 +1006,9 @@ controlRoom:
       title: Data
     header:
       14g:
-        title: 1.4G Signal Strength
+        title: 1.4G
       sdr:
-        title: SDR Signal Strength
+        title: SDR
       signal:
         title: Signal Strength
       hSpeed:
@@ -1022,6 +1022,8 @@ controlRoom:
         untaken: Untaken
       fd:
         title: Flight Distance
+      satellite:
+        title: Satellite
     service:
       tapToFly:
         title: Tap-to-Fly

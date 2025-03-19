@@ -9,6 +9,7 @@ import FloatIconButton from '@/components/ui/button/FloatIconButton'
 import CustomCesiumGlobalTerrain from './components/CustomCesiumGlobalTerrain'
 import useMapSettingStore from '@/store/setting/useMapSetting.store'
 import IconLoading from '@/assets/icons/jsx/IconLoading'
+import BottomBar from './components/BottomBar'
 
 const ShanghaiBanRoutes = lazy(
   () => import('./components/custom/ShanghaiBanRoutes'),
@@ -76,7 +77,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
         {children}
       </Suspense>
       {useToolBar && (
-        <div className="absolute right-3 bottom-3 flex flex-col gap-3">
+        <div className="absolute right-3 bottom-8 flex flex-col gap-3">
           <FloatIconButton onClick={toggle}>
             {is2D ? '2D' : '3D'}
           </FloatIconButton>
@@ -86,6 +87,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
       <Suspense fallback={null}>
         {globalConfig.useShanghaiBanRoutes && <ShanghaiBanRoutes />}
       </Suspense>
+      <BottomBar />
     </Viewer>
   )
 })

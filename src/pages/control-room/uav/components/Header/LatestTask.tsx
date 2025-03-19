@@ -66,7 +66,7 @@ const LatestTask: FC<PropsType> = memo(({ deviceId }) => {
   }
 
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex gap-2 items-center whitespace-nowrap">
       <div className="flex gap-2 w-9">
         {operLoading ? (
           <LoadingOutlined />

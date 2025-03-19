@@ -994,9 +994,9 @@ controlRoom:
       title: 数据
     header:
       14g:
-        title: 1.4G信号强度
+        title: 1.4G
       sdr:
-        title: 无线电信号强度
+        title: 无线电
       signal:
         title: 信号强度
       hSpeed:
@@ -1010,6 +1010,8 @@ controlRoom:
         untaken: 未起飞
       fd:
         title: 飞行距离
+      satellite:
+        title: 搜星
     service:
       tapToFly:
         title: 指点飞行

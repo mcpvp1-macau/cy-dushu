@@ -49,6 +49,8 @@ const POISearch: FC<PropsType> = memo(() => {
     updateActivePOI(null)
   }
 
+  const location = useLocation()
+
   return (
     <div>
       <Select
@@ -56,7 +58,12 @@ const POISearch: FC<PropsType> = memo(() => {
         value={value}
         open={open}
         placeholder={t('poi_searcher.placeholder')}
-        style={{ width: 330 }}
+        className={clsx(
+          location.pathname.startsWith('/control-room')
+            ? 'w-[200px]'
+            : 'w-[330px]',
+        )}
+        // style={{ width: 330 }}
         defaultActiveFirstOption={false}
         suffixIcon={null}
         filterOption={false}

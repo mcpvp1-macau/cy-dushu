@@ -3,10 +3,15 @@ import React from 'react'
 type PropsType = {
   sn: string
   containerId?: string
+  onVideoInfo?: (videoInfo: {
+    bitrate: string
+    lostrate: string
+    videoRatio: number
+  }) => void
 }
 
 const DaoTongPlayer: React.FC<PropsType> = (props) => {
-  const { sn, containerId } = props
+  const { sn, containerId, onVideoInfo } = props
   const ref = useRef<HTMLVideoElement>(null)
   useEffect(() => {
     if (window.AutelMedia) {
@@ -44,13 +49,13 @@ const DaoTongPlayer: React.FC<PropsType> = (props) => {
         // 播放成功的回调
         onsuccess: () => {},
         // 播放信息回调 比特率/码率 bitrate  丢包数 lostrate
-        oninfo: ({
-          bitrate,
-          lostrate,
-        }: {
+        oninfo: (videoInfo: {
           bitrate: string
           lostrate: string
-        }) => {},
+          videoRatio: number
+        }) => {
+          onVideoInfo?.({ ...videoInfo })
+        },
         // 播放状态回调 status 链接状态 AConnectStatus    reason 原因
         onstatus: (status, reason: string) => {},
       })
@@ -64,7 +69,13 @@ const DaoTongPlayer: React.FC<PropsType> = (props) => {
     }
   }, [sn])
   return (
-    <video autoPlay muted id={containerId} ref={ref}>
+    <video
+      autoPlay
+      muted
+      id={containerId}
+      ref={ref}
+      className="size-full overflow-hidden relative"
+    >
       Your browser is too old which doesn't support HTML5 video.
     </video>
   )
