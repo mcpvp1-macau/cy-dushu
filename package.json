@@ -1,7 +1,7 @@
 {
   "name": "ja-dushu-front",
   "private": true,
-  "version": "v3.13.25.250318",
+  "version": "v3.13.25",
   "type": "module",
   "scripts": {
     "ts": "tsc --noEmit",
@@ -21,12 +21,14 @@
     "skip-check-build": "vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview --config ./vite-config/dev/config.82.ts",
-    "build:docker-amd": "docker build -f Dockerfile -t registry.jingan.com:32008/ja/$npm_package_name:$npm_package_version --platform=linux/amd64 .",
-    "build:docker-arm": "docker build -f Dockerfile-arm -t registry.jingan.com:32008/ja/$npm_package_name:$npm_package_version-arm --platform=linux/arm64 .",
-    "push:amd": "docker push registry.jingan.com:32008/ja/$npm_package_name:$npm_package_version",
-    "push:arm": "docker push registry.jingan.com:32008/ja/$npm_package_name:$npm_package_version-arm",
-    "build:docker-public": "docker build -f Dockerfile -t registry.cn-hangzhou.aliyuncs.com/jingansi/$npm_package_name:$npm_package_version --platform=linux/amd64 .",
-    "push:public": "docker push registry.cn-hangzhou.aliyuncs.com/jingansi/$npm_package_name:$npm_package_version"
+    "build:docker-amd": "docker build -f Dockerfile -t registry.jingan.com:32008/ja/$npm_package_name:$npm_package_version.$(date +'%y%m%d') --platform=linux/amd64 .",
+    "push:amd": "docker push registry.jingan.com:32008/ja/$npm_package_name:$npm_package_version.$(date +'%y%m%d')",
+    "build:docker-arm": "docker build -f Dockerfile-arm -t registry.jingan.com:32008/ja/$npm_package_name:$npm_package_version-arm.$(date +'%y%m%d') --platform=linux/arm64 .",
+    "push:arm": "docker push registry.jingan.com:32008/ja/$npm_package_name:$npm_package_version-arm.$(date +'%y%m%d')",
+    "build:docker-public": "docker build -f Dockerfile -t registry.cn-hangzhou.aliyuncs.com/jingansi/$npm_package_name:$npm_package_version.$(date +'%y%m%d') --platform=linux/amd64 .",
+    "push:public": "docker push registry.cn-hangzhou.aliyuncs.com/jingansi/$npm_package_name:$npm_package_version.$(date +'%y%m%d')",
+    "build:docker-public-arm": "docker build -f Dockerfile -t registry.cn-hangzhou.aliyuncs.com/jingansi/$npm_package_name:$npm_package_version-arm.$(date +'%y%m%d') --platform=linux/arm64 .",
+    "push:public-arm": "docker push registry.cn-hangzhou.aliyuncs.com/jingansi/$npm_package_name:$npm_package_version-arm.$(date +'%y%m%d')"
   },
   "dependencies": {
     "@ant-design/icons": "^5.4.0",
