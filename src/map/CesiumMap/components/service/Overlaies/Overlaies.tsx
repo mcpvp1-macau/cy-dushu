@@ -23,7 +23,6 @@ const LayerOverlaies: FC<PropsType> = memo(() => {
               const overlayPositions = shouldJson(overlay.overlayPositions)[0]
               const postion = overlayPositions.slice(0, 3)
               const radius = overlayPositions[3]
-              console.log(postion)
               const positions = JSON.stringify(
                 circle([postion[0], postion[1]], radius, { units: 'meters' })
                   .geometry.coordinates[0],
