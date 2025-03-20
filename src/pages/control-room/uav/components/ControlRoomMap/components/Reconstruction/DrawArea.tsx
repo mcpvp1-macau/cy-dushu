@@ -15,17 +15,23 @@ import {
   startReconstructionTask,
 } from '@/service/modules/reconstruction'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import { reconstructionMitt } from '@/store/map/useReconstructionMap.store'
 
 type FlyOptions = {
   flightAltitude: number
   overlapRate: number
   returnAltitude: number
-  taskCompletionAction: 'goBack' | 'hover'
+  taskCompletionAction: 'GO_HOME' | 'HOVER'
 }
 
 type PropsType = {
   setState: (
-    state: 'drawing' | 'setting' | 'error_max' | 'reconstructing',
+    state:
+      | 'drawing'
+      | 'setting'
+      | 'error_max'
+      | 'reconstructing'
+      | 'reconstruction_end',
   ) => void
   MAX_AREA: number
 }
@@ -33,11 +39,11 @@ type PropsType = {
 const DrawArea: FC<PropsType> = memo(({ setState, MAX_AREA }) => {
   const { viewer } = useCesium()
   const msgApi = useAppMsg()
+  const { t } = useTranslation()
 
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
 
-  /** 支点 */
-  const paths = useRef<Cesium.Cartesian3[]>([])
+  const circleCenter = useRef<Cesium.Cartesian3 | null>(null)
   const endPoint = useRef<Cesium.Cartesian3 | null>(null)
 
   const [open, { setTrue, setFalse }] = useBoolean(false)
@@ -74,21 +80,29 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_AREA }) => {
 
     // 左键 选点
     handlerRef.current.setInputAction((e) => {
+      if (circleCenter.current) {
+        return
+      }
+
       const ray = viewer.camera.getPickRay(e.position)
       if (!ray) return
       const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
       if (!cartesian) return
-      paths.current.push(cartesian)
+      circleCenter.current = cartesian
       if (endPoint.current && areaPrimitiveRef.current) {
         areaPrimitiveRef.current.positions = [
-          ...paths.current,
-          endPoint.current,
+          circleCenter.current,
+          endPoint.current || circleCenter.current,
         ]
       }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
     // 移动
     handlerRef.current.setInputAction((e) => {
+      if (!circleCenter.current) {
+        return
+      }
+
       const ray = viewer.camera.getPickRay(e.endPosition)
       if (!ray) return
       const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
@@ -96,7 +110,7 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_AREA }) => {
       endPoint.current = cartesian
       if (endPoint.current && areaPrimitiveRef.current) {
         areaPrimitiveRef.current.positions = [
-          ...paths.current,
+          circleCenter.current,
           endPoint.current,
         ]
       }
@@ -107,12 +121,10 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_AREA }) => {
       if (areaPrimitiveRef.current!.area > MAX_AREA) {
         msgApi.error('规划区域过大，请重新绘制')
         setState('drawing')
-        paths.current = []
+        circleCenter.current = null
         endPoint.current = null
         areaPrimitiveRef.current && (areaPrimitiveRef.current.positions = [])
-        return
-      }
-      if (paths.current.length >= 2) {
+      } else {
         setTrue()
         setState('setting')
       }
@@ -128,9 +140,6 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_AREA }) => {
   }, [viewer])
 
   const handleConfirm = async (flyOptions: FlyOptions) => {
-    if (paths.current.length < 2) {
-      return
-    }
     areaPrimitiveRef.current?.complete()
 
     const strokeColorHex = getHexWithAlpha(drawingColor, 1)
@@ -138,9 +147,16 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_AREA }) => {
     const fillColorHex = getHexWithAlpha(drawingColor, 0.5)
     const fillColorARGB = hexToARGB(fillColorHex)
 
+    const circleCarto = Cesium.Cartographic.fromCartesian(circleCenter.current!)
+    const x = Cesium.Math.toDegrees(circleCarto.longitude)
+    const y = Cesium.Math.toDegrees(circleCarto.latitude)
+    const circleCenterCoord = [x, y]
+
     const createLayerData = {
-      overlayType: 'POLYGON',
-      overlayPositions: JSON.stringify([...paths.current, endPoint.current]),
+      overlayType: 'CIRCULAR',
+      overlayPositions: JSON.stringify([
+        [...circleCenterCoord, 0, areaPrimitiveRef.current!.radius],
+      ]),
       overlayBindType: 'NORMAL',
       overlayStyleConfig: JSON.stringify({
         strokeColor: {
@@ -166,20 +182,11 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_AREA }) => {
         },
         remarks: '',
       }),
-      cotType: CotType.SHAPE_POLYGON,
+      cotType: CotType.SHAPE_CIRCLE,
     }
 
     try {
-      const data = await createLayer(createLayerData)
-      const overlayId = data.data.overlayId
-      // await startReconstructionTask({
-      //   overlayId,
-      //   deviceId,
-      //   ...flyOptions,
-      // })
-      msgApi.success(`开始重建，区域id为${overlayId}`)
-      setState('reconstructing')
-      quitRecontructionArea()
+      setFalse()
       if (handlerRef.current) {
         handlerRef.current.removeInputAction(
           Cesium.ScreenSpaceEventType.RIGHT_CLICK,
@@ -191,6 +198,23 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_AREA }) => {
           Cesium.ScreenSpaceEventType.LEFT_CLICK,
         )
       }
+
+      const data = await createLayer(createLayerData)
+      const overlayId = data.data.overlayId
+      await startReconstructionTask({
+        overlayId,
+        deviceId,
+        ...flyOptions,
+      })
+      setState('reconstructing')
+      quitRecontructionArea()
+      reconstructionMitt.on('reconstructionTaskEnd', (oid: number) => {
+        if (oid === overlayId) {
+          setState('reconstruction_end')
+          const areaLabel = areaPrimitiveRef.current?.getAreaLabel()
+          areaLabel!.text = t('mapLayer.reconstructionMap.task.completed')
+        }
+      })
     } catch (error) {
       setState('drawing')
     } finally {
@@ -203,7 +227,7 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_AREA }) => {
       open={open}
       onClose={() => {
         setFalse()
-        paths.current = []
+        circleCenter.current = null
         endPoint.current = null
         areaPrimitiveRef.current && (areaPrimitiveRef.current.positions = [])
         setState('drawing')

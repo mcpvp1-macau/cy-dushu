@@ -7,6 +7,13 @@ import {
   Quaternion as CesiumQuaternion,
   Math as CesiumMath,
   HeadingPitchRoll as CesiumHeadingPitchRoll,
+  GroundPrimitive,
+  GeometryInstance,
+  CircleGeometry,
+  Cartesian3,
+  MaterialAppearance,
+  Material,
+  Color,
 } from 'cesium'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
@@ -140,7 +147,38 @@ class CesiumThreeJS3DGS {
     gsViewer.layerAttr = layerAttr
     this.three.splatViewers.push(gsViewer)
 
+    // 为高斯图层添加一个覆盖物，这样点击地图就可以选中这片区域了
+    gsViewer.pickCircle = this.createPickCircle(layerAttr)
+    this.cesiumViewer.scene.primitives.add(gsViewer.pickCircle)
+
     return gsViewer
+  }
+
+  private createPickCircle(layerAttr: API_RECONSTRUCTION.Layer) {
+    const positions = JSON.parse(layerAttr.overlayPositions)[0]
+
+    const circleCenter = Cartesian3.fromDegrees(positions[0], positions[1])
+    const radius = positions[3]
+    console.log(layerAttr, circleCenter, radius)
+
+    const PickCircle = new GroundPrimitive({
+      geometryInstances: new GeometryInstance({
+        geometry: new CircleGeometry({
+          center: circleCenter,
+          radius,
+        }),
+      }),
+      appearance: new MaterialAppearance({
+        translucent: true,
+        material: Material.fromType(Material.ColorType, {
+          color: Color.TRANSPARENT,
+        }),
+      }),
+      asynchronous: false,
+    })
+    // @ts-ignore
+    PickCircle.id = 'reconstruction--' + layerAttr.overlayId
+    return PickCircle
   }
 
   async remove3dgsAll() {
@@ -297,12 +335,16 @@ class CesiumThreeJS3DGS {
 
     this.three.splatViewers.forEach((splatViewer) => {
       // 图层和所在图层组没被隐藏再渲染
+      const polygon = splatViewer.pickCircle as GroundPrimitive
       if (
         !this.hiddenlayerIds.has(splatViewer.layerAttr.overlayId) &&
         !this.hiddenGroupIds.has(splatViewer.layerAttr.layerId)
       ) {
         splatViewer.update()
         splatViewer.render()
+        polygon.show = true
+      } else {
+        polygon.show = false
       }
     })
   }

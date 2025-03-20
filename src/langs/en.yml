@@ -976,6 +976,7 @@ mapLayer:
   reconstructionMap:
     create:
       tooltip: Create a 3D map group
+      success: 3D reconstruction completed
       layer:
         title: Create a 3D layer
       form:
@@ -986,6 +987,8 @@ mapLayer:
         title: Edit 3D layer name
       form:
         layerName: Name of the 3D layer
+    task:
+      completed: 3D reconstruction completed
 message:
   success:
     saveMapView: Map view saved successfully

@@ -959,6 +959,7 @@ mapLayer:
   reconstructionMap:
     create:
       tooltip: 创建三维图组
+      success: 三维重建完成
       layer:
         title: 创建三维图层
       form:
@@ -969,6 +970,8 @@ mapLayer:
         title: 修改三维图层名称
       form:
         layerName: 三维图层名称
+    task:
+      completed: 3D reconstruction completed
 message:
   success:
     saveMapView: 地图视角保存成功

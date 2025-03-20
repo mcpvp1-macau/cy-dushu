@@ -1,5 +1,10 @@
 type PropsType = {
-  state: 'drawing' | 'setting' | 'error_max' | 'reconstructing'
+  state:
+    | 'drawing'
+    | 'setting'
+    | 'error_max'
+    | 'reconstructing'
+    | 'reconstruction_end'
   MAX_AREA: number
 }
 const MapInfo: FC<PropsType> = memo(({ state, MAX_AREA }) => {

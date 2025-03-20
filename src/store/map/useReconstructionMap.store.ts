@@ -1,5 +1,9 @@
 import { create } from 'zustand'
 import { createJSONStorage, devtools, persist } from 'zustand/middleware'
+import { getLayerList } from '@/service/modules/reconstruction'
+import mitt, { type Emitter, EventType } from 'mitt'
+
+export const reconstructionMitt: Emitter<Record<EventType, number>> = mitt()
 
 type StateType = {
   layerGroupList: API_RECONSTRUCTION.LayerGroup[]
@@ -9,11 +13,12 @@ type StateType = {
 type ActionsType = {
   updateLayerGroupList: (data: StateType['layerGroupList']) => void
   updateLayerList: (data: StateType['layerList']) => void
+  requestAndUpdateLayerList: () => void
 }
 
 const useReconstructionMapStore = create<StateType & ActionsType>()(
   devtools(
-    (set) => ({
+    (set, get) => ({
       layerGroupList: [],
       layerList: [],
       updateLayerGroupList: (data) => {
@@ -21,6 +26,13 @@ const useReconstructionMapStore = create<StateType & ActionsType>()(
       },
       updateLayerList: (data) => {
         set({ layerList: data }, false, 'updateLayerList')
+      },
+      requestAndUpdateLayerList: () => {
+        getLayerList({
+          layerIds: get().layerGroupList.map((group) => group.id),
+        }).then((data) => {
+          set({ layerList: data.data }, false, 'updateLayerList')
+        })
       },
     }),
     {

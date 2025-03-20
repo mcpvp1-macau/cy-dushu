@@ -65,9 +65,8 @@ declare namespace API_RECONSTRUCTION {
       deviceId: string
       //飞行参数
       flightAltitude: number //飞行高度
-      overlapRate: number //重叠率
       returnAltitude: number //返航高度
-      taskCompletionAction: 'goBack' | 'hover' //任务完成动作 返航：goBack 悬停：hover
+      taskCompletionAction: 'GO_HOME' | 'HOVER' //任务完成动作 返航：GO_HONE 悬停：HOVER
     }
   }
 

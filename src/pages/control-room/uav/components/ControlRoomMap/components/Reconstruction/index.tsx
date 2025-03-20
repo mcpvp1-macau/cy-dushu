@@ -11,7 +11,11 @@ const UavReconstruction: FC<PropsType> = memo(() => {
     (s) => s.enableReconstruction,
   )
   const [state, setState] = useState<
-    'drawing' | 'setting' | 'error_max' | 'reconstructing'
+    | 'drawing'
+    | 'setting'
+    | 'error_max'
+    | 'reconstructing'
+    | 'reconstruction_end'
   >('drawing')
 
   return (

@@ -10,6 +10,9 @@ const RightAddPoint = lazy(() => import('./right-tools/AddPoint'))
 const RightAddGeometry = lazy(() => import('./right-tools/AddGeometry'))
 const RightEventDetail = lazy(() => import('./EventDetail'))
 const TargetDetail = lazy(() => import('./TargetDetail'))
+const ReconstructionDetail = lazy(
+  () => import('./right-tools/ReconstructionDetail'),
+)
 
 const route = {
   [RightModeEnum.DEVICE]: RightDeviceDetail,
@@ -19,6 +22,7 @@ const route = {
   [RightModeEnum.RANGING]: RightRangingPanel,
   [RightModeEnum.EVENT_DETAIL]: RightEventDetail,
   [RightModeEnum.RADAR_TARGET]: TargetDetail,
+  [RightModeEnum.RECONSTRUCTION_DETAIL]: ReconstructionDetail,
 }
 
 type PropsType = unknown

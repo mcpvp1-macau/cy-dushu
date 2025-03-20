@@ -52,5 +52,5 @@ export const startReconstructionTask = (
 ) => {
   return serverJingqi.post<{
     taskId: number
-  }>('/reconstruction/start', data)
+  }>('/reconstruction/task/start', data)
 }

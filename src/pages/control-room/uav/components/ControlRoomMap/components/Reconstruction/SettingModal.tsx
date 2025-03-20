@@ -31,23 +31,6 @@ const ReconstructionSettingModal: FC<PropsType> = (props) => {
         },
         {
           label: t(
-            'controlRoom.uav.service.reconstruction.setting.overlapRate',
-          ),
-          name: 'overlapRate',
-          type: 'input-number',
-          otherProps: {
-            suffix: '%',
-            min: 0,
-            max: 90,
-          },
-          rules: [
-            {
-              required: true,
-            },
-          ],
-        },
-        {
-          label: t(
             'controlRoom.uav.service.reconstruction.setting.returnAltitude',
           ),
           name: 'returnAltitude',
@@ -70,8 +53,8 @@ const ReconstructionSettingModal: FC<PropsType> = (props) => {
           name: 'taskCompletionAction',
           type: 'select',
           options: [
-            { value: 'goBack', label: '返航' },
-            { value: 'hover', label: '悬停' },
+            { value: 'GO_HOME', label: '返航' },
+            { value: 'HOVER', label: '悬停' },
           ],
           rules: [
             {
@@ -90,9 +73,8 @@ const ReconstructionSettingModal: FC<PropsType> = (props) => {
       initialValues={
         {
           flightAltitude: 200,
-          overlapRate: 60,
           returnAltitude: 200,
-          taskCompletionAction: 'goBack',
+          taskCompletionAction: 'GO_HOME',
         } as any
       }
       items={items}
