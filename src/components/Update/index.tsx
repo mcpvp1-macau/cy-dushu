@@ -67,9 +67,12 @@ const Update: React.FC = () => {
     if (localVersion !== version) setTrue()
   })
 
-  if (!globalConfig?.version) {
+  const location = useLocation()
+
+  if (!globalConfig?.version || location.pathname.includes('/share')) {
     return null
   }
+
   return (
     <div className={styles.wrapper}>
       <Modal
