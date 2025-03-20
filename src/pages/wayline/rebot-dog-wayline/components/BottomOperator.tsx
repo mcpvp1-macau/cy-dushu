@@ -28,6 +28,7 @@ const BottomOperator: FC<PropsType> = memo(({ disabled }) => {
     const taskBasic = {
       ...waylineConfig,
       waylineType: 'fixed_point_cruise',
+      finishAction: 'NO_ACTION',
     }
 
     const data: Record<string, any> = {

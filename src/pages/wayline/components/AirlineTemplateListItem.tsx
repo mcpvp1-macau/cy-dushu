@@ -1,11 +1,15 @@
 import IconEdit2 from '@/assets/icons/jsx/IconEdit2'
 import IconMore from '@/assets/icons/jsx/IconMore'
+import IconRebotDogWayline from '@/assets/icons/jsx/IconRebotDogWayline'
+import IconSwarm from '@/assets/icons/jsx/IconSwarm'
 import IconWaylineAirpoint from '@/assets/icons/jsx/IconWaylineAirpoint'
 import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
 import IconButton from '@/components/ui/button/IconButton'
 import { delAirlineTempalte } from '@/service/modules/airline'
 import { downloadAndRename } from '@/utils/download'
+import { QuestionCircleFilled } from '@ant-design/icons'
 import { Dropdown, Popconfirm } from 'antd'
+import { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 
 type PropsType = {
@@ -24,18 +28,12 @@ const AirlineTemplateListItem: FC<PropsType> = memo(({ data }) => {
   return (
     <li className="card-border text-sm p-2 bg-[#1C2630]">
       <div className="flex gap-2">
-        {data.taskType === 'waypoint' ? (
-          <IconWaylineAirpoint />
-        ) : (
-          <MenuIconAirline />
-        )}
+        <WaylineIcon type={data.taskType} />
         <div className="grow">
           <p className="max-w-60 truncate text-white">{data.taskName}</p>
         </div>
         <Link
-          to={`/wayline/${
-            data.taskType === 'area_waypoint' ? 'area-wayline-edit' : 'edit'
-          }/${data.waylineTemplateId}`}
+          to={`${getWaylineEditURL(data.taskType)}/${data.waylineTemplateId}`}
         >
           <IconButton className="text-xs">
             <IconEdit2 />
@@ -86,3 +84,27 @@ const AirlineTemplateListItem: FC<PropsType> = memo(({ data }) => {
 AirlineTemplateListItem.displayName = 'AirlineTemplateListItem'
 
 export default AirlineTemplateListItem
+
+export const WaylineIcon: FC<{ type: string }> = ({ type }) => {
+  return (
+    (
+      {
+        waypoint: <IconWaylineAirpoint />,
+        fixed_point_cruise: <IconRebotDogWayline />,
+        area_waypoint: <MenuIconAirline />,
+        swarm_wayline: <IconSwarm />,
+      } as Record<string, ReactNode>
+    )[type] || <QuestionCircleFilled />
+  )
+}
+
+export const getWaylineEditURL = (type: string) => {
+  return (
+    {
+      waypoint: '/wayline/waypoint-edit',
+      fixed_point_cruise: '/wayline/rebot-dog-wayline-edit',
+      area_waypoint: '/wayline/area-wayline-edit',
+      swarm_wayline: '/wayline/swarm-wayline-edit',
+    }[type] || '/404'
+  )
+}

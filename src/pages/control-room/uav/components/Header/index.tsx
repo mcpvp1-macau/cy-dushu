@@ -14,6 +14,7 @@ import LatestTask from './LatestTask'
 import { useTitle } from 'ahooks'
 import { lazy } from 'react'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
+import { createPortal } from 'react-dom'
 
 const DeviceLinkSwitch = lazy(
   () => import('@/components/device/DeviceLinkSwitch'),
@@ -230,9 +231,9 @@ const ControlRoomUavHeader: FC = memo(() => {
   const appHeader = document.getElementById('app-header-center')
 
   const h = (
-    <header className="h-[38px] flex justify-between items-center text-sm">
+    <header className="flex justify-between items-center text-sm px-3">
       {appHeader ? <HeaderLeft /> : <div />}
-      <ScrollArea className="w-full h-[38px] flex items-center ml-3">
+      <ScrollArea className="w-full h-full flex items-center ml-3">
         <div className="flex items-center gap-3">
           <section className="grow">
             <ul className="flex justify-center gap-1 xl:gap-3 2xl:gap-5 whitespace-nowrap">
@@ -263,9 +264,9 @@ const ControlRoomUavHeader: FC = memo(() => {
     </header>
   )
 
-  // if (appHeader) {
-  //   return createPortal(h, appHeader)
-  // }
+  if (appHeader) {
+    return createPortal(h, appHeader)
+  }
 
   return <div className="bg-ground-3 mx-2 rounded mt-2">{h}</div>
 })

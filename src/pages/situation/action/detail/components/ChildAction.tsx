@@ -1,6 +1,10 @@
 import IconTask from '@/assets/icons/jsx/IconTask'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import {
+  getWaylineEditURL,
+  WaylineIcon,
+} from '@/pages/wayline/components/AirlineTemplateListItem'
+import {
   endActionItem,
   pauseActionItem,
   startActionItem,
@@ -68,33 +72,31 @@ const OperatorBtns: FC<PropsType> = ({ data }) => {
   }
   switch (data.status) {
     case 'PENDING':
+      const info = shouldJson(data.taskTemplateInfo)
+      let params = `?actionId=${data.actionId}&actionItemId=${data.id}&name=${
+        data.actionItemName ?? ''
+      }`
+      if (info) {
+        if (!isNil(info.parameters)) {
+          params += `&parameters=${JSON.stringify(info.parameters)}`
+        }
+        if (!isNil(info.taskBasic)) {
+          params += `&taskBasic=${info.taskBasic}`
+        }
+        if (!isNil(info.camera)) {
+          params += `&camera=${JSON.stringify(info.camera)}`
+        }
+      }
+      const type = shouldJson(info.taskBasic)?.waylineType
+
       return (
         <div className="flex gap-2">
           <Button
             size="small"
             disabled={isNil(data.taskTplId)}
+            icon={!isNil(data.taskTplId) && <WaylineIcon type={type} />}
             onClick={() => {
-              const info = shouldJson(data.taskTemplateInfo)
-              let params = `?actionId=${data.actionId}&actionItemId=${
-                data.id
-              }&name=${data.actionItemName ?? ''}`
-              if (info) {
-                if (!isNil(info.parameters)) {
-                  params += `&parameters=${JSON.stringify(info.parameters)}`
-                }
-                if (!isNil(info.taskBasic)) {
-                  params += `&taskBasic=${info.taskBasic}`
-                }
-                if (!isNil(info.camera)) {
-                  params += `&camera=${JSON.stringify(info.camera)}`
-                }
-              }
-              const t = shouldJson(info.taskBasic).waylineType
-              navigate(
-                `/wayline/${
-                  t === 'area_waypoint' ? 'area-wayline-edit' : 'edit'
-                }/${data.taskTplId}${params}`,
-              )
+              navigate(`${getWaylineEditURL(type)}/${data.taskTplId}${params}`)
             }}
           >
             {t('action.detail.task.edit.title')}
