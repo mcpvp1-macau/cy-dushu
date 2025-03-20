@@ -125,7 +125,7 @@ export const getCitySituationUavDetail = (data: {
   startTime?: string
   endTime?: string
 }) => {
-  return serverDBAPI.post<API_DBAPI.res.GetCitySituationUavDetail>(
+  return serverCityDBAPI.post<API_DBAPI.res.GetCitySituationUavDetail>(
     'api/citySituationUavDetail',
     data,
   )
