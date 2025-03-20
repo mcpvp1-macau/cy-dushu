@@ -1,3 +1,4 @@
+import serverCityDBAPI from '@/service/servers/serverCityDBAPI'
 import serverDBAPI from '@/service/servers/serverDBAPI'
 import { AxiosRequestConfig } from 'axios'
 
@@ -112,7 +113,7 @@ export const getCitySituationUavTrack = (data: {
   startTime: string
   endTime: string
 }) => {
-  return serverDBAPI.post<API_DBAPI.res.getCitySituationUavTrack>(
+  return serverCityDBAPI.post<API_DBAPI.res.getCitySituationUavTrack>(
     'api/citySituationUavTrack',
     data,
   )
