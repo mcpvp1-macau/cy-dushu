@@ -20,6 +20,10 @@ import { XFormItem } from '@/components/XForm/types'
 import useDeviceWsURL from '@/hooks/device/useDeviceWsURL'
 import { BaseDeviceDetailProps } from '../routes'
 import XModal from '@/components/XModal'
+import useIsRightDetail from '../hooks/useIsRightDetail'
+import { createPortal } from 'react-dom'
+import IconButton from '@/components/ui/button/IconButton'
+import IconClose from '@/assets/icons/jsx/IconClose'
 
 type PropsType = BaseDeviceDetailProps
 
@@ -160,8 +164,26 @@ const UavAirportDetail: FC<PropsType> = memo(
       setTakeoffFalse()
     }
 
+    const isRightDetail = useIsRightDetail()
+
+    const debugHeader = (
+      <div className="flex items-center gap-2">
+        {t('device.uavDock.remoteDebug.title')}
+        <Switch
+          size="small"
+          disabled={[1, 3, 4].includes(state['modeCode'])}
+          value={state['modeCode'] === 2}
+          onClick={() => {
+            postDeviceService('debugMode', {
+              action: state['modeCode'] === 0 ? 0 : 1,
+            })
+          }}
+        />
+      </div>
+    )
+
     return (
-      <div className="grow overflow-y-hidden flex flex-col backdrop-blur-sm">
+      <div className="grow overflow-y-hidden flex flex-col">
         <CloseableHeader
           onClose={onClose}
           rightTools={headerTools}
@@ -227,43 +249,46 @@ const UavAirportDetail: FC<PropsType> = memo(
             )}
           </ScrollArea>
         </div>
-        <XModal
-          mask={false}
-          title={
-            <>
-              {t('device.uavDock.remoteDebug.title')}
-              <Switch
-                size="small"
-                disabled={[1, 3, 4].includes(state['modeCode'])}
-                value={state['modeCode'] === 2}
-                onClick={() => {
-                  postDeviceService('debugMode', {
-                    action: state['modeCode'] === 0 ? 0 : 1,
-                  })
-                }}
+        {openDebug &&
+          (isRightDetail ? (
+            createPortal(
+              <div className="fixed right-[406px] top-[50px] z-20 text-fore flex flex-col rounded-sm overflow-hidden">
+                <div className="h-8 px-2 bg-ground-3 border-b border-solid border-ground-5 flex items-center justify-between text-sm">
+                  {debugHeader}
+                  <IconButton
+                    className="text-xl"
+                    onClick={() => setOpenDebug(false)}
+                  >
+                    <IconClose />
+                  </IconButton>
+                </div>
+                <RemoteDebug
+                  data={data}
+                  state={state}
+                  progress={progressState}
+                  onClose={() => setOpenDebug(false)}
+                />
+              </div>,
+              document.body,
+            )
+          ) : (
+            <XModal
+              mask={false}
+              title={debugHeader}
+              open={openDebug}
+              onClose={() => setOpenDebug(false)}
+              footer={false}
+              width={400}
+              noPadding
+            >
+              <RemoteDebug
+                data={data}
+                state={state}
+                progress={progressState}
+                onClose={() => setOpenDebug(false)}
               />
-            </>
-          }
-          open={openDebug}
-          onClose={() => setOpenDebug(false)}
-          footer={false}
-          width={400}
-          noPadding
-        >
-          <RemoteDebug
-            data={data}
-            state={state}
-            progress={progressState}
-            onClose={() => setOpenDebug(false)}
-            // className="-translate-x-full"
-            // style={{
-            //   position: 'fixed',
-            //   top: 0,
-            //   left: 0,
-            //   zIndex: 10000,
-            // }}
-          />
-        </XModal>
+            </XModal>
+          ))}
         {takeOffOpen && (
           <FormModal
             initialValues={{

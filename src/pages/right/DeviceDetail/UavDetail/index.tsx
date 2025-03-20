@@ -59,7 +59,7 @@ const UavDetail: FC<PropsType> = memo(
 
     return (
       <UavControlRoomStoreContext.Provider value={store}>
-        <div className="overflow-y-hidden flex flex-col backdrop-blur-sm">
+        <div className="overflow-y-hidden flex flex-col">
           <CloseableHeader
             onClose={onClose}
             rightTools={headerTools}

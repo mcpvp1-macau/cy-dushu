@@ -11,6 +11,7 @@ import {
   RebotDogControlRoomStoreContext,
   useCreateRebotDogControlRoomStore,
 } from '@/store/context-store/useRebotDogControlRoom.store'
+import { DeviceEnum } from '@/enum/device'
 
 const RobotDogDetail: FC<BaseDeviceDetailProps> = memo(
   ({ data, headerTools, headerProps, onClose }) => {
@@ -24,14 +25,17 @@ const RobotDogDetail: FC<BaseDeviceDetailProps> = memo(
 
     return (
       <RebotDogControlRoomStoreContext.Provider value={controlRoomStore}>
-        <div className="overflow-y-hidden flex flex-col backdrop-blur-sm">
+        <div className="overflow-y-hidden flex flex-col">
           <CloseableHeader
             onClose={onClose}
             rightTools={headerTools}
             {...headerProps}
           >
             <div className="flex gap-2 items-center">
-              <DeviceIcon type="ROBOT_DOG" className="device-detail-icon" />
+              <DeviceIcon
+                type={DeviceEnum.ROBOT_DOG}
+                className="device-detail-icon"
+              />
               <h6 className="text-white text-base">{data.deviceName}</h6>
             </div>
           </CloseableHeader>

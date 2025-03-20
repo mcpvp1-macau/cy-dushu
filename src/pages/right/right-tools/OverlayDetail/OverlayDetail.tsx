@@ -40,7 +40,7 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
   const inputRef = useRef<ComponentRef<typeof Input>>(null)
 
   return (
-    <div className="w-[350px] backdrop-blur">
+    <div className="w-[350px]">
       <Form form={form}>
         <CloseableHeader>
           <div className="flex justify-between">

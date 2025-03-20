@@ -44,7 +44,7 @@ const OthersDetail: FC<PropsType> = memo(
 
     return (
       <OthersControlRoomStoreContext.Provider value={store}>
-        <div className="overflow-y-hidden flex flex-col backdrop-blur-sm">
+        <div className="overflow-y-hidden flex flex-col">
           <CloseableHeader
             onClose={onClose}
             rightTools={headerTools}

@@ -27,7 +27,7 @@ const BottomOperator: FC<PropsType> = memo(({ disabled }) => {
 
     const taskBasic = {
       ...waylineConfig,
-      waylineType: 'rebot_dog_wayline',
+      waylineType: 'fixed_point_cruise',
     }
 
     const data: Record<string, any> = {
