@@ -803,6 +803,8 @@ wayline:
     msg: 航点间距离超过 {{meters}} 米
   defaultTaskName:
     title: 航线任务
+  action:
+    noSupportEdit: 暂不支持编辑该动作
 schedue:
   list:
     title: 计划库

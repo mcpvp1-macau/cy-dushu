@@ -1,6 +1,5 @@
 import { Button, Popconfirm } from 'antd'
 import Actions from './Actions'
-// import ActionConfig from './Actions/ActionConfig'
 import AppEmpty from '@/components/AppEmpty'
 import { useMemoizedFn } from 'ahooks'
 import XCard from '@/components/ui/XCard'
@@ -8,9 +7,10 @@ import IconButton from '@/components/ui/button/IconButton'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconLeft from '@/assets/icons/jsx/IconLeft'
 import IconRight from '@/assets/icons/jsx/IconRight'
-// import AirpointAddAction from './Actions/AddAction'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import useRebotDogWaylineStore from '@/store/wayline/rebot-dog-wayline/useRebotDogWayline.store'
+import AddAction from './Actions/AddAction'
+import ActionConfig from './Actions/ActionConfig'
 
 type PropsType = unknown
 
@@ -116,10 +116,10 @@ const AirpointConfig: FC<PropsType> = () => {
                 </div>
                 <ScrollBar orientation="horizontal" />
               </ScrollArea>
-              {/* <AirpointAddAction setActiveOperator={setActiveAction} /> */}
+              <AddAction setActiveOperator={setActiveAction} />
             </div>
             <div className="h-[1px] bg-ground-5 rounded" />
-            {/* <ActionConfig activeOperator={activeAction} /> */}
+            <ActionConfig activeOperator={activeAction} />
           </>
         )}
       </XCard>

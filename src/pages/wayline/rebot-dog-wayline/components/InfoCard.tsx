@@ -40,7 +40,7 @@ const RebotDogInfoCard: FC<PropsType> = memo(() => {
         })
         return prev
       }, 0),
-    waypointsConfig,
+    [waypointsConfig],
   )
 
   /** 飞行时间 */
@@ -61,22 +61,17 @@ const RebotDogInfoCard: FC<PropsType> = memo(() => {
 
   return (
     <ul className="card-border flex p-3 px-1 text-xs text-center bg-[#1c2630] divide-x divide-ground-5">
-      <li className="grow">
-        <p>{t('wayline.info.length.title')}</p>
-        <p className="mt-1 text-white text-sm">{distanceFmt}</p>
-      </li>
-      <li className="grow">
-        <p>{t('wayline.info.time.title')}</p>
-        <p className="mt-1 text-white text-sm">{flyTimeFmt}</p>
-      </li>
-      <li className="grow">
-        <p>{t('wayline.info.pointCnt.title')}</p>
-        <p className="mt-1 text-white text-sm">{waypointsConfig.length}</p>
-      </li>
-      <li className="grow">
-        <p>{t('wayline.info.photoCnt.title')}</p>
-        <p className="mt-1 text-white text-sm">{totalPhotos}</p>
-      </li>
+      {[
+        ['length', distanceFmt],
+        ['time', flyTimeFmt],
+        ['pointCnt', waypointsConfig.length],
+        ['photoCnt', totalPhotos],
+      ].map(([key, value]) => (
+        <li key={key} className="grow">
+          <p>{t(`wayline.info.${key}.title`)}</p>
+          <p className="mt-1 text-white text-sm">{value}</p>
+        </li>
+      ))}
     </ul>
   )
 })

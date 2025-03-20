@@ -1,11 +1,4 @@
-import { InputNumber, Select } from 'antd'
-import styles from './index.module.less'
-import KSLX from '../../icons/KSLX'
-import TZLX from '../../icons/TZLX'
-import KSDSJGPZ from '../../icons/KSDSJGPZ'
-import HNumber from '../../../HNumber'
-import KSDJJGPZ from '../../icons/KSDJJGPZ'
-import JSJGPZ from '../../icons/JSJGPZ'
+import { InputNumber } from 'antd'
 import HoverTime from './HoverTime'
 import AircraftHeading from './AircraftHeading'
 import CameraPositionX from './CameraPositionX'
@@ -18,6 +11,7 @@ import CloseAI from './AlgorithmAction/CloseAI'
 import LenChange from './LenChange'
 import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import { useCurrentAirpoint } from '@/store/wayline/uav-airline/select'
+import AppEmpty from '@/components/AppEmpty'
 
 interface Props {
   activeOperator: string
@@ -73,6 +67,9 @@ const ActionConfig: React.FC<Props> = (props) => {
   }
 
   const getActionComponent = () => {
+    if (!action) {
+      return <AppEmpty className="m-0 mt-3" />
+    }
     if (action?.type === 'HOVER') {
       return (
         <HoverTime
@@ -144,96 +141,21 @@ const ActionConfig: React.FC<Props> = (props) => {
     if (action?.type === 'CLOSE_AI') {
       return <CloseAI config={action.config ?? {}} onChange={onChange} />
     }
-    if (action?.type === 'UNKNOWN') {
-      return <div className="text-center mt-2">暂不支持编辑该动作</div>
-    }
+    return (
+      <AppEmpty
+        className="m-0 mt-3"
+        description={t('wayline.action.noSupportEdit')}
+      />
+    )
   }
 
   return (
     <>
       {getActionComponent()}
-      {
-        {
-          开始录像: (
-            <div>
-              <div className={styles.subTitle}>
-                <KSLX />
-                <span className={styles.text}>开始录像</span>
-              </div>
-              <Select style={{ width: '100%' }} options={[]} />
-            </div>
-          ),
-          停止录像: (
-            <div>
-              <div className={styles.subTitle}>
-                <TZLX />
-                <span className={styles.text}>停止录像</span>
-              </div>
-              <Select style={{ width: '100%' }} options={[]} />
-            </div>
-          ),
-          开始等时间隔拍照: (
-            <div>
-              <div className={styles.subTitle}>
-                <KSDSJGPZ />
-                <span className={styles.text}>开始等时间隔拍照</span>
-              </div>
-              <HNumber
-                value={10}
-                unit="s"
-                negatives={[-10, -1]}
-                positives={[1, 10]}
-              />
-            </div>
-          ),
-          开始等距间隔拍照: (
-            <div>
-              <div className={styles.subTitle}>
-                <KSDJJGPZ />
-                <span className={styles.text}>开始等距间隔拍照</span>
-              </div>
-              <HNumber
-                value={10}
-                unit="m"
-                negatives={[-10, -1]}
-                positives={[1, 10]}
-              />
-            </div>
-          ),
-          结束间隔拍照: (
-            <div>
-              <div className={styles.subTitle}>
-                <JSJGPZ />
-                <span className={styles.text}>结束间隔拍照</span>
-              </div>
-              <HNumber
-                value={10}
-                unit="m"
-                negatives={[-10, -1]}
-                positives={[1, 10]}
-              />
-            </div>
-          ),
-        }['sb' as string]
-      }
 
-      <div
-        style={{
-          borderTop: '1px solid #37414d',
-          width: '100%',
-          height: 1,
-          marginTop: 12,
-        }}
-      ></div>
+      <div className="h-[1px] my-3 bg-ground-5"></div>
       <div>
-        <div className={styles.titleHeader}>
-          <div className={styles.subTitle}>
-            <span className={styles.text}>{t('common.height')} (m)</span>
-          </div>
-          <div>
-            <span className={styles.important}></span>
-          </div>
-        </div>
+        <div className="my-2">{t('common.height')} (m)</div>
         <InputNumber
           value={Number(currentAirpoint?.pointZ.toFixed(2) ?? 0)}
           className="w-full"
@@ -243,14 +165,7 @@ const ActionConfig: React.FC<Props> = (props) => {
         />
       </div>
       <div>
-        <div className={styles.titleHeader}>
-          <div className={styles.subTitle}>
-            <span className={styles.text}>{t('common.longitude')}</span>
-          </div>
-          <div>
-            <span className={styles.important}></span>
-          </div>
-        </div>
+        <div className="my-2">{t('common.longitude')}</div>
         <InputNumber
           value={Number(currentAirpoint?.pointX.toFixed(6) ?? 0)}
           className="w-full"
@@ -260,14 +175,7 @@ const ActionConfig: React.FC<Props> = (props) => {
         />
       </div>
       <div>
-        <div className={styles.titleHeader}>
-          <div className={styles.subTitle}>
-            <span className={styles.text}>{t('common.latitude')}</span>
-          </div>
-          <div>
-            <span className={styles.important}></span>
-          </div>
-        </div>
+        <div className="my-2">{t('common.latitude')}</div>
         <InputNumber
           value={Number(currentAirpoint?.pointY.toFixed(6) ?? 0)}
           className="w-full"

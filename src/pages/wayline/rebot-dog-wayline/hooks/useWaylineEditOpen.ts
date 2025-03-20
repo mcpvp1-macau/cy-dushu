@@ -2,12 +2,13 @@ import useRebotDogWaylineStore from '@/store/wayline/rebot-dog-wayline/useRebotD
 
 const useWaylineEditOpen = () => {
   const updateOpen = useRebotDogWaylineStore((s) => s.updateOpen)
+  const reset = useRebotDogWaylineStore((s) => s.resetState)
 
   useEffect(() => {
     updateOpen(true)
 
     return () => {
-      updateOpen(false)
+      reset()
     }
   }, [updateOpen])
 }

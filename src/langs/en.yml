@@ -813,6 +813,8 @@ wayline:
     msg: The distance between waypoints exceeds {{meters}} meters
   defaultTaskName:
     title: Wayline Task
+  action:
+    noSupportEdit: Editing this action is not currently supported
 schedue:
   list:
     title: Schedule List

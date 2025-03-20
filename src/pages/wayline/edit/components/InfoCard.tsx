@@ -46,7 +46,7 @@ const AirlineInfoCard: FC<PropsType> = memo(() => {
         })
         return prev
       }, 0),
-    airpointsConfig,
+    [airpointsConfig],
   )
 
   /** 飞行时间 */

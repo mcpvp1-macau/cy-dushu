@@ -1,15 +1,14 @@
 import WaylineConfig from './components/WaylineConfig'
 import WaypointConfig from './components/WaypointConfig'
-// import NotTakeoffWarning from './components/NotTakeoffWarning'
-// import DistanceWarning from './components/DistanceWarning'
 import CollapsedPage from '@/components/CollapsedPage'
 import { ScrollArea } from '@/components/ui/scroll-area'
-// import BottomOperator from './components/ButtonOperator'
 import { Spin } from 'antd'
 import Navbar from './components/Navibar'
 import RebotDogInfoCard from './components/InfoCard'
 import Header from './components/Header'
 import useWaylineEditOpen from './hooks/useWaylineEditOpen'
+import useWaylineInit from './hooks/useWaylineInit'
+import BottomOperator from './components/BottomOperator'
 
 type PropsType = {
   pilot?: ReactNode
@@ -20,6 +19,7 @@ const RebotDogWaylineConfig: FC<PropsType> = memo(() => {
   const [activeNav, setActiveNav] = useState<number>(0)
 
   useWaylineEditOpen()
+  const { isLoading } = useWaylineInit()
 
   return (
     <>
@@ -39,12 +39,10 @@ const RebotDogWaylineConfig: FC<PropsType> = memo(() => {
                 }
               </Spin>
             </ScrollArea>
-            {/* <BottomOperator disabled={isLoading} /> */}
+            <BottomOperator disabled={isLoading} />
           </div>
         </div>
       </CollapsedPage>
-      {/* <DistanceWarning />
-      <NotTakeoffWarning /> */}
     </>
   )
 })
