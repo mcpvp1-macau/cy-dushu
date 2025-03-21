@@ -101,7 +101,7 @@ export const WaylineIcon: FC<{ type: string }> = ({ type }) => {
 export const getWaylineEditURL = (type: string) => {
   return (
     {
-      waypoint: '/wayline/waypoint-edit',
+      waypoint: '/wayline/edit',
       fixed_point_cruise: '/wayline/rebot-dog-wayline-edit',
       area_waypoint: '/wayline/area-wayline-edit',
       swarm_wayline: '/wayline/swarm-wayline-edit',

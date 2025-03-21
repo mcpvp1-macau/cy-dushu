@@ -1,4 +1,7 @@
+import IconDetail from '@/assets/icons/jsx/IconDetail'
 import IconTask from '@/assets/icons/jsx/IconTask'
+import IconButton from '@/components/ui/button/IconButton'
+import { RightModeEnum } from '@/enum/right-mode'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import {
   getWaylineEditURL,
@@ -9,6 +12,7 @@ import {
   pauseActionItem,
   startActionItem,
 } from '@/service/modules/action-item'
+import useRightMode from '@/store/layout/useRightMode.store'
 import { shouldJson } from '@/utils/json'
 import { LoadingOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
@@ -87,7 +91,7 @@ const OperatorBtns: FC<PropsType> = ({ data }) => {
           params += `&camera=${JSON.stringify(info.camera)}`
         }
       }
-      const type = shouldJson(info.taskBasic)?.waylineType
+      const type = shouldJson(info.taskBasic)?.waylineType ?? 'waypoint'
 
       return (
         <div className="flex gap-2">
@@ -144,10 +148,15 @@ const ChildAction: FC<PropsType> = memo(({ data }) => {
     }
   }
 
+  const handleDetailClick = () => {
+    useRightMode.getState().updateRightMode(RightModeEnum.DEVICE)
+    useRightMode.getState().updateDetailId(data.deviceId!)
+  }
+
   return (
     <li
       className={clsx(
-        'flex flex-col p-3 text-fore rounded-[3px] bg-ground-1',
+        'flex flex-col p-3 text-fore rounded-[3px] bg-ground-1 max-w-[325px]',
         'border border-ground-4 border-solid',
       )}
     >
@@ -169,7 +178,17 @@ const ChildAction: FC<PropsType> = memo(({ data }) => {
           <span className="mr-1 text-nowrap">
             {t('action.detail.task.device.title')}:
           </span>
-          <span className="max-w-32 truncate">{data.deviceName || '-'}</span>
+          <div className="flex items-center gap-1 overflow-hidden">
+            {data.deviceId && (
+              <IconButton
+                toolTipProps={{ title: t('common.detail') }}
+                onClick={handleDetailClick}
+              >
+                <IconDetail />
+              </IconButton>
+            )}
+            <p className="flex-1 truncate">{data.deviceName || '-'}</p>
+          </div>
         </p>
         <p className="shrink-0">
           <span className="mr-1 text-nowrap">
