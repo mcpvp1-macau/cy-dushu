@@ -1,5 +1,5 @@
 import React from 'react'
-import Frustum from '../../Wayline/ActionAirline3D/UavPoint/Frustum'
+import Frustum from '../../WaylineEdit/ActionAirline3D/UavPoint/Frustum'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 
 type PropsType = {

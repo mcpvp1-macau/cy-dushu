@@ -1,5 +1,6 @@
 import IconDetail from '@/assets/icons/jsx/IconDetail'
-import IconTask from '@/assets/icons/jsx/IconTask'
+import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
+import IconVisible from '@/assets/icons/jsx/IconVisible'
 import IconButton from '@/components/ui/button/IconButton'
 import { RightModeEnum } from '@/enum/right-mode'
 import { useAppMsg } from '@/hooks/useAppMsg'
@@ -20,6 +21,8 @@ import { isNil } from 'lodash'
 
 type PropsType = {
   data: API_ACTION_ITEM.domain.ActionItem
+  visible?: boolean
+  onVisibleChange?: (visible: boolean) => void
 }
 
 export const taskStatusMap: Record<string, Record<string, string>> = {
@@ -137,71 +140,79 @@ const OperatorBtns: FC<PropsType> = ({ data }) => {
 }
 
 /** 子任务 */
-const ChildAction: FC<PropsType> = memo(({ data }) => {
-  const { t, i18n } = useTranslation()
-  // 任务执行人员
-  let pilotsStr = ''
-  if (data.extra) {
-    const pilots = JSON.parse(data.extra) || []
-    if (Array.isArray(pilots)) {
-      pilotsStr = pilots.map((p) => p.name).join(', ')
+const ChildAction: FC<PropsType> = memo(
+  ({ data, visible, onVisibleChange }) => {
+    const { t, i18n } = useTranslation()
+
+    // 执行人员
+    const pilotsStr = useMemo(() => {
+      const pilots = shouldJson(data.extra) || []
+      if (Array.isArray(pilots)) {
+        return pilots.map((p) => p.name).join(', ')
+      }
+      return ''
+    }, [data.extra])
+
+    const handleDetailClick = () => {
+      useRightMode.getState().updateRightMode(RightModeEnum.DEVICE)
+      useRightMode.getState().updateDetailId(data.deviceId!)
     }
-  }
 
-  const handleDetailClick = () => {
-    useRightMode.getState().updateRightMode(RightModeEnum.DEVICE)
-    useRightMode.getState().updateDetailId(data.deviceId!)
-  }
-
-  return (
-    <li
-      className={clsx(
-        'flex flex-col p-3 text-fore rounded-[3px] bg-ground-1 max-w-[325px]',
-        'border border-ground-4 border-solid',
-      )}
-    >
-      <div className="flex items-center justify-between mb-0.5">
-        <div className="flex gap-2">
-          <IconTask />
-          <span className="text-white">{data.actionItemName || '-'}</span>
+    return (
+      <li
+        className={clsx(
+          'flex flex-col p-3 text-fore rounded-[3px] bg-ground-1 max-w-[325px]',
+          'border border-ground-4 border-solid',
+        )}
+      >
+        <div className="flex items-center justify-between mb-0.5">
+          <div className="flex gap-2">
+            <IconButton
+              disabled={!data.taskTplId}
+              onClick={() => onVisibleChange?.(!visible)}
+            >
+              {visible ? <IconVisible /> : <IconNotVisible />}
+            </IconButton>
+            <span className="text-white">{data.actionItemName || '-'}</span>
+          </div>
+          <div>
+            <OperatorBtns data={data} />
+          </div>
         </div>
         <div>
-          <OperatorBtns data={data} />
+          <span className="mr-1">{t('action.detail.task.people.title')}:</span>
+          <span>{pilotsStr || '-'}</span>
         </div>
-      </div>
-      <div>
-        <span className="mr-1">{t('action.detail.task.people.title')}:</span>
-        <span>{pilotsStr || '-'}</span>
-      </div>
-      <div className="flex gap-2 overflow-hidden">
-        <p className="grow flex overflow-hidden">
-          <span className="mr-1 text-nowrap">
-            {t('action.detail.task.device.title')}:
-          </span>
-          <div className="flex items-center gap-1 overflow-hidden">
-            {data.deviceId && (
-              <IconButton
-                toolTipProps={{ title: t('common.detail') }}
-                onClick={handleDetailClick}
-              >
-                <IconDetail />
-              </IconButton>
-            )}
-            <p className="flex-1 truncate">{data.deviceName || '-'}</p>
+        <div className="flex gap-2 overflow-hidden">
+          <div className="grow flex overflow-hidden">
+            <span className="mr-1 text-nowrap">
+              {t('action.detail.task.device.title')}:
+            </span>
+            <div className="flex items-center gap-1 overflow-hidden">
+              {data.deviceId && (
+                <IconButton
+                  toolTipProps={{ title: t('common.detail') }}
+                  onClick={handleDetailClick}
+                >
+                  <IconDetail />
+                </IconButton>
+              )}
+              <p className="flex-1 truncate">{data.deviceName || '-'}</p>
+            </div>
           </div>
-        </p>
-        <p className="shrink-0">
-          <span className="mr-1 text-nowrap">
-            {t('action.detail.task.status.title')}:
-          </span>
-          <span style={{ color: statusColor[data.status!] }}>
-            {taskStatusMap[i18n.language][data.status!]}
-          </span>
-        </p>
-      </div>
-    </li>
-  )
-})
+          <p className="shrink-0">
+            <span className="mr-1 text-nowrap">
+              {t('action.detail.task.status.title')}:
+            </span>
+            <span style={{ color: statusColor[data.status!] }}>
+              {taskStatusMap[i18n.language][data.status!]}
+            </span>
+          </p>
+        </div>
+      </li>
+    )
+  },
+)
 
 ChildAction.displayName = 'ChildAction'
 

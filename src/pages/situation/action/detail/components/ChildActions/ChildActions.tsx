@@ -1,0 +1,71 @@
+import AppEmpty from '@/components/AppEmpty'
+import AppSpin from '@/components/AppSpin'
+import { getActionItemList } from '@/service/modules/action-item'
+import ChildAction from './ChildAction'
+import { Spin } from 'antd'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { useBackTrackingStore } from '@/store/context-store/useBackTracking.store'
+import useVisibleCheck from './useVisibleCheck'
+
+type PropsType = {
+  actionId: string
+  isBacktracking?: boolean
+}
+
+/** 子任务列表 */
+const ChildActions: FC<PropsType> = memo(({ actionId, isBacktracking }) => {
+  const queryClient = useQueryClient()
+
+  const useStore = isBacktracking ? useBackTrackingStore : null
+
+  const updateChildActions = useStore?.((s) => s.updateChildActions)
+  const { data, isLoading, isRefetching } = useQuery(
+    {
+      queryKey: ['action', actionId, 'items'],
+      queryFn: async () => {
+        const d = await getActionItemList({ actionId })
+        if (!Array.isArray(d.data.rows)) {
+          return []
+        }
+        updateChildActions?.(d.data.rows)
+        return d.data.rows
+      },
+    },
+    queryClient,
+  )
+
+  const { visibleSet, handleVisibleChange } = useVisibleCheck(data)
+
+  return (
+    <>
+      <div>
+        {isLoading || !data ? (
+          <AppSpin />
+        ) : data.length === 0 ? (
+          <AppEmpty />
+        ) : (
+          <ScrollArea className="max-h-[330px]">
+            <Spin spinning={isRefetching}>
+              <ul className="flex flex-col gap-3 p-3">
+                {data.map((item) => (
+                  <ChildAction
+                    key={item.id}
+                    data={item}
+                    visible={visibleSet.has(item.id)}
+                    onVisibleChange={(visible) =>
+                      handleVisibleChange(item.id, visible)
+                    }
+                  />
+                ))}
+              </ul>
+            </Spin>
+          </ScrollArea>
+        )}
+      </div>
+    </>
+  )
+})
+
+ChildActions.displayName = 'ChildActions'
+
+export default ChildActions

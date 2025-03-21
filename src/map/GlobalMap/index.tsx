@@ -13,7 +13,8 @@ import UpdateMap from './UpdateMap'
 import TargetPoints from './TargetPoints'
 import BoardCesium from './BoardCesium'
 import EventMarkers from './EventMarkers'
-import Waylines from './Wayline'
+import WaylineEdit from './WaylineEdit'
+import Waylines from './Waylines'
 
 type PropsType = unknown
 
@@ -36,6 +37,7 @@ const GlobalMap: FC<PropsType> = memo(() => {
         <TargetPoints />
         <BoardCesium />
         <EventMarkers />
+        <WaylineEdit />
         <Waylines />
         {/* <GaussianSplatLayerCesium /> */}
       </CesiumMap>

@@ -10,7 +10,9 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import KCYPPanel from './components/kcyp/Panel'
 import { lazy } from 'react'
 
-const ChildActions = lazy(() => import('./components/ChildActions'))
+const ChildActions = lazy(
+  () => import('./components/ChildActions/ChildActions'),
+)
 const ActionLogList = lazy(() => import('./components/ActionLogList'))
 const AIResult = lazy(() => import('./components/AIResult'))
 
@@ -60,7 +62,10 @@ const PageActionDetailSub: FC<PropsType> = memo(
         extra: !isBacktracking && <AddTask actionId={actionId!} />,
         children: (
           <AppViewSuspense>
-            <ChildActions actionId={actionId!} isBacktracking={isBacktracking}/>
+            <ChildActions
+              actionId={actionId!}
+              isBacktracking={isBacktracking}
+            />
           </AppViewSuspense>
         ),
       }

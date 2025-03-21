@@ -1,6 +1,6 @@
 import MapRealMarker from '@/components/map/device/WangLouModel'
 import WangLouModel from '@/components/map/device/WangLouModel'
-import Frustum from '@/map/GlobalMap/Wayline/ActionAirline3D/UavPoint/Frustum'
+import Frustum from '@/map/GlobalMap/WaylineEdit/ActionAirline3D/UavPoint/Frustum'
 import Radar from '@/map/GlobalMap/DeviceMarkers/WangLouMarkers/Radar'
 import { shouldJson } from '@/utils/json'
 import { GetProps } from 'antd'

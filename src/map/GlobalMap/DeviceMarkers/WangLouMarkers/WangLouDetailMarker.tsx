@@ -2,7 +2,7 @@ import MapRealMarker from '@/components/map/device/WangLouModel'
 import WangLouModel from '@/components/map/device/WangLouModel'
 import { GetProps } from 'antd'
 import mitt from 'mitt'
-import Frustum from '../../Wayline/ActionAirline3D/UavPoint/Frustum'
+import Frustum from '../../WaylineEdit/ActionAirline3D/UavPoint/Frustum'
 import Radar from './Radar'
 
 type PropsType = unknown
