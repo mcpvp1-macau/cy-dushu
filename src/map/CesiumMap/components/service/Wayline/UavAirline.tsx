@@ -48,18 +48,18 @@ const Waypoint: FC<{
         heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
       },
     })
-    const dashPostions = new Cesium.CallbackProperty((_, result) => {
-      const positions = [position, bottomPosition]
-      if (Cesium.defined(result)) {
-        result.length = 0 // 清空现有数组
-        result.push(...positions)
-      }
-      return positions
-    }, false)
+
     // 航点与地形点之间的虚线
     lineRef.current = viewer.entities.add({
       polyline: {
-        positions: dashPostions,
+        positions: Cesium.Cartesian3.fromDegreesArrayHeights([
+          pointX,
+          pointY,
+          0,
+          pointX,
+          pointY,
+          pointZ,
+        ]),
         width: 2,
         material: new Cesium.PolylineDashMaterialProperty({
           color: Cesium.Color.fromCssColorString('#fff'),
@@ -114,9 +114,9 @@ const PathLine: FC<{
     })
 
     return () => {
-      try {
+      attempt(() => {
         viewer?.entities?.remove(entity)
-      } catch (error) {}
+      })
     }
   }, [point1, point2])
 
