@@ -225,7 +225,10 @@ const Tanqi = memo(() => {
           </div>
         </div>
 
-        <div>
+        <div
+          onKeyDown={(e) => e.stopPropagation()}
+          onKeyUp={(e) => e.stopPropagation()}
+        >
           <Sender
             value={sendValue + offlineMsg + onlineMsg}
             loading={creating || sending}
