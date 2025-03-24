@@ -4,6 +4,7 @@ import { useLatest } from 'ahooks'
 import UavDirectionImg from '@/assets/marker/UavDirection.png'
 import GimbalDirectionImg from '@/assets/marker/gimbalDirection.png'
 import { attempt } from 'lodash'
+import { calcYaw } from '@/utils/cesium/rotation'
 
 type PropsType = {
   data: {
@@ -43,8 +44,7 @@ const MapUavRealMarker: FC<PropsType> = memo(({ data }) => {
         scale: 0.5,
         disableDepthTestDistance: 16_000_000,
         rotation: new Cesium.CallbackProperty(
-          () =>
-            (-uavYaw.current * Math.PI) / 180 + (viewer?.camera?.heading ?? 0),
+          () => calcYaw(uavYaw.current, viewer),
           false,
         ),
       },
@@ -58,9 +58,7 @@ const MapUavRealMarker: FC<PropsType> = memo(({ data }) => {
         scale: 0.6,
         disableDepthTestDistance: 16_000_000,
         rotation: new Cesium.CallbackProperty(
-          () =>
-            (-gimbalYaw.current * Math.PI) / 180 +
-            (viewer?.camera?.heading ?? 0),
+          () => calcYaw(gimbalYaw.current, viewer),
           false,
         ),
       },
