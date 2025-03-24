@@ -67,6 +67,10 @@ const useVisibleCheck = (
     visibleSet.current = set
     handleUpdateStore()
     update()
+
+    return () => {
+      useWaylinesStore.getState().updateWaylines([])
+    }
   }, [data])
 
   /**
