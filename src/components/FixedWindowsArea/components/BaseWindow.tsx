@@ -5,16 +5,16 @@ import { limitNum } from '@/utils/math'
 import { forwardRef, useImperativeHandle } from 'react'
 
 export enum MouseActionType {
-  None = 0,
-  Move = 1,
-  ResizeTop = 2,
-  ResizeRight = 3,
-  ResizeBottom = 4,
-  ResizeLeft = 5,
-  ResizeTopRight = 6,
-  ResizeBottomRight = 7,
-  ResizeBottomLeft = 8,
-  ResizeTopLeft = 9,
+  None,
+  Move,
+  ResizeTop,
+  ResizeRight,
+  ResizeBottom,
+  ResizeLeft,
+  ResizeTopRight,
+  ResizeBottomRight,
+  ResizeBottomLeft,
+  ResizeTopLeft,
 }
 
 type PropsType = {

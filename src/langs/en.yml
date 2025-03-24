@@ -513,6 +513,7 @@ common:
   threeMap: Three-dimensional Map
   hello: Hello
   params: Params
+  debug: Debug
 events:
   search:
     placeholder: Please search by event name or ID
