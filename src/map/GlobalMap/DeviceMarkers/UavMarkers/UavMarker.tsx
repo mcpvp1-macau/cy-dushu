@@ -10,6 +10,7 @@ import { deviceStatusFilter } from '@/pages/situation/source/utils'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { RightModeEnum } from '@/enum/right-mode'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
+import HeightDashLine from '@/map/CesiumMap/components/service/common/HeightDashLine'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -19,15 +20,14 @@ type PropsType = {
 const UavMarker: FC<PropsType> = memo(({ data }) => {
   const { deviceId } = data
 
-  const realLon = useGlobalWsStore(
-    (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.longitude,
+  const properties = useGlobalWsStore(
+    (s) => s.deviceRealtimeProperties[data.deviceId]?.properties,
   )
-  const realLat = useGlobalWsStore(
-    (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.latitude,
-  )
-  const realHeading = useGlobalWsStore(
-    (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.uavYaw,
-  )
+
+  const realLon = properties?.longitude
+  const realLat = properties?.latitude
+  const realHeading = properties?.uavYaw
+  const realAlt = properties?.altitude
 
   const lng = realLon || data.longitude
   const lat = realLat || data.latitude
@@ -59,9 +59,12 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
   return (
     <>
       <Billboard
-        key={deviceId}
         id={`device--${data.deviceType}--${data.deviceName}--${data.deviceId}--${lng}--${lat}`}
-        position={Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30)}
+        position={Cesium.Cartesian3.fromDegrees(
+          lng || 120,
+          lat || 30,
+          realAlt || 0,
+        )}
         image={icon}
         width={28}
         height={28}
@@ -72,7 +75,15 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
       <DeviceLabel
         text={data.deviceName}
         id={deviceId}
-        position={Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30)}
+        position={Cesium.Cartesian3.fromDegrees(
+          lng || 120,
+          lat || 30,
+          realAlt || 0,
+        )}
+      />
+      <HeightDashLine
+        position={[lng || 120, lat || 30, realAlt || 0]}
+        color="#fff"
       />
     </>
   )
