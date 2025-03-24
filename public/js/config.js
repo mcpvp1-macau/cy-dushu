@@ -43,7 +43,7 @@ window.config = {
 if (isPublic()) {
   window.config.defaultImageries.push({
     url: 'https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png',
-    min: 1,
+    min: 13,
     max: 18,
   })
 } else {
