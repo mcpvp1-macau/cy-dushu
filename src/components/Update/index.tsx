@@ -50,7 +50,7 @@ const content: Node[] = [
     ],
   ],
 ]
-const updateDate = '2024-12-26'
+const updateDate = '2025-03-14'
 
 const Update: React.FC = () => {
   const [open, { setFalse, setTrue }] = useBoolean(false)
