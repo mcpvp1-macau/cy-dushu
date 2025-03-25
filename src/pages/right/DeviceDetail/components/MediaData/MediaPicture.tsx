@@ -21,12 +21,10 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
 
     const deviceOptions = useMemo(
       () =>
-        deviceList
-          .filter((item) => !!item.properties.videoList)
-          .map((e) => ({
-            label: e.name,
-            value: e.deviceId,
-          })),
+        deviceList.map((e) => ({
+          label: e.name,
+          value: e.deviceId,
+        })),
       deviceList,
     )
     const [deviceId, setDeviceId] = useState(deviceOptions?.[0]?.value)
@@ -56,6 +54,7 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
             page,
             pageSize,
           }),
+        enabled: !!deviceId,
         select: (d) => d.data,
       },
       queryClient,
@@ -128,7 +127,7 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
                             destroyOnClose: true,
                             toolbarRender: makeToolbarRender(1, 50),
                           }}
-                          alt=""
+                          alt={e.url.slice(e.url.lastIndexOf('/') + 1)}
                         />
                       </div>
                     </Col>
