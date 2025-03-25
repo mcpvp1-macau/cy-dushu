@@ -15,6 +15,7 @@ import BoardCesium from './BoardCesium'
 import EventMarkers from './EventMarkers'
 import WaylineEdit from './WaylineEdit'
 import Waylines from './Waylines'
+import Demo from './Test'
 
 type PropsType = unknown
 
@@ -40,6 +41,7 @@ const GlobalMap: FC<PropsType> = memo(() => {
         <WaylineEdit />
         <Waylines />
         {/* <GaussianSplatLayerCesium /> */}
+        <Demo />
       </CesiumMap>
     </div>
   )

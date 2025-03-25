@@ -1,10 +1,9 @@
-import { updateUavInfoEmitter } from '@/map/GlobalMap/DeviceMarkers/UavMarkers/UavDetailMarker'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import { useUnmount } from 'ahooks'
-import { memo, type FC } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
+import { emtpyObject } from '@/constant/data'
+import useMapDevicesStore from '@/store/map/useMapDevices.store'
 
 type PropsType = unknown
 
@@ -13,13 +12,15 @@ const UavUpdateRealMarker: FC<PropsType> = memo(() => {
   const deviceId = useDeviceDetailStore((s) => s.deviceId)!
   const data = useDeviceDetailStore((s) => s.deviceDetail)
 
-  const realProperties =
-    useGlobalWsStore((s) => s.deviceRealtimeProperties[deviceId]) ?? {}
+  const realProperties = useGlobalWsStore(
+    (s) => s.deviceRealtimeProperties[deviceId]?.properties ?? emtpyObject,
+  )
 
   const wsState = useUavControlRoomStore(
     useShallow((s) => ({
       longitude: s.state.longitude ?? 0,
       latitude: s.state.latitude ?? 0,
+      altitude: s.state.altitude ?? 0,
       uavYaw: s.state.uavYaw || 0,
       gimbalYaw: s.state.gimbalYaw || 0,
     })),
@@ -31,6 +32,8 @@ const UavUpdateRealMarker: FC<PropsType> = memo(() => {
         wsState.longitude || realProperties.longitude || data?.longitude || 0,
       latitude:
         wsState.latitude || realProperties.latitude || data?.latitude || 0,
+      altitude:
+        wsState.altitude || realProperties.altitude || data?.altitude || 0,
       uavYaw: wsState.uavYaw || realProperties.uavYaw || 0,
       gimbalYaw: wsState.gimbalYaw || realProperties.gimbalYaw || 0,
       deviceId: data!.deviceId,
@@ -38,12 +41,19 @@ const UavUpdateRealMarker: FC<PropsType> = memo(() => {
   }, [data, realProperties, wsState])
 
   useEffect(() => {
-    updateUavInfoEmitter.emit('uavInfo', state)
+    useMapDevicesStore.getState().updateUavStates({
+      ...useMapDevicesStore.getState().uavStates,
+      [state.deviceId]: state,
+    })
   }, [state])
 
-  useUnmount(() => {
-    updateUavInfoEmitter.emit('uavInfo', null)
-  })
+  useEffect(() => {
+    return () => {
+      const states = { ...useMapDevicesStore.getState().uavStates }
+      delete states[state.deviceId]
+      useMapDevicesStore.getState().updateUavStates(states)
+    }
+  }, [deviceId])
 
   return null
 })

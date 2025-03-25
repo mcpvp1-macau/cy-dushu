@@ -15,7 +15,6 @@ import UavUpdateRealMarker from './components/UpdateRealMarker'
 import useServerEventMsg from '@/pages/control-room/uav/hooks/useServerEventMsg'
 import DeviceIcon from '@/components/device/DeviceIcon'
 import { BaseDeviceDetailProps } from '../routes'
-import useIsRightDetail from '../hooks/useIsRightDetail'
 
 const Header: FC = memo(() => {
   const deviceName =
@@ -55,7 +54,6 @@ const UavDetail: FC<PropsType> = memo(
     const [tab, setTab] = useState(0)
 
     const { t } = useTranslation()
-    const isRightDetail = useIsRightDetail()
 
     return (
       <UavControlRoomStoreContext.Provider value={store}>
@@ -71,7 +69,6 @@ const UavDetail: FC<PropsType> = memo(
             <Segmented
               block
               value={tab}
-              // options={segmentOptions.current!}
               options={[
                 {
                   label: t('common.detail'),
@@ -91,8 +88,7 @@ const UavDetail: FC<PropsType> = memo(
             {tab === 0 ? <UavDetailDetail data={data} /> : <UavDetailData />}
           </ScrollArea>
         </div>
-        {/* 比如钉出的设备详情，不需要更新地图上对应的位置 */}
-        {isRightDetail && <UavUpdateRealMarker />}
+        <UavUpdateRealMarker />
       </UavControlRoomStoreContext.Provider>
     )
   },

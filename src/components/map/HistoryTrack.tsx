@@ -7,11 +7,26 @@ type PropsType = {
   value: {
     lng: number
     lat: number
+    alt?: number
   }[]
   useCallback?: boolean
   useOutline?: boolean
   color?: string
 }
+
+// const drawImage = (startColor: string, endColor: string) => {
+//   const canvas = document.createElement('canvas')
+//   const ctx = canvas.getContext('2d')
+//   if (!ctx) {
+//     return
+//   }
+//   const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height)
+//   gradient.addColorStop(0, startColor)
+//   gradient.addColorStop(1, endColor)
+//   ctx.fillStyle = gradient
+//   ctx.fillRect(0, 0, canvas.width, canvas.height)
+//   return canvas
+// }
 
 /** 历史轨迹 */
 const HistoryTrack: FC<PropsType> = memo(
@@ -32,24 +47,24 @@ const HistoryTrack: FC<PropsType> = memo(
       // 添加路径
       const e = viewer.entities.add({
         polyline: {
-          positions: Cesium.Cartesian3.fromDegreesArray(
-            flatten(historyTrack.map((v) => [v.lng, v.lat])),
+          positions: Cesium.Cartesian3.fromDegreesArrayHeights(
+            flatten(historyTrack.map((v) => [v.lng, v.lat, v.alt ?? 0])),
           ),
           width: 2,
           material: Cesium.Color.fromCssColorString(color),
-          clampToGround: true,
+          // clampToGround: true,
         },
       })
       let outline: Cesium.Entity | null = null
       if (useOutline) {
         outline = viewer.entities.add({
           polyline: {
-            positions: Cesium.Cartesian3.fromDegreesArray(
-              flatten(historyTrack.map((v) => [v.lng, v.lat])),
+            positions: Cesium.Cartesian3.fromDegreesArrayHeights(
+              flatten(historyTrack.map((v) => [v.lng, v.lat, v.alt ?? 0])),
             ),
             width: 4,
             material: Cesium.Color.fromCssColorString('#000'),
-            clampToGround: true,
+            // clampToGround: true,
             zIndex: 1,
           },
         })
@@ -67,8 +82,10 @@ const HistoryTrack: FC<PropsType> = memo(
       }
 
       const positions = new Cesium.CallbackProperty((_, result) => {
-        const positions = Cesium.Cartesian3.fromDegreesArray(
-          flatten(historyTrackRef.current.map((v) => [v.lng, v.lat])),
+        const positions = Cesium.Cartesian3.fromDegreesArrayHeights(
+          flatten(
+            historyTrackRef.current.map((v) => [v.lng, v.lat, v.alt ?? 0]),
+          ),
         )
         if (Cesium.defined(result)) {
           result.length = 0 // 清空现有数组
@@ -83,7 +100,7 @@ const HistoryTrack: FC<PropsType> = memo(
           positions,
           width: 2,
           material: Cesium.Color.fromCssColorString(color),
-          clampToGround: true,
+          // clampToGround: true,
           zIndex: 1,
         },
       })
@@ -95,7 +112,7 @@ const HistoryTrack: FC<PropsType> = memo(
             positions,
             width: 5,
             material: Cesium.Color.fromCssColorString('#000'),
-            clampToGround: true,
+            // clampToGround: true,
           },
         })
       }
@@ -106,7 +123,7 @@ const HistoryTrack: FC<PropsType> = memo(
       }
     }, [viewer, historyTrackRef, useCallback, useOutline])
 
-    return <></>
+    return null
   },
 )
 

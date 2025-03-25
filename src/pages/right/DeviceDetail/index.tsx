@@ -59,7 +59,7 @@ const RightDeviceDetail: FC<PropsType> = memo(() => {
       <div className="w-[350px] flex flex-col overflow-y-hidden">
         <AppViewSuspense>
           <DetailComponent
-            key={detailId}
+            key={deviceDetail.deviceId}
             data={deviceDetail}
             headerTools={
               <IconButton

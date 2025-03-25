@@ -25,6 +25,7 @@ const MapUavRealMarker: FC<PropsType> = memo(({ data }) => {
   const gimbalYaw = useLatest(data.gimbalYaw)
 
   const { viewer } = useCesium()
+
   useEffect(() => {
     if (!viewer) return
     const positonCallback = new Cesium.CallbackProperty(() => {

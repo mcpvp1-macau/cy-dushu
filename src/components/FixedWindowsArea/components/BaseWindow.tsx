@@ -32,6 +32,8 @@ type PropsType = {
   /** 是否可调整上下大小 */
   resizeAbleY?: boolean
   children?: React.ReactNode
+  /** 是否没有边框 */
+  noBorder?: boolean
 }
 
 type RefType = {
@@ -244,7 +246,9 @@ const BaseWindow = memo(
 
     return (
       <div
-        className="absolute pointer-events-auto rounded border border-solid border-[#37414d]"
+        className={clsx('absolute pointer-events-auto', {
+          'rounded border border-solid border-[#37414d]': !props.noBorder,
+        })}
         style={{
           width: props.width,
           height: props.height,

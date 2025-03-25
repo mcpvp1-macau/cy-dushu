@@ -1,6 +1,8 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 
+type Track = { lng: number; lat: number; alt: number }
+
 type StateType = {
   /** 无人机 */
   uavDevices: API_DEVICE.domain.Device[]
@@ -16,6 +18,18 @@ type StateType = {
   allDevicesMap: { [key: string]: API_DEVICE.domain.Device[] }
   /** 机器人狗 */
   robotDogDevices: API_DEVICE.domain.Device[]
+  /** 无人机状态 */
+  uavStates: {
+    [deviceId: string]: {
+      longitude: number
+      latitude: number
+      altitude: number
+      uavYaw: number
+      gimbalYaw: number
+    }
+  }
+  /** 无人机轨迹 */
+  uavTracks: { [deviceId: string]: { path: Track[]; useCallback: boolean } }
 }
 
 type ActionsType = {
@@ -26,6 +40,8 @@ type ActionsType = {
   updateAllDevices: (allDevices: StateType['allDevices']) => void
   updateAllDevicesMap: (allDevicesMap: StateType['allDevicesMap']) => void
   updateRobotDogDevices: (robotDogDevices: StateType['robotDogDevices']) => void
+  updateUavTracks: (uavTracks: StateType['uavTracks']) => void
+  updateUavStates: (uavStates: StateType['uavStates']) => void
 }
 
 const useMapDevicesStore = create<StateType & ActionsType>()(
@@ -38,6 +54,8 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       allDevices: [],
       allDevicesMap: {},
       robotDogDevices: [],
+      uavTracks: {},
+      uavStates: {},
       updateUavDevices: (uavDevices) => {
         set({ uavDevices }, false, 'updateUavDevices')
       },
@@ -58,6 +76,12 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       },
       updateRobotDogDevices: (robotDogDevices) => {
         set({ robotDogDevices }, false, 'updateRobotDogDevices')
+      },
+      updateUavTracks: (uavTracks) => {
+        set({ uavTracks }, false, 'updateUavTracks')
+      },
+      updateUavStates: (uavStates) => {
+        set({ uavStates }, false, 'updateUavStates')
       },
     }),
     {

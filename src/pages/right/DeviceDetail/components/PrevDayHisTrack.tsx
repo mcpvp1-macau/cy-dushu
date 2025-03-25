@@ -2,15 +2,15 @@
 import { dft } from '@/constant/time-fmt'
 import { getTrackQuery } from '@/service/modules/db-api'
 import { useDeviceDetailStore } from '../hooks/useDeviceDetail.store'
-import { pathCompress } from '@/utils/path'
-import useHistoryTrackStore from '@/store/map/useHistoryTrack.store'
+import { pathCompress3D } from '@/utils/path'
+import useMapDevicesStore from '@/store/map/useMapDevices.store'
 
 /** 最近一天的轨迹，同步在地图上 */
 const UsePrevDayHisTrack = memo(() => {
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
   const queryClient = useQueryClient()
   const [startTime, endTime] = useMemo(() => {
-    return [dayjs().subtract(1, 'day').format(dft), dayjs().format(dft)]
+    return [dayjs().subtract(24, 'hours').format(dft), dayjs().format(dft)]
   }, [])
 
   const { data } = useQuery(
@@ -29,27 +29,38 @@ const UsePrevDayHisTrack = memo(() => {
     queryClient,
   )
 
-  const updateTracks = useHistoryTrackStore((s) => s.updateTracks)
+  // const updateTracks = useHistoryTrackStore((s) => s.updateTracks)
+  const updateTracks = useMapDevicesStore((s) => s.updateUavTracks)
 
   useEffect(() => {
     if (!data || !data.data) {
       return
     }
-    const res = pathCompress(data.data)
+    const res = pathCompress3D(
+      data.data.map((e) => ({
+        lng: e.lng,
+        lat: e.lat,
+        alt: e.altitude,
+      })),
+    )
     if (!res.length) {
-      updateTracks([])
       return
     }
-    updateTracks([
-      {
-        id: res[0].deviceId,
+    updateTracks({
+      ...useMapDevicesStore.getState().uavTracks,
+      [deviceId]: {
         path: res,
+        useCallback: false,
       },
-    ])
+    })
     return () => {
-      updateTracks([])
+      const newTracks = {
+        ...useMapDevicesStore.getState().uavTracks,
+      }
+      delete newTracks[deviceId]
+      updateTracks(newTracks)
     }
-  }, [data])
+  }, [data, deviceId])
 
   return null
 })

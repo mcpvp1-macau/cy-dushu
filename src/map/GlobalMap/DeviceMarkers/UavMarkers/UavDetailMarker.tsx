@@ -1,40 +1,26 @@
 import MapUavRealMarker from '@/components/map/device/UavRealMarker'
 import HistoryTrack from '@/components/map/HistoryTrack'
-import useRealTrack from '@/hooks/device/useRealTrack'
-import { GetProps } from 'antd'
-import mitt from 'mitt'
+import { emtpyObject } from '@/constant/data'
+import useRealTrack3D from '@/hooks/device/useRealTrack3D'
+import HeightDashLine from '@/map/CesiumMap/components/service/common/HeightDashLine'
+import useMapDevicesStore from '@/store/map/useMapDevices.store'
 
-type PropsType = unknown
+type PropsType = {
+  deviceId: string
+}
 
-type StateType =
-  | (GetProps<typeof MapUavRealMarker>['data'] & { deviceId: string })
-  | null
+const UavDetailMarker: FC<PropsType> = memo(({ deviceId }) => {
+  const state = useMapDevicesStore((s) => s.uavStates[deviceId] ?? emtpyObject)
 
-export const updateUavInfoEmitter = mitt<{
-  uavInfo: StateType
-}>()
-
-const UavDetailMarker: FC<PropsType> = memo(() => {
-  const [state, setState] = useState<StateType>(null)
-
-  useEffect(() => {
-    const handler = (uavInfo: StateType) => {
-      setState(uavInfo)
-    }
-    updateUavInfoEmitter.on('uavInfo', handler)
-    return () => {
-      updateUavInfoEmitter.off('uavInfo', handler)
-    }
-  }, [])
-
-  const { historyTrack, realTrack, clear } = useRealTrack(
-    state?.longitude ?? 0,
-    state?.latitude ?? 0,
+  const { historyTrack, realTrack, clear } = useRealTrack3D(
+    state.longitude ?? 0,
+    state.latitude ?? 0,
+    state.altitude ?? 0,
   )
 
   useEffect(() => {
     clear(true)
-  }, [state?.deviceId])
+  }, [deviceId])
 
   if (!state) {
     return null
@@ -42,6 +28,10 @@ const UavDetailMarker: FC<PropsType> = memo(() => {
 
   return (
     <>
+      <HeightDashLine
+        position={[state.longitude, state.latitude, state.altitude ?? 0]}
+        color="#fff"
+      />
       <MapUavRealMarker data={state} />
       {historyTrack.map((track, index) => (
         <HistoryTrack key={index} value={track} />
