@@ -1,11 +1,11 @@
 /** 航线类型 */
 export enum WaylineEnum {
   /** 航点航线 */
-  PointWayline = 0,
+  PointWayline = 'waypoint',
   /** 面状航线 */
-  AreaWayline = 1,
+  AreaWayline = 'area_waypoint',
   /** 蜂群航线 */
-  SwarmWayline = 2,
+  SwarmWayline = 'swarm_wayline',
   /** 机器狗航线 */
-  RebotDogWayline = 3,
+  RebotDogWayline = 'fixed_point_cruise',
 }

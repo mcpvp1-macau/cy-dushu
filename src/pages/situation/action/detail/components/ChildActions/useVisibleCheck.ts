@@ -43,6 +43,7 @@ const useVisibleCheck = (
             pointY: e.pointY,
             pointZ: e.pointZ,
           })),
+          taskBasic: shouldJson(info.taskBasic) ?? {},
         })
       }
     }

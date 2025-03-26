@@ -14,6 +14,7 @@ import { Spin } from 'antd'
 import { lazy, Suspense } from 'react'
 import FloatIconButton from '@/components/ui/button/FloatIconButton'
 import IconCamera from '@/assets/icons/jsx/IconCamera'
+import { createPortal } from 'react-dom'
 
 type PropsType = {
   pilot?: ReactNode
@@ -28,7 +29,9 @@ const AirlineAirpointConfig: FC<PropsType> = memo(({ pilot }) => {
   useAirlineEditOpen()
   const { isLoading } = useAirlineInit()
 
-  const [cameraViewOpen, { setTrue, setFalse }] = useBoolean()
+  const [cameraViewOpen, { setFalse, toggle }] = useBoolean()
+
+  const rightToolsDom = document.getElementById('global-map-right-tools')
 
   return (
     <>
@@ -58,14 +61,13 @@ const AirlineAirpointConfig: FC<PropsType> = memo(({ pilot }) => {
       </CollapsedPage>
       <DistanceWarning />
       <NotTakeoffWarning />
-      {!cameraViewOpen && (
-        <FloatIconButton
-          className="fixed top-[50px] right-[52px]"
-          onClick={setTrue}
-        >
-          <IconCamera />
-        </FloatIconButton>
-      )}
+      {rightToolsDom &&
+        createPortal(
+          <FloatIconButton onClick={toggle} active={cameraViewOpen}>
+            <IconCamera />
+          </FloatIconButton>,
+          rightToolsDom,
+        )}
       <Suspense>{cameraViewOpen && <CameraView onClose={setFalse} />}</Suspense>
     </>
   )

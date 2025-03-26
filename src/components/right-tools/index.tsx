@@ -19,7 +19,7 @@ const RightTools: FC<PropsType> = memo(() => {
 
   return (
     <div className="absolute top-3 right-3">
-      <div className="flex flex-col gap-3">
+      <div id="global-map-right-tools" className="flex flex-col gap-3">
         <FloatIconButtonGroup mode="vertical">
           <>
             <FloatIconButton

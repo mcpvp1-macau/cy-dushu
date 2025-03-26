@@ -4,6 +4,7 @@ export type Wayline = {
   id: string
   type: string
   points: { pointX: number; pointY: number; pointZ: number }[]
+  taskBasic: Record<string, any>
 }
 
 type StateType = {

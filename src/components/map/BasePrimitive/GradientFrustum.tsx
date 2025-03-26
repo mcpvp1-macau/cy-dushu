@@ -18,7 +18,7 @@ const GradientFrustum = ({
 
   useEffect(() => {
     if (!viewer) return
-    viewer.scene.globe.depthTestAgainstTerrain = true
+    // viewer.scene.globe.depthTestAgainstTerrain = true
 
     // 创建渐变材质
     const gradientMaterial = new Cesium.Material({

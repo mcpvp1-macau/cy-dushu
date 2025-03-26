@@ -86,7 +86,7 @@ const Waypoint: FC<{
   return null
 })
 
-const PathLine: FC<{
+export const PathLine: FC<{
   point1: PropsType['data'][0]
   point2: PropsType['data'][0]
 }> = memo(({ point1, point2 }) => {
