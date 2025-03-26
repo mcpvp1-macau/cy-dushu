@@ -108,7 +108,6 @@ const Polygon: FC<{ data: number[][] }> = memo(({ data }) => {
 })
 
 const UavAreaWayline: FC<PropsType> = memo(({ data, taskBasic }) => {
-  console.log('taskBasic', taskBasic)
   return (
     <>
       {data.map((item, index) => (

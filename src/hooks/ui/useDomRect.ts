@@ -8,7 +8,6 @@ const useDomRect = (ref: React.RefObject<HTMLElement>) => {
       const style = window.getComputedStyle(ref.current)
       const transform = style.transform || style.webkitTransform // 兼容性处理
 
-      console.log('transform', transform)
       // 解析 transform 矩阵
       let translateX = 0
       let translateY = 0

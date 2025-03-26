@@ -12,6 +12,7 @@ import useRightMode from '@/store/layout/useRightMode.store'
 import { Badge, Tooltip } from 'antd'
 import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
 import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
+import { DeviceEnum } from '@/enum/device'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -51,6 +52,11 @@ const BatteryStatusTag: FC<{ battery: number }> = ({ battery }) => {
     />
   )
 }
+
+const ignoreBatteryDeviceTypes = new Set([
+  DeviceEnum.UAV_AIRPORT,
+  DeviceEnum.CAMERA,
+])
 
 /** 设备树中的设备项 */
 const DeviceItem: FC<PropsType> = memo(({ data }) => {
@@ -109,7 +115,10 @@ const DeviceItem: FC<PropsType> = memo(({ data }) => {
       </div>
       <div className="px-6 mb-2 flex items-center gap-2 text-fore">
         <TaskStatusTag taskStatus={data.taskStatus} />
-        <BatteryStatusTag battery={data.remainingPower || 0} />
+        {/* 电量 */}
+        {!ignoreBatteryDeviceTypes.has(data.deviceType as DeviceEnum) && (
+          <BatteryStatusTag battery={data.remainingPower || 0} />
+        )}
         {/* 判断是否报备 */}
         {'REPORTED' ===
         data.deviceTags?.find(

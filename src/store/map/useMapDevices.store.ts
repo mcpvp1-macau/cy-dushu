@@ -26,10 +26,18 @@ type StateType = {
       altitude: number
       uavYaw: number
       gimbalYaw: number
+      gimbalPitch: number
+      lensType: string
+      zoomFactor: number
+      cameraType: string
     }
   }
   /** 无人机轨迹 */
   uavTracks: { [deviceId: string]: { path: Track[]; useCallback: boolean } }
+  /** 扫描区域 */
+  scanAreas: {
+    [deviceId: string]: GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon>
+  }
 }
 
 type ActionsType = {
@@ -42,6 +50,7 @@ type ActionsType = {
   updateRobotDogDevices: (robotDogDevices: StateType['robotDogDevices']) => void
   updateUavTracks: (uavTracks: StateType['uavTracks']) => void
   updateUavStates: (uavStates: StateType['uavStates']) => void
+  updateScanAreas: (scanAreas: StateType['scanAreas']) => void
 }
 
 const useMapDevicesStore = create<StateType & ActionsType>()(
@@ -56,6 +65,7 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       robotDogDevices: [],
       uavTracks: {},
       uavStates: {},
+      scanAreas: {},
       updateUavDevices: (uavDevices) => {
         set({ uavDevices }, false, 'updateUavDevices')
       },
@@ -82,6 +92,9 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       },
       updateUavStates: (uavStates) => {
         set({ uavStates }, false, 'updateUavStates')
+      },
+      updateScanAreas: (scanAreas) => {
+        set({ scanAreas }, false, 'updateScanAreas')
       },
     }),
     {

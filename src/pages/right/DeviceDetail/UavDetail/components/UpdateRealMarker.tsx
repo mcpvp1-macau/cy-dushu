@@ -23,6 +23,10 @@ const UavUpdateRealMarker: FC<PropsType> = memo(() => {
       altitude: s.state.altitude ?? 0,
       uavYaw: s.state.uavYaw || 0,
       gimbalYaw: s.state.gimbalYaw || 0,
+      gimbalPitch: s.state.gimbalPitch || 0,
+      lensType: s.state.lensType || 'wide',
+      zoomFactor: s.state.zoomFactor || 1,
+      cameraType: s.state.cameraType || s.state.gimbalType,
     })),
   )
 
@@ -36,6 +40,10 @@ const UavUpdateRealMarker: FC<PropsType> = memo(() => {
         wsState.altitude || realProperties.altitude || data?.altitude || 0,
       uavYaw: wsState.uavYaw || realProperties.uavYaw || 0,
       gimbalYaw: wsState.gimbalYaw || realProperties.gimbalYaw || 0,
+      gimbalPitch: wsState.gimbalPitch || realProperties.gimbalPitch || 0,
+      lensType: wsState.lensType || realProperties.lensType || 'wide',
+      zoomFactor: wsState.zoomFactor || realProperties.zoomFactor || 1,
+      cameraType: wsState.cameraType || realProperties.cameraType || 'wide',
       deviceId: data!.deviceId,
     }
   }, [data, realProperties, wsState])

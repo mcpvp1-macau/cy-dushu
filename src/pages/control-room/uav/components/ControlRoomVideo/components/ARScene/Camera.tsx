@@ -56,11 +56,11 @@ const ARSceneCamera: FC<PropsType> = memo(() => {
           uav.lensType === 2 ? uav.zoomFactor : 1,
         ),
         0,
-        Math.PI - 0.0000001,
+        Math.PI - 1e-6,
       ),
       aspectRatio: (uav.width ?? 1) / (uav.height ?? 1),
       near: 0.1,
-      far: 100000,
+      far: 100,
     })
 
     // 获取相机四个角的经纬度 ---------------------

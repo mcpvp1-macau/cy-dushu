@@ -128,4 +128,33 @@ const gimbalMap: Record<number, GimbalType> = {
   },
 }
 
+export const gimbalNameMap: Record<string, number> = {
+  H20T: 43,
+  H20N: 61,
+  H20: 42,
+  M30: 52,
+  M30T: 53,
+  M3E: 66,
+  M3T: 67,
+  H30T: 83,
+}
+
+/** 获取相机信息 */
+export const getGimbalInfo = (nameOrId: string | number): GimbalType => {
+  const res = gimbalMap[nameOrId] ?? gimbalMap[gimbalNameMap[nameOrId]]
+  if (res) {
+    return res
+  }
+  if (typeof nameOrId === 'string') {
+    const gimbalName = nameOrId
+      .toString()
+      .split(' ')
+      .find((e) => gimbalMap[gimbalNameMap[e]])
+    if (gimbalName) {
+      return gimbalMap[gimbalNameMap[gimbalName]]
+    }
+  }
+  return gimbalMap[53]
+}
+
 export default gimbalMap
