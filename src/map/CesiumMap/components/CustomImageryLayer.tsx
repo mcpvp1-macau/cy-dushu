@@ -47,7 +47,7 @@ const TilesetLayer: FC<PropsType> = memo(({ url }) => {
   return null
 })
 
-const CustomImageryLayer: FC<PropsType> = memo(() => {
+const CustomImageryLayer: FC<unknown> = memo(() => {
   const queryClient = useQueryClient()
   const { data } = useQuery(
     {
