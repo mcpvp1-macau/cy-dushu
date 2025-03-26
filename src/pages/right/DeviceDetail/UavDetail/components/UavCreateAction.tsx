@@ -41,7 +41,7 @@ const UavCreateAction: FC<PropsType> = memo(() => {
       if (camera) {
         params += `&camera=${JSON.stringify(camera)}`
       }
-      navigate(`/airline/edit` + params)
+      navigate(`/wayline/edit` + params)
     } finally {
       setLoading(false)
     }
