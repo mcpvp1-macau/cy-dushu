@@ -20,12 +20,10 @@ const HistoryVideo: React.FC<PropsType> = memo(
       useState<API_DEVICE.domain.HistoryVideoListItem | null>(null)
     const deviceOptions = useMemo(
       () =>
-        deviceList
-          .filter((item) => !!item.properties.videoList)
-          .map((e) => ({
-            label: e.name,
-            value: e.deviceId,
-          })),
+        deviceList.map((e) => ({
+          label: e.name,
+          value: e.deviceId,
+        })),
       deviceList,
     )
     const [deviceId, setDeviceId] = useState(deviceOptions?.[0]?.value)
@@ -42,7 +40,7 @@ const HistoryVideo: React.FC<PropsType> = memo(
       deviceId,
       deviceType,
       videoId!,
-      timeRange || date,
+      timeRange || date || dayjs(),
     )
 
     return (

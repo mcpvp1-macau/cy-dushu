@@ -1,12 +1,13 @@
-import { dateOnly, dft } from '@/constant/time-fmt'
+import { dft } from '@/constant/time-fmt'
 import { getHistoryVideo, getHistoryM3u8Video } from '@/service/modules/device'
+import { Dayjs } from 'dayjs'
 
 const useVideoList = (
   productKey: string,
   deviceId: string,
   videoId: string,
   deviceType: string,
-  date,
+  date: [Dayjs, Dayjs] | Dayjs,
 ) => {
   const queryClient = useQueryClient()
   const post = deviceType === 'WANGLOU' ? getHistoryM3u8Video : getHistoryVideo
@@ -19,14 +20,22 @@ const useVideoList = (
       }
     } else {
       return {
-        startTime: date!.startOf('day').format(dft),
-        endTime: date!.endOf('day').format(dft),
+        startTime: date.startOf('day').format(dft),
+        endTime: date.endOf('day').format(dft),
       }
     }
   }, [date])
+
   const { data: videoList, isLoading } = useQuery(
     {
-      queryKey: ['getHistoryVideo', deviceId, `${date?.format(dateOnly)}`],
+      queryKey: [
+        'getHistoryVideo',
+        deviceId,
+        {
+          startTime,
+          endTime,
+        },
+      ],
       queryFn: () =>
         post(productKey, deviceId, videoId!, {
           startTime,
