@@ -40,6 +40,9 @@ const GroundPolygonCircle: React.FC<PropsType> = ({
   const headingRef = useRef(0)
 
   useEffect(() => {
+    if (viewer) {
+      viewer.scene.globe.depthTestAgainstTerrain = true
+    }
     const a = viewer?.entities.add({
       position: Cesium.Cartesian3.fromDegrees(lng, lat),
       name: '雷达扫描',
@@ -50,10 +53,11 @@ const GroundPolygonCircle: React.FC<PropsType> = ({
           color: Cesium.Color.fromCssColorString(color),
           speed: 20.0,
         }),
-        height: 20.0,
+        // height: 20.0,
         heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
         outline: true,
         outlineColor: Cesium.Color.fromCssColorString(color),
+        outlineWidth: 10,
       },
     })
 

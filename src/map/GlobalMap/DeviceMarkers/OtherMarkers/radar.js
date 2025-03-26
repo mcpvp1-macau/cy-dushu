@@ -2,54 +2,64 @@
 import * as Cesium from 'cesium'
 
 export default class RadarScanMaterialProperty {
-    constructor(options) {
-        this._definitionChanged = new Cesium.Event();
-        this._color = undefined;
-        this._speed = undefined;
-        this.color = options.color;
-        this.speed = options.speed;
-    }
-    get isConstant() {
-        return false;
+  constructor(options) {
+    this._definitionChanged = new Cesium.Event()
+    this._color = undefined
+    this._speed = undefined
+    this.color = options.color
+    this.speed = options.speed
+  }
+  get isConstant() {
+    return false
+  }
+
+  get definitionChanged() {
+    return this._definitionChanged
+  }
+
+  getType(time) {
+    return Cesium.Material.RadarScanMaterialType
+  }
+
+  getValue(time, result) {
+    if (!Cesium.defined(result)) {
+      result = {}
     }
 
-    get definitionChanged() {
-        return this._definitionChanged;
-    }
+    result.color = Cesium.Property.getValueOrDefault(
+      this._color,
+      time,
+      Cesium.Color.RED,
+      result.color,
+    )
+    result.speed = Cesium.Property.getValueOrDefault(
+      this._speed,
+      time,
+      10,
+      result.speed,
+    )
+    return result
+  }
 
-    getType(time) {
-        return Cesium.Material.RadarScanMaterialType;
-    }
-
-    getValue(time, result) {
-        if (!Cesium.defined(result)) {
-            result = {};
-        }
-
-        result.color = Cesium.Property.getValueOrDefault(this._color, time, Cesium.Color.RED, result.color);
-        result.speed = Cesium.Property.getValueOrDefault(this._speed, time, 10, result.speed);
-        return result
-    }
-
-    equals(other) {
-        return (this === other ||
-            (other instanceof RadarScanMaterialProperty &&
-                Cesium.Property.equals(this._color, other._color) &&
-                Cesium.Property.equals(this._speed, other._speed))
-        )
-    }
+  equals(other) {
+    return (
+      this === other ||
+      (other instanceof RadarScanMaterialProperty &&
+        Cesium.Property.equals(this._color, other._color) &&
+        Cesium.Property.equals(this._speed, other._speed))
+    )
+  }
 }
 
 Object.defineProperties(RadarScanMaterialProperty.prototype, {
-    color: Cesium.createPropertyDescriptor('color'),
-    speed: Cesium.createPropertyDescriptor('speed')
+  color: Cesium.createPropertyDescriptor('color'),
+  speed: Cesium.createPropertyDescriptor('speed'),
 })
 
 // Cesium.RadarScanMaterialProperty = RadarScanMaterialProperty;
-Cesium.Material.RadarScanMaterialProperty = 'RadarScanMaterialProperty';
-Cesium.Material.RadarScanMaterialType = 'RadarScanMaterialType';
-Cesium.Material.RadarScanMaterialSource =
-    `
+Cesium.Material.RadarScanMaterialProperty = 'RadarScanMaterialProperty'
+Cesium.Material.RadarScanMaterialType = 'RadarScanMaterialType'
+Cesium.Material.RadarScanMaterialSource = `
     uniform vec4 color;
     uniform float speed;
 
@@ -80,16 +90,19 @@ Cesium.Material.RadarScanMaterialSource =
 
      `
 
-Cesium.Material._materialCache.addMaterial(Cesium.Material.RadarScanMaterialType, {
+Cesium.Material._materialCache.addMaterial(
+  Cesium.Material.RadarScanMaterialType,
+  {
     fabric: {
-        type: Cesium.Material.RadarScanMaterialType,
-        uniforms: {
-            color: new Cesium.Color(1.0, 0.0, 0.0, 1.0),
-            speed: 10.0
-        },
-        source: Cesium.Material.RadarScanMaterialSource
+      type: Cesium.Material.RadarScanMaterialType,
+      uniforms: {
+        color: new Cesium.Color(1.0, 0.0, 0.0, 1.0),
+        speed: 10.0,
+      },
+      source: Cesium.Material.RadarScanMaterialSource,
     },
     translucent: function (material) {
-        return true;
-    }
-})
+      return true
+    },
+  },
+)

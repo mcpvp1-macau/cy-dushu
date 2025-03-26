@@ -6,7 +6,6 @@ function isDomainOrIP() {
 }
 
 function isPublic() {
-  return true
   return isDomainOrIP() === 'Domain'
 }
 
