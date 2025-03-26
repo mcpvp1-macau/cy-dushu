@@ -4,7 +4,7 @@ import createUrlTemplateImageryProvider from './CustomUrlTemplateImageryProvider
 import { ImageryLayer, useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { useAsyncEffect } from 'ahooks'
-
+import CustomTMSImageryLayer from './CustomTMSImageryLayer'
 type PropsType = {
   url: string
 }
@@ -101,7 +101,20 @@ const CustomImageryLayer: FC<unknown> = memo(() => {
       })
   }, [data, activeSpaceIds])
 
-  console.log('tileset', tileset)
+  const tms = useMemo(() => {
+    if (!data || !activeSpaceIds || activeSpaceIds.size === 0) {
+      return []
+    }
+    const map = new Map(data.map((e) => [e.spaceId, e]))
+    return Array.from(activeSpaceIds)
+      .filter((e) => {
+        const space = map.get(e)
+        return space?.spaceType === 'TMS'
+      })
+      .map((e) => {
+        return map.get(e)!.spaceMapUrl
+      })
+  }, [data, activeSpaceIds])
 
   return (
     <>
@@ -110,6 +123,9 @@ const CustomImageryLayer: FC<unknown> = memo(() => {
       ))}
       {tileset.map((t) => (
         <TilesetLayer key={t} url={t} />
+      ))}
+      {tms.map((t) => ( 
+        <CustomTMSImageryLayer key={t} url={t} />
       ))}
     </>
   )
