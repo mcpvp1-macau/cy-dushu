@@ -40,9 +40,7 @@ const GroundPolygonCircle: React.FC<PropsType> = ({
   const headingRef = useRef(0)
 
   useEffect(() => {
-    if (viewer) {
-      viewer.scene.globe.depthTestAgainstTerrain = true
-    }
+
     const a = viewer?.entities.add({
       position: Cesium.Cartesian3.fromDegrees(lng, lat),
       name: '雷达扫描',
