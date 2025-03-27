@@ -9,7 +9,6 @@ import FloatIconButton from '@/components/ui/button/FloatIconButton'
 import CustomCesiumGlobalTerrain from './components/CustomCesiumGlobalTerrain'
 import useMapSettingStore from '@/store/setting/useMapSetting.store'
 import BottomBar from './components/BottomBar'
-
 const ShanghaiBanAreas = lazy(
   () => import('./components/custom/ShanghaiBanAreas'),
 )

@@ -16,9 +16,7 @@ const TilesetLayer: FC<PropsType> = memo(({ url }) => {
 
   const add3DTileset = async (url: string) => {
     const tileset = await Cesium.Cesium3DTileset.fromUrl(url, {
-      maximumScreenSpaceError: 1, // 数值加大，能让最终成像变模糊
-      // @ts-ignore
-      maximumMemoryUsage: 1024, // 内存分配变小有利于倾斜摄影数据回收，提升性能体验
+      maximumCacheOverflowBytes: 1024 * 1024 * 10 * 1024, // 缓存溢出字节数
     })
     tileset && viewer?.scene.primitives.add(tileset)
     tileset && viewer?.zoomTo(tileset)
@@ -38,7 +36,8 @@ const TilesetLayer: FC<PropsType> = memo(({ url }) => {
   useEffect(() => {
     return () => {
       try {
-        tilesetRef.current && viewer?.scene.primitives.remove(tilesetRef.current)
+        tilesetRef.current &&
+          viewer?.scene.primitives.remove(tilesetRef.current)
         tilesetRef.current = null
       } catch (error) {}
     }
@@ -124,9 +123,10 @@ const CustomImageryLayer: FC<unknown> = memo(() => {
       {tileset.map((t) => (
         <TilesetLayer key={t} url={t} />
       ))}
-      {tms.map((t) => ( 
+      {tms.map((t) => (
         <CustomTMSImageryLayer key={t} url={t} />
       ))}
+    
     </>
   )
 })
