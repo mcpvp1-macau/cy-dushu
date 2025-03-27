@@ -10,6 +10,7 @@ setting:
     description: >-
       By default, the decoder will be automatically selected in the order of WCS, MSE, Simd, and Wasm based on browser support.
 
+
     attention: Attention
   map:
     resolution:
@@ -23,6 +24,7 @@ setting:
       description: >-
         For the best map browsing experience, please select an appropriate resolution based on your computer's performance
 
+
     title: Map
   system:
     title: System
@@ -30,6 +32,7 @@ setting:
     clear:
       description: >-
         Clicking the 'Clear All' button will erase all local data and restore default configurations (including settings and AR configuration content). Before proceeding, please ensure you have backed up important information to prevent data loss
+
 
       title: Clear All
   warning:
@@ -156,6 +159,7 @@ device:
           title: Close
         openWarning: >-
           Before opening the cover, please ensure the surrounding environment of the airport is clear of obstacles and no personnel are nearby.
+
 
       putter:
         title: Putter
@@ -629,6 +633,7 @@ wayline:
     description: >-
       After deletion, the wayline content cannot be recovered. Are you sure you want to delete the wayline?
 
+
   regenerator:
     title: Regenerator
   create:
@@ -669,6 +674,7 @@ wayline:
       title: Coverage Rate
       tooltip: >-
         Overlap ratio of the shooting field of view between adjacent flight lines, default nadir angle of the gimbal
+
 
     titleRebotDog: Wayline Config
     speedRebotDog:
@@ -799,6 +805,7 @@ wayline:
       waypointNotEnough: At least 2 waypoints are required
       rthHeightNotSet: Return Height is not set
       polygonNotSet: Please draw polygon on map
+      msg: The task execute error
     defaultTaskName: Wayline Task
     success:
       stopTask:
@@ -842,6 +849,7 @@ schedule:
     mustSetGoHome: End action of wayline must be set to `Go Home`
     20minsInterval: >-
       The scheduled interval of repeated tasks must exceed the actual execution duration of the previous task by at least 20 minutes
+
 
   form:
     name:

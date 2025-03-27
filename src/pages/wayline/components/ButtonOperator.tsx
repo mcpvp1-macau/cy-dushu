@@ -91,6 +91,7 @@ const BottomOperator: FC<PropsType> = memo(
       actionItem: number
       message: string
     } | null>(null)
+
     const handleExecuteConfirm = async (deviceId: string, type?: string) => {
       setLoading(2)
       try {
@@ -102,7 +103,8 @@ const BottomOperator: FC<PropsType> = memo(
         data['type'] = type
         data['deviceIds'] = deviceId
         await createActionItem(data, false)
-        // navigate(-1)
+        msgApi.success(t('api.success.msg'))
+        navigate(-1)
       } catch (e) {
         if (isLiqunCommonError(e)) {
           // 该设备有正在执行的任务
@@ -115,6 +117,12 @@ const BottomOperator: FC<PropsType> = memo(
               message: e.message,
             })
           }
+          msgApi.error(
+            `${t('wayline.executeTask.error.msg')}${
+              e.message ? ` ${e.message}` : ''
+            }`,
+          )
+          return
         }
       } finally {
         setLoading(0)

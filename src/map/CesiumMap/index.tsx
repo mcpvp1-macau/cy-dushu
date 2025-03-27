@@ -11,6 +11,9 @@ import useMapSettingStore from '@/store/setting/useMapSetting.store'
 import IconLoading from '@/assets/icons/jsx/IconLoading'
 import BottomBar from './components/BottomBar'
 
+const ShanghaiBanAreas = lazy(
+  () => import('./components/custom/ShanghaiBanAreas'),
+)
 const ShanghaiBanRoutes = lazy(
   () => import('./components/custom/ShanghaiBanRoutes'),
 )
@@ -85,7 +88,12 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
         </div>
       )}
       <Suspense fallback={null}>
-        {globalConfig.useShanghaiBanRoutes && <ShanghaiBanRoutes />}
+        {globalConfig.useShanghaiBanRoutes && (
+          <>
+            <ShanghaiBanRoutes />
+            <ShanghaiBanAreas />
+          </>
+        )}
       </Suspense>
       <BottomBar />
     </Viewer>

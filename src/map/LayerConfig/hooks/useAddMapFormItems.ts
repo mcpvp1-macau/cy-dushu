@@ -34,6 +34,10 @@ const useAddMapFormItems = () => {
               value: 'XYZ',
             },
             {
+              label: 'TMS',
+              value: 'TMS',
+            },
+            {
               label: t(
                 'mapLayer.createMap.form.tileType.options.3dTiles.label',
               ),

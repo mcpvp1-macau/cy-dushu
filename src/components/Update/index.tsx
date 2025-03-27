@@ -50,7 +50,7 @@ const content: Node[] = [
     ],
   ],
 ]
-const updateDate = '2024-12-26'
+const updateDate = '2025-03-14'
 
 const Update: React.FC = () => {
   const [open, { setFalse, setTrue }] = useBoolean(false)
@@ -67,9 +67,12 @@ const Update: React.FC = () => {
     if (localVersion !== version) setTrue()
   })
 
-  if (!globalConfig?.version) {
+  const location = useLocation()
+
+  if (!globalConfig?.version || location.pathname.includes('/share')) {
     return null
   }
+
   return (
     <div className={styles.wrapper}>
       <Modal
