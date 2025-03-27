@@ -58,6 +58,7 @@ declare namespace API_RECONSTRUCTION {
     type UpdateLayer = {
       overlayId: number
       overlayName: string
+      layerId: number
     }
 
     type StartTask = {

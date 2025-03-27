@@ -984,7 +984,8 @@ mapLayer:
         layerName: Name of the 3D layer
     edit:
       layer:
-        title: Edit 3D layer name
+        title: Edit 3D layer
+        groupName: Name of the 3D layer group
       form:
         layerName: Name of the 3D layer
     task:

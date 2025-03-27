@@ -967,9 +967,10 @@ mapLayer:
         layerName: 三维图层名称
     edit:
       layer:
-        title: 修改三维图层名称
+        title: 修改三维图层
       form:
         layerName: 三维图层名称
+        groupName: 三维图层组名称
     task:
       completed: 3D reconstruction completed
 message:

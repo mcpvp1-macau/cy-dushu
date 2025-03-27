@@ -10,7 +10,7 @@ type PropsType = {
   id: number
 }
 
-export const AddReconstructionLayer: FC<PropsType> = (props) => {
+export const EditReconstructionLayer: FC<PropsType> = (props) => {
   const { t } = useTranslation()
   const msgApi = useAppMsg()
 
@@ -19,11 +19,15 @@ export const AddReconstructionLayer: FC<PropsType> = (props) => {
     s.layerGroupList,
     s.updateLayerList,
   ])
-  const handleConfirm = async (values: { layerName: string }) => {
+  const handleConfirm = async (values: {
+    layerName: string
+    layerId: number
+  }) => {
     try {
       await updateLayer({
         overlayId: props.id,
         overlayName: values.layerName,
+        layerId: values.layerId,
       })
       const data = await getLayerList({
         layerIds: layerGroupList.map((item) => item.id),
@@ -42,6 +46,16 @@ export const AddReconstructionLayer: FC<PropsType> = (props) => {
           label: t('mapLayer.reconstructionMap.edit.form.layerName'),
           name: 'layerName',
           type: 'input',
+          rules: [{ required: true }],
+        },
+        {
+          label: t('mapLayer.reconstructionMap.edit.form.groupName'),
+          name: 'layerId',
+          type: 'select',
+          options: layerGroupList.map((item) => ({
+            label: item.layerName,
+            value: item.id,
+          })),
           rules: [{ required: true }],
         },
       ] as XFormItem[],
@@ -69,6 +83,6 @@ export const AddReconstructionLayer: FC<PropsType> = (props) => {
   )
 }
 
-AddReconstructionLayer.displayName = 'AddReconstructionLayer'
+EditReconstructionLayer.displayName = 'EditReconstructionLayer'
 
-export default AddReconstructionLayer
+export default EditReconstructionLayer
