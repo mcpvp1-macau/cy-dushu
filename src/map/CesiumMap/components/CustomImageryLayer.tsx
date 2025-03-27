@@ -17,6 +17,13 @@ const TilesetLayer: FC<PropsType> = memo(({ url }) => {
   const add3DTileset = async (url: string) => {
     const tileset = await Cesium.Cesium3DTileset.fromUrl(url, {
       maximumCacheOverflowBytes: 1024 * 1024 * 10 * 1024, // 缓存溢出字节数
+      baseScreenSpaceError: 0.1,
+      skipScreenSpaceErrorFactor: 0,
+      dynamicScreenSpaceError: true,
+      dynamicScreenSpaceErrorDensity: 0.00278,
+      dynamicScreenSpaceErrorFactor: 0.1,
+      dynamicScreenSpaceErrorHeightFalloff: 0.25,
+      maximumScreenSpaceError: 0.1, // 根据需要调整，以平衡加载时间和细节
     })
     tileset && viewer?.scene.primitives.add(tileset)
     tileset && viewer?.zoomTo(tileset)
@@ -126,7 +133,6 @@ const CustomImageryLayer: FC<unknown> = memo(() => {
       {tms.map((t) => (
         <CustomTMSImageryLayer key={t} url={t} />
       ))}
-    
     </>
   )
 })
