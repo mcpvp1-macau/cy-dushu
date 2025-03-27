@@ -33,7 +33,7 @@ export const createLayer = (data: API_RECONSTRUCTION.req.CreateLayer) => {
   return serverJingqi.post<{
     overlayId: number
     overlayUuid: string
-  }>('/reconstruction/overlay/create')
+  }>('/reconstruction/overlay/create', data)
 }
 
 /**修改三维图层的名称 */
@@ -52,5 +52,5 @@ export const startReconstructionTask = (
 ) => {
   return serverJingqi.post<{
     taskId: number
-  }>('/reconstruction/start', data)
+  }>('/reconstruction/task/start', data)
 }

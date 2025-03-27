@@ -15,7 +15,7 @@ import BoardCesium from './BoardCesium'
 import EventMarkers from './EventMarkers'
 import WaylineEdit from './WaylineEdit'
 import Waylines from './Waylines'
-import Demo from './Test'
+import ReconstructionDraw from '@/map/CesiumMap/components/service/ReconstructionDraw'
 
 type PropsType = unknown
 
@@ -40,8 +40,7 @@ const GlobalMap: FC<PropsType> = memo(() => {
         <EventMarkers />
         <WaylineEdit />
         <Waylines />
-        {/* <GaussianSplatLayerCesium /> */}
-        <Demo />
+        <ReconstructionDraw></ReconstructionDraw>
       </CesiumMap>
     </div>
   )

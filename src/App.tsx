@@ -3,8 +3,12 @@ import AppHeader from './components/Header'
 import AppNavigator from './components/Navigator'
 import { useTitle } from 'ahooks'
 import GlobalMap from './map/GlobalMap'
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import { AppMsgContext, msgMitt } from './hooks/useAppMsg'
+import {
+  NotificationContext,
+  notificationMitt,
+} from './hooks/useNotification.ts'
 import GlobalState from './components/GlobalState'
 import Right from './pages/right'
 import AppViewSuspense from './components/AppViewSuspense'
@@ -40,6 +44,12 @@ const App = () => {
     top: 45,
     maxCount: 3,
   })
+
+  const [notificationApi, notificationContextHolder] =
+    notification.useNotification({
+      placement: 'top',
+      duration: 0,
+    })
 
   useEffect(() => {
     msgMitt.on('open', (payload) => {
@@ -79,28 +89,31 @@ const App = () => {
       >
         <FixedWindowArea />
         <AppMsgContext.Provider value={messageApi}>
-          {contextHolder}
-          <GlobalState />
-          {!hideAppHeaderAndNavigator && <AppHeader />}
-          <div className="flex-grow overflow-hidden">
-            <div className="h-full flex overflow-hidden">
-              {!hideAppHeaderAndNavigator && <AppNavigator />}
-              <main className="flex-grow bg-ground-1 relative overflow-hidden z-10">
-                <div className="absolute h-full z-20 overflow-hidden">
-                  <AppViewSuspense>
-                    <Outlet />
-                  </AppViewSuspense>
-                </div>
-                {hide && (
-                  <>
-                    <GlobalMap />
-                    <RightTools />
-                    <Right />
-                  </>
-                )}
-              </main>
+          <NotificationContext.Provider value={notificationApi}>
+            {contextHolder}
+            {notificationContextHolder}
+            <GlobalState />
+            {!hideAppHeaderAndNavigator && <AppHeader />}
+            <div className="flex-grow overflow-hidden">
+              <div className="h-full flex overflow-hidden">
+                {!hideAppHeaderAndNavigator && <AppNavigator />}
+                <main className="flex-grow bg-ground-1 relative overflow-hidden z-10">
+                  <div className="absolute h-full z-20 overflow-hidden">
+                    <AppViewSuspense>
+                      <Outlet />
+                    </AppViewSuspense>
+                  </div>
+                  {hide && (
+                    <>
+                      <GlobalMap />
+                      <RightTools />
+                      <Right />
+                    </>
+                  )}
+                </main>
+              </div>
             </div>
-          </div>
+          </NotificationContext.Provider>
         </AppMsgContext.Provider>
       </div>
     </XProvider>

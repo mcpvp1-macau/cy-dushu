@@ -970,7 +970,22 @@ mapLayer:
     previewParse:
       msg: 预览图解析失败
   reconstructionMap:
-    create: 创建三维图组
+    create:
+      tooltip: 创建三维图组
+      success: 三维重建完成
+      layer:
+        title: 创建三维图层
+      form:
+        groupName: 三维图层组名称
+        layerName: 三维图层名称
+    edit:
+      layer:
+        title: 修改三维图层
+      form:
+        layerName: 三维图层名称
+        groupName: 三维图层组名称
+    task:
+      completed: 3D reconstruction completed
 message:
   success:
     saveMapView: 地图视角保存成功
@@ -1046,7 +1061,19 @@ controlRoom:
           title: 虚实融合设置
       reconstruction:
         title: 三维重建
-        startInfo: 在地图规划需要重建的区域，每1km²预计需要5分钟，最大支持
+        startInfo: 在地图规划需要重建的区域，每0.1km²预计需要30分钟，最大支持
+        reconstructingInfo: 建图中
+        error_max: 规划区域面积超出限制，请重新规划
+        setting:
+          title: 飞行参数设置
+          flightAltitude: 飞行高度
+          overlapRate: 重叠率（0-90%）
+          returnAltitude: 返航高度（0-500m）
+          taskCompletionAction: 任务完成动作
+          flightAltitude_rule_msg: 请输入正确的飞行高度
+          overlapRate_rule_msg: 请输入正确的重叠率
+          returnAltitude_rule_msg: 请输入正确的返航高度
+          taskCompletionAction_rule_msg: 请选择正确的任务完成动作
       takePhoto:
         title: 拍照
       cameraMode:

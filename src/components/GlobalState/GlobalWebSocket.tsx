@@ -10,6 +10,10 @@ import { type FC } from 'react'
 import useWebSocket from 'react-use-websocket'
 import { useEventData } from '@/store/event/useEvent.store'
 import { msgEmitter } from '@/pages/control-room/uav/components/Tanqi'
+import useReconstructionMapStore, {
+  reconstructionMitt,
+} from '@/store/map/useReconstructionMap.store'
+import { useAppNotification } from '@/hooks/useNotification'
 
 type PropsType = unknown
 
@@ -204,6 +208,26 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
     msgEmitter.emit('message', message)
   })
 
+  // 三维重建完成 ----------------------------
+  const notificationApi = useAppNotification()
+  const [t] = useTranslation()
+  const requestAndUpdateLayerList = useReconstructionMapStore(
+    (s) => s.requestAndUpdateLayerList,
+  )
+  const handleReconstructionTaskEnd = useMemoizedFn((message) => {
+    requestAndUpdateLayerList()
+    reconstructionMitt.emit('reconstructionTaskEnd', message.overlayId)
+    notificationApi.success({
+      message: t('mapLayer.reconstructionMap.create.success'),
+      duration: 0,
+      style: {
+        backgroundColor: '#53b176',
+        padding: '15px 0 10px 0',
+      },
+      icon: <></>,
+    })
+  })
+
   // websocket message
   const handleMessage = useMemoizedFn((event: WebSocketEventMap['message']) => {
     const { type, message } = shouldJson(event.data) ?? {}
@@ -231,6 +255,9 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         break
       case 'DIALOG_RESPONSE':
         handleDialogResponse(message)
+        break
+      case 'RECONSTRUCTION_TASK_END':
+        handleReconstructionTaskEnd(message)
         break
     }
   })

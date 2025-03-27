@@ -1,5 +1,9 @@
 import { create } from 'zustand'
 import { createJSONStorage, devtools, persist } from 'zustand/middleware'
+import { getLayerList } from '@/service/modules/reconstruction'
+import mitt, { type Emitter, EventType } from 'mitt'
+
+export const reconstructionMitt: Emitter<Record<EventType, number>> = mitt()
 
 type StateType = {
   layerGroupList: API_RECONSTRUCTION.LayerGroup[]
@@ -9,11 +13,12 @@ type StateType = {
 type ActionsType = {
   updateLayerGroupList: (data: StateType['layerGroupList']) => void
   updateLayerList: (data: StateType['layerList']) => void
+  requestAndUpdateLayerList: () => void
 }
 
 const useReconstructionMapStore = create<StateType & ActionsType>()(
   devtools(
-    (set) => ({
+    (set, get) => ({
       layerGroupList: [],
       layerList: [],
       updateLayerGroupList: (data) => {
@@ -21,6 +26,13 @@ const useReconstructionMapStore = create<StateType & ActionsType>()(
       },
       updateLayerList: (data) => {
         set({ layerList: data }, false, 'updateLayerList')
+      },
+      requestAndUpdateLayerList: () => {
+        getLayerList({
+          layerIds: get().layerGroupList.map((group) => group.id),
+        }).then((data) => {
+          set({ layerList: data.data }, false, 'updateLayerList')
+        })
       },
     }),
     {
@@ -52,20 +64,47 @@ const useReconstructionMapConfigStore = create<
   ConfigStateType & ConfigActionsType
 >()(
   devtools(
-    (set) => ({
-      hiddenGroupIds: new Set(),
-      hiddenLayerIds: new Set(),
-      activeLayerIds: new Set(),
-      updateHiddenGroupIds: (hiddenGroupIds) => {
-        set({ hiddenGroupIds }, false, 'updateHiddenGroupIds')
+    persist(
+      (set) => ({
+        hiddenGroupIds: new Set(),
+        hiddenLayerIds: new Set(),
+        activeLayerIds: new Set(),
+        updateHiddenGroupIds: (hiddenGroupIds) => {
+          set({ hiddenGroupIds }, false, 'updateHiddenGroupIds')
+        },
+        updateHiddenLayerIds: (hiddenLayerIds) => {
+          set({ hiddenLayerIds }, false, 'updateHiddenLayerIds')
+        },
+        updateActiveLayerIds: (activeLayerIds) => {
+          set({ activeLayerIds }, false, 'updateActiveLayerIds')
+        },
+      }),
+      {
+        name: 'reconstruction-map-config',
+        storage: createJSONStorage(() => sessionStorage, {
+          replacer: (key: string, value: any) => {
+            if (
+              key === 'hiddenGroupIds' ||
+              key === 'hiddenLayerIds' ||
+              key === 'activeLayerIds'
+            ) {
+              return Array.from(value)
+            }
+            return value
+          },
+          reviver: (key: string, value: any) => {
+            if (
+              key === 'hiddenGroupIds' ||
+              key === 'hiddenLayerIds' ||
+              key === 'activeLayerIds'
+            ) {
+              return new Set(value)
+            }
+            return value
+          },
+        }),
       },
-      updateHiddenLayerIds: (hiddenLayerIds) => {
-        set({ hiddenLayerIds }, false, 'updateHiddenLayerIds')
-      },
-      updateActiveLayerIds: (activeLayerIds) => {
-        set({ activeLayerIds }, false, 'updateActiveLayerIds')
-      },
-    }),
+    ),
     {
       name: 'reconstruction-map-config',
       enabled: import.meta.env.DEV,

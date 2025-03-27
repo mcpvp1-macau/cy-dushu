@@ -28,6 +28,11 @@ const LayerOverlay: FC<PropsType> = () => {
           updateRightMode(RightModeEnum.POINT_DETAIL)
           updateDetailId(overlayId)
         }
+        if (id?.startsWith('reconstruction--')) {
+          const overlayId = id.slice('reconstruction--'.length)
+          updateRightMode(RightModeEnum.RECONSTRUCTION_DETAIL)
+          updateDetailId(overlayId)
+        }
       }
     }, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK)
     return () => {

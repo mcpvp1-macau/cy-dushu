@@ -1,29 +1,30 @@
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
+import MapInfo from './MapInfo'
+import DrawArea from './DrawArea'
 
 type PropsType = unknown
+/**最大支持重建面积，单位km² */
+const MAX_AREA = 1
+
 const UavReconstruction: FC<PropsType> = memo(() => {
-  const { t } = useTranslation()
-
-  /**最大支持重建面积，单位km² */
-  const MAX_AREA = 20
-
   const enableReconstruction = useUavControlRoomStore(
     (s) => s.enableReconstruction,
   )
-  const reconstructionState = useState<
-    'start' | 'drawing' | 'setting' | 'max' | 'reconstructing'
-  >('start')
+  const [state, setState] = useState<
+    | 'drawing'
+    | 'setting'
+    | 'error_max'
+    | 'reconstructing'
+    | 'reconstruction_end'
+  >('drawing')
 
   return (
     <>
       {enableReconstruction && (
-        <div
-          className="absolute p-6 top-16 left-1/2 -translate-x-1/2 w-4/5 text-center"
-          style={{ backgroundColor: '#0009' }}
-        >
-          {t('controlRoom.uav.service.reconstruction.startInfo') +
-            ` ${MAX_AREA}km²`}
-        </div>
+        <>
+          <MapInfo state={state} MAX_AREA={MAX_AREA} />
+          <DrawArea setState={setState} MAX_AREA={MAX_AREA} />
+        </>
       )}
     </>
   )
