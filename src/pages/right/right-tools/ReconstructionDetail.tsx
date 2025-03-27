@@ -56,6 +56,7 @@ const ReconstructionDetail: FC = () => {
     await updateLayer({
       overlayId: layer.overlayId,
       overlayName: value.overlayName || '',
+      layerId: layer.layerId,
     })
     updateLayers()
   }
