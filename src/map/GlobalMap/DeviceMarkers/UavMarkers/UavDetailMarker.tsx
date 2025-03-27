@@ -9,6 +9,7 @@ import { CameraVertexPicker } from '@/utils/cesium/camera/camera-vertex-pick'
 import { useCesium } from 'resium'
 import { limitNum } from '@/utils/math'
 import useCollectCameraScanAreas from '@/hooks/device/useCollectCameraScanAreas'
+import CameraGroundFrustum from '@/components/map/device/CameraGroundFrustum'
 
 type PropsType = {
   deviceId: string
@@ -60,7 +61,6 @@ const UavDetailMarker: FC<PropsType> = memo(({ deviceId }) => {
   }, [deviceId])
 
   useCollectCameraScanAreas(gimbalPick, (scanArea) => {
-    // console.log('scanArea', scanArea)
     useMapDevicesStore.getState().updateScanAreas({
       ...useMapDevicesStore.getState().scanAreas,
       [deviceId]: scanArea,
@@ -90,6 +90,15 @@ const UavDetailMarker: FC<PropsType> = memo(({ deviceId }) => {
         <HistoryTrack key={index} value={track} />
       ))}
       {realTrack.length > 1 && <HistoryTrack value={realTrack} useCallback />}
+      {gimbalPick.leftTop &&
+        gimbalPick.rightTop &&
+        gimbalPick.rightBottom &&
+        gimbalPick.leftBottom && (
+          <CameraGroundFrustum
+            gimbalPick={gimbalPick as any}
+            position={[state.longitude, state.latitude, state.altitude ?? 0]}
+          />
+        )}
     </>
   )
 })

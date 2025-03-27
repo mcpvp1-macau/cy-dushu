@@ -5,6 +5,7 @@ import * as turf from '@turf/turf'
 import { useCesium } from 'resium'
 import { attempt } from 'lodash'
 import * as Cesium from 'cesium'
+import { makeMemoCallbackProperty } from '@/utils/cesium/memoCallbackProperty'
 
 const Polygon: FC<{
   polygon: number[][]
@@ -12,33 +13,27 @@ const Polygon: FC<{
   const { viewer } = useCesium()
 
   const polygonRef = useLatest(polygon)
-  const lastResult = useRef<Cesium.Cartesian3[] | null>(null)
-  const lastT = useRef(0)
 
   useEffect(() => {
     if (!viewer) {
       return
     }
 
-    const position = new Cesium.CallbackProperty(() => {
-      if (polygonRef.current.length < 2) {
-        return {
-          positions: Cesium.Cartesian3.fromDegreesArray([0, 0, 0, 0]),
+    const position = makeMemoCallbackProperty(
+      () => {
+        if (polygonRef.current.length < 2) {
+          return {
+            positions: Cesium.Cartesian3.fromDegreesArray([0, 0, 0, 0]),
+          }
         }
-      }
-      const now = Date.now()
-      // 如果上次计算的时间和当前时间相差小于 100ms，则返回上次计算的结果
-      if (now - lastT.current < 100 && lastResult.current) {
-        return { positions: lastResult.current }
-      }
-      // 否则重新计算
-      const result = Cesium.Cartesian3.fromDegreesArray(
-        [...polygonRef.current].flat(),
-      )
-      lastResult.current = result
-      lastT.current = now
-      return { positions: result }
-    }, false)
+        const result = Cesium.Cartesian3.fromDegreesArray(
+          [...polygonRef.current].flat(),
+        )
+        return { positions: result }
+      },
+      false,
+      () => [polygonRef.current],
+    )
 
     const entity = new Cesium.Entity({
       polygon: {

@@ -30,16 +30,19 @@ const HeightDashLine: FC<PropsType> = memo(
         },
       })
 
+      const p = position
+      const cartographic = Cesium.Cartographic.fromDegrees(p[0], p[1])
+
       // 航点与地形点之间的虚线
       const lineEntity = viewer.entities.add({
         polyline: {
           positions: Cesium.Cartesian3.fromDegreesArrayHeights([
-            position[0],
-            position[1],
-            0,
-            position[0],
-            position[1],
-            position[2],
+            p[0],
+            p[1],
+            viewer.scene.globe.getHeight(cartographic) ?? 0,
+            p[0],
+            p[1],
+            p[2],
           ]),
           width: 1,
           material: new Cesium.PolylineDashMaterialProperty({
@@ -55,7 +58,7 @@ const HeightDashLine: FC<PropsType> = memo(
           viewer.entities.remove(lineEntity)
         })
       }
-    }, [viewer, position, color])
+    }, [viewer, color, position])
 
     return null
   },
