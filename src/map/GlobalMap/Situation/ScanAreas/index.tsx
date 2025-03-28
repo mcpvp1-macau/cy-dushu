@@ -8,11 +8,13 @@ import * as Cesium from 'cesium'
 import { makeMemoCallbackProperty } from '@/utils/cesium/memoCallbackProperty'
 
 const Polygon: FC<{
-  polygon: number[][]
-}> = memo(({ polygon }) => {
+  outPolygon: number[][]
+  innerPolygon: number[][][]
+}> = memo(({ outPolygon: polygon, innerPolygon }) => {
   const { viewer } = useCesium()
 
   const polygonRef = useLatest(polygon)
+  const innerPolygonRef = useLatest(innerPolygon)
 
   useEffect(() => {
     if (!viewer) {
@@ -29,10 +31,17 @@ const Polygon: FC<{
         const result = Cesium.Cartesian3.fromDegreesArray(
           [...polygonRef.current].flat(),
         )
-        return { positions: result }
+        return {
+          positions: result,
+          holes: innerPolygonRef.current.map((e) => {
+            return {
+              positions: Cesium.Cartesian3.fromDegreesArray(e.flat()),
+            }
+          }),
+        }
       },
       false,
-      () => [polygonRef.current],
+      () => [polygonRef.current, innerPolygonRef.current],
     )
 
     const entity = new Cesium.Entity({
@@ -90,12 +99,21 @@ const ScanAreas: FC<PropsType> = memo(() => {
 
   if (scanArea?.geometry.type === 'MultiPolygon') {
     return scanArea.geometry.coordinates.map((polygon) => (
-      <Polygon key={polygon.toString()} polygon={polygon[0]} />
+      <Polygon
+        key={polygon.toString()}
+        outPolygon={polygon[0]}
+        innerPolygon={polygon.slice(1)}
+      />
     ))
   }
 
   if (scanArea?.geometry.type === 'Polygon') {
-    return <Polygon polygon={scanArea.geometry.coordinates[0]} />
+    return (
+      <Polygon
+        outPolygon={scanArea.geometry.coordinates[0]}
+        innerPolygon={scanArea.geometry.coordinates.slice(1)}
+      />
+    )
   }
 
   return null

@@ -2,13 +2,15 @@ import useGlobalWsStore, {
   useRealOnlineStatus,
 } from '@/store/useGlobalWebSocket.store'
 import icon from '/images/marker/icon/uav3.svg'
-import { Billboard } from 'resium'
+import { Billboard, useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
 import { DeviceStatusEnum } from '@/enum/device'
 import { deviceStatusFilter } from '@/pages/situation/source/utils'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
 import HeightDashLine from '@/map/CesiumMap/components/service/common/HeightDashLine'
+import { useShallow } from 'zustand/react/shallow'
+import { round } from 'lodash'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -18,14 +20,17 @@ type PropsType = {
 const UavMarker: FC<PropsType> = memo(({ data }) => {
   const { deviceId } = data
 
-  const properties = useGlobalWsStore(
-    (s) => s.deviceRealtimeProperties[data.deviceId]?.properties,
+  const { realLon, realLat, realHeading, realAlt } = useGlobalWsStore(
+    useShallow((s) => {
+      const p = s.deviceRealtimeProperties[data.deviceId]?.properties
+      return {
+        realLon: round(p?.longitude ?? 0, 5),
+        realLat: round(p?.latitude ?? 0, 5),
+        realHeading: round(p?.uavYaw ?? 0, 5),
+        realAlt: round(p?.altitude ?? 0, 1),
+      }
+    }),
   )
-
-  const realLon = properties?.longitude
-  const realLat = properties?.latitude
-  const realHeading = properties?.uavYaw
-  const realAlt = properties?.altitude
 
   const lng = realLon || data.longitude
   const lat = realLat || data.latitude
@@ -36,7 +41,7 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
   const isHidden = useDeviceListConfigStore((s) => s.hiddenDeviceIds[deviceId])
 
   const status = useRealOnlineStatus(deviceId)
-
+  const { viewer } = useCesium()
   if (
     isHidden || // 隐藏
     (isOnline && status !== DeviceStatusEnum.ONLINE) || // 在线状态不显示
@@ -50,15 +55,20 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
     return null
   }
 
+  const globeHeight =
+    viewer?.scene.globe.getHeight(
+      Cesium.Cartographic.fromDegrees(lng || 120, lat || 30),
+    ) ?? 0
+
+  const alt = Math.max(globeHeight, realAlt ?? 0)
+
+  const position = Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30, alt)
+
   return (
     <>
       <Billboard
         id={`device--${data.deviceType}--${data.deviceName}--${data.deviceId}--${lng}--${lat}`}
-        position={Cesium.Cartesian3.fromDegrees(
-          lng || 120,
-          lat || 30,
-          realAlt || 0,
-        )}
+        position={position}
         image={icon}
         width={28}
         height={28}
@@ -66,19 +76,10 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
         heightReference={Cesium.HeightReference.NONE}
         rotation={Cesium.Math.toRadians(-realHeading || 0)}
       />
-      <DeviceLabel
-        text={data.deviceName}
-        id={deviceId}
-        position={Cesium.Cartesian3.fromDegrees(
-          lng || 120,
-          lat || 30,
-          realAlt || 0,
-        )}
-      />
-      <HeightDashLine
-        position={[lng || 120, lat || 30, realAlt || 0]}
-        color="#fff"
-      />
+      <DeviceLabel text={data.deviceName} id={deviceId} position={position} />
+      {alt !== globeHeight && (
+        <HeightDashLine position={[lng || 120, lat || 30, alt]} color="#fff" />
+      )}
     </>
   )
 })
