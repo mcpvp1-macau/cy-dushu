@@ -58,8 +58,8 @@ const AsideButtons: FC<PropsType> = memo(() => {
         >
           {t('controlRoom.uav.service.boxZoom.title')}
         </Button>
-        <IntelligentPhotography postServiceFn={postSerivce} />
-        {/* <IntelligentPhotographyV1 postServiceFn={postSerivce} /> */}
+        {/* <IntelligentPhotography postServiceFn={postSerivce} /> */}
+        <IntelligentPhotographyV1 postServiceFn={postSerivce} />
         <Gamepad />
       </div>
       <div className="flex justify-between gap-2.5">
