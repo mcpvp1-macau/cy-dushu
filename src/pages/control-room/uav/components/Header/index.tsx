@@ -6,7 +6,10 @@ import SignalStrengthIcon from '@/components/device/SignalStrength'
 import IconButton from '@/components/ui/button/IconButton'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import JCXT from '@/pages/right/DeviceDetail/UavAirportDetail/components/RemoteDebug/icons/JCXT'
-import { useUavControlRoomStore as useS } from '@/store/context-store/useUavControlRoom.store'
+import {
+  useUavControlRoomStore as useS,
+  useUavControlRoomStore,
+} from '@/store/context-store/useUavControlRoom.store'
 import { Tooltip } from 'antd'
 import { isNil } from 'lodash'
 import { useShallow } from 'zustand/react/shallow'
@@ -323,6 +326,8 @@ const ControlRoomUavHeader: FC = memo(() => {
 
   const appHeader = document.getElementById('app-header-center')
 
+  const updateLinks = useUavControlRoomStore((s) => s.updateLinks)
+
   const h = (
     <header className="flex justify-between items-center text-sm px-3">
       {appHeader ? <HeaderLeft /> : <div />}
@@ -334,6 +339,7 @@ const ControlRoomUavHeader: FC = memo(() => {
                 productKey={productKey}
                 deviceId={deviceId}
                 className="text-fore"
+                onLinksChange={updateLinks}
               />
               <Signal14G />
               <SDRStrength />

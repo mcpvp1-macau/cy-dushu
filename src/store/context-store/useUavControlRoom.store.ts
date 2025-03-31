@@ -70,6 +70,8 @@ type StateType = {
   enableSmartTrack: boolean
   /**是否开启三维重建 */
   enableReconstruction: boolean
+  /** 双链路 */
+  links: API_DEVICE.domain.DeviceLink[]
 }
 
 type ActionsType = {
@@ -101,6 +103,8 @@ type ActionsType = {
   updateEnableSmartTrack: (enable?: boolean) => void
   /**更新三维重建 */
   updateEnableReconstruction: (enable: boolean) => void
+  /** 更新双链路 */
+  updateLinks: (links: StateType['links']) => void
 }
 
 type WsSendersType = {
@@ -142,6 +146,7 @@ const createInitialState = () =>
     historyTracks: [],
     enableSmartTrack: false,
     enableReconstruction: false,
+    links: [],
   } as StateType)
 
 export const createUavControlRoomStore = (senders: WsSendersType) => {
@@ -288,6 +293,9 @@ export const createUavControlRoomStore = (senders: WsSendersType) => {
             false,
             'updateEnableReconstruction',
           )
+        },
+        updateLinks: (links) => {
+          set({ links }, false, 'updateLinks')
         },
       }),
       {

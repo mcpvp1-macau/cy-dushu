@@ -12,7 +12,7 @@ import Gamepad from './Gamepad'
 import Takeoff from './Takeoff'
 import IntelligentPhotographyV1 from './IntelligentPhotographV1'
 import PointFly from './PointFly'
-import IntelligentPhotography from './IntelligentPhotograph'
+// import IntelligentPhotography from './IntelligentPhotograph'
 
 type PropsType = unknown
 

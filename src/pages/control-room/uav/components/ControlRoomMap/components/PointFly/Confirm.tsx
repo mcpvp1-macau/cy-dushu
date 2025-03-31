@@ -47,9 +47,14 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
     { setTrue: setParamsOpenTrue, setFalse: setParamsOpenFalse },
   ] = useBoolean(false)
 
+  const links = useUavControlRoomStore((s) => s.links)
+
   const handleConfirm = async (data) => {
     try {
-      if (parentDeivceDetail) {
+      if (
+        parentDeivceDetail &&
+        links.some((e) => e.name.toUpperCase() === 'DRC')
+      ) {
         // 调用父设备的 gotoPosition 服务
         await postServiceHandler(
           parentDeivceDetail.deviceModel.productKey,
