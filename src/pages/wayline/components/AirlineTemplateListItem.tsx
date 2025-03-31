@@ -92,7 +92,7 @@ export const WaylineIcon: FC<{ type: string }> = ({ type }) => {
         waypoint: <IconWaylineAirpoint />,
         fixed_point_cruise: <IconRebotDogWayline />,
         area_waypoint: <MenuIconAirline />,
-        swarm_wayline: <IconSwarm />,
+        cluster_wayline: <IconSwarm />,
       } as Record<string, ReactNode>
     )[type] || <QuestionCircleFilled />
   )
@@ -104,7 +104,7 @@ export const getWaylineEditURL = (type: string) => {
       waypoint: '/wayline/edit',
       fixed_point_cruise: '/wayline/rebot-dog-wayline-edit',
       area_waypoint: '/wayline/area-wayline-edit',
-      swarm_wayline: '/wayline/swarm-wayline-edit',
+      cluster_wayline: '/wayline/swarm-wayline-edit',
     }[type] || '/404'
   )
 }

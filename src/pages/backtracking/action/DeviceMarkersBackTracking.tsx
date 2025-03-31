@@ -39,8 +39,12 @@ type DeviceBackItem = {
  */
 const DeviceMarkersBackTracking: FC<PropsType> = memo(
   ({ deviceId, deviceIds, onClick }) => {
-    const dataTime = useBackTrackingStore((s) => s.currentTime.format('YYYY-MM-DD HH:mm:ss'))
-    const startTime = useBackTrackingStore((s) => s.timeRange[0].format('YYYY-MM-DD HH:mm:ss'))
+    const dataTime = useBackTrackingStore((s) =>
+      s.currentTime.format('YYYY-MM-DD HH:mm:ss'),
+    )
+    const startTime = useBackTrackingStore((s) =>
+      s.timeRange[0].format('YYYY-MM-DD HH:mm:ss'),
+    )
     const { viewer } = useCesium()
     const { data, run } = useRequest(
       async () => {
@@ -120,7 +124,7 @@ const DeviceMarkersBackTracking: FC<PropsType> = memo(
                     style={Cesium.LabelStyle.FILL_AND_OUTLINE}
                     heightReference={Cesium.HeightReference.NONE}
                     distanceDisplayCondition={
-                      new Cesium.DistanceDisplayCondition(0, 500_000)
+                      new Cesium.DistanceDisplayCondition(0, 200_000)
                     }
                   />
                 </>

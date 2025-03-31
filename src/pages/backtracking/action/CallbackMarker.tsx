@@ -50,7 +50,7 @@ const CallbackMarker: React.FC<PropsType> = memo(
             heightReference: Cesium.HeightReference.NONE,
             distanceDisplayCondition: new Cesium.DistanceDisplayCondition(
               0,
-              500_000,
+              200_000,
             ),
             style: Cesium.LabelStyle.FILL_AND_OUTLINE,
             outlineColor: Cesium.Color.fromCssColorString('#000'),

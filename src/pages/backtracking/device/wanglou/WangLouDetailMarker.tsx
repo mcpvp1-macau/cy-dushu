@@ -138,7 +138,7 @@ const WangLouDetailMarker: FC<PropsType> = memo(() => {
             style={Cesium.LabelStyle.FILL_AND_OUTLINE}
             heightReference={Cesium.HeightReference.NONE}
             distanceDisplayCondition={
-              new Cesium.DistanceDisplayCondition(0, 500_000)
+              new Cesium.DistanceDisplayCondition(0, 200_000)
             }
           />
         </LabelCollection>

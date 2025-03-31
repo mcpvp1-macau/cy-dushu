@@ -5,10 +5,7 @@ import { useTitle } from 'ahooks'
 import GlobalMap from './map/GlobalMap'
 import { message, notification } from 'antd'
 import { AppMsgContext, msgMitt } from './hooks/useAppMsg'
-import {
-  NotificationContext,
-  notificationMitt,
-} from './hooks/useNotification.ts'
+import { NotificationContext } from './hooks/useNotification.ts'
 import GlobalState from './components/GlobalState'
 import Right from './pages/right'
 import AppViewSuspense from './components/AppViewSuspense'
