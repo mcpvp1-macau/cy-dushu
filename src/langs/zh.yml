@@ -508,6 +508,7 @@ common:
   hello: 您好
   params: 参数
   debug: 调试
+  event: 事件
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索

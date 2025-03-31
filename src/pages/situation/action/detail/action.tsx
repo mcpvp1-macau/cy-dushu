@@ -9,6 +9,7 @@ import AppSpin from '@/components/AppSpin'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import KCYPPanel from './components/kcyp/Panel'
 import { lazy } from 'react'
+import EventDetail from '@/pages/events/components/EventDetail'
 
 const ChildActions = lazy(
   () => import('./components/ChildActions/ChildActions'),
@@ -47,6 +48,20 @@ const PageActionDetailSub: FC<PropsType> = memo(
     const items = useMemo(() => {
       if (!actionDetail?.type) {
         return []
+      }
+
+      const items: {
+        label: string
+        key: string
+        children: JSX.Element
+      }[] = []
+
+      if (actionDetail.eventId) {
+        items.push({
+          label: t('common.event'),
+          key: 'event',
+          children: <EventDetail eventId={actionDetail.eventId} useCol useGo />,
+        })
       }
 
       const kcyp = {
@@ -101,13 +116,14 @@ const PageActionDetailSub: FC<PropsType> = memo(
           </AppViewSuspense>
         ),
       }
+
       if (actionDetail.type === 'kcyp_action') {
-        return [kcyp, task, aiResult, log]
+        return items.concat([kcyp, task, aiResult, log])
       }
       if (actionDetail.type === 'xiaoshan_kcyp_action') {
-        return [kcyp, task, aiResult, log]
+        items.concat([kcyp, task, aiResult, log])
       }
-      return [task, aiResult, log]
+      return items.concat([task, aiResult, log])
     }, [actionDetail?.type])
 
     return (

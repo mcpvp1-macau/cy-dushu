@@ -5,7 +5,7 @@ export enum WaylineEnum {
   /** 面状航线 */
   AreaWayline = 'area_waypoint',
   /** 蜂群航线 */
-  SwarmWayline = 'swarm_wayline',
+  SwarmWayline = 'cluster_wayline',
   /** 机器狗航线 */
   RebotDogWayline = 'fixed_point_cruise',
 }
