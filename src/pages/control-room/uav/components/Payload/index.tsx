@@ -1,10 +1,11 @@
 import AppCollapse from '@/components/AppCollapse'
 import AppEmpty from '@/components/AppEmpty'
+import AppViewSuspense from '@/components/AppViewSuspense'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { emtpyArray } from '@/constant/data'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { CollapseProps } from 'antd'
-import { lazy, Suspense } from 'react'
+import { lazy } from 'react'
 
 const MMC_Gimbal_P3 = lazy(() => import('./MMC_Gimbal_P3'))
 const MMC_Gimbal_D4 = lazy(() => import('./MMC_Gimbal_D4'))
@@ -41,7 +42,6 @@ const labelMap: { [key in MountType]: string } = {
 const UavPayload: FC<PropsType> = memo(({ productKey }) => {
   // TODO mock 挂载
   const mount: string[] = useUavControlRoomStore((s) => s.state.mounts) || []
-  console.log('mount', mount)
   // || [
   //   'PARACHUTE',
   //   'MMC_Gimbal_P3',
@@ -68,41 +68,13 @@ const UavPayload: FC<PropsType> = memo(({ productKey }) => {
   const MountsChildren: {
     [key in MountType]: React.ReactNode
   } = {
-    PARACHUTE: (
-      <Suspense fallback={'loading...'}>
-        <PARACHUTE />
-      </Suspense>
-    ),
-    MMC_Gimbal_P3: (
-      <Suspense fallback={'loading...'}>
-        <MMC_Gimbal_P3 />
-      </Suspense>
-    ),
-    MMC_Gimbal_Z60R: (
-      <Suspense fallback={'loading...'}>
-        <MMC_Gimbal_Z60R />
-      </Suspense>
-    ),
-    MMC_Gimbal_Z30Pro: (
-      <Suspense fallback={'loading...'}>
-        <MMC_Gimbal_Z30Pro />
-      </Suspense>
-    ),
-    MMC_Gimbal_D4: (
-      <Suspense fallback={'loading...'}>
-        <MMC_Gimbal_D4 />
-      </Suspense>
-    ),
-    MMC_Gimbal_LP12_1: (
-      <Suspense fallback={'loading...'}>
-        <MMC_Gimbal_LP12_1 />
-      </Suspense>
-    ),
-    MMC_Gimbal_LP12_2: (
-      <Suspense fallback={'loading...'}>
-        <MMC_Gimbal_LP12_2 />
-      </Suspense>
-    ),
+    PARACHUTE: <PARACHUTE />,
+    MMC_Gimbal_P3: <MMC_Gimbal_P3 />,
+    MMC_Gimbal_Z60R: <MMC_Gimbal_Z60R />,
+    MMC_Gimbal_Z30Pro: <MMC_Gimbal_Z30Pro />,
+    MMC_Gimbal_D4: <MMC_Gimbal_D4 />,
+    MMC_Gimbal_LP12_1: <MMC_Gimbal_LP12_1 />,
+    MMC_Gimbal_LP12_2: <MMC_Gimbal_LP12_2 />,
   }
 
   const collapseItems: CollapseProps['items'] =
@@ -110,7 +82,7 @@ const UavPayload: FC<PropsType> = memo(({ productKey }) => {
       return {
         key: item,
         label: labelMap[item],
-        children: MountsChildren[item],
+        children: <AppViewSuspense>{MountsChildren[item]}</AppViewSuspense>,
       }
     }) || emtpyArray
 
