@@ -1,4 +1,7 @@
-import useWaylinesStore, { Wayline } from '@/store/map/useWaylines.store'
+import useWaylinesStore, {
+  SwarmPolygon,
+  Wayline,
+} from '@/store/map/useWaylines.store'
 import { shouldJson } from '@/utils/json'
 import { useUpdate } from 'ahooks'
 import { uniqBy } from 'lodash'
@@ -24,7 +27,13 @@ const useVisibleCheck = (
       oldWaylines.map((e) => [e.id, e]),
     )
 
+    const oldSwarmPolygons = useWaylinesStore.getState().swarmPolygons
+    const oldSwarmPolygonMap = new Map<string, SwarmPolygon>(
+      oldSwarmPolygons.map((e) => [e.id, e]),
+    )
+
     let waylines: Wayline[] = []
+    let swarmPolygons: SwarmPolygon[] = []
     for (const task of data) {
       const info = shouldJson(task.taskTemplateInfo)
       if (!info || !task.taskTplId || !visibleSet.current.has(task.id)) {
@@ -33,6 +42,7 @@ const useVisibleCheck = (
       const waylineType = info.waylineType ?? 'waypoint'
       const found = oldWaylineMap.get(task.taskTplId)
       if (found) {
+        // 复用之前，有利于 React Equal
         waylines.push(found)
       } else {
         waylines.push({
@@ -46,9 +56,34 @@ const useVisibleCheck = (
           taskBasic: shouldJson(info.taskBasic) ?? {},
         })
       }
+
+      // 处理 集群航线相关的
+      const resolvedGroupIds = new Set<string>()
+      if (
+        task.extra.actionItemGroupId &&
+        !resolvedGroupIds.has(task.extra.actionItemGroupId) // 已处理
+      ) {
+        resolvedGroupIds.add(task.extra.actionItemGroupId)
+
+        const found = oldSwarmPolygonMap.get(task.extra.actionItemGroupId)
+        if (found) {
+          swarmPolygons.push(found)
+        } else {
+          const taskBasic = shouldJson(info.taskBasic)
+          if (taskBasic?.polygon) {
+            swarmPolygons.push({
+              id: task.extra.actionItemGroupId,
+              points: taskBasic.polygon,
+            })
+          }
+        }
+      }
     }
     waylines = uniqBy(waylines, 'id')
     useWaylinesStore.getState().updateWaylines(waylines)
+
+    swarmPolygons = uniqBy(swarmPolygons, 'id')
+    useWaylinesStore.getState().updateSwarmPolygons(swarmPolygons)
   }
 
   useEffect(() => {

@@ -60,7 +60,11 @@ const PageActionDetailSub: FC<PropsType> = memo(
         items.push({
           label: t('common.event'),
           key: 'event',
-          children: <EventDetail eventId={actionDetail.eventId} useCol useGo />,
+          children: (
+            <div className="p-3">
+              <EventDetail eventId={actionDetail.eventId} useCol useGo />,
+            </div>
+          ),
         })
       }
 

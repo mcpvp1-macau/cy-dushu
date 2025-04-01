@@ -21,6 +21,7 @@ import { isNil } from 'lodash'
 
 type PropsType = {
   data: API_ACTION_ITEM.domain.ActionItem
+  noEdit?: boolean
   visible?: boolean
   onVisibleChange?: (visible: boolean) => void
 }
@@ -48,7 +49,7 @@ const statusColor: Record<string, string> = {
 }
 
 /** 操作栏 */
-const OperatorBtns: FC<PropsType> = ({ data }) => {
+const OperatorBtns: FC<PropsType> = ({ data, noEdit }) => {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const msgApi = useAppMsg()
@@ -98,16 +99,20 @@ const OperatorBtns: FC<PropsType> = ({ data }) => {
 
       return (
         <div className="flex gap-2">
-          <Button
-            size="small"
-            disabled={isNil(data.taskTplId)}
-            icon={!isNil(data.taskTplId) && <WaylineIcon type={type} />}
-            onClick={() => {
-              navigate(`${getWaylineEditURL(type)}/${data.taskTplId}${params}`)
-            }}
-          >
-            {t('action.detail.task.edit.title')}
-          </Button>
+          {!noEdit && (
+            <Button
+              size="small"
+              disabled={isNil(data.taskTplId)}
+              icon={!isNil(data.taskTplId) && <WaylineIcon type={type} />}
+              onClick={() => {
+                navigate(
+                  `${getWaylineEditURL(type)}/${data.taskTplId}${params}`,
+                )
+              }}
+            >
+              {t('action.detail.task.edit.title')}
+            </Button>
+          )}
           <Button size="small" onClick={() => handleClick('start')}>
             {t('action.detail.task.start.title')}
           </Button>
@@ -141,7 +146,7 @@ const OperatorBtns: FC<PropsType> = ({ data }) => {
 
 /** 子任务 */
 const ChildAction: FC<PropsType> = memo(
-  ({ data, visible, onVisibleChange }) => {
+  ({ data, visible, onVisibleChange, noEdit }) => {
     const { t, i18n } = useTranslation()
 
     // 执行人员
@@ -159,12 +164,7 @@ const ChildAction: FC<PropsType> = memo(
     }
 
     return (
-      <li
-        className={clsx(
-          'flex flex-col p-3 text-fore rounded-[3px] bg-ground-1 max-w-[325px]',
-          'border border-ground-4 border-solid',
-        )}
-      >
+      <>
         <div className="flex items-center justify-between mb-0.5">
           <div className="flex gap-2">
             <IconButton
@@ -176,7 +176,7 @@ const ChildAction: FC<PropsType> = memo(
             <span className="text-white">{data.actionItemName || '-'}</span>
           </div>
           <div>
-            <OperatorBtns data={data} />
+            <OperatorBtns data={data} noEdit={noEdit} />
           </div>
         </div>
         <div>
@@ -209,7 +209,7 @@ const ChildAction: FC<PropsType> = memo(
             </span>
           </p>
         </div>
-      </li>
+      </>
     )
   },
 )

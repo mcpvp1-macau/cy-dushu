@@ -60,7 +60,7 @@ const Waypoint: FC<{
           pointY,
           pointZ,
         ]),
-        width: 2,
+        width: 1,
         material: new Cesium.PolylineDashMaterialProperty({
           color: Cesium.Color.fromCssColorString('#fff'),
           dashLength: 8,

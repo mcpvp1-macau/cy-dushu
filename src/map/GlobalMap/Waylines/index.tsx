@@ -2,11 +2,14 @@ import { WaylineEnum } from '@/constant/uav/wayline'
 import UavWayline from '@/map/CesiumMap/components/service/Wayline/UavAirline'
 import UavAreaWayline from '@/map/CesiumMap/components/service/Wayline/UavAreaWayline'
 import useWaylinesStore from '@/store/map/useWaylines.store'
+import GroundPolygon from '@/map/CesiumMap/components/service/common/GroundPolygon'
 
 type PropsType = unknown
 
 const Waylines: FC<PropsType> = memo(() => {
   const waylines = useWaylinesStore((s) => s.waylines)
+
+  const swarmPolygons = useWaylinesStore((s) => s.swarmPolygons)
 
   return (
     <>
@@ -23,6 +26,9 @@ const Waylines: FC<PropsType> = memo(() => {
             />
           )
         }
+      })}
+      {swarmPolygons.map((e) => {
+        return <GroundPolygon key={e.id} positions={e.points} />
       })}
     </>
   )

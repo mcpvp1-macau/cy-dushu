@@ -165,6 +165,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
     }
     if (airline) {
       data['templateId'] = airline.templateId
+      data['waylineTemplateId'] = airline.waylineTemplateId
       data['taskTemplateInfo'] = {
         taskBasic: airline.taskBasic,
         defaultDeviceId: val.deviceIds,

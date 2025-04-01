@@ -6,6 +6,8 @@ import { Spin } from 'antd'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useBackTrackingStore } from '@/store/context-store/useBackTracking.store'
 import useVisibleCheck from './useVisibleCheck'
+import { shouldJson } from '@/utils/json'
+import ChildActionGroup from './ChildActionGroup'
 
 type PropsType = {
   actionId: string
@@ -27,6 +29,11 @@ const ChildActions: FC<PropsType> = memo(({ actionId, isBacktracking }) => {
         if (!Array.isArray(d.data.rows)) {
           return []
         }
+        d.data.rows = d.data.rows.map((item) => ({
+          ...item,
+          taskTemplateInfo: shouldJson(item.taskTemplateInfo),
+          extra: shouldJson(item.extra),
+        }))
         updateChildActions?.(d.data.rows)
         return d.data.rows
       },
@@ -36,6 +43,43 @@ const ChildActions: FC<PropsType> = memo(({ actionId, isBacktracking }) => {
 
   const { visibleSet, handleVisibleChange } = useVisibleCheck(data)
 
+  type item = API_ACTION_ITEM.domain.ActionItem
+
+  const data2 = useMemo(() => {
+    if (!data) {
+      return []
+    }
+
+    const res: (
+      | {
+          id: string
+          data: item[]
+        }
+      | item
+    )[] = []
+    const indexMap = new Map<string, item[]>()
+
+    for (const e of data) {
+      const groupdId: string | undefined = e.extra?.actionItemGroupId
+      if (groupdId) {
+        if (indexMap.has(groupdId)) {
+          indexMap.get(groupdId)!.push(e)
+        } else {
+          const group: item[] = []
+          group.push(e)
+          indexMap.set(groupdId, group)
+          res.push({
+            id: groupdId,
+            data: group,
+          })
+        }
+      } else {
+        res.push(e)
+      }
+    }
+    return res
+  }, [data])
+
   return (
     <>
       <div>
@@ -44,18 +88,35 @@ const ChildActions: FC<PropsType> = memo(({ actionId, isBacktracking }) => {
         ) : data.length === 0 ? (
           <AppEmpty />
         ) : (
-          <ScrollArea className="max-h-[330px]">
+          <ScrollArea className="max-h-[45vh]">
             <Spin spinning={isRefetching}>
               <ul className="flex flex-col gap-3 p-3">
-                {data.map((item) => (
-                  <ChildAction
-                    key={item.id}
-                    data={item}
-                    visible={visibleSet.has(item.id)}
-                    onVisibleChange={(visible) =>
-                      handleVisibleChange(item.id, visible)
-                    }
-                  />
+                {data2.map((item) => (
+                  <li
+                    key={String(item.id)}
+                    className={clsx(
+                      'flex flex-col p-3 text-fore rounded-[3px] bg-ground-1 max-w-[325px]',
+                      'border border-ground-4 border-solid',
+                    )}
+                  >
+                    {Array.isArray(item.data) ? (
+                      <ChildActionGroup
+                        data={item.data}
+                        visibleSet={visibleSet}
+                        onVisibleChange={(id, visible) =>
+                          handleVisibleChange(id, visible)
+                        }
+                      />
+                    ) : (
+                      <ChildAction
+                        data={item as item}
+                        visible={visibleSet.has((item as item).id)}
+                        onVisibleChange={(visible) =>
+                          handleVisibleChange((item as item).id, visible)
+                        }
+                      />
+                    )}
+                  </li>
                 ))}
               </ul>
             </Spin>
