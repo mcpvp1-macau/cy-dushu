@@ -95,7 +95,7 @@ const OperatorBtns: FC<PropsType> = ({ data, noEdit }) => {
           params += `&camera=${JSON.stringify(info.camera)}`
         }
       }
-      const type = shouldJson(info.taskBasic)?.waylineType ?? 'waypoint'
+      const type = shouldJson(info?.taskBasic)?.waylineType ?? 'waypoint'
 
       return (
         <div className="flex gap-2">

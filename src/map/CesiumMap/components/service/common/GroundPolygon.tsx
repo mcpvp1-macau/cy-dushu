@@ -11,7 +11,7 @@ type PropsType = {
 const GroundPolygon: FC<PropsType> = memo(
   ({
     positions,
-    fillColor = '#3b82f666',
+    fillColor = '#3b82f633',
     outlineColor = '#3b82f6',
     outlineWidth = 2,
   }) => {
@@ -46,10 +46,9 @@ const GroundPolygon: FC<PropsType> = memo(
         appearance: new Cesium.MaterialAppearance({
           translucent: true,
           material: Cesium.Material.fromType(Cesium.Material.ColorType, {
-            color: Cesium.Color.fromCssColorString(fillColor).withAlpha(0.3),
+            color: Cesium.Color.fromCssColorString(fillColor),
           }),
         }),
-        allowPicking: true,
       })
       const outlinePrimitive = new Cesium.GroundPolylinePrimitive({
         geometryInstances: [instance2],
