@@ -65,26 +65,27 @@ const UavDetail: FC<PropsType> = memo(
           >
             <Header />
           </CloseableHeader>
-          <div className="px-3 mb-3">
-            <Segmented
-              block
-              value={tab}
-              options={[
-                {
-                  label: t('common.detail'),
-                  value: 0,
-                  icon: <IconDetail />,
-                },
-                {
-                  label: t('common.data'),
-                  value: 1,
-                  icon: <IconData />,
-                },
-              ]}
-              onChange={setTab}
-            />
-          </div>
           <ScrollArea className="grow">
+            <div className="px-3 mb-3">
+              <Segmented
+                block
+                value={tab}
+                options={[
+                  {
+                    label: t('common.detail'),
+                    value: 0,
+                    icon: <IconDetail />,
+                  },
+                  {
+                    label: t('common.data'),
+                    value: 1,
+                    icon: <IconData />,
+                  },
+                ]}
+                onChange={setTab}
+              />
+            </div>
+
             {tab === 0 ? <UavDetailDetail data={data} /> : <UavDetailData />}
           </ScrollArea>
         </div>
