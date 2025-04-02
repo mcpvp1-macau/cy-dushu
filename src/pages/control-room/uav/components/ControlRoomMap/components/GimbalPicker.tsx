@@ -1,30 +1,25 @@
-import MapUavRealMarker from '@/components/map/device/UavRealMarker'
-import HistoryTrack from '@/components/map/HistoryTrack'
-import { emtpyObject } from '@/constant/data'
-import { getGimbalInfo } from '@/constant/uav/gimbal'
-import useRealTrack3D from '@/hooks/device/useRealTrack3D'
-import HeightDashLine from '@/map/CesiumMap/components/service/common/HeightDashLine'
-import useMapDevicesStore from '@/store/map/useMapDevices.store'
-import { CameraVertexPicker } from '@/utils/cesium/camera/camera-vertex-pick'
-import { useCesium } from 'resium'
-import { limitNum } from '@/utils/math'
-import useCollectCameraScanAreas from '@/hooks/device/useCollectCameraScanAreas'
 import CameraGroundFrustum from '@/components/map/device/CameraGroundFrustum'
+import { getGimbalInfo } from '@/constant/uav/gimbal'
+import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
+import { CameraVertexPicker } from '@/utils/cesium/camera/camera-vertex-pick'
+import { limitNum } from '@/utils/math'
+import { useCesium } from 'resium'
 import { useShallow } from 'zustand/react/shallow'
 
-type PropsType = {
-  deviceId: string
-}
+type PropsType = unknown
 
-const UavDetailMarker: FC<PropsType> = memo(({ deviceId }) => {
-  const state = useMapDevicesStore(
-    useShallow((s) => s.uavStates[deviceId] ?? emtpyObject),
-  )
-
-  const { historyTrack, realTrack, clear } = useRealTrack3D(
-    state.longitude ?? 0,
-    state.latitude ?? 0,
-    state.altitude ?? 0,
+const GimbalPicker: FC<PropsType> = memo(() => {
+  const state = useUavControlRoomStore(
+    useShallow((s) => ({
+      longitude: s.state.longitude ?? 0,
+      latitude: s.state.latitude ?? 0,
+      altitude: s.state.altitude ?? 0,
+      gimbalYaw: s.state.gimbalHead ?? 0,
+      gimbalPitch: s.state.gimbalPitch ?? 0,
+      lensType: s.state.lensType ?? 'wide',
+      zoomFactor: s.state.zoomFactor ?? 1,
+      cameraType: s.state.cameraType || s.state.gimbalType,
+    })),
   )
 
   const { viewer } = useCesium()
@@ -42,7 +37,6 @@ const UavDetailMarker: FC<PropsType> = memo(({ deviceId }) => {
     }
 
     const gimbalInfo = getGimbalInfo(state.cameraType)
-
     const zoom =
       state.lensType === 'wide' ? 1 : limitNum(state.zoomFactor, 1, 200)
     let focal = gimbalInfo.wide_focal
@@ -76,40 +70,8 @@ const UavDetailMarker: FC<PropsType> = memo(({ deviceId }) => {
     return res
   }, [state])
 
-  useEffect(() => {
-    clear(true)
-  }, [deviceId])
-
-  useCollectCameraScanAreas(gimbalPick, (scanArea) => {
-    useMapDevicesStore.getState().updateScanAreas({
-      ...useMapDevicesStore.getState().scanAreas,
-      [deviceId]: scanArea,
-    })
-  })
-
-  useEffect(() => {
-    return () => {
-      const next = { ...useMapDevicesStore.getState().scanAreas }
-      delete next[deviceId]
-      useMapDevicesStore.getState().updateScanAreas(next)
-    }
-  }, [deviceId])
-
-  if (!state) {
-    return null
-  }
-
   return (
     <>
-      <HeightDashLine
-        position={[state.longitude, state.latitude, state.altitude ?? 0]}
-        color="#fff"
-      />
-      <MapUavRealMarker data={state} />
-      {historyTrack.map((track, index) => (
-        <HistoryTrack key={index} value={track} />
-      ))}
-      {realTrack.length > 1 && <HistoryTrack value={realTrack} useCallback />}
       {gimbalPick.leftTop &&
         gimbalPick.rightTop &&
         gimbalPick.rightBottom &&
@@ -123,6 +85,6 @@ const UavDetailMarker: FC<PropsType> = memo(({ deviceId }) => {
   )
 })
 
-UavDetailMarker.displayName = 'UavDetailMarker'
+GimbalPicker.displayName = 'GimmbalPicker'
 
-export default UavDetailMarker
+export default GimbalPicker

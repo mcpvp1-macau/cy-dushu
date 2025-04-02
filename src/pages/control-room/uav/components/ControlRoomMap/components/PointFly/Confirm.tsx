@@ -53,7 +53,7 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
     try {
       if (
         parentDeivceDetail &&
-        links.some((e) => e.name.toUpperCase() === 'DRC')
+        !links.some((e) => e.name.toUpperCase() === '5G')
       ) {
         // 调用父设备的 gotoPosition 服务
         await postServiceHandler(

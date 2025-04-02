@@ -1,4 +1,3 @@
-import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import MapInfo from './MapInfo'
 import DrawArea from './DrawArea'
 
@@ -7,9 +6,6 @@ type PropsType = unknown
 const MAX_AREA = 1
 
 const UavReconstruction: FC<PropsType> = memo(() => {
-  const enableReconstruction = useUavControlRoomStore(
-    (s) => s.enableReconstruction,
-  )
   const [state, setState] = useState<
     | 'drawing'
     | 'setting'
@@ -20,12 +16,8 @@ const UavReconstruction: FC<PropsType> = memo(() => {
 
   return (
     <>
-      {enableReconstruction && (
-        <>
-          <MapInfo state={state} MAX_AREA={MAX_AREA} />
-          <DrawArea setState={setState} MAX_AREA={MAX_AREA} />
-        </>
-      )}
+      <MapInfo state={state} MAX_AREA={MAX_AREA} />
+      <DrawArea setState={setState} MAX_AREA={MAX_AREA} />
     </>
   )
 })

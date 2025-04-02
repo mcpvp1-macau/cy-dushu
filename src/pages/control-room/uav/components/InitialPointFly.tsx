@@ -9,32 +9,28 @@ const InnerInitialPointFly: FC<{
   targetLng: number
   targetLat: number
 }> = memo(({ targetLng, targetLat }) => {
-  const hasControlPower = useUavControlRoomStore((s) => s.hasControlPower)
+  // const hasControlPower = useUavControlRoomStore((s) => s.hasControlPower)
 
   const updatePointFly = useUavControlRoomStore((s) => s.updatePointFly)
 
-  const idleControlTag = useIdleControlTag()
+  // const idleControlTag = useIdleControlTag()
 
   const [searchParams, setSearchParams] = useSearchParams()
 
   const msgApi = useAppMsg()
 
   useEffect(() => {
-    if (!hasControlPower && !idleControlTag) {
-      robControlPowerEmitter.emit('rob')
-    } else {
-      updatePointFly({
-        targetPosition: [targetLng, targetLat],
-        open: true,
-      })
-      // Remove targetLng and targetLat from URL params after processing
-      const newSearchParams = new URLSearchParams(searchParams)
-      newSearchParams.delete('targetLng')
-      newSearchParams.delete('targetLat')
-      setSearchParams(newSearchParams, { replace: true })
-      msgApi.info('请在地图上参考目标点和相关信息，并点击确认后开始指点飞行')
-    }
-  }, [hasControlPower, idleControlTag])
+    updatePointFly({
+      targetPosition: [targetLng, targetLat],
+      open: true,
+    })
+    // Remove targetLng and targetLat from URL params after processing
+    const newSearchParams = new URLSearchParams(searchParams)
+    newSearchParams.delete('targetLng')
+    newSearchParams.delete('targetLat')
+    setSearchParams(newSearchParams, { replace: true })
+    msgApi.info('请在地图上参考目标点和相关信息，并点击确认后开始指点飞行')
+  }, [])
 
   return null
 })
@@ -57,11 +53,11 @@ const InitialPointFly: FC<PropsType> = memo(() => {
   const targetLng = searchParams.get('targetLng')
   const targetLat = searchParams.get('targetLat')
 
-  if (go === 0) {
-    if (!targetLng || !targetLat) {
-      return null
-    }
+  if (!targetLng || !targetLat) {
+    return null
+  }
 
+  if (go === 0) {
     return (
       <XModal
         width={300}

@@ -1,6 +1,7 @@
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { useShallow } from 'zustand/react/shallow'
 import MapUavRealMarker from '@/components/map/device/UavRealMarker'
+import GimbalPicker from './GimbalPicker'
 
 type PropsType = unknown
 
@@ -10,12 +11,18 @@ const UavMarker: FC<PropsType> = memo(() => {
     useShallow((s) => ({
       longitude: s.state.longitude ?? 0,
       latitude: s.state.latitude ?? 0,
+      altitude: s.state.altitude ?? 0,
       uavYaw: s.state.uavYaw ?? 0,
       gimbalYaw: s.state.gimbalYaw ?? 0,
     })),
   )
 
-  return <MapUavRealMarker data={state} />
+  return (
+    <>
+      <GimbalPicker />
+      <MapUavRealMarker data={state} />
+    </>
+  )
 })
 
 UavMarker.displayName = 'UavMarker'

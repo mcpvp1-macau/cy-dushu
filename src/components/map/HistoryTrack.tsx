@@ -62,7 +62,7 @@ const HistoryTrack: FC<PropsType> = memo(
             positions: Cesium.Cartesian3.fromDegreesArrayHeights(
               flatten(historyTrack.map((v) => [v.lng, v.lat, v.alt ?? 0])),
             ),
-            width: 4,
+            width: 2,
             material: Cesium.Color.fromCssColorString('#000'),
             // clampToGround: true,
             zIndex: 1,

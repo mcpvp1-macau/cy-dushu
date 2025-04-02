@@ -28,7 +28,6 @@ const UavPointFlyTarget: FC<PropsType> = memo(({ position }) => {
       </BillboardCollection>
       <HistoryTrack
         color="#3d87e9"
-        useOutline
         useCallback
         value={[
           { lng, lat },

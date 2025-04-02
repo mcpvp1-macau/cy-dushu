@@ -95,7 +95,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       video: t('common.video'),
       flyParams: t('controlRoom.uav.flyParams.title'),
       flyButtons: t('controlRoom.uav.flyButtons.title'),
-      flyParamsSetting: t('controlRoom.uav.flyParamsSetting.title'),
+      flyParamsSetting: t('common.params'),
       payload: t('controlRoom.uav.payload.title'),
       ['ai-list']: t('controlRoom.uav.aiList.title'),
       ['device-data']: t('controlRoom.uav.deviceData.title'),
