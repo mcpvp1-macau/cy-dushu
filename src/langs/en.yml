@@ -258,6 +258,8 @@ action:
   item:
     time: Time
     description: Description
+    startAll: Start All
+    stopAll: Stop All
   add:
     title: Create Action
     form:

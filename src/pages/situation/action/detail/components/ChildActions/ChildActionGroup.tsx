@@ -1,7 +1,7 @@
 import { Button } from 'antd'
 import ChildAction from './ChildAction'
 import IconSwarm from '@/assets/icons/jsx/IconSwarm'
-import { startActionItem } from '@/service/modules/action-item'
+import { endActionItem, startActionItem } from '@/service/modules/action-item'
 import { Link } from 'react-router-dom'
 import { getWaylineEditURL } from '@/pages/wayline/components/AirlineTemplateListItem'
 import { WaylineEnum } from '@/constant/uav/wayline'
@@ -18,8 +18,15 @@ const ChildActionGroup: FC<PropsType> = ({
   visibleSet,
   onVisibleChange,
 }) => {
+  const { t } = useTranslation()
+
   const allowStart = useMemo(
     () => data.every((e) => e.status === 'PENDING'),
+    [data],
+  )
+
+  const allowStop = useMemo(
+    () => data.some((e) => e.status === 'RUNNING'),
     [data],
   )
 
@@ -29,6 +36,22 @@ const ChildActionGroup: FC<PropsType> = ({
     setLoading(true)
     try {
       await Promise.allSettled(data.map((e) => startActionItem(e.id)))
+      await queryClient.invalidateQueries({
+        queryKey: ['action', String(data[0].actionId), 'items'],
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleStop = async () => {
+    setLoading(true)
+    try {
+      await Promise.allSettled(
+        data
+          .filter((e) => e.status === 'RUNNING')
+          .map((e) => endActionItem(e.id)),
+      )
       await queryClient.invalidateQueries({
         queryKey: ['action', String(data[0].actionId), 'items'],
       })
@@ -48,7 +71,15 @@ const ChildActionGroup: FC<PropsType> = ({
           onClick={handleStart}
           loading={loading}
         >
-          全都开始
+          {t('action.item.startAll')}
+        </Button>
+        <Button
+          size="small"
+          disabled={!allowStop}
+          onClick={handleStop}
+          loading={loading}
+        >
+          {t('action.item.stopAll')}
         </Button>
         {waylineTemplateId && (
           <Link

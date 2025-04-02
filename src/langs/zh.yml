@@ -252,6 +252,8 @@ action:
   item:
     time: 时间
     description: 描述
+    startAll: 全部开始
+    stopAll: 全部停止
   add:
     title: 创建行动
     form:
