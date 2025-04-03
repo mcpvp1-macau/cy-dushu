@@ -221,8 +221,10 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
       message: t('mapLayer.reconstructionMap.create.success'),
       duration: 0,
       style: {
-        backgroundColor: '#53b176',
-        padding: '15px 0 10px 0',
+        backgroundColor: '#15B371',
+        padding: '8px 0',
+        width: '280px',
+        borderRadius: '4px',
       },
       icon: <></>,
     })

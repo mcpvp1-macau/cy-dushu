@@ -989,7 +989,7 @@ mapLayer:
         layerName: 三维图层名称
         groupName: 三维图层组名称
     task:
-      completed: 3D reconstruction completed
+      completed: 三维重建完成
 message:
   success:
     saveMapView: 地图视角保存成功
@@ -1065,9 +1065,11 @@ controlRoom:
           title: 虚实融合设置
       reconstruction:
         title: 三维重建
-        startInfo: 在地图规划需要重建的区域，每0.1km²预计需要30分钟，最大支持
+        startInfo1: 在地图规划需要重建的区域，每100m半径预计需要30分钟，最大支持半径为
+        startInfo2: 且半径最低为
         reconstructingInfo: 建图中
         error_max: 规划区域面积超出限制，请重新规划
+        error_min: 规划区域面积过小，请重新规划
         setting:
           title: 飞行参数设置
           flightAltitude: 飞行高度

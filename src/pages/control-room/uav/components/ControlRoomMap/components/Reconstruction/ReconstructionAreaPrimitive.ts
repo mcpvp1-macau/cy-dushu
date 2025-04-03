@@ -2,8 +2,8 @@ import * as Cesium from 'cesium'
 
 type RecursiveRequired<T> = {
   [P in keyof T]-?: T[P] extends object
-    ? RecursiveRequired<T[P]>
-    : Required<T[P]>
+  ? RecursiveRequired<T[P]>
+  : Required<T[P]>
 }
 
 /**增强多边形显示，聚合polygon/polyline，折点、边长label、面积label。更新坐标时应该传入一个新数组，否则无法更新
@@ -55,7 +55,7 @@ export default class ReconstructionAreaPrimitive {
       this.updatePolyline()
       this.updateCircle()
       this.updateLabels()
-      this.onAreaChanged && this.onAreaChanged(this.area)
+      this.onChange && this.onChange(this.area, this.radius)
       this._completed = false
     }
     // @ts-ignore
@@ -203,10 +203,13 @@ export default class ReconstructionAreaPrimitive {
     return (Math.PI * dis * dis) / 1000000
   }
 
+  /**获取当前绘制的半径，单位：m */
   get radius() {
+    if (this.positions.length < 2) return 100
+
     return Cesium.Cartesian3.distance(this._positions[0], this._positions[1])
   }
 
-  /** 监听面积变化的回调，返回面积单位为km² */
-  onAreaChanged: ((area: number) => void) | null = null
+  /** 监听面积变化的回调，返回面积单位为km²，半径单位为m */
+  onChange: ((area: number, radius: number) => void) | null = null
 }

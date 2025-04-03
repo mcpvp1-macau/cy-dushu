@@ -30,13 +30,15 @@ type PropsType = {
       | 'drawing'
       | 'setting'
       | 'error_max'
+      | 'error_min'
       | 'reconstructing'
       | 'reconstruction_end',
   ) => void
-  MAX_AREA: number
+  MAX_RADIUS: number
+  MIN_RADIUS: number
 }
 
-const DrawArea: FC<PropsType> = memo(({ setState, MAX_AREA }) => {
+const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
   const { viewer } = useCesium()
   const msgApi = useAppMsg()
   const { t } = useTranslation()
@@ -70,9 +72,11 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_AREA }) => {
     viewer?.scene.primitives.add(areaPrimitiveRef.current)
 
     // 监听绘制面积变化
-    areaPrimitiveRef.current.onAreaChanged = (area) => {
-      if (area > MAX_AREA) {
+    areaPrimitiveRef.current.onChange = (_area, radius) => {
+      if (radius > MAX_RADIUS) {
         setState('error_max')
+      } else if (radius < MIN_RADIUS) {
+        setState('error_min')
       } else {
         setState('drawing')
       }
@@ -118,8 +122,17 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_AREA }) => {
 
     // 右键结束
     handlerRef.current.setInputAction(() => {
-      if (areaPrimitiveRef.current!.area > MAX_AREA) {
-        msgApi.error('规划区域过大，请重新绘制')
+      if (areaPrimitiveRef.current!.radius > MAX_RADIUS) {
+        msgApi.error(t('controlRoom.uav.service.reconstruction.error_max'))
+        setState('drawing')
+        circleCenter.current = null
+        endPoint.current = null
+        areaPrimitiveRef.current && (areaPrimitiveRef.current.positions = [])
+      } else if (
+        areaPrimitiveRef.current!.radius < MIN_RADIUS ||
+        areaPrimitiveRef.current?.area === 0
+      ) {
+        msgApi.error(t('controlRoom.uav.service.reconstruction.error_min'))
         setState('drawing')
         circleCenter.current = null
         endPoint.current = null

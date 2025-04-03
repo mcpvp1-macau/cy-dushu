@@ -3,22 +3,28 @@ type PropsType = {
     | 'drawing'
     | 'setting'
     | 'error_max'
+    | 'error_min'
     | 'reconstructing'
     | 'reconstruction_end'
-  MAX_AREA: number
+  MAX_RADIUS: number
+  MIN_RADIUS: number
 }
-const MapInfo: FC<PropsType> = memo(({ state, MAX_AREA }) => {
+const MapInfo: FC<PropsType> = memo(({ state, MAX_RADIUS, MIN_RADIUS }) => {
   const { t } = useTranslation()
 
   const infoMsg = () => {
     switch (state) {
       case 'drawing':
         return (
-          t('controlRoom.uav.service.reconstruction.startInfo') +
-          ` ${MAX_AREA}km²`
+          t('controlRoom.uav.service.reconstruction.startInfo1') +
+          ` ${MAX_RADIUS}m ` +
+          t('controlRoom.uav.service.reconstruction.startInfo2') +
+          ` ${MIN_RADIUS}m`
         )
       case 'error_max':
         return t('controlRoom.uav.service.reconstruction.error_max')
+      case 'error_min':
+        return t('controlRoom.uav.service.reconstruction.error_min')
       case 'reconstructing':
         return t('controlRoom.uav.service.reconstruction.reconstructingInfo')
       default:
