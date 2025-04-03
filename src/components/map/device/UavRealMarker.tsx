@@ -14,10 +14,11 @@ type PropsType = {
     gimbalYaw: number
     altitude?: number
   }
+  useGimbal?: boolean
 }
 
 /** 无人机实时图标 */
-const MapUavRealMarker: FC<PropsType> = memo(({ data }) => {
+const MapUavRealMarker: FC<PropsType> = memo(({ data, useGimbal = true }) => {
   const lonRef = useLatest(data.longitude)
   const latRef = useLatest(data.latitude)
   const altRef = useLatest(data.altitude || 0)
@@ -26,18 +27,22 @@ const MapUavRealMarker: FC<PropsType> = memo(({ data }) => {
 
   const { viewer } = useCesium()
 
-  useEffect(() => {
-    if (!viewer) return
-    const positonCallback = new Cesium.CallbackProperty(() => {
+  const positionCallback = useRef<Cesium.PositionProperty | null>(null)
+  if (!positionCallback.current) {
+    positionCallback.current = new Cesium.CallbackProperty(() => {
       return Cesium.Cartesian3.fromDegrees(
         lonRef.current,
         latRef.current,
         altRef.current || 0,
       )
     }, false) as unknown as Cesium.PositionProperty
+  }
+
+  useEffect(() => {
+    if (!viewer) return
 
     const uav = viewer.entities.add({
-      position: positonCallback,
+      position: positionCallback.current!,
       billboard: {
         image: UavDirectionImg,
         width: 50,
@@ -50,8 +55,21 @@ const MapUavRealMarker: FC<PropsType> = memo(({ data }) => {
         ),
       },
     })
+
+    return () => {
+      attempt(() => {
+        viewer.entities.remove(uav)
+      })
+    }
+  }, [viewer])
+
+  useEffect(() => {
+    if (!viewer || !useGimbal) {
+      return
+    }
+
     const gimbal = viewer.entities.add({
-      position: positonCallback,
+      position: positionCallback.current!,
       billboard: {
         image: GimbalDirectionImg,
         width: 100,
@@ -67,11 +85,10 @@ const MapUavRealMarker: FC<PropsType> = memo(({ data }) => {
 
     return () => {
       attempt(() => {
-        viewer.entities.remove(uav)
         viewer.entities.remove(gimbal)
       })
     }
-  }, [viewer])
+  }, [viewer, useGimbal])
 
   return null
 })

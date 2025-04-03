@@ -99,26 +99,29 @@ const UavDetailMarker: FC<PropsType> = memo(({ deviceId }) => {
     return null
   }
 
+  const gimbalPickExist =
+    gimbalPick.leftTop &&
+    gimbalPick.rightTop &&
+    gimbalPick.rightBottom &&
+    gimbalPick.leftBottom
+
   return (
     <>
       <HeightDashLine
         position={[state.longitude, state.latitude, state.altitude ?? 0]}
         color="#fff"
       />
-      <MapUavRealMarker data={state} />
+      <MapUavRealMarker data={state} useGimbal={!gimbalPickExist} />
       {historyTrack.map((track, index) => (
         <HistoryTrack key={index} value={track} />
       ))}
       {realTrack.length > 1 && <HistoryTrack value={realTrack} useCallback />}
-      {gimbalPick.leftTop &&
-        gimbalPick.rightTop &&
-        gimbalPick.rightBottom &&
-        gimbalPick.leftBottom && (
-          <CameraGroundFrustum
-            gimbalPick={gimbalPick as any}
-            position={[state.longitude, state.latitude, state.altitude ?? 0]}
-          />
-        )}
+      {gimbalPickExist && (
+        <CameraGroundFrustum
+          gimbalPick={gimbalPick as any}
+          position={[state.longitude, state.latitude, state.altitude ?? 0]}
+        />
+      )}
     </>
   )
 })
