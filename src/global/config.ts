@@ -30,6 +30,8 @@ export type ConfigType = {
   isHaveBacktracking?: boolean
   /** 地形服务 */
   terrainUrl?: string
+  /** 是否使用地形 */
+  useTerrain?: boolean
   useShanghaiBanRoutes?: boolean
 }
 

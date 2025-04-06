@@ -1,4 +1,4 @@
-import { Billboard, Label } from 'resium'
+import { Billboard } from 'resium'
 import * as Cesium from 'cesium'
 import shijian from '/images/marker/icon/shijian.svg'
 
@@ -24,7 +24,7 @@ const EventMarker: FC<PropsType> = memo(({ data }) => {
         verticalOrigin={Cesium.VerticalOrigin.BOTTOM}
         horizontalOrigin={Cesium.HorizontalOrigin.CENTER}
         disableDepthTestDistance={50000}
-        heightReference={Cesium.HeightReference.NONE}
+        heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
       />
       {/* <Label
         key={eventId + '-label'}

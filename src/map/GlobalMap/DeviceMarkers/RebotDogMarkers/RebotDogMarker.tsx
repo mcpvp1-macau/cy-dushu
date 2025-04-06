@@ -64,7 +64,7 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
         width={25}
         height={25}
         disableDepthTestDistance={16_000_000}
-        heightReference={Cesium.HeightReference.NONE}
+        heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
         rotation={Cesium.Math.toRadians(-realHeading || 0)}
       />
       <Billboard
@@ -73,7 +73,7 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
         width={13}
         height={13}
         disableDepthTestDistance={16_000_000}
-        heightReference={Cesium.HeightReference.NONE}
+        heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
         rotation={Cesium.Math.toRadians(realHeading)}
         pixelOffset={
           new Cesium.Cartesian2(
@@ -87,6 +87,7 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
         text={data.deviceName}
         id={deviceId}
         position={Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30)}
+        heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
       />
     </>
   )

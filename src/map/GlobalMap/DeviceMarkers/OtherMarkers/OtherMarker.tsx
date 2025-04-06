@@ -78,12 +78,13 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
         width={24}
         height={24}
         disableDepthTestDistance={50000}
-        heightReference={Cesium.HeightReference.NONE}
+        heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
       />
       <DeviceLabel
         text={data.deviceName}
         id={deviceId}
         position={Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30)}
+        heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
       />
       {deviceType === 'RADAR' && properties.scope ? (
         <>

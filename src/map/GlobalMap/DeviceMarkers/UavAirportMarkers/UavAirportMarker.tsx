@@ -53,6 +53,7 @@ const UavAirportMarker: FC<PropsType> = memo(({ data }) => {
         text={data.deviceName}
         id={deviceId}
         position={Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30)}
+        heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
       />
     </>
   )

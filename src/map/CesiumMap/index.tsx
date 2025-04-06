@@ -68,7 +68,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
       <DefaultImageryLayer />
       <CustomImageryLayer />
       <CesiumDefaultConfig />
-      <CustomCesiumGlobalTerrain />
+      {globalConfig.useTerrain && <CustomCesiumGlobalTerrain />}
       <Suspense
         fallback={
           <div className="absolute inset-0 bg-ground-1/20 backdrop-blur-sm flex justify-center items-center">

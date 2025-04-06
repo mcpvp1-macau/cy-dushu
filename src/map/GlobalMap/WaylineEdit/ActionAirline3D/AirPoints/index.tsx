@@ -13,6 +13,10 @@ const AirPoints: FC<PropsType> = () => {
     (s) => s.airlineConfig.takeOffRefPoint,
   )
 
+  const deltaHeight = useAirlineConfigStore(
+    (s) => s.airlineConfig.takeOffRefPoint?.[2] ?? 0,
+  )
+
   return (
     <>
       {/* 航点 */}
@@ -28,8 +32,8 @@ const AirPoints: FC<PropsType> = () => {
         return (
           <PathLine
             key={`${point.xid}-${nextPoint.xid}`}
-            point1={point}
-            point2={nextPoint}
+            point1={{ ...point, pointZ: point.pointZ + deltaHeight }}
+            point2={{ ...nextPoint, pointZ: nextPoint.pointZ + deltaHeight }}
           />
         )
       })}
@@ -42,7 +46,7 @@ const AirPoints: FC<PropsType> = () => {
             point1={[
               airpointsConfig[0].pointX,
               airpointsConfig[0].pointY,
-              airpointsConfig[0].pointZ,
+              airpointsConfig[0].pointZ + deltaHeight,
             ]}
           />
         )

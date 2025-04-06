@@ -18,6 +18,7 @@ const AirPoint: FC<PropsType> = memo(({ positionIndex, lng, lat }) => {
         image: '/images/airline/inverted-triangle.svg',
         scale: 1.15,
         eyeOffset: new Cesium.Cartesian3(0, 0, -2),
+        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
       },
       label: {
         text: positionIndex + 1 + '',
@@ -25,6 +26,7 @@ const AirPoint: FC<PropsType> = memo(({ positionIndex, lng, lat }) => {
         pixelOffset: new Cesium.Cartesian2(0, -3),
         horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
         eyeOffset: new Cesium.Cartesian3(0.0, 0.0, -10.0),
+        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
       },
     })
     return () => {

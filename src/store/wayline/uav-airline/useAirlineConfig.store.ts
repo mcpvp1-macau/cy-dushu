@@ -301,6 +301,8 @@ const useAirlineConfigStore = create<
           fovMultipiler,
         } = get()
         const takeOffRefPoint = airlineConfig.takeOffRefPoint
+        const deltaHeight = takeOffRefPoint?.[2] ?? 0
+
         const nextUav = {
           ...(currentAirPoint ?? { pointX: 0, pointY: 0, pointZ: 0 }),
           uavHeading: currentBearing,
@@ -311,12 +313,13 @@ const useAirlineConfigStore = create<
         if (airpointsConfig.length === 0 && takeOffRefPoint) {
           nextUav.pointX = takeOffRefPoint[0]
           nextUav.pointY = takeOffRefPoint[1]
-          nextUav.pointZ = airlineConfig.takeOffSecurityHeight
+          nextUav.pointZ = airlineConfig.takeOffSecurityHeight + deltaHeight
           set({
             uav: nextUav,
           })
           return
         }
+        nextUav.pointZ += deltaHeight
         const c = airpointsConfig[currentIndex]
         if (
           !c ||

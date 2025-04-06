@@ -7,6 +7,7 @@ import { attempt } from 'lodash'
 export const useAirpointEntity = (
   point: AirlinePoint,
   currentIndex: number,
+  deltaHeight: number,
 ) => {
   const { viewer } = useCesium()
 
@@ -20,7 +21,11 @@ export const useAirpointEntity = (
     const { pointX, pointY, pointZ } = point
 
     // 航点
-    const position = Cesium.Cartesian3.fromDegrees(pointX, pointY, pointZ)
+    const position = Cesium.Cartesian3.fromDegrees(
+      pointX,
+      pointY,
+      pointZ + deltaHeight,
+    )
     entityRef.current = viewer.entities.add({
       position,
       billboard: {
@@ -86,7 +91,7 @@ export const useAirpointEntity = (
         }
       })
     }
-  }, [point, currentIndex])
+  }, [point, currentIndex, deltaHeight])
 
   return entityRef
 }

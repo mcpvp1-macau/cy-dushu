@@ -160,7 +160,7 @@ const ActionConfig: React.FC<Props> = (props) => {
           value={Number(currentAirpoint?.pointZ.toFixed(2) ?? 0)}
           className="w-full"
           onChange={(value: number | null) =>
-            value && onChangePosition('pointZ', limitNum(value, 1, 500))
+            value && onChangePosition('pointZ', limitNum(value, 1, 2000))
           }
         />
       </div>

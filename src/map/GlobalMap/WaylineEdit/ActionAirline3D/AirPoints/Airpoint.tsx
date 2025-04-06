@@ -27,7 +27,12 @@ const Airpoint: FC<PropsType> = ({ point }) => {
     (s) => s.calcUavByCurrentAirpoint,
   )
 
-  const entityRef = useAirpointEntity(point, currentIndex)
+  const deltaHeight = useAirlineConfigStore(
+    (s) => s.airlineConfig.takeOffRefPoint?.[2] ?? 0,
+  )
+  const deltaHeightRef = useLatest(deltaHeight)
+
+  const entityRef = useAirpointEntity(point, currentIndex, deltaHeight)
   const pointRef = useLatest(point)
   const currentIndexRef = useLatest(currentIndex)
 
@@ -95,7 +100,7 @@ const Airpoint: FC<PropsType> = ({ point }) => {
         editCurrentAirPoint({
           pointX: x[0],
           pointY: x[1],
-          pointZ: target[2],
+          pointZ: pointRef.current.pointZ,
         })
         return
       }
@@ -115,7 +120,7 @@ const Airpoint: FC<PropsType> = ({ point }) => {
         editCurrentAirPoint({
           pointX: dest.geometry.coordinates[0],
           pointY: dest.geometry.coordinates[1],
-          pointZ: target[2],
+          pointZ: pointRef.current.pointZ,
         })
       }
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
@@ -155,7 +160,7 @@ const Airpoint: FC<PropsType> = ({ point }) => {
         }
 
         let low = 1,
-          high = 500.01
+          high = 2000.01
         while (high - low >= 0.01) {
           const mid = (low + high) / 2
           const pos = wgs84ToDrawingBufferCoordinates(
@@ -163,7 +168,7 @@ const Airpoint: FC<PropsType> = ({ point }) => {
             Cesium.Cartesian3.fromDegrees(
               pointRef.current.pointX,
               pointRef.current.pointY,
-              mid,
+              mid + deltaHeightRef.current,
             ),
           )!
           const y = pos.y / viewer.resolutionScale
