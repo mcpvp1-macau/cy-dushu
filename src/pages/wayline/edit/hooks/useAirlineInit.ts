@@ -112,7 +112,7 @@ const useAirlineInit = () => {
   // 复原详情数据 ------------------------------
   const { waylineTemplateId } = useParams()
   const queryClient = useQueryClient()
-  const { data, isLoading } = useQuery(
+  const { data, isLoading, isRefetching } = useQuery(
     {
       queryKey: ['waylineTemplate', waylineTemplateId],
       queryFn: () =>
@@ -153,7 +153,7 @@ const useAirlineInit = () => {
     }
   }, [data])
 
-  return { isLoading }
+  return { isLoading: isLoading || isRefetching }
 }
 
 export default useAirlineInit

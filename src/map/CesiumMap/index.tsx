@@ -10,11 +10,19 @@ import CustomCesiumGlobalTerrain from './components/CustomCesiumGlobalTerrain'
 import useMapSettingStore from '@/store/setting/useMapSetting.store'
 import IconLoading from '@/assets/icons/jsx/IconLoading'
 import BottomBar from './components/BottomBar'
+
+const ShanghaiWarZoneConfig = lazy(
+  () => import('./components/custom/ShanghaiWarZoneConfig'),
+)
+
 const ShanghaiBanAreas = lazy(
   () => import('./components/custom/ShanghaiBanAreas'),
 )
 const ShanghaiBanRoutes = lazy(
   () => import('./components/custom/ShanghaiBanRoutes'),
+)
+const ShanghaiWarZone = lazy(
+  () => import('./components/custom/ShanghaiWarZone'),
 )
 
 type PropsType = {
@@ -80,6 +88,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
       </Suspense>
       {useToolBar && (
         <div className="absolute right-3 bottom-8 flex flex-col gap-3">
+          {globalConfig.useShanghaiBanRoutes && <ShanghaiWarZoneConfig />}
           <FloatIconButton onClick={toggle}>
             {is2D ? '2D' : '3D'}
           </FloatIconButton>
@@ -89,6 +98,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
       <Suspense fallback={null}>
         {globalConfig.useShanghaiBanRoutes && (
           <>
+            <ShanghaiWarZone />
             <ShanghaiBanRoutes />
             <ShanghaiBanAreas />
           </>

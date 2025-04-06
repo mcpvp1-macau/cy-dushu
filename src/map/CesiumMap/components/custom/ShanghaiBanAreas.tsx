@@ -408,7 +408,7 @@ const ShanghaiBanAreas: FC<PropsType> = memo(() => {
               subArea.polygon_points.map((e) => e.flat()).flat(),
             ),
             material: Cesium.Color.fromCssColorString(subArea.color).withAlpha(
-              0.4,
+              0.2,
             ),
           },
           position: Cesium.Cartesian3.fromDegrees(subArea.lng, subArea.lat),
