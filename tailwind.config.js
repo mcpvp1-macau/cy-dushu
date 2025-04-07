@@ -6,7 +6,7 @@ export default {
     extend: {
       colors: {
         ground: {
-          1: 'var(--ja-dark-gray-1)',
+          1: '#16202b',
           2: 'var(--ja-dark-gray-2)',
           3: 'var(--ja-dark-gray-3)',
           4: 'var(--ja-dark-gray-4)',

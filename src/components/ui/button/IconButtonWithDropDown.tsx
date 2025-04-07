@@ -4,11 +4,12 @@ import IconButton from './IconButton'
 type PropsType = GetProps<typeof Dropdown> & {
   tooltipProps?: GetProps<typeof Tooltip>
   className?: string
+  active?: boolean
 }
 
 /** 图标按钮携带下拉菜单 */
 const IconButtonWithDropDown: FC<PropsType> = memo(
-  ({ children, tooltipProps, className, ...props }) => {
+  ({ children, tooltipProps, className, active, ...props }) => {
     const [open, setOpen] = useState(false)
     return (
       <Dropdown
@@ -24,7 +25,7 @@ const IconButtonWithDropDown: FC<PropsType> = memo(
         <IconButton
           className={className}
           toolTipProps={open ? undefined : tooltipProps}
-          active={open}
+          active={open || active}
         >
           {children}
         </IconButton>

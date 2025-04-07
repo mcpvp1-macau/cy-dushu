@@ -511,6 +511,9 @@ common:
   params: 参数
   debug: 调试
   event: 事件
+  average: 平均
+  lowest: 最低
+  highest: 最高
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -1093,6 +1096,14 @@ controlRoom:
         title: 悬停
       autoTrack:
         title: 追踪
+      irMeteringModeSet:
+        title: 红外测温模式
+        area: 区域
+        point: 点
+      focusMode:
+        title: 对焦模式
+      exposureMode:
+        title: 镜头曝光模式
     gamepad:
       title: 摇杆
     goHome:

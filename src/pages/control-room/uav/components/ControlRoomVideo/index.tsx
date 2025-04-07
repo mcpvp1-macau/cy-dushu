@@ -15,6 +15,8 @@ import AITrackBoxSelect from './components/AITrackBoxSelect'
 import { ComponentRef, lazy, Suspense } from 'react'
 import useHandleTakePhotoEvent from './hooks/useHandleTakePhotoEvent'
 import ZoomFocusMode from '../AsideToolBar/ZoomFucusMode'
+import IrMetering from './components/IrMetering'
+import ExposureMode from '../AsideToolBar/ExposureMode'
 
 const ExposureValue = lazy(() => import('./components/ExposureValue'))
 const ShutterValue = lazy(() => import('./components/ShutterValue'))
@@ -103,6 +105,9 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
   useHandleTakePhotoEvent(deviceLiveVideoRef)
   const postDeviceService = usePostDeviceService(productKey, deviceId)
 
+  const irMeteringMode = useUavControlRoomStore((s) => s.state.irMeteringMode)
+  const lensType = useUavControlRoomStore((s) => s.state.lensType)
+
   return (
     <div className="absolute inset-0  bg-black">
       <DeviceLiveVideo
@@ -134,7 +139,7 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
                 <ExposureValue />
               </Suspense>
             )}
-
+            {hasExposureSet && <ExposureMode postSerivce={postDeviceService} />}
             {hasZoomFocusMode && (
               <ZoomFocusMode postSerivce={postDeviceService} />
             )}
@@ -154,6 +159,9 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
               </div>
             )}
             {enableSmartTrack && <AITrackBoxSelect />}
+            {irMeteringMode &&
+              irMeteringMode !== 'CLOSE' &&
+              lensType?.toLowerCase?.() === 'ir' && <IrMetering />}
           </>
         }
         videoSafeAreaChildren={<Avoidance />}

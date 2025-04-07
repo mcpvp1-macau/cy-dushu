@@ -1,9 +1,8 @@
-import IconButton from '@/components/ui/button/IconButton'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import { Dropdown } from 'antd'
 import { isNil } from 'lodash'
 import { Mode, modeMap, modeZhMap } from './constants'
+import IconButtonWithDropDown from '@/components/ui/button/IconButtonWithDropDown'
 
 type PropsType = {
   postSerivce: ReturnType<typeof usePostDeviceService>
@@ -11,6 +10,8 @@ type PropsType = {
 
 /** 镜头变焦模式 */
 const ZoomFocusMode: FC<PropsType> = memo(({ postSerivce }) => {
+  const { t } = useTranslation()
+
   const zoomFocusMode: Mode = useUavControlRoomStore(
     (s) => s.state.zoomFocusMode,
   )
@@ -28,7 +29,11 @@ const ZoomFocusMode: FC<PropsType> = memo(({ postSerivce }) => {
   }
 
   return (
-    <Dropdown
+    <IconButtonWithDropDown
+      className="text-xs"
+      tooltipProps={{
+        title: t('controlRoom.uav.service.focusMode.title'),
+      }}
       menu={{
         items: Array.from(modeMap.entries()).map(([k, v]) => ({
           key: k,
@@ -44,11 +49,10 @@ const ZoomFocusMode: FC<PropsType> = memo(({ postSerivce }) => {
       }}
       disabled={!(lensType === 'wide' || lensType === 'zoom')}
       placement="top"
+      trigger={['click']}
     >
-      <IconButton className={clsx('text-xs')}>
-        {modeMap.get(zoomFocusMode)}
-      </IconButton>
-    </Dropdown>
+      {modeMap.get(zoomFocusMode)}
+    </IconButtonWithDropDown>
   )
 })
 

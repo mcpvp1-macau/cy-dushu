@@ -14,6 +14,7 @@ import { ConfigProvider, Drawer } from 'antd'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import IconSmartTrack from '@/assets/icons/jsx/uav/IconSmartTrack'
 import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
+import IrMeteringMode from './IrMeteringMode'
 
 const ARSetting = lazy(() => import('@/components/Header/setting/ar'))
 
@@ -45,6 +46,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
   const hasCameraMode = !!propsHave['cameraMode']
   const hasAr = !!propsHave['ar']
   const hasLaserDistance = !!propsHave['laserDistance']
+  const hasIrMeteringModeSet = !!serviceHave['irMeteringModeSet']
 
   const arEnable = useMixARStore((s) => s.enable)
   const updateArEnable = useMixARStore((s) => s.updateEnable)
@@ -59,6 +61,8 @@ const AsideToolBar: FC<PropsType> = memo(() => {
     useBoolean(false)
 
   const postDeviceService = usePostDeviceService()
+
+  const lensType = useUavControlRoomStore((s) => s.state.lensType)
 
   // 三维重建
   //  const hasReconstruction = !!serviceHave['Reconstruction']
@@ -178,6 +182,9 @@ const AsideToolBar: FC<PropsType> = memo(() => {
           >
             <IconRebuild3d />
           </IconButton>
+        )}
+        {hasIrMeteringModeSet && lensType?.toLowerCase?.() === 'ir' && (
+          <IrMeteringMode postServiceFn={postDeviceService} />
         )}
       </ConfigProvider>
     </div>
