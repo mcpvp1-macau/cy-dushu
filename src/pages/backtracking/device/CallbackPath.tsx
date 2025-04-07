@@ -54,7 +54,7 @@ const CallbackPath: React.FC<PropsType> = memo(({
     
     // 创建位置数组
     const positions = filteredPoints.map((item) => {
-      return Cesium.Cartesian3.fromDegrees(item.lng, item.lat, 0)
+      return Cesium.Cartesian3.fromDegrees(item.lng, item.lat, item.altitude || 0)
     })
     
     // 创建几何体实例

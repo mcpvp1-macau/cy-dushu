@@ -11,6 +11,7 @@ type PropsType = {
     latitude: number
     uavYaw: number
     gimbalYaw: number
+    altitude?: number
   }
 }
 
@@ -18,6 +19,7 @@ type PropsType = {
 const MapUavRealMarker: FC<PropsType> = memo(({ data }) => {
   const lonRef = useLatest(data.longitude)
   const latRef = useLatest(data.latitude)
+  const altRef = useLatest(data.altitude)
   const uavYaw = useLatest(data.uavYaw)
   const gimbalYaw = useLatest(data.gimbalYaw)
 
@@ -25,7 +27,7 @@ const MapUavRealMarker: FC<PropsType> = memo(({ data }) => {
   useEffect(() => {
     if (!viewer) return
     const positonCallback = new Cesium.CallbackProperty(() => {
-      return Cesium.Cartesian3.fromDegrees(lonRef.current, latRef.current, 0)
+      return Cesium.Cartesian3.fromDegrees(lonRef.current, latRef.current, altRef.current || 0)
     }, false) as unknown as Cesium.PositionProperty
 
     const uav = viewer.entities.add({

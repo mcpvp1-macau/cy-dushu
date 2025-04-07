@@ -17,9 +17,7 @@ const useFly = (curAttr) => {
           if (flyedRef.current) {
             return
           }
-          const cameraHeight =
-            Math.round(viewer?.camera?.positionCartographic?.height) ||
-            (curAttr.altitude || 0) + 500
+          const cameraHeight = curAttr.altitude ? curAttr.altitude + 800 : Math.round(viewer?.camera?.positionCartographic?.height) || 0
           let targetHeight = cameraHeight
           if (cameraHeight > (globalConfig?.disableZoomHeight || 2000)) {
             targetHeight = (curAttr.altitude || 0) + 500
