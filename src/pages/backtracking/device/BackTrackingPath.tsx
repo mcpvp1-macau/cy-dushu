@@ -50,6 +50,8 @@ const BackTrackingPath: React.FC<PropsType> = memo(({ deviceId }) => {
         lng: item.lng,
         lat: item.lat,
         alt: item.altitude || 0,
+        longitude: item.lng,
+        latitude: item.lat,
       }))
     return arr || []
   }, [data, currentTime, deviceId])
@@ -85,7 +87,7 @@ const BackTrackingPath: React.FC<PropsType> = memo(({ deviceId }) => {
             latitude: curAttr.lat ?? 0,
             uavYaw: curAttr.attitudeHead ?? 0,
             gimbalYaw: curAttr.gimbalHead ?? 0,
-            altitude: curAttr.altitude?? 0,
+            altitude: curAttr.altitude ?? 0,
           }}
         />
       ) : null}
