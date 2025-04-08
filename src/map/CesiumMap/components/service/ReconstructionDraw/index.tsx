@@ -7,9 +7,10 @@ import CesiumThreeJS3DGS from './cesium-threejs-3dgs'
 const ReconstructionDraw: FC = memo(() => {
   const resiumContext = useCesium()
   const layerList = useReconstructionMapStore((s) => s.layerList)
-  const [hiddenLayerIds, hiddenGroupIds] = useReconstructionMapConfigStore(
-    (s) => [s.hiddenLayerIds, s.hiddenGroupIds],
-  )
+  const [showLayerIds, showGroupIds] = useReconstructionMapConfigStore((s) => [
+    s.showLayerIds,
+    s.showGroupIds,
+  ])
 
   const cesium3dgsRef = useRef<CesiumThreeJS3DGS | null>(null)
 
@@ -30,15 +31,15 @@ const ReconstructionDraw: FC = memo(() => {
   }, [])
 
   useEffect(() => {
-    cesium3dgsRef.current!.hiddenlayerIds = hiddenLayerIds
-    cesium3dgsRef.current!.hiddenGroupIds = hiddenGroupIds
+    cesium3dgsRef.current!.showLayerIds = showLayerIds
+    cesium3dgsRef.current!.showGroupIds = showGroupIds
 
     layerList.forEach((layer, i) => {
       // 如果已经添加了或者被隐藏了，则不加载
       if (
         cesium3dgsRef.current!.has(layer.overlayId) ||
-        hiddenLayerIds.has(layer.overlayId) ||
-        hiddenGroupIds.has(layer.layerId)
+        !showLayerIds.has(layer.overlayId) ||
+        !showGroupIds.has(layer.layerId)
       ) {
         return
       }
@@ -62,7 +63,7 @@ const ReconstructionDraw: FC = memo(() => {
     })
 
     return () => {}
-  }, [layerList, hiddenLayerIds, hiddenGroupIds])
+  }, [layerList, showLayerIds, showGroupIds])
 
   return <></>
 })

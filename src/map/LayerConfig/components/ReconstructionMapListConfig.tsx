@@ -30,11 +30,9 @@ const ReconstructionMapListConfig: FC = memo(() => {
     [layerList],
   )
 
-  const hiddenGroupIds = useReconstructionMapConfigStore(
-    (s) => s.hiddenGroupIds,
-  )
-  const updateHiddenGroupIds = useReconstructionMapConfigStore(
-    (s) => s.updateHiddenGroupIds,
+  const showGroupIds = useReconstructionMapConfigStore((s) => s.showGroupIds)
+  const updateShowGroupIds = useReconstructionMapConfigStore(
+    (s) => s.updateShowGroupIds,
   )
 
   const msgApi = useAppMsg()
@@ -58,18 +56,18 @@ const ReconstructionMapListConfig: FC = memo(() => {
           <div className="flex gap-3" onClick={(e) => e.stopPropagation()}>
             <IconButton
               onClick={() => {
-                if (hiddenGroupIds.has(layerGroup.id)) {
-                  hiddenGroupIds.delete(layerGroup.id)
+                if (showGroupIds.has(layerGroup.id)) {
+                  showGroupIds.delete(layerGroup.id)
                 } else {
-                  hiddenGroupIds.add(layerGroup.id)
+                  showGroupIds.add(layerGroup.id)
                 }
-                updateHiddenGroupIds(new Set(hiddenGroupIds))
+                updateShowGroupIds(new Set(showGroupIds))
               }}
             >
-              {hiddenGroupIds.has(layerGroup.id) ? (
-                <IconNotVisible />
-              ) : (
+              {showGroupIds.has(layerGroup.id) ? (
                 <IconVisible />
+              ) : (
+                <IconNotVisible />
               )}
             </IconButton>
             {layerGroup.layerType !== 'DEFAULT' && (
@@ -83,7 +81,7 @@ const ReconstructionMapListConfig: FC = memo(() => {
           </div>
         ),
         children: (
-          <ul className="p-3 flex flex-col gap-2">
+          <ul className="p-3 flex flex-col gap-2 max-h-[300px] overflow-y-auto">
             {(layerListGroup[layerGroup.id] ?? []).length === 0 ? (
               <AppEmpty />
             ) : (

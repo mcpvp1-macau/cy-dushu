@@ -49,8 +49,8 @@ const SCALE_BASE = 1 / 1
 class CesiumThreeJS3DGS {
   cesiumViewer: CesiumViewer
   threeContainer: HTMLDivElement
-  hiddenlayerIds: Set<number> = new Set()
-  hiddenGroupIds: Set<number> = new Set()
+  showLayerIds: Set<number> = new Set()
+  showGroupIds: Set<number> = new Set()
   readySplatViewer: number = 0
 
   three: {
@@ -336,8 +336,8 @@ class CesiumThreeJS3DGS {
       // 图层和所在图层组没被隐藏再渲染
       const polygon = splatViewer.pickCircle as GroundPrimitive
       if (
-        !this.hiddenlayerIds.has(splatViewer.layerAttr.overlayId) &&
-        !this.hiddenGroupIds.has(splatViewer.layerAttr.layerId)
+        this.showLayerIds.has(splatViewer.layerAttr.overlayId) &&
+        this.showGroupIds.has(splatViewer.layerAttr.layerId)
       ) {
         splatViewer.update()
         splatViewer.render()

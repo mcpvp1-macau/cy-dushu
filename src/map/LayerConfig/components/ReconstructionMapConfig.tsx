@@ -27,11 +27,9 @@ const ReconstructionMapConfig: FC<PropsType> = memo((props) => {
   const rightMode = useRightMode((s) => s.rightMode)
   const rightDetailId = useRightMode((s) => s.detailId)
 
-  const hiddenLayerIds = useReconstructionMapConfigStore(
-    (s) => s.hiddenLayerIds,
-  )
-  const updateHiddenLayerIds = useReconstructionMapConfigStore(
-    (s) => s.updateHiddenLayerIds,
+  const showLayerIds = useReconstructionMapConfigStore((s) => s.showLayerIds)
+  const updateShowLayerIds = useReconstructionMapConfigStore(
+    (s) => s.updateShowLayerIds,
   )
   const [layerGroupList, updateLayerList] = useReconstructionMap((s) => [
     s.layerGroupList,
@@ -72,18 +70,18 @@ const ReconstructionMapConfig: FC<PropsType> = memo((props) => {
             <>
               <IconButton
                 onClick={() => {
-                  if (hiddenLayerIds.has(data.overlayId)) {
-                    hiddenLayerIds.delete(data.overlayId)
+                  if (showLayerIds.has(data.overlayId)) {
+                    showLayerIds.delete(data.overlayId)
                   } else {
-                    hiddenLayerIds.add(data.overlayId)
+                    showLayerIds.add(data.overlayId)
                   }
-                  updateHiddenLayerIds(new Set(hiddenLayerIds))
+                  updateShowLayerIds(new Set(showLayerIds))
                 }}
               >
-                {hiddenLayerIds.has(data.overlayId) ? (
-                  <IconNotVisible />
-                ) : (
+                {showLayerIds.has(data.overlayId) ? (
                   <IconVisible />
+                ) : (
+                  <IconNotVisible />
                 )}
               </IconButton>
               <EditReconstructionLayer id={data.overlayId} />
