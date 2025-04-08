@@ -34,13 +34,13 @@ type LoadOPtions = {
   headingPitchRoll: { heading: number; pitch: number; roll: number }
   scale: number | { x: number; y: number; z: number }
   camera:
-    | {
-        offset: { x: number; y: number; z: number } | undefined
-        headingPitchRoll:
-          | { heading: number; pitch: number; roll: number }
-          | undefined
-      }
+  | {
+    offset: { x: number; y: number; z: number } | undefined
+    headingPitchRoll:
+    | { heading: number; pitch: number; roll: number }
     | undefined
+  }
+  | undefined
 }
 
 // const SCALE_BASE = 1 / 10000;
@@ -60,12 +60,12 @@ class CesiumThreeJS3DGS {
     controls: OrbitControls | null
     splatViewers: any[]
   } = {
-    renderer: null,
-    camera: null,
-    scene: null,
-    controls: null,
-    splatViewers: [],
-  }
+      renderer: null,
+      camera: null,
+      scene: null,
+      controls: null,
+      splatViewers: [],
+    }
 
   constructor(cesiumViewer: CesiumViewer) {
     this.cesiumViewer = cesiumViewer
@@ -159,7 +159,6 @@ class CesiumThreeJS3DGS {
 
     const circleCenter = Cartesian3.fromDegrees(positions[0], positions[1])
     const radius = positions[3]
-    console.log(layerAttr, circleCenter, radius)
 
     const PickCircle = new GroundPrimitive({
       geometryInstances: new GeometryInstance({

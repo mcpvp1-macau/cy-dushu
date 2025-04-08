@@ -47,9 +47,7 @@ const ReconstructionDraw: FC = memo(() => {
         splatUrl: '/storage' + layer.modelPath,
         lat: layer.modelLayerLat,
         lon: layer.modelLayerLon,
-        // 由于第一个测试模型采用激光摄影，高度正常，以后所有的模型都是普通摄像，高度需要减去12
-        // height: layer.modelLayerHeight - 12,
-        height: layer.modelLayerHeight - 12 * i,
+        height: layer.modelLayerHeight - 12,
         headingPitchRoll: { heading: 0.0, pitch: 0.0, roll: -90 },
         scale: 1,
         camera: {

@@ -87,7 +87,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
         {children}
       </Suspense>
       {useToolBar && (
-        <div className="absolute right-3 bottom-8 flex flex-col gap-3">
+        <div className="absolute right-3 bottom-8 flex flex-col gap-3 z-10">
           {globalConfig.useShanghaiBanRoutes && <ShanghaiWarZoneConfig />}
           <FloatIconButton onClick={toggle}>
             {is2D ? '2D' : '3D'}

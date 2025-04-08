@@ -50,7 +50,7 @@ const BottomBar: FC<unknown> = memo(() => {
   }, [viewer])
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 h-5 bg-[#16202be6] backdrop-blur-sm">
+    <div className="absolute bottom-0 left-0 right-0 h-5 bg-[#16202be6] backdrop-blur-sm z-10">
       <div className="flex h-full items-center justify-end text-fore text-xs px-3">
         <p className="text-right whitespace-nowrap">
           {position?.lon?.toFixed(6) || '-'}, {position?.lat?.toFixed(6) || '-'}
