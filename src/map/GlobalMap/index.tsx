@@ -15,7 +15,11 @@ import BoardCesium from './BoardCesium'
 import EventMarkers from './EventMarkers'
 import WaylineEdit from './WaylineEdit'
 import Waylines from './Waylines'
-import ReconstructionDraw from '@/map/CesiumMap/components/service/ReconstructionDraw'
+import { lazy } from 'react'
+
+const ReconstructionDraw = lazy(
+  () => import('@/map/CesiumMap/components/service/ReconstructionDraw'),
+)
 
 type PropsType = unknown
 
@@ -40,7 +44,7 @@ const GlobalMap: FC<PropsType> = memo(() => {
         <EventMarkers />
         <WaylineEdit />
         <Waylines />
-        <ReconstructionDraw></ReconstructionDraw>
+        <ReconstructionDraw />
       </CesiumMap>
     </div>
   )
