@@ -10,6 +10,8 @@ const AirlineHeader: FC<PropsType> = memo(() => {
   )
   const navigate = useNavigate()
 
+  const { t } = useTranslation()
+
   return (
     <EditableNameHeader
       className="px-3"
@@ -19,6 +21,10 @@ const AirlineHeader: FC<PropsType> = memo(() => {
           ...useAirlineConfigStore.getState().airlineTemplateInfo,
           taskName: v,
         })
+      }}
+      backConfirm={{
+        content: t('wayline.backConfirm'),
+        placement: 'bottomLeft',
       }}
       onBackClick={() => navigate(-1)}
     />

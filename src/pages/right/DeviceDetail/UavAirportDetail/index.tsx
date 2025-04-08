@@ -293,6 +293,7 @@ const UavAirportDetail: FC<PropsType> = memo(
           <FormModal
             initialValues={{
               height: 100,
+              gohomeAltitude: 120,
             }}
             title={`${t('device.uavDock.takeoffForm.title')} ALT(m)`}
             open={takeOffOpen}

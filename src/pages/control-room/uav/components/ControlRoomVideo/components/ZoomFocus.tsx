@@ -17,10 +17,7 @@ const InnerZoomFocus: FC<PropsType> = () => {
 
   const lens = useUavControlRoomStore((s) => s.state.lensType)
 
-  const [pos, setPos] = useState<{ x: number; y: number } | null>({
-    x: 0,
-    y: 0,
-  })
+  const [pos, setPos] = useState<{ x: number; y: number } | null>(null)
 
   const { run: clear } = useDebounceFn(
     () => {

@@ -813,6 +813,7 @@ wayline:
     title: 航线任务
   action:
     noSupportEdit: 暂不支持编辑该动作
+  backConfirm: 航线未保存，是否退出
 schedue:
   list:
     title: 计划库

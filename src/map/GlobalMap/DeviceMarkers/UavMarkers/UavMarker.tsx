@@ -41,10 +41,11 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
   const isHidden = useDeviceListConfigStore((s) => s.hiddenDeviceIds[deviceId])
 
   const status = useRealOnlineStatus(deviceId)
+  const deviceIsOnline = status === DeviceStatusEnum.ONLINE
   const { viewer } = useCesium()
   if (
     isHidden || // 隐藏
-    (isOnline && status !== DeviceStatusEnum.ONLINE) || // 在线状态不显示
+    (isOnline && !deviceIsOnline) || // 在线状态不显示
     !deviceStatusFilter(
       { status, taskStatus: 'RUNNING' },
       isOnline,
@@ -73,11 +74,24 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
         width={28}
         height={28}
         disableDepthTestDistance={16_000_000}
-        heightReference={Cesium.HeightReference.NONE}
+        heightReference={
+          deviceIsOnline
+            ? Cesium.HeightReference.NONE
+            : Cesium.HeightReference.CLAMP_TO_GROUND
+        }
         rotation={Cesium.Math.toRadians(-realHeading || 0)}
       />
-      <DeviceLabel text={data.deviceName} id={deviceId} position={position} />
-      {alt !== globeHeight && (
+      <DeviceLabel
+        text={data.deviceName}
+        id={deviceId}
+        position={position}
+        heightReference={
+          deviceIsOnline
+            ? Cesium.HeightReference.NONE
+            : Cesium.HeightReference.CLAMP_TO_GROUND
+        }
+      />
+      {deviceIsOnline && alt !== globeHeight && (
         <HeightDashLine position={[lng || 120, lat || 30, alt]} color="#fff" />
       )}
     </>

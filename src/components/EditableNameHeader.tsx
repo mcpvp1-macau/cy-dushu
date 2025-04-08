@@ -1,14 +1,20 @@
 import IconButton from './ui/button/IconButton'
 import IconBack from '@/assets/icons/jsx/IconBack'
-import { Form, Input } from 'antd'
+import { Form, Input, Popconfirm } from 'antd'
 import IconEdit from '@/assets/icons/jsx/IconEdit'
 import { LoadingOutlined } from '@ant-design/icons'
 import IconTick from '@/assets/icons/jsx/IconTick'
+import { ReactNode } from 'react'
+import { TooltipPlacement } from 'antd/es/tooltip'
 
 type PropsType = {
   value: string
   className?: string
   loading?: boolean
+  backConfirm?: {
+    content: ReactNode
+    placement?: TooltipPlacement
+  }
   /** 文本改变时 */
   onChange?: (value: string) => void
   /** 点保存时 */
@@ -17,7 +23,7 @@ type PropsType = {
 }
 
 const EditableNameHeader: FC<PropsType> = memo(
-  ({ value, className, loading, onFinish, onBackClick }) => {
+  ({ value, className, loading, onFinish, backConfirm, onBackClick }) => {
     const [isEdit, setIsEdit] = useState(false)
     const { t } = useTranslation()
 
@@ -46,12 +52,24 @@ const EditableNameHeader: FC<PropsType> = memo(
         )}
       >
         <div>
-          <IconButton
-            toolTipProps={{ title: t('common.back') }}
-            onClick={onBackClick}
-          >
-            <IconBack />
-          </IconButton>
+          {backConfirm ? (
+            <Popconfirm
+              title={backConfirm.content}
+              placement={backConfirm.placement}
+              onConfirm={onBackClick}
+            >
+              <IconButton toolTipProps={{ title: t('common.back') }}>
+                <IconBack />
+              </IconButton>
+            </Popconfirm>
+          ) : (
+            <IconButton
+              toolTipProps={{ title: t('common.back') }}
+              onClick={onBackClick}
+            >
+              <IconBack />
+            </IconButton>
+          )}
         </div>
         <div className="flex-1 flex flex-col justify-center h-[32px] overflow-hidden">
           <Form form={form} autoComplete="off">

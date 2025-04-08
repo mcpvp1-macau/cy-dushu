@@ -823,6 +823,7 @@ wayline:
     title: Wayline Task
   action:
     noSupportEdit: Editing this action is not currently supported
+  backConfirm: Wayline not saved, whether to exit
 schedue:
   list:
     title: Schedule List

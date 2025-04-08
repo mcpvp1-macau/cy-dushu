@@ -148,10 +148,6 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
         videoChildren={
           <>
             <LaserRanging />
-            <ZoomFocus />
-            {posizionZoomOpen > 0 && (
-              <PositionZoom deviceLiveVideoRef={deviceLiveVideoRef} />
-            )}
             {/* {enableAR && <MixARCanvas />} */}
             {enableAR && (
               <div className="asolute inset-0">
@@ -162,6 +158,10 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
             {irMeteringMode &&
               irMeteringMode !== 'CLOSE' &&
               lensType?.toLowerCase?.() === 'ir' && <IrMetering />}
+            <ZoomFocus />
+            {posizionZoomOpen > 0 && (
+              <PositionZoom deviceLiveVideoRef={deviceLiveVideoRef} />
+            )}
           </>
         }
         videoSafeAreaChildren={<Avoidance />}
