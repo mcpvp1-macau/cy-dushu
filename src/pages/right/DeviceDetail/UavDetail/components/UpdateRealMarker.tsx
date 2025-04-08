@@ -26,7 +26,7 @@ const UavUpdateRealMarker: FC<PropsType> = memo(() => {
       gimbalPitch: s.state.gimbalPitch || 0,
       lensType: s.state.lensType || 'wide',
       zoomFactor: s.state.zoomFactor || 1,
-      cameraType: s.state.cameraType || s.state.gimbalType,
+      cameraType: s.state.gimbalType || s.state.cameraType,
     })),
   )
 
@@ -43,7 +43,11 @@ const UavUpdateRealMarker: FC<PropsType> = memo(() => {
       gimbalPitch: wsState.gimbalPitch || realProperties.gimbalPitch || 0,
       lensType: wsState.lensType || realProperties.lensType || 'wide',
       zoomFactor: wsState.zoomFactor || realProperties.zoomFactor || 1,
-      cameraType: wsState.cameraType || realProperties.cameraType || 'wide',
+      cameraType:
+        wsState.cameraType ||
+        realProperties.gimbalType ||
+        realProperties.cameraType ||
+        'H20T',
       deviceId: data!.deviceId,
     }
   }, [data, realProperties, wsState])

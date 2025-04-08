@@ -98,6 +98,18 @@ export class CameraVertexPicker {
     for (const [key, fovX, fovY] of directionTuples) {
       const direction = calcDirection(fovX, fovY)
       const ray = new Cesium.Ray(camera.position, direction)
+
+      // 计算射线与地球地形的交点
+      const p = this.viewer.scene.globe.pick(ray, this.viewer.scene)
+      if (p) {
+        const cartographic = Cesium.Cartographic.fromCartesian(p)
+        const lon = Cesium.Math.toDegrees(cartographic.longitude)
+        const lat = Cesium.Math.toDegrees(cartographic.latitude)
+        gimbalPick[key] = [lon, lat]
+        continue
+      }
+
+      // 计算射线与地球球面的交点
       const intersection = Cesium.IntersectionTests.rayEllipsoid(
         ray,
         this.viewer.scene.globe.ellipsoid,

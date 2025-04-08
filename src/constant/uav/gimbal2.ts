@@ -51,43 +51,55 @@ export enum Gimbal {
   M4T,
 }
 
-// export const gimbalMap: Record<Gimbal, GimbalType> = {
-//   [Gimbal.M30]: {
-//     name: 'M30 Camera',
-//     wide: {
-//       focal: 6.83,
-//       width: 7.41,
-//       height: 5.66,
-//     },
-//     zoom: {
-//       width: 6.4,
-//       height: 4.8,
-//       minFocal: 21,
-//       maxFocal: 75,
-//       maxRatio: 16,
-//     },
-//   },
-//   [Gimbal.H20N]: {
-//     name: 'Zenmuse H20N',
-//     wide: {
-//       focal: 4.5,
-//       width: 5.76,
-//       height: 3.24,
-//     },
-//     zoom: {
-//       width: 7.79,
-//       height: 4.38,
-//       minFocal: 6.8,
-//       maxFocal: 119.9,
-//       maxRatio: 20,
-//     },
-//   },
-//   [Gimbal.H20T]: {
-//     name: 'Zenmuse H20T',
-//     wide: {
-//       focal: 4.5,
-//       width: 6.29,
-//       height: 4.71,
-//     },
-//   },
-// }
+export const gimbalMap: Record<string, GimbalType> = {
+  M30: {
+    name: 'M30 Camera',
+    wide: {
+      focal: 6.83,
+      width: 7.41,
+      height: 5.66,
+    },
+    zoom: {
+      width: 6.4,
+      height: 4.8,
+      minFocal: 21,
+      maxFocal: 75,
+      maxRatio: 16,
+    },
+  },
+  H20N: {
+    name: 'Zenmuse H20N',
+    wide: {
+      focal: 4.5,
+      width: 5.76,
+      height: 3.24,
+    },
+    zoom: {
+      width: 7.79,
+      height: 4.38,
+      minFocal: 6.8,
+      maxFocal: 119.9,
+      maxRatio: 20,
+    },
+  },
+  H20T: {
+    name: 'Zenmuse H20T',
+    wide: {
+      focal: 4.5,
+      width: 6.29,
+      height: 4.71,
+    },
+    zoom: {
+      minFocal: 6.83,
+      maxFocal: 119.94,
+      maxRatio: 23,
+      width: 7.41,
+      height: 5.66,
+    },
+    ir: {
+      focal: 13.5,
+      width: 17.4,
+      height: 13,
+    },
+  },
+}
