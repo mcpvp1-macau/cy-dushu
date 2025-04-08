@@ -20,7 +20,7 @@ const UavMarker: FC<PropsType> = memo(() => {
       gimbalPitch: s.state.gimbalPitch ?? 0,
       lensType: s.state.lensType ?? 'wide',
       zoomFactor: s.state.zoomFactor ?? 1,
-      cameraType: s.state.cameraType || s.state.gimbalType,
+      cameraType: s.state.gimbalType || s.state.cameraType,
       uavYaw: s.state.uavYaw ?? 0,
     })),
   )
