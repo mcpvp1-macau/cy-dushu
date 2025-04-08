@@ -35,10 +35,12 @@ export const createAddActionFormItems = (
   },
 ]
 
-type PropsType = unknown
+type PropsType = {
+  extra?: Record<string, any>
+}
 
 /** 创建行动 */
-const AddAction: FC<PropsType> = memo(() => {
+const AddAction: FC<PropsType> = memo(({ extra }) => {
   const { t, i18n } = useTranslation()
   const [open, setOpen] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
@@ -54,7 +56,7 @@ const AddAction: FC<PropsType> = memo(() => {
   const handleAddAction = async (data: any) => {
     setConfirmLoading(true)
     try {
-      const resp = await addAction(data)
+      const resp = await addAction({ ...(extra ?? {}), ...data })
       queryClient.invalidateQueries({
         queryKey: ['actionList'],
         exact: false,

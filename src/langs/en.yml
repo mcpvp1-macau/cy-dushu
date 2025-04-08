@@ -357,6 +357,7 @@ action:
     aiResult:
       empty:
         title: Null Result
+    title: Action Detail
 modal:
   cancel: Cancel
   confirm: Confirm
@@ -562,6 +563,8 @@ events:
     processStatus:
       title: Process Status
   title: Events
+  eventHasAuth:
+    warning: This event is being handled by someone else or you do not have permission!
 uav:
   displayMode:
     title: State

@@ -1,7 +1,8 @@
 import MenuIconEvents from '@/assets/icons/jsx/menus/MenuIconEvents'
 import { EventStatusMap } from '@/enum/event'
 import { RightModeEnum } from '@/enum/right-mode'
-import { ignoreEvent } from '@/service/modules/events'
+import { useAppMsg } from '@/hooks/useAppMsg'
+import { getEventHasAuth, ignoreEvent } from '@/service/modules/events'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { LoadingOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
@@ -20,6 +21,27 @@ const EventItem: FC<PropsType> = memo(({ data, active }) => {
 
   const updateRightMode = useRightMode((s) => s.updateRightMode)
   const updateDetailId = useRightMode((s) => s.updateDetailId)
+
+  const msgApi = useAppMsg()
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
+  const handleProcess = async () => {
+    if (data.processStatus === 'PENDING') {
+      navigate(`/event-resolve/${data.eventId}`)
+      return
+    }
+    setLoading(true)
+    try {
+      const res = await getEventHasAuth(data.eventId)
+      if (res.code === 'SUCCESS' && !!res.data) {
+        navigate(`/event-resolve/${data.eventId}`)
+      } else {
+        msgApi.warning(t('events.eventHasAuth.warning'))
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <li
@@ -68,7 +90,7 @@ const EventItem: FC<PropsType> = memo(({ data, active }) => {
             <span>{t('common.level')}: </span>
             <span>{data.level}</span>
           </p>
-          <div>
+          <div onClick={(e) => e.stopPropagation()}>
             {isLoading ? (
               <LoadingOutlined className="size-[22.5px]" />
             ) : (
@@ -96,6 +118,8 @@ const EventItem: FC<PropsType> = memo(({ data, active }) => {
                   className="ml-2 text-xs px-2.5"
                   size="small"
                   type="primary"
+                  loading={loading}
+                  onClick={handleProcess}
                 >
                   {t('common.process')}
                 </Button>

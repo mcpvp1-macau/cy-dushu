@@ -38,3 +38,8 @@ export const getEventTypeAndSourceList = () => {
     '/event/getEventTypeAndSourceList',
   )
 }
+
+/** 获取事件是否授权 */
+export const getEventHasAuth = (eventId: string) => {
+  return serverJingqi.get('/event/hasAuth', { params: { eventId } })
+}
