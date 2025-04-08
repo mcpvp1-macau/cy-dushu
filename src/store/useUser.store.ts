@@ -35,6 +35,7 @@ type StateType = {
   token: string | null
   user: User | null
   menus: Menu[] | null
+  menuMap: Record<string, Menu> | null
 }
 
 type ActionsType = {
@@ -49,6 +50,7 @@ const useUserStore = create<StateType & ActionsType>()(
       token: null,
       user: null,
       menus: null,
+      menuMap: null,
       // 登出
       logout: async () => {
         set({ token: null, user: null, menus: null }, false, 'logout')
@@ -64,8 +66,12 @@ const useUserStore = create<StateType & ActionsType>()(
           getUserByToken(token!),
           getSystemRoleMenu({}),
         ])
+        const m = {}
+        resp2.data.rows.forEach((e) => {
+          m[e.url] = e
+        })
         set(
-          { user: resp1.data, menus: resp2.data.rows },
+          { user: resp1.data, menus: resp2.data.rows, menuMap: m },
           false,
           'fetchUserInfoAndMenus',
         )

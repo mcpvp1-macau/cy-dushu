@@ -5,6 +5,7 @@ import { GetProps, Tabs } from 'antd'
 import { Outlet, useMatch } from 'react-router'
 import SourceTypeSelect from './components/SourceTypeSelect'
 import MenuIconEvents from '@/assets/icons/jsx/menus/MenuIconEvents'
+import useUserStore from '@/store/useUser.store'
 
 type PropsType = unknown
 
@@ -19,6 +20,7 @@ const PageSituation: FC<PropsType> = memo(() => {
     : 'action'
 
   const navigate = useNavigate()
+  const menuMap = useUserStore((s) => s.menuMap)
 
   const params = useParams()
   const [sourceType, setSourceType] = useState(params.sourceType ?? '')
@@ -72,13 +74,28 @@ const PageSituation: FC<PropsType> = memo(() => {
     }
   })
 
+  const newMenus = useMemo(() => {
+    const isShowAction = menuMap?.['action']
+    const isShowSource = menuMap?.['device']
+    const isShowEvents = menuMap?.['event']
+    return menus.filter((e) => {
+      if (e.key === 'action') {
+        return isShowAction
+      } else if (e.key === 'source') {
+        return isShowSource
+      } else if (e.key === 'events') {
+        return isShowEvents
+      }
+    })
+  }, [menuMap])
+
   return (
     <CollapsedPage>
       <div className="h-full flex flex-col overflow-hidden">
         {!params.actionId && (
           <Tabs
             className="px-3 mt-2"
-            items={menus}
+            items={newMenus}
             size="small"
             activeKey={activeKey}
             onChange={handleTabChange}

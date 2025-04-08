@@ -18,7 +18,7 @@ import TargetPoints from './TargetPoints'
 import BoardCesium from './BoardCesium'
 import EventMarkers from './EventMarkers'
 // import GaussianSplatLayerCesium from '@/components/map/GaussianSplatLayer'
-
+import useUserStore from '@/store/useUser.store'
 type PropsType = unknown
 
 Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ACCESS_TOKEN
@@ -26,6 +26,8 @@ Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ACCESS_TOKEN
 const GlobalMap: FC<PropsType> = memo(() => {
   const airlineOpen = useAirlineConfigStore((s) => s.open)
   const areaWaylineOpen = useAreaWaylineStore((s) => s.open)
+  const menuMap = useUserStore((s) => s.menuMap)
+  const isShowEvents = menuMap?.['event']
 
   return (
     <div className="absolute inset-0">
@@ -42,7 +44,7 @@ const GlobalMap: FC<PropsType> = memo(() => {
         <DeviceHistoryTracks />
         <TargetPoints />
         <BoardCesium />
-        <EventMarkers />
+        {isShowEvents && <EventMarkers />}
         {airlineOpen && <ActionAirline />}
         {areaWaylineOpen && <AreaWayline />}
         {/* <GaussianSplatLayerCesium /> */}
