@@ -1,5 +1,6 @@
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
+import { attempt } from 'lodash'
 
 type PropsType = {
   positions: number[][]
@@ -62,8 +63,10 @@ const GroundPolygon: FC<PropsType> = memo(
       viewer.scene.primitives.add(outlinePrimitive)
 
       return () => {
-        viewer.scene.primitives.remove(primitive)
-        viewer.scene.primitives.remove(outlinePrimitive)
+        attempt(() => {
+          viewer.scene.primitives.remove(primitive)
+          viewer.scene.primitives.remove(outlinePrimitive)
+        })
       }
     }, [viewer, positions, fillColor, outlineColor, outlineWidth])
 
