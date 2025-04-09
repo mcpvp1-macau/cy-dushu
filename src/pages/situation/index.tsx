@@ -76,13 +76,13 @@ const PageSituation: FC<PropsType> = memo(() => {
 
   const newMenus = useMemo(() => {
     const isShowAction = menuMap?.['action']
-    const isShowSource = menuMap?.['device']
+    // const isShowSource = menuMap?.['device']
     const isShowEvents = menuMap?.['event']
     return menus.filter((e) => {
       if (e.key === 'action') {
         return isShowAction
       } else if (e.key === 'source') {
-        return isShowSource
+        return true
       } else if (e.key === 'events') {
         return isShowEvents
       }
