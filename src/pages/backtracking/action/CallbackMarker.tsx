@@ -1,28 +1,19 @@
 import { useEffect } from 'react'
 import * as Cesium from 'cesium'
 import { useCesium } from 'resium'
-import { useLatest } from 'ahooks'
 import { attempt } from 'lodash'
 import { deviceIconMap } from '@/map/GlobalMap/DeviceMarkers/OtherMarkers/OtherMarker'
-type DeviceBackItem = {
-  deviceType: any
-  longitude: number
-  latitude: number
-  deviceId: string
-  deviceName: string
-  name: string
-  type: string
-}
 
 type PropsType = {
   lng: number
   lat: number
   name: string
   deviceId: string
+  altitude: number
 }
 
 const CallbackMarker: React.FC<PropsType> = memo(
-  ({ lng, lat, name, deviceId }) => {
+  ({ lng, lat, name, deviceId, altitude }) => {
     const { viewer } = useCesium()
     //   const position = useLatest({ lng, lat })
 
@@ -30,7 +21,7 @@ const CallbackMarker: React.FC<PropsType> = memo(
       if (viewer) {
         const entity = new Cesium.Entity({
           id: deviceId + '=back',
-          position: Cesium.Cartesian3.fromDegrees(lng, lat, 0),
+          position: Cesium.Cartesian3.fromDegrees(lng, lat, altitude || 0),
           billboard: {
             image: deviceIconMap['UAV'],
             width: 26,
@@ -78,11 +69,11 @@ const CallbackMarker: React.FC<PropsType> = memo(
           entity.position = Cesium.Cartesian3.fromDegrees(
             lng,
             lat,
-            0,
+            altitude || 0,
           ) as unknown as Cesium.PositionProperty
         }
       }
-    }, [viewer, lng, lat])
+    }, [viewer, lng, lat, altitude])
 
     return <></>
   },

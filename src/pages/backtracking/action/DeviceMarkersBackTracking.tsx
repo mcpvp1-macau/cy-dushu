@@ -1,19 +1,8 @@
-import {
-  getGlobalDeviceLocationRetrieval,
-  getTrackQueryMultiDeviceV2,
-} from '@/service/modules/db-api'
+import { getGlobalDeviceLocationRetrieval } from '@/service/modules/db-api'
 import { useBackTrackingStore } from '@/store/context-store/useBackTracking.store'
-import { useQuery } from '@tanstack/react-query'
 import { memo, useMemo, type FC } from 'react'
-import {
-  Billboard,
-  BillboardCollection,
-  Label,
-  LabelCollection,
-  useCesium,
-} from 'resium'
+import { Billboard, BillboardCollection, Label, LabelCollection } from 'resium'
 import * as Cesium from 'cesium'
-import { attempt } from 'lodash'
 import { deviceIconMap } from '@/map/GlobalMap/DeviceMarkers/OtherMarkers/OtherMarker'
 import useFly from '../hooks/useFly'
 import { useRequest } from 'ahooks'
@@ -32,6 +21,7 @@ type DeviceBackItem = {
   deviceName: string
   name: string
   type: string
+  altitude?: number
 }
 
 /**
@@ -45,7 +35,6 @@ const DeviceMarkersBackTracking: FC<PropsType> = memo(
     const startTime = useBackTrackingStore((s) =>
       s.timeRange[0].format('YYYY-MM-DD HH:mm:ss'),
     )
-    const { viewer } = useCesium()
     const { data, run } = useRequest(
       async () => {
         const res = await getGlobalDeviceLocationRetrieval({
@@ -94,6 +83,7 @@ const DeviceMarkersBackTracking: FC<PropsType> = memo(
                     position={Cesium.Cartesian3.fromDegrees(
                       lng || 120,
                       lat || 30,
+                      item.altitude || 0,
                     )}
                     image={icon}
                     width={26}
@@ -108,6 +98,7 @@ const DeviceMarkersBackTracking: FC<PropsType> = memo(
                     position={Cesium.Cartesian3.fromDegrees(
                       lng || 120,
                       lat || 30,
+                      item.altitude || 0,
                     )}
                     scale={0.1}
                     verticalOrigin={Cesium.VerticalOrigin.BOTTOM}

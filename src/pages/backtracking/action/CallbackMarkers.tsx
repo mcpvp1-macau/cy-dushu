@@ -71,6 +71,7 @@ const CallbackMarkers: React.FC<PropsType> = memo(
       deviceIds.length && run()
     }, [deviceIds, startTime, dataTime])
 
+
     return (
       <>
         {featureCollections.map((item) => (
@@ -80,6 +81,7 @@ const CallbackMarkers: React.FC<PropsType> = memo(
             lat={item.latitude}
             name={item.deviceName}
             deviceId={item.deviceId}
+            altitude={item.altitude}
           />
         ))}
       </>
