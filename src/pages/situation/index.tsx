@@ -79,11 +79,6 @@ const PageSituation: FC<PropsType> = memo(() => {
     // const isShowSource = menuMap?.['device']
     const isShowEvents = menuMap?.['event']
 
-    if (!isShowAction && activeKey === 'action') {
-      // activeKey = 'source'
-      navigate(`source/${sourceType || 'UAV'}`)
-    }
-
     return menus.filter((e) => {
       if (e.key === 'action') {
         return isShowAction
@@ -93,7 +88,7 @@ const PageSituation: FC<PropsType> = memo(() => {
         return isShowEvents
       }
     })
-  }, [menuMap, sourceType])
+  }, [menuMap])
 
   // 如果 action 菜单被隐藏，则跳转到 source 菜单
   useEffect(() => {
