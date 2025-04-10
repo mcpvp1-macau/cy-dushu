@@ -1,6 +1,6 @@
 import Select from '@/components/AntdOverride/Select'
 import DeviceIcon from '@/components/device/DeviceIcon'
-import { getDeviceWeight } from '@/enum/device'
+import { DeviceEnum, getDeviceWeight } from '@/enum/device'
 import useWatch from '@/hooks/useWatch'
 import { getAllDeviceType } from '@/service/modules/device'
 import { useLangsDict } from '@/store/useDict.store'
@@ -52,13 +52,11 @@ const SourceTypeSelect: FC<PropsType> = memo(({ value, onChange }) => {
   return (
     <Select
       loading={isLoading}
-      // className="w-fit"
       variant="borderless"
       popupMatchSelectWidth={false}
       labelRender={(e) => (
         <div className="flex gap-2">
-          {/** @ts-ignore */}
-          <DeviceIcon type={e.value} />
+          <DeviceIcon type={e.value as DeviceEnum} />
           {e.label}
         </div>
       )}

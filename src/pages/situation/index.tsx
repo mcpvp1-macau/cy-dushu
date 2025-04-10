@@ -88,7 +88,7 @@ const PageSituation: FC<PropsType> = memo(() => {
         return isShowEvents
       }
     })
-  }, [menuMap])
+  }, [menuMap, menus])
 
   // 如果 action 菜单被隐藏，则跳转到 source 菜单
   useEffect(() => {
