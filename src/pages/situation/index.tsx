@@ -13,7 +13,11 @@ const PageSituation: FC<PropsType> = memo(() => {
   const mathchedSource = useMatch('/source/:sourceType')
   const matchEvents = useMatch('situation/events')
 
-  const activeKey = mathchedSource ? 'source' : matchEvents ? 'events' : 'action'
+  const activeKey = mathchedSource
+    ? 'source'
+    : matchEvents
+    ? 'events'
+    : 'action'
 
   const navigate = useNavigate()
   const menuMap = useUserStore((s) => s.menuMap)
@@ -89,7 +93,7 @@ const PageSituation: FC<PropsType> = memo(() => {
         return isShowEvents
       }
     })
-  }, [menuMap])
+  }, [menuMap, sourceType])
 
   // 如果 action 菜单被隐藏，则跳转到 source 菜单
   useEffect(() => {
@@ -98,8 +102,6 @@ const PageSituation: FC<PropsType> = memo(() => {
       navigate(`source/${sourceType || 'UAV'}`)
     }
   }, [menuMap, activeKey, sourceType, navigate])
-
-  console.log(activeKey, sourceType)
 
   return (
     <CollapsedPage>
