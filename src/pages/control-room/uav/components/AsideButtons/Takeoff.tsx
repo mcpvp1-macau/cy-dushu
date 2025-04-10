@@ -49,13 +49,19 @@ const Takeoff: FC<PropsType> = memo(({ postServiceFn }) => {
               rules: [{ required: true, message: '请输入起飞高度' }],
               otherProps: {
                 addonAfter: 'm',
+                min: 1,
+                max: globalConfig.uavHeightLimit,
               },
             },
             {
               label: t('device.uav.takeoffForm.goHomeAltitude.title'),
               name: 'gohomeAltitude',
               type: 'input-number',
-              otherProps: { addonAfter: 'm', min: 50, max: 500 },
+              otherProps: {
+                addonAfter: 'm',
+                min: 50,
+                max: globalConfig.uavHeightLimit,
+              },
             },
           ]}
           onClose={setFalse}

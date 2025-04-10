@@ -56,13 +56,21 @@ const UavAirportDetail: FC<PropsType> = memo(
                 message: t('device.uav.takeoffForm.takeoffHeight.required_msg'),
               },
             ],
-            otherProps: { style: { width: '100%' } },
+            otherProps: {
+              style: { width: '100%' },
+              min: 1,
+              max: globalConfig.uavHeightLimit,
+            },
           },
           {
             label: t('device.uav.takeoffForm.goHomeAltitude.title'),
             name: 'gohomeAltitude',
             type: 'input-number',
-            otherProps: { style: { width: '100%' }, min: 50, max: 500 },
+            otherProps: {
+              style: { width: '100%' },
+              min: 50,
+              max: globalConfig.uavHeightLimit,
+            },
           },
         ] as XFormItem[],
       [t],

@@ -95,6 +95,14 @@ export class CameraVertexPicker {
     // 视锥四个角的经纬度
     const gimbalPick: GimbalPick = {}
 
+    // 如果相机高度小于地形高度，则不进行计算
+    const height = this.viewer.scene.globe.getHeight(
+      Cesium.Cartographic.fromDegrees(position.lon, position.lat),
+    )
+    if (height && height > position.alt) {
+      return gimbalPick
+    }
+
     for (const [key, fovX, fovY] of directionTuples) {
       const direction = calcDirection(fovX, fovY)
       const ray = new Cesium.Ray(camera.position, direction)

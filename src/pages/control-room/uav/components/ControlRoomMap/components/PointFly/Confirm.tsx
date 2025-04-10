@@ -147,7 +147,11 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
                   ),
                 },
               ],
-              otherProps: { addonAfter: 'm' },
+              otherProps: {
+                addonAfter: 'm',
+                min: 1,
+                max: globalConfig.uavHeightLimit,
+              },
             },
             {
               label: t('common.flightSpeed'),
@@ -167,7 +171,11 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
               label: t('device.uav.takeoffForm.goHomeAltitude.title'),
               name: 'gohomeAltitude',
               type: 'input-number',
-              otherProps: { addonAfter: 'm', min: 50, max: 500 },
+              otherProps: {
+                addonAfter: 'm',
+                min: 50,
+                max: globalConfig.uavHeightLimit,
+              },
             },
           ]}
           onClose={setParamsOpenFalse}

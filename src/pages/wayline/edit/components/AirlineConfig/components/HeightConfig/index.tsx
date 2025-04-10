@@ -1,4 +1,3 @@
-import { memo, type FC } from 'react'
 import HNumber from '../../../HNumber'
 import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import XCard from '@/components/ui/XCard'
@@ -26,7 +25,7 @@ const AirlineHeightConfig: FC<PropsType> = () => {
           positives={[10, 100]}
           value={height}
           unit="m"
-          max={500}
+          max={globalConfig.uavHeightLimit}
           onChange={(e) => {
             setAirlineConfig({
               ...useAirlineConfigStore.getState().airlineConfig,

@@ -27,6 +27,8 @@ export type ConfigType = {
       particularHeader?: boolean
     }
   }
+  /** 无人机高度限制 */
+  uavHeightLimit: number
   isHaveBacktracking?: boolean
   /** 地形服务 */
   terrainUrl?: string
@@ -47,5 +49,7 @@ if (import.meta.env.DEV && __DEV_MERGE_CONFIG__) {
 globalConfig.loginUrl ??= `${globalConfig.loginHttps ? 'https' : 'http'}://${
   location.hostname
 }:32712/login`
+
+globalConfig.uavHeightLimit ??= 1000
 
 export default globalConfig

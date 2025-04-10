@@ -3,9 +3,8 @@ import { useShallow } from 'zustand/react/shallow'
 import MapUavRealMarker from '@/components/map/device/UavRealMarker'
 import { useCesium } from 'resium'
 import { CameraVertexPicker } from '@/utils/cesium/camera/camera-vertex-pick'
-import { getGimbalInfo } from '@/constant/uav/gimbal'
-import { limitNum } from '@/utils/math'
 import CameraGroundFrustum from '@/components/map/device/CameraGroundFrustum'
+import useCalcGimbalParams from '@/hooks/device/uav/useCalcGimbalParams'
 
 type PropsType = unknown
 
@@ -34,28 +33,16 @@ const UavMarker: FC<PropsType> = memo(() => {
     pickerRef.current = new CameraVertexPicker(viewer)
   }
 
+  const gimbalState = useCalcGimbalParams(
+    state.cameraType as string,
+    state.lensType as 'wide' | 'zoom' | 'ir',
+    state.zoomFactor,
+  )
+
   const gimbalPick = useMemo(() => {
     if (!pickerRef.current) {
       return {}
     }
-
-    const gimbalInfo = getGimbalInfo(state.cameraType)
-    const zoom =
-      state.lensType === 'wide' ? 1 : limitNum(state.zoomFactor, 1, 200)
-    let focal = gimbalInfo.wide_focal
-    if (state.lensType !== 'wide') {
-      const df =
-        (gimbalInfo.max_focal - gimbalInfo.min_focal) /
-        (gimbalInfo.max_ratio - 2)
-      focal = gimbalInfo.min_focal + df * (zoom - 2)
-    }
-
-    const w =
-      state.lensType !== 'wide' ? gimbalInfo.camera_w : gimbalInfo.wide_camera_w
-    const aspect =
-      state.lensType !== 'wide'
-        ? gimbalInfo.camera_w / gimbalInfo.camera_h
-        : gimbalInfo.wide_camera_w / gimbalInfo.wide_camera_h
 
     const res = pickerRef.current.getGimbalPick(
       {
@@ -64,14 +51,14 @@ const UavMarker: FC<PropsType> = memo(() => {
         alt: state.altitude,
       },
       { yaw: state.gimbalYaw, pitch: state.gimbalPitch, roll: 0 },
-      focal,
-      w,
-      aspect,
+      gimbalState.focal,
+      gimbalState.width,
+      gimbalState.width / gimbalState.height,
       1,
     )
 
     return res
-  }, [state])
+  }, [state, gimbalState])
 
   const gimbalPickExist =
     gimbalPick.leftTop &&
