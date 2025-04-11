@@ -21,7 +21,7 @@ const InnerInitialPointFly: FC<{
 
   useEffect(() => {
     updatePointFly({
-      targetPosition: [targetLng, targetLat],
+      targetPosition: [targetLng, targetLat, 0],
       open: true,
     })
     // Remove targetLng and targetLat from URL params after processing

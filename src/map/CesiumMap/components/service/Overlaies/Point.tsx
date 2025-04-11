@@ -2,8 +2,6 @@ import { argbToHex } from '@/utils/color'
 import { shouldJson } from '@/utils/json'
 import { Label, useCesium } from 'resium'
 import * as Cesium from 'cesium'
-import useRightMode from '@/store/layout/useRightMode.store'
-import { RightModeEnum } from '@/enum/right-mode'
 import { useMapLayerAndOverlayConfigStore } from '@/store/map/useLayerAndOverlay.store'
 import { attempt } from 'lodash'
 
@@ -15,9 +13,6 @@ type PropsType = {
 const OverlayPoint: FC<PropsType> = memo(({ data }) => {
   const postion = shouldJson(data.overlayPositions)?.[0]
 
-  const updateRightMode = useRightMode((s) => s.updateRightMode)
-  const updateDetailId = useRightMode((s) => s.updateDetailId)
-
   const hiddenOverlayIds = useMapLayerAndOverlayConfigStore(
     (s) => s.hiddenOverlayIds,
   )
@@ -26,11 +21,6 @@ const OverlayPoint: FC<PropsType> = memo(({ data }) => {
   )
 
   const { viewer } = useCesium()
-
-  const handleDblClick = () => {
-    updateRightMode(RightModeEnum.POINT_DETAIL)
-    updateDetailId(data.overlayId + '')
-  }
 
   useEffect(() => {
     if (!viewer) {
@@ -60,7 +50,7 @@ const OverlayPoint: FC<PropsType> = memo(({ data }) => {
     )
 
     const entity = new Cesium.Entity({
-      id: `overlay--${data.overlayId}`,
+      id: `overlay--${data.overlayId}--${data.overlayType}`,
       position,
       point: {
         color: Cesium.Color.fromCssColorString(hex),
@@ -106,6 +96,7 @@ const OverlayPoint: FC<PropsType> = memo(({ data }) => {
   return (
     <>
       <Label
+        id={`overlay--${data.overlayId}--${data.overlayType}`}
         position={position}
         scale={0.2}
         verticalOrigin={Cesium.VerticalOrigin.BOTTOM}
@@ -124,7 +115,6 @@ const OverlayPoint: FC<PropsType> = memo(({ data }) => {
         distanceDisplayCondition={
           new Cesium.DistanceDisplayCondition(0, 200_000)
         }
-        onClick={handleDblClick}
       />
     </>
   )

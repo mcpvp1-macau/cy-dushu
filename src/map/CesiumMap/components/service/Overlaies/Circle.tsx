@@ -52,7 +52,7 @@ const OverlayCircle: FC<PropsType> = memo(({ data }) => {
 
     // 创建多边形几何实例
     const instance1 = new Cesium.GeometryInstance({
-      id: `overlay--${data.overlayId}`,
+      id: `overlay--${data.overlayId}--${data.overlayType}`,
       geometry: new Cesium.CircleGeometry({
         center,
         radius,
@@ -109,6 +109,7 @@ const OverlayCircle: FC<PropsType> = memo(({ data }) => {
 
   return (
     <Label
+      id={`overlay--${data.overlayId}--${data.overlayType}`}
       position={Cesium.Cartesian3.fromDegrees(postion[0], postion[1], 0)}
       scale={0.2}
       verticalOrigin={Cesium.VerticalOrigin.BOTTOM}

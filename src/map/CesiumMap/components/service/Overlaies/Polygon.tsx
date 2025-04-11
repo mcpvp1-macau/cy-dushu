@@ -49,7 +49,7 @@ const OverlayPolygon: FC<PropsType> = memo(({ data }) => {
         polygonHierarchy: new Cesium.PolygonHierarchy(positions),
         extrudedHeight: 0,
       }),
-      id: `overlay--${data.overlayId}`,
+      id: `overlay--${data.overlayId}--${data.overlayType}`,
     })
 
     // 创建边界线几何实例

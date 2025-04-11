@@ -116,7 +116,7 @@ const UAVControlRoomPOIResolver: FC<PropsType> = memo(() => {
                 onClick: () => {
                   updatePointFly({
                     open: true,
-                    targetPosition: [activePOI.lng, activePOI.lat],
+                    targetPosition: [activePOI.lng, activePOI.lat, 0],
                   })
                   menuRef.current?.close()
                 },

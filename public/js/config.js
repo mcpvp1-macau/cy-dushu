@@ -16,6 +16,11 @@ window.config = {
       min: 6,
       max: 12,
     },
+    // {
+    //   url: 'http://172.21.30.204:32650/styles/klokantech-basic/{z}/{x}/{y}@4x.png',
+    //   min: 0,
+    //   max: 14,
+    // },
     {
       url: 'https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png',
       min: 13,

@@ -298,15 +298,39 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
     )
 
     handler.setInputAction(clearOptions, Cesium.ScreenSpaceEventType.LEFT_DOWN)
-    // handler.setInputAction(
-    //   clearOptions,
-    //   Cesium.ScreenSpaceEventType.RIGHT_CLICK,
-    // )
     handler.setInputAction(clearOptions, Cesium.ScreenSpaceEventType.WHEEL)
 
     handler.setInputAction(
       listenRightClick,
       Cesium.ScreenSpaceEventType.RIGHT_CLICK,
+    )
+
+    const handleDoubleClick = (evt) => {
+      const pickedObjs = viewer?.scene?.drillPick(evt.position)
+      if (!pickedObjs || !pickedObjs.length) {
+        return
+      }
+
+      const res = pickedObjs.find((e) => {
+        if (typeof e.id === 'string' && e.id.startsWith('overlay--')) {
+          return true
+        }
+        if (typeof e.id?.id === 'string' && e.id.id.startsWith('overlay--')) {
+          return true
+        }
+        return false
+      })
+
+      const id = res?.id?.id ?? res?.id
+      if (typeof id === 'string' && id.startsWith('overlay--')) {
+        const [, overlayId] = id.split('--')
+        updateRightMode(RightModeEnum.POINT_DETAIL)
+        updateDetailId(overlayId)
+      }
+    }
+    handler.setInputAction(
+      handleDoubleClick,
+      Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK,
     )
 
     return () => {
