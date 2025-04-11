@@ -10,7 +10,7 @@ import { Button } from 'antd'
 import useQueryDeviceDetail from '@/hooks/device/useQueryDeviceDetail'
 
 type PropsType = {
-  position: [number, number]
+  position: [number, number, number]
 }
 
 const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {

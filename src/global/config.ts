@@ -14,6 +14,7 @@ export type ConfigType = {
     url: string
     min: number
     max: number
+    crs?: string
   }[]
   logo?: string
   enableElectricScale?: boolean

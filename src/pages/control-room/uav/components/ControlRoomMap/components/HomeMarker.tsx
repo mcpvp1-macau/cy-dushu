@@ -21,6 +21,7 @@ const HomeMarker: FC<PropsType> = memo(() => {
         scale={0.7}
         verticalOrigin={Cesium.VerticalOrigin.BOTTOM}
         disableDepthTestDistance={50000}
+        heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
       />
     </BillboardCollection>
   )

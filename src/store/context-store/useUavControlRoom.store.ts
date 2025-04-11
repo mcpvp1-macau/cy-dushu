@@ -37,7 +37,7 @@ type StateType = {
     /** 是否开启指点飞行 */
     open: boolean
     /** 目标经纬度 */
-    targetPosition: [number, number] | null
+    targetPosition: [number, number, number] | null
   }
   /** 无人机的控制信息 */
   uavControlInfo: Partial<{

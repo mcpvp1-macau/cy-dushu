@@ -5,9 +5,11 @@ import { useThrottleFn } from 'ahooks'
 const BottomBar: FC<unknown> = memo(() => {
   const { viewer } = useCesium()
 
-  const [position, setPosition] = useState<{ lon: number; lat: number } | null>(
-    null,
-  )
+  const [position, setPosition] = useState<{
+    lon: number
+    lat: number
+    alt?: number
+  } | null>(null)
 
   const { run: updateMousePosition } = useThrottleFn(
     (movement: Cesium.ScreenSpaceEventHandler.MotionEvent) => {
@@ -15,22 +17,25 @@ const BottomBar: FC<unknown> = memo(() => {
         return
       }
 
-      const cartesian = viewer.camera.pickEllipsoid(
-        movement.endPosition,
-        viewer.scene.globe.ellipsoid,
-      )
+      const ray = viewer.camera.getPickRay(movement.endPosition)
+      if (!ray) {
+        return
+      }
+      // Get the cartesian position from the mouse position
+      const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
 
       if (cartesian) {
         const cartographic = Cesium.Cartographic.fromCartesian(cartesian)
         const lon = Cesium.Math.toDegrees(cartographic.longitude)
         const lat = Cesium.Math.toDegrees(cartographic.latitude)
-        setPosition({ lon, lat })
+        const alt = cartographic.height
+        setPosition({ lon, lat, alt })
       } else {
         setPosition(null)
       }
     },
     {
-      wait: 100,
+      wait: 120,
     },
   )
 
@@ -54,6 +59,7 @@ const BottomBar: FC<unknown> = memo(() => {
       <div className="flex h-full items-center justify-end text-fore text-xs px-3">
         <p className="text-right whitespace-nowrap">
           {position?.lon?.toFixed(6) || '-'}, {position?.lat?.toFixed(6) || '-'}
+          , {position?.alt?.toFixed(1) || '-'} m
         </p>
       </div>
     </div>

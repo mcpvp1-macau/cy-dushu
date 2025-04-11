@@ -12,6 +12,7 @@ type PropsType = {
   useCallback?: boolean
   useOutline?: boolean
   color?: string
+  clampToGround?: boolean
 }
 
 // const drawImage = (startColor: string, endColor: string) => {
@@ -35,6 +36,7 @@ const HistoryTrack: FC<PropsType> = memo(
     useCallback = false,
     useOutline = false,
     color = '#ef4444',
+    clampToGround = false,
   }) => {
     const { viewer } = useCesium()
     const historyTrackRef = useLatest(historyTrack)
@@ -52,7 +54,7 @@ const HistoryTrack: FC<PropsType> = memo(
           ),
           width: 2,
           material: Cesium.Color.fromCssColorString(color),
-          // clampToGround: true,
+          clampToGround,
         },
       })
       let outline: Cesium.Entity | null = null
@@ -64,7 +66,7 @@ const HistoryTrack: FC<PropsType> = memo(
             ),
             width: 2,
             material: Cesium.Color.fromCssColorString('#000'),
-            // clampToGround: true,
+            clampToGround,
             zIndex: 1,
           },
         })
@@ -100,7 +102,7 @@ const HistoryTrack: FC<PropsType> = memo(
           positions,
           width: 2,
           material: Cesium.Color.fromCssColorString(color),
-          // clampToGround: true,
+          clampToGround,
           zIndex: 1,
         },
       })
@@ -112,7 +114,7 @@ const HistoryTrack: FC<PropsType> = memo(
             positions,
             width: 5,
             material: Cesium.Color.fromCssColorString('#000'),
-            // clampToGround: true,
+            clampToGround,
           },
         })
       }
@@ -121,7 +123,7 @@ const HistoryTrack: FC<PropsType> = memo(
         attempt(() => viewer.entities.remove(e))
         attempt(() => outline && viewer.entities.remove(outline))
       }
-    }, [viewer, historyTrackRef, useCallback, useOutline])
+    }, [viewer, historyTrackRef, useCallback, useOutline, clampToGround])
 
     return null
   },
