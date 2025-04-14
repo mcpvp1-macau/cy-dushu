@@ -47,6 +47,7 @@ const createTaskConfig = (
       type: 'select',
       options: airlineTemplateOptions,
       otherProps: {
+        optionFilterProp: 'name',
         allowClear: true,
       },
     },
@@ -145,6 +146,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
           </div>
         ),
         value: i,
+        name: e.taskName,
       })) ?? emtpyArray,
     [airlineTemplateList],
   )
