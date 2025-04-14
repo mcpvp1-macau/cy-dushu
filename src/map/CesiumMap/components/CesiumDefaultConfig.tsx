@@ -4,6 +4,13 @@ import * as Cesium from 'cesium'
 import { useRafInterval } from 'ahooks'
 import useMapSettingStore from '@/store/setting/useMapSetting.store'
 
+import posz from '@/assets/imgs/sky-box/pz.jpg'
+import negz from '@/assets/imgs/sky-box/nz.jpg'
+import posx from '@/assets/imgs/sky-box/px.jpg'
+import negx from '@/assets/imgs/sky-box/nx.jpg'
+import posy from '@/assets/imgs/sky-box/py.jpg'
+import negy from '@/assets/imgs/sky-box/ny.jpg'
+
 type PropsType = unknown
 
 const CesiumDefaultConfig: FC<PropsType> = memo(() => {
@@ -52,6 +59,18 @@ const CesiumDefaultConfig: FC<PropsType> = memo(() => {
         heading: Cesium.Math.toRadians(0),
         pitch: Cesium.Math.toRadians(-90),
         roll: Cesium.Math.toRadians(0),
+      },
+    })
+
+    // 添加背景图
+    viewer.scene.skyBox = new Cesium.SkyBox({
+      sources: {
+        positiveZ: posz,
+        negativeZ: negz,
+        positiveX: posx,
+        negativeX: negx,
+        positiveY: negy,
+        negativeY: posy,
       },
     })
   }, [viewer])
