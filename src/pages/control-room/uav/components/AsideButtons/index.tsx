@@ -66,7 +66,7 @@ const AsideButtons: FC<PropsType> = memo(() => {
         <Takeoff postServiceFn={postSerivce} />
         <PointFly />
         <VerticalIconButton
-          className="flex-1 h-10 p-0 text-xs"
+          className="flex-1 h-11 p-1 text-xs"
           disabled={!canStopAll}
           icon={<IconStopCircle className="text-base" />}
           onClick={() => postSerivce('stopAll')}
@@ -74,7 +74,7 @@ const AsideButtons: FC<PropsType> = memo(() => {
           {t('controlRoom.uav.service.stopAll.title')}
         </VerticalIconButton>
         <VerticalIconButton
-          className="flex-1 h-10 p-0 text-xs"
+          className="flex-1 h-11 p-1 text-xs"
           disabled={!canGohome}
           icon={<IconReturnBase className="text-base" />}
           onClick={() => postSerivce('gohome')}
@@ -82,7 +82,7 @@ const AsideButtons: FC<PropsType> = memo(() => {
           {t('controlRoom.uav.service.goHome.title')}
         </VerticalIconButton>
         <VerticalIconButton
-          className="flex-1 h-10 p-0 text-xs"
+          className="flex-1 h-11 p-1 text-xs"
           disabled={!canAutoland}
           icon={<IconLanding className="text-base" />}
           onClick={() => postSerivce('autoland')}

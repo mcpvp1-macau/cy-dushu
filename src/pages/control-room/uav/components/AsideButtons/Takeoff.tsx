@@ -30,7 +30,7 @@ const Takeoff: FC<PropsType> = memo(({ postServiceFn }) => {
   return (
     <>
       <VerticalIconButton
-        className="flex-1 h-10 p-0 text-xs"
+        className="flex-1 h-11 p-1 text-xs"
         disabled={!canTakeoff}
         icon={<IconTakeoff className="text-base" />}
         onClick={setTrue}

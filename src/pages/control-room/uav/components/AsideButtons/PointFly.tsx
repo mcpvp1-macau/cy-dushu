@@ -27,7 +27,7 @@ const PointFly: FC<PropsType> = memo(() => {
 
   return (
     <VerticalIconButton
-      className={clsx('flex-1 h-10 p-0 text-xs', {
+      className={clsx('flex-1 h-11 p-1 text-xs', {
         'text-primary': openPointFly,
       })}
       disabled={!canPointFly}

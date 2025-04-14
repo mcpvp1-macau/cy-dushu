@@ -25,14 +25,14 @@ const ControlRoomUavCameraSwitch: FC<PropsType> = memo(() => {
     <div className="flex gap-2">
       <FloatIconButton
         active={videoSource === 'fpv'}
-        className="text-xs h-7 leading-7 font-bold"
+        className="text-sm size-8 leading-8"
         onClick={() => handleVideoSourceChange('fpv')}
       >
         FPV
       </FloatIconButton>
       <FloatIconButton
         active={videoSource === 'gimbal'}
-        className="text-xs h-7 leading-7 font-bold"
+        className="text-sm size-8 leading-8"
         onClick={() => handleVideoSourceChange('gimbal')}
       >
         {t('controlRoom.uav.btn.gimbal.title')}

@@ -195,7 +195,7 @@ const Tanqi = memo(() => {
         {creating || isLoading ? (
           <AppSpin />
         ) : !chatId || (!chatDetail?.rows?.length && !appendedRows.length) ? (
-          <div className="text-xl text-fore opacity-80 size-full flex flex-col items-center justify-center gap-2">
+          <div className="text-sm text-fore opacity-80 size-full flex flex-col items-center justify-center gap-1">
             <p className="text-center">{`${t('common.hello')}, ${name}`}</p>
             <p className="text-center">{`${t('tanqi.welcome.msg')}`}</p>
           </div>

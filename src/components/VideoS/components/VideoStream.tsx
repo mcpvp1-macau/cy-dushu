@@ -69,7 +69,9 @@ const VideoStream: FC<PropsType> = memo(
           (document.fullscreenElement as HTMLElement) || document.body
         }
         labelRender={(v) => (
-          <div className="text-fore max-w-[70px] truncate">{v.label}</div>
+          <div className="text-fore text-xs max-w-[70px] truncate">
+            {v.label}
+          </div>
         )}
       />
     )

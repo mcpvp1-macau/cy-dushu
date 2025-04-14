@@ -72,7 +72,7 @@ const FallbackMessage: FC<PropsType> = memo(() => {
       return (
         <p
           key={i}
-          className="px-2 py-1 text-white text-sm rounded-[3px] truncate"
+          className="px-2 text-white text-sm rounded-[3px] h-8 leading-8 truncate"
           style={{ backgroundColor: color }}
         >
           {info}
@@ -108,8 +108,8 @@ const FallbackMessage: FC<PropsType> = memo(() => {
             content={<div className="flex flex-col gap-1">{renderMsgs}</div>}
             placement="bottomLeft"
           >
-            <div className="flex gap-3">
-              <div className="px-2 py-1 text-white text-sm rounded-[3px] bg-ground-2">
+            <div className="flex gap-3 h-8">
+              <div className="size-8 flex justify-center items-center text-white text-sm rounded-[3px] bg-ground-2">
                 {renderMsgs.length}
               </div>
               <div className="max-w-64">{renderMsgs[0]}</div>
@@ -118,7 +118,7 @@ const FallbackMessage: FC<PropsType> = memo(() => {
         </>
       )}
       {mode && (
-        <div className="text-sm px-2 py-1 bg-ground-3 bg-opacity-80 rounded-[3px]">
+        <div className="text-sm h-8 leading-8 px-2 flex justify-center items-center bg-ground-3 bg-opacity-80 rounded-[3px]">
           {mode}
         </div>
       )}

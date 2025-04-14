@@ -30,7 +30,7 @@ const VideoQuality5G: FC<PropsType> = memo(({ value, onChange }) => {
     <Select
       variant="borderless"
       placement="topRight"
-      labelRender={(v) => <div className="text-fore">{v.label}</div>}
+      labelRender={(v) => <div className="text-fore text-xs">{v.label}</div>}
       suffixIcon={null}
       popupMatchSelectWidth={false}
       options={options}
