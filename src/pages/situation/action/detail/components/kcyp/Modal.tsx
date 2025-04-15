@@ -65,7 +65,7 @@ const ResultItem: FC<{ data: API_ACTION.domain.AIResultRecord }> = memo(
 
     return (
       <div className="flex gap-2">
-        <div className="w-[213px] h-[120px] relative border border-solid border-ground-5 box-content bg-ground-1">
+        <div className="w-[212px] h-[120px] relative border border-solid border-ground-5 box-content bg-ground-1">
           <ImageContainBoxPreview
             src={`/storage${data.image || data.sourceImage}`}
             sourceWidth={data.sourceFrameWidth}
@@ -92,28 +92,6 @@ const ResultItem: FC<{ data: API_ACTION.domain.AIResultRecord }> = memo(
               />
             )}
           </ImageContainBoxPreview>
-          {/* <ImageContainBox src={`/storage${data.image || data.sourceImage}`}>
-            {data.leftTopX && data.leftTopY && (
-              <div
-                className="absolute border border-solid border-red-400"
-                style={{
-                  left: `${(data.leftTopX / data.sourceFrameWidth) * 100}%`,
-                  top: `${(data.leftTopY / data.sourceFrameHeight) * 100}%`,
-                  right: `${
-                    100 -
-                    ((data.leftTopX + data.bboxWidth) / data.sourceFrameWidth) *
-                      100
-                  }%`,
-                  bottom: `${
-                    100 -
-                    ((data.leftTopY + data.bboxHeight) /
-                      data.sourceFrameHeight) *
-                      100
-                  }%`,
-                }}
-              />
-            )}
-          </ImageContainBox> */}
           <div className="absolute left-2 top-2">
             <Checkbox value={data.id} />
           </div>

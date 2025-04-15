@@ -1,4 +1,3 @@
-import ImageContainBox from '@/components/ImageContainBox'
 import XModal from '@/components/XModal'
 import { DictEnum } from '@/enum/dict'
 import { useAppMsg } from '@/hooks/useAppMsg'
