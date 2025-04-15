@@ -1,9 +1,7 @@
-import { Button, ConfigProvider, Form, GetProps, Modal } from 'antd'
+import { ConfigProvider, Form, GetProps } from 'antd'
 import { useLayoutEffect, type FC } from 'react'
-import styles from './index.module.less'
-import IconButton from '@/components/ui/button/IconButton'
-import IconClose from '@/assets/icons/jsx/IconClose'
 import XForm from '../index'
+import XModal from '@/components/XModal'
 
 type PropsType = GetProps<typeof XForm> & {
   width?: string
@@ -13,6 +11,7 @@ type PropsType = GetProps<typeof XForm> & {
   confirmLoading?: boolean
   /** @deprecated 继承自 Form, 参考 https://ant-design.antgroup.com/components/form-cn#form */
   layout?: 'auto' | number
+  modalProps?: GetProps<typeof XModal>
   onConfirm?: (data: any) => Promise<void> | void
   onClose?: () => void
 }
@@ -28,9 +27,9 @@ const FormModal: FC<PropsType> = ({
   layout = 24,
   onConfirm,
   onClose,
+  modalProps,
   ...restProps
 }) => {
-  const { t } = useTranslation()
   const [innerForm] = Form.useForm()
 
   const form = propForm ?? innerForm
@@ -64,44 +63,24 @@ const FormModal: FC<PropsType> = ({
         },
       }}
     >
-      <Modal
+      <XModal
+        title={title}
         open={open}
-        closable={false}
-        footer={null}
-        centered
+        onClose={onClose}
+        onConfirm={handleConfirmClick}
         width={width ?? '318px'}
+        centered
+        confirmLoading={confirmLoading || loading}
+        {...modalProps}
       >
-        <div className={styles.addModal}>
-          <div className="header">
-            <div className="text-white">{title}</div>
-            <IconButton style={{ height: '20px' }} onClick={onClose}>
-              <IconClose style={{ fontSize: '20px' }} />
-            </IconButton>
-          </div>
-          <div className="px-3 pt-3">
-            <XForm
-              items={items}
-              form={form}
-              layout="vertical"
-              colsProps={{
-                span: layout,
-              }}
-              {...restProps}
-            />
-          </div>
-          <div className="text-right p-3 pt-0">
-            <Button onClick={onClose}>{t('modal.cancel')}</Button>
-            <Button
-              loading={confirmLoading || loading}
-              type="primary"
-              style={{ marginLeft: '12px' }}
-              onClick={handleConfirmClick}
-            >
-              {t('modal.confirm')}
-            </Button>
-          </div>
-        </div>
-      </Modal>
+        <XForm
+          items={items}
+          form={form}
+          layout="vertical"
+          colsProps={{ span: layout }}
+          {...restProps}
+        />
+      </XModal>
     </ConfigProvider>
   )
 }
