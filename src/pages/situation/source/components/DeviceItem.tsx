@@ -7,8 +7,6 @@ import IconVisible from '@/assets/icons/jsx/IconVisible'
 import DeviceIcon from '@/components/device/DeviceIcon'
 import IconButton from '@/components/ui/button/IconButton'
 import TagItem from '@/components/TagItem'
-import { RightModeEnum } from '@/enum/right-mode'
-import useRightMode from '@/store/layout/useRightMode.store'
 import { Badge, Tooltip } from 'antd'
 import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
 import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
@@ -16,6 +14,7 @@ import { DeviceEnum } from '@/enum/device'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
+  onClick?: (data: API_DEVICE.domain.Device) => void
 }
 
 /** 任务状态 */
@@ -59,15 +58,7 @@ const ignoreBatteryDeviceTypes = new Set([
 ])
 
 /** 设备树中的设备项 */
-const DeviceItem: FC<PropsType> = memo(({ data }) => {
-  const updateRightMode = useRightMode((s) => s.updateRightMode)
-  const updateDetailId = useRightMode((s) => s.updateDetailId)
-
-  const handleClick = useMemoizedFn(() => {
-    updateRightMode(RightModeEnum.DEVICE)
-    updateDetailId(data.deviceId)
-  })
-
+const DeviceItem: FC<PropsType> = memo(({ data, onClick }) => {
   /** 设备型号 */
   const moduleNumber = useMemo(
     () => data.deviceTags?.find((e) => e.tagName === 'MODEL_NUMBER')?.tagValue,
@@ -84,7 +75,7 @@ const DeviceItem: FC<PropsType> = memo(({ data }) => {
   const { t } = useTranslation()
 
   return (
-    <div onClick={handleClick}>
+    <div onClick={() => onClick?.(data)}>
       <div className="w-[350px] px-3 py-1 flex items-center justify-between text-fore">
         <div className="flex items-center gap-2">
           <div className="text-white">

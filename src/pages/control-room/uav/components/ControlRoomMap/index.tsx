@@ -17,6 +17,7 @@ import DrawHandler from '@/map/GlobalMap/DrawHandler'
 import MapSituation from '@/map/GlobalMap/Situation'
 import { useSearchParams } from 'react-router-dom'
 import TargetPoints from '@/map/GlobalMap/TargetPoints'
+import LeftTopTools from './components/LeftTopTools'
 type PropsType = unknown
 
 const RIDTargets = lazy(() => import('./components/RIDTargets'))
@@ -39,6 +40,7 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
 
   return (
     <CesiumMap id="uav-control-room-map">
+      <LeftTopTools />
       <RightTools />
       <Right />
       <DrawHandler />

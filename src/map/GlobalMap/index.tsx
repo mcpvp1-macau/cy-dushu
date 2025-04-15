@@ -15,11 +15,7 @@ import BoardCesium from './BoardCesium'
 import EventMarkers from './EventMarkers'
 import WaylineEdit from './WaylineEdit'
 import Waylines from './Waylines'
-import { lazy } from 'react'
-
-const ReconstructionDraw = lazy(
-  () => import('@/map/CesiumMap/components/service/ReconstructionDraw'),
-)
+import ReconstructionDraw from '../CesiumMap/components/service/ReconstructionDraw'
 
 type PropsType = unknown
 
