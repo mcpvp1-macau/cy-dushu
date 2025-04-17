@@ -20,7 +20,7 @@ const AiResultItem: FC<PropsType> = memo(({ data }) => {
             sourceWidth={data.sourceFrameWidth}
             sourceHeight={data.sourceFrameHeight}
           >
-            {data.leftTopX && data.leftTopY && (
+            {data.bboxWidth && data.bboxHeight ? (
               <div
                 className="absolute border border-solid border-red-400"
                 style={{
@@ -39,7 +39,7 @@ const AiResultItem: FC<PropsType> = memo(({ data }) => {
                   }%`,
                 }}
               />
-            )}
+            ) : null}
           </ImageContainBoxPreview>
         </div>
         <ul className="flex flex-col justify-between text-fore">

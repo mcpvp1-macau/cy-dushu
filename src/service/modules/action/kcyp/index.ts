@@ -1,4 +1,5 @@
 import serverJingqi from '@/service/servers/serverJingqi'
+import serverUavXiaoshan from '@/service/servers/serverUavXiaoshan'
 
 /** 查询工单暂存记录 */
 export const getKCYPOrder = (data: API_KCYP.req.GetKCYPOrderReq) => {
@@ -34,4 +35,14 @@ export const saveXSKCYPOrder = (data: any) => {
 /** 最终工单提交 */
 export const commitXiaoshanKCYP = (data: any) => {
   return serverJingqi.post('/xiaoshan/kcyp/commit', data)
+}
+
+/** 获取萧山大华卡口图片 */
+export const getSipCascadePicture = (
+  data: API_KCYP.req.GetSipCascadePictureReq,
+) => {
+  return serverUavXiaoshan.post(
+    '/sip-cascade/xiaoshan/dahua/picture/query',
+    data,
+  )
 }

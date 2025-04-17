@@ -179,6 +179,16 @@ declare namespace API_KCYP {
       kcypActionCommit: OrderRecord
       pictures: Picture[]
     }
+
+    interface GetSipCascadePictureReq {
+      actionId: number
+      actionItemId: number
+      actionItemRecordId: number
+      actionRecordId: number
+      deviceId: string
+      plateNo: string
+      resultTime: string
+    }
   }
   // ------------------ res ------------------
   namespace res {
