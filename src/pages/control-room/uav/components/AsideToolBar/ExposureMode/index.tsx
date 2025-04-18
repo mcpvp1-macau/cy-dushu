@@ -52,14 +52,6 @@ const ExposureMode: FC<PropsType> = memo(({ postSerivce }) => {
             label: '自动',
           },
           {
-            key: 2,
-            label: '快门优先曝光',
-          },
-          {
-            key: 3,
-            label: '光圈优先曝光',
-          },
-          {
             key: 4,
             label: '手动曝光',
           },
