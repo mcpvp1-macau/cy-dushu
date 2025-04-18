@@ -53,6 +53,7 @@ const LastestTask: FC<PropsType> = memo(() => {
           positionIndex={item.positionIndex}
           lng={item.pointX}
           lat={item.pointY}
+          alt={item.pointZ}
         />
       ))}
       {positions.map(
@@ -60,8 +61,12 @@ const LastestTask: FC<PropsType> = memo(() => {
           i > 0 && (
             <PathLine
               key={item.id}
-              from={[positions[i - 1].pointX, positions[i - 1].pointY]}
-              to={[item.pointX, item.pointY]}
+              from={[
+                positions[i - 1].pointX,
+                positions[i - 1].pointY,
+                positions[i - 1].pointZ,
+              ]}
+              to={[item.pointX, item.pointY, item.pointZ]}
             />
           ),
       )}
