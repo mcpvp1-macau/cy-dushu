@@ -11,6 +11,7 @@ import DeviceLabel from '@/components/map/device/DeviceLabel'
 import HeightDashLine from '@/map/CesiumMap/components/service/common/HeightDashLine'
 import { useShallow } from 'zustand/react/shallow'
 import { round } from 'lodash'
+import { useAsyncEffect } from 'ahooks'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -43,6 +44,24 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
   const status = useRealOnlineStatus(deviceId)
   const deviceIsOnline = status === DeviceStatusEnum.ONLINE
   const { viewer } = useCesium()
+
+  // 地面位置
+  const [groundHeight, setGroundHeight] = useState(0)
+
+  useAsyncEffect(async () => {
+    if (!viewer) {
+      return
+    }
+    const position = Cesium.Cartographic.fromDegrees(lng || 120, lat || 30)
+    const res = await Cesium.sampleTerrain(viewer.terrainProvider, 11, [
+      position,
+    ])
+    const h = res[0]?.height ?? 0
+    if (Math.abs(h - groundHeight) > 0.1) {
+      setGroundHeight(h)
+    }
+  }, [lng, lat, deviceIsOnline])
+
   if (
     isHidden || // 隐藏
     (isOnline && !deviceIsOnline) || // 在线状态不显示
@@ -56,12 +75,9 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
     return null
   }
 
-  const globeHeight =
-    viewer?.scene.globe.getHeight(
-      Cesium.Cartographic.fromDegrees(lng || 120, lat || 30),
-    ) ?? 0
-
-  const alt = Math.max(globeHeight, realAlt ?? 0)
+  const alt = deviceIsOnline
+    ? Math.max(groundHeight, realAlt ?? 0)
+    : groundHeight
 
   const position = Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30, alt)
 
@@ -74,24 +90,16 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
         width={28}
         height={28}
         disableDepthTestDistance={16_000_000}
-        heightReference={
-          deviceIsOnline
-            ? Cesium.HeightReference.NONE
-            : Cesium.HeightReference.CLAMP_TO_GROUND
-        }
+        heightReference={Cesium.HeightReference.NONE}
         rotation={Cesium.Math.toRadians(-realHeading || 0)}
       />
       <DeviceLabel
         text={data.deviceName}
         id={deviceId}
         position={position}
-        heightReference={
-          deviceIsOnline
-            ? Cesium.HeightReference.NONE
-            : Cesium.HeightReference.CLAMP_TO_GROUND
-        }
+        heightReference={Cesium.HeightReference.NONE}
       />
-      {deviceIsOnline && alt !== globeHeight && (
+      {deviceIsOnline && alt !== groundHeight && (
         <HeightDashLine position={[lng || 120, lat || 30, alt]} color="#fff" />
       )}
     </>

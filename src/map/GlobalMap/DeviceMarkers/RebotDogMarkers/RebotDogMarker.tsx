@@ -9,6 +9,7 @@ import { DeviceStatusEnum } from '@/enum/device'
 import { deviceStatusFilter } from '@/pages/situation/source/utils'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
 import directionIcon from '/images/marker/icon/rebot_dog_direction.svg'
+import useGroundHeight from '@/hooks/cesium/useGroundHeight'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -31,8 +32,10 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
         0,
     ) * -1
 
-  const lng = realLon || data.longitude
-  const lat = realLat || data.latitude
+  const lng = realLon || data.longitude || 0
+  const lat = realLat || data.latitude || 0
+
+  const groundHeight = useGroundHeight(lng, lat)
 
   const isOnline = useDeviceListConfigStore((s) => s.isOnline)
   const isTask = useDeviceListConfigStore((s) => s.isTask)
@@ -54,26 +57,28 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
     return null
   }
 
+  const position = Cesium.Cartesian3.fromDegrees(lng, lat, groundHeight)
+
   return (
     <>
       <Billboard
         key={deviceId}
         id={`device--${data.deviceType}--${data.deviceName}--${data.deviceId}--${lng}--${lat}`}
-        position={Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30)}
+        position={position}
         image={icon}
         width={25}
         height={25}
         disableDepthTestDistance={16_000_000}
-        heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
+        heightReference={Cesium.HeightReference.NONE}
         rotation={Cesium.Math.toRadians(-realHeading || 0)}
       />
       <Billboard
-        position={Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30)}
+        position={position}
         image={directionIcon}
         width={13}
         height={13}
         disableDepthTestDistance={16_000_000}
-        heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
+        heightReference={Cesium.HeightReference.NONE}
         rotation={Cesium.Math.toRadians(realHeading)}
         pixelOffset={
           new Cesium.Cartesian2(
@@ -86,8 +91,8 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
       <DeviceLabel
         text={data.deviceName}
         id={deviceId}
-        position={Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30)}
-        heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
+        position={position}
+        heightReference={Cesium.HeightReference.NONE}
       />
     </>
   )

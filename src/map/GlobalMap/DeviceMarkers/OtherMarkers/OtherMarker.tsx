@@ -19,6 +19,7 @@ import radar from '/images/marker/icon/radar.svg'
 import GroundPolygonCircle from '@/components/map/GroundPolygonCircle'
 import VideoFrustum from './VideoFrustum'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
+import useGroundHeight from '@/hooks/cesium/useGroundHeight'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -47,8 +48,10 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
     (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.latitude,
   )
 
-  const lng = realLon || data.longitude
-  const lat = realLat || data.latitude
+  const lng = realLon || data.longitude || 0
+  const lat = realLat || data.latitude || 0
+
+  const groundHeight = useGroundHeight(lng, lat)
 
   const isOnline = useDeviceListConfigStore((s) => s.isOnline)
   const isHidden = useDeviceListConfigStore((s) => s.hiddenDeviceIds[deviceId])
@@ -56,39 +59,36 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
   const status = useRealOnlineStatus(deviceId)
 
   if (isHidden) return null
-  // if (
-  //   !deviceStatusFilter(
-  //     { status, taskStatus: 'RUNNING' },
-  //     isOnline,
-  //     isTask,
-  //     isNotTask,
-  //   )
-  // ) {
-  //   return null
-  // }
-  if (isOnline && status !== DeviceStatusEnum.ONLINE) return null
+
+  const isDeviceOnline = isOnline && status === DeviceStatusEnum.ONLINE
+
+  if (isOnline && !isDeviceOnline) return null
+
+  const position = Cesium.Cartesian3.fromDegrees(lng, lat, groundHeight)
 
   return (
     <>
       <Billboard
         key={deviceId}
         id={`device--${deviceType}--${data.deviceName}--${deviceId}--${lng}--${lat}`}
-        position={Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30)}
+        position={position}
         image={deviceIconMap[deviceType] || camera}
         width={24}
         height={24}
         disableDepthTestDistance={50000}
-        heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
+        heightReference={Cesium.HeightReference.NONE}
       />
       <DeviceLabel
         text={data.deviceName}
         id={deviceId}
-        position={Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30)}
-        heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
+        position={position}
+        heightReference={Cesium.HeightReference.NONE}
       />
       {deviceType === 'RADAR' && properties.scope ? (
         <>
-          <GroundPolygonCircle lng={lng} lat={lat} scope={properties.scope} />
+          {isDeviceOnline && (
+            <GroundPolygonCircle lng={lng} lat={lat} scope={properties.scope} />
+          )}
         </>
       ) : null}
       {properties?.videoList?.length ? <VideoFrustum data={data} /> : null}

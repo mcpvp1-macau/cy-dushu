@@ -1,4 +1,3 @@
-import { memo, type FC } from 'react'
 import UavMarkers from './UavMarkers'
 import UavAirportMarkers from './UavAirportMarkers'
 import OtherMarkers from './OtherMarkers'
