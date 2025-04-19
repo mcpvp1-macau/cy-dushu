@@ -37,7 +37,7 @@ const HeaderLeft = memo(() => {
       <IconButton className="text-base" onClick={() => navigate(-1)}>
         <IconBack />
       </IconButton>
-      {/* <h3 className="whitespace-nowrap">{deviceName}</h3> */}
+      <h3 className="whitespace-nowrap">{deviceName}</h3>
     </section>
   )
 })
