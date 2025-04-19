@@ -14,6 +14,8 @@ import { DeviceEnum } from '@/enum/device'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
+  prefix?: ReactNode
+  suffix?: ReactNode
   onClick?: (data: API_DEVICE.domain.Device) => void
 }
 
@@ -58,7 +60,7 @@ const ignoreBatteryDeviceTypes = new Set([
 ])
 
 /** 设备树中的设备项 */
-const DeviceItem: FC<PropsType> = memo(({ data, onClick }) => {
+const DeviceItem: FC<PropsType> = memo(({ data, onClick, prefix, suffix }) => {
   /** 设备型号 */
   const moduleNumber = useMemo(
     () => data.deviceTags?.find((e) => e.tagName === 'MODEL_NUMBER')?.tagValue,
@@ -78,6 +80,7 @@ const DeviceItem: FC<PropsType> = memo(({ data, onClick }) => {
     <div onClick={() => onClick?.(data)}>
       <div className="w-[350px] px-3 py-1 flex items-center justify-between text-fore">
         <div className="flex items-center gap-2">
+          {prefix}
           <div className="text-white">
             <Badge
               dot
@@ -90,6 +93,7 @@ const DeviceItem: FC<PropsType> = memo(({ data, onClick }) => {
           <span>{data.deviceName}</span>
         </div>
         <div className="pr-6">
+          {suffix}
           <IconButton
             onClick={(e) => {
               e.stopPropagation()

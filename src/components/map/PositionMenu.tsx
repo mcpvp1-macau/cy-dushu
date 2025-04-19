@@ -5,7 +5,7 @@ import * as Cesium from 'cesium'
 import { wgs84ToDrawingBufferCoordinates } from '@/utils/cesium/sence-transform'
 
 type PropsType = Omit<GetProps<typeof Dropdown>, 'trigger' | 'open'> & {
-  position: [number, number]
+  position: number[]
 }
 
 /** 坐标 menu */
@@ -26,7 +26,11 @@ const PositionMenu = memo(
       if (!viewer?.scene) {
         return
       }
-      const catesian = Cesium.Cartesian3.fromDegrees(position[0], position[1])
+      const catesian = Cesium.Cartesian3.fromDegrees(
+        position[0],
+        position[1],
+        position[2] ?? 0,
+      )
       const screenPostion = wgs84ToDrawingBufferCoordinates(
         viewer.scene,
         catesian,

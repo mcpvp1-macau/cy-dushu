@@ -2,10 +2,11 @@ import AppCollapse from '@/components/AppCollapse'
 import AppEmpty from '@/components/AppEmpty'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { emtpyArray } from '@/constant/data'
+import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { CollapseProps } from 'antd'
 import { lazy } from 'react'
+import Scorpion from './Scorpion'
 
 const MMC_Gimbal_P3 = lazy(() => import('./MMC_Gimbal_P3'))
 const MMC_Gimbal_D4 = lazy(() => import('./MMC_Gimbal_D4'))
@@ -77,14 +78,26 @@ const UavPayload: FC<PropsType> = memo(({ productKey }) => {
     MMC_Gimbal_LP12_2: <MMC_Gimbal_LP12_2 />,
   }
 
-  const collapseItems: CollapseProps['items'] =
-    mounts?.map((item: MountType) => {
-      return {
+  const hasThrowAt = useDeviceDetailStore((s) => s.serviceHave['throwAt'])
+  const collapseItems = useMemo(() => {
+    const res: CollapseProps['items'] = []
+    mounts?.forEach((item: MountType) => {
+      res.push({
         key: item,
         label: labelMap[item],
         children: <AppViewSuspense>{MountsChildren[item]}</AppViewSuspense>,
-      }
-    }) || emtpyArray
+      })
+    })
+
+    if (hasThrowAt) {
+      res.push({
+        key: 'throwAt',
+        label: '抛投器',
+        children: <AppViewSuspense>{<Scorpion />}</AppViewSuspense>,
+      })
+    }
+    return res
+  }, [mounts, hasThrowAt])
 
   return (
     <ScrollArea className="size-full">

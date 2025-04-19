@@ -13,10 +13,18 @@ type PropsType = {
   isLoading?: boolean
   data: API_DEVICE.domain.DeviceTreeItem
   onDeviceItemClick?: (data: API_DEVICE.domain.Device) => void
+  deviceItemPrefix?: (data: API_DEVICE.domain.Device) => ReactNode
+  deviceItemSuffix?: (data: API_DEVICE.domain.Device) => ReactNode
 }
 
 const SourceTree: FC<PropsType> = memo(
-  ({ isLoading, data, onDeviceItemClick }) => {
+  ({
+    isLoading,
+    data,
+    onDeviceItemClick,
+    deviceItemPrefix,
+    deviceItemSuffix,
+  }) => {
     const { isOnline, isTask, isNotTask } = useDeviceListConfigStore(
       useShallow((s) => ({
         isOnline: s.isOnline,
@@ -43,6 +51,8 @@ const SourceTree: FC<PropsType> = memo(
                   <DeviceItem
                     data={e}
                     onClick={(e) => onDeviceItemClick?.(e)}
+                    prefix={deviceItemPrefix?.(e)}
+                    suffix={deviceItemSuffix?.(e)}
                   />
                 ),
                 isLeaf: true,
@@ -57,7 +67,7 @@ const SourceTree: FC<PropsType> = memo(
 
     const treeData = useMemo(
       () => [resolveGroup(data)],
-      [data, isOnline, isTask, isNotTask],
+      [data, isOnline, isTask, isNotTask, deviceItemPrefix],
     )
     const [expandKeys, setExpandKeys] = useState<React.Key[]>([
       data.groupId ?? '',
