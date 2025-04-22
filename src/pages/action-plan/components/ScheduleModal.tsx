@@ -101,9 +101,9 @@ const REPEATFormItems = memo(() => {
                               t('schedule.errors.smallThanThePrevious.msg'),
                             )
                           }
-                          if (diff < 120) {
+                          if (diff < 60) {
                             return Promise.reject(
-                              t('schedule.errors.lessThan2h.msg'),
+                              t('schedule.errors.lessThan.msg'),
                             )
                           }
                         }

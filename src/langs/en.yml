@@ -8,8 +8,8 @@ setting:
   video_decoder:
     title: Video Decoder
     description: >-
-      By default, the decoder will be automatically selected in the order of WCS, MSE, Simd, and Wasm based on browser support.
-
+      By default, the decoder will be automatically selected in the order of
+      WCS, MSE, Simd, and Wasm based on browser support.
     attention: Attention
   map:
     resolution:
@@ -21,16 +21,18 @@ setting:
       ultra: Ultra
       title: Resolution
       description: >-
-        For the best map browsing experience, please select an appropriate resolution based on your computer's performance
-
+        For the best map browsing experience, please select an appropriate
+        resolution based on your computer's performance
     title: Map
   system:
     title: System
     clearLocalData: Clear Local Data
     clear:
       description: >-
-        Clicking the 'Clear All' button will erase all local data and restore default configurations (including settings and AR configuration content). Before proceeding, please ensure you have backed up important information to prevent data loss
-
+        Clicking the 'Clear All' button will erase all local data and restore
+        default configurations (including settings and AR configuration
+        content). Before proceeding, please ensure you have backed up important
+        information to prevent data loss
       title: Clear All
   warning:
     description: Enable or disable the above warning settings as needed
@@ -155,8 +157,8 @@ device:
         close:
           title: Close
         openWarning: >-
-          Before opening the cover, please ensure the surrounding environment of the airport is clear of obstacles and no personnel are nearby.
-
+          Before opening the cover, please ensure the surrounding environment of
+          the airport is clear of obstacles and no personnel are nearby.
       putter:
         title: Putter
       aircraftCharging:
@@ -622,8 +624,8 @@ wayline:
   deleteWayline:
     title: Delete the Wayline
     description: >-
-      After deletion, the wayline content cannot be recovered. Are you sure you want to delete the wayline?
-
+      After deletion, the wayline content cannot be recovered. Are you sure you
+      want to delete the wayline?
   regenerator:
     title: Regenerator
   create:
@@ -659,8 +661,8 @@ wayline:
     coverage:
       title: Coverage Rate
       tooltip: >-
-        Overlap ratio of the shooting field of view between adjacent flight lines, default nadir angle of the gimbal
-
+        Overlap ratio of the shooting field of view between adjacent flight
+        lines, default nadir angle of the gimbal
   waylinePoint:
     config: Waypoints
     waypointList:
@@ -827,8 +829,8 @@ schedule:
   tip:
     mustSetGoHome: End action of wayline must be set to `Go Home`
     20minsInterval: >-
-      The scheduled interval of repeated tasks must exceed the actual execution duration of the previous task by at least 20 minutes
-
+      The scheduled interval of repeated tasks must exceed the actual execution
+      duration of the previous task by at least 20 minutes
   form:
     name:
       title: Name
@@ -845,6 +847,8 @@ schedule:
       msg: The interval must be later than the previous execution time
     lessThan2h:
       msg: The interval must be greater than 2 hours
+    lessThan:
+      msg: The interval must be greater than 1 hours
   table:
     actionName:
       title: Action name
