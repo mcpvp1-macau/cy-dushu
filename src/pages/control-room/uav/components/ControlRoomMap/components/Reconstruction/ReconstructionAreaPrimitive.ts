@@ -189,7 +189,7 @@ export default class ReconstructionAreaPrimitive {
     if (!this._polyline) return
 
     this._polyline = null
-    this._labelCollection.remove(this._labelCollection.get(1))
+    this._labelCollection.get(1).show = false
 
     this._completed = true
   }

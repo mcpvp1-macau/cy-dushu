@@ -57,16 +57,13 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
   const areaPrimitiveRef = useRef<ReconstructionAreaPrimitive | null>(null)
   const handlerRef = useRef<Cesium.ScreenSpaceEventHandler | null>(null)
 
-  // 地图交互
+  // 初始化绘制
   useEffect(() => {
     if (!viewer) {
       return
     }
-    updateDrawing(DrawType.ReconstructionArea)
-    drawingMitt.on('reconstruction-to-other', () => {
-      msgApi.error('请先完成或取消三维重建规划才能进行测量绘制操作')
-    })
 
+    updateDrawing(DrawType.ReconstructionArea)
     handlerRef.current = new Cesium.ScreenSpaceEventHandler(viewer.canvas)
     areaPrimitiveRef.current = new ReconstructionAreaPrimitive(drawingColor)
     viewer?.scene.primitives.add(areaPrimitiveRef.current)
@@ -81,67 +78,9 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
         setState('drawing')
       }
     }
-
-    // 左键 选点
-    handlerRef.current.setInputAction((e) => {
-      if (circleCenter.current) {
-        return
-      }
-
-      const ray = viewer.camera.getPickRay(e.position)
-      if (!ray) return
-      const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
-      if (!cartesian) return
-      circleCenter.current = cartesian
-      if (endPoint.current && areaPrimitiveRef.current) {
-        areaPrimitiveRef.current.positions = [
-          circleCenter.current,
-          endPoint.current || circleCenter.current,
-        ]
-      }
-    }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
-
-    // 移动
-    handlerRef.current.setInputAction((e) => {
-      if (!circleCenter.current) {
-        return
-      }
-
-      const ray = viewer.camera.getPickRay(e.endPosition)
-      if (!ray) return
-      const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
-      if (!cartesian) return
-      endPoint.current = cartesian
-      if (endPoint.current && areaPrimitiveRef.current) {
-        areaPrimitiveRef.current.positions = [
-          circleCenter.current,
-          endPoint.current,
-        ]
-      }
-    }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
-
-    // 右键结束
-    handlerRef.current.setInputAction(() => {
-      if (areaPrimitiveRef.current!.radius > MAX_RADIUS) {
-        msgApi.error(t('controlRoom.uav.service.reconstruction.error_max'))
-        setState('drawing')
-        circleCenter.current = null
-        endPoint.current = null
-        areaPrimitiveRef.current && (areaPrimitiveRef.current.positions = [])
-      } else if (
-        areaPrimitiveRef.current!.radius < MIN_RADIUS ||
-        areaPrimitiveRef.current?.area === 0
-      ) {
-        msgApi.error(t('controlRoom.uav.service.reconstruction.error_min'))
-        setState('drawing')
-        circleCenter.current = null
-        endPoint.current = null
-        areaPrimitiveRef.current && (areaPrimitiveRef.current.positions = [])
-      } else {
-        setTrue()
-        setState('setting')
-      }
-    }, Cesium.ScreenSpaceEventType.RIGHT_CLICK)
+    drawingMitt.on('reconstruction-to-other', () => {
+      msgApi.error('请先完成或取消三维重建规划才能进行测量绘制操作')
+    })
 
     return () => {
       viewer?.scene.primitives.remove(areaPrimitiveRef.current)
@@ -149,8 +88,112 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
         (handlerRef.current.destroy(), (handlerRef.current = null))
       quitRecontructionArea()
       drawingMitt.off('reconstruction-to-other')
+      updateDrawing(DrawType.None)
     }
   }, [viewer])
+
+  // 地图交互
+  useEffect(() => {
+    if (!viewer || !handlerRef.current) {
+      return
+    }
+
+    // 打开设置面板就关闭绘制
+    if (open) {
+      handlerRef.current.removeInputAction(
+        Cesium.ScreenSpaceEventType.LEFT_CLICK,
+      )
+      handlerRef.current.removeInputAction(
+        Cesium.ScreenSpaceEventType.MOUSE_MOVE,
+      )
+      handlerRef.current.removeInputAction(
+        Cesium.ScreenSpaceEventType.RIGHT_CLICK,
+      )
+    } else {
+      // 左键 选点
+      handlerRef.current.setInputAction((e) => {
+        if (circleCenter.current) {
+          return
+        }
+
+        const ray = viewer.camera.getPickRay(e.position)
+        if (!ray) return
+        const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
+        if (!cartesian) return
+        circleCenter.current = cartesian
+        if (endPoint.current && areaPrimitiveRef.current) {
+          areaPrimitiveRef.current.positions = [
+            circleCenter.current,
+            endPoint.current || circleCenter.current,
+          ]
+        }
+      }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
+
+      // 移动
+      handlerRef.current.setInputAction((e) => {
+        if (!circleCenter.current) {
+          return
+        }
+
+        const ray = viewer.camera.getPickRay(e.endPosition)
+        if (!ray) return
+        const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
+        if (!cartesian) return
+        endPoint.current = cartesian
+        if (endPoint.current && areaPrimitiveRef.current) {
+          areaPrimitiveRef.current.positions = [
+            circleCenter.current,
+            endPoint.current,
+          ]
+        }
+      }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
+
+      // 右键结束
+      handlerRef.current.setInputAction(() => {
+        if (areaPrimitiveRef.current!.radius > MAX_RADIUS) {
+          msgApi.error(t('controlRoom.uav.service.reconstruction.error_max'))
+          setState('drawing')
+          circleCenter.current = null
+          endPoint.current = null
+          areaPrimitiveRef.current && (areaPrimitiveRef.current.positions = [])
+        } else if (
+          areaPrimitiveRef.current!.radius < MIN_RADIUS ||
+          areaPrimitiveRef.current?.area === 0
+        ) {
+          msgApi.error(t('controlRoom.uav.service.reconstruction.error_min'))
+          setState('drawing')
+          circleCenter.current = null
+          endPoint.current = null
+          areaPrimitiveRef.current && (areaPrimitiveRef.current.positions = [])
+        } else {
+          handlerRef.current?.removeInputAction(
+            Cesium.ScreenSpaceEventType.LEFT_CLICK,
+          )
+          handlerRef.current?.removeInputAction(
+            Cesium.ScreenSpaceEventType.MOUSE_MOVE,
+          )
+          handlerRef.current?.removeInputAction(
+            Cesium.ScreenSpaceEventType.RIGHT_CLICK,
+          )
+          setTrue()
+          setState('setting')
+        }
+      }, Cesium.ScreenSpaceEventType.RIGHT_CLICK)
+    }
+
+    return () => {
+      updateDrawing(DrawType.None)
+      handlerRef.current?.removeInputAction(
+        Cesium.ScreenSpaceEventType.LEFT_CLICK,
+      )
+      handlerRef.current?.removeInputAction(
+        Cesium.ScreenSpaceEventType.MOUSE_MOVE,
+      )
+      handlerRef.current?.removeInputAction(
+        Cesium.ScreenSpaceEventType.RIGHT_CLICK,
+      )
+    }
+  }, [viewer, open])
 
   const handleConfirm = async (flyOptions: FlyOptions) => {
     areaPrimitiveRef.current?.complete()
@@ -225,7 +268,8 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
         if (oid === overlayId) {
           setState('reconstruction_end')
           const areaLabel = areaPrimitiveRef.current?.getAreaLabel()
-          areaLabel!.text = t('mapLayer.reconstructionMap.task.completed')
+          areaLabel &&
+            (areaLabel.text = t('mapLayer.reconstructionMap.task.completed'))
         }
       })
     } catch (error) {
