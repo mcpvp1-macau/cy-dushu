@@ -108,6 +108,21 @@ export const gimbalMap: Record<string, GimbalType> = {
       height: 13,
     },
   },
+  H30T: {
+    name: 'H30T Camera',
+    wide: {
+      focal: 4.5,
+      width: 6.4,
+      height: 4.8,
+    },
+    zoom: {
+      width: 6.4,
+      height: 4.8,
+      minFocal: 21,
+      maxFocal: 75,
+      maxRatio: 16,
+    },
+  },
   M3E: {
     name: 'M3E Camera',
     wide: {
