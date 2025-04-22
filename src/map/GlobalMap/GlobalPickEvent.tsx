@@ -145,9 +145,11 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
     const [kind] = e.primitive.id.split('--')
     if (kind === 'device') {
       return runDevice(e)
-    } else if (kind === 'radartarget') {
-      return runTarget(e)
-    } else if (kind === 'event') {
+    }
+    // else if (kind === 'radartarget') {
+    //   return runTarget(e)
+    // }
+    else if (kind === 'event') {
       return runEvent(e)
     }
   }
@@ -175,31 +177,31 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
 
   const setBoardOpenMap = useBoardObjStore((s) => s.setBoardOpenMap)
 
-  const RightMenus = useMemo<MenuProps['items']>(() => {
-    if (rightMenuType?.kind === 'radartarget') {
-      const arr: MenuProps['items'] = []
-      if (rightMenuType?.uploadMode === 'TIANLANG') {
-        arr.push({
-          key: '引导',
-          label: '引导',
-          onClick: () =>
-            handleClick1(rightMenuType.parentId, rightMenuType.targetId),
-        })
-      }
-      return [
-        ...arr,
-        {
-          key: '标牌',
-          label: '显示标牌',
-          onClick: () => {
-            setBoardOpenMap((s) => ({ ...s, [rightMenuType.targetId]: true }))
-            setRightMenuType(null)
-          },
-          // handleClick1(rightMenuType.parentId, rightMenuType.targetId),
-        },
-      ]
-    }
-  }, [rightMenuType])
+  // const RightMenus = useMemo<MenuProps['items']>(() => {
+  //   if (rightMenuType?.kind === 'radartarget') {
+  //     const arr: MenuProps['items'] = []
+  //     if (rightMenuType?.uploadMode === 'TIANLANG') {
+  //       arr.push({
+  //         key: '引导',
+  //         label: '引导',
+  //         onClick: () =>
+  //           handleClick1(rightMenuType.parentId, rightMenuType.targetId),
+  //       })
+  //     }
+  //     return [
+  //       ...arr,
+  //       {
+  //         key: '标牌',
+  //         label: '显示标牌',
+  //         onClick: () => {
+  //           setBoardOpenMap((s) => ({ ...s, [rightMenuType.targetId]: true }))
+  //           setRightMenuType(null)
+  //         },
+  //         // handleClick1(rightMenuType.parentId, rightMenuType.targetId),
+  //       },
+  //     ]
+  //   }
+  // }, [rightMenuType])
 
   const listenRightClick = (evt) => {
     if (!viewer?.scene) {
@@ -217,7 +219,8 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
             e.primitive instanceof Cesium.PointPrimitive) &&
           e.id &&
           typeof e.id === 'string' &&
-          (e.id.includes('device--') || e.id.includes('radartarget--')),
+          e.id.includes('device--'),
+        // || e.id.includes('radartarget--')
       )
       .slice(0, 8) // 限制 8 个
       .map((e) => {
@@ -267,7 +270,7 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
               e.id &&
               typeof e.id === 'string' &&
               (e.id.includes('device--') ||
-                e.id.includes('radartarget--') ||
+                // e.id.includes('radartarget--') ||
                 e.id.includes('event--')),
           )
           .slice(0, 8) // 限制 8 个
@@ -300,10 +303,10 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
     handler.setInputAction(clearOptions, Cesium.ScreenSpaceEventType.LEFT_DOWN)
     handler.setInputAction(clearOptions, Cesium.ScreenSpaceEventType.WHEEL)
 
-    handler.setInputAction(
-      listenRightClick,
-      Cesium.ScreenSpaceEventType.RIGHT_CLICK,
-    )
+    // handler.setInputAction(
+    //   listenRightClick,
+    //   Cesium.ScreenSpaceEventType.RIGHT_CLICK,
+    // )
 
     const handleDoubleClick = (evt) => {
       const pickedObjs = viewer?.scene?.drillPick(evt.position)
@@ -342,10 +345,10 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
     <>
       {/** 设备清单 */}
       <Dropdown
-        open={!!rightMenuType || open}
+        open={open}
         trigger={['click']}
         menu={{
-          items: RightMenus ?? items,
+          items: items,
         }}
       >
         <div
@@ -355,7 +358,7 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
             height: '1px',
             left: '-1000px',
             top: '-1000px',
-            display: rightMenuType || open ? 'block' : 'none',
+            display: open ? 'block' : 'none',
           }}
           ref={divRef}
         />

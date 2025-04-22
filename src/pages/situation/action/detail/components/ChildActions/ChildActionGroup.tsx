@@ -26,7 +26,7 @@ const ChildActionGroup: FC<PropsType> = ({
   )
 
   const allowStop = useMemo(
-    () => data.some((e) => e.status === 'RUNNING'),
+    () => data.some((e) => e.status === 'PROCESSING'),
     [data],
   )
 

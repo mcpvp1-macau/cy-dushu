@@ -4,6 +4,7 @@ import IconButton from '@/components/ui/button/IconButton'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import XModal from '@/components/XModal'
 import { usePostDeviceServiceHandler } from '@/hooks/device/usePostDeviceService'
+import { useAppMsg } from '@/hooks/useAppMsg'
 import SourceStatusCheckGroup from '@/pages/situation/source/components/SourceStatusCheckGroup'
 import SourceTree from '@/pages/situation/source/components/SourceTree'
 import { getDeviceTree } from '@/service/modules/device'
@@ -57,10 +58,11 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
 
   const postDeviceService = usePostDeviceServiceHandler()
   const [confirmLoading, setConfirmLoading] = useState(false)
+  const msgApi = useAppMsg()
   const handleFlyConfirm = async () => {
     setConfirmLoading(true)
     const values = form.getFieldsValue()
-    await Promise.allSettled(
+    const resps = await Promise.allSettled(
       Object.values(values).map(async (e: any) => {
         await postDeviceService(
           e.productKey,
@@ -76,6 +78,11 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
       }),
     )
     setConfirmLoading(false)
+    if (resps.every((e) => e.status === 'fulfilled')) {
+      msgApi.success('所有设备派遣成功')
+      onClose()
+      setFlyModalOpen(false)
+    }
   }
 
   return (
