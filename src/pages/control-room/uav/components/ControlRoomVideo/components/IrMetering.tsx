@@ -53,6 +53,7 @@ const IrMetering: FC<PropsType> = memo(() => {
 
   return (
     <div className="asbolute inset-0 text-xs text-white">
+      {/* 点位测温 */}
       {irMeteringMode === 'POINT' && (
         <>
           {!isNil(irMeteringPoint) && (
@@ -77,6 +78,7 @@ const IrMetering: FC<PropsType> = memo(() => {
           />
         </>
       )}
+      {/* 区域测温 */}
       {irMeteringMode === 'AREA' && (
         <>
           {!isNil(irMeteringArea) && (
