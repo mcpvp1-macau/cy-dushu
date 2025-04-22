@@ -22,6 +22,7 @@ const DefaultImageryLayer: FC<PropsType> = memo(() => {
 
       const CustomUrlTemplateImageryProvider = createUrlTemplateImageryProvider(
         (l) => l >= (e.min ?? 0) && l <= (e.max ?? 18),
+        e.cacheOption,
       )
       const provider = new CustomUrlTemplateImageryProvider({
         url: e.url,

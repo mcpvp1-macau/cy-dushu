@@ -15,6 +15,10 @@ export type ConfigType = {
     min: number
     max: number
     crs?: string
+    cacheOption?: {
+      ver: number
+      staleDays?: number
+    }
   }[]
   logo?: string
   enableElectricScale?: boolean

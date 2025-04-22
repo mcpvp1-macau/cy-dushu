@@ -24,6 +24,9 @@ setting:
         For the best map browsing experience, please select an appropriate
         resolution based on your computer's performance
     title: Map
+    imagery:
+      size: Map Cache
+      calculating: Calculating
   system:
     title: System
     clearLocalData: Clear Local Data
@@ -521,6 +524,7 @@ common:
   average: Average
   lowest: Lowest
   highest: Highest
+  clear: Clear
 events:
   search:
     placeholder: Please search by event name or ID

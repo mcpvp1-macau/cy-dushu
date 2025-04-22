@@ -10,21 +10,33 @@ window.config = {
       url: '/data/maptiler-satellite-lowres/{z}/{x}/{y}.jpg',
       min: 0,
       max: 5,
+      cacheOption: {
+        ver: 0,
+      },
     },
     {
       url: '/data/maptiler-satellite/{z}/{x}/{y}.webp',
       min: 6,
       max: 12,
+      cacheOption: {
+        ver: 0,
+      },
     },
     {
       url: 'https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png',
       min: 13,
       max: 18,
+      cacheOption: {
+        ver: 0,
+      },
     },
     {
       url: 'http://47.111.155.82:32650/styles/dark/{z}/{x}/{y}@3x.png',
       min: 0,
       max: 18,
+      cacheOption: {
+        ver: 0,
+      },
     },
     // {
     //   url: 'https://api.map.baidu.com/api_tile/v1/png?qt=vtile&x={x}&y={y}&z={z}&styles=sl&scaler=2&udt=20250410&showtext=1&manufacturer=didi&ak=lAsOZvyB3LuDw8scMpR9LRN8DjqXDDaq',

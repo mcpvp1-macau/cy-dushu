@@ -7,7 +7,6 @@ const useCalcGimbalParams = (
   zoom,
 ) => {
   const gimbalInfo = useMemo(() => getGimbalInfo(gimbalName), [gimbalName])
-
   return useMemo(
     () => calcCameraParameters(gimbalInfo, lensType, zoom),
     [gimbalInfo, lensType, zoom],

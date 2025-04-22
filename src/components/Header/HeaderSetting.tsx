@@ -30,6 +30,7 @@ const HeaderSetting: FC<PropsType> = memo(() => {
       >
         <div className="p-3">
           <Tabs
+            destroyInactiveTabPane
             items={[
               {
                 key: 'video_decoder',

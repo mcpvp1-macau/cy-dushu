@@ -20,6 +20,9 @@ setting:
       title: 清晰度
       description: 为了获得最佳的地图浏览体验，请根据您的电脑性能选择合适的清晰度
     title: 地图
+    imagery:
+      size: 地图缓存
+      calculating: 计算中
   system:
     title: 系统
     clearLocalData: 清空本地数据
@@ -515,6 +518,7 @@ common:
   average: 平均
   lowest: 最低
   highest: 最高
+  clear: 清空
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
