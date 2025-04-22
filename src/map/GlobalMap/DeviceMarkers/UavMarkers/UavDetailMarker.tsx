@@ -10,6 +10,9 @@ import useCollectCameraScanAreas from '@/hooks/device/useCollectCameraScanAreas'
 import CameraGroundFrustum from '@/components/map/device/CameraGroundFrustum'
 import { useShallow } from 'zustand/react/shallow'
 import useCalcGimbalParams from '@/hooks/device/uav/useCalcGimbalParams'
+import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
+import DeviceLabel from '@/components/map/device/DeviceLabel'
+import * as Cesium from 'cesium'
 
 type PropsType = {
   deviceId: string
@@ -18,6 +21,10 @@ type PropsType = {
 const UavDetailMarker: FC<PropsType> = memo(({ deviceId }) => {
   const state = useMapDevicesStore(
     useShallow((s) => s.uavStates[deviceId] ?? emtpyObject),
+  )
+
+  const deviceName = useGlobalWsStore(
+    (s) => s.deviceRealtimeProperties[deviceId]?.deviceName,
   )
 
   const { historyTrack, realTrack, clear } = useRealTrack3D(
@@ -91,12 +98,18 @@ const UavDetailMarker: FC<PropsType> = memo(({ deviceId }) => {
     gimbalPick.rightBottom &&
     gimbalPick.leftBottom
 
+  const position = Cesium.Cartesian3.fromDegrees(
+    state.longitude,
+    state.latitude,
+    state.altitude ?? 0,
+  )
   return (
     <>
       <HeightDashLine
         position={[state.longitude, state.latitude, state.altitude ?? 0]}
         color="#fff"
       />
+      <DeviceLabel id={deviceId} text={deviceName} position={position} />
       <MapUavRealMarker data={state} useGimbal={!gimbalPickExist} />
       {historyTrack.map((track, index) => (
         <HistoryTrack key={index} value={track} />
