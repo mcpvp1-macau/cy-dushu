@@ -5,6 +5,7 @@ import { useCesium } from 'resium'
 import { CameraVertexPicker } from '@/utils/cesium/camera/camera-vertex-pick'
 import CameraGroundFrustum from '@/components/map/device/CameraGroundFrustum'
 import useCalcGimbalParams from '@/hooks/device/uav/useCalcGimbalParams'
+import HeightDashLine from '@/map/CesiumMap/components/service/common/HeightDashLine'
 
 type PropsType = unknown
 
@@ -75,6 +76,9 @@ const UavMarker: FC<PropsType> = memo(() => {
         />
       )}
       <MapUavRealMarker data={state} useGimbal={!gimbalPickExist} />
+      <HeightDashLine
+        position={[state.longitude, state.latitude, state.altitude ?? 0]}
+      />
     </>
   )
 })
