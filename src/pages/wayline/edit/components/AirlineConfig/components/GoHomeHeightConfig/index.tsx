@@ -21,7 +21,7 @@ const GoHomeHeightConfig: FC<PropsType> = memo(() => {
           positives={[10, 100]}
           value={globalRTHHeight}
           unit="m"
-          max={500}
+          max={globalConfig.uavHeightLimit}
           onChange={(e) => {
             setAirlineConfig({
               ...useAirlineConfigStore.getState().airlineConfig,
