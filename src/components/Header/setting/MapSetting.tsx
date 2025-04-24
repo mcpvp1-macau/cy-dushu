@@ -1,5 +1,9 @@
 import IconTip from '@/assets/icons/jsx/IconTip'
-import { getCacheImageTotalSize } from '@/map/CesiumMap/components/CustomUrlTemplateImageryProvider'
+import useLoadingFn from '@/hooks/useLoadingFn'
+import {
+  clearCacheImage,
+  getCacheImageTotalSize,
+} from '@/map/CesiumMap/components/CustomUrlTemplateImageryProvider'
 import useMapSettingStore from '@/store/setting/useMapSetting.store'
 import { LoadingOutlined } from '@ant-design/icons'
 import { useAsyncEffect } from 'ahooks'
@@ -47,6 +51,12 @@ const MapSetting: FC<PropsType> = memo(() => {
     setSize(await getCacheImageTotalSize())
   }, [])
 
+  const [run, clearCacheImageLoading] = useLoadingFn(async () => {
+    await clearCacheImage()
+    setSize(-1)
+    setSize(await getCacheImageTotalSize())
+  })
+
   return (
     <div>
       <Radio.Group
@@ -79,7 +89,9 @@ const MapSetting: FC<PropsType> = memo(() => {
             </p>
           )}
         </div>
-        <Button size="small">{t('common.clear')}</Button>
+        <Button size="small" onClick={run} loading={clearCacheImageLoading}>
+          {t('common.clear')}
+        </Button>
       </div>
     </div>
   )

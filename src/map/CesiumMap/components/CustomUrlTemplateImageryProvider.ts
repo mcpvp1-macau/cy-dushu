@@ -28,6 +28,8 @@ export const getCacheImageTotalSize = async () => {
   return size
 }
 
+export const clearCacheImage = async () => imageryStore.clear()
+
 export const penddingAbortControllers = new Set<
   readonly [number[], AbortController]
 >()
