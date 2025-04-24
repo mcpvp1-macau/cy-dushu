@@ -49,7 +49,7 @@ const ChildActionGroup: FC<PropsType> = ({
     try {
       await Promise.allSettled(
         data
-          .filter((e) => e.status === 'RUNNING')
+          .filter((e) => e.status === 'PROCESSING')
           .map((e) => endActionItem(e.id)),
       )
       await queryClient.invalidateQueries({
