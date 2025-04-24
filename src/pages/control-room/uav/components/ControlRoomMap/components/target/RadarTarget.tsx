@@ -29,9 +29,9 @@ const RadarTargets: FC<PropsType> = memo(() => {
           const n = targets.length
           return targets.map((item, i) => {
             const isLast = i === n - 1
-            const lng = Number(item.targetLongitude)
-            const lat = Number(item.targetLatitude)
-            const alt = Number(item.targetAltitude)
+            const lng = Number(item.targetLongitude ?? 0)
+            const lat = Number(item.targetLatitude ?? 0)
+            const alt = Number(item.targetAltitude ?? 0)
             const tid = `radartarget-${isLast ? 'last' : 'nor'}-${
               item.targetId
             }-${item.sourceType}-${i}`
