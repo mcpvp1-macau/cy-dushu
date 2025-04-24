@@ -20,11 +20,7 @@ interface Props {
 const ActionConfig: React.FC<Props> = (props) => {
   const { t } = useTranslation()
   const { activeOperator } = props
-  const currentIndex = useAirlineConfigStore((s) => s.currentIndex)
   const currentAirpoint = useCurrentAirpoint()
-  const setAirpointsConfig = useAirlineConfigStore(
-    (s) => s.updateAirpointsConfig,
-  )
   const editCurrentAirPoint = useAirlineConfigStore(
     (s) => s.updateCurrentAirpoint,
   )
@@ -52,18 +48,12 @@ const ActionConfig: React.FC<Props> = (props) => {
     type: 'pointX' | 'pointY' | 'pointZ',
     value: number,
   ) => {
-    const airPointsConfig = useAirlineConfigStore.getState().airpointsConfig
-    setAirpointsConfig(
-      airPointsConfig.map((item, index) => {
-        if (currentIndex === index) {
-          return {
-            ...item,
-            [type]: value,
-          }
-        }
-        return item
-      }),
-    )
+    const updateCurrentAirpoint =
+      useAirlineConfigStore.getState().updateCurrentAirpoint
+    updateCurrentAirpoint({
+      [type]: value,
+    })
+    useAirlineConfigStore.getState().calcUavByCurrentAirpoint()
   }
 
   const getActionComponent = () => {

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="21px" viewBox="0 0 24 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>inverted-triangle</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="inverted-triangle" transform="translate(0.000000, 0.000000)" fill-rule="nonzero">
+            <polygon id="多边形" fill="#FFF67F" transform="translate(12.000000, 10.392305) scale(-1, 1) rotate(-180.000000) translate(-12.000000, -10.392305) " points="12 3.55271368e-15 24 20.7846097 1.77635684e-15 20.7846097"></polygon>
+            <polygon id="路径" fill="#03D68F" transform="translate(12.032392, 9.765291) scale(-1, 1) rotate(-180.000000) translate(-12.032392, -9.765291) " points="12.0327879 1.2732934 2.22720289 18.2572888 21.8375811 18.2572888"></polygon>
+        </g>
+    </g>
+</svg>

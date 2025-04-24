@@ -79,7 +79,7 @@ const CameraView: FC<PropsType> = memo(({ onClose }) => {
       </div>
       {/* 焦距滑块 */}
       <div
-        className="absolute right-0 top-0 bottom-0 w-[70px]"
+        className="absolute right-0 top-0 bottom-5 w-[70px]"
         style={{
           background: 'linear-gradient(to right, transparent, #000a)',
         }}

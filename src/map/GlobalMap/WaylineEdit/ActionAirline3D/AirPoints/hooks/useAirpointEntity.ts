@@ -29,7 +29,10 @@ export const useAirpointEntity = (
     entityRef.current = viewer.entities.add({
       position,
       billboard: {
-        image: '/images/airline/inverted-triangle.svg',
+        image:
+          idx === currentIndex
+            ? '/images/airline/inverted-triangle-active.svg'
+            : '/images/airline/inverted-triangle.svg',
         scale: 1.1,
         eyeOffset: new Cesium.Cartesian3(0, 0, -5),
       },
