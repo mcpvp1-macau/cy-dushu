@@ -106,7 +106,6 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
   const postDeviceService = usePostDeviceService(productKey, deviceId)
 
   const irMeteringMode = useUavControlRoomStore((s) => s.state.irMeteringMode)
-  const lensType = useUavControlRoomStore((s) => s.state.lensType)
 
   return (
     <div className="absolute inset-0  bg-black">
@@ -155,9 +154,7 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
               </div>
             )}
             {enableSmartTrack && <AITrackBoxSelect />}
-            {irMeteringMode &&
-              irMeteringMode !== 'CLOSE' &&
-              lensType?.toLowerCase?.() === 'ir' && <IrMetering />}
+            {irMeteringMode && irMeteringMode !== 'CLOSE' && <IrMetering />}
             <ZoomFocus />
             {posizionZoomOpen > 0 && (
               <PositionZoom deviceLiveVideoRef={deviceLiveVideoRef} />
