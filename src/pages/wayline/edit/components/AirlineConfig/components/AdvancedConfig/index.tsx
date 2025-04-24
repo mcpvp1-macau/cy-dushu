@@ -26,7 +26,7 @@ const AdvancedConfig: FC<PropsType> = () => {
         style={{ marginTop: '8px', marginBottom: '-12px' }}
       >
         {moreFormItems.map((item) => (
-          <div className="mb-3">
+          <div className="mb-3" key={item.key}>
             <p className="text-sm mb-2">
               {t(`wayline.advancedSetting.${item.key}.title`)}
             </p>
