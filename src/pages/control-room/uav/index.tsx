@@ -159,7 +159,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
   const { pathname } = useLocation()
 
   return (
-    <DeviceDetailStoreContext.Provider value={store}>
+    <DeviceDetailStoreContext.Provider key={deviceId} value={store}>
       <UavControlRoomStoreContext.Provider value={controlRoomStore}>
         <StateResolver />
         <InitialPointFly />

@@ -391,7 +391,15 @@ export const useCreateUavControlRoomStore = (
     storeRef.current = createUavControlRoomStore({
       sendMsg: (msg) => sendMessageRef.current(msg),
     })
-    storeRef.current.getState().updateProdctKeyAndDeviceId(productKey, deviceId)
+  }
+
+  if (storeRef.current) {
+    if (storeRef.current.getState().deviceId !== deviceId) {
+      storeRef.current.getState().resetState()
+      storeRef.current
+        .getState()
+        .updateProdctKeyAndDeviceId(productKey, deviceId)
+    }
   }
 
   useEffect(() => {

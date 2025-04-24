@@ -33,7 +33,7 @@ const DeviceSelect: FC<PropsType> = memo(({ onClose }) => {
 
   const navigate = useNavigate()
   const handleClick = useMemoizedFn((data: API_DEVICE.domain.Device) => {
-    navigate(`/control-room/uav/${data.deviceId}`)
+    navigate(`/control-room/uav/${data.deviceId}`, { replace: true })
   })
 
   return (
