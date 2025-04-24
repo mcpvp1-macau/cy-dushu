@@ -41,6 +41,9 @@ const useVisibleCheck = (
       }
       const waylineType = info.waylineType ?? 'waypoint'
       const found = oldWaylineMap.get(task.taskTplId)
+      const taskBasic = shouldJson(info.taskBasic)
+      // 起飞点高度
+      const hHeight = taskBasic?.takeOffRefPoint?.[2] ?? 0
       if (found) {
         // 复用之前，有利于 React Equal
         waylines.push(found)
@@ -51,7 +54,7 @@ const useVisibleCheck = (
           points: (info.parameters?.spaces?.[0]?.positions ?? []).map((e) => ({
             pointX: e.pointX,
             pointY: e.pointY,
-            pointZ: e.pointZ,
+            pointZ: e.pointZ + hHeight,
           })),
           taskBasic: shouldJson(info.taskBasic) ?? {},
         })

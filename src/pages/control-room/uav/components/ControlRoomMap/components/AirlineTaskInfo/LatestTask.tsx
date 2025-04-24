@@ -31,13 +31,23 @@ const LastestTask: FC<PropsType> = memo(() => {
 
   const positions = useMemo(() => {
     const parameters = shouldJson(taskData?.parameters)
+    const taskBasic = shouldJson(taskData?.taskBasic)
     if (!parameters?.spaces?.[0]?.positions) {
       return
     }
-    const positions = resolvePositions(parameters.spaces[0].positions)
-    if (Array.isArray(positions)) {
-      updateAirpointPositions(positions)
+    let positions = resolvePositions(parameters.spaces[0].positions)
+    if (!Array.isArray(positions)) {
+      return []
     }
+    // 起飞点高度
+    const hHeight = taskBasic?.takeOffRefPoint?.[2] as number | undefined
+    if (hHeight) {
+      positions = positions.map((e) => ({
+        ...e,
+        pointZ: e.pointZ + hHeight,
+      }))
+    }
+    updateAirpointPositions(positions)
     return positions
   }, [taskData?.id])
 
