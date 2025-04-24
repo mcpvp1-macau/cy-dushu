@@ -5,7 +5,7 @@ import useUserStore from '@/store/useUser.store'
 import { shouldJson } from '@/utils/json'
 import { useInterval } from 'ahooks'
 import dayjs from 'dayjs'
-import { isEqual } from 'lodash'
+import { isEqual, isNil } from 'lodash'
 import { type FC } from 'react'
 import useWebSocket from 'react-use-websocket'
 import { useEventData } from '@/store/event/useEvent.store'
@@ -74,6 +74,14 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
     const newArr = data?.data?.targets || []
     const n = newArr.reduce((acc, item) => {
       if (item.loss_times > 0) return acc
+
+      if (
+        isNil(item.targetLongitude) ||
+        isNil(item.targetLatitude) ||
+        isNil(item.targetAltitude)
+      ) {
+        return acc
+      }
 
       const targetData = {
         ...item,
