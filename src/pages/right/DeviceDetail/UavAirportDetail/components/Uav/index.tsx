@@ -16,6 +16,7 @@ import IconData from '@/assets/icons/jsx/IconData'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import UavCreateAction from '../../../UavDetail/components/UavCreateAction'
 import DeviceIcon from '@/components/device/DeviceIcon'
+import useServerEventMsg from '@/pages/control-room/uav/hooks/useServerEventMsg'
 
 const UavAirportUavDetailDetail = lazy(() => import('./components/Detail'))
 const UavDetailData = lazy(
@@ -46,6 +47,7 @@ const UavAirportUavDetail: FC<PropsType> = memo(({ deviceId }) => {
 
   const queryClient = useQueryClient()
 
+  const handleServerEventMsg = useServerEventMsg()
   /** WebSocket 处理 */
   const handleMessage = useMemoizedFn((evt: WebSocketEventMap['message']) => {
     const { data } = evt
@@ -69,6 +71,7 @@ const UavAirportUavDetail: FC<PropsType> = memo(({ deviceId }) => {
         // 智能追踪 目标信息
         break
     }
+    handleServerEventMsg(wsData)
   })
 
   useWebSocket(wsUrl, {

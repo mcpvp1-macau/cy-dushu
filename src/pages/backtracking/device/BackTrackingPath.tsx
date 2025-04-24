@@ -57,7 +57,23 @@ const BackTrackingPath: React.FC<PropsType> = memo(({ deviceId }) => {
   }, [data, currentTime, deviceId])
 
   const curAttr = useMemo(
-    () => (lineData?.length ? lineData[lineData.length - 1] : null),
+    () => {
+      if (lineData?.length) {
+        return lineData[lineData.length - 1]
+      }
+      if (data?.length) {
+        return {
+          ...data[0],
+          lng: data[0].lng,
+          lat: data[0].lat,
+          altitude: data[0].altitude || 0,
+          longitude: data[0].lng,
+          latitude: data[0].lat,
+        }
+      }
+
+      return null
+    },
     [lineData, deviceId],
   )
 

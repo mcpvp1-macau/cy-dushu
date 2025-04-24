@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>S</title>
+    <g id="S" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="编组" transform="translate(0.000000, 2.000000)" fill-rule="nonzero">
+            <polygon id="多边形" fill="#FFFFFF" transform="translate(12.000000, 10.392305) scale(1, -1) translate(-12.000000, -10.392305) " points="12 0 24 20.7846097 1.53028272e-12 20.7846097"></polygon>
+            <polygon id="路径" fill="#5d8ee9" transform="translate(12.032392, 9.765291) scale(1, -1) translate(-12.032392, -9.765291) " points="12.0327879 1.27329294 2.22720289 18.2572883 21.8375811 18.2572883"></polygon>
+        </g>
+    </g>
+</svg>

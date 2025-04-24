@@ -5,10 +5,15 @@ import useUserStore from '@/store/useUser.store'
 import { shouldJson } from '@/utils/json'
 import { useInterval } from 'ahooks'
 import dayjs from 'dayjs'
-import { isEqual } from 'lodash'
+import { isEqual, isNil } from 'lodash'
 import { type FC } from 'react'
 import useWebSocket from 'react-use-websocket'
 import { useEventData } from '@/store/event/useEvent.store'
+import { msgEmitter } from '@/pages/control-room/uav/components/Tanqi'
+import useReconstructionMapStore, {
+  reconstructionMitt,
+} from '@/store/map/useReconstructionMap.store'
+import { useAppNotification } from '@/hooks/useNotification'
 
 type PropsType = unknown
 
@@ -68,8 +73,16 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
     const oldmap: { [key: string]: any[] } = parentDevice?.[deviceId] || {}
     const newArr = data?.data?.targets || []
     const n = newArr.reduce((acc, item) => {
-      if (item.loss_times > 0) return acc;
-      
+      if (item.loss_times > 0) return acc
+
+      if (
+        isNil(item.targetLongitude) ||
+        isNil(item.targetLatitude) ||
+        isNil(item.targetAltitude)
+      ) {
+        return acc
+      }
+
       const targetData = {
         ...item,
         productKey: data?.productKey,
@@ -80,12 +93,12 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         objectLabel: item.objectLabel || getLabel(item),
         distance: item.distance ?? item.radialDistance,
       }
-  
+
       return {
         ...acc,
-        [item.targetId]: oldmap[item.targetId] 
+        [item.targetId]: oldmap[item.targetId]
           ? [...oldmap[item.targetId], targetData]
-          : [targetData]
+          : [targetData],
       }
     }, {})
 
@@ -161,11 +174,11 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
   })
 
   // 事件推送 ------------------------
-  const { refetch } = useEventData();
+  const { refetch } = useEventData()
   const updateNewEvent = useGlobalWsStore((s) => s.updateNewEvent)
   const handleEventPush = useMemoizedFn((message: any) => {
     //
-    refetch();
+    refetch()
     updateNewEvent(message)
   })
 
@@ -198,6 +211,33 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
     }, {})
     updateActionItemStatus(res)
   })
+
+  const handleDialogResponse = useMemoizedFn((message: any) => {
+    msgEmitter.emit('message', message)
+  })
+
+  // 三维重建完成 ----------------------------
+  const notificationApi = useAppNotification()
+  const [t] = useTranslation()
+  const requestAndUpdateLayerList = useReconstructionMapStore(
+    (s) => s.requestAndUpdateLayerList,
+  )
+  const handleReconstructionTaskEnd = useMemoizedFn((message) => {
+    requestAndUpdateLayerList()
+    reconstructionMitt.emit('reconstructionTaskEnd', message.overlayId)
+    notificationApi.success({
+      message: t('mapLayer.reconstructionMap.create.success'),
+      duration: 0,
+      style: {
+        backgroundColor: '#15B371',
+        padding: '8px 0',
+        width: '280px',
+        borderRadius: '4px',
+      },
+      icon: <></>,
+    })
+  })
+
   // websocket message
   const handleMessage = useMemoizedFn((event: WebSocketEventMap['message']) => {
     const { type, message } = shouldJson(event.data) ?? {}
@@ -222,6 +262,12 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         break
       case 'ACTION_ITEM_STATUS':
         handleActionItemStatus(message)
+        break
+      case 'DIALOG_RESPONSE':
+        handleDialogResponse(message)
+        break
+      case 'RECONSTRUCTION_TASK_END':
+        handleReconstructionTaskEnd(message)
         break
     }
   })

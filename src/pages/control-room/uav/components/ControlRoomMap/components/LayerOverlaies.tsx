@@ -23,34 +23,81 @@ const LayerOverlay: FC<PropsType> = () => {
       return
     }
     const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas)
-    handler.setInputAction((e) => {
-      const pickedObject = viewer.scene.pick(e.position)
-      if (Cesium.defined(pickedObject)) {
-        const primitive = pickedObject.primitive
-        const id = primitive.id ?? primitive._instanceIds?.[0]
-        // 在这里处理双击事件，例如打印信息或执行其他操作
-        if (id?.startsWith('overlay--')) {
-          const overlayId = id.slice('overlay--'.length)
-          updateOverlayDetailId(overlayId)
-          const overlayTab = {
-            key: 'overlay',
-            closeable: true,
+
+    const handleDoubleClick = (evt) => {
+      const pickedObjs = viewer?.scene?.drillPick(evt.position)
+      if (!pickedObjs || !pickedObjs.length) {
+        return
+      }
+
+      const res = pickedObjs.find((e) => {
+        if (typeof e.id === 'string' && e.id.startsWith('overlay--')) {
+          return true
+        }
+        if (typeof e.id?.id === 'string' && e.id.id.startsWith('overlay--')) {
+          return true
+        }
+        return false
+      })
+
+      const id = res?.id?.id ?? res?.id
+      if (typeof id === 'string' && id.startsWith('overlay--')) {
+        const [, overlayId] = id.split('--')
+        updateOverlayDetailId(overlayId)
+        const overlayTab = {
+          key: 'overlay',
+          closeable: true,
+        }
+
+        const newLayout = { ...layoutRef.current }
+        let found = false
+
+        let updateLayoutNode = (node: DynamicLayoutType) => {
+          if (node.type === 'tabs') {
+            const overlayIndex = node.children.findIndex(
+              (tab) => tab.key === 'overlay',
+            )
+            if (overlayIndex >= 0) {
+              node.children = [
+                ...node.children.slice(0, overlayIndex),
+                overlayTab,
+                ...node.children.slice(overlayIndex + 1),
+              ]
+              found = true
+              node.activeKey = 'overlay'
+              node.isCollapsed = false
+              node.size = Math.max(node.size, 350)
+              return
+            }
+            return
           }
+          if (found) {
+            return
+          }
+          let i = 0
+          for (const child of node.children) {
+            updateLayoutNode(child)
+            if (found) {
+              node.children = [
+                ...node.children.slice(0, i),
+                { ...child },
+                ...node.children.slice(i + 1),
+              ]
+              return
+            }
+            i++
+          }
+        }
+        updateLayoutNode(newLayout)
 
-          const newLayout = { ...layoutRef.current }
-          let found = false
-
-          let updateLayoutNode = (node: DynamicLayoutType) => {
+        if (!found) {
+          updateLayoutNode = (node: DynamicLayoutType) => {
             if (node.type === 'tabs') {
               const overlayIndex = node.children.findIndex(
-                (tab) => tab.key === 'overlay',
+                (tab) => tab.key === 'device-data',
               )
               if (overlayIndex >= 0) {
-                node.children = [
-                  ...node.children.slice(0, overlayIndex),
-                  overlayTab,
-                  ...node.children.slice(overlayIndex + 1),
-                ]
+                node.children = [...node.children, overlayTab]
                 found = true
                 node.activeKey = 'overlay'
                 node.isCollapsed = false
@@ -77,46 +124,15 @@ const LayerOverlay: FC<PropsType> = () => {
             }
           }
           updateLayoutNode(newLayout)
-
-          if (!found) {
-            updateLayoutNode = (node: DynamicLayoutType) => {
-              if (node.type === 'tabs') {
-                const overlayIndex = node.children.findIndex(
-                  (tab) => tab.key === 'device-data',
-                )
-                if (overlayIndex >= 0) {
-                  node.children = [...node.children, overlayTab]
-                  found = true
-                  node.activeKey = 'overlay'
-                  node.isCollapsed = false
-                  node.size = Math.max(node.size, 350)
-                  return
-                }
-                return
-              }
-              if (found) {
-                return
-              }
-              let i = 0
-              for (const child of node.children) {
-                updateLayoutNode(child)
-                if (found) {
-                  node.children = [
-                    ...node.children.slice(0, i),
-                    { ...child },
-                    ...node.children.slice(i + 1),
-                  ]
-                  return
-                }
-                i++
-              }
-            }
-            updateLayoutNode(newLayout)
-          }
-          updateLayout(newLayout)
         }
+        updateLayout(newLayout)
       }
-    }, Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK)
+    }
+
+    handler.setInputAction(
+      handleDoubleClick,
+      Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK,
+    )
     return () => {
       handler.destroy()
     }

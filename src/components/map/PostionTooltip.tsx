@@ -34,6 +34,7 @@ const PositionTooltip: FC<PropsType> = memo(
         if (!viewer?.scene) {
           return
         }
+
         const catesian = Cesium.Cartesian3.fromDegrees(
           position[0],
           position[1],

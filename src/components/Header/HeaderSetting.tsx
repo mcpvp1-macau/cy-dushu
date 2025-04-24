@@ -15,6 +15,8 @@ const HeaderSetting: FC<PropsType> = memo(() => {
 
   const { t } = useTranslation()
 
+  const [activeKey, setActiveKey] = useState('video_decoder')
+
   return (
     <>
       <IconButton onClick={setTrue}>
@@ -27,9 +29,13 @@ const HeaderSetting: FC<PropsType> = memo(() => {
         onClose={setFalse}
         width={600}
         footer={false}
+        destroyOnClose
       >
         <div className="p-3">
           <Tabs
+            destroyInactiveTabPane
+            activeKey={activeKey}
+            onChange={setActiveKey}
             items={[
               {
                 key: 'video_decoder',

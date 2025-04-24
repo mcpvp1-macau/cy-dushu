@@ -25,6 +25,9 @@ const MapDevices: FC<PropsType> = memo(() => {
     (s) => s.updateWangloutDevices,
   )
   const updateAirportDevices = useMapDevicesStore((s) => s.updateAirportDevices)
+  const updateRobotDogDevices = useMapDevicesStore(
+    (s) => s.updateRobotDogDevices,
+  )
   const updateOtherDevices = useMapDevicesStore((s) => s.updateOtherDevices)
   const updateAllDevices = useMapDevicesStore((s) => s.updateAllDevices)
   const updateAllDevicesMap = useMapDevicesStore((s) => s.updateAllDevicesMap)
@@ -40,6 +43,7 @@ const MapDevices: FC<PropsType> = memo(() => {
       [DeviceEnum.UAV]: DeviceEnum.UAV,
       [DeviceEnum.WANGLOU]: DeviceEnum.WANGLOU,
       [DeviceEnum.UAV_AIRPORT]: DeviceEnum.UAV_AIRPORT,
+      [DeviceEnum.ROBOT_DOG]: DeviceEnum.ROBOT_DOG,
     }
 
     const g = groupBy(
@@ -50,6 +54,7 @@ const MapDevices: FC<PropsType> = memo(() => {
     updateUavDevices(g[DeviceEnum.UAV] || [])
     updateWangloutDevices(g[DeviceEnum.WANGLOU] || [])
     updateAirportDevices(g[DeviceEnum.UAV_AIRPORT] || [])
+    updateRobotDogDevices(g[DeviceEnum.ROBOT_DOG] || [])
     updateOtherDevices(g['other'] || [])
 
     const gm = groupBy(data, (e) => e.deviceId)

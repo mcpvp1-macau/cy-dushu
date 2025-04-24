@@ -30,7 +30,7 @@ const Takeoff: FC<PropsType> = memo(({ postServiceFn }) => {
   return (
     <>
       <VerticalIconButton
-        className="flex-1 h-10 p-0 text-xs"
+        className="flex-1 h-11 p-1 text-xs"
         disabled={!canTakeoff}
         icon={<IconTakeoff className="text-base" />}
         onClick={setTrue}
@@ -49,13 +49,19 @@ const Takeoff: FC<PropsType> = memo(({ postServiceFn }) => {
               rules: [{ required: true, message: '请输入起飞高度' }],
               otherProps: {
                 addonAfter: 'm',
+                min: 1,
+                max: globalConfig.uavHeightLimit,
               },
             },
             {
               label: t('device.uav.takeoffForm.goHomeAltitude.title'),
               name: 'gohomeAltitude',
               type: 'input-number',
-              otherProps: { addonAfter: 'm', min: 50, max: 500 },
+              otherProps: {
+                addonAfter: 'm',
+                min: 50,
+                max: globalConfig.uavHeightLimit,
+              },
             },
           ]}
           onClose={setFalse}

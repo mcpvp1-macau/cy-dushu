@@ -2,7 +2,7 @@ import * as Cesium from 'cesium'
 import { useCesium } from 'resium'
 
 type PropsType = {
-  onClick: (longitude: number, latitude: number, alt?:number) => void
+  onClick: (longitude: number, latitude: number, alt?: number) => void
 }
 
 /** 地图坐标点击获取 */
@@ -15,6 +15,8 @@ const PositionPickListener: FC<PropsType> = ({ onClick }) => {
     if (!viewer) {
       return
     }
+
+    viewer.scene.canvas.style.cursor = 'crosshair'
 
     const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
     handler.setInputAction(
@@ -38,6 +40,7 @@ const PositionPickListener: FC<PropsType> = ({ onClick }) => {
 
     return () => {
       handler.destroy()
+      viewer.scene.canvas.style.cursor = 'default'
     }
   }, [viewer])
 

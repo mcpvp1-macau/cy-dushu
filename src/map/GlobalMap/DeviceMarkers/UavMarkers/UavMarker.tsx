@@ -2,14 +2,16 @@ import useGlobalWsStore, {
   useRealOnlineStatus,
 } from '@/store/useGlobalWebSocket.store'
 import icon from '/images/marker/icon/uav3.svg'
-import { Billboard } from 'resium'
+import { Billboard, useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
 import { DeviceStatusEnum } from '@/enum/device'
 import { deviceStatusFilter } from '@/pages/situation/source/utils'
-import useRightMode from '@/store/layout/useRightMode.store'
-import { RightModeEnum } from '@/enum/right-mode'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
+import HeightDashLine from '@/map/CesiumMap/components/service/common/HeightDashLine'
+import { useShallow } from 'zustand/react/shallow'
+import { round } from 'lodash'
+import { useAsyncEffect } from 'ahooks'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -19,14 +21,16 @@ type PropsType = {
 const UavMarker: FC<PropsType> = memo(({ data }) => {
   const { deviceId } = data
 
-  const realLon = useGlobalWsStore(
-    (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.longitude,
-  )
-  const realLat = useGlobalWsStore(
-    (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.latitude,
-  )
-  const realHeading = useGlobalWsStore(
-    (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.uavYaw,
+  const { realLon, realLat, realHeading, realAlt } = useGlobalWsStore(
+    useShallow((s) => {
+      const p = s.deviceRealtimeProperties[data.deviceId]?.properties
+      return {
+        realLon: round(p?.longitude ?? 0, 5),
+        realLat: round(p?.latitude ?? 0, 5),
+        realHeading: round(p?.uavYaw ?? 0, 5),
+        realAlt: round(p?.altitude ?? 0, 1),
+      }
+    }),
   )
 
   const lng = realLon || data.longitude
@@ -38,42 +42,66 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
   const isHidden = useDeviceListConfigStore((s) => s.hiddenDeviceIds[deviceId])
 
   const status = useRealOnlineStatus(deviceId)
+  const deviceIsOnline = status === DeviceStatusEnum.ONLINE
+  const { viewer } = useCesium()
 
-  const rightMode = useRightMode((s) => s.rightMode)
-  const detailDeviceId = useRightMode((s) => s.detailId)
+  // 地面位置
+  const [groundHeight, setGroundHeight] = useState(0)
+
+  useAsyncEffect(async () => {
+    if (!viewer) {
+      return
+    }
+    const position = Cesium.Cartographic.fromDegrees(lng || 120, lat || 30)
+    const res = await Cesium.sampleTerrain(viewer.terrainProvider, 11, [
+      position,
+    ])
+    const h = res[0]?.height ?? 0
+    if (Math.abs(h - groundHeight) > 0.1) {
+      setGroundHeight(h)
+    }
+  }, [lng, lat, deviceIsOnline])
 
   if (
     isHidden || // 隐藏
-    (isOnline && status !== DeviceStatusEnum.ONLINE) || // 在线状态不显示
+    (isOnline && !deviceIsOnline) || // 在线状态不显示
     !deviceStatusFilter(
       { status, taskStatus: 'RUNNING' },
       isOnline,
       isTask,
       isNotTask,
-    ) || // 任务状态不显示（对应设备树中的筛选）
-    (rightMode === RightModeEnum.DEVICE && detailDeviceId === deviceId) // 设备详情模式下不显示
+    )
   ) {
     return null
   }
 
+  const alt = deviceIsOnline
+    ? Math.max(groundHeight, realAlt ?? 0)
+    : groundHeight
+
+  const position = Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30, alt)
+
   return (
     <>
       <Billboard
-        key={deviceId}
         id={`device--${data.deviceType}--${data.deviceName}--${data.deviceId}--${lng}--${lat}`}
-        position={Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30)}
+        position={position}
         image={icon}
         width={28}
         height={28}
-        disableDepthTestDistance={50000}
+        disableDepthTestDistance={16_000_000}
         heightReference={Cesium.HeightReference.NONE}
         rotation={Cesium.Math.toRadians(-realHeading || 0)}
       />
       <DeviceLabel
         text={data.deviceName}
         id={deviceId}
-        position={Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30)}
+        position={position}
+        heightReference={Cesium.HeightReference.NONE}
       />
+      {deviceIsOnline && alt !== groundHeight && (
+        <HeightDashLine position={[lng || 120, lat || 30, alt]} color="#fff" />
+      )}
     </>
   )
 })

@@ -1,6 +1,6 @@
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import HistoryTrack from '@/components/map/HistoryTrack'
-import useRealTrack from '@/hooks/device/useRealTrack'
+import useRealTrack3D from '@/hooks/device/useRealTrack3D'
 
 type PropsType = unknown
 
@@ -10,8 +10,8 @@ type PropsType = unknown
 const UavRealTrack: FC<PropsType> = memo(() => {
   const lon = useUavControlRoomStore((s) => s.state.longitude)
   const lat = useUavControlRoomStore((s) => s.state.latitude)
-
-  const { historyTrack, realTrack } = useRealTrack(lon, lat)
+  const altitude = useUavControlRoomStore((s) => s.state.altitude)
+  const { historyTrack, realTrack } = useRealTrack3D(lon, lat, altitude)
 
   return (
     <>

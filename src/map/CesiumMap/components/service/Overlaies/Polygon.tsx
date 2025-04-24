@@ -49,51 +49,32 @@ const OverlayPolygon: FC<PropsType> = memo(({ data }) => {
         polygonHierarchy: new Cesium.PolygonHierarchy(positions),
         extrudedHeight: 0,
       }),
-      id: `overlay--${data.overlayId}`,
-
-      attributes: {
-        color: Cesium.ColorGeometryInstanceAttribute.fromColor(
-          Cesium.Color.fromCssColorString(fill).withAlpha(0.3),
-        ),
-      },
+      id: `overlay--${data.overlayId}--${data.overlayType}`,
     })
 
     // 创建边界线几何实例
     const instance2 = new Cesium.GeometryInstance({
-      geometry: new Cesium.PolygonOutlineGeometry({
-        polygonHierarchy: new Cesium.PolygonHierarchy(positions),
+      geometry: new Cesium.GroundPolylineGeometry({
+        positions: [...positions, positions[0]],
       }),
-
-      attributes: {
-        color: Cesium.ColorGeometryInstanceAttribute.fromColor(
-          Cesium.Color.fromCssColorString(stroke),
-        ),
-      },
     })
 
-    const primitive = new Cesium.Primitive({
+    const primitive = new Cesium.GroundPrimitive({
       geometryInstances: [instance1], //可以是实例数组
-      appearance: new Cesium.PerInstanceColorAppearance({
-        closed: true,
-        flat: true,
-        renderState: {
-          depthTest: {
-            enabled: true,
-          },
-        },
+      appearance: new Cesium.MaterialAppearance({
+        translucent: true,
+        material: Cesium.Material.fromType(Cesium.Material.ColorType, {
+          color: Cesium.Color.fromCssColorString(fill).withAlpha(0.3),
+        }),
       }),
       allowPicking: true,
     })
-    const outlinePrimitive = new Cesium.Primitive({
+    const outlinePrimitive = new Cesium.GroundPolylinePrimitive({
       geometryInstances: [instance2],
-      appearance: new Cesium.PerInstanceColorAppearance({
-        flat: true,
-        renderState: {
-          lineWidth: Math.min(2.0, viewer.scene.maximumAliasedLineWidth),
-          depthTest: {
-            enabled: true,
-          },
-        },
+      appearance: new Cesium.PolylineMaterialAppearance({
+        material: Cesium.Material.fromType(Cesium.Material.ColorType, {
+          color: Cesium.Color.fromCssColorString(stroke),
+        }),
       }),
     })
     viewer.scene.primitives.add(primitive)
@@ -135,7 +116,7 @@ const OverlayPolygon: FC<PropsType> = memo(({ data }) => {
       disableDepthTestDistance={50000}
       style={Cesium.LabelStyle.FILL_AND_OUTLINE}
       heightReference={Cesium.HeightReference.NONE}
-      distanceDisplayCondition={new Cesium.DistanceDisplayCondition(0, 500_000)}
+      distanceDisplayCondition={new Cesium.DistanceDisplayCondition(0, 200_000)}
     />
   )
 })

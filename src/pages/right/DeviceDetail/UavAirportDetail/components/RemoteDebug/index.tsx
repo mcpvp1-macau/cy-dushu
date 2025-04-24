@@ -13,6 +13,8 @@ import { useBoolean } from 'ahooks'
 import AppEmpty from '@/components/AppEmpty'
 import IconClose from '@/assets/icons/jsx/IconClose'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
+import { twMerge } from 'tailwind-merge'
+import { CSSProperties } from 'react'
 
 const transMap = {
   en: {
@@ -226,11 +228,20 @@ type PropsType = {
   state: Record<string, any>
   data: API_DEVICE.domain.Device
   progress: any[]
+  className?: string
+  style?: CSSProperties
   onClose?: () => void
 }
 
 /** 远程调试 */
-const RemoteDebug: FC<PropsType> = ({ state, onClose, data, progress }) => {
+const RemoteDebug: FC<PropsType> = ({
+  state,
+  onClose,
+  data,
+  progress,
+  className,
+  style,
+}) => {
   const { t, i18n } = useTranslation()
   const deviceId = data.deviceId
   const productKey = (data.productKey || data.deviceModel?.productKey)!
@@ -489,30 +500,14 @@ const RemoteDebug: FC<PropsType> = ({ state, onClose, data, progress }) => {
   )
 
   return (
-    <div className={styles.remoteDebug}>
-      <div className={styles.header}>
-        <div className={styles.title}>
-          <span className="mr-2 text-white">
-            {t('device.uavDock.remoteDebug.title')}
-          </span>
-          <Switch
-            size="small"
-            disabled={[1, 3, 4].includes(state['modeCode'])}
-            value={state['modeCode'] === 2}
-            onClick={() => {
-              runService('debugMode', {
-                action: state['modeCode'] === 0 ? 0 : 1,
-              })
-            }}
-          />
-        </div>
-        <div className={styles.close} onClick={onClose}>
-          <IconButton className="text-xl">
-            <IconClose />
-          </IconButton>
-        </div>
-      </div>
-      <div className={styles.wrapper}>
+    <div
+      className={twMerge(
+        'bg-[#16202be6] backdrop-blur-sm overflow-hidden z-10 w-[400px]',
+        className,
+      )}
+      style={style}
+    >
+      <div className="p-3">
         <div className={styles.content}>
           {serviceItems.map((item) => (
             <ServiceItem key={item.title} {...item} />
@@ -539,7 +534,10 @@ const RemoteDebug: FC<PropsType> = ({ state, onClose, data, progress }) => {
             </IconButton>
           </div>
           {open && (
-            <div className={styles.progressWrapper}>
+            <div
+              className="flex flex-col gap-2 p-3 text-sm overflow-y-auto text-fore"
+              style={{ maxHeight: 'calc(100vh - 550px)' }}
+            >
               {progress?.length > 0 ? (
                 progress.map((item, index) => (
                   <div

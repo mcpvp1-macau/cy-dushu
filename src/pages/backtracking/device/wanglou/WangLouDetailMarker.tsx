@@ -1,6 +1,6 @@
 import MapRealMarker from '@/components/map/device/WangLouModel'
 import WangLouModel from '@/components/map/device/WangLouModel'
-import Frustum from '@/map/GlobalMap/ActionAirline3D/UavPoint/Frustum'
+import Frustum from '@/map/GlobalMap/WaylineEdit/ActionAirline3D/UavPoint/Frustum'
 import Radar from '@/map/GlobalMap/DeviceMarkers/WangLouMarkers/Radar'
 import { shouldJson } from '@/utils/json'
 import { GetProps } from 'antd'
@@ -29,7 +29,8 @@ type StateType =
 
 const WangLouDetailMarker: FC<PropsType> = memo(() => {
   // const [state, setState] = useState<StateType>(null)
-  const data = useBackTrackingStore((s) => s.detail) || {} as API_DEVICE.domain.Device
+  const data =
+    useBackTrackingStore((s) => s.detail) || ({} as API_DEVICE.domain.Device)
   const currentAttribute = useBackTrackingStore((s) => s.currentAttribute)
 
   const properties = currentAttribute
@@ -137,7 +138,7 @@ const WangLouDetailMarker: FC<PropsType> = memo(() => {
             style={Cesium.LabelStyle.FILL_AND_OUTLINE}
             heightReference={Cesium.HeightReference.NONE}
             distanceDisplayCondition={
-              new Cesium.DistanceDisplayCondition(0, 500_000)
+              new Cesium.DistanceDisplayCondition(0, 200_000)
             }
           />
         </LabelCollection>

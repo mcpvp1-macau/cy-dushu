@@ -52,12 +52,11 @@ const OverlayCircle: FC<PropsType> = memo(({ data }) => {
 
     // 创建多边形几何实例
     const instance1 = new Cesium.GeometryInstance({
-      id: `overlay--${data.overlayId}`,
+      id: `overlay--${data.overlayId}--${data.overlayType}`,
       geometry: new Cesium.CircleGeometry({
         center,
         radius,
       }),
-
       attributes: {
         color: Cesium.ColorGeometryInstanceAttribute.fromColor(
           Cesium.Color.fromCssColorString(fill).withAlpha(0.4),
@@ -65,17 +64,14 @@ const OverlayCircle: FC<PropsType> = memo(({ data }) => {
       },
     })
 
-    const circlePrimitive = new Cesium.Primitive({
+    const circlePrimitive = new Cesium.GroundPrimitive({
       allowPicking: true,
       geometryInstances: [instance1],
-      appearance: new Cesium.PerInstanceColorAppearance({
-        closed: true,
-        flat: true,
-        renderState: {
-          depthTest: {
-            enabled: true,
-          },
-        },
+      appearance: new Cesium.MaterialAppearance({
+        translucent: true,
+        material: Cesium.Material.fromType(Cesium.Material.ColorType, {
+          color: Cesium.Color.fromCssColorString(fill).withAlpha(0.3),
+        }),
       }),
     })
 
@@ -85,23 +81,14 @@ const OverlayCircle: FC<PropsType> = memo(({ data }) => {
         center,
         radius,
       }),
-      attributes: {
-        color: Cesium.ColorGeometryInstanceAttribute.fromColor(
-          Cesium.Color.fromCssColorString(stroke),
-        ),
-      },
     })
 
-    const CircleOutlinePrimitive = new Cesium.Primitive({
+    const CircleOutlinePrimitive = new Cesium.GroundPolylinePrimitive({
       geometryInstances: [instance2],
-      appearance: new Cesium.PerInstanceColorAppearance({
-        closed: true,
-        flat: true,
-        renderState: {
-          depthTest: {
-            enabled: true,
-          },
-        },
+      appearance: new Cesium.PolylineMaterialAppearance({
+        material: Cesium.Material.fromType(Cesium.Material.ColorType, {
+          color: Cesium.Color.fromCssColorString(stroke),
+        }),
       }),
     })
 
@@ -122,6 +109,7 @@ const OverlayCircle: FC<PropsType> = memo(({ data }) => {
 
   return (
     <Label
+      id={`overlay--${data.overlayId}--${data.overlayType}`}
       position={Cesium.Cartesian3.fromDegrees(postion[0], postion[1], 0)}
       scale={0.2}
       verticalOrigin={Cesium.VerticalOrigin.BOTTOM}
@@ -136,7 +124,7 @@ const OverlayCircle: FC<PropsType> = memo(({ data }) => {
       disableDepthTestDistance={50000}
       style={Cesium.LabelStyle.FILL_AND_OUTLINE}
       heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
-      distanceDisplayCondition={new Cesium.DistanceDisplayCondition(0, 500_000)}
+      distanceDisplayCondition={new Cesium.DistanceDisplayCondition(0, 200_000)}
     />
   )
 })

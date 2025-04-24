@@ -8,6 +8,7 @@ import CustomImageryLayer from './components/CustomImageryLayer'
 import FloatIconButton from '@/components/ui/button/FloatIconButton'
 import CustomCesiumGlobalTerrain from './components/CustomCesiumGlobalTerrain'
 import useMapSettingStore from '@/store/setting/useMapSetting.store'
+import IconLoading from '@/assets/icons/jsx/IconLoading'
 import BottomBar from './components/BottomBar'
 
 const ShanghaiWarZoneConfig = lazy(
@@ -75,10 +76,18 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
       <DefaultImageryLayer />
       <CustomImageryLayer />
       <CesiumDefaultConfig />
-      <CustomCesiumGlobalTerrain />
-      {children}
+      {globalConfig.useTerrain && <CustomCesiumGlobalTerrain />}
+      <Suspense
+        fallback={
+          <div className="absolute inset-0 bg-ground-1/20 backdrop-blur-sm flex justify-center items-center">
+            <IconLoading className="text-white text-3xl scale-150" />
+          </div>
+        }
+      >
+        {children}
+      </Suspense>
       {useToolBar && (
-        <div className="absolute right-3 bottom-8 flex flex-col gap-3">
+        <div className="absolute right-3 bottom-8 flex flex-col gap-3 z-10">
           {globalConfig.useShanghaiBanRoutes && <ShanghaiWarZoneConfig />}
           <FloatIconButton onClick={toggle}>
             {is2D ? '2D' : '3D'}

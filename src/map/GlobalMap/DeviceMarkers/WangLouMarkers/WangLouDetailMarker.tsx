@@ -2,7 +2,7 @@ import MapRealMarker from '@/components/map/device/WangLouModel'
 import WangLouModel from '@/components/map/device/WangLouModel'
 import { GetProps } from 'antd'
 import mitt from 'mitt'
-import Frustum from '../../ActionAirline3D/UavPoint/Frustum'
+import Frustum from '../../WaylineEdit/ActionAirline3D/UavPoint/Frustum'
 import Radar from './Radar'
 
 type PropsType = unknown
@@ -61,7 +61,7 @@ const WangLouDetailMarker: FC<PropsType> = memo(() => {
             data.altitude + (state.VISIBLE_LIGHT_CAMERA.groundLift || 0),
           ]}
           rotation={{
-            x:  + (state.pitch ?? 0),
+            x: +(state.pitch ?? 0),
             y: state.yaw ?? 0,
             z: 0,
           }}
@@ -80,7 +80,7 @@ const WangLouDetailMarker: FC<PropsType> = memo(() => {
             data.altitude + (state.INFRARED_CAMERA.groundLift || 0),
           ]}
           rotation={{
-            x:  + (state.pitch ?? 0),
+            x: +(state.pitch ?? 0),
             y: state.yaw ?? 0,
             z: 0,
           }}

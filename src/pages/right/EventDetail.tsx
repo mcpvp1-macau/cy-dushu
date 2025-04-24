@@ -25,7 +25,7 @@ const RightEventDetail: FC<PropsType> = memo(() => {
   const Icon =
     algorithmIconMap[data?.eventType ?? 'unknown'] ?? QuestionCircleFilled
 
-      // big fly
+  // big fly
   useEffect(() => {
     if (!data) {
       return
@@ -47,7 +47,7 @@ const RightEventDetail: FC<PropsType> = memo(() => {
         </div>
       </CloseableHeader>
       <div className="px-3 pb-3">
-        <EventDetail eventId={eventId ?? ''} useCol />
+        <EventDetail eventId={eventId ?? ''} useCol useGo />
       </div>
     </div>
   )

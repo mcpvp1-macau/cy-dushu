@@ -7,14 +7,16 @@ import IconVisible from '@/assets/icons/jsx/IconVisible'
 import DeviceIcon from '@/components/device/DeviceIcon'
 import IconButton from '@/components/ui/button/IconButton'
 import TagItem from '@/components/TagItem'
-import { RightModeEnum } from '@/enum/right-mode'
-import useRightMode from '@/store/layout/useRightMode.store'
 import { Badge, Tooltip } from 'antd'
 import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
 import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
+import { DeviceEnum } from '@/enum/device'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
+  prefix?: ReactNode
+  suffix?: ReactNode
+  onClick?: (data: API_DEVICE.domain.Device) => void
 }
 
 /** 任务状态 */
@@ -52,16 +54,13 @@ const BatteryStatusTag: FC<{ battery: number }> = ({ battery }) => {
   )
 }
 
+const ignoreBatteryDeviceTypes = new Set([
+  DeviceEnum.UAV_AIRPORT,
+  DeviceEnum.CAMERA,
+])
+
 /** 设备树中的设备项 */
-const DeviceItem: FC<PropsType> = memo(({ data }) => {
-  const updateRightMode = useRightMode((s) => s.updateRightMode)
-  const updateDetailId = useRightMode((s) => s.updateDetailId)
-
-  const handleClick = useMemoizedFn(() => {
-    updateRightMode(RightModeEnum.DEVICE)
-    updateDetailId(data.deviceId)
-  })
-
+const DeviceItem: FC<PropsType> = memo(({ data, onClick, prefix, suffix }) => {
   /** 设备型号 */
   const moduleNumber = useMemo(
     () => data.deviceTags?.find((e) => e.tagName === 'MODEL_NUMBER')?.tagValue,
@@ -78,9 +77,10 @@ const DeviceItem: FC<PropsType> = memo(({ data }) => {
   const { t } = useTranslation()
 
   return (
-    <div onClick={handleClick}>
+    <div onClick={() => onClick?.(data)}>
       <div className="w-[350px] px-3 py-1 flex items-center justify-between text-fore">
         <div className="flex items-center gap-2">
+          {prefix}
           <div className="text-white">
             <Badge
               dot
@@ -93,6 +93,7 @@ const DeviceItem: FC<PropsType> = memo(({ data }) => {
           <span>{data.deviceName}</span>
         </div>
         <div className="pr-6">
+          {suffix}
           <IconButton
             onClick={(e) => {
               e.stopPropagation()
@@ -109,7 +110,10 @@ const DeviceItem: FC<PropsType> = memo(({ data }) => {
       </div>
       <div className="px-6 mb-2 flex items-center gap-2 text-fore">
         <TaskStatusTag taskStatus={data.taskStatus} />
-        <BatteryStatusTag battery={data.remainingPower || 0} />
+        {/* 电量 */}
+        {!ignoreBatteryDeviceTypes.has(data.deviceType as DeviceEnum) && (
+          <BatteryStatusTag battery={data.remainingPower || 0} />
+        )}
         {/* 判断是否报备 */}
         {'REPORTED' ===
         data.deviceTags?.find(

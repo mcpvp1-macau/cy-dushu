@@ -1,10 +1,12 @@
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
-import React from 'react'
+import React, { ComponentRef } from 'react'
 import { PointPrimitive, PointPrimitiveCollection } from 'resium'
 import * as Cesium from 'cesium'
 // import useRightMode from '@/store/layout/useRightMode.store'
 // import { RightModeEnum } from '@/enum/right-mode'
 import useBoardObjStore from '@/store/map/useBoardObj.store'
+import PositionMenu from '@/components/map/PositionMenu'
+import DispatchModal from './components/DispatchModal'
 
 export const sourceTypeColorMap: Record<string, string> = {
   RADAR: '#14CCBD',
@@ -51,6 +53,10 @@ const TargetPoints: React.FC = () => {
     setBoardObj(newBoardObj)
   }, [radarTarget])
 
+  const menuRef = useRef<ComponentRef<typeof PositionMenu>>(null)
+  const [menuPosition, setMenuPosition] = useState<number[]>([0, 0])
+  const [dispatchOpen, setDispatchOpen] = useState(false)
+
   return (
     <>
       <PointPrimitiveCollection>
@@ -88,6 +94,10 @@ const TargetPoints: React.FC = () => {
                       outlineColor={Cesium.Color.fromCssColorString('#fff')}
                       outlineWidth={last ? 1.5 : 0}
                       // onClick={() => onClick(`${parentId}=${deviceId}=${id}`)}
+                      onRightClick={() => {
+                        setMenuPosition([lng, lat, alt])
+                        menuRef.current?.open()
+                      }}
                     />
                   </React.Fragment>
                 )
@@ -95,7 +105,44 @@ const TargetPoints: React.FC = () => {
             })
           })
         })}
+        {/* 下面的代码 MOCK 测试用的 */}
+        {/* <PointPrimitive
+          color={Cesium.Color.fromCssColorString('#fff')}
+          position={Cesium.Cartesian3.fromDegrees(120, 30, 0)}
+          pixelSize={14}
+          disableDepthTestDistance={50000}
+          outlineColor={Cesium.Color.fromCssColorString('#fff')}
+          outlineWidth={1.5}
+          // onClick={() => onClick(`${parentId}=${deviceId}=${id}`)}
+          onRightClick={() => {
+            menuRef.current?.open()
+            setMenuPosition([120, 30, 0])
+          }}
+        /> */}
       </PointPrimitiveCollection>
+      <PositionMenu
+        ref={menuRef}
+        position={menuPosition}
+        menu={{
+          items: [
+            {
+              key: 0,
+              label: '派遣',
+              onClick: () => {
+                setDispatchOpen(true)
+                menuRef.current?.close()
+              },
+            },
+          ],
+        }}
+      />
+      {dispatchOpen && (
+        <DispatchModal
+          open={dispatchOpen}
+          position={menuPosition}
+          onClose={() => setDispatchOpen(false)}
+        />
+      )}
     </>
   )
 }

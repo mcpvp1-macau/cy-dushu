@@ -222,11 +222,13 @@ const AlgorithmSettingModal: FC<PropsType> = memo(
       // 设置表单值
       const value = { ...(alogorithmConfig ?? {}) }
 
+      const set = new Set(overlayOptions.map((e) => e.value))
+
       algorithmConfigList.forEach((e) => {
         if (e.valueType === 'lnglatPositions') {
-          value[e.property] = shouldJson(alogorithmConfig[e.property])?.map(
-            (v: any) => v.overlayId,
-          )
+          value[e.property] = shouldJson(alogorithmConfig[e.property])
+            ?.map((v: any) => v.overlayId)
+            ?.filter((v: any) => set.has(v))
         }
       })
 

@@ -144,11 +144,14 @@ const PageActionRecord: FC<PropsType> = memo(() => {
         <DatePicker.RangePicker
           defaultValue={rangeValue}
           onChange={(d) => {
-            setSearchParams({
-              ...Object.fromEntries(searchParams.entries()),
-              startTime: d?.[0]?.format('YYYY-MM-DD') ?? '',
-              endTime: d?.[1]?.format('YYYY-MM-DD') ?? '',
-            })
+            setSearchParams(
+              {
+                ...Object.fromEntries(searchParams.entries()),
+                startTime: d?.[0]?.format('YYYY-MM-DD') ?? '',
+                endTime: d?.[1]?.format('YYYY-MM-DD') ?? '',
+              },
+              { replace: true },
+            )
           }}
         />
       </section>

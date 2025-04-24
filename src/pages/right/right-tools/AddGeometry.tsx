@@ -38,7 +38,7 @@ const AddGeometry: FC<PropsType> = memo(({ onClose }) => {
   })
 
   return (
-    <div className="w-[350px] backdrop-blur">
+    <div className="w-[350px]">
       <CloseableHeader onClose={onClose}>
         <div className="flex gap-2 items-center">
           <IconDrawArea className="device-detail-icon" />

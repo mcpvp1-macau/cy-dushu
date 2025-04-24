@@ -16,6 +16,10 @@ import '@/global/favicon-change.ts'
 
 import './langs/i18n.ts'
 
+import { queryTerrain } from './utils/map/queryTerrainElevation.js'
+
+window.queryTerrain = queryTerrain
+
 // 设置 dayjs 语言
 dayjs.locale('zh-cn')
 

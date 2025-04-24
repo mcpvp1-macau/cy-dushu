@@ -1,5 +1,4 @@
 import { Button, ConfigProvider, GetProps, Modal } from 'antd'
-import { type FC, type ReactNode } from 'react'
 import IconButton from '@/components/ui/button/IconButton'
 import IconClose from '@/assets/icons/jsx/IconClose'
 import './styles.modle.less'
@@ -26,6 +25,49 @@ const XModal: FC<PropsType> = ({
 }) => {
   const { t } = useTranslation()
 
+  const [shift, setShift] = useState({
+    x: 0,
+    y: 0,
+  })
+  const startPosition = useRef({
+    x: 0,
+    y: 0,
+  })
+  const startShift = useRef({
+    x: 0,
+    y: 0,
+  })
+
+  const handleHeaderMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    startPosition.current = {
+      x: e.clientX,
+      y: e.clientY,
+    }
+    startShift.current = {
+      x: shift.x,
+      y: shift.y,
+    }
+
+    const handleMouseMove = (e: MouseEvent) => {
+      setShift({
+        x: startShift.current.x + e.clientX - startPosition.current.x,
+        y: startShift.current.y + e.clientY - startPosition.current.y,
+      })
+    }
+
+    const handleMouseUp = () => {
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+      document.body.style.userSelect = 'auto'
+    }
+
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+    document.body.style.userSelect = 'none'
+    // 清空选中的内容
+    document.getSelection()?.removeAllRanges()
+  }
+
   return (
     <ConfigProvider
       theme={{
@@ -40,12 +82,22 @@ const XModal: FC<PropsType> = ({
         },
       }}
     >
-      <Modal {...restProps} closable={false} footer={null}>
+      <Modal
+        {...restProps}
+        closable={false}
+        footer={null}
+        modalRender={(modal) => (
+          <div style={{ transform: `translate(${shift.x}px, ${shift.y}px)` }}>
+            {modal}
+          </div>
+        )}
+        mask={restProps.mask ?? false}
+      >
         <div className="liqun-modal">
-          <div className="header">
+          <div className="header" onMouseDown={handleHeaderMouseDown}>
             <div className="title">{title}</div>
-            <IconButton style={{ height: '20px' }} onClick={onClose}>
-              <IconClose style={{ fontSize: '20px' }} />
+            <IconButton className="text-lg" onClick={onClose}>
+              <IconClose />
             </IconButton>
           </div>
           <div

@@ -36,7 +36,7 @@ const VideoQualityDRC: FC<PropsType> = memo(({ value, onChange }) => {
       popupMatchSelectWidth={false}
       options={options}
       onChange={onChange}
-      labelRender={(v) => <div className="text-fore">{v.label}</div>}
+      labelRender={(v) => <div className="text-fore text-xs">{v.label}</div>}
       getPopupContainer={() =>
         (document.fullscreenElement as HTMLElement) ?? document.body
       }

@@ -1,6 +1,8 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 
+type Track = { lng: number; lat: number; alt: number }
+
 type StateType = {
   /** 无人机 */
   uavDevices: API_DEVICE.domain.Device[]
@@ -14,6 +16,28 @@ type StateType = {
   allDevices: API_DEVICE.domain.Device[]
   /** 所有设备 */
   allDevicesMap: { [key: string]: API_DEVICE.domain.Device[] }
+  /** 机器人狗 */
+  robotDogDevices: API_DEVICE.domain.Device[]
+  /** 无人机状态 */
+  uavStates: {
+    [deviceId: string]: {
+      longitude: number
+      latitude: number
+      altitude: number
+      uavYaw: number
+      gimbalYaw: number
+      gimbalPitch: number
+      lensType: string
+      zoomFactor: number
+      cameraType: string
+    }
+  }
+  /** 无人机轨迹 */
+  uavTracks: { [deviceId: string]: { path: Track[]; useCallback: boolean } }
+  /** 扫描区域 */
+  scanAreas: {
+    [deviceId: string]: GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon>
+  }
 }
 
 type ActionsType = {
@@ -23,6 +47,10 @@ type ActionsType = {
   updateOtherDevices: (otherDevices: StateType['otherDevices']) => void
   updateAllDevices: (allDevices: StateType['allDevices']) => void
   updateAllDevicesMap: (allDevicesMap: StateType['allDevicesMap']) => void
+  updateRobotDogDevices: (robotDogDevices: StateType['robotDogDevices']) => void
+  updateUavTracks: (uavTracks: StateType['uavTracks']) => void
+  updateUavStates: (uavStates: StateType['uavStates']) => void
+  updateScanAreas: (scanAreas: StateType['scanAreas']) => void
 }
 
 const useMapDevicesStore = create<StateType & ActionsType>()(
@@ -34,6 +62,10 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       otherDevices: [],
       allDevices: [],
       allDevicesMap: {},
+      robotDogDevices: [],
+      uavTracks: {},
+      uavStates: {},
+      scanAreas: {},
       updateUavDevices: (uavDevices) => {
         set({ uavDevices }, false, 'updateUavDevices')
       },
@@ -51,6 +83,18 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       },
       updateAllDevicesMap: (allDevicesMap) => {
         set({ allDevicesMap }, false, 'updateAllDevices')
+      },
+      updateRobotDogDevices: (robotDogDevices) => {
+        set({ robotDogDevices }, false, 'updateRobotDogDevices')
+      },
+      updateUavTracks: (uavTracks) => {
+        set({ uavTracks }, false, 'updateUavTracks')
+      },
+      updateUavStates: (uavStates) => {
+        set({ uavStates }, false, 'updateUavStates')
+      },
+      updateScanAreas: (scanAreas) => {
+        set({ scanAreas }, false, 'updateScanAreas')
       },
     }),
     {

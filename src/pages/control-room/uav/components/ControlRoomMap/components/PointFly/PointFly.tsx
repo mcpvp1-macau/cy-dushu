@@ -13,8 +13,11 @@ const UavMapPointFly: FC<PropsType> = memo(() => {
 
   const displayMode = useUavControlRoomStore((s) => s.state.displayMode)
 
-  const handleClick = (longitude: number, latitude: number) => {
-    updatePointFly({ targetPosition: [longitude, latitude], open: true })
+  const handleClick = (longitude: number, latitude: number, alt?: number) => {
+    updatePointFly({
+      targetPosition: [longitude, latitude, alt ?? 0],
+      open: true,
+    })
   }
 
   const isPointFlying =

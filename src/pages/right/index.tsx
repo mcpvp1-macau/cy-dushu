@@ -10,6 +10,9 @@ const RightAddPoint = lazy(() => import('./right-tools/AddPoint'))
 const RightAddGeometry = lazy(() => import('./right-tools/AddGeometry'))
 const RightEventDetail = lazy(() => import('./EventDetail'))
 const TargetDetail = lazy(() => import('./TargetDetail'))
+const ReconstructionDetail = lazy(
+  () => import('./right-tools/ReconstructionDetail'),
+)
 
 const route = {
   [RightModeEnum.DEVICE]: RightDeviceDetail,
@@ -19,6 +22,7 @@ const route = {
   [RightModeEnum.RANGING]: RightRangingPanel,
   [RightModeEnum.EVENT_DETAIL]: RightEventDetail,
   [RightModeEnum.RADAR_TARGET]: TargetDetail,
+  [RightModeEnum.RECONSTRUCTION_DETAIL]: ReconstructionDetail,
 }
 
 type PropsType = unknown
@@ -35,7 +39,7 @@ const Right: FC<PropsType> = memo(() => {
     <div
       className={clsx(
         'absolute top-3 right-[54px] z-10',
-        'bg-[#16202be6] rounded-[3px]',
+        'bg-[#16202be6] rounded-[3px] backdrop-blur-sm',
         'border border-solid border-ground-5',
         'flex flex-col',
         'overflow-y-hidden',

@@ -17,10 +17,7 @@ const InnerZoomFocus: FC<PropsType> = () => {
 
   const lens = useUavControlRoomStore((s) => s.state.lensType)
 
-  const [pos, setPos] = useState<{ x: number; y: number } | null>({
-    x: 0,
-    y: 0,
-  })
+  const [pos, setPos] = useState<{ x: number; y: number } | null>(null)
 
   const { run: clear } = useDebounceFn(
     () => {
@@ -60,9 +57,6 @@ const InnerZoomFocus: FC<PropsType> = () => {
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 bg-yellow-500 w-[1px] h-2" />
           <div className="absolute left-0 top-1/2 -translate-y-1/2 bg-yellow-500 w-2 h-[1px]" />
           <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-yellow-500 w-2 h-[1px]" />
-          {/* <div className="absolute -right-2 top-1/2 -translate-y-1/2 translate-x-full">
-            <SunOutlined className="text-yellow-500 text-xl" />
-          </div> */}
         </div>
       )}
     </div>

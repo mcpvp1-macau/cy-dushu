@@ -1,6 +1,6 @@
 import PositionTooltip from '@/components/map/PostionTooltip'
 import FormModal from '@/components/XForm/Modal'
-import usePostDeviceService from '@/pages/control-room/uav/hooks/usePostDeviceService'
+import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 import { usePostDeviceServiceHandler } from '@/hooks/device/usePostDeviceService'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
@@ -10,7 +10,7 @@ import { Button } from 'antd'
 import useQueryDeviceDetail from '@/hooks/device/useQueryDeviceDetail'
 
 type PropsType = {
-  position: [number, number]
+  position: [number, number, number]
 }
 
 const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
@@ -47,9 +47,14 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
     { setTrue: setParamsOpenTrue, setFalse: setParamsOpenFalse },
   ] = useBoolean(false)
 
+  const links = useUavControlRoomStore((s) => s.links)
+
   const handleConfirm = async (data) => {
     try {
-      if (parentDeivceDetail) {
+      if (
+        parentDeivceDetail &&
+        !links.some((e) => e.name.toUpperCase() === '5G')
+      ) {
         // 调用父设备的 gotoPosition 服务
         await postServiceHandler(
           parentDeivceDetail.deviceModel.productKey,
@@ -142,7 +147,11 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
                   ),
                 },
               ],
-              otherProps: { addonAfter: 'm' },
+              otherProps: {
+                addonAfter: 'm',
+                min: 1,
+                max: globalConfig.uavHeightLimit,
+              },
             },
             {
               label: t('common.flightSpeed'),
@@ -162,7 +171,11 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
               label: t('device.uav.takeoffForm.goHomeAltitude.title'),
               name: 'gohomeAltitude',
               type: 'input-number',
-              otherProps: { addonAfter: 'm', min: 50, max: 500 },
+              otherProps: {
+                addonAfter: 'm',
+                min: 50,
+                max: globalConfig.uavHeightLimit,
+              },
             },
           ]}
           onClose={setParamsOpenFalse}

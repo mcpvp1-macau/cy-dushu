@@ -1,4 +1,8 @@
-import { live, setLiveQuality } from '@/service/modules/device/device-video'
+import {
+  getDeviceStreamList,
+  live,
+  setLiveQuality,
+} from '@/service/modules/device/device-video'
 import Jessibuca from '../Video/Jessibuca'
 import { formatTs } from '@/utils/time'
 import IconButton from '../ui/button/IconButton'
@@ -85,16 +89,39 @@ const DeviceLiveVideo = memo(
     ) => {
       const { t } = useTranslation()
       const queryClient = useQueryClient()
-      const { data: playUrl, refetch } = useQuery(
+
+      const { data, refetch } = useQuery(
         {
-          queryKey: ['livePost', { productKey, deviceId, videoId }],
+          queryKey: ['getVideoUrl', { productKey, deviceId, videoId }],
           queryFn: async () => {
-            const { data } = await live(productKey, deviceId, { videoId })
-            return data.playUrl + `?t=-1&token=-1&tt=${dayjs().valueOf()}`
+            // 同时获取视频直播地址和流列表
+            const [liveData, streamList] = await Promise.all([
+              live(productKey, deviceId, { videoId }),
+              getDeviceStreamList({
+                streamId: `${productKey}/${deviceId}`,
+              }),
+            ])
+            let url = (liveData.data.playUrl as string) || ''
+
+            // 记忆化获取上次的流
+            const last = sessionStorage.getItem(deviceId + '-videoURL')
+            if (last) {
+              const find = streamList.data.find((e) => e.playUrl === last)
+              if (find) {
+                url = find.playUrl
+              }
+            }
+            return {
+              url,
+              streamList: streamList.data,
+            }
           },
         },
         queryClient,
       )
+
+      const playUrl = data?.url
+      const streamList = data?.streamList
 
       const [url, setUrl] = useState(playUrl ?? '')
 
@@ -216,9 +243,13 @@ const DeviceLiveVideo = memo(
 
       const [aiData, setAIData] = useAIDataState()
 
+      const finalUrl = useMemo(() => {
+        return url + `?t=-1&token=-1&tt=${dayjs().valueOf()}`
+      }, [url])
+
       return (
         <div
-          className="size-full overflow-hidden relative"
+          className="size-full overflow-hidden relative bg-black text-sm"
           ref={wrapperRef}
           style={{ aspectRatio: aspectRatio }}
         >
@@ -255,7 +286,7 @@ const DeviceLiveVideo = memo(
               {playUrl && !sn && (
                 <Jessibuca
                   containerId={videoContainerId}
-                  src={url}
+                  src={finalUrl}
                   onVideoInfo={(v) => {
                     const aspect = v.width / v.height
                     if (Math.abs(aspect - aspectRatio) > 1e-5) {
@@ -348,12 +379,14 @@ const DeviceLiveVideo = memo(
                 <div className="flex justify-between items-center h-full">
                   <section className="flex items-center gap-3">
                     <div className="text-fore text-xs">{formatTs(ts)}</div>
-                    <VideoStream
-                      currentUrl={url}
-                      productKey={productKey}
-                      deviceId={deviceId}
-                      onChange={handleStreamChange}
-                    />
+                    {Array.isArray(streamList) && streamList.length > 1 && (
+                      <VideoStream
+                        currentUrl={url}
+                        streamList={streamList!}
+                        deviceId={deviceId}
+                        onChange={handleStreamChange}
+                      />
+                    )}
                     {+videoQuality >= 0 && (
                       <VideoQuality5G
                         value={videoQuality}

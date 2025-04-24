@@ -5,15 +5,14 @@ import { Segmented } from 'antd'
 import IconDetail from '@/assets/icons/jsx/IconDetail'
 import IconData from '@/assets/icons/jsx/IconData'
 import AppViewSuspense from '@/components/AppViewSuspense'
+import { BaseDeviceDetailProps } from '../routes'
 
-type PropsType = {
-  data: API_DEVICE.domain.Device
-}
+type PropsType = BaseDeviceDetailProps
 
 const CameraDetailDetail = lazy(() => import('./components/CameraDetailDetail'))
 const CameraDetailData = lazy(() => import('./components/CameraDetailData'))
 
-const CameraDetail: FC<PropsType> = memo(({ data }) => {
+const CameraDetail: FC<PropsType> = memo(({ data, headerTools, onClose }) => {
   const header = useMemo(
     () => (
       <div className="flex gap-2 items-center">
@@ -40,7 +39,9 @@ const CameraDetail: FC<PropsType> = memo(({ data }) => {
 
   return (
     <div>
-      <CloseableHeader>{header}</CloseableHeader>
+      <CloseableHeader onClose={onClose} rightTools={headerTools}>
+        {header}
+      </CloseableHeader>
       <div className="px-3 mt-1 mb-3">
         <Segmented
           block

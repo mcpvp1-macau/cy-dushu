@@ -8,7 +8,7 @@ import { emtpyObject } from '@/constant/data'
 import { getDeviceDetail } from '@/service/modules/device'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { memo, useMemo, useState } from 'react'
-import CallbackMarkers from './CallbackMarkers'
+// import CallbackMarkers from './CallbackMarkers'
 
 type PropsType = unknown
 
@@ -76,6 +76,7 @@ const DeviceMarker: React.FC<PropsType> = memo(() => {
                 )) ||
               '-'
             }
+            onClose={() => setCurrentDeviceId(null)}
           />
         </>
       )}

@@ -46,8 +46,8 @@ const menus = [
     color: '#3D8882',
   },
   {
-    id: 'airline',
-    path: '/airline',
+    id: 'wayline',
+    path: '/wayline',
     auth: 'airline',
     component: <MenuIconAirline className="text-lg text-[#4F81D7]" />,
   },

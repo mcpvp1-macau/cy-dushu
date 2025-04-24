@@ -21,7 +21,6 @@ import ControlRoomUavMap from './components/ControlRoomMap'
 import useServerEventMsg from './hooks/useServerEventMsg'
 import IconCameraVideo from '@/assets/icons/jsx/IconCameraVideo'
 import IconMap from '@/assets/icons/jsx/IconMap'
-import DeviceIconUAV2 from '@/assets/icons/jsx/device/DeviceIconUAV2'
 import IconAISwitch from '@/assets/icons/jsx/IconAISwitch'
 import DeviceAlgorithmList from '@/components/device/algorithm/DeviceAlgorithmList'
 import { DeviceEnum } from '@/enum/device'
@@ -41,6 +40,9 @@ import RightOverlayDetail from './components/right_detail/Overlay'
 import useControlRoomTargetInfoStore from '@/store/control-room/useTargetInfo.store'
 import { useLocation } from 'react-router'
 import InitialPointFly from './components/InitialPointFly'
+import IconTanQi from '@/assets/icons/jsx/IconTanQi'
+import Tanqi from './components/Tanqi'
+import IconControl from '@/assets/icons/jsx/IconControl'
 
 type PropsType = unknown
 
@@ -76,12 +78,13 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       map: <IconMap className="text-blue-500" />,
       video: <IconCameraVideo className="text-blue-500" />,
       flyParams: <IconFlightOperation className="text-orange-500" />,
-      flyButtons: <DeviceIconUAV2 className="text-purple-500" />,
+      flyButtons: <IconControl className="text-purple-500" />,
       flyParamsSetting: <IconFlightParams className="text-emerald-500" />,
-      payload: <IconPayload className="text-orange-500" />,
+      payload: <IconPayload className="text-emerald-500" />,
       'ai-list': <IconAISwitch className="text-violet-500" />,
-      'device-data': <IconDeviceData className="text-emerald-500" />,
+      'device-data': <IconDeviceData className="text-orange-500" />,
       overlay: <IconDrawArea className="text-blue-500" />,
+      tanqi: <IconTanQi className="text-emerald-500" />,
     }),
     [],
   )
@@ -92,11 +95,12 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       video: t('common.video'),
       flyParams: t('controlRoom.uav.flyParams.title'),
       flyButtons: t('controlRoom.uav.flyButtons.title'),
-      flyParamsSetting: t('controlRoom.uav.flyParamsSetting.title'),
+      flyParamsSetting: t('common.params'),
       payload: t('controlRoom.uav.payload.title'),
       ['ai-list']: t('controlRoom.uav.aiList.title'),
       ['device-data']: t('controlRoom.uav.deviceData.title'),
       overlay: t('controlRoom.uav.overlay.title'),
+      tanqi: t('common.tanqi'),
     }),
     [t],
   )
@@ -130,10 +134,12 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       payload: <UavPayload productKey={productKey} />,
       ['device-data']: <UavDetailData />,
       flyButtons: (
-        <>
-          <AsideToolBar />
-          <AsideButtons />
-        </>
+        <div className="absolute inset-0 flex justify-center items-center">
+          <div className="w-full max-w-[450px] min-w-[300px] px-2 flex flex-col gap-2.5">
+            <AsideToolBar />
+            <AsideButtons />
+          </div>
+        </div>
       ),
       ['ai-list']: (
         <div className="size-full text-sm overflow-hidden flex flex-col">
@@ -145,6 +151,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
         </div>
       ),
       overlay: <RightOverlayDetail />,
+      tanqi: <Tanqi />,
     }),
     [productKey, deviceId],
   )
@@ -152,7 +159,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
   const { pathname } = useLocation()
 
   return (
-    <DeviceDetailStoreContext.Provider value={store}>
+    <DeviceDetailStoreContext.Provider key={deviceId} value={store}>
       <UavControlRoomStoreContext.Provider value={controlRoomStore}>
         <StateResolver />
         <InitialPointFly />

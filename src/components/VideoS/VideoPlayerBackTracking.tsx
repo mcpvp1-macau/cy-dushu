@@ -29,6 +29,7 @@ const VideoPlayer: FC<PropsType> = memo(
     // const [isPlaying, setIsPlaying] = useState(true);
 
     const playerRef = useRef<ComponentRef<typeof CyberPlayer>>(null)
+
     const [buffering, setBuffering] = useState(true)
 
     const handlePlay = useMemoizedFn(() => {
@@ -59,6 +60,7 @@ const VideoPlayer: FC<PropsType> = memo(
         setBuffering(true)
         return
       }
+
       setBuffering(false)
       // setIsPlaying(type === 'play');
     })
@@ -78,14 +80,21 @@ const VideoPlayer: FC<PropsType> = memo(
     useEffect(() => {
       if (playing) {
         handlePlay()
+      } else if (playing === undefined) {
+        setTimeout(() => {
+          handlePause()
+        }, 1000)
       } else {
         handlePause()
       }
-    }, [playing])
+    }, [playing, playerRef.current])
 
     useEffect(() => {
       if (time - currentPosition > 5 || time - currentPosition < -5) {
         playerRef.current?.seek(time)
+        if (!playing) {
+          handlePause()
+        }
         try {
           playerRef.current?.player?.setPlaybackRate(multiple)
         } catch (error) {}

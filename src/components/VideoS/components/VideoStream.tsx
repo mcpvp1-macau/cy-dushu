@@ -1,47 +1,29 @@
 import { getDeviceStreamList } from '@/service/modules/device/device-video'
 import { calcStreamId } from '@/utils/video/stream'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Select } from 'antd'
 
 type PropsType = {
-  // url: string;
   currentUrl: string
-  productKey: string
   deviceId: string
+  streamList: Awaited<ReturnType<typeof getDeviceStreamList>>['data']
   onChange?: (value: string) => void
 }
 
+/** 视频流切换 */
 const VideoStream: FC<PropsType> = memo(
-  ({ currentUrl, productKey, deviceId, onChange }) => {
-    const streamId =
-      productKey && deviceId ? `${productKey}/${deviceId}` : undefined
+  ({ currentUrl, streamList, deviceId, onChange }) => {
     const currentStreamId = useMemo(
       () => calcStreamId(currentUrl),
       [currentUrl],
     )
 
-    const queryClient = useQueryClient()
-    const { data, isLoading } = useQuery(
-      {
-        queryKey: ['getDeviceStreamList', streamId],
-        queryFn: async () => {
-          return await getDeviceStreamList({
-            streamId: streamId!,
-          })
-        },
-        enabled: !!streamId,
-        select: (d) => d.data,
-      },
-      queryClient,
-    )
-
     const options = useMemo(
       () =>
-        data?.map((e: any) => ({
+        streamList?.map((e: any) => ({
           label: e.appName,
           value: e.playUrl,
         })) ?? [],
-      [data],
+      [streamList],
     )
 
     const selectValue = useMemo(() => {
@@ -59,17 +41,21 @@ const VideoStream: FC<PropsType> = memo(
         className="w-fit text-right"
         placement="topLeft"
         popupMatchSelectWidth={false}
-        loading={isLoading}
         variant="borderless"
         value={selectValue}
         suffixIcon={null}
         options={options}
-        onChange={onChange}
+        onChange={(v) => {
+          sessionStorage.setItem(deviceId + '-videoURL', v)
+          onChange?.(v)
+        }}
         getPopupContainer={() =>
           (document.fullscreenElement as HTMLElement) || document.body
         }
         labelRender={(v) => (
-          <div className="text-fore max-w-[70px] truncate">{v.label}</div>
+          <div className="text-fore text-xs max-w-[70px] truncate">
+            {v.label}
+          </div>
         )}
       />
     )

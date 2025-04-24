@@ -1,21 +1,22 @@
 import { useLinksSwitch } from '@/hooks/device/useLinksSwitch'
-import { memo, type FC } from 'react'
 import IconButtonWithDropDown from '../ui/button/IconButtonWithDropDown'
 
 type PropsType = {
   productKey: string
   deviceId: string
   className?: string
+  onLinksChange?: (links: API_DEVICE.domain.DeviceLink[]) => void
 }
 
 /** 设备双链路切换 */
 const DeviceLinkSwitch: FC<PropsType> = memo(
-  ({ productKey, deviceId, className }) => {
+  ({ productKey, deviceId, className, onLinksChange }) => {
     const { t } = useTranslation()
 
     const { links, currentLink, handleLinkChange } = useLinksSwitch(
       productKey,
       deviceId,
+      onLinksChange,
     )
 
     const linkOptions = useMemo(() => {

@@ -6,15 +6,21 @@ import SignalStrengthIcon from '@/components/device/SignalStrength'
 import IconButton from '@/components/ui/button/IconButton'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import JCXT from '@/pages/right/DeviceDetail/UavAirportDetail/components/RemoteDebug/icons/JCXT'
-import { useUavControlRoomStore as useS } from '@/store/context-store/useUavControlRoom.store'
+import {
+  useUavControlRoomStore as useS,
+  useUavControlRoomStore,
+} from '@/store/context-store/useUavControlRoom.store'
 import { Tooltip } from 'antd'
 import { isNil } from 'lodash'
 import { useShallow } from 'zustand/react/shallow'
 import LatestTask from './LatestTask'
-import { createPortal } from 'react-dom'
 import { useTitle } from 'ahooks'
-import { lazy } from 'react'
+import { HTMLAttributes, lazy } from 'react'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
+import { createPortal } from 'react-dom'
+import IconButtonWithDropDownDialog from '@/components/ui/button/IconButtonWithDropDownDialog'
+import { emtpyObject } from '@/constant/data'
+import { BugOutlined } from '@ant-design/icons'
 
 const DeviceLinkSwitch = lazy(
   () => import('@/components/device/DeviceLinkSwitch'),
@@ -31,15 +37,17 @@ const HeaderLeft = memo(() => {
       <IconButton className="text-base" onClick={() => navigate(-1)}>
         <IconBack />
       </IconButton>
-      {/* <h3 className="whitespace-nowrap">{deviceName}</h3> */}
+      <h3 className="whitespace-nowrap">{deviceName}</h3>
     </section>
   )
 })
 
-const I: FC<{ l: ReactNode; v: ReactNode; t?: string }> = ({ l, v, t }) => {
+const I: FC<
+  { l: ReactNode; v: ReactNode; t?: string } & HTMLAttributes<HTMLElement>
+> = ({ l, v, t, ...props }) => {
   if (globalConfig.controlRoom?.uav?.particularHeader) {
     return (
-      <li className="flex gap-1 select-none">
+      <li className="flex gap-1 select-none" {...props}>
         {t && `${t} `}
         {v}
       </li>
@@ -47,7 +55,7 @@ const I: FC<{ l: ReactNode; v: ReactNode; t?: string }> = ({ l, v, t }) => {
   }
   return (
     <li className="flex gap-1 select-none">
-      {t ? <Tooltip title={t}>{l}</Tooltip> : <div>{l}</div>}
+      {!l ? null : t ? <Tooltip title={t}>{l}</Tooltip> : <div>{l}</div>}
       <div>{v}</div>
     </li>
   )
@@ -95,6 +103,7 @@ const SignalStrength = memo(() => {
       }
     }),
   )
+
   return (
     <I
       t={t('controlRoom.uav.header.signal.title')}
@@ -104,15 +113,69 @@ const SignalStrength = memo(() => {
   )
 })
 
+const fixedStatusMap = {
+  '0': '未开始',
+  '1': '收敛中',
+  '2': '收敛成功',
+  '3': '收敛失败',
+}
+
+const fixedStatusColorMap = {
+  '0': 'text-fore',
+  '1': 'text-orange-500',
+  '2': 'text-green-500',
+  '3': 'text-red-500',
+}
+
+const positionStateQualityMap = {
+  '1': '1档',
+  '2': '2档',
+  '3': '3档',
+  '4': '4档',
+  '5': '5档',
+  '10': 'RTK fixed',
+}
+
 const SatelliteNumber = memo(() => {
   const { t } = useTranslation()
   const satelliteNumber = useS((s) => s.state?.satelliteNumber)
+  const positionState = useS((s) => s.state?.positionState ?? emtpyObject)
   return (
-    <I
-      l={<IconSatellite />}
-      v={satelliteNumber ?? '-'}
-      t={t('controlRoom.uav.header.satellite.title')}
-    />
+    <IconButtonWithDropDownDialog
+      title={t('controlRoom.uav.header.satellite.title')}
+      trigger={['click']}
+      useDing
+      dropdownRender={() => (
+        <div className="p-2 text-xs">
+          <ul className="flex flex-col gap-1">
+            <li className="flex gap-2">
+              <p>收敛状态</p>
+              <p className={fixedStatusColorMap[positionState.isFixed] || ''}>
+                {fixedStatusMap[positionState.isFixed] || '-'}
+              </p>
+            </li>
+            <li className="flex gap-2">
+              <p>搜星档位</p>
+              <p>{positionStateQualityMap[positionState.quality] || '-'}</p>
+            </li>
+            <li className="flex gap-2">
+              <p>GPS 搜星</p>
+              <p>{positionState.gpsNumber || '-'}</p>
+            </li>
+            <li className="flex gap-2">
+              <p>RTK 搜星</p>
+              <p>{positionState.rtkNumber || '-'}</p>
+            </li>
+          </ul>
+        </div>
+      )}
+    >
+      <I
+        l={<IconSatellite />}
+        v={satelliteNumber ?? '-'}
+        t={t('controlRoom.uav.header.satellite.title')}
+      />
+    </IconButtonWithDropDownDialog>
   )
 })
 
@@ -224,16 +287,51 @@ const FD = memo(() => {
   )
 })
 
+const DebugState = memo(() => {
+  const { t } = useTranslation()
+  const state = useS((s) => s.state)
+
+  return (
+    <I
+      t={t('common.debug')}
+      l={null}
+      v={
+        <IconButtonWithDropDownDialog
+          title={t('common.debug')}
+          trigger={['click']}
+          useDing
+          autoAdjustOverflow
+          tooltipProps={{
+            title: t('common.debug'),
+          }}
+          destroyPopupOnHide
+          dropdownRender={() => (
+            <ScrollArea className="max-h-[80vh] text-xs">
+              <pre>
+                <code>{JSON.stringify(state, null, 2)}</code>
+              </pre>
+            </ScrollArea>
+          )}
+        >
+          <BugOutlined />
+        </IconButtonWithDropDownDialog>
+      }
+    />
+  )
+})
+
 const ControlRoomUavHeader: FC = memo(() => {
   const productKey = useDeviceDetailStore((s) => s.productKey)
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
 
   const appHeader = document.getElementById('app-header-center')
 
+  const updateLinks = useUavControlRoomStore((s) => s.updateLinks)
+
   const h = (
-    <header className="h-[38px] flex justify-between items-center text-sm">
+    <header className="flex justify-between items-center text-sm px-3">
       {appHeader ? <HeaderLeft /> : <div />}
-      <ScrollArea className="w-full h-[38px] flex items-center ml-3">
+      <ScrollArea className="w-full h-full flex items-center ml-3">
         <div className="flex items-center gap-3">
           <section className="grow">
             <ul className="flex justify-center gap-1 xl:gap-3 2xl:gap-5 whitespace-nowrap">
@@ -241,6 +339,7 @@ const ControlRoomUavHeader: FC = memo(() => {
                 productKey={productKey}
                 deviceId={deviceId}
                 className="text-fore"
+                onLinksChange={updateLinks}
               />
               <Signal14G />
               <SDRStrength />
@@ -253,6 +352,7 @@ const ControlRoomUavHeader: FC = memo(() => {
               <HomeDistance />
               <FT />
               <FD />
+              <DebugState />
             </ul>
           </section>
           <section>

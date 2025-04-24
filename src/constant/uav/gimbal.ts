@@ -126,6 +126,50 @@ const gimbalMap: Record<number, GimbalType> = {
     wide_pixel_size_height: 0.0013171397379913,
     wide_pixel_size_width: 0.0013171397379913,
   },
+  1234: {
+    name: 'MATRICE_4T',
+    camera_w: 6.4, // 相机宽度（推测，单位 mm，基于 1/1.3 英寸传感器）
+    camera_h: 4.8, // 相机高度（推测，单位 mm，基于 1/1.3 英寸传感器）
+    camera_d: 8, // 相机深度（推测，单位 mm，假设镜头模组厚度）
+    min_focal: 19.35, // 最小焦距（广角相机，24 mm）
+    max_focal: 40, // 最大焦距（长焦相机，168 mm）
+    max_ratio: 7, // 最大变焦倍数（长焦相机约 7x 光学变焦，混合变焦可达 56x）
+    wide_focal: 12.287, // 广角相机焦距（24 mm）
+    wide_camera_w: 17.4, // 广角相机宽度（推测，单位 mm，与变焦相机一致）
+    wide_camera_h: 13.0, // 广角相机高度（推测，单位 mm，与变焦相机一致）
+    wide_pixel_size_height: 0.0017, // 广角像素尺寸高度（1/1.3 英寸，48 MP，计算约 1.7 μm）
+    wide_pixel_size_width: 0.0017, // 广角像素尺寸宽度（同上）
+  },
+}
+
+export const gimbalNameMap: Record<string, number> = {
+  H20T: 43,
+  H20N: 61,
+  H20: 42,
+  M30: 52,
+  M30T: 53,
+  M3E: 66,
+  M3T: 67,
+  H30T: 83,
+  MATRICE_4T: 1234,
+}
+
+/** 获取相机信息 */
+export const getGimbalInfo = (nameOrId: string | number): GimbalType => {
+  const res = gimbalMap[nameOrId] ?? gimbalMap[gimbalNameMap[nameOrId]]
+  if (res) {
+    return res
+  }
+  if (typeof nameOrId === 'string') {
+    const gimbalName = nameOrId
+      .toString()
+      .split(' ')
+      .find((e) => gimbalMap[gimbalNameMap[e]])
+    if (gimbalName) {
+      return gimbalMap[gimbalNameMap[gimbalName]]
+    }
+  }
+  return gimbalMap[53]
 }
 
 export default gimbalMap

@@ -1,6 +1,18 @@
 import { v4 } from 'uuid'
 import { create } from 'zustand'
 
+export type LiveVideoParams = {
+  type: 'live-video'
+  productKey: string
+  deviceId: string
+  videoId: string
+}
+
+export type DeviceDetailParams = {
+  type: 'device-detail'
+  deviceId: string
+}
+
 export type WindowType = {
   id: string
   zIndex: number
@@ -11,11 +23,7 @@ export type WindowType = {
     width: number
     height: number
   }
-} & {
-  type: 'live-video'
-  productKey: string
-  deviceId: string
-  videoId: string
+  params: LiveVideoParams | DeviceDetailParams
 }
 
 type StateType = {
@@ -52,7 +60,7 @@ const useFixedWindowsStore = create<StateType & ActionsType>()((set, get) => ({
         height: 300,
         ...(e.layout ?? {}),
       } as WindowType['layout'],
-    }
+    } as WindowType
     set((state) => ({
       windows: [...state.windows, newItem],
     }))
@@ -61,7 +69,7 @@ const useFixedWindowsStore = create<StateType & ActionsType>()((set, get) => ({
     set((state) => ({
       windows: state.windows.map((w) =>
         w.id === id ? { ...w, ...window } : w,
-      ),
+      ) as WindowType[],
     }))
   },
   removeWindow: (id) => {

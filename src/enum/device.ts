@@ -1,5 +1,6 @@
 import DeviceIconAIRPORT from '@/assets/icons/jsx/device/DeviceIconAIRPORT'
 import DeviceIconCamera from '@/assets/icons/jsx/device/DeviceIconCamera'
+import DeviceIconRebotDog from '@/assets/icons/jsx/device/DeviceIconRebotDog'
 import DeviceIconENFORCEMENT from '@/assets/icons/jsx/device/DeviceIconENFORCEMENT_RECODER'
 import DeviceIconTracker from '@/assets/icons/jsx/device/DeviceIconTracker'
 import DeviceIconTTP_BOX from '@/assets/icons/jsx/device/DeviceIconTTP_BOX'
@@ -48,6 +49,7 @@ export const deviceIconMap = {
   [DeviceEnum.WANGLOU]: DeviceIconWANGLOU,
   [DeviceEnum.SITE_ENFORCEMENT_RECORDER]: DeviceIconENFORCEMENT,
   [DeviceEnum.TRACKER]: DeviceIconTracker,
+  [DeviceEnum.ROBOT_DOG]: DeviceIconRebotDog,
 }
 
 export enum DeviceStatusEnum {

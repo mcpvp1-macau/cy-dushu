@@ -11,7 +11,7 @@ import IconTurnLeft from '@/assets/icons/jsx/uav/IconTurnLeft'
 import IconTurnRight from '@/assets/icons/jsx/uav/IconTurnRight'
 import IconDownStraight from '@/assets/icons/jsx/IconDownStraight'
 import IconUpStraight from '@/assets/icons/jsx/IconUpStraight'
-import usePostDeviceService from '@/pages/control-room/uav/hooks/usePostDeviceService'
+import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 import { useDeviceDetailStore } from '../../../hooks/useDeviceDetail.store'
 
 type PropsType = unknown
@@ -111,24 +111,25 @@ const UavDetailFlightControl: FC<PropsType> = memo(() => {
   const postService = usePostDeviceService()
 
   const leftBtns = useMemo(
-    () => [
-      ['takeoff', t('uav.takeOff.title')],
-      ['autoland', t('uav.land.title')],
-      ['gohome', t('uav.return.title')],
-    ],
+    () =>
+      [
+        ['takeoff', t('uav.takeOff.title'), true],
+        ['autoland', t('uav.land.title'), true],
+        ['gohome', t('uav.return.title'), false],
+      ] as const,
     [t],
   )
 
   return (
     <div className="p-3 flex items-center justify-between gap-3">
       <div className="flex flex-col gap-3 w-[90px]">
-        {leftBtns.map(([service, label]) => (
+        {leftBtns.map(([service, label, needControl]) => (
           <Button
             key={service}
             type="primary"
             block
             size="small"
-            disabled={!canControl || !serviceHave[service]}
+            disabled={(!canControl && needControl) || !serviceHave[service]}
             onClick={() => postService(service)}
           >
             {label}

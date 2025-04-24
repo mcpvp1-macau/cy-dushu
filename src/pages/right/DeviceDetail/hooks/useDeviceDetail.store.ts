@@ -13,21 +13,22 @@ type StateType = {
 
 type ActionsType = {
   updateDeviceDetail: (deviceDetail: StateType['deviceDetail']) => void
+  reset: () => void
 }
 
-export const createDeviceDetailStore = () => {
-  const initalState: StateType = {
-    deviceId: '',
-    productKey: '',
-    deviceDetail: null,
-    propsHave: {},
-    serviceHave: {},
-  }
+const createInitialState = (): StateType => ({
+  deviceId: '',
+  productKey: '',
+  deviceDetail: null,
+  propsHave: {},
+  serviceHave: {},
+})
 
+export const createDeviceDetailStore = () => {
   return createStore<StateType & ActionsType>()(
     devtools(
       (set) => ({
-        ...initalState,
+        ...createInitialState(),
         updateDeviceDetail: (deviceDetail: StateType['deviceDetail']) => {
           if (!deviceDetail) {
             set({ deviceDetail }, false, 'updateDeviceDetail')
@@ -57,6 +58,9 @@ export const createDeviceDetailStore = () => {
             'updateDeviceDetail',
           )
         },
+        reset: () => {
+          set(createInitialState())
+        },
       }),
       {
         name: 'device-detail-store',
@@ -81,8 +85,10 @@ export const useDeviceDetailStore = <T>(
 /** 创建 deviceDetailStore */
 export const useCreateDeviceDetailStore = (deviceId: string) => {
   const deviceDetailStoreRef = useRef<DeviceDetailStoreType | null>(null)
-  if (!deviceDetailStoreRef.current) {
+  const lastDeviceIdRef = useRef<string | null>(null)
+  if (!deviceDetailStoreRef.current || lastDeviceIdRef.current !== deviceId) {
     deviceDetailStoreRef.current = createDeviceDetailStore()
+    lastDeviceIdRef.current = deviceId
   }
   const queryClient = useQueryClient()
   const { isLoading } = useQuery(
@@ -96,6 +102,7 @@ export const useCreateDeviceDetailStore = (deviceId: string) => {
     },
     queryClient,
   )
+
   return {
     store: deviceDetailStoreRef.current,
     isLoading,

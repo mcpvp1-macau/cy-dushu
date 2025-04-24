@@ -56,13 +56,13 @@ const getRGBValue = async (lng, lat, z) => {
   } else {
     let url =
       globalConfig.terrainUrl || `/data/maptiler-terrain-rgb/{z}/{x}/{y}.png`
-    // const url = `/data/maptiler-terrain-rgb/${z}/${row}/${col}.png`
-    url = url.replace('{z}', z).replace('{x}', col).replace('{y}', row)
+    // // const url = `/data/maptiler-terrain-rgb/${z}/${row}/${col}.png`
+    url = url.replace('{z}', z).replace('{x}', row).replace('{y}', col)
+    // console.log('url', url)
     // const url = `http://61.153.111.197:32650/data/maptiler-terrain-rgb/${z}/${row}/${col}.png`;
     image = await Jimp.read(url).catch((err) => {
       return 0
     })
-    console.info('image', image)
     images[`${z}/${row}/${col}`] = image
   }
 
@@ -93,7 +93,13 @@ const clear = () => {
   images = {}
 }
 
-export { queryTerrainElevation, clear }
+const queryTerrain = async (lng, lat) => {
+  const elevation = await queryTerrainElevation(lng, lat)
+  console.log('elevation', elevation)
+  return elevation
+}
+
+export { queryTerrainElevation, clear, queryTerrain }
 
 // 测试
 // const elevation = await queryTerrainElevation(120, 30)

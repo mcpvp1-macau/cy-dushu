@@ -77,7 +77,7 @@ const Forecats: FC<PropsType> = memo(({ positions }) => {
         boardInfo.remainDistance >= 1 &&
         (waypointIndex || 0) < positions.length && (
           <PositionTooltip
-            position={[boardInfo.lng, boardInfo.lat]}
+            position={[boardInfo.lng, boardInfo.lat, boardInfo.alt]}
             alwayInViewport
           >
             <div

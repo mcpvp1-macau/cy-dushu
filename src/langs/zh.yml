@@ -20,6 +20,9 @@ setting:
       title: 清晰度
       description: 为了获得最佳的地图浏览体验，请根据您的电脑性能选择合适的清晰度
     title: 地图
+    imagery:
+      size: 地图缓存
+      calculating: 计算中
   system:
     title: 系统
     clearLocalData: 清空本地数据
@@ -252,6 +255,8 @@ action:
   item:
     time: 时间
     description: 描述
+    startAll: 全部开始
+    stopAll: 全部停止
   add:
     title: 创建行动
     form:
@@ -349,6 +354,7 @@ action:
     aiResult:
       empty:
         title: 暂无结果
+    title: 行动详情
 modal:
   cancel: 取消
   confirm: 确定
@@ -503,6 +509,16 @@ common:
   success: 成功
   live: 实况
   parameterError: 参数错误
+  tanqi: 檀棋
+  threeMap: 三维图
+  hello: 您好
+  params: 参数
+  debug: 调试
+  event: 事件
+  average: 平均
+  lowest: 最低
+  highest: 最高
+  clear: 清空
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -545,6 +561,8 @@ events:
     processStatus:
       title: 处理状态
   title: 事件
+  eventHasAuth:
+    warning: 该事件他人处理中或者你没有权限！
 uav:
   displayMode:
     title: 飞机状态
@@ -632,6 +650,10 @@ wayline:
             title: 航点航线
           area:
             title: 面状航线
+          swarm:
+            title: 蜂群航线
+          rebotDog:
+            title: 巡逻路线
       uavType:
         label: 飞行器型号
       gimbalType:
@@ -653,6 +675,9 @@ wayline:
     coverage:
       title: 航线重叠率
       tooltip: 相邻两条航线的拍摄视野重叠部分的比例，云台默认正射角度
+    titleRebotDog: 巡线设置
+    speedRebotDog:
+      title: 行进速度
   waylinePoint:
     config: 航点设置
     waypointList:
@@ -712,6 +737,7 @@ wayline:
     deleteIdx: 删除航点 {{i}}
     copyIdx: 复制航点 {{i}}
     title: 航点
+    configRebotDog: 巡点设置
   info:
     length:
       title: 航线长度
@@ -792,6 +818,9 @@ wayline:
     msg: 航点间距离超过 {{meters}} 米
   defaultTaskName:
     title: 航线任务
+  action:
+    noSupportEdit: 暂不支持编辑该动作
+  backConfirm: 航线未保存，是否退出
 schedue:
   list:
     title: 计划库
@@ -957,6 +986,23 @@ mapLayer:
   errors:
     previewParse:
       msg: 预览图解析失败
+  reconstructionMap:
+    create:
+      tooltip: 创建三维图组
+      success: 三维重建完成
+      layer:
+        title: 创建三维图层
+      form:
+        groupName: 三维图层组名称
+        layerName: 三维图层名称
+    edit:
+      layer:
+        title: 修改三维图层
+      form:
+        layerName: 三维图层名称
+        groupName: 三维图层组名称
+    task:
+      completed: 三维重建完成
 message:
   success:
     saveMapView: 地图视角保存成功
@@ -970,7 +1016,7 @@ message:
 controlRoom:
   uav:
     flyParams:
-      title: 飞行操控
+      title: 操控
     flyButtons:
       title: 操作
     flyParamsSetting:
@@ -982,9 +1028,9 @@ controlRoom:
     payload:
       title: 负载
     aiList:
-      title: 算法库
+      title: 算法
     deviceData:
-      title: 设备数据
+      title: 数据
     header:
       14g:
         title: 1.4G
@@ -1030,6 +1076,23 @@ controlRoom:
         title: 虚实融合
         setting:
           title: 虚实融合设置
+      reconstruction:
+        title: 三维重建
+        startInfo1: 在地图规划需要重建的区域，每100m半径预计需要30分钟，最大支持半径为
+        startInfo2: 且半径最低为
+        reconstructingInfo: 建图中
+        error_max: 规划区域面积超出限制，请重新规划
+        error_min: 规划区域面积过小，请重新规划
+        setting:
+          title: 飞行参数设置
+          flightAltitude: 飞行高度
+          overlapRate: 重叠率（0-90%）
+          returnAltitude: 返航高度（0-500m）
+          taskCompletionAction: 任务完成动作
+          flightAltitude_rule_msg: 请输入正确的飞行高度
+          overlapRate_rule_msg: 请输入正确的重叠率
+          returnAltitude_rule_msg: 请输入正确的返航高度
+          taskCompletionAction_rule_msg: 请选择正确的任务完成动作
       takePhoto:
         title: 拍照
       cameraMode:
@@ -1043,6 +1106,14 @@ controlRoom:
         title: 悬停
       autoTrack:
         title: 追踪
+      irMeteringModeSet:
+        title: 红外测温模式
+        area: 区域
+        point: 点
+      focusMode:
+        title: 对焦模式
+      exposureMode:
+        title: 镜头曝光模式
     gamepad:
       title: 摇杆
     goHome:
@@ -1147,6 +1218,13 @@ controlRoom:
   service:
     robControlPowerError:
       msg: 获取控制权失败
+  rebotDog:
+    dogRoll:
+      title: 机器狗横滚角
+    dogPitch:
+      title: 机器狗俯仰角
+    dogYaw:
+      title: 机器狗偏航角
 dynamicLayout:
   exit:
     title: 退出
@@ -1172,3 +1250,25 @@ ja-she-bei-zhuang-tai: 设备状态
 ja-hong-wai-shi-pin: 红外视频
 ja-ke-jian-guang-shi-pin: 可见光视频
 ja-zhuan-tai-kong-zhi: 转台控制
+tanqi:
+  welcome:
+    msg: 有什么可以帮忙的？
+  historyChat:
+    title: 历史对话
+  createChat:
+    title: 新建会话
+  historyChats:
+    today:
+      title: 今日
+    yesterday:
+      title: 昨日
+    last7Days:
+      title: 最近7天
+    last30Days:
+      title: 最近30天
+    before:
+      title: 更早
+    delete:
+      title: 你确定要删除这个对话吗？
+  taskUnderstanding:
+    title: 任务理解

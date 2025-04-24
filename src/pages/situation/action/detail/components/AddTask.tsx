@@ -3,9 +3,14 @@ import DeviceIcon from '@/components/device/DeviceIcon'
 import IconButton from '@/components/ui/button/IconButton'
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
+import { emtpyArray } from '@/constant/data'
+import { WaylineEnum } from '@/constant/uav/wayline'
+import { DeviceEnum } from '@/enum/device'
+import { WaylineIcon } from '@/pages/wayline/components/AirlineTemplateListItem'
 import { createActionItem } from '@/service/modules/action-item'
 import { getAirlineTemplateList } from '@/service/modules/airline'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
+import { Form } from 'antd'
 import { TFunction } from 'i18next'
 import { pick } from 'lodash'
 
@@ -22,6 +27,7 @@ const createTaskConfig = (
   t: TFunction,
   airlineTemplateOptions: Option[],
   deviceOptions: Option[],
+  allowMultipleDevice: boolean,
 ) =>
   [
     {
@@ -40,6 +46,10 @@ const createTaskConfig = (
       name: 'airlineIndex',
       type: 'select',
       options: airlineTemplateOptions,
+      otherProps: {
+        optionFilterProp: 'name',
+        allowClear: true,
+      },
     },
     {
       label: t('action.detail.task.add.form.device.label'),
@@ -48,6 +58,7 @@ const createTaskConfig = (
       options: deviceOptions,
       otherProps: {
         optionFilterProp: 'deviceName',
+        mode: allowMultipleDevice ? 'multiple' : undefined,
       },
       rules: [
         {
@@ -74,6 +85,10 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
   const queryClient = useQueryClient()
   const { t, i18n } = useTranslation()
 
+  const [form] = Form.useForm()
+
+  const airlineIndex = Form.useWatch('airlineIndex', form)
+
   const { data: airlineTemplateList } = useQuery(
     {
       queryKey: ['airlineTemplate'],
@@ -83,9 +98,33 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
     queryClient,
   )
 
+  const taskType = airlineTemplateList?.[airlineIndex]?.taskType
+
+  useEffect(() => {
+    form.setFieldValue('deviceIds', [])
+  }, [taskType])
+
   const allDevices = useMapDevicesStore((s) => s.allDevices)
   const deviceOptions = useMemo(() => {
-    return allDevices.map((e) => ({
+    let list = allDevices
+
+    if (taskType) {
+      if (
+        [
+          WaylineEnum.PointWayline,
+          WaylineEnum.AreaWayline,
+          WaylineEnum.SwarmWayline,
+        ].includes(taskType as WaylineEnum)
+      ) {
+        list = list.filter((e) => e.deviceType === DeviceEnum.UAV)
+      } else if (
+        [WaylineEnum.RebotDogWayline].includes(taskType as WaylineEnum)
+      ) {
+        list = list.filter((e) => e.deviceType === DeviceEnum.UAV)
+      }
+    }
+
+    return list.map((e) => ({
       label: (
         <div className="flex gap-2">
           <DeviceIcon type={e.deviceType} />
@@ -95,20 +134,29 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
       deviceName: e.deviceName,
       value: e.deviceId,
     }))
-  }, [allDevices])
+  }, [allDevices, taskType])
 
   const airlineTemplateOptions = useMemo(
     () =>
       airlineTemplateList?.map((e, i) => ({
-        label: e.taskName,
+        label: (
+          <div className="flex gap-2">
+            <WaylineIcon type={e.taskType} />
+            {e.taskName}
+          </div>
+        ),
         value: i,
-      })) ?? [],
+        name: e.taskName,
+      })) ?? emtpyArray,
     [airlineTemplateList],
   )
 
   const [confirmLoading, setConfirmLoading] = useState(false)
   const handleConfirm = useMemoizedFn(async (val: any) => {
     const airline = airlineTemplateList?.[val.airlineIndex]
+    if (Array.isArray(val.deviceIds)) {
+      val.deviceIds = val.deviceIds.join(',')
+    }
     const data = {
       ...pick(val, ['actionItemName', 'deviceIds']),
       // extra: JSON.stringify(
@@ -119,6 +167,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
     }
     if (airline) {
       data['templateId'] = airline.templateId
+      data['waylineTemplateId'] = airline.waylineTemplateId
       data['taskTemplateInfo'] = {
         taskBasic: airline.taskBasic,
         defaultDeviceId: val.deviceIds,
@@ -137,9 +186,16 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
     }
   })
 
+  const allowMultipleDevice = taskType === WaylineEnum.SwarmWayline
   const formItems = useMemo(
-    () => createTaskConfig(t, airlineTemplateOptions, deviceOptions),
-    [i18n.language, airlineTemplateOptions, deviceOptions],
+    () =>
+      createTaskConfig(
+        t,
+        airlineTemplateOptions,
+        deviceOptions,
+        allowMultipleDevice,
+      ),
+    [i18n.language, airlineTemplateOptions, deviceOptions, allowMultipleDevice],
   )
 
   return (
@@ -151,6 +207,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
         title={t('action.detail.task.add.title')}
         items={formItems}
         open={open}
+        form={form}
         confirmLoading={confirmLoading}
         onClose={() => {
           setOpen(false)

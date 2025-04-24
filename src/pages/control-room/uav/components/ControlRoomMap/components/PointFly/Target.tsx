@@ -6,33 +6,43 @@ import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.
 import HistoryTrack from '@/components/map/HistoryTrack'
 
 type PropsType = {
-  position: [number, number]
+  position: [number, number, number]
+  clampToGround?: boolean
 }
 
-const UavPointFlyTarget: FC<PropsType> = memo(({ position }) => {
+const UavPointFlyTarget: FC<PropsType> = memo(({ position, clampToGround }) => {
   const lng = useUavControlRoomStore((s) => s.state.longitude) ?? 0
   const lat = useUavControlRoomStore((s) => s.state.latitude) ?? 0
+  const alt = useUavControlRoomStore((s) => s.state.altitude) ?? 0
 
   return (
     <>
       <BillboardCollection>
         <Billboard
-          position={Cesium.Cartesian3.fromDegrees(position[0], position[1])}
+          position={Cesium.Cartesian3.fromDegrees(
+            position[0],
+            position[1],
+            position[2] ?? 0,
+          )}
           scale={0.4}
           image={icon}
           verticalOrigin={Cesium.VerticalOrigin.BOTTOM}
           horizontalOrigin={Cesium.HorizontalOrigin.CENTER}
           disableDepthTestDistance={50000}
-          heightReference={Cesium.HeightReference.NONE}
+          heightReference={
+            clampToGround
+              ? Cesium.HeightReference.CLAMP_TO_GROUND
+              : Cesium.HeightReference.NONE
+          }
         />
       </BillboardCollection>
       <HistoryTrack
         color="#3d87e9"
-        useOutline
         useCallback
+        clampToGround={clampToGround}
         value={[
-          { lng, lat },
-          { lng: position[0], lat: position[1] },
+          { lng, lat, alt },
+          { lng: position[0], lat: position[1], alt: position[2] ?? 0 },
         ]}
       />
     </>

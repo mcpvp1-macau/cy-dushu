@@ -51,7 +51,7 @@ const TimelineWarpper: React.FC<PropsType> = memo(({ startTime, endTime }) => {
 
   useEffect(() => {
     if (!viewer) return
-    viewer.clock.shouldAnimate = playing
+    viewer.clock.shouldAnimate = false
     viewer.clock.multiplier = multiple
   }, [multiple, playing])
 

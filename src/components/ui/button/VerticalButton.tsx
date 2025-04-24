@@ -12,7 +12,9 @@ const VerticalIconButton: FC<PropsType> = memo(
       <Button {...props}>
         <div className="flex justify-center items-center flex-col">
           <div className={clsx('h-4', iconClassName)}>{icon}</div>
-          <div className={clsx('h-4', textClassName)}>{props.children}</div>
+          <div className={clsx('h-4 text-sm', textClassName)}>
+            {props.children}
+          </div>
         </div>
       </Button>
     )

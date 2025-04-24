@@ -1,6 +1,13 @@
 import IconTip from '@/assets/icons/jsx/IconTip'
+import useLoadingFn from '@/hooks/useLoadingFn'
+import {
+  clearCacheImage,
+  getCacheImageTotalSize,
+} from '@/map/CesiumMap/components/CustomUrlTemplateImageryProvider'
 import useMapSettingStore from '@/store/setting/useMapSetting.store'
-import { Checkbox, Radio } from 'antd'
+import { LoadingOutlined } from '@ant-design/icons'
+import { useAsyncEffect } from 'ahooks'
+import { Button, Checkbox, Radio } from 'antd'
 
 type PropsType = unknown
 
@@ -39,6 +46,17 @@ const MapSetting: FC<PropsType> = memo(() => {
     },
   ]
 
+  const [size, setSize] = useState(-1)
+  useAsyncEffect(async () => {
+    setSize(await getCacheImageTotalSize())
+  }, [])
+
+  const [run, clearCacheImageLoading] = useLoadingFn(async () => {
+    await clearCacheImage()
+    setSize(-1)
+    setSize(await getCacheImageTotalSize())
+  })
+
   return (
     <div>
       <Radio.Group
@@ -58,6 +76,22 @@ const MapSetting: FC<PropsType> = memo(() => {
       <div className="flex gap-2 text-fore mt-3">
         <IconTip />
         <p className="text-xs">{t('setting.map.resolution.description')}</p>
+      </div>
+      <div className="flex gap-2 mt-3">
+        <div className="flex items-center gap-1">
+          {t('setting.map.imagery.size')}:
+          {size >= 0 ? (
+            <span>{size >> 20} MB</span>
+          ) : (
+            <p className="flex items-center gap-1">
+              {t('setting.map.imagery.calculating')}
+              <LoadingOutlined />
+            </p>
+          )}
+        </div>
+        <Button size="small" onClick={run} loading={clearCacheImageLoading}>
+          {t('common.clear')}
+        </Button>
       </div>
     </div>
   )

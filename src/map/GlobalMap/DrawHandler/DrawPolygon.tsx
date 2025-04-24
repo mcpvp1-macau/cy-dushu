@@ -7,6 +7,7 @@ import * as Cesium from 'cesium'
 import AddFormModal from './components/AddFormModal'
 import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
 import { createOverlay } from '@/service/modules/layer_overlay'
+import { makeMemoCallbackProperty } from '@/utils/cesium/memoCallbackProperty'
 
 type PropsType = {
   onSuccess?: () => void
@@ -27,17 +28,21 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
       return
     }
 
-    const position = new Cesium.CallbackProperty(() => {
-      if (paths.current.length < 1 || !endPoint.current) {
-        return {
-          positions: Cesium.Cartesian3.fromDegreesArray([0, 0, 0, 0]),
+    const position = makeMemoCallbackProperty(
+      () => {
+        if (paths.current.length < 1 || !endPoint.current) {
+          return {
+            positions: Cesium.Cartesian3.fromDegreesArray([0, 0, 0, 0]),
+          }
         }
-      }
-      const result = Cesium.Cartesian3.fromDegreesArray(
-        flatten([...paths.current, endPoint.current]),
-      )
-      return { positions: result }
-    }, false)
+        const result = Cesium.Cartesian3.fromDegreesArray(
+          flatten([...paths.current, endPoint.current]),
+        )
+        return { positions: result }
+      },
+      false,
+      () => [paths.current, endPoint.current],
+    )
 
     const e = viewer.entities.add({
       polygon: {

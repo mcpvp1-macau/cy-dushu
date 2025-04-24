@@ -9,6 +9,7 @@ import { shouldJson } from '@/utils/json'
 import { isEqual } from 'lodash'
 import { Btn } from '@/pages/control-room/uav/components/BottomButtons/type'
 import useDeviceWsURL from '@/hooks/device/useDeviceWsURL'
+import { dft } from '@/constant/time-fmt'
 
 type StateType = {
   productKey: string
@@ -36,7 +37,7 @@ type StateType = {
     /** 是否开启指点飞行 */
     open: boolean
     /** 目标经纬度 */
-    targetPosition: [number, number] | null
+    targetPosition: [number, number, number] | null
   }
   /** 无人机的控制信息 */
   uavControlInfo: Partial<{
@@ -67,6 +68,10 @@ type StateType = {
   enableGamepad: boolean
   historyTracks: number[][][]
   enableSmartTrack: boolean
+  /**是否开启三维重建 */
+  enableReconstruction: boolean
+  /** 双链路 */
+  links: API_DEVICE.domain.DeviceLink[]
 }
 
 type ActionsType = {
@@ -96,6 +101,10 @@ type ActionsType = {
   updateHistoryTracks: (tracks: StateType['historyTracks']) => void
 
   updateEnableSmartTrack: (enable?: boolean) => void
+  /**更新三维重建 */
+  updateEnableReconstruction: (enable: boolean) => void
+  /** 更新双链路 */
+  updateLinks: (links: StateType['links']) => void
 }
 
 type WsSendersType = {
@@ -136,6 +145,8 @@ const createInitialState = () =>
     enableGamepad: false,
     historyTracks: [],
     enableSmartTrack: false,
+    enableReconstruction: false,
+    links: [],
   } as StateType)
 
 export const createUavControlRoomStore = (senders: WsSendersType) => {
@@ -160,7 +171,7 @@ export const createUavControlRoomStore = (senders: WsSendersType) => {
                 ...value,
                 controlTag: get().uuid,
                 sendTime: dayjs().valueOf(),
-                sendTimeFormat: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+                sendTimeFormat: dayjs().format(dft),
               },
             }),
           )
@@ -276,6 +287,16 @@ export const createUavControlRoomStore = (senders: WsSendersType) => {
             'updateEnableSmartTrack',
           )
         },
+        updateEnableReconstruction: (enable) => {
+          set(
+            { enableReconstruction: enable },
+            false,
+            'updateEnableReconstruction',
+          )
+        },
+        updateLinks: (links) => {
+          set({ links }, false, 'updateLinks')
+        },
       }),
       {
         name: 'control-room-store',
@@ -370,7 +391,15 @@ export const useCreateUavControlRoomStore = (
     storeRef.current = createUavControlRoomStore({
       sendMsg: (msg) => sendMessageRef.current(msg),
     })
-    storeRef.current.getState().updateProdctKeyAndDeviceId(productKey, deviceId)
+  }
+
+  if (storeRef.current) {
+    if (storeRef.current.getState().deviceId !== deviceId) {
+      storeRef.current.getState().resetState()
+      storeRef.current
+        .getState()
+        .updateProdctKeyAndDeviceId(productKey, deviceId)
+    }
   }
 
   useEffect(() => {

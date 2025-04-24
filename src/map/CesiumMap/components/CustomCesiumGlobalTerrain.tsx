@@ -10,7 +10,8 @@ import { MartiniTerrainProvider } from '@zjugis/cesium-martini'
 const CustomCesiumGlobalTerrain = () => {
   const { viewer } = useCesium()
   useEffect(() => {
-    const url = globalConfig.terrainUrl || `/data/maptiler-terrain-rgb/{z}/{x}/{y}.png`
+    const url =
+      globalConfig.terrainUrl || `/data/maptiler-terrain-rgb/{z}/{x}/{y}.png`
 
     const terrainLayer = new MartiniTerrainProvider({
       url: new Cesium.Resource({
@@ -29,10 +30,9 @@ const CustomCesiumGlobalTerrain = () => {
       // 设置 Cesium Viewer 或 Scene 的 terrainProvider 属性
       viewer.terrainProvider = terrainLayer
 
-
-      return () => {
-        //
-      }
+    return () => {
+      //
+    }
   }, [])
   return null
 }

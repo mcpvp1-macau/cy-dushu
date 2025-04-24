@@ -6,7 +6,7 @@ import actionRecord from './modules/action-record'
 import organization from './modules/organization'
 import controlRoom from './modules/control-room'
 import actionPlan from './modules/action-plan'
-import airline from './modules/airline'
+import wayline from './modules/wayline'
 import demo from './modules/demo'
 import events from './modules/events'
 import backtracking from './modules/backtracking'
@@ -14,18 +14,20 @@ import defence from './modules/defence'
 import AppErrorBoundary from '@/components/AppError'
 import Page404 from '@/pages/404'
 import share from './modules/share'
+import eventResolve from './modules/event-resolve'
 
 export const rootRoute = {
   element: <App />,
   children: [
     situation,
     events,
+    eventResolve,
     sources,
     actionRecord,
     organization,
     controlRoom,
     actionPlan,
-    airline,
+    wayline,
     backtracking,
     defence,
     share,

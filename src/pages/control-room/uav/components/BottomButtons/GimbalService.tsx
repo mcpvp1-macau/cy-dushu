@@ -7,7 +7,7 @@ import gimbalYawMiddle from '@/assets/imgs/control/gimbalYawMiddle.png'
 import follow from '@/assets/imgs/control/follow.png'
 import freedom from '@/assets/imgs/control/freedom.png'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import usePostDeviceService from '../../hooks/usePostDeviceService'
+import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 
 type PropsType = unknown
 

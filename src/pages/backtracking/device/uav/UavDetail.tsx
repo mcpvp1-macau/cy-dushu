@@ -6,15 +6,18 @@ import BackTrackingVideo from '../BackTrackingVideo'
 import { Link } from 'react-router-dom'
 import { Button } from 'antd'
 import IconControlRoom from '@/assets/icons/jsx/IconControlRoom'
+import IconButton from '@/components/ui/button/IconButton'
+import IconClose from '@/assets/icons/jsx/IconClose'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
   state: Record<string, any>
   updateTime: string
+  onClose?: () => void
 }
 
 const UavBackTrackingDetail: FC<PropsType> = memo(
-  ({ data, state, updateTime }) => {
+  ({ data, state, updateTime, onClose }) => {
     const { t } = useTranslation()
     return (
       <div className="w-[350px]">
@@ -26,6 +29,13 @@ const UavBackTrackingDetail: FC<PropsType> = memo(
               <HealthInfoMini healthInfo={state.healthInfo} />
             )}
           </div>
+          {onClose ? (
+            <div className="flex gap-2 items-center">
+              <IconButton className="text-xl" onClick={onClose}>
+                <IconClose />
+              </IconButton>
+            </div>
+          ) : null}
         </div>
         <div className="my-2">
           <UavDetailInfoCard
@@ -48,7 +58,10 @@ const UavBackTrackingDetail: FC<PropsType> = memo(
         </div>
         <div className="my-2 px-3 text-xs text-center"></div>
         <section className="mx-3 mr-[9px] my-3 flex gap-2">
-          <Link className="grow" to={`/backtracking/control-room/uav/${data.deviceId}`}>
+          <Link
+            className="grow"
+            to={`/backtracking/control-room/uav/${data.deviceId}`}
+          >
             <Button block className="h-7" icon={<IconControlRoom />}>
               {t('device.enterControlRoom.title')}
             </Button>

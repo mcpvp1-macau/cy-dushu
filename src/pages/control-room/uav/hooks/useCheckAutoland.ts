@@ -1,6 +1,6 @@
 import { useRafInterval } from 'ahooks'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import usePostDeviceService from './usePostDeviceService'
+import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 
 /** 校验自动降落 */
 const useCheckAutoland = () => {

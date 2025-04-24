@@ -8,8 +8,8 @@ setting:
   video_decoder:
     title: Video Decoder
     description: >-
-      By default, the decoder will be automatically selected in the order of
-      WCS, MSE, Simd, and Wasm based on browser support.
+      By default, the decoder will be automatically selected in the order of WCS, MSE, Simd, and Wasm based on browser support.
+
     attention: Attention
   map:
     resolution:
@@ -21,18 +21,19 @@ setting:
       ultra: Ultra
       title: Resolution
       description: >-
-        For the best map browsing experience, please select an appropriate
-        resolution based on your computer's performance
+        For the best map browsing experience, please select an appropriate resolution based on your computer's performance
+
     title: Map
+    imagery:
+      size: Map Cache
+      calculating: Calculating
   system:
     title: System
     clearLocalData: Clear Local Data
     clear:
       description: >-
-        Clicking the 'Clear All' button will erase all local data and restore
-        default configurations (including settings and AR configuration
-        content). Before proceeding, please ensure you have backed up important
-        information to prevent data loss
+        Clicking the 'Clear All' button will erase all local data and restore default configurations (including settings and AR configuration content). Before proceeding, please ensure you have backed up important information to prevent data loss
+
       title: Clear All
   warning:
     description: Enable or disable the above warning settings as needed
@@ -157,8 +158,8 @@ device:
         close:
           title: Close
         openWarning: >-
-          Before opening the cover, please ensure the surrounding environment of
-          the airport is clear of obstacles and no personnel are nearby.
+          Before opening the cover, please ensure the surrounding environment of the airport is clear of obstacles and no personnel are nearby.
+
       putter:
         title: Putter
       aircraftCharging:
@@ -258,6 +259,8 @@ action:
   item:
     time: Time
     description: Description
+    startAll: Start All
+    stopAll: Stop All
   add:
     title: Create Action
     form:
@@ -355,6 +358,7 @@ action:
     aiResult:
       empty:
         title: Null Result
+    title: Action Detail
 modal:
   cancel: Cancel
   confirm: Confirm
@@ -509,6 +513,16 @@ common:
   success: Success
   live: Live
   parameterError: Parameter Error
+  tanqi: Tanqi
+  threeMap: Three-dimensional Map
+  hello: Hello
+  params: Params
+  debug: Debug
+  event: Event
+  average: Average
+  lowest: Lowest
+  highest: Highest
+  clear: Clear
 events:
   search:
     placeholder: Please search by event name or ID
@@ -551,6 +565,8 @@ events:
     processStatus:
       title: Process Status
   title: Events
+  eventHasAuth:
+    warning: This event is being handled by someone else or you do not have permission!
 uav:
   displayMode:
     title: State
@@ -624,8 +640,8 @@ wayline:
   deleteWayline:
     title: Delete the Wayline
     description: >-
-      After deletion, the wayline content cannot be recovered. Are you sure you
-      want to delete the wayline?
+      After deletion, the wayline content cannot be recovered. Are you sure you want to delete the wayline?
+
   regenerator:
     title: Regenerator
   create:
@@ -640,6 +656,10 @@ wayline:
             title: Point Wayline
           area:
             title: Area Wayline
+          swarm:
+            title: Swarm Wayline
+          rebotDog:
+            title: RebotDog Wayline
       uavType:
         label: UAV Model
       gimbalType:
@@ -661,8 +681,11 @@ wayline:
     coverage:
       title: Coverage Rate
       tooltip: >-
-        Overlap ratio of the shooting field of view between adjacent flight
-        lines, default nadir angle of the gimbal
+        Overlap ratio of the shooting field of view between adjacent flight lines, default nadir angle of the gimbal
+
+    titleRebotDog: Wayline Config
+    speedRebotDog:
+      title: Speed
   waylinePoint:
     config: Waypoints
     waypointList:
@@ -722,6 +745,7 @@ wayline:
     deleteIdx: Delete waypoint {{i}}
     copyIdx: Copy waypoint {{i}}
     title: Waypoint
+    configRebotDog: Waypoints Config
   info:
     length:
       title: Length
@@ -802,6 +826,9 @@ wayline:
     msg: The distance between waypoints exceeds {{meters}} meters
   defaultTaskName:
     title: Wayline Task
+  action:
+    noSupportEdit: Editing this action is not currently supported
+  backConfirm: Wayline not saved, whether to exit
 schedue:
   list:
     title: Schedule List
@@ -829,8 +856,8 @@ schedule:
   tip:
     mustSetGoHome: End action of wayline must be set to `Go Home`
     20minsInterval: >-
-      The scheduled interval of repeated tasks must exceed the actual execution
-      duration of the previous task by at least 20 minutes
+      The scheduled interval of repeated tasks must exceed the actual execution duration of the previous task by at least 20 minutes
+
   form:
     name:
       title: Name
@@ -969,6 +996,23 @@ mapLayer:
   errors:
     previewParse:
       msg: Preview image parsing failed
+  reconstructionMap:
+    create:
+      tooltip: Create a 3D map group
+      success: 3D reconstruction completed
+      layer:
+        title: Create a 3D layer
+      form:
+        groupName: Name of the 3D layer group
+        layerName: Name of the 3D layer
+    edit:
+      layer:
+        title: Edit 3D layer
+        groupName: Name of the 3D layer group
+      form:
+        layerName: Name of the 3D layer
+    task:
+      completed: 3D reconstruction completed
 message:
   success:
     saveMapView: Map view saved successfully
@@ -982,7 +1026,7 @@ message:
 controlRoom:
   uav:
     flyParams:
-      title: Flight Control
+      title: Control
     flyButtons:
       title: Command
     flyParamsSetting:
@@ -996,7 +1040,7 @@ controlRoom:
     aiList:
       title: AI List
     deviceData:
-      title: Device Data
+      title: Data
     header:
       14g:
         title: 1.4G
@@ -1042,6 +1086,25 @@ controlRoom:
         title: AR
         setting:
           title: AR Setting
+      reconstruction:
+        title: Three-dimensional Reconstruction
+        startInfo1: >-
+          n the area to be rebuilt, it is estimated that it takes 30 minutes for each 100m radius. The maximum radius is
+
+        startInfo2: and the minimum radius is
+        reconstructingInfo: reconstructing
+        error_max: The planned area exceeds the limit. Please draw again
+        error_min: The planned area is too small. Please draw again
+        setting:
+          title: Flight parameter setting
+          flightAltitude: Flight Altitude
+          overlapRate: Overlap Rate(0-90%)
+          returnAltitude: Return Altitude(0-500m)
+          taskCompletionAction: Task Completion Action
+          flightAltitude_rule_msg: Please enter the correct flight altitude
+          overlapRate_rule_msg: Please enter the correct overlap rate
+          returnAltitude_rule_msg: Please enter the correct return altitude
+          taskCompletionAction_rule_msg: Please select the correct task completion action
       takePhoto:
         title: Take Photo
       cameraMode:
@@ -1055,6 +1118,14 @@ controlRoom:
         title: Hover
       autoTrack:
         title: Track
+      irMeteringModeSet:
+        title: Ir Metering Set
+        area: Area
+        point: Point
+      focusMode:
+        title: Focus Mode
+      exposureMode:
+        title: Exposure Mode
     gamepad:
       title: Gamepad
     goHome:
@@ -1159,6 +1230,13 @@ controlRoom:
   service:
     robControlPowerError:
       msg: Failed to gain control
+  rebotDog:
+    dogRoll:
+      title: RebotDog Roll
+    dogPitch:
+      title: RebotDog Pitch
+    dogYaw:
+      title: RebotDog Yaw
 dynamicLayout:
   maximize:
     title: Maximize
@@ -1184,3 +1262,25 @@ ja-ke-jian-guang-shi-pin: Visible light video
 ja-she-bei-kong-zhi: Device control
 ja-she-bei-zhuang-tai: Device status
 ja-zhuan-tai-kong-zhi: Turntable control
+tanqi:
+  welcome:
+    msg: How Can I Help you today?
+  historyChat:
+    title: 历史对话
+  createChat:
+    title: 新建会话
+  historyChats:
+    today:
+      title: Today
+    yesterday:
+      title: Yesterday
+    last7Days:
+      title: Last 7 Days
+    last30Days:
+      title: Last 30 Days
+    before:
+      title: Earlier
+    delete:
+      title: Are you sure you want to delete this chat?
+  taskUnderstanding:
+    title: Task Understand

@@ -90,7 +90,7 @@ const ShanghaiBanRoutes: FC<unknown> = memo(() => {
               pixelOffset: new Cesium.Cartesian2(0, -10),
               distanceDisplayCondition: new Cesium.DistanceDisplayCondition(
                 0,
-                500_000,
+                200_000,
               ),
             },
           })

@@ -19,4 +19,5 @@ export enum RightModeEnum {
   RADAR_TARGET = 'radarTarget',
   DRAW_SHAPE = 'drawShape',
   DRAW_GEOMETRY = 'drawGeometry',
+  RECONSTRUCTION_DETAIL = 'reconstructionDetail',
 }

@@ -5,15 +5,16 @@ type PropsType = {
   positionIndex: number
   lng: number
   lat: number
+  alt?: number
 }
 
-const AirPoint: FC<PropsType> = memo(({ positionIndex, lng, lat }) => {
+const AirPoint: FC<PropsType> = memo(({ positionIndex, lng, lat, alt }) => {
   const { viewer } = useCesium()
 
   useEffect(() => {
     if (!viewer) return
     const entity = viewer.entities.add({
-      position: Cesium.Cartesian3.fromDegrees(lng, lat, 0),
+      position: Cesium.Cartesian3.fromDegrees(lng, lat, alt ?? 0),
       billboard: {
         image: '/images/airline/inverted-triangle.svg',
         scale: 1.15,
@@ -32,8 +33,8 @@ const AirPoint: FC<PropsType> = memo(({ positionIndex, lng, lat }) => {
         viewer.entities.remove(entity)
       } catch (e) {}
     }
-  }, [positionIndex, lng, lat])
-  return <></>
+  }, [positionIndex, lng, lat, alt])
+  return null
 })
 
 export default AirPoint

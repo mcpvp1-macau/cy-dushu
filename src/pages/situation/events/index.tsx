@@ -136,7 +136,7 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
 
   return (
     <div className="h-full flex flex-col my-3 overflow-hidden">
-      <div className="px-3 flex gap-3">
+      <div className="px-3 flex gap-3 text-sm">
         <Input
           placeholder={t('events.search.placeholder')}
           onPressEnter={handlePressEnter}

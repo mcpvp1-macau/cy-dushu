@@ -8,12 +8,16 @@ type PropsType = {
 
 /** 指点飞行预测 */
 const PointFlyForecast: FC<PropsType> = memo(({ displayTarget = true }) => {
-  const { tartgetLng, tartgetLat, distance, timeFormat } = useCalcPointFlyInfo()
+  const { tartgetLng, tartgetLat, targetHeight, distance, timeFormat } =
+    useCalcPointFlyInfo()
   const { t } = useTranslation()
 
   return (
     <>
-      <PositionTooltip position={[tartgetLng, tartgetLat]} offset={[0, 30]}>
+      <PositionTooltip
+        position={[tartgetLng, tartgetLat, targetHeight ?? 0]}
+        offset={[0, 30]}
+      >
         <div className="flex flex-col gap-1 text-fore p-1 text-xs">
           <p className="flex justify-between gap-1">
             {t('controlRoom.uav.pointFlyForecast.distance.title')}:
@@ -30,7 +34,9 @@ const PointFlyForecast: FC<PropsType> = memo(({ displayTarget = true }) => {
         </div>
       </PositionTooltip>
       {displayTarget && (
-        <UavPointFlyTarget position={[tartgetLng, tartgetLat]} />
+        <UavPointFlyTarget
+          position={[tartgetLng, tartgetLat, targetHeight ?? 0]}
+        />
       )}
     </>
   )

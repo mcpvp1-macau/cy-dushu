@@ -5,6 +5,7 @@ import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
 import { deviceStatusFilter } from '@/pages/situation/source/utils'
 import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
+import useGroundHeight from '@/hooks/cesium/useGroundHeight'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -14,8 +15,8 @@ const UavAirportMarker: FC<PropsType> = memo(({ data }) => {
   const { deviceId } = data
 
   // 机库刷新经纬度频率很低，所以这里不用获取实时数据了~
-  const lng = data.longitude
-  const lat = data.latitude
+  const lng = data.longitude ?? 0
+  const lat = data.latitude ?? 0
 
   const onlineStatus = useRealOnlineStatus(deviceId)
 
@@ -23,6 +24,8 @@ const UavAirportMarker: FC<PropsType> = memo(({ data }) => {
   const isTask = useDeviceListConfigStore((s) => s.isTask)
   const isNotTask = useDeviceListConfigStore((s) => s.isNotTask)
   const isHidden = useDeviceListConfigStore((s) => s.hiddenDeviceIds[deviceId])
+
+  const groundHeight = useGroundHeight(lng, lat)
 
   if (isHidden) return null
 
@@ -37,23 +40,20 @@ const UavAirportMarker: FC<PropsType> = memo(({ data }) => {
     return null
   }
 
+  const position = Cesium.Cartesian3.fromDegrees(lng, lat, groundHeight)
+
   return (
     <>
       <Billboard
         key={deviceId}
         id={`device--${data.deviceType}--${data.deviceName}--${data.deviceId}--${lng}--${lat}`}
-        position={Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30)}
+        position={position}
         image={icon}
         width={26}
         height={26}
-        disableDepthTestDistance={50000}
-        heightReference={Cesium.HeightReference.NONE}
+        disableDepthTestDistance={16_000_000}
       />
-      <DeviceLabel
-        text={data.deviceName}
-        id={deviceId}
-        position={Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30)}
-      />
+      <DeviceLabel text={data.deviceName} id={deviceId} position={position} />
     </>
   )
 })

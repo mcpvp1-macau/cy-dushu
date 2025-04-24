@@ -113,7 +113,7 @@ const PageEvents: FC<PropsType> = memo(() => {
             return '-'
           }
           return (
-            <span style={{ color: e.color }}>
+            <span style={{ color: e.textColor ?? '#fff' }}>
               {t(`events.status.${e.key}.title`) || '-'}
             </span>
           )
@@ -152,11 +152,14 @@ const PageEvents: FC<PropsType> = memo(() => {
         <DatePicker.RangePicker
           defaultValue={rangeValue}
           onChange={(d) => {
-            setSearchParams({
-              ...Object.fromEntries(searchParams.entries()),
-              startTime: d?.[0]?.format('YYYY-MM-DD') ?? '',
-              endTime: d?.[1]?.format('YYYY-MM-DD') ?? '',
-            })
+            setSearchParams(
+              {
+                ...Object.fromEntries(searchParams.entries()),
+                startTime: d?.[0]?.format('YYYY-MM-DD') ?? '',
+                endTime: d?.[1]?.format('YYYY-MM-DD') ?? '',
+              },
+              { replace: true },
+            )
           }}
         />
         <Select

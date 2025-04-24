@@ -11,6 +11,8 @@ import { useAppMsg } from '@/hooks/useAppMsg'
 import { addSpace } from '@/service/modules/layer_overlay'
 import { v4 } from 'uuid'
 import useAddMapFormItems from './hooks/useAddMapFormItems'
+import ReconstructionMapListConfig from './components/ReconstructionMapListConfig'
+import AddReconstructionLayerGroup from './components/AddReconstructionLayerGroup'
 
 type PropsType = {
   open: boolean
@@ -89,6 +91,16 @@ const MapLayerSettingModal: FC<PropsType> = ({ open, onClose }) => {
               </div>
             ),
             children: <MapLayerListConfig />,
+          },
+          {
+            key: 'reconstruction',
+            label: t('common.threeMap'),
+            extra: (
+              <div onClick={(e) => e.stopPropagation()}>
+                <AddReconstructionLayerGroup />
+              </div>
+            ),
+            children: <ReconstructionMapListConfig />,
           },
         ]}
       />
