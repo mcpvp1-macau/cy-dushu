@@ -43,16 +43,18 @@ const getImageData = async (
 ) => {
   const now = dayjs()
   if (cacheOption) {
-    const imageData = await imageryStore.getItem<ImageData>(url)
-    if (imageData) {
-      if (
-        imageData.ver === cacheOption.ver &&
-        now.diff(dayjs(imageData.t), 'day') < (cacheOption.staleDays ?? 30)
-      ) {
-        return imageData.blob
+    try {
+      const imageData = await imageryStore.getItem<ImageData>(url)
+      if (imageData) {
+        if (
+          imageData.ver === cacheOption.ver &&
+          now.diff(dayjs(imageData.t), 'day') < (cacheOption.staleDays ?? 14)
+        ) {
+          return imageData.blob
+        }
+        await imageryStore.removeItem(url)
       }
-      await imageryStore.removeItem(url)
-    }
+    } catch (e) {}
   }
 
   const abortController = new AbortController()
