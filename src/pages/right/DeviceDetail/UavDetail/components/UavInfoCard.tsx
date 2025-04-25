@@ -1,6 +1,14 @@
 import SignalStrength from '@/components/device/SignalStrength'
+import IconButton from '@/components/ui/button/IconButton'
 import { uavDisplayModeTransMap } from '@/constant/trans_map/uav_display_mode'
 import { StatusColorMap } from '@/enum/device'
+import { useAppMsg } from '@/hooks/useAppMsg'
+import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
+import { CopyOutlined } from '@ant-design/icons'
+import { pick, round } from 'lodash'
+import { useShallow } from 'zustand/react/shallow'
+import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
+import { emtpyObject } from '@/constant/data'
 
 const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
   return (
@@ -36,6 +44,73 @@ const UavDetailInfoCard: FC<PropsType> = memo(
     horizontalSpeed,
   }) => {
     const { t, i18n } = useTranslation()
+    const s = useUavControlRoomStore(
+      useShallow((m) => {
+        const s = m.state
+        return pick(s, [
+          'longitude',
+          'latitude',
+          'height',
+          'altitude',
+          'uavYaw',
+          'uavPitch',
+          'uavRoll',
+          'gimbalYaw',
+          'gimbalPitch',
+          'horizontalSpeed',
+        ])
+      }),
+    )
+
+    const p = useDeviceDetailStore(
+      (s) => s.deviceDetail?.properties ?? emtpyObject,
+    )
+
+    const msgApi = useAppMsg()
+    const handleCopy = async () => {
+      const texts = [
+        [
+          t('common.lonLat'),
+          `${round(s.longitude ?? p.longitude ?? 0, 1) || '-'}, ${
+            round(s.latitude ?? p.latitude ?? 0, 1) || '-'
+          }`,
+        ],
+        [
+          t('common.altitude'),
+          `${round(s.altitude ?? p.altitude ?? 0, 1) || '-'} m`,
+        ],
+        [t('common.height'), `${round(s.height ?? p.height ?? 0, 1) || '-'} m`],
+        [
+          t('controlRoom.uav.header.hSpeed.title'),
+          `${round(s.horizontalSpeed ?? p.horizontalSpeed ?? 0, 1) || '-'} m/s`,
+        ],
+        [
+          t('controlRoom.uav.uavYaw.title'),
+          `${round(s.uavYaw ?? p.uavYaw ?? 0, 1) || '-'}`,
+        ],
+        [
+          t('controlRoom.uav.uavPitch.title'),
+          `${round(s.uavPitch ?? p.uavPitch ?? 0, 1) || '-'}`,
+        ],
+        [
+          t('controlRoom.uav.uavRoll.title'),
+          `${round(s.uavRoll ?? p.uavRoll ?? 0, 1) || '-'}`,
+        ],
+        [
+          t('controlRoom.uav.gimbalYaw.title'),
+          `${round(s.gimbalYaw ?? p.gimbalYaw ?? 0, 1) || '-'}`,
+        ],
+        [
+          t('controlRoom.uav.gimbalPitch.title'),
+          `${round(s.gimbalPitch ?? p.gimbalPitch ?? 0, 1) || '-'}`,
+        ],
+      ]
+      const text = texts.reduce((acc, [label, value]) => {
+        return `${acc}${label}: ${value}\n`
+      }, '')
+      await navigator.clipboard.writeText(text)
+      msgApi.success('复制飞参信息成功')
+    }
 
     return (
       <ul className="p-2 mx-3 mr-[9px] card-border text-sm flex flex-wrap">
@@ -60,7 +135,20 @@ const UavDetailInfoCard: FC<PropsType> = memo(
         />
         <I l={t('common.electricity')} v={`${electricity || 0} %`} />
         <I l={t('common.longitude')} v={longitude?.toFixed(5) || '-'} />
-        <I l={t('common.latitude')} v={latitude?.toFixed(5) || '-'} />
+        <I
+          l={t('common.latitude')}
+          v={
+            <div className="flex items-center gap-1">
+              <span>{latitude?.toFixed(5) || '-'}</span>
+              <IconButton
+                toolTipProps={{ title: '复制飞参信息' }}
+                onClick={handleCopy}
+              >
+                <CopyOutlined />
+              </IconButton>
+            </div>
+          }
+        />
         <I l={t('common.height')} v={`${height?.toFixed(2) || 0} m`} />
         <I
           l={t('common.speed')}

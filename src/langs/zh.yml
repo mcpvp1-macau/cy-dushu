@@ -519,6 +519,7 @@ common:
   lowest: 最低
   highest: 最高
   clear: 清空
+  lonLat: 经纬度
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -1173,6 +1174,8 @@ controlRoom:
       title: 曝光
     shutter:
       title: 快门速度
+    gimbalYaw:
+      title: 云台偏航角
   control:
     uavTurnLeft:
       title: 无人机左转
