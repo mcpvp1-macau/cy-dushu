@@ -51,6 +51,7 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
   const [open, { setTrue, setFalse }] = useBoolean(false)
 
   const drawingColor = useMapDrawStore((s) => s.drawingColor)
+  const drawing = useMapDrawStore((s) => s.drawing)
   const updateDrawing = useMapDrawStore((s) => s.updateDrawing)
   const quitRecontructionArea = useMapDrawStore((s) => s.quitRecontructionArea)
 
@@ -63,7 +64,6 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
       return
     }
 
-    updateDrawing(DrawType.ReconstructionArea)
     handlerRef.current = new Cesium.ScreenSpaceEventHandler(viewer.canvas)
     areaPrimitiveRef.current = new ReconstructionAreaPrimitive(drawingColor)
     viewer?.scene.primitives.add(areaPrimitiveRef.current)
@@ -93,23 +93,16 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
   }, [viewer])
 
   // 地图交互
+  const [isDraw, setIsDraw] = useState(true)
   useEffect(() => {
     if (!viewer || !handlerRef.current) {
       return
     }
 
-    // 打开设置面板就关闭绘制
-    if (open) {
-      handlerRef.current.removeInputAction(
-        Cesium.ScreenSpaceEventType.LEFT_CLICK,
-      )
-      handlerRef.current.removeInputAction(
-        Cesium.ScreenSpaceEventType.MOUSE_MOVE,
-      )
-      handlerRef.current.removeInputAction(
-        Cesium.ScreenSpaceEventType.RIGHT_CLICK,
-      )
-    } else {
+    if (isDraw) {
+      if (drawing !== DrawType.ReconstructionArea) {
+        updateDrawing(DrawType.ReconstructionArea)
+      }
       // 左键 选点
       handlerRef.current.setInputAction((e) => {
         if (circleCenter.current) {
@@ -166,19 +159,22 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
           endPoint.current = null
           areaPrimitiveRef.current && (areaPrimitiveRef.current.positions = [])
         } else {
-          handlerRef.current?.removeInputAction(
-            Cesium.ScreenSpaceEventType.LEFT_CLICK,
-          )
-          handlerRef.current?.removeInputAction(
-            Cesium.ScreenSpaceEventType.MOUSE_MOVE,
-          )
-          handlerRef.current?.removeInputAction(
-            Cesium.ScreenSpaceEventType.RIGHT_CLICK,
-          )
           setTrue()
+          setIsDraw(false)
           setState('setting')
         }
       }, Cesium.ScreenSpaceEventType.RIGHT_CLICK)
+    } else {
+      updateDrawing(DrawType.None)
+      handlerRef.current.removeInputAction(
+        Cesium.ScreenSpaceEventType.LEFT_CLICK,
+      )
+      handlerRef.current.removeInputAction(
+        Cesium.ScreenSpaceEventType.MOUSE_MOVE,
+      )
+      handlerRef.current.removeInputAction(
+        Cesium.ScreenSpaceEventType.RIGHT_CLICK,
+      )
     }
 
     return () => {
@@ -193,7 +189,7 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
         Cesium.ScreenSpaceEventType.RIGHT_CLICK,
       )
     }
-  }, [viewer, open])
+  }, [viewer, isDraw])
 
   const handleConfirm = async (flyOptions: FlyOptions) => {
     areaPrimitiveRef.current?.complete()
@@ -243,17 +239,6 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
 
     try {
       setFalse()
-      if (handlerRef.current) {
-        handlerRef.current.removeInputAction(
-          Cesium.ScreenSpaceEventType.RIGHT_CLICK,
-        )
-        handlerRef.current.removeInputAction(
-          Cesium.ScreenSpaceEventType.MOUSE_MOVE,
-        )
-        handlerRef.current.removeInputAction(
-          Cesium.ScreenSpaceEventType.LEFT_CLICK,
-        )
-      }
 
       const data = await createLayer(createLayerData)
       const overlayId = data.data.overlayId
@@ -262,7 +247,6 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
         deviceId,
         ...flyOptions,
       })
-      setState('reconstructing')
       quitRecontructionArea()
       reconstructionMitt.on('reconstructionTaskEnd', (oid: number) => {
         if (oid === overlayId) {
@@ -272,8 +256,17 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
             (areaLabel.text = t('mapLayer.reconstructionMap.task.completed'))
         }
       })
+      // 任务成功，就退出绘制，并且保留结果
+      setIsDraw(false)
+      setState('reconstructing')
+      quitRecontructionArea()
     } catch (error) {
+      // 失败就清空结果重新绘制
       setState('drawing')
+      setIsDraw(true)
+      circleCenter.current = null
+      endPoint.current = null
+      areaPrimitiveRef.current && (areaPrimitiveRef.current.positions = [])
     } finally {
       setFalse()
     }
@@ -287,6 +280,7 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
         circleCenter.current = null
         endPoint.current = null
         areaPrimitiveRef.current && (areaPrimitiveRef.current.positions = [])
+        setIsDraw(true)
         setState('drawing')
       }}
       onConfirm={handleConfirm}
