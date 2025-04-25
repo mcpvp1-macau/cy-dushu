@@ -33,6 +33,7 @@ type PropsType = {
   onSeiProperties?: (data: SEI_TYPE[SeiEnum.JSON_PROPERTIES]) => void
   onSeiAIData?: (data: SEI_TYPE[SeiEnum.Protobuf_SEI]) => void
   onFetchError?: () => void
+  onError?: (err: Error) => void
   onStats?: (stats: any) => void
 }
 
@@ -268,6 +269,7 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
       'error' as JessibucaPro.EVENTS.error,
       (err: Error) => {
         console.error('jessibuca error', err)
+        props.onError?.(err)
       },
     )
 

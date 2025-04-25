@@ -120,6 +120,7 @@ const DeviceLiveVideo = memo(
         queryClient,
       )
 
+      const [jessibucaKey, setJessibucaKey] = useState(0)
       const playUrl = data?.url
       const streamList = data?.streamList
 
@@ -141,10 +142,8 @@ const DeviceLiveVideo = memo(
 
       /** 刷新 */
       const handleRefresh = async () => {
-        queryClient.invalidateQueries({
-          queryKey: ['getDeviceStreamList', `${productKey}/${deviceId}`],
-        })
         await refetch()
+        setJessibucaKey((prev) => prev + 1)
       }
 
       const wrapperRef = useRef<HTMLDivElement>(null)
@@ -226,6 +225,7 @@ const DeviceLiveVideo = memo(
         })
       })
 
+      // 主要用于: 在没有更新 ts 时，重新拉流
       const { run: debounceRetch } = useDebounceFn(
         () => {
           refetch()
@@ -244,8 +244,8 @@ const DeviceLiveVideo = memo(
       const [aiData, setAIData] = useAIDataState()
 
       const finalUrl = useMemo(() => {
-        return url + `?t=-1&token=-1&tt=${dayjs().valueOf()}`
-      }, [url])
+        return url + `?t=-1&token=-1&tt=${Date.now()}`
+      }, [url, jessibucaKey])
 
       return (
         <div
@@ -285,6 +285,7 @@ const DeviceLiveVideo = memo(
             >
               {playUrl && !sn && (
                 <Jessibuca
+                  key={jessibucaKey}
                   containerId={videoContainerId}
                   src={finalUrl}
                   onVideoInfo={(v) => {
@@ -298,6 +299,7 @@ const DeviceLiveVideo = memo(
                   onSeiAIData={setAIData}
                   onSeiProperties={onUavProperties}
                   onFetchError={handleRefresh}
+                  onError={() => setJessibucaKey((prev) => prev + 1)}
                 />
               )}
 
