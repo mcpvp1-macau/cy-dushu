@@ -1,5 +1,5 @@
 import { formatSecMMSS } from '@/utils/format/time'
-import { useMemoizedFn } from 'ahooks'
+import { useFullscreen, useMemoizedFn } from 'ahooks'
 import { Slider, Spin } from 'antd'
 import classNames from 'clsx'
 import {
@@ -15,6 +15,9 @@ import CyberPlayer, {
   TimeUpdateEvent,
   VideoInfoEvent,
 } from '../Video/CyberPlayer'
+import IconButton from '../ui/button/IconButton'
+import IconFull from '@/assets/icons/jsx/IconFull'
+import { FullscreenExitOutlined } from '@ant-design/icons'
 
 type PropsType = {
   src: string
@@ -76,6 +79,9 @@ const VideoPlayer: FC<PropsType> = memo(
     })
 
     const [mouseIn, setMouseIn] = useState(false)
+    const wrapperRef = useRef<HTMLDivElement>(null)
+    const [fullScreen, { toggleFullscreen }] = useFullscreen(wrapperRef)
+    const { t } = useTranslation()
 
     useEffect(() => {
       if (playing) {
@@ -115,6 +121,7 @@ const VideoPlayer: FC<PropsType> = memo(
         style={{ aspectRatio }}
         onMouseEnter={() => setMouseIn(true)}
         onMouseLeave={() => setMouseIn(false)}
+        ref={wrapperRef}
       >
         <div className="absolute inset-0">
           <CyberPlayer
@@ -156,6 +163,25 @@ const VideoPlayer: FC<PropsType> = memo(
                 onChange={handleSliderChange}
                 onChangeComplete={handleSliderChangeComplete}
               />
+            </div>
+            <div>
+              <IconButton
+                toolTipProps={{
+                  title: !fullScreen
+                    ? t('common.fullScreen')
+                    : t('common.exit'),
+                  align: {
+                    offset: [-20, -10],
+                  },
+                  getPopupContainer: () =>
+                    (document.fullscreenElement as HTMLElement) ??
+                    document.body,
+                }}
+                className="order-20 text-[13px]"
+                onClick={toggleFullscreen}
+              >
+                {!fullScreen ? <IconFull /> : <FullscreenExitOutlined />}
+              </IconButton>
             </div>
             {rightTools}
           </div>
