@@ -10,6 +10,7 @@ import CustomCesiumGlobalTerrain from './components/CustomCesiumGlobalTerrain'
 import useMapSettingStore from '@/store/setting/useMapSetting.store'
 import IconLoading from '@/assets/icons/jsx/IconLoading'
 import BottomBar from './components/BottomBar'
+import FuzhouJiefangBridge from './components/custom/FuzhouJiefangBridge'
 
 const ShanghaiWarZoneConfig = lazy(
   () => import('./components/custom/ShanghaiWarZoneConfig'),
@@ -105,6 +106,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
         )}
       </Suspense>
       <BottomBar />
+      <FuzhouJiefangBridge />
     </Viewer>
   )
 })
