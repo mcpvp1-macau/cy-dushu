@@ -2,6 +2,7 @@ import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDevice
 import { memo, type FC } from 'react'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
+import useMixARStore from '@/store/control-room/useMixAR.store'
 
 type PropsType = unknown
 
@@ -9,7 +10,21 @@ type PropsType = unknown
 const UavMapInitial: FC<PropsType> = memo(() => {
   const lon = useDeviceDetailStore((s) => s.deviceDetail?.properties.longitude)
   const lat = useDeviceDetailStore((s) => s.deviceDetail?.properties.latitude)
+
+  const updateMapCesiumViewer = useMixARStore((s) => s.updateMapCesiumViwer)
+
   const { viewer } = useCesium()
+
+  useEffect(() => {
+    if (!viewer) {
+      return
+    }
+    updateMapCesiumViewer(viewer)
+    return () => {
+      updateMapCesiumViewer(null)
+    }
+  }, [viewer])
+
   useEffect(() => {
     if (!viewer?.camera) {
       return
