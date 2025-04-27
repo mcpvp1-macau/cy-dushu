@@ -12,6 +12,7 @@ type PropsType = GetProps<typeof XForm> & {
   /** @deprecated 继承自 Form, 参考 https://ant-design.antgroup.com/components/form-cn#form */
   layout?: 'auto' | number
   modalProps?: GetProps<typeof XModal>
+  mask?: boolean
   onConfirm?: (data: any) => Promise<void> | void
   onClose?: () => void
 }
@@ -28,6 +29,7 @@ const FormModal: FC<PropsType> = ({
   onConfirm,
   onClose,
   modalProps,
+  mask,
   ...restProps
 }) => {
   const [innerForm] = Form.useForm()
@@ -71,6 +73,7 @@ const FormModal: FC<PropsType> = ({
         width={width ?? '318px'}
         centered
         confirmLoading={confirmLoading || loading}
+        mask={mask}
         {...modalProps}
       >
         <XForm

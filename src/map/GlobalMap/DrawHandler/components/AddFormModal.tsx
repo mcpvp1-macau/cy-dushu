@@ -52,6 +52,7 @@ const AddFormModal: FC<PropsType> = memo((props) => {
 
   return (
     <FormModal
+      mask
       title={props.title ?? t('overlay.drawing.create.title')}
       {...props}
       items={items}
