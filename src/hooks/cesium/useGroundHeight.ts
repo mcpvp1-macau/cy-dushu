@@ -1,5 +1,6 @@
 import { useAsyncEffect } from 'ahooks'
 import { useCesium } from 'resium'
+import * as Cesium from 'cesium'
 
 const useGroundHeight = (lng: number, lat: number, level = 11) => {
   const { viewer } = useCesium()
