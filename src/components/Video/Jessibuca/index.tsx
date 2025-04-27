@@ -35,6 +35,7 @@ type PropsType = {
   onFetchError?: () => void
   onError?: (err: Error) => void
   onStats?: (stats: any) => void
+  onStreamEnd?: () => void
 }
 
 const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
@@ -276,11 +277,19 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
     jessibucaRef.current.on(
       'fetchError' as JessibucaPro.ERROR.fetchError,
       () => {
+        console.error('jessibuca fetch error')
         props.onFetchError?.()
       },
     )
 
     jessibucaRef.current.on('stats' as JessibucaPro.EVENTS.stats, handleStats)
+
+    jessibucaRef.current.on(
+      'streamEnd' as JessibucaPro.EVENTS.streamEnd,
+      () => {
+        props.onStreamEnd?.()
+      },
+    )
 
     return () => {
       jessibucaRef.current?.destroy()

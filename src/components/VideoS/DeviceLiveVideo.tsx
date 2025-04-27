@@ -90,6 +90,7 @@ const DeviceLiveVideo = memo(
       const { t } = useTranslation()
       const queryClient = useQueryClient()
 
+      const [fetchTime, setFetchTime] = useState(0)
       const { data, refetch } = useQuery(
         {
           queryKey: ['getVideoUrl', { productKey, deviceId, videoId }],
@@ -101,6 +102,7 @@ const DeviceLiveVideo = memo(
                 streamId: `${productKey}/${deviceId}`,
               }),
             ])
+            setFetchTime(Date.now())
             let url = (liveData.data.playUrl as string) || ''
 
             // 记忆化获取上次的流
@@ -143,7 +145,6 @@ const DeviceLiveVideo = memo(
       /** 刷新 */
       const handleRefresh = async () => {
         await refetch()
-        setJessibucaKey((prev) => prev + 1)
       }
 
       const wrapperRef = useRef<HTMLDivElement>(null)
@@ -243,9 +244,10 @@ const DeviceLiveVideo = memo(
 
       const [aiData, setAIData] = useAIDataState()
 
-      const finalUrl = useMemo(() => {
-        return url + `?t=-1&token=-1&tt=${Date.now()}`
-      }, [url, jessibucaKey])
+      const finalUrl = useMemo(
+        () => url + `?t=-1&token=-1&tt=${fetchTime}`,
+        [url, fetchTime],
+      )
 
       return (
         <div
@@ -300,6 +302,7 @@ const DeviceLiveVideo = memo(
                   onSeiProperties={onUavProperties}
                   onFetchError={handleRefresh}
                   onError={() => setJessibucaKey((prev) => prev + 1)}
+                  onStreamEnd={handleRefresh}
                 />
               )}
 
