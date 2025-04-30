@@ -107,6 +107,8 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
 
   const irMeteringMode = useUavControlRoomStore((s) => s.state.irMeteringMode)
 
+  const updateVideoElement = useUavControlRoomStore((s) => s.updateVideoElement)
+
   return (
     <div className="absolute inset-0  bg-black">
       <DeviceLiveVideo
@@ -162,6 +164,7 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
           </>
         }
         videoSafeAreaChildren={<Avoidance />}
+        onVideoElementChange={updateVideoElement}
       />
     </div>
   )

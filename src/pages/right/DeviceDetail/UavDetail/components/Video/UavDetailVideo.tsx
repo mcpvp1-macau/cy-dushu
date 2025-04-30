@@ -7,6 +7,8 @@ import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
 import { ComponentRef, lazy } from 'react'
 import VideoSnapshotBtn from '@/hooks/device/VideoSnapshot'
 import AppViewSuspense from '@/components/AppViewSuspense'
+import IconVideoTrack from '@/assets/icons/jsx/IconVideoTrack'
+import useMapDevicesStore from '@/store/map/useMapDevices.store'
 
 const DeviceLinkSwitch = lazy(
   () => import('@/components/device/DeviceLinkSwitch'),
@@ -55,6 +57,25 @@ const UavDetailVideo: FC<PropsType> = memo(
       postService('liveSetQuality', { quality })
     })
 
+    // 是否处于跟踪视频状态
+    const isFollowing = useMapDevicesStore((s) => !!s.followedVideos[deviceId])
+
+    const handleFollowVideo = () => {
+      const followedVideos = useMapDevicesStore.getState().followedVideos
+      const nextFollowedVideos = { ...followedVideos }
+      if (isFollowing) {
+        delete nextFollowedVideos[deviceId]
+      } else {
+        nextFollowedVideos[deviceId] = {
+          productKey,
+          videoId,
+        }
+      }
+      useMapDevicesStore.setState({
+        followedVideos: nextFollowedVideos,
+      })
+    }
+
     return (
       <DeviceLiveVideo
         ref={videoLiveRef}
@@ -68,6 +89,7 @@ const UavDetailVideo: FC<PropsType> = memo(
           onDRCChange: liveSetQuality,
         }}
         // onClickSeiBox={handleSeiClik}
+        renderVideo={!isFollowing}
         leftTop={
           <>
             <LinkSwitch
@@ -88,6 +110,16 @@ const UavDetailVideo: FC<PropsType> = memo(
         }
         rightTop={
           <>
+            <IconButton
+              className="text-base"
+              toolTipProps={{
+                title: t('common.videoFollow'),
+              }}
+              active={isFollowing}
+              onClick={handleFollowVideo}
+            >
+              <IconVideoTrack />
+            </IconButton>
             <VideoSnapshotBtn
               productKey={productKey}
               deviceId={deviceId}

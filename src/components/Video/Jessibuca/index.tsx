@@ -36,10 +36,33 @@ type PropsType = {
   onError?: (err: Error) => void
   onStats?: (stats: any) => void
   onStreamEnd?: () => void
+  /** 视频 Video 元素发生变化时 */
+  onVideoElementChange?: (videoElement: HTMLVideoElement | null) => void
 }
 
 const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
   const ref = useRef<HTMLDivElement>(null)
+
+  // 获取最新的 video 元素 ------------------------------------------------------
+  const videoElementRef = useRef<HTMLVideoElement | null>(null)
+  useEffect(() => {
+    if (!ref.current) {
+      return
+    }
+    const ob = new MutationObserver(() => {
+      const videoElement = ref.current?.querySelector('video')
+      if (videoElementRef.current !== videoElement) {
+        props.onVideoElementChange?.(videoElement ?? null)
+      }
+    })
+    ob.observe(ref.current!, {
+      childList: true,
+    })
+    return () => {
+      ob.disconnect()
+    }
+  }, [ref, props.onVideoElementChange])
+
   const jessibucaRef = useRef<JessibucaPro | null>(null)
 
   const videoEncoderValue = useVideoEncoderStore((s) => s.videoEncoderValue)
@@ -60,12 +83,7 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
     if (!videoInfo) {
       return
     }
-    // if (
-    //   videoInfo.width !== lastVideoInfo.current.width ||
-    //   videoInfo.height !== lastVideoInfo.current.height
-    // ) {
     handleVideoInfo(videoInfo)
-    // }
   }, 2000)
 
   const { handlePropertiesProtobuf } = usePropertiesProtobuf(
@@ -313,6 +331,13 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
     [src, refreshKey],
     { wait: 500, trailing: false },
   )
+
+  useInterval(() => {
+    if (!jessibucaRef.current) {
+      return
+    }
+    jessibucaRef.current?.sendWebsocketMessage?.('ping')
+  }, 3000)
 
   return <div id={props.containerId} ref={ref} key={videoEncoderValue}></div>
 })

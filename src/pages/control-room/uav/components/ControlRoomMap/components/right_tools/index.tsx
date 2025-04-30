@@ -6,6 +6,8 @@ import { RightModeEnum } from '@/enum/right-mode'
 import FloatIconButton from '@/components/ui/button/FloatIconButton'
 import { useUavControlRoomLayoutStore } from '@/pages/control-room/uav/hooks/useUavControlRoomLayout.store'
 import WirelessSituationTool from '@/components/right-tools/components/WirelessSituationTool'
+import IconVideoProjection from '@/assets/icons/jsx/IconVideoProjection'
+import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 
 type PropsType = unknown
 
@@ -14,6 +16,13 @@ const RightTools: FC<PropsType> = memo(() => {
   const updateRightMode = useUavControlRoomLayoutStore((s) => s.updateMapRight)
 
   const { t } = useTranslation()
+
+  const openVideoProjection = useUavControlRoomStore(
+    (s) => s.openVideoProjection,
+  )
+  const updateOpenVideoProjection = useUavControlRoomStore(
+    (s) => s.updateOpenVideoProjection,
+  )
 
   return (
     <div className="absolute top-3 right-3">
@@ -59,6 +68,16 @@ const RightTools: FC<PropsType> = memo(() => {
           </>
         </FloatIconButtonGroup>
         <WirelessSituationTool />
+        <FloatIconButton
+          toolTipProps={{
+            title: t('common.videoProjection'),
+            placement: 'left',
+          }}
+          active={openVideoProjection}
+          onClick={() => updateOpenVideoProjection(!openVideoProjection)}
+        >
+          <IconVideoProjection />
+        </FloatIconButton>
       </div>
     </div>
   )

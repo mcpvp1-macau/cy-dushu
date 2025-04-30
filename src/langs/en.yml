@@ -526,6 +526,8 @@ common:
   highest: Highest
   clear: Clear
   lonLat: Longitude & Latitude
+  videoProjection: Video Projection
+  videoFollow: Video Follow
 events:
   search:
     placeholder: Please search by event name or ID
@@ -1289,3 +1291,5 @@ tanqi:
       title: Are you sure you want to delete this chat?
   taskUnderstanding:
     title: Task Understand
+  commandControl:
+    title: Command Controll

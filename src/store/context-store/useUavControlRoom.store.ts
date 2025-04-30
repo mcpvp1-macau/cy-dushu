@@ -72,6 +72,8 @@ type StateType = {
   enableReconstruction: boolean
   /** 双链路 */
   links: API_DEVICE.domain.DeviceLink[]
+  videoElement: HTMLVideoElement | null
+  openVideoProjection: boolean
 }
 
 type ActionsType = {
@@ -105,6 +107,10 @@ type ActionsType = {
   updateEnableReconstruction: (enable: boolean) => void
   /** 更新双链路 */
   updateLinks: (links: StateType['links']) => void
+  /** 更新视频元素 */
+  updateVideoElement: (videoElement: HTMLVideoElement | null) => void
+  /** 发送命令 */
+  updateOpenVideoProjection: (open: boolean) => void
 }
 
 type WsSendersType = {
@@ -147,6 +153,8 @@ const createInitialState = () =>
     enableSmartTrack: false,
     enableReconstruction: false,
     links: [],
+    videoElement: null,
+    openVideoProjection: false,
   } as StateType)
 
 export const createUavControlRoomStore = (senders: WsSendersType) => {
@@ -296,6 +304,12 @@ export const createUavControlRoomStore = (senders: WsSendersType) => {
         },
         updateLinks: (links) => {
           set({ links }, false, 'updateLinks')
+        },
+        updateVideoElement: (videoElement) => {
+          set({ videoElement }, false, 'updateVideoElement')
+        },
+        updateOpenVideoProjection: (open) => {
+          set({ openVideoProjection: open }, false, 'updateOpenVideoProjection')
         },
       }),
       {

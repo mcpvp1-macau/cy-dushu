@@ -3,14 +3,14 @@ import { updateDialog } from '@/service/modules/tanqi'
 import { Button } from 'antd'
 
 type PropsType = {
-  isTaskUnderstanding: boolean
+  isCommandControl: boolean
   chatId?: number
   onStartNewDialog: (openTaskUnderstanding: 0 | 1 | 2) => void
 }
 
-/** 任务理解 */
-const TaskUnderstanding: FC<PropsType> = memo(
-  ({ isTaskUnderstanding, chatId, onStartNewDialog }) => {
+/** 指令控制 */
+const CommandControl: FC<PropsType> = memo(
+  ({ isCommandControl, chatId, onStartNewDialog }) => {
     const { t } = useTranslation()
     const deviceId = useDeviceDetailStore((s) => s.deviceId)
 
@@ -26,11 +26,11 @@ const TaskUnderstanding: FC<PropsType> = memo(
 
     const handleClick = async () => {
       if (!chatId) {
-        onStartNewDialog(1)
+        onStartNewDialog(2)
       } else {
         updateDialogAsync({
           id: chatId,
-          taskUnderstanding: isTaskUnderstanding ? 0 : 1,
+          taskUnderstanding: isCommandControl ? 0 : 2,
         })
       }
     }
@@ -38,17 +38,17 @@ const TaskUnderstanding: FC<PropsType> = memo(
     return (
       <Button
         size="small"
-        type={isTaskUnderstanding ? 'primary' : 'default'}
+        type={isCommandControl ? 'primary' : 'default'}
         shape="round"
         loading={isPending}
         onClick={handleClick}
       >
-        {t('tanqi.taskUnderstanding.title')}
+        {t('tanqi.commandControl.title')}
       </Button>
     )
   },
 )
 
-TaskUnderstanding.displayName = 'TaskUnderstanding'
+CommandControl.displayName = 'TaskUnderstanding'
 
-export default TaskUnderstanding
+export default CommandControl

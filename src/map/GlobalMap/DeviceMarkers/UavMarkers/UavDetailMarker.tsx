@@ -13,6 +13,8 @@ import useCalcGimbalParams from '@/hooks/device/uav/useCalcGimbalParams'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
 import * as Cesium from 'cesium'
+import BoardMarker3D from '@/components/map/BoardCesium/BoardMarker3D'
+import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
 
 type PropsType = {
   deviceId: string
@@ -88,6 +90,8 @@ const UavDetailMarker: FC<PropsType> = memo(({ deviceId }) => {
     }
   }, [deviceId])
 
+  const followedVideo = useMapDevicesStore((s) => s.followedVideos[deviceId])
+
   if (!state) {
     return null
   }
@@ -103,6 +107,7 @@ const UavDetailMarker: FC<PropsType> = memo(({ deviceId }) => {
     state.latitude,
     state.altitude ?? 0,
   )
+
   return (
     <>
       <HeightDashLine
@@ -120,6 +125,28 @@ const UavDetailMarker: FC<PropsType> = memo(({ deviceId }) => {
           gimbalPick={gimbalPick as any}
           position={[state.longitude, state.latitude, state.altitude ?? 0]}
         />
+      )}
+      {followedVideo && viewer && (
+        <BoardMarker3D
+          id={`video-${deviceId}`}
+          lng={state.longitude}
+          lat={state.latitude}
+          height={state.altitude ?? 0}
+          map={viewer}
+          option={{
+            verticalPosition: 'center',
+            horizontalPosition: 'center',
+          }}
+        >
+          <div className="w-[300px]">
+            <DeviceLiveVideo
+              deviceId={deviceId}
+              productKey={followedVideo.productKey}
+              videoId={followedVideo.videoId}
+              useTopBar={false}
+            />
+          </div>
+        </BoardMarker3D>
       )}
     </>
   )

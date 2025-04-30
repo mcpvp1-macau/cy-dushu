@@ -18,6 +18,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 import TaskUnderstanding from './components/TaskUnderstanding'
 import useASR from './utils/asr'
 import useUserStore from '@/store/useUser.store'
+import CommandControl from './components/CommandControl'
 
 export const msgEmitter = mitt<{
   message: { type: string; content: string; dialogId: number }
@@ -43,13 +44,13 @@ const Tanqi = memo(() => {
   const queryClient = useQueryClient()
 
   // 创建对话
-  const handleCreateChat = async (openTaskUnderstanding = false) => {
+  const handleCreateChat = async (openTaskUnderstanding?: 0 | 1 | 2) => {
     setCreating(true)
     try {
       const res = await startNewDialog({
         deviceId,
         productKey,
-        taskUnderstanding: openTaskUnderstanding ? 1 : 0,
+        taskUnderstanding: openTaskUnderstanding,
       })
       const nextSearchParams = new URLSearchParams(searchParams)
       nextSearchParams.set('chat', res.data.toString())
@@ -93,7 +94,7 @@ const Tanqi = memo(() => {
     setSendValue('')
     if (!chatId) {
       willSendMsg.current = message
-      await handleCreateChat()
+      await handleCreateChat(0)
       return
     }
     try {
@@ -169,13 +170,11 @@ const Tanqi = memo(() => {
     queryClient,
   )
 
-  const isTaskUnderstanding = useMemo(() => {
+  const taskUnderstanding = useMemo(() => {
     if (!chats || !chatId) {
       return false
     }
-    return (
-      chats.find((item) => item.id === Number(chatId))?.taskUnderstanding === 1
-    )
+    return chats.find((item) => item.id === Number(chatId))?.taskUnderstanding
   }, [chats, chatId])
 
   const [isRecording, setIsRecording] = useState(false)
@@ -208,9 +207,14 @@ const Tanqi = memo(() => {
       </div>
       <div className="m-2">
         <div className="flex justify-between">
-          <div>
+          <div className="flex gap-2">
             <TaskUnderstanding
-              isTaskUnderstanding={isTaskUnderstanding}
+              isTaskUnderstanding={taskUnderstanding === 1}
+              chatId={chatId!}
+              onStartNewDialog={handleCreateChat}
+            />
+            <CommandControl
+              isCommandControl={taskUnderstanding === 2}
               chatId={chatId!}
               onStartNewDialog={handleCreateChat}
             />

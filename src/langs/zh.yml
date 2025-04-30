@@ -520,6 +520,8 @@ common:
   highest: 最高
   clear: 清空
   lonLat: 经纬度
+  videoProjection: 视频投射
+  videoFollow: 视频跟随
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -1275,3 +1277,5 @@ tanqi:
       title: 你确定要删除这个对话吗？
   taskUnderstanding:
     title: 任务理解
+  commandControl:
+    title: 指令控制

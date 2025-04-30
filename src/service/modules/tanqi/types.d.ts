@@ -19,7 +19,7 @@ declare namespace API_TANQI {
        * - 0: 未开启
        * - 1: 已开启
        */
-      taskUnderstanding: 0 | 1
+      taskUnderstanding: 0 | 1 | 2
     }
   }
   // ------------------ req ------------------
@@ -50,7 +50,7 @@ declare namespace API_TANQI {
        * - 0: 关闭
        * - 1: 开始
        */
-      taskUnderstanding?: 0 | 1
+      taskUnderstanding?: 0 | 1 | 2
     }
     type UpdateDialog = {
       /**
@@ -64,12 +64,12 @@ declare namespace API_TANQI {
       dialogName?: string
 
       /**
-       * 是否开启任务理解，只在需要修改此字段时传递
        * - 0: 关闭
-       * - 1: 开始
+       * - 1: 任务理解
+       * - 2: 指令控制
        * @remarks 只修改会话名称时该字段不要传
        */
-      taskUnderstanding?: 0 | 1
+      taskUnderstanding?: 0 | 1 | 2
     }
     type SendDialogMsg = {
       /**

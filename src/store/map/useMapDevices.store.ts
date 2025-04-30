@@ -38,6 +38,10 @@ type StateType = {
   scanAreas: {
     [deviceId: string]: GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon>
   }
+  /** 视频跟踪 */
+  followedVideos: {
+    [deviceId: string]: { productKey: string; videoId: string }
+  }
 }
 
 type ActionsType = {
@@ -51,6 +55,7 @@ type ActionsType = {
   updateUavTracks: (uavTracks: StateType['uavTracks']) => void
   updateUavStates: (uavStates: StateType['uavStates']) => void
   updateScanAreas: (scanAreas: StateType['scanAreas']) => void
+  updateFollowedVideos: (followedVideos: StateType['followedVideos']) => void
 }
 
 const useMapDevicesStore = create<StateType & ActionsType>()(
@@ -66,6 +71,7 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       uavTracks: {},
       uavStates: {},
       scanAreas: {},
+      followedVideos: {},
       updateUavDevices: (uavDevices) => {
         set({ uavDevices }, false, 'updateUavDevices')
       },
@@ -95,6 +101,9 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       },
       updateScanAreas: (scanAreas) => {
         set({ scanAreas }, false, 'updateScanAreas')
+      },
+      updateFollowedVideos: (followedVideos) => {
+        set({ followedVideos }, false, 'updateFollowedVideos')
       },
     }),
     {

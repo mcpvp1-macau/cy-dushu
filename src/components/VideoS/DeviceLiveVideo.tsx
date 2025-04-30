@@ -51,9 +51,11 @@ type PropsType = {
     onDRCChange?: (quality: string) => void
   }
   useDing?: boolean
+  renderVideo?: boolean
   onAspectRatioChange?: (aspectRatio: number) => void
   onUavProperties?: (properties: PropertiesData) => void
   onClickSeiBox?: (box: AiObject) => void
+  onVideoElementChange?: (videoElement: HTMLVideoElement | null) => void
 }
 
 type DeviceLiveVideoRefType = {
@@ -81,9 +83,11 @@ const DeviceLiveVideo = memo(
         videoSafeAreaChildren,
         useVideoQualityCheck,
         useDing = true,
+        renderVideo = true,
         onAspectRatioChange,
         onUavProperties,
         onClickSeiBox,
+        onVideoElementChange,
       },
       ref,
     ) => {
@@ -285,7 +289,7 @@ const DeviceLiveVideo = memo(
                     : 'translate(0px, 0px)',
               }}
             >
-              {playUrl && !sn && (
+              {playUrl && !sn && renderVideo && (
                 <Jessibuca
                   key={jessibucaKey}
                   containerId={videoContainerId}
@@ -303,6 +307,7 @@ const DeviceLiveVideo = memo(
                   onFetchError={handleRefresh}
                   onError={() => setJessibucaKey((prev) => prev + 1)}
                   onStreamEnd={handleRefresh}
+                  onVideoElementChange={onVideoElementChange}
                 />
               )}
 
@@ -356,7 +361,7 @@ const DeviceLiveVideo = memo(
             {useTopBar && (leftTop || rightTop || useDing) && (
               <aside
                 ref={topBar}
-                className="absolute top-0 inset-x-0 bg-[#1c2630] bg-opacity-70 p-1 px-2 h-8 z-30 backdrop-blur-sm"
+                className="absolute inset-x-0 bg-[#1c2630] bg-opacity-70 p-1 px-2 h-8 backdrop-blur-sm"
               >
                 <div className="flex justify-between items-center h-full">
                   <section className="flex items-center gap-3">
