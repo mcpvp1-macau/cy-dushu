@@ -89,6 +89,7 @@ const UavMarker: FC<PropsType> = memo(() => {
       />
       {gimbalPickExist && openVideoProjection && videoElement && (
         <VideoProjection
+          gimbalYaw={state.gimbalYaw ?? 0}
           gimbalPick={gimbalPick as Required<typeof gimbalPick>}
           videoElement={videoElement}
         />

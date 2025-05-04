@@ -1,9 +1,13 @@
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
-import { attempt } from 'lodash'
+import { attempt, round } from 'lodash'
+import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
+import { emtpyObject } from '@/constant/data'
 
 type PropsType = {
   data: { pointX: number; pointY: number; pointZ: number }[]
+  executeDeviceId?: string
+  taskBasic?: Record<string, any>
 }
 
 const Waypoint: FC<{
@@ -123,22 +127,51 @@ export const PathLine: FC<{
   return null
 })
 
-const UavWayline: FC<PropsType> = memo(({ data }) => {
-  return (
-    <>
-      {data.map((item, index) => (
-        <Waypoint key={index} data={item} index={index + 1} />
-      ))}
-      {/* 航点之间的连线 */}
-      {data.map((point, i) => {
-        const nextPoint = data[i + 1]
-        if (!nextPoint) {
-          return null
+const UavWayline: FC<PropsType> = memo(
+  ({ data, executeDeviceId, taskBasic }) => {
+    const p = useGlobalWsStore(
+      (s) =>
+        s.deviceRealtimeProperties[executeDeviceId ?? 'never']?.properties ??
+        emtpyObject,
+    )
+
+    // 起飞点高度
+    const hHeight = useMemo(() => {
+      if (p.altitude && p.height) {
+        return round(p.altitude - p.height - 1, 1)
+      }
+      return taskBasic?.takeOffRefPoint?.[2] ?? 0
+    }, [p, taskBasic])
+
+    const newData = useMemo(() => {
+      if (!data) return []
+      const newData = data.map((item) => {
+        const { pointX, pointY, pointZ } = item
+        return {
+          pointX,
+          pointY,
+          pointZ: pointZ + hHeight,
         }
-        return <PathLine key={i} point1={point} point2={nextPoint} />
-      })}
-    </>
-  )
-})
+      })
+      return newData
+    }, [data, hHeight])
+
+    return (
+      <>
+        {newData.map((item, index) => (
+          <Waypoint key={index} data={item} index={index + 1} />
+        ))}
+        {/* 航点之间的连线 */}
+        {newData.map((point, i) => {
+          const nextPoint = newData[i + 1]
+          if (!nextPoint) {
+            return null
+          }
+          return <PathLine key={i} point1={point} point2={nextPoint} />
+        })}
+      </>
+    )
+  },
+)
 
 export default UavWayline

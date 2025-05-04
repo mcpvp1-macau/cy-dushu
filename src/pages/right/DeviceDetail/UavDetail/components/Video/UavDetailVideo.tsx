@@ -7,8 +7,10 @@ import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
 import { ComponentRef, lazy } from 'react'
 import VideoSnapshotBtn from '@/hooks/device/VideoSnapshot'
 import AppViewSuspense from '@/components/AppViewSuspense'
-import IconVideoTrack from '@/assets/icons/jsx/IconVideoTrack'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
+import VideoFollow from './VideoFollow'
+import VideoProjection from './VideoProjection'
+import { isNil } from 'lodash'
 
 const DeviceLinkSwitch = lazy(
   () => import('@/components/device/DeviceLinkSwitch'),
@@ -59,21 +61,22 @@ const UavDetailVideo: FC<PropsType> = memo(
 
     // 是否处于跟踪视频状态
     const isFollowing = useMapDevicesStore((s) => !!s.followedVideos[deviceId])
+    const activeVideo = useRef<HTMLVideoElement | null>(null)
 
-    const handleFollowVideo = () => {
-      const followedVideos = useMapDevicesStore.getState().followedVideos
-      const nextFollowedVideos = { ...followedVideos }
-      if (isFollowing) {
-        delete nextFollowedVideos[deviceId]
-      } else {
-        nextFollowedVideos[deviceId] = {
-          productKey,
-          videoId,
+    //处理视频元素变化
+    const handleVideoElementChange = (video: HTMLVideoElement | null) => {
+      activeVideo.current = video
+      const { projectedVideos } = useMapDevicesStore.getState()
+      if (!isNil(projectedVideos[deviceId])) {
+        const next = { ...projectedVideos }
+        next[deviceId] = {
+          ...next[deviceId],
+          videoElement: video,
         }
+        useMapDevicesStore.setState({
+          projectedVideos: next,
+        })
       }
-      useMapDevicesStore.setState({
-        followedVideos: nextFollowedVideos,
-      })
     }
 
     return (
@@ -90,6 +93,7 @@ const UavDetailVideo: FC<PropsType> = memo(
         }}
         // onClickSeiBox={handleSeiClik}
         renderVideo={!isFollowing}
+        onVideoElementChange={handleVideoElementChange}
         leftTop={
           <>
             <LinkSwitch
@@ -110,16 +114,12 @@ const UavDetailVideo: FC<PropsType> = memo(
         }
         rightTop={
           <>
-            <IconButton
-              className="text-base"
-              toolTipProps={{
-                title: t('common.videoFollow'),
-              }}
-              active={isFollowing}
-              onClick={handleFollowVideo}
-            >
-              <IconVideoTrack />
-            </IconButton>
+            <VideoFollow
+              productKey={productKey}
+              deviceId={deviceId}
+              videoId={videoId}
+            />
+            <VideoProjection deviceId={deviceId} activeVideo={activeVideo} />
             <VideoSnapshotBtn
               productKey={productKey}
               deviceId={deviceId}

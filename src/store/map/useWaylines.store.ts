@@ -3,6 +3,7 @@ import { create } from 'zustand'
 export type Wayline = {
   id: string
   type: string
+  executeDeviceId?: string
   points: { pointX: number; pointY: number; pointZ: number }[]
   taskBasic: Record<string, any>
 }

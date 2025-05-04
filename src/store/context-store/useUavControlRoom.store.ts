@@ -6,7 +6,7 @@ import { useLatest } from 'ahooks'
 import { heartbeat } from '@/constant/websocket'
 import useWebSocket from 'react-use-websocket'
 import { shouldJson } from '@/utils/json'
-import { isEqual } from 'lodash'
+import { isEqual, round } from 'lodash'
 import { Btn } from '@/pages/control-room/uav/components/BottomButtons/type'
 import useDeviceWsURL from '@/hooks/device/useDeviceWsURL'
 import { dft } from '@/constant/time-fmt'
@@ -26,6 +26,8 @@ type StateType = {
   hasControlPower: boolean
   /** 是否受限飞行 */
   isLimitedFly: boolean
+  /** 起飞点高度 */
+  takeOffHeight: number | null
   flyParams: {
     open: boolean
     isResetHome: boolean
@@ -155,6 +157,7 @@ const createInitialState = () =>
     links: [],
     videoElement: null,
     openVideoProjection: false,
+    takeOffHeight: null,
   } as StateType)
 
 export const createUavControlRoomStore = (senders: WsSendersType) => {
@@ -223,6 +226,11 @@ export const createUavControlRoomStore = (senders: WsSendersType) => {
                   state.displayMode.includes('自动返航') ||
                   state.displayMode.startsWith('10000'))
               ),
+              // 更新起飞点高度
+              takeOffHeight:
+                state.altitude && state.height
+                  ? round(state.altitude - state.height, 1)
+                  : null,
             },
             false,
             'updateState',

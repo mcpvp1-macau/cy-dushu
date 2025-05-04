@@ -47,3 +47,8 @@ export const createActionItem = (
 export const updateActionItem = (data: any) => {
   return serverJingqi.post('/action/item/update', data)
 }
+
+/** 获取飞手树 */
+export const getPilotTree = () => {
+  return serverJingqi.get('/jinghang/pilots')
+}

@@ -43,25 +43,27 @@ type PropsType = {
 const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
   const ref = useRef<HTMLDivElement>(null)
 
+  const handleVideoDetect = useMemoizedFn(() => {
+    const videoElement = ref.current?.querySelector('video')
+    if (videoElementRef.current !== videoElement) {
+      props.onVideoElementChange?.(videoElement ?? null)
+    }
+  })
+
   // 获取最新的 video 元素 ------------------------------------------------------
   const videoElementRef = useRef<HTMLVideoElement | null>(null)
-  useEffect(() => {
-    if (!ref.current) {
-      return
-    }
-    const ob = new MutationObserver(() => {
-      const videoElement = ref.current?.querySelector('video')
-      if (videoElementRef.current !== videoElement) {
-        props.onVideoElementChange?.(videoElement ?? null)
-      }
-    })
-    ob.observe(ref.current!, {
-      childList: true,
-    })
-    return () => {
-      ob.disconnect()
-    }
-  }, [ref, props.onVideoElementChange])
+  // useEffect(() => {
+  //   if (!ref.current) {
+  //     return
+  //   }
+  //   const ob = new MutationObserver(handleVideoDetect)
+  //   ob.observe(ref.current!, {
+  //     childList: true,
+  //   })
+  //   return () => {
+  //     ob.disconnect()
+  //   }
+  // }, [ref, props.onVideoElementChange])
 
   const jessibucaRef = useRef<JessibucaPro | null>(null)
 
@@ -309,6 +311,11 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
       },
     )
 
+    jessibucaRef.current.on(
+      'start' as JessibucaPro.EVENTS.start,
+      handleVideoDetect,
+    )
+
     return () => {
       jessibucaRef.current?.destroy()
       jessibucaRef.current = null
@@ -332,12 +339,12 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
     { wait: 500, trailing: false },
   )
 
-  useInterval(() => {
-    if (!jessibucaRef.current) {
-      return
-    }
-    jessibucaRef.current?.sendWebsocketMessage?.('ping')
-  }, 3000)
+  // useInterval(() => {
+  //   if (!jessibucaRef.current) {
+  //     return
+  //   }
+  //   jessibucaRef.current?.sendWebsocketMessage?.('ping')
+  // }, 3000)
 
   return <div id={props.containerId} ref={ref} key={videoEncoderValue}></div>
 })

@@ -7,7 +7,7 @@ import { emtpyArray } from '@/constant/data'
 import { WaylineEnum } from '@/constant/uav/wayline'
 import { DeviceEnum } from '@/enum/device'
 import { WaylineIcon } from '@/pages/wayline/components/AirlineTemplateListItem'
-import { createActionItem } from '@/service/modules/action-item'
+import { createActionItem, getPilotTree } from '@/service/modules/action-item'
 import { getAirlineTemplateList } from '@/service/modules/airline'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import { Form } from 'antd'
@@ -185,6 +185,13 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
       setConfirmLoading(false)
     }
   })
+
+  const { data: pilotData } = useQuery({
+    queryKey: ['pilotTree'],
+    queryFn: () => getPilotTree(),
+  })
+
+  console.log('pilotData', pilotData)
 
   const allowMultipleDevice = taskType === WaylineEnum.SwarmWayline
   const formItems = useMemo(

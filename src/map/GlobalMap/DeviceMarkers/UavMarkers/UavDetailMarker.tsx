@@ -15,6 +15,8 @@ import DeviceLabel from '@/components/map/device/DeviceLabel'
 import * as Cesium from 'cesium'
 import BoardMarker3D from '@/components/map/BoardCesium/BoardMarker3D'
 import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
+import VideoProjection from '@/pages/control-room/uav/components/ControlRoomMap/components/VideoProjection'
+import { isNil } from 'lodash'
 
 type PropsType = {
   deviceId: string
@@ -91,6 +93,7 @@ const UavDetailMarker: FC<PropsType> = memo(({ deviceId }) => {
   }, [deviceId])
 
   const followedVideo = useMapDevicesStore((s) => s.followedVideos[deviceId])
+  const projectedVideo = useMapDevicesStore((s) => s.projectedVideos[deviceId])
 
   if (!state) {
     return null
@@ -108,6 +111,21 @@ const UavDetailMarker: FC<PropsType> = memo(({ deviceId }) => {
     state.altitude ?? 0,
   )
 
+  //处理视频元素变化
+  const handleVideoElementChange = (video: HTMLVideoElement | null) => {
+    const { projectedVideos } = useMapDevicesStore.getState()
+    if (!isNil(projectedVideos[deviceId])) {
+      const next = { ...projectedVideos }
+      next[deviceId] = {
+        ...next[deviceId],
+        videoElement: video,
+      }
+      useMapDevicesStore.setState({
+        projectedVideos: next,
+      })
+    }
+  }
+
   return (
     <>
       <HeightDashLine
@@ -124,6 +142,13 @@ const UavDetailMarker: FC<PropsType> = memo(({ deviceId }) => {
         <CameraGroundFrustum
           gimbalPick={gimbalPick as any}
           position={[state.longitude, state.latitude, state.altitude ?? 0]}
+        />
+      )}
+      {gimbalPickExist && projectedVideo?.videoElement && (
+        <VideoProjection
+          gimbalPick={gimbalPick as Required<typeof gimbalPick>}
+          gimbalYaw={state.gimbalYaw ?? 0}
+          videoElement={projectedVideo.videoElement}
         />
       )}
       {followedVideo && viewer && (
@@ -144,6 +169,7 @@ const UavDetailMarker: FC<PropsType> = memo(({ deviceId }) => {
               productKey={followedVideo.productKey}
               videoId={followedVideo.videoId}
               useTopBar={false}
+              onVideoElementChange={handleVideoElementChange}
             />
           </div>
         </BoardMarker3D>

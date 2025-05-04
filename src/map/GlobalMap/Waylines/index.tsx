@@ -16,7 +16,14 @@ const Waylines: FC<PropsType> = memo(() => {
     <>
       {waylines.map((e) => {
         if (e.type === WaylineEnum.PointWayline) {
-          return <UavWayline key={e.id} data={e.points} />
+          return (
+            <UavWayline
+              key={e.id}
+              data={e.points}
+              executeDeviceId={e.executeDeviceId}
+              taskBasic={e.taskBasic}
+            />
+          )
         }
         if (e.type === WaylineEnum.AreaWayline) {
           return (

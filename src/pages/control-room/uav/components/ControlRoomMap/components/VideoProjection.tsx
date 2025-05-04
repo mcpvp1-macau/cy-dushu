@@ -1,7 +1,6 @@
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { attempt } from 'lodash'
-import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { useDebounceEffect, useLatest } from 'ahooks'
 import { makeMemoCallbackProperty } from '@/utils/cesium/memoCallbackProperty'
 
@@ -12,6 +11,7 @@ type PropsType = {
     rightTop: number[]
     rightBottom: number[]
   }
+  gimbalYaw: number
   videoElement: HTMLVideoElement
 }
 
@@ -20,9 +20,8 @@ const VideoProjection: FC<PropsType> = memo((props) => {
   const { viewer } = useCesium()
   const entityRef = useRef<Cesium.Entity | null>(null)
 
-  const gimbalYaw = useUavControlRoomStore((s) => s.state.gimbalYaw ?? 0)
   const gimbalPickLatest = useLatest(props.gimbalPick)
-  const gimbalYawLatest = useLatest(gimbalYaw)
+  const gimbalYawLatest = useLatest(props.gimbalYaw)
 
   useDebounceEffect(
     () => {
@@ -68,7 +67,7 @@ const VideoProjection: FC<PropsType> = memo((props) => {
       }
     },
     [props.videoElement, viewer],
-    { wait: 300 },
+    { wait: 10, trailing: true },
   )
 
   return null

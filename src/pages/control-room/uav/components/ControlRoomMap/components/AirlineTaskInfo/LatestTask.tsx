@@ -29,6 +29,7 @@ const LastestTask: FC<PropsType> = memo(() => {
     (s) => s.updateAirpointPositions,
   )
 
+  const takeOffHeight = useUavControlRoomStore((s) => s.takeOffHeight)
   const positions = useMemo(() => {
     const parameters = shouldJson(taskData?.parameters)
     const taskBasic = shouldJson(taskData?.taskBasic)
@@ -40,16 +41,17 @@ const LastestTask: FC<PropsType> = memo(() => {
       return []
     }
     // 起飞点高度
-    const hHeight = taskBasic?.takeOffRefPoint?.[2] as number | undefined
+    const hHeight =
+      takeOffHeight ?? (taskBasic?.takeOffRefPoint?.[2] as number | undefined)
     if (hHeight) {
       positions = positions.map((e) => ({
         ...e,
-        pointZ: e.pointZ + hHeight,
+        pointZ: e.pointZ + hHeight - 2,
       }))
     }
     updateAirpointPositions(positions)
     return positions
-  }, [taskData?.id])
+  }, [taskData?.id, takeOffHeight])
 
   if (!positions || taskData?.status === 'FINISH') {
     return null

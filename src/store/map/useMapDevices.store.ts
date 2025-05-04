@@ -24,6 +24,7 @@ type StateType = {
       longitude: number
       latitude: number
       altitude: number
+      height: number
       uavYaw: number
       gimbalYaw: number
       gimbalPitch: number
@@ -42,6 +43,11 @@ type StateType = {
   followedVideos: {
     [deviceId: string]: { productKey: string; videoId: string }
   }
+  projectedVideos: {
+    [deviceId: string]: {
+      videoElement: HTMLVideoElement | null
+    }
+  }
 }
 
 type ActionsType = {
@@ -56,6 +62,7 @@ type ActionsType = {
   updateUavStates: (uavStates: StateType['uavStates']) => void
   updateScanAreas: (scanAreas: StateType['scanAreas']) => void
   updateFollowedVideos: (followedVideos: StateType['followedVideos']) => void
+  updateProjectedVideos: (projectedVideos: StateType['projectedVideos']) => void
 }
 
 const useMapDevicesStore = create<StateType & ActionsType>()(
@@ -72,6 +79,7 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       uavStates: {},
       scanAreas: {},
       followedVideos: {},
+      projectedVideos: {},
       updateUavDevices: (uavDevices) => {
         set({ uavDevices }, false, 'updateUavDevices')
       },
@@ -104,6 +112,9 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       },
       updateFollowedVideos: (followedVideos) => {
         set({ followedVideos }, false, 'updateFollowedVideos')
+      },
+      updateProjectedVideos: (projectedVideos) => {
+        set({ projectedVideos }, false, 'updateProjectedVideos')
       },
     }),
     {

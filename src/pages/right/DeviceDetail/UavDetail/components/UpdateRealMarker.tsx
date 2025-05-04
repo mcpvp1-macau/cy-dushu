@@ -21,6 +21,7 @@ const UavUpdateRealMarker: FC<PropsType> = memo(() => {
       longitude: s.state.longitude ?? 0,
       latitude: s.state.latitude ?? 0,
       altitude: s.state.altitude ?? 0,
+      height: s.state.height ?? 0,
       uavYaw: s.state.uavYaw || 0,
       gimbalYaw: s.state.gimbalYaw || 0,
       gimbalPitch: s.state.gimbalPitch || 0,
@@ -38,6 +39,8 @@ const UavUpdateRealMarker: FC<PropsType> = memo(() => {
         wsState.latitude || realProperties.latitude || data?.latitude || 0,
       altitude:
         wsState.altitude || realProperties.altitude || data?.altitude || 0,
+      height:
+        wsState.height || realProperties.height || data?.properties.height || 0,
       uavYaw: wsState.uavYaw || realProperties.uavYaw || 0,
       gimbalYaw: wsState.gimbalYaw || realProperties.gimbalYaw || 0,
       gimbalPitch: wsState.gimbalPitch || realProperties.gimbalPitch || 0,
