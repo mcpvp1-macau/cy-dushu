@@ -8,10 +8,10 @@ type PropsType = {
 }
 
 const exposureModeMap = new Map<number, string>([
-  [1, '自动'],
+  [1, '曝光优先'],
   [2, '快门优先曝光'],
   [3, '光圈优先曝光'],
-  [4, '手动曝光'],
+  [4, '快门曝光'],
 ])
 
 /** 镜头曝光模式 */
