@@ -49,11 +49,11 @@ const ExposureMode: FC<PropsType> = memo(({ postSerivce }) => {
         items: [
           {
             key: 1,
-            label: '自动',
+            label: '曝光优先',
           },
           {
             key: 4,
-            label: '手动曝光',
+            label: '快门优先',
           },
         ],
         onClick: handleClick,
