@@ -6,6 +6,7 @@ import { XFormItem } from '@/components/XForm/types'
 import { emtpyArray } from '@/constant/data'
 import { WaylineEnum } from '@/constant/uav/wayline'
 import { DeviceEnum } from '@/enum/device'
+import { usePilotTreeData } from '@/hooks/jinghang/usePilots'
 import { WaylineIcon } from '@/pages/wayline/components/AirlineTemplateListItem'
 import { createActionItem, getPilotTree } from '@/service/modules/action-item'
 import { getAirlineTemplateList } from '@/service/modules/airline'
@@ -27,6 +28,7 @@ const createTaskConfig = (
   t: TFunction,
   airlineTemplateOptions: Option[],
   deviceOptions: Option[],
+  pilotTreeData: any[],
   allowMultipleDevice: boolean,
 ) =>
   [
@@ -71,9 +73,9 @@ const createTaskConfig = (
       label: t('action.detail.task.add.form.staff.label'),
       name: 'feishou',
       type: 'tree-select',
-      treeData: [],
+      treeData: pilotTreeData,
       otherProps: {
-        multiple: true,
+        multiple: false,
       },
     },
   ] as XFormItem[]
@@ -159,9 +161,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
     }
     const data = {
       ...pick(val, ['actionItemName', 'deviceIds']),
-      // extra: JSON.stringify(
-      //   val.feishou?.map((v: string) => pilotMap.current?.get(v)) || [],
-      // ),
+      extra: val.feishou,
       actionId,
       deviceType: 'UAV',
     }
@@ -186,12 +186,13 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
     }
   })
 
-  const { data: pilotData } = useQuery({
+  const { data: pilotData = emtpyArray } = useQuery({
     queryKey: ['pilotTree'],
     queryFn: () => getPilotTree(),
+    select: (d) => d.data?.rows ?? emtpyArray,
   })
 
-  console.log('pilotData', pilotData)
+  const { treeData } = usePilotTreeData(pilotData)
 
   const allowMultipleDevice = taskType === WaylineEnum.SwarmWayline
   const formItems = useMemo(
@@ -200,9 +201,16 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
         t,
         airlineTemplateOptions,
         deviceOptions,
+        treeData,
         allowMultipleDevice,
       ),
-    [i18n.language, airlineTemplateOptions, deviceOptions, allowMultipleDevice],
+    [
+      i18n.language,
+      airlineTemplateOptions,
+      deviceOptions,
+      allowMultipleDevice,
+      treeData,
+    ],
   )
 
   return (
