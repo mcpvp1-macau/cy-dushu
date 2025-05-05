@@ -12,6 +12,9 @@ import HeightDashLine from '@/map/CesiumMap/components/service/common/HeightDash
 import { useShallow } from 'zustand/react/shallow'
 import { round } from 'lodash'
 import { useAsyncEffect } from 'ahooks'
+import useMapDevicesStore from '@/store/map/useMapDevices.store'
+import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
+import BoardMarker3D from '@/components/map/BoardCesium/BoardMarker3D'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -62,6 +65,8 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
     }
   }, [lng, lat, deviceIsOnline])
 
+  const followedVideo = useMapDevicesStore((s) => s.followedVideos[deviceId])
+
   if (
     isHidden || // 隐藏
     (isOnline && !deviceIsOnline) || // 在线状态不显示
@@ -101,6 +106,28 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
       />
       {deviceIsOnline && alt !== groundHeight && (
         <HeightDashLine position={[lng || 120, lat || 30, alt]} color="#fff" />
+      )}
+      {followedVideo && viewer && (
+        <BoardMarker3D
+          id={`video-${deviceId}`}
+          lng={lng}
+          lat={lat}
+          height={alt}
+          map={viewer}
+          option={{
+            verticalPosition: 'center',
+            horizontalPosition: 'center',
+          }}
+        >
+          <div className="w-[300px]">
+            <DeviceLiveVideo
+              deviceId={deviceId}
+              productKey={followedVideo.productKey}
+              videoId={followedVideo.videoId}
+              useTopBar={false}
+            />
+          </div>
+        </BoardMarker3D>
       )}
     </>
   )
