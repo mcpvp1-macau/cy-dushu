@@ -161,7 +161,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
     }
     const data = {
       ...pick(val, ['actionItemName', 'deviceIds']),
-      extra: val.feishou,
+      pilotCode: val.feishou,
       actionId,
       deviceType: 'UAV',
     }
