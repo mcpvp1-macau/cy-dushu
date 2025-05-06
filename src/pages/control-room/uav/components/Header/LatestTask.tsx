@@ -26,6 +26,7 @@ const LatestTask: FC<PropsType> = memo(({ deviceId }) => {
     {
       queryKey: ['getLatestTask', deviceId],
       queryFn: () => getLatestTask(deviceId),
+      enabled: !!deviceId,
       select: (d) => d.data,
     },
     queryClient,
