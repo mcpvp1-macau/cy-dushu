@@ -604,7 +604,7 @@ uav:
   land:
     title: Land
   return:
-    title: Return
+    title: Go Home
 actionRecord:
   title: Action Records
   table:
