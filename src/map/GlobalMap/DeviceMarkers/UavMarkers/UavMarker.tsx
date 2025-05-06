@@ -12,16 +12,18 @@ import HeightDashLine from '@/map/CesiumMap/components/service/common/HeightDash
 import { useShallow } from 'zustand/react/shallow'
 import { round } from 'lodash'
 import { useAsyncEffect } from 'ahooks'
-import useMapDevicesStore from '@/store/map/useMapDevices.store'
-import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
-import BoardMarker3D from '@/components/map/BoardCesium/BoardMarker3D'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
+  onPositionChange?: (postion: {
+    longitude: number
+    latitude: number
+    altitude: number
+  }) => void
 }
 
 /** 无人机图标 */
-const UavMarker: FC<PropsType> = memo(({ data }) => {
+const UavMarker: FC<PropsType> = memo(({ data, onPositionChange }) => {
   const { deviceId } = data
 
   const { realLon, realLat, realHeading, realAlt } = useGlobalWsStore(
@@ -65,7 +67,17 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
     }
   }, [lng, lat, deviceIsOnline])
 
-  const followedVideo = useMapDevicesStore((s) => s.followedVideos[deviceId])
+  const alt = deviceIsOnline
+    ? Math.max(groundHeight, realAlt ?? 0)
+    : groundHeight
+
+  useEffect(() => {
+    onPositionChange?.({
+      longitude: lng ?? 0,
+      latitude: lat ?? 0,
+      altitude: alt,
+    })
+  }, [lng, lat, alt, onPositionChange])
 
   if (
     isHidden || // 隐藏
@@ -79,10 +91,6 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
   ) {
     return null
   }
-
-  const alt = deviceIsOnline
-    ? Math.max(groundHeight, realAlt ?? 0)
-    : groundHeight
 
   const position = Cesium.Cartesian3.fromDegrees(lng || 120, lat || 30, alt)
 
@@ -106,28 +114,6 @@ const UavMarker: FC<PropsType> = memo(({ data }) => {
       />
       {deviceIsOnline && alt !== groundHeight && (
         <HeightDashLine position={[lng || 120, lat || 30, alt]} color="#fff" />
-      )}
-      {followedVideo && viewer && (
-        <BoardMarker3D
-          id={`video-${deviceId}`}
-          lng={lng}
-          lat={lat}
-          height={alt}
-          map={viewer}
-          option={{
-            verticalPosition: 'center',
-            horizontalPosition: 'center',
-          }}
-        >
-          <div className="w-[300px]">
-            <DeviceLiveVideo
-              deviceId={deviceId}
-              productKey={followedVideo.productKey}
-              videoId={followedVideo.videoId}
-              useTopBar={false}
-            />
-          </div>
-        </BoardMarker3D>
       )}
     </>
   )

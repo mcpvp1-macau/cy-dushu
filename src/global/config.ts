@@ -40,6 +40,7 @@ export type ConfigType = {
   /** 是否使用地形 */
   useTerrain?: boolean
   useShanghaiBanRoutes?: boolean
+  intelligentPhotographVersion?: number
 }
 
 type WindowType = Window & { config: ConfigType }

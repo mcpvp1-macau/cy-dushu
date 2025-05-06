@@ -10,8 +10,10 @@ import IconStopCircle from '@/assets/icons/jsx/IconStopCircle'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import Gamepad from './Gamepad'
 import Takeoff from './Takeoff'
-import IntelligentPhotographyV1 from './IntelligentPhotographV1'
+// import IntelligentPhotographyV1 from './IntelligentPhotographV1'
 import PointFly from './PointFly'
+import IntelligentPhotography from './IntelligentPhotograph'
+import IntelligentPhotographyV1 from './IntelligentPhotographV1'
 
 type PropsType = unknown
 
@@ -57,8 +59,11 @@ const AsideButtons: FC<PropsType> = memo(() => {
         >
           {t('controlRoom.uav.service.boxZoom.title')}
         </Button>
-        {/* <IntelligentPhotography postServiceFn={postSerivce} /> */}
-        <IntelligentPhotographyV1 postServiceFn={postSerivce} />
+        {globalConfig.intelligentPhotographVersion === 2 ? (
+          <IntelligentPhotography postServiceFn={postSerivce} />
+        ) : (
+          <IntelligentPhotographyV1 postServiceFn={postSerivce} />
+        )}
         <Gamepad />
       </div>
       <div className="flex justify-between gap-2.5">

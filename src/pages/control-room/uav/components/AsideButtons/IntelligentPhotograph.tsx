@@ -41,7 +41,7 @@ const IntelligentPhotography: FC<PropsType> = memo(({ postServiceFn }) => {
           key: 0,
           label: '停止',
           btnLabel: '',
-          btnAction: 'intelligentPhotography',
+          btnAction: 'startIntelligentPhotography',
         },
         1: {
           key: 1,

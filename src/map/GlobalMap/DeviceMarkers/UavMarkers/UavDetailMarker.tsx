@@ -13,170 +13,147 @@ import useCalcGimbalParams from '@/hooks/device/uav/useCalcGimbalParams'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
 import * as Cesium from 'cesium'
-import BoardMarker3D from '@/components/map/BoardCesium/BoardMarker3D'
-import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
 import VideoProjection from '@/pages/control-room/uav/components/ControlRoomMap/components/VideoProjection'
-import { isNil } from 'lodash'
 
 type PropsType = {
   deviceId: string
+  onPositionChange?: (position: {
+    longitude: number
+    latitude: number
+    altitude: number
+  }) => void
 }
 
-const UavDetailMarker: FC<PropsType> = memo(({ deviceId }) => {
-  const state = useMapDevicesStore(
-    useShallow((s) => s.uavStates[deviceId] ?? emtpyObject),
-  )
-
-  const deviceName = useGlobalWsStore(
-    (s) => s.deviceRealtimeProperties[deviceId]?.deviceName,
-  )
-
-  const { historyTrack, realTrack, clear } = useRealTrack3D(
-    state.longitude ?? 0,
-    state.latitude ?? 0,
-    state.altitude ?? 0,
-  )
-
-  const { viewer } = useCesium()
-  const pickerRef = useRef<CameraVertexPicker | null>(null)
-  const lastCameraTypeRef = useRef<string | null>(null)
-
-  if (lastCameraTypeRef.current !== state.cameraType && viewer) {
-    lastCameraTypeRef.current = state.cameraType
-    pickerRef.current = new CameraVertexPicker(viewer)
-  }
-
-  const gimbalState = useCalcGimbalParams(
-    state.cameraType,
-    state.lensType as 'wide' | 'zoom' | 'ir',
-    state.zoomFactor,
-  )
-
-  const gimbalPick = useMemo(() => {
-    if (!pickerRef.current) {
-      return {}
-    }
-
-    const res = pickerRef.current.getGimbalPick(
-      {
-        lon: state.longitude,
-        lat: state.latitude,
-        alt: state.altitude,
-      },
-      { yaw: state.gimbalYaw, pitch: state.gimbalPitch, roll: 0 },
-      gimbalState.focal,
-      gimbalState.width,
-      gimbalState.width / gimbalState.height,
-      1,
+const UavDetailMarker: FC<PropsType> = memo(
+  ({ deviceId, onPositionChange }) => {
+    const state = useMapDevicesStore(
+      useShallow((s) => s.uavStates[deviceId] ?? emtpyObject),
     )
 
-    return res
-  }, [state, gimbalState])
+    const deviceName = useGlobalWsStore(
+      (s) => s.deviceRealtimeProperties[deviceId]?.deviceName,
+    )
 
-  useEffect(() => {
-    clear(true)
-  }, [deviceId])
+    const { historyTrack, realTrack, clear } = useRealTrack3D(
+      state.longitude ?? 0,
+      state.latitude ?? 0,
+      state.altitude ?? 0,
+    )
 
-  useCollectCameraScanAreas(gimbalPick, (scanArea) => {
-    useMapDevicesStore.getState().updateScanAreas({
-      ...useMapDevicesStore.getState().scanAreas,
-      [deviceId]: scanArea,
-    })
-  })
+    const { viewer } = useCesium()
+    const pickerRef = useRef<CameraVertexPicker | null>(null)
+    const lastCameraTypeRef = useRef<string | null>(null)
 
-  useEffect(() => {
-    return () => {
-      const next = { ...useMapDevicesStore.getState().scanAreas }
-      delete next[deviceId]
-      useMapDevicesStore.getState().updateScanAreas(next)
+    if (lastCameraTypeRef.current !== state.cameraType && viewer) {
+      lastCameraTypeRef.current = state.cameraType
+      pickerRef.current = new CameraVertexPicker(viewer)
     }
-  }, [deviceId])
 
-  const followedVideo = useMapDevicesStore((s) => s.followedVideos[deviceId])
-  const projectedVideo = useMapDevicesStore((s) => s.projectedVideos[deviceId])
+    const gimbalState = useCalcGimbalParams(
+      state.cameraType,
+      state.lensType as 'wide' | 'zoom' | 'ir',
+      state.zoomFactor,
+    )
 
-  if (!state) {
-    return null
-  }
-
-  const gimbalPickExist =
-    gimbalPick.leftTop &&
-    gimbalPick.rightTop &&
-    gimbalPick.rightBottom &&
-    gimbalPick.leftBottom
-
-  const position = Cesium.Cartesian3.fromDegrees(
-    state.longitude,
-    state.latitude,
-    state.altitude ?? 0,
-  )
-
-  //处理视频元素变化
-  const handleVideoElementChange = (video: HTMLVideoElement | null) => {
-    const { projectedVideos } = useMapDevicesStore.getState()
-    if (!isNil(projectedVideos[deviceId])) {
-      const next = { ...projectedVideos }
-      next[deviceId] = {
-        ...next[deviceId],
-        videoElement: video,
+    const gimbalPick = useMemo(() => {
+      if (!pickerRef.current) {
+        return {}
       }
-      useMapDevicesStore.setState({
-        projectedVideos: next,
-      })
-    }
-  }
 
-  return (
-    <>
-      <HeightDashLine
-        position={[state.longitude, state.latitude, state.altitude ?? 0]}
-        color="#fff"
-      />
-      <DeviceLabel id={deviceId} text={deviceName} position={position} />
-      <MapUavRealMarker data={state} useGimbal={!gimbalPickExist} />
-      {historyTrack.map((track, index) => (
-        <HistoryTrack key={index} value={track} />
-      ))}
-      {realTrack.length > 1 && <HistoryTrack value={realTrack} useCallback />}
-      {gimbalPickExist && (
-        <CameraGroundFrustum
-          gimbalPick={gimbalPick as any}
+      const res = pickerRef.current.getGimbalPick(
+        {
+          lon: state.longitude,
+          lat: state.latitude,
+          alt: state.altitude,
+        },
+        { yaw: state.gimbalYaw, pitch: state.gimbalPitch, roll: 0 },
+        gimbalState.focal,
+        gimbalState.width,
+        gimbalState.width / gimbalState.height,
+        1,
+      )
+
+      return res
+    }, [state, gimbalState])
+
+    useEffect(() => {
+      clear(true)
+    }, [deviceId])
+
+    useCollectCameraScanAreas(gimbalPick, (scanArea) => {
+      useMapDevicesStore.getState().updateScanAreas({
+        ...useMapDevicesStore.getState().scanAreas,
+        [deviceId]: scanArea,
+      })
+    })
+
+    useEffect(() => {
+      return () => {
+        const next = { ...useMapDevicesStore.getState().scanAreas }
+        delete next[deviceId]
+        useMapDevicesStore.getState().updateScanAreas(next)
+      }
+    }, [deviceId])
+
+    const projectedVideo = useMapDevicesStore(
+      (s) => s.projectedVideos[deviceId],
+    )
+
+    useEffect(() => {
+      if (onPositionChange) {
+        onPositionChange({
+          longitude: state.longitude,
+          latitude: state.latitude,
+          altitude: state.altitude ?? 0,
+        })
+      }
+    }, [state, onPositionChange])
+
+    if (!state) {
+      return null
+    }
+
+    const gimbalPickExist =
+      gimbalPick.leftTop &&
+      gimbalPick.rightTop &&
+      gimbalPick.rightBottom &&
+      gimbalPick.leftBottom
+
+    const position = Cesium.Cartesian3.fromDegrees(
+      state.longitude,
+      state.latitude,
+      state.altitude ?? 0,
+    )
+
+    return (
+      <>
+        <HeightDashLine
           position={[state.longitude, state.latitude, state.altitude ?? 0]}
+          color="#fff"
         />
-      )}
-      {gimbalPickExist && projectedVideo?.videoElement && (
-        <VideoProjection
-          gimbalPick={gimbalPick as Required<typeof gimbalPick>}
-          gimbalYaw={state.gimbalYaw ?? 0}
-          videoElement={projectedVideo.videoElement}
-        />
-      )}
-      {followedVideo && viewer && (
-        <BoardMarker3D
-          id={`video-${deviceId}`}
-          lng={state.longitude}
-          lat={state.latitude}
-          height={state.altitude ?? 0}
-          map={viewer}
-          option={{
-            verticalPosition: 'center',
-            horizontalPosition: 'center',
-          }}
-        >
-          <div className="w-[300px]">
-            <DeviceLiveVideo
-              deviceId={deviceId}
-              productKey={followedVideo.productKey}
-              videoId={followedVideo.videoId}
-              useTopBar={false}
-              onVideoElementChange={handleVideoElementChange}
-            />
-          </div>
-        </BoardMarker3D>
-      )}
-    </>
-  )
-})
+        <DeviceLabel id={deviceId} text={deviceName} position={position} />
+        <MapUavRealMarker data={state} useGimbal={!gimbalPickExist} />
+        {historyTrack.map((track, index) => (
+          <HistoryTrack key={index} value={track} />
+        ))}
+        {realTrack.length > 1 && <HistoryTrack value={realTrack} useCallback />}
+        {gimbalPickExist && (
+          <CameraGroundFrustum
+            gimbalPick={gimbalPick as any}
+            position={[state.longitude, state.latitude, state.altitude ?? 0]}
+          />
+        )}
+        {gimbalPickExist && projectedVideo?.videoElement && (
+          <VideoProjection
+            gimbalPick={gimbalPick as Required<typeof gimbalPick>}
+            gimbalYaw={state.gimbalYaw ?? 0}
+            videoElement={projectedVideo.videoElement}
+          />
+        )}
+      </>
+    )
+  },
+)
 
 UavDetailMarker.displayName = 'UavDetailMarker'
 

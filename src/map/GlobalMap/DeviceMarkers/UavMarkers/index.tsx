@@ -1,8 +1,7 @@
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import { BillboardCollection, LabelCollection } from 'resium'
-import UavMarker from './UavMarker'
-import UavDetailMarker from './UavDetailMarker'
 import { useShallow } from 'zustand/react/shallow'
+import UavMarkerWrapper from './UavMarkerWrapper'
 
 type PropsType = unknown
 
@@ -17,12 +16,13 @@ const UavMarkers: FC<PropsType> = memo(() => {
     <>
       <BillboardCollection>
         <LabelCollection>
-          {uavDevices.map((e) => {
-            if (uavDetailSet.has(e.deviceId)) {
-              return <UavDetailMarker key={e.deviceId} deviceId={e.deviceId} />
-            }
-            return <UavMarker key={e.deviceId} data={e} />
-          })}
+          {uavDevices.map((e) => (
+            <UavMarkerWrapper
+              key={e.deviceId}
+              data={e}
+              isDetail={uavDetailSet.has(e.deviceId)}
+            />
+          ))}
         </LabelCollection>
       </BillboardCollection>
     </>
