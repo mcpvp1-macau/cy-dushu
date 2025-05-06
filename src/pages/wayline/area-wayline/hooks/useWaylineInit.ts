@@ -5,6 +5,9 @@ import { useSearchParams } from 'react-router-dom'
 import { pick } from 'lodash'
 import useAreaWaylineStore from '@/store/wayline/uav-area-wayline/useAreaWayline.store'
 import { resolveAirlineConifg } from '../../edit/hooks/useAirlineInit'
+import { addPaddingToRectangle } from '@/utils/cesium/rectangle'
+import { useGlobalCesium } from '@/store/map/useGlobalMap.store'
+import * as Cesium from 'cesium'
 
 /** 航线信息初始化 */
 const useAirlineInit = () => {
@@ -107,6 +110,8 @@ const useAirlineInit = () => {
     queryClient,
   )
 
+  const viewer = useGlobalCesium()
+
   useEffect(() => {
     if (!data) {
       return
@@ -135,6 +140,19 @@ const useAirlineInit = () => {
       mainK: o2.mainK,
       coverage: o2.coverage,
     })
+
+    if (Array.isArray(o2.polygon)) {
+      const rect = addPaddingToRectangle(
+        Cesium.Rectangle.fromCartographicArray(
+          o2.polygon.map((e) => Cesium.Cartographic.fromDegrees(e[0], e[1])),
+        ),
+        0.2,
+      )
+      viewer?.camera.flyTo({
+        destination: rect,
+        duration: 1,
+      })
+    }
   }, [data])
 
   useEffect(() => {

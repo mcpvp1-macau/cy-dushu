@@ -156,11 +156,12 @@ const useAirlineInit = () => {
     if (points) {
       updateAirpointsConfig(points)
       if (points.length > 0) {
+        const hHeight = waylineConfig.takeOffRefPoint?.[2] ?? 0
         const position = createROIfromRotation(
           Cesium.Cartographic.fromDegrees(
             points[0].pointX,
             points[0].pointY,
-            points[0].pointZ,
+            points[0].pointZ + hHeight,
           ),
           new Cesium.HeadingPitchRoll(
             Cesium.Math.toRadians(180),
