@@ -122,6 +122,13 @@ const UavDetailGimbalControl: FC<PropsType> = memo(() => {
     ['wide', t('uav.gimbal.wideMode.title')],
   ]
 
+  const gimbalServices = [
+    ['resetGimbal', t('uav.gimbal.gimbalReset.title')],
+    ['resetGimbalToDown', t('uav.gimbal.gimbalToDown.title')],
+    ['resetGimbalYaw', t('uav.gimbal.gimbalResetYaw.title')],
+    ['resetGimbalPitchToDown', t('uav.gimbal.gimbalPitchDown.title')],
+  ]
+
   const handleLensTypeChange = useMemoizedFn((type: string) => {
     postService('liveLensChange', { lensType: type, videoId })
   })
@@ -189,7 +196,19 @@ const UavDetailGimbalControl: FC<PropsType> = memo(() => {
         </div>
       </div>
       <div>
-        <div className="relative h-[100px] w-[100px]" />
+        <div className="flex flex-col gap-3 w-[100px]">
+          {gimbalServices.map(([key, label]) => (
+            <Button
+              key={key}
+              block
+              size="small"
+              disabled={!canControl || !isGimbalSource}
+              onClick={() => postService(key)}
+            >
+              {label}
+            </Button>
+          ))}
+        </div>
       </div>
     </div>
   )

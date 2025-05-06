@@ -26,6 +26,25 @@ const UavMarkerWrapper: FC<PropsType> = memo(({ data, isDetail }) => {
     altitude: data.altitude,
   })
 
+  const videoElementRef = useRef<HTMLVideoElement | null>(null)
+  if (!followedVideo) {
+    videoElementRef.current = null
+  }
+
+  const projectVideo = useMapDevicesStore((s) => s.projectedVideos[deviceId])
+  useEffect(() => {
+    if (projectVideo && videoElementRef.current) {
+      const next = { ...useMapDevicesStore.getState().projectedVideos }
+      next[deviceId] = {
+        ...next[deviceId],
+        videoElement: videoElementRef.current,
+      }
+      useMapDevicesStore.setState({
+        projectedVideos: next,
+      })
+    }
+  }, [!!projectVideo])
+
   return (
     <>
       {isDetail ? (
@@ -52,7 +71,9 @@ const UavMarkerWrapper: FC<PropsType> = memo(({ data, isDetail }) => {
             <IconButton
               className="absolute top-1 right-1 z-10 bg-black/40 text-base size-5 flex items-center justify-center rounded-full"
               onClick={() => {
-                const next = { ...useMapDevicesStore.getState().followedVideos }
+                const next = {
+                  ...useMapDevicesStore.getState().followedVideos,
+                }
                 delete next[deviceId]
                 useMapDevicesStore.setState({
                   followedVideos: next,
@@ -68,6 +89,7 @@ const UavMarkerWrapper: FC<PropsType> = memo(({ data, isDetail }) => {
               useTopBar={false}
               onVideoElementChange={(video: HTMLVideoElement | null) => {
                 const { projectedVideos } = useMapDevicesStore.getState()
+                videoElementRef.current = video
                 if (!isNil(projectedVideos[deviceId])) {
                   const next = { ...projectedVideos }
                   next[deviceId] = {

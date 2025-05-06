@@ -587,6 +587,14 @@ uav:
       title: Focal
     reset:
       title: Reset
+    gimbalReset:
+      title: Reset
+    gimbalToDown:
+      title: To Down
+    gimbalResetYaw:
+      title: Reset Yaw
+    gimbalPitchDown:
+      title: Pitch Down
   gimbalControl:
     title: Gimbal Control
   flightControl:

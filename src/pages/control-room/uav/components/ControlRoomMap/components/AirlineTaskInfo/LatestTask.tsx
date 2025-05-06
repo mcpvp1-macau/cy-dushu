@@ -46,7 +46,7 @@ const LastestTask: FC<PropsType> = memo(() => {
     if (hHeight) {
       positions = positions.map((e) => ({
         ...e,
-        pointZ: e.pointZ + hHeight - 2,
+        pointZ: e.pointZ + hHeight - 1,
       }))
     }
     updateAirpointPositions(positions)

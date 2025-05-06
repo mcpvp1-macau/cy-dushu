@@ -581,6 +581,14 @@ uav:
       title: 焦距
     reset:
       title: 复位
+    gimbalReset:
+      title: 回中
+    gimbalToDown:
+      title: 朝下
+    gimbalResetYaw:
+      title: 偏航回中
+    gimbalPitchDown:
+      title: 俯仰朝下
   gimbalControl:
     title: 云台控制
   flightControl:

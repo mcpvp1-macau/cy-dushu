@@ -17,6 +17,9 @@ import AppViewSuspense from '@/components/AppViewSuspense'
 import UavCreateAction from '../../../UavDetail/components/UavCreateAction'
 import DeviceIcon from '@/components/device/DeviceIcon'
 import useServerEventMsg from '@/pages/control-room/uav/hooks/useServerEventMsg'
+import IconButton from '@/components/ui/button/IconButton'
+import useRightMode from '@/store/layout/useRightMode.store'
+import { RightModeEnum } from '@/enum/right-mode'
 
 const UavAirportUavDetailDetail = lazy(() => import('./components/Detail'))
 const UavDetailData = lazy(
@@ -85,21 +88,6 @@ const UavAirportUavDetail: FC<PropsType> = memo(({ deviceId }) => {
 
   const { actionId } = useParams()
 
-  const header = useMemo(
-    () => (
-      <div className="flex justify-between">
-        <div className="flex gap-2 items-center">
-          <DeviceIcon type="UAV" className="device-detail-icon" />
-          <h6 className="text-white text-base">
-            {isLoading || !data ? <LoadingOutlined /> : data?.deviceName}
-          </h6>
-        </div>
-        {actionId && <UavCreateAction />}
-      </div>
-    ),
-    [data?.deviceName, isLoading, actionId],
-  )
-
   const [tab, setTab] = useState(0)
   const segmentOptions = useMemo(
     () => [
@@ -117,9 +105,37 @@ const UavAirportUavDetail: FC<PropsType> = memo(({ deviceId }) => {
     [t],
   )
 
+  const updateRightMode = useRightMode((s) => s.updateRightMode)
+  const updateDetailId = useRightMode((s) => s.updateDetailId)
+
   return (
     <DeviceDetailStoreContext.Provider value={deviceDetailStore}>
-      <div className="px-3">{header}</div>
+      <div className="px-3">
+        <div className="flex justify-between">
+          <div className="flex gap-2 items-center">
+            <DeviceIcon type="UAV" className="device-detail-icon" />
+            <h6 className="text-white text-base">
+              {isLoading || !data ? (
+                <LoadingOutlined />
+              ) : (
+                <div className="flex items-center gap-2">
+                  {data?.deviceName}
+                  <IconButton
+                    className="text-sm"
+                    onClick={() => {
+                      updateRightMode(RightModeEnum.DEVICE)
+                      updateDetailId(deviceId)
+                    }}
+                  >
+                    <IconDetail />
+                  </IconButton>
+                </div>
+              )}
+            </h6>
+          </div>
+          {actionId && <UavCreateAction />}
+        </div>
+      </div>
       {isLoading || !data ? (
         <AppSpin />
       ) : (

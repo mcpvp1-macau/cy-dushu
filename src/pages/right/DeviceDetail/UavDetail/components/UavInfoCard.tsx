@@ -71,8 +71,8 @@ const UavDetailInfoCard: FC<PropsType> = memo(
       const texts = [
         [
           t('common.lonLat'),
-          `${round(s.longitude ?? p.longitude ?? 0, 1) || '-'}, ${
-            round(s.latitude ?? p.latitude ?? 0, 1) || '-'
+          `${round(s.longitude ?? p.longitude ?? 0, 6) || '-'}, ${
+            round(s.latitude ?? p.latitude ?? 0, 6) || '-'
           }`,
         ],
         [
