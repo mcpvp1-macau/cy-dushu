@@ -4,6 +4,9 @@ import { shouldJson } from '@/utils/json'
 import { useSearchParams } from 'react-router-dom'
 import { resolvePositions } from '../utils'
 import { pick } from 'lodash'
+import { useGlobalCesium } from '@/store/map/useGlobalMap.store'
+import * as Cesium from 'cesium'
+import { createROIfromRotation } from '@/utils/cesium/rotation'
 
 export const resolveAirlineConifg = (config: any) => {
   for (const key of [
@@ -125,6 +128,8 @@ const useAirlineInit = () => {
     queryClient,
   )
 
+  const viewer = useGlobalCesium()
+
   useEffect(() => {
     if (!data) {
       return
@@ -150,6 +155,30 @@ const useAirlineInit = () => {
 
     if (points) {
       updateAirpointsConfig(points)
+      if (points.length > 0) {
+        const position = createROIfromRotation(
+          Cesium.Cartographic.fromDegrees(
+            points[0].pointX,
+            points[0].pointY,
+            points[0].pointZ,
+          ),
+          new Cesium.HeadingPitchRoll(
+            Cesium.Math.toRadians(180),
+            Cesium.Math.toRadians(45),
+            Cesium.Math.toRadians(0),
+          ),
+          1000,
+        )
+        viewer?.camera.flyTo({
+          destination: position,
+          duration: 1,
+          orientation: {
+            heading: Cesium.Math.toRadians(0),
+            pitch: Cesium.Math.toRadians(-45),
+            roll: Cesium.Math.toRadians(0),
+          },
+        })
+      }
     }
   }, [data])
 
