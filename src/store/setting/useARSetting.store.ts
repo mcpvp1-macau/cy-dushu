@@ -39,6 +39,10 @@ type StateType = {
     showName: boolean
     filter: string[]
   }
+  wayline: {
+    enable: boolean
+    color: string
+  }
   overlay: {
     enable: boolean
     point: boolean
@@ -96,6 +100,10 @@ const useARSettingStore = create<StateType & ActionsType>()(
           height: 15,
           lng: 0,
           lat: 0,
+        },
+        wayline: {
+          enable: true,
+          color: '#22c55e66',
         },
         poi: {
           enable: true,

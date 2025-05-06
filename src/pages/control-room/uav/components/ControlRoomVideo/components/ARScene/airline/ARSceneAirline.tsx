@@ -8,6 +8,8 @@ import {
 import * as Cesium from 'cesium'
 import { attempt } from 'lodash'
 import { Fragment } from 'react'
+import useARSettingStore from '@/store/setting/useARSetting.store'
+import { useDebounceEffect } from 'ahooks'
 
 type PropsType = {
   data: number[][]
@@ -29,30 +31,37 @@ function computeCircle(radius: number) {
 
 const ARSceneAirline: FC<PropsType> = memo(({ data }) => {
   const { viewer } = useCesium()
-  useEffect(() => {
-    if (!viewer || data.length < 2) {
-      return
-    }
 
-    const positions = Cesium.Cartesian3.fromDegreesArrayHeights(data.flat())
-    const polyline = viewer.entities.add({
-      polylineVolume: {
-        positions,
-        shape: computeCircle(6),
-        material: new Cesium.ImageMaterialProperty({
-          image: '/images/mask/liner.png',
-          color: Cesium.Color.fromCssColorString('#22c55e').withAlpha(0.4),
-        }),
-        cornerType: Cesium.CornerType.ROUNDED,
-      },
-    })
+  const waylineColor = useARSettingStore((s) => s.wayline.color)
 
-    return () => {
-      attempt(() => {
-        viewer.entities.remove(polyline)
+  useDebounceEffect(
+    () => {
+      if (!viewer || data.length < 2) {
+        return
+      }
+
+      const positions = Cesium.Cartesian3.fromDegreesArrayHeights(data.flat())
+      const polyline = viewer.entities.add({
+        polylineVolume: {
+          positions,
+          shape: computeCircle(6),
+          material: new Cesium.ImageMaterialProperty({
+            image: '/images/mask/liner.png',
+            color: Cesium.Color.fromCssColorString(waylineColor),
+          }),
+          cornerType: Cesium.CornerType.ROUNDED,
+        },
       })
-    }
-  })
+
+      return () => {
+        attempt(() => {
+          viewer.entities.remove(polyline)
+        })
+      }
+    },
+    [waylineColor],
+    { wait: 500 },
+  )
 
   return (
     <BillboardCollection>

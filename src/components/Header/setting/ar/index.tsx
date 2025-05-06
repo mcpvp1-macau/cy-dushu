@@ -154,6 +154,16 @@ const ARSetting: FC<PropsType> = memo(() => {
     })
   }
 
+  const updateWayline = (data: Partial<(typeof ar)['wayline']>) => {
+    updAR({
+      ...ar,
+      wayline: {
+        ...ar.wayline,
+        ...data,
+      },
+    })
+  }
+
   return (
     <div className="flex flex-col gap-3 mt-2 text-fore">
       <Form layout="horizontal" size="small" colon={false}>
@@ -430,6 +440,32 @@ const ARSetting: FC<PropsType> = memo(() => {
                     })
                   }
                 }}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <div className="flex gap-1.5 items-center mb-1">
+          <div className="h-[10px] w-[2px] rounded bg-green-500"></div>
+          航线
+          <Form.Item noStyle>
+            <Switch
+              value={ar.wayline.enable}
+              onChange={(e) => updateWayline({ enable: e })}
+            />
+          </Form.Item>
+        </div>
+
+        <Row>
+          <Col span={12}>
+            <Form.Item label="航线颜色">
+              <ColorPicker
+                value={ar.wayline.color}
+                onChange={(e) =>
+                  updateWayline({
+                    color: e.toHexString(),
+                  })
+                }
               />
             </Form.Item>
           </Col>

@@ -7,17 +7,20 @@ import type { ContextOptions } from 'cesium'
 import QueryData from './QueryData'
 import ARSceneCanvas from './canvas'
 import ARSceneUavAirline from './airline'
+import useARSettingStore from '@/store/setting/useARSetting.store'
 
 type PropsType = unknown
 
 const Inner: FC = () => {
+  const enableWayline = useARSettingStore((s) => s.wayline.enable)
+
   return (
     <>
       <ARSceneConfig />
       <ARSceneCamera />
       <ARSenceUpdateData />
       <QueryData />
-      <ARSceneUavAirline />
+      {enableWayline && <ARSceneUavAirline />}
       {/* <ARSceneBanAreas /> */}
       {/* <ARSceneHomePoint /> */}
       {/* <ARScenePointFly /> */}
