@@ -125,7 +125,7 @@ const PageActionDetailSub: FC<PropsType> = memo(
         return items.concat([kcyp, task, aiResult, log])
       }
       if (actionDetail.type === 'xiaoshan_kcyp_action') {
-        items.concat([kcyp, task, aiResult, log])
+        return items.concat([kcyp, task, aiResult, log])
       }
       return items.concat([task, aiResult, log])
     }, [actionDetail?.type])
