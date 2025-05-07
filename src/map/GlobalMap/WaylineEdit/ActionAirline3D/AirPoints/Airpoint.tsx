@@ -159,13 +159,14 @@ const Airpoint: FC<PropsType> = ({ point }) => {
           return
         }
 
-        let low =
-          viewer.scene.globe.getHeight(
-            Cesium.Cartographic.fromDegrees(
-              pointRef.current.pointX,
-              pointRef.current.pointY,
-            ),
-          ) ?? 0
+        const groundHeight = viewer.scene.globe.getHeight(
+          Cesium.Cartographic.fromDegrees(
+            pointRef.current.pointX,
+            pointRef.current.pointY,
+          ),
+        )
+
+        let low = groundHeight ? groundHeight - deltaHeightRef.current : 0
         let high = globalConfig.uavHeightLimit + 0.01
         while (high - low >= 0.01) {
           const mid = (low + high) / 2
