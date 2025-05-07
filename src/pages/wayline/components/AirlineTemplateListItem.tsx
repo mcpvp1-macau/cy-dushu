@@ -94,6 +94,7 @@ export const WaylineIcon: FC<{ type: string }> = ({ type }) => {
         area_waypoint: <MenuIconAirline />,
         cluster_wayline: <IconSwarm />,
         mapping2d: <IconWaylineAirpoint />,
+        mapping3d: <IconWaylineAirpoint />,
       } as Record<string, ReactNode>
     )[type] || <QuestionCircleFilled />
   )
@@ -107,6 +108,7 @@ export const getWaylineEditURL = (type: string) => {
       area_waypoint: '/wayline/area-wayline-edit',
       cluster_wayline: '/wayline/swarm-wayline-edit',
       mapping2d: '/wayline/edit',
+      mapping3d: '/wayline/edit',
     }[type] || '/404'
   )
 }
