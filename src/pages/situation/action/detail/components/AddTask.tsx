@@ -116,6 +116,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
           WaylineEnum.PointWayline,
           WaylineEnum.AreaWayline,
           WaylineEnum.SwarmWayline,
+          'mapping2d', // 第三方
         ].includes(taskType as WaylineEnum)
       ) {
         list = list.filter((e) => e.deviceType === DeviceEnum.UAV)
