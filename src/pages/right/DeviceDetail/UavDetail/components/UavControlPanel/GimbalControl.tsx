@@ -173,8 +173,11 @@ const UavDetailGimbalControl: FC<PropsType> = memo(() => {
                     className={className}
                     disabled={!canControl || !isGimbalSource}
                     onMouseDown={() => setDownKey(payload)}
+                    onTouchStart={() => setDownKey(payload)}
                     onMouseUp={reset}
                     onMouseLeave={reset}
+                    onTouchEnd={reset}
+                    onTouchCancel={reset}
                   >
                     {title}
                   </CircleButton>

@@ -2,7 +2,7 @@ import IconClose from '@/assets/icons/jsx/IconClose'
 import IconButton from '@/components/ui/button/IconButton'
 import useFixedWindowsStore from '@/store/useFixedWindows.store'
 import { limitNum } from '@/utils/math'
-import { forwardRef, useImperativeHandle } from 'react'
+import { forwardRef, TouchEventHandler, useImperativeHandle } from 'react'
 
 export enum MouseActionType {
   None,
@@ -38,6 +38,7 @@ type PropsType = {
 
 type RefType = {
   handleMouseDown: (e: React.MouseEvent) => void
+  handleTouchStart: TouchEventHandler<HTMLDivElement>
   setMouseAction: (action: MouseActionType) => void
   handleClose: () => void
 }
@@ -51,11 +52,12 @@ const BaseWindow = memo(
       height: props.height,
     })
     const [mouseAction, setMouseAction] = useState(MouseActionType.None)
-    const handleMouseDown = (e: React.MouseEvent) => {
-      e.stopPropagation()
+
+    // 处理开始拖拽
+    const handleStart = (x: number, y: number) => {
       startPosition.current = {
-        x: e.clientX,
-        y: e.clientY,
+        x: x,
+        y: y,
       }
       startTransform.current = {
         x: props.x,
@@ -65,6 +67,20 @@ const BaseWindow = memo(
         width: props.width,
         height: props.height,
       }
+    }
+    const handleMouseDown = (e: React.MouseEvent) => {
+      e.stopPropagation()
+      handleStart(e.clientX, e.clientY)
+    }
+
+    const handleTouchStart: TouchEventHandler<HTMLDivElement> = (e) => {
+      e.stopPropagation()
+      if (e.touches.length !== 1) {
+        return
+      }
+      const x = e.touches[0].clientX
+      const y = e.touches[0].clientY
+      handleStart(x, y)
     }
 
     const updateWindow = useFixedWindowsStore((s) => s.updateWindow)
@@ -77,14 +93,10 @@ const BaseWindow = memo(
       const maxWidth = document.body.clientWidth - 100
       const maxHeight = document.body.clientHeight - 62
 
-      const handleMouseMove = (e: MouseEvent) => {
-        if ((e.buttons & 1) !== 1) {
-          setMouseAction(MouseActionType.None)
-          return
-        }
+      const handleMove = (x: number, y: number) => {
         if (MouseActionType.Move === mouseAction) {
-          const dx = e.clientX - startPosition.current.x
-          const dy = e.clientY - startPosition.current.y
+          const dx = x - startPosition.current.x
+          const dy = y - startPosition.current.y
           updateWindow(props.id, {
             layout: {
               x: limitNum(
@@ -102,7 +114,7 @@ const BaseWindow = memo(
             },
           })
         } else if (MouseActionType.ResizeLeft === mouseAction) {
-          const dx = e.clientX - startPosition.current.x
+          const dx = x - startPosition.current.x
           const newWidth = limitNum(startSize.current.width - dx, 100, maxWidth)
           updateWindow(props.id, {
             layout: {
@@ -113,7 +125,7 @@ const BaseWindow = memo(
             },
           })
         } else if (MouseActionType.ResizeRight === mouseAction) {
-          const dx = e.clientX - startPosition.current.x
+          const dx = x - startPosition.current.x
           const newWidth = limitNum(startSize.current.width + dx, 100, maxWidth)
           updateWindow(props.id, {
             layout: {
@@ -124,7 +136,7 @@ const BaseWindow = memo(
             },
           })
         } else if (MouseActionType.ResizeTop === mouseAction) {
-          const dy = e.clientY - startPosition.current.y
+          const dy = y - startPosition.current.y
           const newHeight = limitNum(
             startSize.current.height - dy,
             100,
@@ -139,7 +151,7 @@ const BaseWindow = memo(
             },
           })
         } else if (MouseActionType.ResizeBottom === mouseAction) {
-          const dy = e.clientY - startPosition.current.y
+          const dy = y - startPosition.current.y
           const newHeight = limitNum(
             startSize.current.height + dy,
             100,
@@ -154,8 +166,8 @@ const BaseWindow = memo(
             },
           })
         } else if (MouseActionType.ResizeTopRight === mouseAction) {
-          const dx = e.clientX - startPosition.current.x
-          const dy = e.clientY - startPosition.current.y
+          const dx = x - startPosition.current.x
+          const dy = y - startPosition.current.y
           const newWidth = limitNum(startSize.current.width + dx, 100, maxWidth)
           const newHeight = limitNum(
             startSize.current.height - dy,
@@ -171,8 +183,8 @@ const BaseWindow = memo(
             },
           })
         } else if (MouseActionType.ResizeBottomRight === mouseAction) {
-          const dx = e.clientX - startPosition.current.x
-          const dy = e.clientY - startPosition.current.y
+          const dx = x - startPosition.current.x
+          const dy = y - startPosition.current.y
           const newWidth = limitNum(startSize.current.width + dx, 100, maxWidth)
           const newHeight = limitNum(
             startSize.current.height + dy,
@@ -188,8 +200,8 @@ const BaseWindow = memo(
             },
           })
         } else if (MouseActionType.ResizeBottomLeft === mouseAction) {
-          const dx = e.clientX - startPosition.current.x
-          const dy = e.clientY - startPosition.current.y
+          const dx = x - startPosition.current.x
+          const dy = y - startPosition.current.y
           const newWidth = limitNum(startSize.current.width - dx, 100, maxWidth)
           const newHeight = limitNum(
             startSize.current.height + dy,
@@ -205,8 +217,8 @@ const BaseWindow = memo(
             },
           })
         } else if (MouseActionType.ResizeTopLeft === mouseAction) {
-          const dx = e.clientX - startPosition.current.x
-          const dy = e.clientY - startPosition.current.y
+          const dx = x - startPosition.current.x
+          const dy = y - startPosition.current.y
           const newWidth = limitNum(startSize.current.width - dx, 100, maxWidth)
           const newHeight = limitNum(
             startSize.current.height - dy,
@@ -224,10 +236,36 @@ const BaseWindow = memo(
         }
       }
 
+      const handleMouseMove = (e: MouseEvent) => {
+        if ((e.buttons & 1) !== 1) {
+          setMouseAction(MouseActionType.None)
+          return
+        }
+        handleMove(e.clientX, e.clientY)
+      }
+
+      const handleTouchMove = (e: TouchEvent) => {
+        if (e.touches.length !== 1) {
+          return
+        }
+        handleMove(e.touches[0].clientX, e.touches[0].clientY)
+      }
+
+      const handleEnd = () => {
+        setMouseAction(MouseActionType.None)
+      }
+
       window.addEventListener('mousemove', handleMouseMove)
+      window.addEventListener('touchmove', handleTouchMove)
+      window.addEventListener('mouseup', handleEnd)
+      window.addEventListener('touchend', handleEnd)
+      window.addEventListener
       window.document.body.style.userSelect = 'none'
       return () => {
         window.removeEventListener('mousemove', handleMouseMove)
+        window.removeEventListener('touchmove', handleTouchMove)
+        window.removeEventListener('mouseup', handleEnd)
+        window.removeEventListener('touchend', handleEnd)
         window.document.body.style.userSelect = ''
       }
     }, [mouseAction])
@@ -242,6 +280,7 @@ const BaseWindow = memo(
       handleMouseDown,
       setMouseAction,
       handleClose,
+      handleTouchStart,
     }))
 
     return (
@@ -261,6 +300,10 @@ const BaseWindow = memo(
             onMouseDown={(e) => {
               setMouseAction(MouseActionType.Move)
               handleMouseDown(e)
+            }}
+            onTouchStart={(e) => {
+              setMouseAction(MouseActionType.Move)
+              handleTouchStart(e)
             }}
           >
             <div className="text-sm select-none">{props.title}</div>
@@ -283,12 +326,20 @@ const BaseWindow = memo(
                 setMouseAction(MouseActionType.ResizeLeft)
                 handleMouseDown(e)
               }}
+              onTouchStart={(e) => {
+                setMouseAction(MouseActionType.ResizeLeft)
+                handleTouchStart(e)
+              }}
             />
             <div
               className="absolute right-0 inset-y-0 w-2 translate-x-1 cursor-ew-resize z-40"
               onMouseDown={(e) => {
                 setMouseAction(MouseActionType.ResizeRight)
                 handleMouseDown(e)
+              }}
+              onTouchStart={(e) => {
+                setMouseAction(MouseActionType.ResizeRight)
+                handleTouchStart(e)
               }}
             />
           </>
@@ -301,12 +352,20 @@ const BaseWindow = memo(
                 setMouseAction(MouseActionType.ResizeTop)
                 handleMouseDown(e)
               }}
+              onTouchStart={(e) => {
+                setMouseAction(MouseActionType.ResizeTop)
+                handleTouchStart(e)
+              }}
             />
             <div
               className="absolute bottom-0 inset-x-0 h-2 translate-y-1 cursor-ns-resize z-40"
               onMouseDown={(e) => {
                 setMouseAction(MouseActionType.ResizeBottom)
                 handleMouseDown(e)
+              }}
+              onTouchStart={(e) => {
+                setMouseAction(MouseActionType.ResizeBottom)
+                handleTouchStart(e)
               }}
             />
           </>
@@ -319,12 +378,20 @@ const BaseWindow = memo(
                 setMouseAction(MouseActionType.ResizeTopLeft)
                 handleMouseDown(e)
               }}
+              onTouchStart={(e) => {
+                setMouseAction(MouseActionType.ResizeTopLeft)
+                handleTouchStart(e)
+              }}
             />
             <div
               className="absolute right-0 top-0 w-2 h-2 translate-x-1 -translate-y-1 cursor-nesw-resize z-50"
               onMouseDown={(e) => {
                 setMouseAction(MouseActionType.ResizeTopRight)
                 handleMouseDown(e)
+              }}
+              onTouchStart={(e) => {
+                setMouseAction(MouseActionType.ResizeTopRight)
+                handleTouchStart(e)
               }}
             />
             <div
@@ -333,12 +400,20 @@ const BaseWindow = memo(
                 setMouseAction(MouseActionType.ResizeBottomRight)
                 handleMouseDown(e)
               }}
+              onTouchStart={(e) => {
+                setMouseAction(MouseActionType.ResizeBottomRight)
+                handleTouchStart(e)
+              }}
             />
             <div
               className="absolute left-0 bottom-0 w-2 h-2 -translate-x-1 translate-y-1 cursor-nesw-resize z-50"
               onMouseDown={(e) => {
                 setMouseAction(MouseActionType.ResizeBottomLeft)
                 handleMouseDown(e)
+              }}
+              onTouchStart={(e) => {
+                setMouseAction(MouseActionType.ResizeBottomLeft)
+                handleTouchStart(e)
               }}
             />
           </>

@@ -148,8 +148,11 @@ const UavDetailFlightControl: FC<PropsType> = memo(() => {
                   className={className}
                   disabled={!canControl}
                   onMouseDown={() => setDownKey(payload)}
+                  onTouchStart={() => setDownKey(payload)}
                   onMouseUp={() => setDownKey(null)}
                   onMouseLeave={() => setDownKey(null)}
+                  onTouchEnd={() => setDownKey(null)}
+                  onTouchCancel={() => setDownKey(null)}
                 >
                   {title}
                 </CircleButton>
@@ -170,8 +173,11 @@ const UavDetailFlightControl: FC<PropsType> = memo(() => {
                   className={className}
                   disabled={!canControl}
                   onMouseDown={() => setDownKey(payload)}
+                  onTouchStart={() => setDownKey(payload)}
                   onMouseUp={() => setDownKey(null)}
                   onMouseLeave={() => setDownKey(null)}
+                  onTouchEnd={() => setDownKey(null)}
+                  onTouchCancel={() => setDownKey(null)}
                 >
                   {title}
                 </CircleButton>

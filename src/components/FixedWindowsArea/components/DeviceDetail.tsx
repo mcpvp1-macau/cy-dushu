@@ -59,6 +59,10 @@ const FixedWindowDeviceDetail: FC<PropsType> = memo(({ data }) => {
                     windowRef.current?.setMouseAction(MouseActionType.Move)
                     windowRef.current?.handleMouseDown(e)
                   },
+                  onTouchStart: (e) => {
+                    windowRef.current?.setMouseAction(MouseActionType.Move)
+                    windowRef.current?.handleTouchStart(e)
+                  },
                 }}
               />
             </AppViewSuspense>

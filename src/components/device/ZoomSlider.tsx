@@ -1,7 +1,7 @@
 import { limitNum } from '@/utils/math'
 import { sortSearchFnAsc } from '@/utils/sort'
 import { useSize } from 'ahooks'
-import { Fragment, useLayoutEffect } from 'react'
+import { Fragment, TouchEventHandler, useLayoutEffect } from 'react'
 
 type PropsType = {
   items?: {
@@ -55,9 +55,8 @@ const ZoomSlider: FC<PropsType> = memo(
     })
     const startMove = useRef(false)
 
-    const changeValue = (e: React.MouseEvent<HTMLDivElement>) => {
-      const rect = e.currentTarget.getBoundingClientRect()
-      const diffMouse = e.clientY - rect.y
+    const changeValue = (rect: DOMRect, y: number) => {
+      const diffMouse = y - rect.y
       const percent = 1 - diffMouse / rect.height
       let value = 0
       const i =
@@ -81,9 +80,17 @@ const ZoomSlider: FC<PropsType> = memo(
         startMove.current = true
         e.preventDefault()
         e.stopPropagation()
-        changeValue(e)
+        changeValue(e.currentTarget.getBoundingClientRect(), e.clientY)
       },
     )
+
+    const handleTouchStart: TouchEventHandler = (e) => {
+      if (e.touches.length !== 1) {
+        return
+      }
+      startMove.current = true
+      changeValue(e.currentTarget.getBoundingClientRect(), e.touches[0].clientY)
+    }
 
     const handleMove = useMemoizedFn((e: React.MouseEvent<HTMLDivElement>) => {
       if (!startMove.current) {
@@ -91,8 +98,15 @@ const ZoomSlider: FC<PropsType> = memo(
       }
       e.preventDefault()
       e.stopPropagation()
-      changeValue(e)
+      changeValue(e.currentTarget.getBoundingClientRect(), e.clientY)
     })
+
+    const handleTouchMove: TouchEventHandler = (e) => {
+      if (e.touches.length !== 1 || !startMove.current) {
+        return
+      }
+      changeValue(e.currentTarget.getBoundingClientRect(), e.touches[0].clientY)
+    }
 
     const handleSbClick = useMemoizedFn((v: number) => {
       onChange?.(v)
@@ -153,9 +167,13 @@ const ZoomSlider: FC<PropsType> = memo(
           ref={rootRef}
           className="relative flex flex-col-reverse h-full items-end"
           onMouseDown={handleMouseDown}
+          onTouchStart={handleTouchStart}
           onMouseMove={handleMove}
+          onTouchMove={handleTouchMove}
           onMouseLeave={handleLeaveOrUp}
+          onTouchEnd={handleLeaveOrUp}
           onMouseUp={handleLeaveOrUp}
+          onTouchCancel={handleLeaveOrUp}
           onWheel={handleWheel}
         >
           {renderItems.map((item) => (

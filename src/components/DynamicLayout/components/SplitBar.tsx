@@ -15,6 +15,15 @@ const SplitBar: FC<PropsType> = memo(
       setTrue()
     }
 
+    const handleTouchStart = (e: React.TouchEvent) => {
+      if (e.touches.length !== 1) {
+        return
+      }
+      const touch = e.touches[0]
+      onStartResize?.(touch.clientX, touch.clientY, index)
+      setTrue()
+    }
+
     useEffect(() => {
       if (!dragging) return
 
@@ -24,18 +33,31 @@ const SplitBar: FC<PropsType> = memo(
       const moveHandler = (e: MouseEvent) => {
         onResize?.(e.clientX, e.clientY)
       }
+
+      const touchMoveHandler = (e: TouchEvent) => {
+        if (e.touches.length !== 1) {
+          return
+        }
+        onResize?.(e.touches[0].clientX, e.touches[0].clientY)
+      }
+
       const mouseupHandler = () => {
         setFalse()
         window.document.body.style.cursor = ''
         window.document.body.style.userSelect = ''
         onSizeEnd?.()
       }
+
       window.addEventListener('mousemove', moveHandler)
       window.addEventListener('mouseup', mouseupHandler)
+      window.addEventListener('touchmove', touchMoveHandler)
+      window.addEventListener('touchend', mouseupHandler)
 
       return () => {
         window.removeEventListener('mousemove', moveHandler)
         window.removeEventListener('mouseup', mouseupHandler)
+        window.removeEventListener('touchmove', touchMoveHandler)
+        window.removeEventListener('touchend', mouseupHandler)
       }
     }, [dragging])
 
@@ -49,6 +71,7 @@ const SplitBar: FC<PropsType> = memo(
           },
         )}
         onMouseDown={handleDown}
+        onTouchStart={handleTouchStart}
       >
         <div
           className={clsx(

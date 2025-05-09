@@ -1,9 +1,7 @@
-import type { FC } from 'react'
-import { memo } from 'react'
 import Airpoint from './Airpoint'
-import PathLine from './PathLine'
 import HomePathLine from './HomePathLine'
 import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
+import Path from './Path'
 
 type PropsType = unknown
 
@@ -24,19 +22,7 @@ const AirPoints: FC<PropsType> = () => {
         <Airpoint key={point.xid} point={point} />
       ))}
       {/* 航点之间的连线 */}
-      {airpointsConfig.map((point, i) => {
-        const nextPoint = airpointsConfig[i + 1]
-        if (!nextPoint) {
-          return null
-        }
-        return (
-          <PathLine
-            key={`${point.xid}-${nextPoint.xid}`}
-            point1={{ ...point, pointZ: point.pointZ + deltaHeight }}
-            point2={{ ...nextPoint, pointZ: nextPoint.pointZ + deltaHeight }}
-          />
-        )
-      })}
+      <Path data={airpointsConfig} deltaHeight={deltaHeight} />
       {
         // 起飞点与第一个航点之间的连线
         takeOffRefPoint && airpointsConfig[0] && (

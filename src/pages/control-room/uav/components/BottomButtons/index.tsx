@@ -242,8 +242,11 @@ const BottomButtons: FC<PropsType> = memo(() => {
                   },
                 )}
                 onMouseDown={() => updateActiveMouseBtn(e)}
+                onTouchStart={() => updateActiveMouseBtn(e)}
                 onMouseLeave={handleUp}
                 onMouseUp={handleUp}
+                onTouchEnd={handleUp}
+                onTouchCancel={handleUp}
               >
                 {e.icon}
                 {e.btn}
@@ -273,8 +276,11 @@ const BottomButtons: FC<PropsType> = memo(() => {
                   },
                 )}
                 onMouseDown={() => updateActiveMouseBtn(e)}
+                onTouchStart={() => updateActiveMouseBtn(e)}
                 onMouseLeave={handleUp}
                 onMouseUp={handleUp}
+                onTouchEnd={handleUp}
+                onTouchCancel={handleUp}
               >
                 {e.btn}
                 {e.icon}
@@ -314,8 +320,11 @@ const BottomButtons: FC<PropsType> = memo(() => {
                   },
                 )}
                 onMouseDown={() => updateActiveMouseBtn(buttons[6])}
+                onTouchStart={() => updateActiveMouseBtn(buttons[6])}
                 onMouseLeave={handleUp}
                 onMouseUp={handleUp}
+                onTouchEnd={handleUp}
+                onTouchCancel={handleUp}
               >
                 <IconUpStraight />C
               </button>
@@ -337,8 +346,10 @@ const BottomButtons: FC<PropsType> = memo(() => {
                     },
                   )}
                   onMouseDown={() => updateActiveMouseBtn(e)}
+                  onTouchStart={() => updateActiveMouseBtn(e)}
                   onMouseLeave={handleUp}
                   onMouseUp={handleUp}
+                  onTouchEnd={handleUp}
                 >
                   {e.icon}
                 </button>
@@ -367,8 +378,11 @@ const BottomButtons: FC<PropsType> = memo(() => {
                   },
                 )}
                 onMouseDown={() => updateActiveMouseBtn(buttons[7])}
+                onTouchStart={() => updateActiveMouseBtn(buttons[7])}
                 onMouseLeave={handleUp}
                 onMouseUp={handleUp}
+                onTouchEnd={handleUp}
+                onTouchCancel={handleUp}
               >
                 Z<IconDownStraight />
               </button>
@@ -390,8 +404,11 @@ const BottomButtons: FC<PropsType> = memo(() => {
                     },
                   )}
                   onMouseDown={() => updateActiveMouseBtn(e)}
+                  onTouchStart={() => updateActiveMouseBtn(e)}
                   onMouseLeave={handleUp}
                   onMouseUp={handleUp}
+                  onTouchEnd={handleUp}
+                  onTouchCancel={handleUp}
                 >
                   {e.icon}
                 </button>
