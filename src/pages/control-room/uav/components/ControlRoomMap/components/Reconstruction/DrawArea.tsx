@@ -16,6 +16,7 @@ import {
 } from '@/service/modules/reconstruction'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { reconstructionMitt } from '@/store/map/useReconstructionMap.store'
+import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 
 type FlyOptions = {
   flightAltitude: number
@@ -191,7 +192,17 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
     }
   }, [viewer, isDraw])
 
+  const links = useUavControlRoomStore((s) => s.links)
+  const currentLink = useMemo(
+    () => links?.find((link) => link.active)?.linkId ?? 'auto',
+    [links],
+  )
+
   const handleConfirm = async (flyOptions: FlyOptions) => {
+    if (currentLink?.toUpperCase?.() !== '5G') {
+      msgApi.error(t('当前链路不支持重建任务, 请切换至 5G 链路'))
+      return
+    }
     areaPrimitiveRef.current?.complete()
 
     const strokeColorHex = getHexWithAlpha(drawingColor, 1)
