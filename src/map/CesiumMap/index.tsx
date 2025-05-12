@@ -11,6 +11,8 @@ import useMapSettingStore from '@/store/setting/useMapSetting.store'
 import IconLoading from '@/assets/icons/jsx/IconLoading'
 import BottomBar from './components/BottomBar'
 import FuzhouJiefangBridge from './components/custom/FuzhouJiefangBridge'
+import ErrorListener from './components/ErrorListener'
+import { Button } from 'antd'
 
 const ShanghaiWarZoneConfig = lazy(
   () => import('./components/custom/ShanghaiWarZoneConfig'),
@@ -45,9 +47,13 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
     [webgl1],
   )
 
+  const [errorPanelOpen, setErrorPanelOpen] = useState(false)
+
+  const [retryKey, setRetryKey] = useState(0)
+
   return (
     <Viewer
-      key={webgl1 ? 'webgl1' : 'webgl2'}
+      key={`${webgl1 ? 'webgl1' : 'webgl2'}-${retryKey}`}
       full
       id={id}
       geocoder={false}
@@ -74,6 +80,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
         mode={is2D ? Cesium.SceneMode.SCENE2D : Cesium.SceneMode.SCENE3D}
         morphDuration={0}
       />
+      <ErrorListener onRenderError={() => setErrorPanelOpen(true)} />
       <DefaultImageryLayer />
       <CustomImageryLayer />
       <CesiumDefaultConfig />
@@ -107,6 +114,22 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
       </Suspense>
       <BottomBar />
       <FuzhouJiefangBridge />
+      {errorPanelOpen && (
+        <div className="absolute inset-0 z-[99] bg-black/50 backdrop-blur flex justify-center items-center">
+          <div className="flex flex-col gap-3 items-center">
+            <div className="text-lg">Something error</div>
+            <Button
+              type="primary"
+              onClick={() => {
+                setRetryKey((prev) => prev + 1)
+                setErrorPanelOpen(false)
+              }}
+            >
+              重试
+            </Button>
+          </div>
+        </div>
+      )}
     </Viewer>
   )
 })
