@@ -7,6 +7,8 @@ import AiResultItem from './AIResultItem'
 import { Spin } from 'antd'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import { useUpdateEffect } from 'ahooks'
+import { useDictOptions } from '@/store/useDict.store'
+import { DictEnum } from '@/enum/dict'
 
 type PropsType = {
   actionId: string
@@ -40,6 +42,23 @@ const AIResult: FC<PropsType> = memo(
       refetch()
     }, [refreshTemporary])
 
+    const colorType = useDictOptions(DictEnum.KCYP_CAR_COLOR_TYPE)
+    const colorTypeXS = useDictOptions(DictEnum.XIAOSHAN_KCYP_CAR_COLOR_TYPE)
+
+    const renderData = useMemo<API_ACTION.domain.AIResultRecord[]>(() => {
+      if (!data) {
+        return []
+      }
+      const map1 = new Map(colorType.map((e) => [e.value, e.label]))
+      const map2 = new Map(colorTypeXS.map((e) => [e.value, e.label]))
+
+      return data.map((e) => ({
+        ...e,
+        plateColor:
+          map1.get(e.plateColor) ?? map2.get(e.plateColor) ?? e.plateColor,
+      }))
+    }, [data])
+
     if (isLoading || !data || !actionDetail) {
       return <AppSpin />
     }
@@ -51,7 +70,7 @@ const AIResult: FC<PropsType> = memo(
     return (
       <Spin spinning={isRefetching}>
         <ul className="p-3 flex flex-col gap-3 max-h-[400px] overflow-y-auto">
-          {data.map((e) => (
+          {renderData.map((e) => (
             <li key={e.id}>
               <AiResultItem data={e} />
             </li>
