@@ -17,7 +17,7 @@ const AirlineSpeedConfig: FC<PropsType> = () => {
         <HNumber
           value={speed}
           unit="m/s"
-          min={5}
+          min={1}
           max={15}
           onChange={(e) => {
             setAirlineConfig({
