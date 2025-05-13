@@ -18,6 +18,7 @@ import MapSituation from '@/map/GlobalMap/Situation'
 import { useSearchParams } from 'react-router-dom'
 import TargetPoints from '@/map/GlobalMap/TargetPoints'
 import LeftTopTools from './components/LeftTopTools'
+import ReconstructionLayer from '@/map/CesiumMap/components/service/ReconstructionDraw/ReconstructionLayer'
 type PropsType = unknown
 
 const RIDTargets = lazy(() => import('./components/RIDTargets'))
@@ -60,6 +61,7 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
         {rids.length > 0 && <RIDTargets targetIds={rids} />}
       </Suspense>
       {enableReconstruction && <UavReconstruction />}
+      <ReconstructionLayer />
     </CesiumMap>
   )
 })

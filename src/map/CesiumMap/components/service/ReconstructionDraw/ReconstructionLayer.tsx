@@ -7,6 +7,7 @@ const ReconstructionDraw = lazy(() => import('./ReconstructionDraw'))
 
 type PropsType = unknown
 
+/** 三维重建图层 */
 const ReconstructionLayer: FC<PropsType> = memo(() => {
   const layerList = useReconstructionMapStore((s) => s.layerList)
   const [showLayerIds, showGroupIds] = useReconstructionMapConfigStore((s) => [
