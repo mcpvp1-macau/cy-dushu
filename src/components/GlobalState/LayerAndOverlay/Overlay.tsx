@@ -14,6 +14,7 @@ const Overlay: FC<PropsType> = memo(() => {
     {
       queryKey: ['overlayList', layerIds],
       queryFn: () => getOverlayList({ layerIds }),
+      enabled: layerIds.length > 0,
       select: (d) => d.data.rows,
     },
     queryClient,
