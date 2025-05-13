@@ -6,7 +6,7 @@ import {
   supportWCS,
   supportWCSHevc,
 } from '@/utils/video/video-support'
-import { useInterval, useThrottleEffect } from 'ahooks'
+import { useInterval } from 'ahooks'
 import usePropertiesProtobuf from './hooks/usePropertiesProtobuf'
 import SeiEnum, { SEI_TYPE } from './sei-enum'
 import useProtobufSei from './hooks/useProtobufSei'
@@ -323,21 +323,17 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
   }, [videoEncoderValue])
 
   // 视频地址变化时，重新播放
-  useThrottleEffect(
-    () => {
-      if (!jessibucaRef.current) {
-        return
-      }
-      jessibucaRef.current.clearBufferDelay()
-      jessibucaRef.current.playbackClearCacheBuffer()
-      if (!src) {
-        return
-      }
-      jessibucaRef.current.play(src)
-    },
-    [src, refreshKey],
-    { wait: 500, trailing: false },
-  )
+  useEffect(() => {
+    if (!jessibucaRef.current) {
+      return
+    }
+    jessibucaRef.current.clearBufferDelay()
+    jessibucaRef.current.playbackClearCacheBuffer()
+    if (!src) {
+      return
+    }
+    jessibucaRef.current.play(src)
+  }, [src, refreshKey])
 
   // useInterval(() => {
   //   if (!jessibucaRef.current) {
