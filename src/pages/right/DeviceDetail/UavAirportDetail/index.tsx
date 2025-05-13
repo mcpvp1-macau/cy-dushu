@@ -148,7 +148,9 @@ const UavAirportDetail: FC<PropsType> = memo(
         <div className="flex justify-between gap-2">
           <div className="flex gap-2 items-center">
             <DeviceIconAIRPORT className="device-detail-icon" />
-            <h6 className="text-white text-base">{data.deviceName}</h6>
+            <h6 className="text-white text-base max-w-[224px] truncate">
+              {data.deviceName}
+            </h6>
           </div>
         </div>
       ),
