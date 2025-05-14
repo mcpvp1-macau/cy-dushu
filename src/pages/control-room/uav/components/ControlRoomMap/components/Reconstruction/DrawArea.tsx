@@ -194,7 +194,7 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
 
   const links = useUavControlRoomStore((s) => s.links)
   const currentLink = useMemo(
-    () => links?.find((link) => link.active)?.linkId ?? 'auto',
+    () => links?.find((link) => link.active)?.name ?? 'auto',
     [links],
   )
 
