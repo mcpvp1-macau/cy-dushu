@@ -52,8 +52,6 @@ const SafetyCheck: FC<PropsType> = memo(({ airpoints, takeOffRefPoint }) => {
       set.add(Warning.CollisionTerrain)
     }
 
-    console.log('p1, p2', p1, p2)
-
     if (computeRayTerrainIntersection(p1Cartographic, p2Cartographic, viewer)) {
       set.add(Warning.CollisionTerrain)
     }

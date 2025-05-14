@@ -84,9 +84,9 @@ const App = () => {
           'text-fore',
         )}
       >
-        <FixedWindowArea />
         <AppMsgContext.Provider value={messageApi}>
           <NotificationContext.Provider value={notificationApi}>
+            <FixedWindowArea />
             {contextHolder}
             {notificationContextHolder}
             <GlobalState />
