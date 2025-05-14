@@ -1,14 +1,13 @@
 import useMapDrawStore, { CotType } from '@/store/map/useDraw.store'
 import { cartesian3ToDegrees } from '@/utils/geoUtils'
-import { useBoolean } from 'ahooks'
-import { attempt, flatten } from 'lodash'
-import { memo, type FC } from 'react'
+import { useBoolean, useLatest } from 'ahooks'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import AddFormModal from './components/AddFormModal'
 import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
 import { createOverlay } from '@/service/modules/layer_overlay'
 import * as turf from '@turf/turf'
+import DrawingPolygon from './components/DrawingPolygon'
 
 type PropsType = {
   onSuccess?: () => void
@@ -44,49 +43,53 @@ const getFan = (pivot: number[], startPoint: number[], endPoint: number[]) => {
 const DrawFan: FC<PropsType> = memo(({ onSuccess }) => {
   const { viewer } = useCesium()
   /** 支点 */
-  const pivot = useRef<number[] | null>(null)
-  const startPoint = useRef<number[] | null>(null)
-  const endPoint = useRef<number[] | null>(null)
+  const [pivot, setPivot] = useState<number[] | null>(null)
+  const [startPoint, setStartPoint] = useState<number[] | null>(null)
+  const [endPoint, setEndPoint] = useState<number[] | null>(null)
+
+  const latestPivot = useLatest(pivot)
+  const latestStartPoint = useLatest(startPoint)
+  const latestEndPoint = useLatest(endPoint)
 
   const [open, { setTrue, setFalse }] = useBoolean(false)
 
   const drawingColor = useMapDrawStore((s) => s.drawingColor)
 
-  useEffect(() => {
-    if (!viewer) {
-      return
-    }
+  // useEffect(() => {
+  //   if (!viewer) {
+  //     return
+  //   }
 
-    const position = new Cesium.CallbackProperty(() => {
-      if (!pivot.current || !startPoint.current || !endPoint.current) {
-        return {
-          positions: Cesium.Cartesian3.fromDegreesArray([0, 0, 0, 0]),
-        }
-      }
-      const result = Cesium.Cartesian3.fromDegreesArray(
-        flatten(getFan(pivot.current, startPoint.current, endPoint.current)),
-      )
-      return {
-        positions: result,
-      }
-    }, false)
+  //   const position = new Cesium.CallbackProperty(() => {
+  //     if (!pivot.current || !startPoint.current || !endPoint.current) {
+  //       return {
+  //         positions: Cesium.Cartesian3.fromDegreesArray([0, 0, 0, 0]),
+  //       }
+  //     }
+  //     const result = Cesium.Cartesian3.fromDegreesArray(
+  //       flatten(getFan(pivot.current, startPoint.current, endPoint.current)),
+  //     )
+  //     return {
+  //       positions: result,
+  //     }
+  //   }, false)
 
-    const e = viewer.entities.add({
-      polygon: {
-        hierarchy: position,
-        material: Cesium.Color.fromCssColorString(drawingColor).withAlpha(0.5),
-        height: 0,
-        outline: true,
-        outlineColor: Cesium.Color.fromCssColorString(drawingColor),
-      },
-    })
+  //   const e = viewer.entities.add({
+  //     polygon: {
+  //       hierarchy: position,
+  //       material: Cesium.Color.fromCssColorString(drawingColor).withAlpha(0.5),
+  //       height: 0,
+  //       outline: true,
+  //       outlineColor: Cesium.Color.fromCssColorString(drawingColor),
+  //     },
+  //   })
 
-    return () => {
-      attempt(() => {
-        viewer.entities.remove(e)
-      })
-    }
-  }, [viewer, drawingColor])
+  //   return () => {
+  //     attempt(() => {
+  //       viewer.entities.remove(e)
+  //     })
+  //   }
+  // }, [viewer, drawingColor])
 
   useEffect(() => {
     if (!viewer) {
@@ -97,7 +100,7 @@ const DrawFan: FC<PropsType> = memo(({ onSuccess }) => {
 
     // 左键 选点
     handler.setInputAction((e) => {
-      if (pivot.current && startPoint.current) {
+      if (latestPivot.current && latestStartPoint.current) {
         return
       }
       const ray = viewer.camera.getPickRay(e.position)
@@ -105,16 +108,16 @@ const DrawFan: FC<PropsType> = memo(({ onSuccess }) => {
       const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
       if (!cartesian) return
       // 地形上的点
-      if (!pivot.current) {
-        pivot.current = cartesian3ToDegrees(cartesian).slice(0, 2)
+      if (!latestPivot.current) {
+        setPivot(cartesian3ToDegrees(cartesian).slice(0, 2))
       } else {
-        startPoint.current = cartesian3ToDegrees(cartesian).slice(0, 2)
+        setStartPoint(cartesian3ToDegrees(cartesian).slice(0, 2))
       }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
     // 移动
     handler.setInputAction((e) => {
-      if (!pivot.current || !startPoint.current) {
+      if (!latestPivot.current || !latestStartPoint.current) {
         return
       }
       const ray = viewer.camera.getPickRay(e.endPosition)
@@ -122,12 +125,12 @@ const DrawFan: FC<PropsType> = memo(({ onSuccess }) => {
       const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
       if (!cartesian) return
       // 地形上的点
-      endPoint.current = cartesian3ToDegrees(cartesian).slice(0, 2)
+      setEndPoint(cartesian3ToDegrees(cartesian).slice(0, 2))
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
 
     // 右键结束
     handler.setInputAction(() => {
-      if (pivot.current && endPoint.current) {
+      if (latestPivot.current && latestEndPoint.current) {
         setTrue()
       }
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK)
@@ -138,7 +141,7 @@ const DrawFan: FC<PropsType> = memo(({ onSuccess }) => {
   }, [viewer])
 
   const handleConfirm = async (data: any) => {
-    if (!pivot.current || !endPoint.current || !startPoint.current) {
+    if (!pivot || !endPoint || !startPoint) {
       return
     }
 
@@ -151,9 +154,7 @@ const DrawFan: FC<PropsType> = memo(({ onSuccess }) => {
       layerId: data.layerId,
       overlayName: data.overlayName,
       overlayType: 'POLYGON',
-      overlayPositions: JSON.stringify(
-        getFan(pivot.current, startPoint.current, endPoint.current),
-      ),
+      overlayPositions: JSON.stringify(getFan(pivot, startPoint, endPoint)),
       overlayBindType: 'NORMAL',
       overlayStyleConfig: JSON.stringify({
         contact: {
@@ -189,17 +190,29 @@ const DrawFan: FC<PropsType> = memo(({ onSuccess }) => {
     setFalse()
   }
 
+  const positions = useMemo(() => {
+    if (!startPoint || !endPoint || !pivot) {
+      return null
+    }
+    return getFan(pivot, startPoint, endPoint)
+  }, [startPoint, endPoint, pivot])
+
   return (
-    <AddFormModal
-      open={open}
-      onClose={() => {
-        setFalse()
-        pivot.current = null
-        endPoint.current = null
-        startPoint.current = null
-      }}
-      onConfirm={handleConfirm}
-    />
+    <>
+      <AddFormModal
+        open={open}
+        onClose={() => {
+          setFalse()
+          setPivot(null)
+          setEndPoint(null)
+          setStartPoint(null)
+        }}
+        onConfirm={handleConfirm}
+      />
+      {positions && (
+        <DrawingPolygon positions={positions} color={drawingColor} />
+      )}
+    </>
   )
 })
 

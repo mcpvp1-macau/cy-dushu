@@ -44,6 +44,7 @@ const HeightDashLine: FC<PropsType> = memo(
             dashLength: 4,
           }),
         }),
+        asynchronous: false,
       })
 
       primitives.add(linePrimitive)

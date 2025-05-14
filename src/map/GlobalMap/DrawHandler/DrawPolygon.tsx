@@ -1,13 +1,12 @@
 import useMapDrawStore, { CotType } from '@/store/map/useDraw.store'
 import { cartesian3ToDegrees } from '@/utils/geoUtils'
-import { useBoolean } from 'ahooks'
-import { attempt, flatten } from 'lodash'
+import { useBoolean, useLatest } from 'ahooks'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import AddFormModal from './components/AddFormModal'
 import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
 import { createOverlay } from '@/service/modules/layer_overlay'
-import { makeMemoCallbackProperty } from '@/utils/cesium/memoCallbackProperty'
+import DrawingPolygon from './components/DrawingPolygon'
 
 type PropsType = {
   onSuccess?: () => void
@@ -15,51 +14,13 @@ type PropsType = {
 
 const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
   const { viewer } = useCesium()
-  /** 支点 */
-  const paths = useRef<number[][]>([])
-  const endPoint = useRef<number[] | null>(null)
+  const [paths, setPaths] = useState<number[][]>([])
+  const latestPaths = useLatest(paths)
+  const [endPoint, setEndPoint] = useState<number[] | null>(null)
 
   const [open, { setTrue, setFalse }] = useBoolean(false)
 
   const drawingColor = useMapDrawStore((s) => s.drawingColor)
-
-  useEffect(() => {
-    if (!viewer) {
-      return
-    }
-
-    const position = makeMemoCallbackProperty(
-      () => {
-        if (paths.current.length < 1 || !endPoint.current) {
-          return {
-            positions: Cesium.Cartesian3.fromDegreesArray([0, 0, 0, 0]),
-          }
-        }
-        const result = Cesium.Cartesian3.fromDegreesArray(
-          flatten([...paths.current, endPoint.current]),
-        )
-        return { positions: result }
-      },
-      false,
-      () => [paths.current, endPoint.current],
-    )
-
-    const e = viewer.entities.add({
-      polygon: {
-        hierarchy: position,
-        material: Cesium.Color.fromCssColorString(drawingColor).withAlpha(0.5),
-        height: 0,
-        outline: true,
-        outlineColor: Cesium.Color.fromCssColorString(drawingColor),
-      },
-    })
-
-    return () => {
-      attempt(() => {
-        viewer.entities.remove(e)
-      })
-    }
-  }, [viewer, drawingColor])
 
   useEffect(() => {
     if (!viewer) {
@@ -76,7 +37,7 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
       if (!cartesian) return
       // 地形上的点
       const geo = cartesian3ToDegrees(cartesian)
-      paths.current.push([geo[0], geo[1]])
+      setPaths((prev) => [...prev, [geo[0], geo[1]]])
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
     // 移动
@@ -87,12 +48,13 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
       if (!cartesian) return
       // 地形上的点
       const geo = cartesian3ToDegrees(cartesian)
-      endPoint.current = [geo[0], geo[1]]
+      // endPoint.current = [geo[0], geo[1]]
+      setEndPoint([geo[0], geo[1]])
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
 
     // 右键结束
     handler.setInputAction(() => {
-      if (paths.current.length >= 2) {
+      if (latestPaths.current.length >= 2) {
         setTrue()
       }
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK)
@@ -103,7 +65,7 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
   }, [viewer])
 
   const handleConfirm = async (data: any) => {
-    if (paths.current.length < 2) {
+    if (paths.length < 2) {
       return
     }
 
@@ -116,7 +78,7 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
       layerId: data.layerId,
       overlayName: data.overlayName,
       overlayType: 'POLYGON',
-      overlayPositions: JSON.stringify([...paths.current, endPoint.current]),
+      overlayPositions: JSON.stringify([...paths, endPoint]),
       overlayBindType: 'NORMAL',
       overlayStyleConfig: JSON.stringify({
         contact: {
@@ -152,16 +114,28 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
     setFalse()
   }
 
+  const positions = useMemo(() => {
+    if (!endPoint || paths.length < 2) {
+      return paths
+    }
+    return [...paths, endPoint]
+  }, [paths, endPoint])
+
   return (
-    <AddFormModal
-      open={open}
-      onClose={() => {
-        setFalse()
-        paths.current = []
-        endPoint.current = null
-      }}
-      onConfirm={handleConfirm}
-    />
+    <>
+      <AddFormModal
+        open={open}
+        onClose={() => {
+          setFalse()
+          setPaths([])
+          setEndPoint(null)
+        }}
+        onConfirm={handleConfirm}
+      />
+      {positions && (
+        <DrawingPolygon positions={positions} color={drawingColor} />
+      )}
+    </>
   )
 })
 

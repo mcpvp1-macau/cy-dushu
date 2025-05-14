@@ -1,11 +1,9 @@
 import { ScanArea } from '@/hooks/device/useCollectCameraScanAreas'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
-import { useLatest, useThrottleEffect } from 'ahooks'
+import { useThrottleEffect } from 'ahooks'
 import * as turf from '@turf/turf'
 import { useCesium } from 'resium'
-import { attempt } from 'lodash'
 import * as Cesium from 'cesium'
-import { makeMemoCallbackProperty } from '@/utils/cesium/memoCallbackProperty'
 
 const Polygon: FC<{
   outPolygon: number[][]
@@ -13,53 +11,41 @@ const Polygon: FC<{
 }> = memo(({ outPolygon: polygon, innerPolygon }) => {
   const { viewer } = useCesium()
 
-  const polygonRef = useLatest(polygon)
-  const innerPolygonRef = useLatest(innerPolygon)
-
   useEffect(() => {
     if (!viewer) {
       return
     }
 
-    const position = makeMemoCallbackProperty(
-      () => {
-        if (polygonRef.current.length < 2) {
-          return {
-            positions: Cesium.Cartesian3.fromDegreesArray([0, 0, 0, 0]),
-          }
-        }
-        const result = Cesium.Cartesian3.fromDegreesArray(
-          [...polygonRef.current].flat(),
-        )
-        return {
-          positions: result,
-          holes: innerPolygonRef.current.map((e) => {
-            return {
-              positions: Cesium.Cartesian3.fromDegreesArray(e.flat()),
-            }
-          }),
-        }
-      },
-      false,
-      () => [polygonRef.current, innerPolygonRef.current],
-    )
-
-    const entity = new Cesium.Entity({
-      polygon: {
-        hierarchy: position,
-        material: Cesium.Color.fromCssColorString('#ffd0a1').withAlpha(0.4),
-        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
-      },
+    const primitive = new Cesium.GroundPrimitive({
+      geometryInstances: new Cesium.GeometryInstance({
+        geometry: new Cesium.PolygonGeometry({
+          polygonHierarchy: new Cesium.PolygonHierarchy(
+            Cesium.Cartesian3.fromDegreesArray(polygon.flat()),
+            innerPolygon.map(
+              (e) =>
+                new Cesium.PolygonHierarchy(
+                  Cesium.Cartesian3.fromDegreesArray(e.flat()),
+                ),
+            ),
+          ),
+          extrudedHeight: 0,
+        }),
+      }),
+      appearance: new Cesium.MaterialAppearance({
+        translucent: true,
+        material: Cesium.Material.fromType(Cesium.Material.ColorType, {
+          color: Cesium.Color.fromCssColorString('#ffd0a1').withAlpha(0.4),
+        }),
+      }),
+      asynchronous: false,
     })
-
-    viewer.entities.add(entity)
-
+    viewer.scene.primitives.add(primitive)
     return () => {
-      attempt(() => {
-        viewer.entities.remove(entity)
-      })
+      if (viewer.scene.primitives) {
+        viewer.scene.primitives.remove(primitive)
+      }
     }
-  }, [viewer])
+  }, [viewer, polygon, innerPolygon])
 
   return null
 })

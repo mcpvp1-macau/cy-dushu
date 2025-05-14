@@ -18,7 +18,7 @@ const UavRealTrack: FC<PropsType> = memo(() => {
       {historyTrack.map((track, index) => (
         <HistoryTrack key={index} value={track} />
       ))}
-      {realTrack.length > 1 && <HistoryTrack value={realTrack} useCallback />}
+      {realTrack.length > 1 && <HistoryTrack value={realTrack} />}
     </>
   )
 })
