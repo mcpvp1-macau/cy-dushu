@@ -1,7 +1,10 @@
 import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import XCard from '@/components/ui/XCard'
 import IconTakeoff from '@/assets/icons/jsx/uav/IconTakeoff'
-import { Button } from 'antd'
+import { Button, Tooltip } from 'antd'
+import { round } from 'lodash'
+import HNumber from '../../../HNumber'
+import { InfoCircleOutlined } from '@ant-design/icons'
 
 type PropsType = unknown
 
@@ -15,9 +18,16 @@ const TakeOffPointConfig: FC<PropsType> = () => {
   return (
     <XCard
       title={
-        takeOffRefPoint
-          ? t('wayline.takeoffRefPoint.setted.title')
-          : t('wayline.takeoffRefPoint.notSetted.title')
+        takeOffRefPoint ? (
+          <div>
+            {t('wayline.takeoffRefPoint.setted.title')}{' '}
+            <Tooltip title={t('wayline.takeoffRefPoint.setted.tooltip')}>
+              <InfoCircleOutlined className="text-fore" />
+            </Tooltip>
+          </div>
+        ) : (
+          t('wayline.takeoffRefPoint.notSetted.title')
+        )
       }
       topRight={
         <Button
@@ -29,7 +39,24 @@ const TakeOffPointConfig: FC<PropsType> = () => {
           {takeOffRefPoint ? t('common.reset') : t('common.set')}
         </Button>
       }
-    />
+    >
+      {takeOffRefPoint && (
+        <HNumber
+          className="mt-3"
+          negatives={[-100, -10]}
+          positives={[10, 100]}
+          value={round(takeOffRefPoint[2], 1)}
+          unit="m"
+          max={globalConfig.uavHeightLimit}
+          onChange={(e) => {
+            useAirlineConfigStore.getState().updateAirlineConfig({
+              ...useAirlineConfigStore.getState().airlineConfig,
+              takeOffRefPoint: [takeOffRefPoint[0], takeOffRefPoint[1], e],
+            })
+          }}
+        />
+      )}
+    </XCard>
   )
 }
 

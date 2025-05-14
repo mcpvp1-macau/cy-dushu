@@ -699,6 +699,8 @@ wayline:
     titleRebotDog: Wayline Config
     speedRebotDog:
       title: Speed
+    height:
+      tooltip: Wayline take-off height
   waylinePoint:
     config: Waypoints
     waypointList:
@@ -780,6 +782,9 @@ wayline:
   takeoffRefPoint:
     setted:
       title: The ref take-off point is set
+      tooltip: >-
+        Adjust the altitude of the take-off point. For example, if taking off
+        from a rooftop, it can be adjusted to the altitude of the rooftop.
     notSetted:
       title: The ref take-off point is not set.
   advancedSetting:
@@ -842,6 +847,10 @@ wayline:
   action:
     noSupportEdit: Editing this action is not currently supported
   backConfirm: Wayline not saved, whether to exit
+  collisionWarning:
+    msg: The flight route hit the terrain
+  nearTerrain:
+    msg: The flight path is too close to the terrain height
 schedue:
   list:
     title: Schedule List

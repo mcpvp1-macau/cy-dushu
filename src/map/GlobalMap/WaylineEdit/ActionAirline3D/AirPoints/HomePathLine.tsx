@@ -1,9 +1,6 @@
-import { memo, useEffect, type FC } from 'react'
-import * as Cesium from 'cesium'
-import { useCesium } from 'resium'
-import { useLatest } from 'ahooks'
 import { useShallow } from 'zustand/react/shallow'
 import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
+import Path from './Path'
 
 type PropsType = {
   homePoint: number[]
@@ -12,8 +9,6 @@ type PropsType = {
 
 /** 起飞点连接线 */
 const HomePathLine: FC<PropsType> = ({ homePoint, point1 }) => {
-  const { viewer } = useCesium()
-
   const config = useAirlineConfigStore(
     useShallow((s) => ({
       flyToWaylineMode: s.airlineConfig.flyToWaylineMode,
@@ -21,74 +16,66 @@ const HomePathLine: FC<PropsType> = ({ homePoint, point1 }) => {
     })),
   )
 
-  const configRef = useLatest(config)
-
-  useEffect(() => {
-    if (!viewer?.scene) return
-
-    const positions = new Cesium.CallbackProperty((_, result) => {
-      let positions
-
-      if (configRef.current.flyToWaylineMode === 'safely') {
-        // 垂直爬升
-        positions = [
-          Cesium.Cartesian3.fromDegrees(
-            homePoint[0],
-            homePoint[1],
-            homePoint[2],
+  const positions = useMemo(() => {
+    if (config.flyToWaylineMode === 'safely') {
+      return [
+        {
+          pointX: homePoint[0],
+          pointY: homePoint[1],
+          pointZ: homePoint[2],
+        },
+        {
+          pointX: homePoint[0],
+          pointY: homePoint[1],
+          pointZ: Math.max(
+            config.takeOffSecurityHeight + homePoint[2],
+            point1[2],
           ),
-          Cesium.Cartesian3.fromDegrees(
-            homePoint[0],
-            homePoint[1],
-            Math.max(configRef.current.takeOffSecurityHeight, point1[2]),
+        },
+        {
+          pointX: point1[0],
+          pointY: point1[1],
+          pointZ: Math.max(
+            config.takeOffSecurityHeight + homePoint[2],
+            point1[2],
           ),
-          Cesium.Cartesian3.fromDegrees(
-            point1[0],
-            point1[1],
-            Math.max(configRef.current.takeOffSecurityHeight, point1[2]),
+        },
+        {
+          pointX: point1[0],
+          pointY: point1[1],
+          pointZ: point1[2],
+        },
+      ]
+    } else {
+      return [
+        {
+          pointX: homePoint[0],
+          pointY: homePoint[1],
+          pointZ: homePoint[2],
+        },
+        {
+          pointX: homePoint[0],
+          pointY: homePoint[1],
+          pointZ: Math.min(
+            config.takeOffSecurityHeight + homePoint[2],
+            point1[2],
           ),
-          Cesium.Cartesian3.fromDegrees(point1[0], point1[1], point1[2]),
-        ]
-      } else {
-        // 倾斜爬升
-        positions = [
-          Cesium.Cartesian3.fromDegrees(
-            homePoint[0],
-            homePoint[1],
-            homePoint[2],
-          ),
-          Cesium.Cartesian3.fromDegrees(
-            homePoint[0],
-            homePoint[1],
-            Math.min(configRef.current.takeOffSecurityHeight, point1[2]),
-          ),
-          Cesium.Cartesian3.fromDegrees(point1[0], point1[1], point1[2]),
-        ]
-      }
-
-      if (Cesium.defined(result)) {
-        result.length = 0 // 清空现有数组
-        result.push(...positions)
-      }
-      return positions
-    }, false)
-
-    const entity = viewer.entities.add({
-      polyline: {
-        positions,
-        width: 4,
-        material: Cesium.Color.fromCssColorString('#03D68F'),
-      },
-    })
-
-    return () => {
-      try {
-        viewer?.entities?.remove(entity)
-      } catch (error) {}
+        },
+        {
+          pointX: point1[0],
+          pointY: point1[1],
+          pointZ: point1[2],
+        },
+      ]
     }
-  }, [homePoint, point1])
+  }, [config, homePoint, point1])
 
-  return <></>
+  return (
+    <>
+      <Path data={positions as any} deltaHeight={0} />
+      <Path data={positions as any} deltaHeight={0} isVirtual />
+    </>
+  )
 }
 
 export default memo(HomePathLine)

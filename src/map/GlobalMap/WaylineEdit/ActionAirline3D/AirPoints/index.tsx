@@ -2,6 +2,7 @@ import Airpoint from './Airpoint'
 import HomePathLine from './HomePathLine'
 import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import Path from './Path'
+import SafetyCheck from './SafetyCheck'
 
 type PropsType = unknown
 
@@ -15,6 +16,14 @@ const AirPoints: FC<PropsType> = () => {
     (s) => s.airlineConfig.takeOffRefPoint?.[2] ?? 0,
   )
 
+  const points = useMemo(() => {
+    return airpointsConfig.map((point) => ({
+      pointX: point.pointX,
+      pointY: point.pointY,
+      pointZ: point.pointZ + deltaHeight,
+    }))
+  }, [airpointsConfig, deltaHeight])
+
   return (
     <>
       {/* 航点 */}
@@ -23,6 +32,7 @@ const AirPoints: FC<PropsType> = () => {
       ))}
       {/* 航点之间的连线 */}
       <Path data={airpointsConfig} deltaHeight={deltaHeight} />
+      <Path data={airpointsConfig} deltaHeight={deltaHeight} isVirtual />
       {
         // 起飞点与第一个航点之间的连线
         takeOffRefPoint && airpointsConfig[0] && (
@@ -37,6 +47,9 @@ const AirPoints: FC<PropsType> = () => {
           />
         )
       }
+      {takeOffRefPoint && (
+        <SafetyCheck airpoints={points} takeOffRefPoint={takeOffRefPoint} />
+      )}
     </>
   )
 }

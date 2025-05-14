@@ -689,6 +689,8 @@ wayline:
     titleRebotDog: 巡线设置
     speedRebotDog:
       title: 行进速度
+    height:
+      tooltip: 航线起飞高度
   waylinePoint:
     config: 航点设置
     waypointList:
@@ -770,6 +772,7 @@ wayline:
   takeoffRefPoint:
     setted:
       title: 已设置参考起飞点
+      tooltip: 调整起飞点的海拔高度，如从楼顶起飞，可以调整为楼顶的海拔高度。
     notSetted:
       title: 未设置起飞点
   advancedSetting:
@@ -832,6 +835,10 @@ wayline:
   action:
     noSupportEdit: 暂不支持编辑该动作
   backConfirm: 航线未保存，是否退出
+  collisionWarning:
+    msg: 飞行路径撞到地形
+  nearTerrain:
+    msg: 飞行路径距离地形高度过近
 schedue:
   list:
     title: 计划库

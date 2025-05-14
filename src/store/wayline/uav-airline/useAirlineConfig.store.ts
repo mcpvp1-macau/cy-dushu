@@ -10,6 +10,15 @@ import * as turf from '@turf/turf'
 import { createComputed } from 'zustand-computed'
 import { createInitAirlineConfig, createInitAirpointConfig } from './helper'
 
+export enum Warning {
+  /** 航点间距离过远 */
+  DistanceBetweenWaypoints,
+  /** 碰撞地形 */
+  CollisionTerrain,
+  /** 距离地形高度过近 */
+  NearTerrain,
+}
+
 type StateType = {
   open: boolean
   isDrawHome: boolean
@@ -25,6 +34,7 @@ type StateType = {
     sensorWidth: number
     sensorHeight: number
   } | null
+  warningSet: Set<Warning>
 }
 
 type ActionsType = {
@@ -67,6 +77,8 @@ type ActionsType = {
   /** 根据当前航点计算无人机配置 */
   calcUavByCurrentAirpoint: () => void
   updateCameraInfo: (cameraInfo: StateType['cameraInfo']) => void
+  /** 更新警告信息 */
+  updateWarningSet: (warning: StateType['warningSet']) => void
 }
 
 const initialState = () =>
@@ -82,6 +94,7 @@ const initialState = () =>
     currentActionIndex: 0,
     uav: createInitAirpointConfig(0),
     cameraInfo: null,
+    warningSet: new Set<Warning>(),
   } as StateType)
 
 const computedState = createComputed((state: StateType & ActionsType) => {
@@ -357,6 +370,9 @@ const useAirlineConfigStore = create<
       },
       updateCameraInfo: (cameraInfo) => {
         set({ cameraInfo }, false, 'updateCameraInfo')
+      },
+      updateWarningSet: (warning) => {
+        set({ warningSet: new Set(warning) }, false, 'updateWarningSet')
       },
     })),
     {

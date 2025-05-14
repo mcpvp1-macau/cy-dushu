@@ -34,14 +34,16 @@ export const useAirpointEntity = (
             ? '/images/airline/inverted-triangle-active.svg'
             : '/images/airline/inverted-triangle.svg',
         scale: 1.1,
-        eyeOffset: new Cesium.Cartesian3(0, 0, -5),
+        eyeOffset: new Cesium.Cartesian3(0, 0, -10),
+        disableDepthTestDistance: Number.POSITIVE_INFINITY,
       },
       label: {
         text: idx + 1 + '',
         font: 'bold 16px sans-serif',
         pixelOffset: new Cesium.Cartesian2(0, -3),
         horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-        eyeOffset: new Cesium.Cartesian3(0.0, 0.0, -10.0),
+        eyeOffset: new Cesium.Cartesian3(0.0, 0.0, -20.0),
+        disableDepthTestDistance: Number.POSITIVE_INFINITY,
       },
       properties: {
         point: point,

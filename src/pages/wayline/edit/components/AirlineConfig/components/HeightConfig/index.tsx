@@ -1,6 +1,8 @@
 import HNumber from '../../../HNumber'
 import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import XCard from '@/components/ui/XCard'
+import { Tooltip } from 'antd'
+import { InfoCircleOutlined } from '@ant-design/icons'
 
 type PropsType = unknown
 
@@ -11,7 +13,16 @@ const AirlineHeightConfig: FC<PropsType> = () => {
   const { t } = useTranslation()
 
   return (
-    <XCard title={t('wayline.waylineConfig.atl.title')}>
+    <XCard
+      title={
+        <div>
+          {t('wayline.waylineConfig.atl.title')}{' '}
+          <Tooltip title={t('wayline.waylineConfig.height.tooltip')}>
+            <InfoCircleOutlined className="text-fore" />
+          </Tooltip>
+        </div>
+      }
+    >
       {/* <Radio.Group
           style={{ width: '100%' }}
           options={['绝对高度', '相对起飞点高度', '相对地面高度']}

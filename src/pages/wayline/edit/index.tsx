@@ -1,7 +1,7 @@
 import AirlineConfig from './components/AirlineConfig'
 import AirpointConfig from './components/AirpointConfig'
 import NotTakeoffWarning from './components/NotTakeoffWarning'
-import DistanceWarning from './components/DistanceWarning'
+import WaylineWaning from './components/WaylineWarning'
 import CollapsedPage from '@/components/CollapsedPage'
 import AirlineInfoCard from './components/InfoCard'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -59,7 +59,7 @@ const AirlineAirpointConfig: FC<PropsType> = memo(({ pilot }) => {
           </div>
         </div>
       </CollapsedPage>
-      <DistanceWarning />
+      <WaylineWaning />
       <NotTakeoffWarning />
       {rightToolsDom &&
         createPortal(
