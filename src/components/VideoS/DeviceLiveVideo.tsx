@@ -248,10 +248,12 @@ const DeviceLiveVideo = memo(
 
       const [aiData, setAIData] = useAIDataState()
 
-      const finalUrl = useMemo(
-        () => url + `?t=-1&token=-1&tt=${fetchTime}`,
-        [url, fetchTime],
-      )
+      const finalUrl = useMemo(() => {
+        if (url) {
+          return url + `?t=-1&token=-1&tt=${fetchTime}`
+        }
+        return ''
+      }, [url, fetchTime])
 
       return (
         <div
@@ -289,7 +291,7 @@ const DeviceLiveVideo = memo(
                     : 'translate(0px, 0px)',
               }}
             >
-              {playUrl && !sn && renderVideo && (
+              {finalUrl && !sn && renderVideo && (
                 <Jessibuca
                   key={jessibucaKey}
                   containerId={videoContainerId}

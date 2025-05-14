@@ -192,9 +192,9 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
     const metricsURL = `${src.slice(0, index)}/metrics?stream_id=${src.slice(
       index + '/rtp/'.length,
       flvIndex,
-    )}&client_id=${useUserStore.getState().user?.username ?? ''}_${
-      openTime.current
-    }`
+    )}&client_id=${useUserStore.getState().user?.username ?? ''}_${dayjs(
+      openTime.current,
+    ).format('YYMMDD_HHmm_ssSSS')}`
     return metricsURL
   }, [src])
 
