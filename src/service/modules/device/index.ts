@@ -18,6 +18,14 @@ export const getDeviceTree = (data: API_DEVICE.req.GetDeviceTreeReq) => {
   )
 }
 
+/** 获取目标点的推荐设备列表 */
+export const getRecommendDeviceList = (data: {
+  longitude: number
+  latitude: number
+}) => {
+  return serverControlCenter.post('/recommend/device/list', data)
+}
+
 /** 获取所有设备 (jingqi) */
 export const getAllDeviceList = (data: API_DEVICE.req.GetDeviceListReq) => {
   return serverJingqi.post<API_DEVICE.res.AllDeviceListRes>(
