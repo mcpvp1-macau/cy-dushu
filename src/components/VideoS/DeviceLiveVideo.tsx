@@ -99,27 +99,36 @@ const DeviceLiveVideo = memo(
         {
           queryKey: ['getVideoUrl', { productKey, deviceId, videoId }],
           queryFn: async () => {
-            // 同时获取视频直播地址和流列表
-            const [liveData, streamList] = await Promise.all([
-              live(productKey, deviceId, { videoId }),
-              getDeviceStreamList({
-                streamId: `${productKey}/${deviceId}`,
-              }),
-            ])
-            setFetchTime(Date.now())
-            let url = (liveData.data.playUrl as string) || ''
+            try {
+              // 同时获取视频直播地址和流列表
+              const [liveData, streamList] = await Promise.all([
+                live(productKey, deviceId, { videoId }),
+                getDeviceStreamList({
+                  streamId: `${productKey}/${deviceId}`,
+                }),
+              ])
 
-            // 记忆化获取上次的流
-            const last = sessionStorage.getItem(deviceId + '-videoURL')
-            if (last) {
-              const find = streamList.data.find((e) => e.playUrl === last)
-              if (find) {
-                url = find.playUrl
+              setFetchTime(Date.now())
+              let url = (liveData.data.playUrl as string) || ''
+
+              // 记忆化获取上次的流
+              const last = sessionStorage.getItem(deviceId + '-videoURL')
+              if (last) {
+                const find = streamList.data.find((e) => e.playUrl === last)
+                if (find) {
+                  url = find.playUrl
+                }
               }
-            }
-            return {
-              url,
-              streamList: streamList.data,
+              return {
+                url,
+                streamList: streamList.data,
+              }
+            } catch (error) {
+              console.error(error)
+              return {
+                url: '',
+                streamList: [],
+              }
             }
           },
         },
@@ -200,6 +209,15 @@ const DeviceLiveVideo = memo(
         queryClient,
       )
 
+      // const delay = (callback: () => void, delay: number) => {
+      //   let timer: NodeJS.Timeout | null = null
+      //   timer = setTimeout(() => {
+      //     callback()
+      //     timer && clearTimeout(timer)
+      //     timer = null
+      //   }, delay)
+      // }
+
       // 电子放大
       const {
         enableScale,
@@ -254,6 +272,8 @@ const DeviceLiveVideo = memo(
         }
         return ''
       }, [url, fetchTime])
+
+      console.log('finalUrl', finalUrl)
 
       return (
         <div

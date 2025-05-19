@@ -7,8 +7,8 @@ declare namespace API_EVENTS {
       eventNo: string
       eventName: string
       source: string
-      longitude: number
-      latitude: number
+      longitude: number | null
+      latitude: number | null
       eventType: string
       level: string
       deviceId: string

@@ -12,6 +12,10 @@ const EventMarker: FC<PropsType> = memo(({ data }) => {
 
   const groundHeight = useGroundHeight(longitude, latitude)
 
+  if (!longitude || !latitude) {
+    return null
+  }
+
   return (
     <>
       <Billboard

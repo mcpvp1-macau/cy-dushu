@@ -2,7 +2,7 @@ import { useAsyncEffect } from 'ahooks'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 
-const useGroundHeight = (lng: number, lat: number, level = 11) => {
+const useGroundHeight = (lng: number | null, lat: number | null, level = 11) => {
   const { viewer } = useCesium()
 
   const [groundHeight, setGroundHeight] = useState(0)
@@ -12,7 +12,7 @@ const useGroundHeight = (lng: number, lat: number, level = 11) => {
       return
     }
     const res = await Cesium.sampleTerrain(viewer.terrainProvider, level, [
-      Cesium.Cartographic.fromDegrees(lng, lat),
+      Cesium.Cartographic.fromDegrees(lng || 0, lat || 0),
     ])
     const h = res[0]?.height ?? 0
     if (Math.abs(h - groundHeight) > 0.1) {

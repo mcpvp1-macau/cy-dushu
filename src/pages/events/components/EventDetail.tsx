@@ -142,12 +142,15 @@ const EventDetail: FC<PropsType> = memo(({ eventId, useCol, useGo }) => {
                 <label>{t('common.position')}: </label>
                 <IconButton>
                   <IconToLocation
-                    onClick={() =>
+                    onClick={() => {
+                      if (!data.longitude || !data.latitude) {
+                        return
+                      }
                       bigFlyEmitter.emit('bigFly', {
                         lng: data.longitude,
                         lat: data.latitude,
                       })
-                    }
+                    }}
                   />
                 </IconButton>
               </li>
