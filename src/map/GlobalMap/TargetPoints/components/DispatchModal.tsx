@@ -12,7 +12,7 @@ import { getDeviceTree, getRecommendDeviceList } from '@/service/modules/device'
 import { getSpaceDistance } from '@/utils/geo-math'
 import { Button, Checkbox, Form, Input, InputNumber, Segmented } from 'antd'
 import { useForm } from 'antd/es/form/Form'
-import { round } from 'lodash'
+import { omit, round } from 'lodash'
 
 type PropsType = {
   open: boolean
@@ -108,7 +108,7 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
 
   const handleFlyConfirm = async () => {
     setConfirmLoading(true)
-    const values = form.getFieldsValue()
+    const values = omit(form.getFieldsValue(), ['enableAutoThrow'])
     const resps = await Promise.allSettled(
       Object.values(values).map(async (e: any) => {
         const dev = deviceMap.get(e.deviceId)!
@@ -122,7 +122,7 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
           payload.gohomeAltitude = e.gohomeAltitude
           // 投弹设置
           if (values.enableAutoThrow) {
-            payload.enableAutoThrow = true
+            payload.enableAutoThrow = 'true'
             payload.throwType = 5
           }
         } else {
@@ -144,6 +144,33 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
       setFlyModalOpen(false)
     }
   }
+
+  const compareFn = useMemoizedFn(
+    (a: API_DEVICE.domain.Device, b: API_DEVICE.domain.Device) => {
+      if (a.status !== b.status) {
+        if (a.status === 'ONLINE') {
+          return -1
+        } else if (b.status === 'ONLINE') {
+          return 1
+        }
+      }
+      if (a.remainingPower !== b.remainingPower) {
+        return -((a.remainingPower ?? 0) - (b.remainingPower ?? 0))
+      }
+      if (a.longitude && b.longitude && a.latitude && b.latitude) {
+        const aDistance = getSpaceDistance([
+          position,
+          [a.longitude, a.latitude],
+        ])
+        const bDistance = getSpaceDistance([
+          position,
+          [b.longitude, b.latitude],
+        ])
+        return aDistance - bDistance
+      }
+      return 0
+    },
+  )
 
   return (
     <>
@@ -185,6 +212,7 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
                     <SourceTree
                       data={data}
                       isLoading={isRefetching}
+                      compareFn={compareFn}
                       deviceItemPrefix={(e) => <Checkbox value={e.deviceId} />}
                       deviceItemSuffix={(e) => (
                         <Button
