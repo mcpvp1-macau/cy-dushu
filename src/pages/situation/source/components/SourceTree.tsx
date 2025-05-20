@@ -15,6 +15,7 @@ type PropsType = {
   onDeviceItemClick?: (data: API_DEVICE.domain.Device) => void
   deviceItemPrefix?: (data: API_DEVICE.domain.Device) => ReactNode
   deviceItemSuffix?: (data: API_DEVICE.domain.Device) => ReactNode
+  deviceItemBottom?: (data: API_DEVICE.domain.Device) => ReactNode
 }
 
 const SourceTree: FC<PropsType> = memo(
@@ -24,6 +25,7 @@ const SourceTree: FC<PropsType> = memo(
     onDeviceItemClick,
     deviceItemPrefix,
     deviceItemSuffix,
+    deviceItemBottom,
   }) => {
     const { isOnline, isTask, isNotTask } = useDeviceListConfigStore(
       useShallow((s) => ({
@@ -53,6 +55,7 @@ const SourceTree: FC<PropsType> = memo(
                     onClick={(e) => onDeviceItemClick?.(e)}
                     prefix={deviceItemPrefix?.(e)}
                     suffix={deviceItemSuffix?.(e)}
+                    bottom={deviceItemBottom?.(e)}
                   />
                 ),
                 isLeaf: true,

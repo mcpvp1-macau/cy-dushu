@@ -1,24 +1,31 @@
-import IconSwarm from '@/assets/icons/jsx/IconSwarm'
+import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
 import DeviceIcon from '@/components/device/DeviceIcon'
-import IconButton from '@/components/ui/button/IconButton'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import XModal from '@/components/XModal'
 import { DeviceEnum } from '@/enum/device'
 import { usePostDeviceServiceHandler } from '@/hooks/device/usePostDeviceService'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import DeviceItem from '@/pages/situation/source/components/DeviceItem'
-import SourceStatusCheckGroup from '@/pages/situation/source/components/SourceStatusCheckGroup'
 import SourceTree from '@/pages/situation/source/components/SourceTree'
 import { getDeviceTree, getRecommendDeviceList } from '@/service/modules/device'
+import { getSpaceDistance } from '@/utils/geo-math'
 import { Button, Checkbox, Form, Input, InputNumber, Segmented } from 'antd'
 import { useForm } from 'antd/es/form/Form'
+import { round } from 'lodash'
 
 type PropsType = {
   open: boolean
   /** 经纬度 */
   position: number[]
   onClose: () => void
+}
+
+const fmtDistance = (distance: number) => {
+  if (distance < 1000) {
+    return `${round(distance, 1)} m`
+  }
+  return `${round(distance / 1000, 1)} km`
 }
 
 const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
@@ -143,7 +150,7 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
       <XModal
         title="派遣"
         open={open}
-        onClose={() => onClose()}
+        onClose={onClose}
         width={350}
         noPadding
         footer={false}
@@ -191,6 +198,20 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
                           派遣
                         </Button>
                       )}
+                      deviceItemBottom={(e) =>
+                        e.longitude &&
+                        e.latitude && (
+                          <div className="text-green-500 mr-6 whitespace-nowrap">
+                            距{' '}
+                            {fmtDistance(
+                              getSpaceDistance([
+                                position,
+                                [e.longitude, e.latitude],
+                              ]),
+                            )}
+                          </div>
+                        )
+                      }
                     />
                   </Checkbox.Group>
                 )}
@@ -200,13 +221,15 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
             <>
               {recommendDataIsLoading || !recommendData ? (
                 <AppSpin />
+              ) : recommendData.length === 0 ? (
+                <AppEmpty description="暂无推荐" className="mt-5" />
               ) : (
                 <div className="mt-2">
                   <Checkbox.Group
                     value={checkedDevices}
                     onChange={setCheckDevices}
                   >
-                    {recommendData.slice(0, 5).map((e) => {
+                    {recommendData.map((e) => {
                       return (
                         <DeviceItem
                           key={e.deviceId}
@@ -223,6 +246,20 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
                             >
                               派遣
                             </Button>
+                          }
+                          bottom={
+                            e.longitude &&
+                            e.latitude && (
+                              <div className="text-green-500 mr-6 whitespace-nowrap">
+                                距{' '}
+                                {fmtDistance(
+                                  getSpaceDistance([
+                                    position,
+                                    [e.longitude, e.latitude],
+                                  ]),
+                                )}
+                              </div>
+                            )
                           }
                         />
                       )
@@ -243,7 +280,7 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
             />
 
             <div className="flex justify-end gap-2">
-              <Button>取消</Button>
+              <Button onClick={onClose}>取消</Button>
               <Button type="primary" onClick={handleDispatchClick}>
                 派遣
               </Button>
