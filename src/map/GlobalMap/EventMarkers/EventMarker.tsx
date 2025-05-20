@@ -1,6 +1,5 @@
 import { Billboard } from 'resium'
 import * as Cesium from 'cesium'
-import shijian from '/images/marker/icon/shijian.svg'
 import useGroundHeight from '@/hooks/cesium/useGroundHeight'
 
 type PropsType = {
@@ -26,7 +25,7 @@ const EventMarker: FC<PropsType> = memo(({ data }) => {
           latitude,
           groundHeight,
         )}
-        image={shijian}
+        image={'/images/marker/icon/shijian.svg'}
         width={26}
         height={26}
         verticalOrigin={Cesium.VerticalOrigin.BOTTOM}

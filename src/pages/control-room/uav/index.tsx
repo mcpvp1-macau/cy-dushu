@@ -43,6 +43,8 @@ import InitialPointFly from './components/InitialPointFly'
 import IconTanQi from '@/assets/icons/jsx/IconTanQi'
 import Tanqi from './components/Tanqi'
 import IconControl from '@/assets/icons/jsx/IconControl'
+import MenuIconEvents from '@/assets/icons/jsx/menus/MenuIconEvents'
+import ControlRoomEventDetail from './components/EventDetail'
 
 type PropsType = unknown
 
@@ -85,6 +87,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       'device-data': <IconDeviceData className="text-orange-500" />,
       overlay: <IconDrawArea className="text-blue-500" />,
       tanqi: <IconTanQi className="text-emerald-500" />,
+      event: <MenuIconEvents className="text-[#ae706e]" />,
     }),
     [],
   )
@@ -101,6 +104,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       ['device-data']: t('controlRoom.uav.deviceData.title'),
       overlay: t('controlRoom.uav.overlay.title'),
       tanqi: t('common.tanqi'),
+      event: t('common.event'),
     }),
     [t],
   )
@@ -152,6 +156,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       ),
       overlay: <RightOverlayDetail />,
       tanqi: <Tanqi />,
+      event: <ControlRoomEventDetail />,
     }),
     [productKey, deviceId],
   )
