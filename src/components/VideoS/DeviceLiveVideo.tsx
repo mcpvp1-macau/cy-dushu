@@ -273,8 +273,6 @@ const DeviceLiveVideo = memo(
         return ''
       }, [url, fetchTime])
 
-      console.log('finalUrl', finalUrl)
-
       return (
         <div
           className="size-full overflow-hidden relative bg-black text-sm"
