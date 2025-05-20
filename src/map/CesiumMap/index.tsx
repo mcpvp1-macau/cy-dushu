@@ -28,6 +28,8 @@ const ShanghaiWarZone = lazy(
   () => import('./components/custom/ShanghaiWarZone'),
 )
 
+const GuizhouFarm = lazy(() => import('./components/custom/GuizhouFarm'))
+
 type PropsType = {
   id: string
   children?: ReactNode
@@ -111,11 +113,12 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
             <ShanghaiBanAreas />
           </>
         )}
+        {globalConfig.useGuizhouFarm && <GuizhouFarm />}
       </Suspense>
       <BottomBar />
       <FuzhouJiefangBridge />
       {errorPanelOpen && (
-        <div className="absolute inset-0 z-[99] bg-black/50 backdrop-blur flex justify-center items-center">
+        <div className="absolute inset-0 z-10 bg-black/50 backdrop-blur flex justify-center items-center">
           <div className="flex flex-col gap-3 items-center">
             <div className="text-lg">Something error</div>
             <Button

@@ -40,6 +40,8 @@ export type ConfigType = {
   /** 是否使用地形 */
   useTerrain?: boolean
   useShanghaiBanRoutes?: boolean
+  /** 贵州自定义 */
+  useGuizhouFarm?: boolean
   intelligentPhotographVersion?: number
 }
 

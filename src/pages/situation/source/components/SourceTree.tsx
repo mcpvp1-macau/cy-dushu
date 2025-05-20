@@ -15,15 +15,22 @@ type PropsType = {
   onDeviceItemClick?: (data: API_DEVICE.domain.Device) => void
   deviceItemPrefix?: (data: API_DEVICE.domain.Device) => ReactNode
   deviceItemSuffix?: (data: API_DEVICE.domain.Device) => ReactNode
+  deviceItemBottom?: (data: API_DEVICE.domain.Device) => ReactNode
+  compareFn?: (
+    a: API_DEVICE.domain.Device,
+    b: API_DEVICE.domain.Device,
+  ) => number
 }
 
 const SourceTree: FC<PropsType> = memo(
   ({
     isLoading,
     data,
+    compareFn,
     onDeviceItemClick,
     deviceItemPrefix,
     deviceItemSuffix,
+    deviceItemBottom,
   }) => {
     const { isOnline, isTask, isNotTask } = useDeviceListConfigStore(
       useShallow((s) => ({
@@ -38,26 +45,34 @@ const SourceTree: FC<PropsType> = memo(
       depth = 0,
     ) => {
       const { children, devices } = data
+
+      const childrenDevice = devices.filter((e) =>
+        deviceStatusFilter(e, isOnline, isTask, isNotTask),
+      )
+
+      if (compareFn) {
+        childrenDevice.sort((a, b) => compareFn(a, b))
+      }
+
       return {
         key: data.groupId,
         title: <GroupHeader data={data} depth={depth} />,
         children: [
-          ...devices
-            .filter((e) => deviceStatusFilter(e, isOnline, isTask, isNotTask))
-            .map((e) => {
-              return {
-                key: `device-${e.deviceId}`,
-                title: (
-                  <DeviceItem
-                    data={e}
-                    onClick={(e) => onDeviceItemClick?.(e)}
-                    prefix={deviceItemPrefix?.(e)}
-                    suffix={deviceItemSuffix?.(e)}
-                  />
-                ),
-                isLeaf: true,
-              }
-            }),
+          ...childrenDevice.map((e) => {
+            return {
+              key: `device-${e.deviceId}`,
+              title: (
+                <DeviceItem
+                  data={e}
+                  onClick={(e) => onDeviceItemClick?.(e)}
+                  prefix={deviceItemPrefix?.(e)}
+                  suffix={deviceItemSuffix?.(e)}
+                  bottom={deviceItemBottom?.(e)}
+                />
+              ),
+              isLeaf: true,
+            }
+          }),
           ...(children?.map((e) => resolveGroup(e, depth + 1)) ?? []).filter(
             (e: any) => e.children.length > 0,
           ),
@@ -67,7 +82,7 @@ const SourceTree: FC<PropsType> = memo(
 
     const treeData = useMemo(
       () => [resolveGroup(data)],
-      [data, isOnline, isTask, isNotTask, deviceItemPrefix],
+      [data, isOnline, isTask, isNotTask, deviceItemPrefix, compareFn],
     )
     const [expandKeys, setExpandKeys] = useState<React.Key[]>([
       data.groupId ?? '',
@@ -115,7 +130,7 @@ const SourceTree: FC<PropsType> = memo(
       }
       dfs(data)
       updateHiddenGroupIds(newHiddenGroupIds)
-    }, [data, hiddenDeviceIds])
+    }, [data, hiddenDeviceIds, compareFn])
 
     return (
       <ScrollArea className="h-full">

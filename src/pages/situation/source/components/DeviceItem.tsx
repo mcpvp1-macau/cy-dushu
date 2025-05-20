@@ -16,6 +16,7 @@ type PropsType = {
   data: API_DEVICE.domain.Device
   prefix?: ReactNode
   suffix?: ReactNode
+  bottom?: ReactNode
   onClick?: (data: API_DEVICE.domain.Device) => void
 }
 
@@ -60,78 +61,86 @@ const ignoreBatteryDeviceTypes = new Set([
 ])
 
 /** 设备树中的设备项 */
-const DeviceItem: FC<PropsType> = memo(({ data, onClick, prefix, suffix }) => {
-  /** 设备型号 */
-  const moduleNumber = useMemo(
-    () => data.deviceTags?.find((e) => e.tagName === 'MODEL_NUMBER')?.tagValue,
-    [data],
-  )
+const DeviceItem: FC<PropsType> = memo(
+  ({ data, onClick, prefix, suffix, bottom }) => {
+    /** 设备型号 */
+    const moduleNumber = useMemo(
+      () =>
+        data.deviceTags?.find((e) => e.tagName === 'MODEL_NUMBER')?.tagValue,
+      [data],
+    )
 
-  const isHidden = useDeviceListConfigStore(
-    (s) => s.hiddenDeviceIds[data.deviceId],
-  )
-  const updateHiddenDeviceIds = useDeviceListConfigStore(
-    (s) => s.updateHiddenDeviceIds,
-  )
+    const isHidden = useDeviceListConfigStore(
+      (s) => s.hiddenDeviceIds[data.deviceId],
+    )
+    const updateHiddenDeviceIds = useDeviceListConfigStore(
+      (s) => s.updateHiddenDeviceIds,
+    )
 
-  const { t } = useTranslation()
+    const { t } = useTranslation()
 
-  return (
-    <div onClick={() => onClick?.(data)}>
-      <div className="w-[350px] px-3 py-1 flex items-center justify-between text-fore">
-        <div className="flex items-center gap-2">
-          {prefix}
-          <div className="text-white">
-            <Badge
-              dot
-              offset={[0, 20]}
-              color={data.status === 'ONLINE' ? 'rgb(21, 179, 113)' : '#E45951'}
-            >
-              <DeviceIcon type={data.deviceType} />
-            </Badge>
+    return (
+      <div onClick={() => onClick?.(data)}>
+        <div className="w-[350px] px-3 py-1 flex items-center justify-between text-fore">
+          <div className="flex items-center gap-2">
+            {prefix}
+            <div className="text-white">
+              <Badge
+                dot
+                offset={[0, 20]}
+                color={
+                  data.status === 'ONLINE' ? 'rgb(21, 179, 113)' : '#E45951'
+                }
+              >
+                <DeviceIcon type={data.deviceType} />
+              </Badge>
+            </div>
+            <span>{data.deviceName}</span>
           </div>
-          <span>{data.deviceName}</span>
+          <div className="pr-6">
+            {suffix}
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation()
+                const newHiddenDeviceIds = {
+                  ...useDeviceListConfigStore.getState().hiddenDeviceIds,
+                }
+                newHiddenDeviceIds[data.deviceId] = !isHidden
+                updateHiddenDeviceIds(newHiddenDeviceIds)
+              }}
+            >
+              {isHidden ? <IconNotVisible /> : <IconVisible />}
+            </IconButton>
+          </div>
         </div>
-        <div className="pr-6">
-          {suffix}
-          <IconButton
-            onClick={(e) => {
-              e.stopPropagation()
-              const newHiddenDeviceIds = {
-                ...useDeviceListConfigStore.getState().hiddenDeviceIds,
-              }
-              newHiddenDeviceIds[data.deviceId] = !isHidden
-              updateHiddenDeviceIds(newHiddenDeviceIds)
-            }}
-          >
-            {isHidden ? <IconNotVisible /> : <IconVisible />}
-          </IconButton>
+        <div className="flex justify-between">
+          <div className="px-6 mb-2 flex items-center gap-2 text-fore">
+            <TaskStatusTag taskStatus={data.taskStatus} />
+            {/* 电量 */}
+            {!ignoreBatteryDeviceTypes.has(data.deviceType as DeviceEnum) && (
+              <BatteryStatusTag battery={data.remainingPower || 0} />
+            )}
+            {/* 判断是否报备 */}
+            {'REPORTED' ===
+            data.deviceTags?.find(
+              (tag) => 'FLIGHT_REPORTING_STATUS' === tag.tagName,
+            )?.tagValue ? (
+              <Tooltip title={t('device.status.reported.ok')}>
+                <IconReported className="text-xs text-[#15B371]" />
+              </Tooltip>
+            ) : (
+              <Tooltip title={t('device.status.reported.no')}>
+                <IconNotReported className="text-xs text-fore" />
+              </Tooltip>
+            )}
+            <span className="opacity-80">{moduleNumber}</span>
+          </div>
+          {bottom}
         </div>
       </div>
-      <div className="px-6 mb-2 flex items-center gap-2 text-fore">
-        <TaskStatusTag taskStatus={data.taskStatus} />
-        {/* 电量 */}
-        {!ignoreBatteryDeviceTypes.has(data.deviceType as DeviceEnum) && (
-          <BatteryStatusTag battery={data.remainingPower || 0} />
-        )}
-        {/* 判断是否报备 */}
-        {'REPORTED' ===
-        data.deviceTags?.find(
-          (tag) => 'FLIGHT_REPORTING_STATUS' === tag.tagName,
-        )?.tagValue ? (
-          <Tooltip title={t('device.status.reported.ok')}>
-            <IconReported className="text-xs text-[#15B371]" />
-          </Tooltip>
-        ) : (
-          <Tooltip title={t('device.status.reported.no')}>
-            <IconNotReported className="text-xs text-fore" />
-          </Tooltip>
-        )}
-        <span className="opacity-80">{moduleNumber}</span>
-      </div>
-    </div>
-  )
-})
+    )
+  },
+)
 
 DeviceItem.displayName = 'DeviceItem'
 

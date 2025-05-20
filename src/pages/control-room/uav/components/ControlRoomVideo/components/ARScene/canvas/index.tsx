@@ -80,7 +80,7 @@ const ARSceneCanvas: FC<PropsType> = memo(() => {
           const catesian = Cesium.Cartesian3.fromDegrees(
             coordinates[0],
             coordinates[1],
-            0,
+            coordinates[2] ?? 0,
           )
           // 获取屏幕坐标
           const screenPostion = wgs84ToDrawingBufferCoordinates(
@@ -115,7 +115,7 @@ const ARSceneCanvas: FC<PropsType> = memo(() => {
           const catesian = Cesium.Cartesian3.fromDegrees(
             coordinates[0],
             coordinates[1],
-            0,
+            coordinates[2] ?? 0,
           )
           // 获取屏幕坐标
           const screenPostion = wgs84ToDrawingBufferCoordinates(
@@ -148,7 +148,7 @@ const ARSceneCanvas: FC<PropsType> = memo(() => {
           const catesian = Cesium.Cartesian3.fromDegrees(
             coordinates[0],
             coordinates[1],
-            0,
+            coordinates[2] ?? 0,
           )
           // 获取屏幕坐标
           const screenPostion = wgs84ToDrawingBufferCoordinates(

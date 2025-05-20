@@ -9,7 +9,7 @@ const ARSceneUavAirline: FC<PropsType> = memo(() => {
 
   return (
     <ARSceneAirline
-      data={airpointPositions.map((e) => [e.pointX, e.pointY, e.pointZ])}
+      data={airpointPositions.map((e) => [e.pointX, e.pointY, e.pointZ - 20])}
     />
   )
 })

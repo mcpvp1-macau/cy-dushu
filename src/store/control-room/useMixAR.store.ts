@@ -61,7 +61,7 @@ type StateType = {
   overlaiesAR: number[][][]
 
   cesiumViewer: Viewer | null
-  mapCesiumViwer: Viewer | null
+  mapCesiumViewer: Viewer | null
 
   /** ====== 3D 虚实融合 ====== */
   roads: API_GEO_SERACH.res.RoadDataRes | null
@@ -104,7 +104,7 @@ type ActionsType = {
   updateAOIsRTree: (aoisRTree: StateType['aoisRTree']) => void
   updatePOIsRTree: (poisRTree: StateType['poisRTree']) => void
   updateOverlayRTree: (overlayRTree: StateType['overlayRTree']) => void
-  updateMapCesiumViwer: (mapCesiumViwer: StateType['mapCesiumViwer']) => void
+  updateMapCesiumViwer: (mapCesiumViwer: StateType['mapCesiumViewer']) => void
 }
 
 /** 虚实融合 */
@@ -138,7 +138,7 @@ const useMixARStore = create<StateType & ActionsType>()(
       poisRTree: null,
       overlayRTree: null,
       cesiumViewer: null,
-      mapCesiumViwer: null,
+      mapCesiumViewer: null,
       updateEnable: (enable) => {
         set({ enable, arData: [], features: [] }, false, 'updateEnable')
       },
@@ -204,8 +204,8 @@ const useMixARStore = create<StateType & ActionsType>()(
       updateCeisumViewer: (cesiumViewer) => {
         set({ cesiumViewer }, false, 'updateCeisumViewer')
       },
-      updateMapCesiumViwer: (mapCesiumViwer) => {
-        set({ mapCesiumViwer }, false, 'updateMapCesiumViwer')
+      updateMapCesiumViwer: (mapCesiumViewer) => {
+        set({ mapCesiumViewer }, false, 'updateMapCesiumViwer')
       },
       updateOverlayRTree: (overlayRTree) => {
         set({ overlayRTree }, false, 'updateOverlayRTree')

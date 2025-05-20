@@ -20,7 +20,7 @@ const useShanghaiWarZoneStore = create<StateType & ActionsType>()(
       }),
       {
         name: 'shanghai-war-zone-config',
-        storage: createJSONStorage(() => sessionStorage, {
+        storage: createJSONStorage(() => localStorage, {
           replacer: (key: string, value: any) => {
             if (key === 'hiddenZones') {
               return Array.from(value)

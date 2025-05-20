@@ -1,24 +1,31 @@
-import IconSwarm from '@/assets/icons/jsx/IconSwarm'
+import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
 import DeviceIcon from '@/components/device/DeviceIcon'
-import IconButton from '@/components/ui/button/IconButton'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import XModal from '@/components/XModal'
 import { DeviceEnum } from '@/enum/device'
 import { usePostDeviceServiceHandler } from '@/hooks/device/usePostDeviceService'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import DeviceItem from '@/pages/situation/source/components/DeviceItem'
-import SourceStatusCheckGroup from '@/pages/situation/source/components/SourceStatusCheckGroup'
 import SourceTree from '@/pages/situation/source/components/SourceTree'
 import { getDeviceTree, getRecommendDeviceList } from '@/service/modules/device'
+import { getSpaceDistance } from '@/utils/geo-math'
 import { Button, Checkbox, Form, Input, InputNumber, Segmented } from 'antd'
 import { useForm } from 'antd/es/form/Form'
+import { omit, round } from 'lodash'
 
 type PropsType = {
   open: boolean
   /** 经纬度 */
   position: number[]
   onClose: () => void
+}
+
+const fmtDistance = (distance: number) => {
+  if (distance < 1000) {
+    return `${round(distance, 1)} m`
+  }
+  return `${round(distance / 1000, 1)} km`
 }
 
 const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
@@ -101,7 +108,7 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
 
   const handleFlyConfirm = async () => {
     setConfirmLoading(true)
-    const values = form.getFieldsValue()
+    const values = omit(form.getFieldsValue(), ['enableAutoThrow'])
     const resps = await Promise.allSettled(
       Object.values(values).map(async (e: any) => {
         const dev = deviceMap.get(e.deviceId)!
@@ -115,7 +122,7 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
           payload.gohomeAltitude = e.gohomeAltitude
           // 投弹设置
           if (values.enableAutoThrow) {
-            payload.enableAutoThrow = true
+            payload.enableAutoThrow = 'true'
             payload.throwType = 5
           }
         } else {
@@ -138,12 +145,39 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
     }
   }
 
+  const compareFn = useMemoizedFn(
+    (a: API_DEVICE.domain.Device, b: API_DEVICE.domain.Device) => {
+      if (a.status !== b.status) {
+        if (a.status === 'ONLINE') {
+          return -1
+        } else if (b.status === 'ONLINE') {
+          return 1
+        }
+      }
+      if (a.remainingPower !== b.remainingPower) {
+        return -((a.remainingPower ?? 0) - (b.remainingPower ?? 0))
+      }
+      if (a.longitude && b.longitude && a.latitude && b.latitude) {
+        const aDistance = getSpaceDistance([
+          position,
+          [a.longitude, a.latitude],
+        ])
+        const bDistance = getSpaceDistance([
+          position,
+          [b.longitude, b.latitude],
+        ])
+        return aDistance - bDistance
+      }
+      return 0
+    },
+  )
+
   return (
     <>
       <XModal
         title="派遣"
         open={open}
-        onClose={() => onClose()}
+        onClose={onClose}
         width={350}
         noPadding
         footer={false}
@@ -178,6 +212,7 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
                     <SourceTree
                       data={data}
                       isLoading={isRefetching}
+                      compareFn={compareFn}
                       deviceItemPrefix={(e) => <Checkbox value={e.deviceId} />}
                       deviceItemSuffix={(e) => (
                         <Button
@@ -191,6 +226,20 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
                           派遣
                         </Button>
                       )}
+                      deviceItemBottom={(e) =>
+                        e.longitude &&
+                        e.latitude && (
+                          <div className="text-green-500 mr-6 whitespace-nowrap">
+                            距{' '}
+                            {fmtDistance(
+                              getSpaceDistance([
+                                position,
+                                [e.longitude, e.latitude],
+                              ]),
+                            )}
+                          </div>
+                        )
+                      }
                     />
                   </Checkbox.Group>
                 )}
@@ -200,13 +249,15 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
             <>
               {recommendDataIsLoading || !recommendData ? (
                 <AppSpin />
+              ) : recommendData.length === 0 ? (
+                <AppEmpty description="暂无推荐" className="mt-5" />
               ) : (
                 <div className="mt-2">
                   <Checkbox.Group
                     value={checkedDevices}
                     onChange={setCheckDevices}
                   >
-                    {recommendData.slice(0, 5).map((e) => {
+                    {recommendData.map((e) => {
                       return (
                         <DeviceItem
                           key={e.deviceId}
@@ -223,6 +274,20 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
                             >
                               派遣
                             </Button>
+                          }
+                          bottom={
+                            e.longitude &&
+                            e.latitude && (
+                              <div className="text-green-500 mr-6 whitespace-nowrap">
+                                距{' '}
+                                {fmtDistance(
+                                  getSpaceDistance([
+                                    position,
+                                    [e.longitude, e.latitude],
+                                  ]),
+                                )}
+                              </div>
+                            )
                           }
                         />
                       )
@@ -243,7 +308,7 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
             />
 
             <div className="flex justify-end gap-2">
-              <Button>取消</Button>
+              <Button onClick={onClose}>取消</Button>
               <Button type="primary" onClick={handleDispatchClick}>
                 派遣
               </Button>
