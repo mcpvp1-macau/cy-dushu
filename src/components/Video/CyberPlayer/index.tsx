@@ -1,6 +1,7 @@
-import AppSpin from '@/components/AppSpin'
-import { useAsyncEffect } from 'ahooks'
 import { forwardRef, useImperativeHandle } from 'react'
+import Player, { Events } from 'xgplayer'
+import HlsPlugin from 'xgplayer-hls'
+import 'xgplayer/dist/index.min.css'
 
 export type VideoInfoEvent = {
   duration: number
@@ -15,22 +16,15 @@ export type TimeUpdateEvent = {
 
 export type PlayEvent = {
   type: string
-  newstate: string
-  oldstate: string
-  reason: string
-  playReason: string
 }
 
 export type PauseOrBufferEvent = {
   type: string
-  newstate: string
-  oldstate: string
-  reason: string
 }
 
 type PropsType = {
   src: string
-  autostart?: boolean;
+  autostart?: boolean
   onVideoInfo?: (event: VideoInfoEvent) => void
   onTimeUpdate?: (event: TimeUpdateEvent) => void
   onPlay?: (event: PlayEvent) => void
@@ -41,109 +35,108 @@ type PropsType = {
 type CyberPlayerRef = {
   play: () => void
   pause: () => void
-  stop: () => void
   seek: (position: number) => void
-  getDuration: () => number
-  getState: () => 'playing' | 'paused' | 'idle' | 'buffering'
   /** event 有 ready, setupError, playlist, playlistItem, playlistComplete, bufferChange, play, pause, buffer, idle, complete, error, seek, seeked, time, mute, volume, fullscreen, resize, levels, levelsChanged, captionsList, captionsChange, controls, displayClick, meta，performanceInfo, hls_level_updated,rtcEvent,sei_parsed 等  */
   on: (event: string, callback: (event: any) => void) => void
   player: any
+  setPlaybackRate: (rate: number) => void
 }
 
 const CyberPlayer = memo(
   forwardRef<CyberPlayerRef, PropsType>((props, ref) => {
-    const playerRef = useRef<Record<string, any> | null>(null)
+    const elRef = useRef<HTMLDivElement>(null)
+    const playerRef = useRef<Player | null>(null)
 
-    const playTimer = useRef<NodeJS.Timeout | null>(null)
     useImperativeHandle(ref, () => ({
       play: () => playerRef.current?.play(),
       pause: () => playerRef.current?.pause(),
-      stop: () => {
-        playTimer.current = setTimeout(() => playerRef.current?.stop(), 500)
+      seek: (position) => {
+        if (playerRef.current) {
+          // playerRef.current.currentTime = position
+          playerRef.current.seek(position, 'auto')
+        }
       },
-      seek: (position) => playerRef.current?.seek(position),
-      getState: () => playerRef.current?.getState(),
-      getDuration: () => playerRef.current?.getDuration(),
       resize: () => playerRef.current?.resize(),
       on: (event, callback) => playerRef.current?.on(event, callback),
       player: playerRef.current,
+      setPlaybackRate: (rate: number) => {
+        if (playerRef.current) {
+          playerRef.current.playbackRate = rate
+        }
+      },
     }))
 
-    const [loaded, setLoaded] = useState(!!window?.cyberplayer)
-
     useEffect(() => {
-      if (!loaded) {
+      if (!elRef.current) {
         return
       }
-      const player = window.cyberplayer('cyber-player').setup({
-        title: 'h265点播播放',
+      const isHls = props.src.includes('.m3u8')
+      const player = new Player({
+        el: elRef.current,
+        url: props.src,
+        videoInit: true,
         width: '100%',
         height: '100%',
-        autostart: props.autostart ?? true,
-        stretching: 'uniform',
-        repeat: false,
-        volume: 100,
+        defaultMuted: true,
+        plugins: [isHls ? HlsPlugin : null],
+        autoplay: props.autostart ?? true,
+        autoplayMuted: true,
         controls: false,
-        file: props.src,
+        defaultPlaybackRate: 1,
       })
+
       playerRef.current = player
 
-      player.onMeta((e: VideoInfoEvent) => {
-        setTimeout(() => player.resize('100%', '100%'))
-        props.onVideoInfo?.(e)
+      player.on(Events.LOADED_DATA, () => {
+        setTimeout(() => player.resize())
+        props.onVideoInfo?.({
+          duration: player.duration,
+
+          // @ts-ignore
+          width: player._videoWidth,
+          // @ts-ignore
+          height: player._videoHeight,
+        })
       })
-      player.onPlay(props.onPlay)
-      player.onTime(props.onTimeUpdate)
-      player.onPause(props.onPause)
-      player.onBuffer(props.onBuffer)
+      player.on(Events.PLAY, () => {
+        props.onPlay?.({
+          type: 'play',
+        })
+      })
+      player.on(Events.TIME_UPDATE, (e: TimeUpdateEvent) => {
+        props.onTimeUpdate?.({
+          position: player.currentTime,
+          duration: player.duration,
+        })
+      })
+      player.on(Events.PAUSE, (e: PauseOrBufferEvent) => {
+        props.onPause?.(e)
+      })
+      player.on(Events.PLAYING, (e: PauseOrBufferEvent) => {
+        props.onBuffer?.({
+          type: 'play',
+        })
+      })
+      // player.on(Events.SEEKING, (e: PauseOrBufferEvent) => {
+      //   props.onBuffer?.({
+      //     type: 'buffer',
+      //   })
+      // })
+      player.on(Events.WAITING, (e: PauseOrBufferEvent) => {
+        props.onBuffer?.({
+          type: 'buffer',
+        })
+      })
 
       return () => {
-        playerRef.current?.remove()
-        clearTimeout(playTimer.current!)
+        playerRef.current?.destroy()
       }
-    }, [props.src, loaded])
+    }, [props.src])
 
-    useAsyncEffect(async () => {
-      if (loaded) {
-        return
-      }
-      try {
-        await loadCyberPlayer()
-        setLoaded(true)
-      } catch (e) {
-        console.error('load cyberplayer failed')
-      }
-    }, [])
-
-    if (!loaded) {
-      return <AppSpin />
-    }
-
-    return <div id="cyber-player" />
+    return <div id="cyber-player" ref={elRef} />
   }),
 )
 
 CyberPlayer.displayName = 'CyberPlayer'
 
 export default CyberPlayer
-
-// 加载 cyberplayer
-const loadCyberPlayer = async () => {
-  return new Promise<void>((resolve, reject) => {
-    if (window.cyberplayer) {
-      resolve()
-      return
-    }
-    const script = document.createElement('script')
-    script.src = '/js/cyberplayer/cyberplayer.js'
-    document.body.appendChild(script)
-    script.onload = () => {
-      script.remove()
-      resolve()
-    }
-    script.onerror = () => {
-      script.remove()
-      reject('load cyberplayer failed')
-    }
-  })
-}

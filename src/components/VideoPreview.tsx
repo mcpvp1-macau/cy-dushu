@@ -1,21 +1,53 @@
 import IconPlay from '@/assets/icons/jsx/IconPlay'
 import { memo, ReactNode, type FC } from 'react'
+import { useEffect } from 'react'
+import Player from 'xgplayer'
+import HlsPlugin from 'xgplayer-hls'
 
 type PropsType = {
   previewSrc: string
   size?: 'small' | 'middle' | 'large'
   info?: ReactNode
   onClick?: () => void
+  isAutoSrc?: boolean // 是否自动获取视频源封面
+  videoUrl?: string // 视频源地址
 }
 
 const VideoPreview: FC<PropsType> = memo(
-  ({ previewSrc, info, size = 'large', onClick }) => {
+  ({ previewSrc, info, size = 'large', onClick, isAutoSrc, videoUrl }) => {
+
+    useEffect(() => {
+      if (isAutoSrc && videoUrl) {
+        const isHls = videoUrl.includes('.m3u8')
+        const player = new Player({
+          id: videoUrl,
+          url: videoUrl,
+          videoInit: true,
+          width: '100%',
+          height: '100%',
+          muted: true,
+          plugins: [isHls ? HlsPlugin : null],
+          autoplayMuted: true,
+          autoplay: false,
+        })
+
+        return () => {
+          player.destroy()
+        }
+      }
+    }, [isAutoSrc, videoUrl])
+
     return (
       <div
         className="relative w-full aspect-video group rounded-[3px] overflow-hidden"
         onClick={onClick}
       >
-        <img className="size-full object-cover" src={previewSrc} />
+        {isAutoSrc ? (
+          <div id={videoUrl} className="video-preview-img"></div>
+        ) : (
+          <img className="size-full object-cover" src={previewSrc} />
+        )}
+
         <div className="absolute bottom-0 flex justify-center gap-0.5 py-0.5 text-xs bg-ground-1 bg-opacity-70 w-full z-10">
           {info}
         </div>

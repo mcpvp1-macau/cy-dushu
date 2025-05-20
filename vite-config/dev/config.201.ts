@@ -35,6 +35,10 @@ export default mergeConfig(
           target: 'http://172.21.30.201:32011',
           changeOrigin: true,
         },
+        '/data': {
+          target: 'http://61.153.111.197:32650',
+          changeOrigin: true,
+        },
       },
     },
     define: {

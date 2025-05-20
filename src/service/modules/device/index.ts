@@ -2,7 +2,7 @@ import { XCustomConfig } from '@/service/servers/liqunAxios'
 import serverControlCenter from '@/service/servers/serverControlCenter'
 import serverJingqi from '@/service/servers/serverJingqi'
 import serverOTA from '@/service/servers/serverOTA'
-
+import serverVod from '@/service/servers/serverVod'
 /** 获取所有设备类型 */
 export const getAllDeviceType = () => {
   return serverControlCenter.get<API_DEVICE.res.DeviceTypeListRes>(
@@ -150,6 +150,24 @@ export const getHistoryVideo = async (
     },
   )
 }
+/** 获取历史视频 */
+export const getHistoryVideo2 = async (
+  productKey: string,
+  deviceId: string,
+  id: string,
+  data: { startTime: string; endTime: string },
+) => {
+  return serverVod.post<API_DEVICE.res.GetHistoryListRes>(
+    `/vod/${productKey}/${deviceId}/history`,
+    {
+      videoId: id,
+      begin: data.startTime,
+      end: data.endTime,
+      transport: 'HLS',
+    },
+  )
+}
+
 
 /** 获取历史视频 */
 export const getHistoryM3u8Video = async (

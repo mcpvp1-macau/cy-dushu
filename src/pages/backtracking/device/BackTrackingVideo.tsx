@@ -1,4 +1,4 @@
-import { getHistoryVideo } from '@/service/modules/device'
+import { getHistoryVideo2 } from '@/service/modules/device'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { useMemo } from 'react'
@@ -32,7 +32,7 @@ const BackTrackingVideo: React.FC<PropsType> = ({
     {
       queryKey: ['getHistoryVideo', deviceId, startTime, endTime],
       queryFn: () =>
-        getHistoryVideo(productKey, deviceId, videoId!, {
+        getHistoryVideo2(productKey, deviceId, videoId!, {
           startTime,
           endTime,
         }),
@@ -49,6 +49,11 @@ const BackTrackingVideo: React.FC<PropsType> = ({
           dayjs(item.timeRange[0]).isBefore(dayjs(dataTime)) &&
           dayjs(item.timeRange[1]).isAfter(dayjs(dataTime)),
       )
+      console.log(
+        dayjs(dataTime).valueOf() - dayjs(item?.timeRange[0]).valueOf(),
+        'dataTime',
+      )
+
       return {
         url: item?.playUrl || '',
         time: dayjs(dataTime).diff(dayjs(item?.timeRange[0]), 'second'),
@@ -64,7 +69,14 @@ const BackTrackingVideo: React.FC<PropsType> = ({
       </div>
     )
 
-  return <VideoPlayerBackTracking src={url} playing={playing} time={time} multiple={multiple} />
+  return (
+    <VideoPlayerBackTracking
+      src={url}
+      playing={playing}
+      time={time}
+      multiple={multiple}
+    />
+  )
 }
 
 export default BackTrackingVideo

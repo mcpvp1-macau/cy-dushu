@@ -1,5 +1,5 @@
 import { dft } from '@/constant/time-fmt'
-import { getHistoryVideo, getHistoryM3u8Video } from '@/service/modules/device'
+import { getHistoryM3u8Video, getHistoryVideo2 } from '@/service/modules/device'
 import { Dayjs } from 'dayjs'
 
 const useVideoList = (
@@ -10,7 +10,7 @@ const useVideoList = (
   date: [Dayjs, Dayjs] | Dayjs,
 ) => {
   const queryClient = useQueryClient()
-  const post = deviceType === 'WANGLOU' ? getHistoryM3u8Video : getHistoryVideo
+  const post = deviceType === 'WANGLOU' ? getHistoryM3u8Video : getHistoryVideo2
   const { startTime, endTime } = useMemo(() => {
     if (Array.isArray(date)) {
       //

@@ -273,7 +273,6 @@ const DeviceLiveVideo = memo(
         return ''
       }, [url, fetchTime])
 
-      console.log('finalUrl', finalUrl)
 
       return (
         <div

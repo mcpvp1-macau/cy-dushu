@@ -2,7 +2,7 @@ import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
 import VideoPreview from '@/components/VideoPreview'
 import { dft } from '@/constant/time-fmt'
-import { getHistoryVideo } from '@/service/modules/device'
+import { getHistoryVideo2 } from '@/service/modules/device'
 import { Col, DatePicker, Row, Select } from 'antd'
 import { Dayjs } from 'dayjs'
 import VideoViewModal from './VideoViewModal'
@@ -48,7 +48,7 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
         `${dateRange?.[0].unix()}-${dateRange?.[1].unix()}`,
       ],
       queryFn: () =>
-        getHistoryVideo(productKey, deviceId, videoId!, {
+        getHistoryVideo2(productKey, deviceId, videoId!, {
           startTime: dateRange![0].format(dft),
           endTime: dateRange![1].format(dft),
         }),

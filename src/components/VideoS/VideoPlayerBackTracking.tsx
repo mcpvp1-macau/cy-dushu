@@ -29,7 +29,6 @@ type PropsType = {
 
 const VideoPlayer: FC<PropsType> = memo(
   ({ src, rightTools, playing, time, multiple }) => {
-    // const [isPlaying, setIsPlaying] = useState(true);
 
     const playerRef = useRef<ComponentRef<typeof CyberPlayer>>(null)
 
@@ -102,7 +101,7 @@ const VideoPlayer: FC<PropsType> = memo(
           handlePause()
         }
         try {
-          playerRef.current?.player?.setPlaybackRate(multiple)
+          multiple && playerRef.current?.setPlaybackRate(multiple)
         } catch (error) {}
       }
     }, [time])
@@ -110,7 +109,7 @@ const VideoPlayer: FC<PropsType> = memo(
     useEffect(() => {
       if (multiple) {
         try {
-          playerRef.current?.player?.setPlaybackRate(multiple)
+          playerRef.current?.setPlaybackRate(multiple)
         } catch (error) {}
       }
     }, [multiple])

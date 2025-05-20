@@ -70,6 +70,8 @@ const HistoryVideo: React.FC<PropsType> = memo(
                   <VideoPreview
                     size="small"
                     previewSrc={`/storage/${e.previewUrl}`}
+                    videoUrl={e.playUrl}
+                    isAutoSrc={!e.previewUrl}
                     info={
                       <p className="flex gap-1">
                         <span>{dayjs(e.timeRange[0])?.format('HH:mm')}</span>-
