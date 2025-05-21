@@ -8,6 +8,7 @@ import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
 import { createOverlay } from '@/service/modules/layer_overlay'
 import * as turf from '@turf/turf'
 import DrawingPolygon from './components/DrawingPolygon'
+import { round } from 'lodash'
 
 type PropsType = {
   onSuccess?: () => void
@@ -33,7 +34,7 @@ const getFan = (pivot: number[], startPoint: number[], endPoint: number[]) => {
       bearing -= 360
     }
     const newPoint = turf.destination(pp, distance, bearing)
-    res.push(newPoint.geometry.coordinates)
+    res.push([...newPoint.geometry.coordinates, pivot[2]])
   }
   res.push(turf.destination(pp, distance, endBearing).geometry.coordinates)
   res.push(pivot)
@@ -55,42 +56,6 @@ const DrawFan: FC<PropsType> = memo(({ onSuccess }) => {
 
   const drawingColor = useMapDrawStore((s) => s.drawingColor)
 
-  // useEffect(() => {
-  //   if (!viewer) {
-  //     return
-  //   }
-
-  //   const position = new Cesium.CallbackProperty(() => {
-  //     if (!pivot.current || !startPoint.current || !endPoint.current) {
-  //       return {
-  //         positions: Cesium.Cartesian3.fromDegreesArray([0, 0, 0, 0]),
-  //       }
-  //     }
-  //     const result = Cesium.Cartesian3.fromDegreesArray(
-  //       flatten(getFan(pivot.current, startPoint.current, endPoint.current)),
-  //     )
-  //     return {
-  //       positions: result,
-  //     }
-  //   }, false)
-
-  //   const e = viewer.entities.add({
-  //     polygon: {
-  //       hierarchy: position,
-  //       material: Cesium.Color.fromCssColorString(drawingColor).withAlpha(0.5),
-  //       height: 0,
-  //       outline: true,
-  //       outlineColor: Cesium.Color.fromCssColorString(drawingColor),
-  //     },
-  //   })
-
-  //   return () => {
-  //     attempt(() => {
-  //       viewer.entities.remove(e)
-  //     })
-  //   }
-  // }, [viewer, drawingColor])
-
   useEffect(() => {
     if (!viewer) {
       return
@@ -109,9 +74,9 @@ const DrawFan: FC<PropsType> = memo(({ onSuccess }) => {
       if (!cartesian) return
       // 地形上的点
       if (!latestPivot.current) {
-        setPivot(cartesian3ToDegrees(cartesian).slice(0, 2))
+        setPivot(cartesian3ToDegrees(cartesian))
       } else {
-        setStartPoint(cartesian3ToDegrees(cartesian).slice(0, 2))
+        setStartPoint(cartesian3ToDegrees(cartesian))
       }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
@@ -154,7 +119,13 @@ const DrawFan: FC<PropsType> = memo(({ onSuccess }) => {
       layerId: data.layerId,
       overlayName: data.overlayName,
       overlayType: 'POLYGON',
-      overlayPositions: JSON.stringify(getFan(pivot, startPoint, endPoint)),
+      overlayPositions: JSON.stringify(
+        getFan(pivot, startPoint, endPoint).map((e) => [
+          e[0],
+          e[1],
+          round(e[2], 2),
+        ]),
+      ),
       overlayBindType: 'NORMAL',
       overlayStyleConfig: JSON.stringify({
         contact: {

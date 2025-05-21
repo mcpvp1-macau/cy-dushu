@@ -166,6 +166,11 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
         const f = turf.circle([positions[0], positions[1]], positions[3], {
           units: 'meters',
         })
+        f.geometry.coordinates[0] = f.geometry.coordinates[0].map((item) => [
+          item[0],
+          item[1],
+          positions[2],
+        ])
 
         f.properties = {
           name: e.overlayName,

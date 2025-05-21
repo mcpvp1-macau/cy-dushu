@@ -7,6 +7,7 @@ import AddFormModal from './components/AddFormModal'
 import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
 import { createOverlay } from '@/service/modules/layer_overlay'
 import DrawingPolygon from './components/DrawingPolygon'
+import { round } from 'lodash'
 
 type PropsType = {
   onSuccess?: () => void
@@ -37,7 +38,7 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
       if (!cartesian) return
       // 地形上的点
       const geo = cartesian3ToDegrees(cartesian)
-      setPaths((prev) => [...prev, [geo[0], geo[1]]])
+      setPaths((prev) => [...prev, [geo[0], geo[1], round(geo[2], 2)]])
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
     // 移动
@@ -49,7 +50,7 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
       // 地形上的点
       const geo = cartesian3ToDegrees(cartesian)
       // endPoint.current = [geo[0], geo[1]]
-      setEndPoint([geo[0], geo[1]])
+      setEndPoint([geo[0], geo[1], round(geo[2], 2)])
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
 
     // 右键结束
