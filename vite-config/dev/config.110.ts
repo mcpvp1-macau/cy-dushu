@@ -7,6 +7,12 @@ export default mergeConfig(
     server: {
       host: '0.0.0.0',
       proxy: {
+        '/proxyApi/otherService/jingqi/vodServer': {
+          target: 'http://135.100.11.115:8080',
+          // target: 'http://127.0.0.1:7001/',
+          changeOrigin: true,
+          rewrite: (path) => path.replace('/proxyApi/otherService/jingqi/vodServer', ''),
+        },
         // 4A 接口
         '/proxyApi': {
           target: 'http://135.100.11.110:31851/',

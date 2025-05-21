@@ -99,6 +99,8 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
                 <Col span={24} md={12} lg={8} key={e.playUrl}>
                   <VideoPreview
                     previewSrc={`/storage/${e.previewUrl}`}
+                    videoUrl={e.playUrl}
+                    isAutoSrc={!e.previewUrl}
                     info={
                       <p>
                         <span>{e.timeRange[0]}</span>-

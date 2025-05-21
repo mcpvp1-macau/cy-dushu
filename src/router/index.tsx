@@ -12,7 +12,7 @@ import events from './modules/events'
 import backtracking from './modules/backtracking'
 import defence from './modules/defence'
 import AppErrorBoundary from '@/components/AppError'
-import Page404 from '@/pages/404'
+// import Page404 from '@/pages/404'
 import share from './modules/share'
 import eventResolve from './modules/event-resolve'
 
@@ -33,10 +33,10 @@ export const rootRoute = {
     share,
     // 测试页面
     ...(import.meta.env.DEV ? [demo] : []),
-    {
-      path: '*',
-      element: <Page404 />,
-    },
+    // {
+    //   path: '*',
+    //   element: <Page404 />,
+    // },
   ],
   ErrorBoundary: AppErrorBoundary,
 } as RouteObject

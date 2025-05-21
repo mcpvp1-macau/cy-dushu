@@ -30,6 +30,7 @@ dayjs.locale('zh-cn')
     return
   }
   useUserStore.getState().fetchUserInfoAndMenus()
+  useUserStore.getState().fetchSystemInfo()
 
   ReactDOM.createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>

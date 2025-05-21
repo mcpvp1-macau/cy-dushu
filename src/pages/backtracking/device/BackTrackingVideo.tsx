@@ -49,10 +49,6 @@ const BackTrackingVideo: React.FC<PropsType> = ({
           dayjs(item.timeRange[0]).isBefore(dayjs(dataTime)) &&
           dayjs(item.timeRange[1]).isAfter(dayjs(dataTime)),
       )
-      console.log(
-        dayjs(dataTime).valueOf() - dayjs(item?.timeRange[0]).valueOf(),
-        'dataTime',
-      )
 
       return {
         url: item?.playUrl || '',

@@ -10,7 +10,6 @@ export default mergeConfig(
         // 4A 接口
         '/proxyApi': {
           target: 'http://172.21.30.201:32711/',
-          // target: 'http://127.0.0.1:7001/',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/proxyApi/, '/'),
         },
@@ -37,6 +36,10 @@ export default mergeConfig(
         },
         '/data': {
           target: 'http://61.153.111.197:32650',
+          changeOrigin: true,
+        },
+        '/vod/download': {
+          target: 'http://172.21.30.201:31118',
           changeOrigin: true,
         },
       },

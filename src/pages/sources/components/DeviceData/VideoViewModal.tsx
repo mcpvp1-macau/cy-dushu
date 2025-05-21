@@ -4,6 +4,7 @@ import XModal from '@/components/XModal'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { getVodUrl } from '@/service/modules/video'
 import { DownloadOutlined } from '@ant-design/icons'
+import { saveAs } from 'file-saver'
 
 type PropsType = {
   /** data 存在时 自动打开 */
@@ -17,6 +18,11 @@ const VideoViewModal: FC<PropsType> = memo(({ data, onClose }) => {
 
   const handleDownloadClick = async () => {
     if (data.playUrl) {
+      if (data.playUrl.includes('.mp4')) {
+        // window.open(data.playUrl, 'download')
+        saveAs(data.playUrl)
+        return
+      }
       const resp = await getVodUrl(data.playUrl)
       if (resp.data?.location) {
         msgApi.info('正在下载视频, 请稍候~')
@@ -24,7 +30,8 @@ const VideoViewModal: FC<PropsType> = memo(({ data, onClose }) => {
         if (globalConfig.vodVideoUrl) {
           url = url.replace(globalConfig.vodVideoUrl, '')
         }
-        window.open(url, 'download')
+        saveAs(url)
+        // window.open(url, 'download')
       } else {
         msgApi.error(resp.message)
       }

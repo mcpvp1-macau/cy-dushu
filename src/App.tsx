@@ -24,7 +24,6 @@ import backtracking from './router/modules/backtracking'
 import share from './router/modules/share.tsx'
 import { XProvider } from '@ant-design/x'
 import Update from './components/Update'
-
 const hidenSet = new Set([
   controlRoom.id,
   sources.id,

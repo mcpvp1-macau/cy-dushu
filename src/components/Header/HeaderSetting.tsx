@@ -7,7 +7,7 @@ import { Tabs } from 'antd'
 import MapSetting from './setting/MapSetting'
 import WarnningSetting from './setting/WarnningSetting'
 import SystemSetting from './setting/SystemSetting'
-
+import SourceSetting from './setting/SourceSetting'
 type PropsType = unknown
 
 const HeaderSetting: FC<PropsType> = memo(() => {
@@ -56,6 +56,11 @@ const HeaderSetting: FC<PropsType> = memo(() => {
                 key: 'system_setting',
                 label: t('setting.system.title'),
                 children: <SystemSetting />,
+              },
+              {
+                key: 'source_setting',
+                label: '资源',
+                children: <SourceSetting />,
               },
             ]}
           />

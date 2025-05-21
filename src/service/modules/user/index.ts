@@ -25,3 +25,7 @@ export async function getGroupTree() {
 export const getSystemRoleMenu = (params: any) => {
   return server4A.post('/roleMenu/systemRoleMenuList', params)
 }
+
+export const getSystemInfo = (systemName: string) => {
+  return server4A.post('/system/getSystemByName', { systemName })
+}

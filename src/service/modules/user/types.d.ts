@@ -16,5 +16,13 @@ declare namespace API_USER {
     interface GetGroupTreeRes {
       rows: API_LAYER_OVERLAY.domain.GroupTreeItem[]
     }
+    interface GetSystemInfoRes {
+      config: string | null | Record<string, any>
+      systemIcon: string | null
+      systemId: number
+      systemLabel: string
+      systemName: string
+      systemUrl: string | null
+    }
   }
 }

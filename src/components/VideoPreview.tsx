@@ -15,7 +15,7 @@ type PropsType = {
 
 const VideoPreview: FC<PropsType> = memo(
   ({ previewSrc, info, size = 'large', onClick, isAutoSrc, videoUrl }) => {
-
+    const [error, setError] = useState(false)
     useEffect(() => {
       if (isAutoSrc && videoUrl) {
         const isHls = videoUrl.includes('.m3u8')
@@ -31,22 +31,50 @@ const VideoPreview: FC<PropsType> = memo(
           autoplay: false,
         })
 
+        player.on('error', (e) => {
+          console.log('error', e.errorCode)
+          if (e.errorCode === 5103) {
+            // 解码错误
+            setError(true)
+          } else {
+            console.log('error222', e)
+          }
+        })
+
         return () => {
           player.destroy()
         }
       }
     }, [isAutoSrc, videoUrl])
 
+    console.log('视频转码中', error)
+
     return (
       <div
         className="relative w-full aspect-video group rounded-[3px] overflow-hidden"
         onClick={onClick}
       >
-        {isAutoSrc ? (
-          <div id={videoUrl} className="video-preview-img"></div>
+        {error ? (
+          <>
+            <div className="bg-[#28323C] pt-1 w-full h-full flex justify-center text-[10px]">
+              视频转码中
+              <br /> 请下载观看
+            </div>
+          </>
         ) : (
-          <img className="size-full object-cover" src={previewSrc} />
+          <></>
         )}
+        <>
+          {isAutoSrc ? (
+            <div
+              id={videoUrl}
+              className="video-preview-img"
+              style={{ display: error ? 'none' : 'block' }}
+            ></div>
+          ) : (
+            <img className="size-full object-cover" src={previewSrc} />
+          )}
+        </>
 
         <div className="absolute bottom-0 flex justify-center gap-0.5 py-0.5 text-xs bg-ground-1 bg-opacity-70 w-full z-10">
           {info}

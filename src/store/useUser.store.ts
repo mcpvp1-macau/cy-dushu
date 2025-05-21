@@ -1,4 +1,8 @@
-import { getSystemRoleMenu, getUserByToken } from '@/service/modules/user'
+import {
+  getSystemInfo,
+  getSystemRoleMenu,
+  getUserByToken,
+} from '@/service/modules/user'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 
@@ -36,11 +40,13 @@ type StateType = {
   user: User | null
   menus: Menu[] | null
   menuMap: Record<string, Menu> | null
+  systemInfo: API_USER.res.GetSystemInfoRes & { config: Record<string, any> } | null
 }
 
 type ActionsType = {
   logout: () => void
   fetchUserInfoAndMenus: () => void
+  fetchSystemInfo: () => void
 }
 
 /** 用户信息 */
@@ -51,6 +57,7 @@ const useUserStore = create<StateType & ActionsType>()(
       user: null,
       menus: null,
       menuMap: null,
+      systemInfo: null,
       // 登出
       logout: async () => {
         set({ token: null, user: null, menus: null }, false, 'logout')
@@ -75,6 +82,24 @@ const useUserStore = create<StateType & ActionsType>()(
           false,
           'fetchUserInfoAndMenus',
         )
+      },
+      fetchSystemInfo: async () => {
+        const resp = await getSystemInfo(globalConfig.systemName)
+        const data = resp.data
+        try {
+          const config = JSON.parse(data.config || '{}')
+          set(
+            { systemInfo: { ...resp.data, config } },
+            false,
+            'fetchSystemInfo',
+          )
+        } catch (error) {
+          set(
+            { systemInfo: { ...resp.data, config: {} } },
+            false,
+            'fetchSystemInfo',
+          )
+        }
       },
     }),
     {
