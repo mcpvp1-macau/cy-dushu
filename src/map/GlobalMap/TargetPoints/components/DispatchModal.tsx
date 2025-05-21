@@ -108,9 +108,9 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
 
   const handleFlyConfirm = async () => {
     setConfirmLoading(true)
-    const values = omit(form.getFieldsValue(), ['enableAutoThrow'])
+    const values = form.getFieldsValue()
     const resps = await Promise.allSettled(
-      Object.values(values).map(async (e: any) => {
+      Object.values(omit(values, ['enableAutoThrow'])).map(async (e: any) => {
         const dev = deviceMap.get(e.deviceId)!
         const payload: Record<string, any> = {
           longitude: position[0],
