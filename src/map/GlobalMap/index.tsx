@@ -3,7 +3,6 @@ import * as Cesium from 'cesium'
 import CesiumGlobalPickEvent from './GlobalPickEvent'
 import BigFlyListener from './BigFlyListener'
 import CesiumDebug from './Debug'
-import CesiumMap from '../CesiumMap'
 import LayerOverlay from './LayerOverlay'
 import MapSituation from './Situation'
 import MapViewSave from './MapViewSave'
@@ -16,6 +15,8 @@ import EventMarkers from './EventMarkers'
 import WaylineEdit from './WaylineEdit'
 import Waylines from './Waylines'
 import ReconstructionLayer from '../CesiumMap/components/service/ReconstructionDraw/ReconstructionLayer'
+import DeferredRender from '@/components/DeferredRender'
+import CesiumMap from '../CesiumMap'
 
 type PropsType = unknown
 
@@ -24,24 +25,26 @@ Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ACCESS_TOKEN
 const GlobalMap: FC<PropsType> = memo(() => {
   return (
     <div className="absolute inset-0">
-      <CesiumMap id="global-map">
-        <UpdateMap />
-        <DeviceMarkers />
-        <CesiumGlobalPickEvent />
-        <BigFlyListener />
-        <LayerOverlay />
-        <CesiumDebug />
-        <MapSituation />
-        <MapViewSave />
-        <DrawHandler />
-        <DeviceHistoryTracks />
-        <TargetPoints />
-        <BoardCesium />
-        <EventMarkers />
-        <WaylineEdit />
-        <Waylines />
-        <ReconstructionLayer />
-      </CesiumMap>
+      <DeferredRender>
+        <CesiumMap id="global-map">
+          <UpdateMap />
+          <DeviceMarkers />
+          <CesiumGlobalPickEvent />
+          <BigFlyListener />
+          <LayerOverlay />
+          <CesiumDebug />
+          <MapSituation />
+          <MapViewSave />
+          <DrawHandler />
+          <DeviceHistoryTracks />
+          <TargetPoints />
+          <BoardCesium />
+          <EventMarkers />
+          <WaylineEdit />
+          <Waylines />
+          <ReconstructionLayer />
+        </CesiumMap>
+      </DeferredRender>
     </div>
   )
 })

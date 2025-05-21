@@ -45,6 +45,7 @@ import Tanqi from './components/Tanqi'
 import IconControl from '@/assets/icons/jsx/IconControl'
 import MenuIconEvents from '@/assets/icons/jsx/menus/MenuIconEvents'
 import ControlRoomEventDetail from './components/EventDetail'
+import DeferredRender from '@/components/DeferredRender'
 
 type PropsType = unknown
 
@@ -111,7 +112,11 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
 
   const componentMap = useMemo(
     () => ({
-      map: <ControlRoomUavMap />,
+      map: (
+        <DeferredRender>
+          <ControlRoomUavMap />
+        </DeferredRender>
+      ),
       video: (
         <div className="size-full relative">
           <ControlRoomVideo />
