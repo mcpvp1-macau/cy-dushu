@@ -292,7 +292,7 @@ const ARSceneCanvas: FC<PropsType> = memo(() => {
         ctx.fillText(name, p[0], p[1])
       }
     }
-  }, [aoiItems, roadItems, uav])
+  }, [aoiItems, roadItems, uav, arSetting, viewer])
 
   if (!viewer?.canvas?.width || !viewer?.canvas?.height) {
     return null

@@ -8,6 +8,7 @@ import AddFormModal from './components/AddFormModal'
 import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
 import { createOverlay } from '@/service/modules/layer_overlay'
 import DrawingPolygon from './components/DrawingPolygon'
+import { round } from 'lodash'
 
 type PropsType = {
   onSuccess?: () => void
@@ -85,16 +86,27 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
     const fillColorHex = getHexWithAlpha(drawingColor, 0.5)
     const fillColorARGB = hexToARGB(fillColorHex)
 
+    const h1 =
+      viewer?.scene.globe.getHeight(
+        Cesium.Cartographic.fromDegrees(pivot[0], endPoint[1]),
+      ) ?? 0
+    const h2 =
+      viewer?.scene.globe.getHeight(
+        Cesium.Cartographic.fromDegrees(endPoint[0], pivot[1]),
+      ) ?? 0
+
     const commitData = {
       layerId: data.layerId,
       overlayName: data.overlayName,
       overlayType: 'POLYGON',
-      overlayPositions: JSON.stringify([
-        pivot,
-        [pivot[0], endPoint[1]],
-        endPoint,
-        [endPoint[0], pivot[1]],
-      ]),
+      overlayPositions: JSON.stringify(
+        [
+          pivot,
+          [pivot[0], endPoint[1], h1],
+          endPoint,
+          [endPoint[0], pivot[1], h2],
+        ].map((e) => [e[0], e[1], round(e[2], 2)]),
+      ),
       overlayBindType: 'NORMAL',
       overlayStyleConfig: JSON.stringify({
         contact: {

@@ -7,6 +7,7 @@ import useMapDrawStore, { CotType } from '@/store/map/useDraw.store'
 import { createOverlay } from '@/service/modules/layer_overlay'
 import { hexToARGB } from '@/utils/color'
 import AddFormModal from './components/AddFormModal'
+import { round } from 'lodash'
 
 type PropsType = {
   onSuccess?: () => void
@@ -17,7 +18,7 @@ const DrawPoint: FC<PropsType> = memo(({ onSuccess }) => {
   const { t } = useTranslation()
   const { viewer } = useCesium()
 
-  const pointRef = useRef<[number, number] | null>(null)
+  const pointRef = useRef<number[] | null>(null)
   const [open, { setTrue, setFalse }] = useBoolean(false)
 
   const drawingColor = useMapDrawStore((s) => s.drawingColor)
@@ -36,7 +37,7 @@ const DrawPoint: FC<PropsType> = memo(({ onSuccess }) => {
       // 地形上的点
       const geo = cartesian3ToDegrees(cartesian)
 
-      pointRef.current = [geo[0], geo[1]]
+      pointRef.current = [geo[0], geo[1], round(geo[2], 2)]
       setTrue()
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
