@@ -32,7 +32,6 @@ const VideoPreview: FC<PropsType> = memo(
         })
 
         player.on('error', (e) => {
-          console.log('error', e.errorCode)
           if (e.errorCode === 5103) {
             // 解码错误
             setError(true)
@@ -47,7 +46,6 @@ const VideoPreview: FC<PropsType> = memo(
       }
     }, [isAutoSrc, videoUrl])
 
-    console.log('视频转码中', error)
 
     return (
       <div
