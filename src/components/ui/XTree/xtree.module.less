@@ -1,0 +1,57 @@
+.xTree {
+  :global {
+    .ant-tree-draggable-icon {
+      display: none !important;
+    }
+
+    .ant-tree-treenode {
+      width: 100%;
+      padding: 0;
+    }
+
+    .ant-tree .ant-tree-indent {
+      width: 0;
+    }
+
+    .ant-tree .ant-tree-switcher {
+      width: 0;
+    }
+
+    .ant-tree-switcher {
+      display: none;
+    }
+
+    .ant-tree-node-content-wrapper {
+      width: 100%;
+      border-radius: 0;
+      padding: 0;
+      background-color: transparent;
+    }
+
+    // 树选中样式
+    .ant-tree .ant-tree-node-content-wrapper:hover {
+      background-color: #141d28;
+    }
+
+    .ant-tree-node-selected {
+      background-color: #141d28 !important;
+    }
+
+    .ant-tree-treenode-switcher-open {
+      border-top: 1px solid rgb(57 67 75 / 100%);
+      border-bottom: 1px solid rgb(57 67 75 / 100%);
+      background-color: rgb(57 67 75 / 20%) !important;
+
+      & .downUpIcon {
+        // color: red;
+        transform: rotate(90deg);
+      }
+    }
+
+    .ant-tree-treenode-switcher-close {
+      border-top: 1px solid rgb(57 67 75 / 100%);
+      border-bottom: 1px solid rgb(57 67 75 / 100%);
+      background-color: rgb(57 67 75 / 20%) !important;
+    }
+  }
+}

@@ -103,7 +103,7 @@ const DrawRangingLine: FC<PropsType> = memo(() => {
 
   return (
     <PositionTooltip position={[endPoint[0], endPoint[1]]} offset={[0, 20]}>
-      <div>
+      <div className="py-1 px-2">
         {t('common.distance')}: {distanceFmt}
       </div>
     </PositionTooltip>

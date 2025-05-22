@@ -130,11 +130,13 @@ const DrawRangingAngle: FC<PropsType> = memo(() => {
       position={[pivot.current?.[0] ?? 0, pivot.current?.[1] ?? 0]}
       offset={[0, 20]}
     >
-      {t('common.angle')}({t('common.clockwise')}):{' '}
-      {getBearing(pivot.current!, startPoint.current!, endPointState).toFixed(
-        2,
-      )}
-      °
+      <div className="py-1 px-2">
+        {t('common.angle')}({t('common.clockwise')}):{' '}
+        {getBearing(pivot.current!, startPoint.current!, endPointState).toFixed(
+          2,
+        )}
+        °
+      </div>
     </PositionTooltip>
   )
 })

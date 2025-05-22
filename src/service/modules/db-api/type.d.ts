@@ -17,8 +17,8 @@ declare namespace API_DBAPI {
       endTime: string
       bid: string
       height?: any
-      longitude?: string
-      latitude?: string
+      longitude?: number
+      latitude?: number
     }
     interface TrackPoint {
       deviceType: any

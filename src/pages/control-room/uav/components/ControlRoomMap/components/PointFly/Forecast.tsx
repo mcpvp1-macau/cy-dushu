@@ -19,7 +19,7 @@ const PointFlyForecast: FC<PropsType> = memo(({ displayTarget = true }) => {
         position={[tartgetLng, tartgetLat, targetHeight ?? 0]}
         offset={[0, 30]}
       >
-        <div className="flex flex-col gap-1 text-fore p-1 text-xs">
+        <div className="p-2 flex flex-col gap-1 text-fore text-xs">
           <p className="flex justify-between gap-1">
             {t('controlRoom.uav.pointFlyForecast.distance.title')}:
             <span>

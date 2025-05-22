@@ -8,6 +8,7 @@ import IconButton from '@/components/ui/button/IconButton'
 import IconRefresh from '@/assets/icons/jsx/IconRefresh'
 import { GetProps } from 'antd'
 import { twMerge } from 'tailwind-merge'
+import IconMap from '@/assets/icons/jsx/IconMap'
 
 const DeviceDetailMediaDataPicture = lazy(
   () => import('../MediaData/MediaPicture'),
@@ -22,6 +23,8 @@ const DataCollapse: FC<PropsType> = memo(({ ...props }) => {
 
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)
   const deviceList = useDeviceChildrenList(deviceDetail)
+
+  const [enablePictureOnMap, { toggle }] = useBoolean(true)
 
   const queryClient = useQueryClient()
 
@@ -40,12 +43,11 @@ const DataCollapse: FC<PropsType> = memo(({ ...props }) => {
         items={[
           {
             label: (
-              <div className="flex gap-2">
+              <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                 {t('common.picture')}
                 <IconButton
                   className="text-xs"
-                  onClick={(e) => {
-                    e.stopPropagation()
+                  onClick={() => {
                     queryClient.invalidateQueries({
                       queryKey: [
                         'getPlatformCapture',
@@ -58,12 +60,22 @@ const DataCollapse: FC<PropsType> = memo(({ ...props }) => {
                 >
                   <IconRefresh />
                 </IconButton>
+                <IconButton
+                  active={enablePictureOnMap}
+                  toolTipProps={{ title: '图片上图' }}
+                  onClick={toggle}
+                >
+                  <IconMap />
+                </IconButton>
               </div>
             ),
             key: 0,
             children: (
               <AppViewSuspense>
-                <DeviceDetailMediaDataPicture deviceList={deviceList} />
+                <DeviceDetailMediaDataPicture
+                  enablePictureOnMap={enablePictureOnMap}
+                  deviceList={deviceList}
+                />
               </AppViewSuspense>
             ),
           },

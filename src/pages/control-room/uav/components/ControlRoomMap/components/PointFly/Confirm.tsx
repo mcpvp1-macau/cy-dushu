@@ -87,7 +87,7 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
   return (
     <>
       <PositionTooltip offset={[0, 30]} position={position} alwayInViewport>
-        <div className="flex flex-col gap-1 text-fore p-1">
+        <div className="p-2 flex flex-col gap-1 text-fore">
           <p className="flex justify-between">
             {t('controlRoom.uav.pointFlyForecast.distance.title')}:{' '}
             <span>
