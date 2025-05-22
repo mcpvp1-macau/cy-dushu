@@ -1,6 +1,7 @@
 import PositionTooltip from '@/components/map/PostionTooltip'
 import UavPointFlyTarget from './Target'
 import useCalcPointFlyInfo from './hooks/useCalcPointFlyInfo'
+import HeightDashLine from '@/map/CesiumMap/components/service/common/HeightDashLine'
 
 type PropsType = {
   displayTarget?: boolean
@@ -34,9 +35,16 @@ const PointFlyForecast: FC<PropsType> = memo(({ displayTarget = true }) => {
         </div>
       </PositionTooltip>
       {displayTarget && (
-        <UavPointFlyTarget
-          position={[tartgetLng, tartgetLat, targetHeight ?? 0]}
-        />
+        <>
+          <UavPointFlyTarget
+            position={[tartgetLng, tartgetLat, targetHeight ?? 0]}
+          />
+          {targetHeight && (
+            <HeightDashLine
+              position={[tartgetLng, tartgetLat, targetHeight ?? 0]}
+            />
+          )}
+        </>
       )}
     </>
   )
