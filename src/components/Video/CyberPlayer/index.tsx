@@ -46,7 +46,7 @@ const CyberPlayer = memo(
   forwardRef<CyberPlayerRef, PropsType>((props, ref) => {
     const elRef = useRef<HTMLDivElement>(null)
     const playerRef = useRef<Player | null>(null)
-
+    const [error, setError] = useState(false)
     useImperativeHandle(ref, () => ({
       play: () => playerRef.current?.play(),
       pause: () => playerRef.current?.pause(),
@@ -81,8 +81,9 @@ const CyberPlayer = memo(
         plugins: [isHls ? HlsPlugin : null],
         autoplay: props.autostart ?? true,
         autoplayMuted: true,
-        controls: false,
         defaultPlaybackRate: 1,
+        download: true,
+        controls: false,
       })
 
       playerRef.current = player
@@ -116,6 +117,7 @@ const CyberPlayer = memo(
         props.onBuffer?.({
           type: 'play',
         })
+        setError(false)
       })
       // player.on(Events.SEEKING, (e: PauseOrBufferEvent) => {
       //   props.onBuffer?.({
@@ -128,12 +130,33 @@ const CyberPlayer = memo(
         })
       })
 
+      player.on(Events.ERROR, (e) => {
+        if (e.errorCode === 5103) {
+          // 解码错误
+          setError(true)
+        } else {
+          console.log('error222', e)
+        }
+      })
+
+
       return () => {
         playerRef.current?.destroy()
       }
     }, [props.src])
 
-    return <div id="cyber-player" ref={elRef} />
+    return (
+      <div ref={elRef}>
+        {error && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+            <div>
+              <div className="text-white text-center">解码异常</div>
+              <div className="text-white text-center">请尝试下载观看</div>
+            </div>
+          </div>
+        )}
+      </div>
+    )
   }),
 )
 

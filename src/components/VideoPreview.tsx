@@ -29,6 +29,7 @@ const VideoPreview: FC<PropsType> = memo(
           plugins: [isHls ? HlsPlugin : null],
           autoplayMuted: true,
           autoplay: false,
+          controls: false,
         })
 
         player.on('error', (e) => {
@@ -55,8 +56,8 @@ const VideoPreview: FC<PropsType> = memo(
         {error ? (
           <>
             <div className="bg-[#28323C] pt-1 w-full h-full flex justify-center text-[10px]">
-              视频转码中
-              <br /> 请下载观看
+              解码失败
+              <br /> 请尝试下载观看
             </div>
           </>
         ) : (

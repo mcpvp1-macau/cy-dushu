@@ -47,7 +47,7 @@ export default mergeConfig(
         },
         // 视频下载
         '/vod/download': {
-          target: 'http://135.100.11.110:31118',
+          target: 'http://135.100.11.115:8080',
           changeOrigin: true,
         },
         '/_proxy/http://135.100.11.130:28080': {
