@@ -84,6 +84,7 @@ const CyberPlayer = memo(
         defaultPlaybackRate: 1,
         download: true,
         controls: false,
+        keyShortcut: false,
       })
 
       playerRef.current = player

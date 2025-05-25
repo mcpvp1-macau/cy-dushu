@@ -30,6 +30,7 @@ const VideoPreview: FC<PropsType> = memo(
           autoplayMuted: true,
           autoplay: false,
           controls: false,
+          keyShortcut: false
         })
 
         player.on('error', (e) => {
