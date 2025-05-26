@@ -28,6 +28,7 @@ import { AiObject } from '../Video/Jessibuca/sei-types/ai-data'
 import useAIDataState from './hooks/useAIDataState'
 import DaoTongPlayer from '../Video/DaoTongPlayer'
 import SeiAIDataMetaInfo from './components/SeiAIDataMetaInfo'
+import { Responses } from '@/service/servers/liqunAxios'
 
 type PropsType = {
   videoContainerId?: string
@@ -95,6 +96,7 @@ const DeviceLiveVideo = memo(
       const queryClient = useQueryClient()
 
       const [fetchTime, setFetchTime] = useState(0)
+      const [errMsg, setErrMsg] = useState('')
       const { data, refetch } = useQuery(
         {
           queryKey: ['getVideoUrl', { productKey, deviceId, videoId }],
@@ -108,7 +110,6 @@ const DeviceLiveVideo = memo(
                 }),
               ])
 
-              setFetchTime(Date.now())
               let url = (liveData.data.playUrl as string) || ''
 
               // 记忆化获取上次的流
@@ -119,16 +120,27 @@ const DeviceLiveVideo = memo(
                   url = find.playUrl
                 }
               }
+              if (!url) {
+                return data
+              }
+              setFetchTime(Date.now())
+              setErrMsg('')
               return {
                 url,
                 streamList: streamList.data,
               }
             } catch (error) {
-              console.error(error)
-              return {
-                url: '',
-                streamList: [],
+              const res = error as Responses<any>['common']
+              console.error(res?.message)
+              if (res?.code === 'ERROR') {
+                if (res.message === 'device is offline') {
+                  // 设备离线
+                  setErrMsg('该设备已离线')
+                } else {
+                  // 其他异常暂不提示
+                }
               }
+              return data
             }
           },
         },
@@ -209,15 +221,6 @@ const DeviceLiveVideo = memo(
         queryClient,
       )
 
-      // const delay = (callback: () => void, delay: number) => {
-      //   let timer: NodeJS.Timeout | null = null
-      //   timer = setTimeout(() => {
-      //     callback()
-      //     timer && clearTimeout(timer)
-      //     timer = null
-      //   }, delay)
-      // }
-
       // 电子放大
       const {
         enableScale,
@@ -273,7 +276,6 @@ const DeviceLiveVideo = memo(
         return ''
       }, [url, fetchTime])
 
-
       return (
         <div
           className="size-full overflow-hidden relative bg-black text-sm"
@@ -310,9 +312,17 @@ const DeviceLiveVideo = memo(
                     : 'translate(0px, 0px)',
               }}
             >
+              {errMsg ? (
+                <div className="text-[#fff] flex justify-center items-center h-full w-full">
+                  <div className="text-[rgb(228,89,81)]">{errMsg}</div>
+                </div>
+              ) : (
+                <></>
+              )}
+
               {finalUrl && !sn && renderVideo && (
                 <Jessibuca
-                  key={jessibucaKey}
+                  // key={jessibucaKey}
                   containerId={videoContainerId}
                   src={finalUrl}
                   onVideoInfo={(v) => {
@@ -329,6 +339,7 @@ const DeviceLiveVideo = memo(
                   onError={() => setJessibucaKey((prev) => prev + 1)}
                   onStreamEnd={handleRefresh}
                   onVideoElementChange={onVideoElementChange}
+                  refreshKey={jessibucaKey}
                 />
               )}
 

@@ -30,16 +30,22 @@ const VideoPreview: FC<PropsType> = memo(
           autoplayMuted: true,
           autoplay: false,
           controls: false,
-          keyShortcut: false
+          keyShortcut: false,
         })
 
         player.on('error', (e) => {
           if (e.errorCode === 5103) {
             // 解码错误
-            setError(true)
+            setError(false)
+            player.seek(player.currentTime + 1, 'auto')
+            player.retry()
           } else {
             console.log('error222', e)
           }
+        })
+
+        player.on('play', (e) => {
+          player.pause()
         })
 
         return () => {
@@ -47,7 +53,6 @@ const VideoPreview: FC<PropsType> = memo(
         }
       }
     }, [isAutoSrc, videoUrl])
-
 
     return (
       <div

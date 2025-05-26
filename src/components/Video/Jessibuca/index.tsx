@@ -246,7 +246,7 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
       isResize: false,
       // text: '',
       loadingText: '',
-      debugLevel: 'debug',
+      debugLevel: 'warn',
       ...support,
       operateBtns: {},
       timeout: 5000,
@@ -268,6 +268,7 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
       // decoderAudio: 'js/JessibucaPro/decoder-pro-audio.js',
       /** @ts-ignore */
       // decoderHard: '/js/JessibucaPro/decoder-pro-hard.js',
+      playFailedAndReplay: true,
     })
 
     jessibucaRef.current.on(
@@ -307,6 +308,7 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
     jessibucaRef.current.on(
       'streamEnd' as JessibucaPro.EVENTS.streamEnd,
       () => {
+        console.info('jessibuca streamEnd')
         props.onStreamEnd?.()
       },
     )
