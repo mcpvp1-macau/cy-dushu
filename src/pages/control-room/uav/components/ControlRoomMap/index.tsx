@@ -21,6 +21,8 @@ import LeftTopTools from './components/LeftTopTools'
 import ReconstructionLayer from '@/map/CesiumMap/components/service/ReconstructionDraw/ReconstructionLayer'
 import EventMarkers from '@/map/GlobalMap/EventMarkers'
 import PickEvent from './components/PickEvent'
+import PicutreOnMap from '@/map/CesiumMap/components/service/PictureOnMap'
+
 type PropsType = unknown
 
 const RIDTargets = lazy(() => import('./components/RIDTargets'))
@@ -66,6 +68,7 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
       <ReconstructionLayer />
       <EventMarkers />
       <PickEvent />
+      <PicutreOnMap />
     </CesiumMap>
   )
 })

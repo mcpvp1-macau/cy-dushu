@@ -17,6 +17,7 @@ import Waylines from './Waylines'
 import ReconstructionLayer from '../CesiumMap/components/service/ReconstructionDraw/ReconstructionLayer'
 import DeferredRender from '@/components/DeferredRender'
 import CesiumMap from '../CesiumMap'
+import PicutreOnMap from '../CesiumMap/components/service/PictureOnMap'
 
 type PropsType = unknown
 
@@ -43,6 +44,7 @@ const GlobalMap: FC<PropsType> = memo(() => {
           <WaylineEdit />
           <Waylines />
           <ReconstructionLayer />
+          <PicutreOnMap />
         </CesiumMap>
       </DeferredRender>
     </div>

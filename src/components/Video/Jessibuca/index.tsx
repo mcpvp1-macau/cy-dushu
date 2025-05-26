@@ -15,6 +15,9 @@ import { heartbeat } from '@/constant/websocket'
 import useUserStore from '@/store/useUser.store'
 import useDeviceStats from './hooks/useDeviceStats'
 
+const SEND_PING_INTERVAL = 1000
+const WS_TIMEOUT = 3000
+
 type VideoInfo = {
   width: number
   height: number
@@ -35,6 +38,7 @@ type PropsType = {
   onFetchError?: () => void
   onError?: (err: Error) => void
   onStats?: (stats: any) => void
+  onTimeout?: () => void
   onStreamEnd?: () => void
   /** 视频 Video 元素发生变化时 */
   onVideoElementChange?: (videoElement: HTMLVideoElement | null) => void
@@ -52,18 +56,6 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
 
   // 获取最新的 video 元素 ------------------------------------------------------
   const videoElementRef = useRef<HTMLVideoElement | null>(null)
-  // useEffect(() => {
-  //   if (!ref.current) {
-  //     return
-  //   }
-  //   const ob = new MutationObserver(handleVideoDetect)
-  //   ob.observe(ref.current!, {
-  //     childList: true,
-  //   })
-  //   return () => {
-  //     ob.disconnect()
-  //   }
-  // }, [ref, props.onVideoElementChange])
 
   const jessibucaRef = useRef<JessibucaPro | null>(null)
 
@@ -219,6 +211,8 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
     sendJsonMessage(Object.assign(stats, deviceStatus))
   }
 
+  const lastMsgTime = useRef(0)
+
   // 创建播放器
   useEffect(() => {
     const support: Record<string, boolean> = {
@@ -308,15 +302,30 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
     jessibucaRef.current.on(
       'streamEnd' as JessibucaPro.EVENTS.streamEnd,
       () => {
-        console.info('jessibuca streamEnd')
+        console.log('streamEnd')
         props.onStreamEnd?.()
       },
     )
+
+    jessibucaRef.current.on('timeout' as JessibucaPro.EVENTS.timeout, () => {
+      console.log('timeout')
+      props.onTimeout?.()
+    })
 
     jessibucaRef.current.on(
       'start' as JessibucaPro.EVENTS.start,
       handleVideoDetect,
     )
+
+    // 检查是否无数据返回, 主要用于检查 ping pong
+    jessibucaRef.current.on('websocketMessage', () => {
+      const now = Date.now()
+      if (lastMsgTime.current > 0 && now - lastMsgTime.current > WS_TIMEOUT) {
+        console.log('ws timeout')
+        props.onTimeout?.()
+      }
+      lastMsgTime.current = now
+    })
 
     return () => {
       jessibucaRef.current?.destroy()
@@ -337,12 +346,13 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
     jessibucaRef.current.play(src)
   }, [src, refreshKey])
 
-  // useInterval(() => {
-  //   if (!jessibucaRef.current) {
-  //     return
-  //   }
-  //   jessibucaRef.current?.sendWebsocketMessage?.('ping')
-  // }, 3000)
+  // 定时发送 ping
+  useInterval(() => {
+    if (!jessibucaRef.current) {
+      return
+    }
+    jessibucaRef.current?.sendWebsocketMessage?.('ping')
+  }, SEND_PING_INTERVAL)
 
   return <div id={props.containerId} ref={ref} key={videoEncoderValue}></div>
 })

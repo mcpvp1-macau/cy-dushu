@@ -1,10 +1,11 @@
 import _data from './warzone_data.json'
 import GroundPolygon from '../service/common/GroundPolygon'
-import { Label, LabelCollection } from 'resium'
+import { Label, LabelCollection, useCesium } from 'resium'
 import { Fragment } from 'react/jsx-runtime'
 import * as Cesium from 'cesium'
-import { center } from '@turf/turf'
+import { bbox, center } from '@turf/turf'
 import useShanghaiWarZoneStore from '@/store/map/useShanghaiWarZone.store'
+import mitt from 'mitt'
 
 const data = _data as GeoJSON.FeatureCollection<GeoJSON.Polygon>
 
@@ -85,9 +86,13 @@ export const warZoneCallSigns = new Set([
 
 type PropsType = unknown
 
+export const shanghaiWarZoneEmitter = mitt<{
+  fitZone: number
+}>()
+
 const ShanghaiWarZone: FC<PropsType> = memo(() => {
   const centerMap = useMemo(() => {
-    return new Map<string, [number, number]>(
+    return new Map<number, [number, number]>(
       data.features.map((e) => {
         const c = center(e as GeoJSON.Feature)
         return [
@@ -98,7 +103,36 @@ const ShanghaiWarZone: FC<PropsType> = memo(() => {
     )
   }, [data])
 
+  const bboxMap = useMemo(() => {
+    return new Map<number, ReturnType<typeof bbox>>(
+      data.features.map((e) => {
+        const b = bbox(e)
+        return [e.properties!.id, b]
+      }),
+    )
+  }, [data])
+
   const hiddenZones = useShanghaiWarZoneStore((s) => s.hiddenZones)
+
+  const { viewer } = useCesium()
+  const flyFn = useMemoizedFn((id: number) => {
+    const b = bboxMap.get(id)
+    if (!b) return
+    viewer?.camera.flyTo({
+      destination: Cesium.Rectangle.fromDegrees(b[0], b[1], b[2], b[3]),
+      duration: 1,
+      complete: () => {
+        viewer?.camera.lookAtTransform(Cesium.Matrix4.IDENTITY)
+      },
+    })
+  })
+
+  useEffect(() => {
+    shanghaiWarZoneEmitter.on('fitZone', flyFn)
+    return () => {
+      shanghaiWarZoneEmitter.off('fitZone', flyFn)
+    }
+  }, [flyFn])
 
   return (
     <LabelCollection>

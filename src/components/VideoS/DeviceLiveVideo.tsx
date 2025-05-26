@@ -8,7 +8,7 @@ import { formatTs } from '@/utils/time'
 import IconButton from '../ui/button/IconButton'
 import IconRefresh from '@/assets/icons/jsx/IconRefresh'
 import IconFull from '@/assets/icons/jsx/IconFull'
-import { useDebounceFn, useFullscreen, useSize, useThrottleFn } from 'ahooks'
+import { useFullscreen, useInterval, useSize, useThrottleFn } from 'ahooks'
 import { ExpandOutlined, FullscreenExitOutlined } from '@ant-design/icons'
 import { forwardRef, useImperativeHandle } from 'react'
 import { calcStreamId } from '@/utils/video/stream'
@@ -161,7 +161,7 @@ const DeviceLiveVideo = memo(
       const [ts, _setTs] = useState(0)
       const { run: setTs } = useThrottleFn(
         (t: number) => {
-          debounceRetch()
+          // debounceRetch()
           _setTs(t)
         },
         { wait: 333 },
@@ -252,17 +252,23 @@ const DeviceLiveVideo = memo(
       })
 
       // 主要用于: 在没有更新 ts 时，重新拉流
-      const { run: debounceRetch } = useDebounceFn(
-        () => {
-          refetch()
-          debounceRetch()
-        },
-        { wait: 5000, leading: false },
-      )
+      // const { run: debounceRetch } = useDebounceFn(
+      //   () => {
+      //     refetch()
+      //     debounceRetch()
+      //   },
+      //   { wait: 5000, leading: false },
+      // )
 
-      useEffect(() => {
-        debounceRetch()
-      }, [])
+      // useEffect(() => {
+      //   debounceRetch()
+      // }, [])
+
+      useInterval(() => {
+        if (!url) {
+          refetch()
+        }
+      }, 3000)
 
       // 计算安全区相关
       const { safeY, topBar, bottomBar, videoWrapper } = useCalcSafeArea(size)
@@ -338,6 +344,7 @@ const DeviceLiveVideo = memo(
                   onFetchError={handleRefresh}
                   onError={() => setJessibucaKey((prev) => prev + 1)}
                   onStreamEnd={handleRefresh}
+                  onTimeout={handleRefresh}
                   onVideoElementChange={onVideoElementChange}
                   refreshKey={jessibucaKey}
                 />

@@ -81,6 +81,7 @@ const Forecats: FC<PropsType> = memo(({ positions }) => {
             alwayInViewport
           >
             <div
+              className="py-1 px-2"
               style={{
                 display: 'flex',
                 flexDirection: 'column',

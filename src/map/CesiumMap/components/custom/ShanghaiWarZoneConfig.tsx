@@ -1,6 +1,10 @@
 import IconWarZone from '@/assets/icons/jsx/IconWarZone'
 import FloatIconButton from '@/components/ui/button/FloatIconButton'
-import { data, warZoneCallSigns } from './ShanghaiWarZone'
+import {
+  data,
+  shanghaiWarZoneEmitter,
+  warZoneCallSigns,
+} from './ShanghaiWarZone'
 import XModal from '@/components/XModal'
 import AppCollapse from '@/components/AppCollapse'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -8,6 +12,11 @@ import IconButton from '@/components/ui/button/IconButton'
 import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
 import IconVisible from '@/assets/icons/jsx/IconVisible'
 import useShanghaiWarZoneStore from '@/store/map/useShanghaiWarZone.store'
+import IconToLocation from '@/assets/icons/jsx/IconToLocation'
+import { Input } from 'antd'
+import { DataNode, EventDataNode } from 'antd/es/tree'
+import XTree from '@/components/ui/XTree'
+import { key } from 'localforage'
 
 type PropsType = unknown
 
@@ -64,6 +73,111 @@ const ShanghaiWarZoneConfig: FC<PropsType> = memo(() => {
     updateHiddenZones(newHiddenZones)
   }
 
+  const [expandedKeys, setExpandedKeys] = useState<number[]>([])
+  const [searchValue, setSearchValue] = useState<string>('')
+  const handleSearch = (value: string) => {
+    if (!value) {
+      setExpandedKeys([])
+      setSearchValue('')
+      return
+    }
+    setSearchValue(value)
+    const keys = data.features
+      .filter((e) => e.properties!.name.includes(value))
+      .map((e) => e.properties!.id)
+    setExpandedKeys(keys)
+  }
+
+  const treeData = useMemo<any[] | undefined>(() => {
+    return Object.entries(group).map(([groupName, children]) => ({
+      key: groupName,
+      title: (
+        <div className="flex justify-between items-center pl-2 pr-3 py-1">
+          <p>{groupName}</p>
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation()
+              handleToggleGroupVisibility(groupName)
+            }}
+          >
+            {children.some(([, id]) => !hiddenZones.has(id)) ? (
+              <IconVisible />
+            ) : (
+              <IconNotVisible />
+            )}
+          </IconButton>
+        </div>
+      ),
+      children: children
+        .filter(([name]) => !searchValue || name.includes(searchValue))
+        .map(([name, id]) => {
+          const idx = name.indexOf(searchValue)
+          const node =
+            idx > -1 ? (
+              <>
+                <span>{name.slice(0, idx)}</span>
+                <span className="text-red-500">
+                  {name.slice(idx, idx + searchValue.length)}
+                </span>
+                <span>{name.slice(idx + searchValue.length)}</span>
+              </>
+            ) : (
+              <span>{name}</span>
+            )
+
+          return {
+            key: id,
+            isLeaf: true,
+            title: (
+              <div className="flex justify-between items-center pl-4 pr-3 py-1 w-[350px]">
+                <p className="max-w-[210px] truncate">
+                  {node}
+                  {warZoneCallSigns.has(name) ? ' ☆' : ''}
+                </p>
+                <div>
+                  <IconButton
+                    onClick={() => shanghaiWarZoneEmitter.emit('fitZone', id)}
+                  >
+                    <IconToLocation />
+                  </IconButton>
+                  <IconButton
+                    className="ml-3"
+                    onClick={() => handleToggleVisibility(id)}
+                  >
+                    {hiddenZones.has(id) ? <IconNotVisible /> : <IconVisible />}
+                  </IconButton>
+                </div>
+              </div>
+            ),
+          }
+        }),
+    }))
+  }, [group, searchValue, hiddenZones])
+
+  const handleSelect = (
+    _: React.Key[],
+    info: {
+      event: 'select'
+      selected: boolean
+      node: EventDataNode<any>
+      selectedNodes: any[]
+      nativeEvent: MouseEvent
+    },
+  ) => {
+    const { node } = info
+    // 设备
+    if (node.isLeaf) {
+      return
+    }
+    const { key } = node
+    // 组织
+    if (expandedKeys.includes(key)) {
+      setExpandedKeys(expandedKeys.filter((k) => k !== key))
+    } else {
+      setExpandedKeys([...expandedKeys, key])
+    }
+  }
+
   return (
     <>
       <FloatIconButton
@@ -81,50 +195,18 @@ const ShanghaiWarZoneConfig: FC<PropsType> = memo(() => {
         width={350}
         centered
       >
-        <ScrollArea className="max-h-[80vh] w-[350px]">
-          <AppCollapse
-            items={Object.entries(group).map(([groupName, children]) => ({
-              label: (
-                <div className="flex justify-between items-center">
-                  <p>{groupName}</p>
-                  <IconButton
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleToggleGroupVisibility(groupName)
-                    }}
-                  >
-                    {children.some(([, id]) => !hiddenZones.has(id)) ? (
-                      <IconVisible />
-                    ) : (
-                      <IconNotVisible />
-                    )}
-                  </IconButton>
-                </div>
-              ),
-              key: groupName,
-              children: (
-                <div className="p-3 flex flex-col gap-2">
-                  {children.map(([name, id]) => (
-                    <div
-                      key={id}
-                      className="flex justify-between items-center "
-                    >
-                      <p className="max-w-[210px] truncate">
-                        {name}
-                        {warZoneCallSigns.has(name) ? ' ☆' : ''}
-                      </p>
-                      <IconButton onClick={() => handleToggleVisibility(id)}>
-                        {hiddenZones.has(id) ? (
-                          <IconNotVisible />
-                        ) : (
-                          <IconVisible />
-                        )}
-                      </IconButton>
-                    </div>
-                  ))}
-                </div>
-              ),
-            }))}
+        <div className="p-3">
+          <Input.Search
+            placeholder="请输入搜索关键字"
+            onSearch={handleSearch}
+          />
+        </div>
+        <ScrollArea className="max-h-[60vh] w-[350px]">
+          <XTree
+            treeData={treeData}
+            autoExpandParent
+            expandedKeys={expandedKeys}
+            onSelect={handleSelect}
           />
         </ScrollArea>
       </XModal>

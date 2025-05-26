@@ -52,7 +52,11 @@ const FuzhouJiefangBridge: FC<PropsType> = memo(() => {
     try {
       const _tileSet = await Cesium.Cesium3DTileset.fromUrl(
         '/ja-map/fuzhou_jiefang_bridge_pnts/tileset.json',
+        {},
       )
+      _tileSet.style = new Cesium.Cesium3DTileStyle({
+        pointSize: 5,
+      })
       setTileSet(_tileSet)
       viewer.scene.primitives.add(_tileSet)
     } finally {

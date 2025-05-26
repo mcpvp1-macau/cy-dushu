@@ -1,5 +1,4 @@
-import styles from './sourcetree.module.less'
-import { Spin, Tree } from 'antd'
+import { Spin } from 'antd'
 import GroupHeader from './GroupHeader'
 import { EventDataNode } from 'antd/es/tree'
 import DeviceItem from './DeviceItem'
@@ -8,6 +7,7 @@ import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
 import { deviceStatusFilter } from '../utils'
 import { useShallow } from 'zustand/react/shallow'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import XTree from '@/components/ui/XTree'
 
 type PropsType = {
   isLoading?: boolean
@@ -134,18 +134,16 @@ const SourceTree: FC<PropsType> = memo(
 
     return (
       <ScrollArea className="h-full">
-        <div className={styles.sourceTree}>
-          <Spin spinning={isLoading}>
-            <Provider value={expandKeys}>
-              <Tree
-                treeData={treeData}
-                defaultExpandAll
-                expandedKeys={expandKeys}
-                onSelect={handleSelect}
-              />
-            </Provider>
-          </Spin>
-        </div>
+        <Spin spinning={isLoading}>
+          <Provider value={expandKeys}>
+            <XTree
+              treeData={treeData}
+              defaultExpandAll
+              expandedKeys={expandKeys}
+              onSelect={handleSelect}
+            />
+          </Provider>
+        </Spin>
       </ScrollArea>
     )
   },

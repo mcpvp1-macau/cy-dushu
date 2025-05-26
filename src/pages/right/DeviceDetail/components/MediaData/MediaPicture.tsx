@@ -5,19 +5,22 @@ import AppSpin from '@/components/AppSpin'
 import usePicutreSourceTypeOptions from '@/constant/options/pictureSourceTypeOptions'
 import { beginDay, dft, timeOnly } from '@/constant/time-fmt'
 import { getPlatformCapture } from '@/service/modules/db-api'
+import useMediaOnMapStore from '@/store/map/useMediaOnMap.store'
 import { makeToolbarRender } from '@/utils/antd/image'
 import { Col, Image, Pagination, Row, Spin } from 'antd'
 import { Dayjs } from 'dayjs'
+import { v4 } from 'uuid'
 
 type PropsType = {
   deviceList: API_DEVICE.domain.Device[]
   timeRange?: [Dayjs, Dayjs]
+  enablePictureOnMap?: boolean
 }
 
 const pageSize = 9
 
 const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
-  ({ deviceList, timeRange }) => {
+  ({ deviceList, timeRange, enablePictureOnMap }) => {
     const [mode, setMode] = useState('ALL')
 
     const deviceOptions = useMemo(
@@ -62,6 +65,33 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
     )
 
     const pictureSourceTypeOptions = usePicutreSourceTypeOptions()
+
+    // 照片上图 -------------------------------------------------------------------
+    const id = useMemo(() => v4(), [])
+
+    useEffect(() => {
+      if (!data?.[0]?.length || !enablePictureOnMap) {
+        return
+      }
+      const store = useMediaOnMapStore.getState()
+      store.updateMediaGroup({
+        ...store.mediaGroup,
+        [id]: data[0].filter((e) => e.longitude && e.latitude),
+      })
+    }, [data, id, enablePictureOnMap])
+
+    // 清空
+    useEffect(() => {
+      return () => {
+        const store = useMediaOnMapStore.getState()
+        if (!store.mediaGroup[id]) {
+          return
+        }
+        const next = { ...store.mediaGroup }
+        delete next[id]
+        store.updateMediaGroup(next)
+      }
+    }, [id, enablePictureOnMap])
 
     return (
       <div>
