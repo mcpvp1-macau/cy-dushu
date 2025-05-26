@@ -1,4 +1,5 @@
 import { makeToolbarRender } from '@/utils/antd/image'
+import { FileOutlined } from '@ant-design/icons'
 import { Image } from 'antd'
 import { memo } from 'react'
 
@@ -13,6 +14,24 @@ const ChatItem: FC<{
 }> = memo(({ type, content }) => {
   if (type === 'TEXT') {
     return <div dangerouslySetInnerHTML={{ __html: content }} />
+  }
+
+  if (type === 'FILE') {
+    const name = content.split('/').pop() || content
+    return (
+      <div className="my-[0.5em]">
+        <a
+          href={`/storage/${content}`}
+          target="_blank"
+          rel="noreferrer"
+          download
+          className="text-blue-500 hover:underline"
+        >
+          <FileOutlined className="mr-1" />
+          {name}
+        </a>
+      </div>
+    )
   }
 
   if (type === 'IMAGE') {
