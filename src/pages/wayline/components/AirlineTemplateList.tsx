@@ -1,7 +1,7 @@
 import { getAirlineTemplateList } from '@/service/modules/airline'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { Input, Spin } from 'antd'
-import React, { memo, type FC } from 'react'
+import { Fragment } from 'react'
 import AirlineTemplateListItem from './AirlineTemplateListItem'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import AppSpin from '@/components/AppSpin'
@@ -77,17 +77,17 @@ const AirlineTemplateList: FC<PropsType> = memo(() => {
         {isLoading ? (
           <AppSpin />
         ) : isNil(data?.pages.at(-1)) ||
-          data?.pages.at(-1)?.rows.length === 0 ? (
+          data?.pages.at(0)?.rows.length === 0 ? (
           <AppEmpty />
         ) : (
           <Spin spinning={isRefetching}>
             <ul className="mx-3 flex flex-col gap-3">
               {data?.pages.map((page, index) => (
-                <React.Fragment key={index}>
+                <Fragment key={index}>
                   {page.rows.map((e) => (
                     <AirlineTemplateListItem key={e.templateId} data={e} />
                   ))}
-                </React.Fragment>
+                </Fragment>
               ))}
             </ul>
           </Spin>
