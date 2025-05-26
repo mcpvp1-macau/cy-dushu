@@ -39,7 +39,10 @@ export type ConfigType = {
   terrainUrl?: string
   /** 是否使用地形 */
   useTerrain?: boolean
+  /** 上海禁飞区/航线 */
   useShanghaiBanRoutes?: boolean
+  /** 杭州禁飞区 */
+  useHangzhouBanAreas?: boolean
   /** 贵州自定义 */
   useGuizhouFarm?: boolean
   intelligentPhotographVersion?: number

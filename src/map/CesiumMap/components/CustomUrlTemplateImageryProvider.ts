@@ -1,5 +1,6 @@
 import * as Cesium from 'cesium'
 import localforage from 'localforage'
+import { attempt } from 'lodash'
 
 type Options = ConstructorParameters<
   typeof Cesium.UrlTemplateImageryProvider
@@ -68,10 +69,12 @@ const getImageData = async (
     })
     const data = await resp.blob()
     if (cacheOption) {
-      await imageryStore.setItem(url, {
-        blob: data,
-        t: now.valueOf(),
-        ver: cacheOption.ver,
+      attempt(async () => {
+        await imageryStore.setItem(url, {
+          blob: data,
+          t: now.valueOf(),
+          ver: cacheOption.ver,
+        })
       })
     }
     return data

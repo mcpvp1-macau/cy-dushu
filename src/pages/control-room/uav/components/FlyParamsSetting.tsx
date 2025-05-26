@@ -246,6 +246,16 @@ const FlyParamsSetting: FC<PropsType> = memo(() => {
                 />
               </Form.Item>
             )}
+            <Form.Item label="低电量设置" name="never">
+              <InputNumber
+                placeholder={t('common.form.pleaseInput')}
+                className="w-full"
+                suffix="%"
+                defaultValue={30}
+                min={0}
+                max={100}
+              />
+            </Form.Item>
           </Form>
         </ConfigProvider>
       </div>
