@@ -132,9 +132,11 @@ const CyberPlayer = memo(
       })
 
       player.on(Events.ERROR, (e) => {
-        if (e.errorCode === 5103) {
+        if (e.errorCode === 5103 || e.mediaError.code === 3) {
           // 解码错误
           setError(true)
+          player.seek(player.currentTime + 1, 'auto');
+          player.retry()
         } else {
           console.log('error222', e)
         }
