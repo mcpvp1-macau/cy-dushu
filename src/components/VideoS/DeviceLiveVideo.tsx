@@ -29,6 +29,7 @@ import useAIDataState from './hooks/useAIDataState'
 import DaoTongPlayer from '../Video/DaoTongPlayer'
 import SeiAIDataMetaInfo from './components/SeiAIDataMetaInfo'
 import { Responses } from '@/service/servers/liqunAxios'
+import useSnapshot from './hooks/useSnapshot'
 
 type PropsType = {
   videoContainerId?: string
@@ -95,19 +96,35 @@ const DeviceLiveVideo = memo(
       const { t } = useTranslation()
       const queryClient = useQueryClient()
 
-      const [fetchTime, setFetchTime] = useState(0)
       const [errMsg, setErrMsg] = useState('')
+      // 获取设备视频流列表
+      const deviceStreamListCache = useRef<
+        Awaited<ReturnType<typeof getDeviceStreamList>>['data'] | null
+      >(null)
+
+      const fetchDeviceStreamList = async () => {
+        if (deviceStreamListCache.current) {
+          return deviceStreamListCache.current
+        }
+        try {
+          const res = await getDeviceStreamList({
+            streamId: `${productKey}/${deviceId}`,
+          })
+          deviceStreamListCache.current = res.data
+        } catch (error) {}
+        return deviceStreamListCache.current
+      }
+
       const { data, refetch } = useQuery(
         {
           queryKey: ['getVideoUrl', { productKey, deviceId, videoId }],
+          enabled: !!deviceId,
           queryFn: async () => {
             try {
               // 同时获取视频直播地址和流列表
               const [liveData, streamList] = await Promise.all([
                 live(productKey, deviceId, { videoId }),
-                getDeviceStreamList({
-                  streamId: `${productKey}/${deviceId}`,
-                }),
+                fetchDeviceStreamList(), // 为了保证第一次拉流时, 能记住上一次选择的视频流, 所以一起请求
               ])
 
               let url = (liveData.data.playUrl as string) || ''
@@ -115,7 +132,7 @@ const DeviceLiveVideo = memo(
               // 记忆化获取上次的流
               const last = sessionStorage.getItem(deviceId + '-videoURL')
               if (last) {
-                const find = streamList.data.find((e) => e.playUrl === last)
+                const find = streamList?.find((e) => e.playUrl === last)
                 if (find) {
                   url = find.playUrl
                 }
@@ -123,11 +140,10 @@ const DeviceLiveVideo = memo(
               if (!url) {
                 return data
               }
-              setFetchTime(Date.now())
               setErrMsg('')
               return {
                 url,
-                streamList: streamList.data,
+                streamList: streamList,
               }
             } catch (error) {
               const res = error as Responses<any>['common']
@@ -159,15 +175,16 @@ const DeviceLiveVideo = memo(
 
       const [aspectRatio, setAspectRatio] = useState(16 / 9)
       const [ts, _setTs] = useState(0)
+      const tsUpdateTime = useRef(0)
       const { run: setTs } = useThrottleFn(
         (t: number) => {
-          // debounceRetch()
           _setTs(t)
+          tsUpdateTime.current = Date.now()
         },
         { wait: 333 },
       )
 
-      /** 刷新 */
+      /** 手动点击刷新 */
       const handleRefresh = async () => {
         await refetch()
       }
@@ -179,26 +196,7 @@ const DeviceLiveVideo = memo(
       const size = useSize(videoBoxRef)
 
       /** 截图 */
-      const snapshot: DeviceLiveVideoRefType['snapshot'] = (
-        type = 'image/jpeg',
-        quality = 0.5,
-      ) => {
-        const video = wrapperRef.current?.querySelector('video')
-        const canvaus = video
-          ? document.createElement('canvas')
-          : wrapperRef.current?.querySelector('canvas')
-        if (!canvaus) {
-          throw new Error('未找到视频或画布')
-        }
-        canvaus.width = video?.videoWidth ?? canvaus.width
-        canvaus.height = video?.videoHeight ?? canvaus.height
-        const ctx = canvaus.getContext('2d')
-        if (!ctx) {
-          throw new Error('未找到画布上下文')
-        }
-        ctx.drawImage(video ?? canvaus, 0, 0)
-        return canvaus.toDataURL(type, quality)
-      }
+      const snapshot = useSnapshot(wrapperRef)
 
       useImperativeHandle(ref, () => ({
         snapshot,
@@ -251,21 +249,13 @@ const DeviceLiveVideo = memo(
         })
       })
 
-      // 主要用于: 在没有更新 ts 时，重新拉流
-      // const { run: debounceRetch } = useDebounceFn(
-      //   () => {
-      //     refetch()
-      //     debounceRetch()
-      //   },
-      //   { wait: 5000, leading: false },
-      // )
-
-      // useEffect(() => {
-      //   debounceRetch()
-      // }, [])
-
       useInterval(() => {
-        if (!url) {
+        if (
+          // 没有 url 说明拉流接口一直在报错或没有返回
+          !url ||
+          // 视频 ts 超过 3 秒没有更新
+          (tsUpdateTime.current && Date.now() - tsUpdateTime.current > 3000)
+        ) {
           refetch()
         }
       }, 3000)
@@ -277,10 +267,10 @@ const DeviceLiveVideo = memo(
 
       const finalUrl = useMemo(() => {
         if (url) {
-          return url + `?t=-1&token=-1&tt=${fetchTime}`
+          return url + `?t=-1&token=-1&tt=${Date.now()}`
         }
         return ''
-      }, [url, fetchTime])
+      }, [url])
 
       return (
         <div
