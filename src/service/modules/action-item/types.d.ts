@@ -119,5 +119,21 @@ declare namespace API_ACTION_ITEM {
       rows: API_ACTION_ITEM.domain.ActionItem[]
       total: number
     }
+    interface AddActionItemRes {
+      gmtModified: string
+      gmtCreateBy: string
+      gmtModifiedBy: string
+      isValid: string
+      productKey: string
+      templateId: string
+      gmtCreate: string
+      taskBasic: string
+      taskType: string
+      isTemplate: string
+      taskTemplateFileUrl: string
+      taskName: string
+      id: number
+      parameters: string
+    }
   }
 }

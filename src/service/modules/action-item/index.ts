@@ -36,11 +36,15 @@ export const createActionItem = (
   data: any,
   autoShowMessageOnNotSuccess = true,
 ) => {
-  return serverJingqi.post('/action/item/add', data, {
-    xCustomConfig: {
-      autoShowMessageOnNotSuccess,
+  return serverJingqi.post<API_ACTION_ITEM.res.AddActionItemRes>(
+    '/action/item/add',
+    data,
+    {
+      xCustomConfig: {
+        autoShowMessageOnNotSuccess,
+      },
     },
-  })
+  )
 }
 
 /** 更新子行动 */

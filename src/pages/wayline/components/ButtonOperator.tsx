@@ -41,6 +41,9 @@ const BottomOperator: FC<PropsType> = memo(
     const actionItemId = searchParams.get('actionItemId')
     const deviceId = searchParams.get('deviceId')
 
+    const backUrl = searchParams.get('backUrl')
+    const taskId = searchParams.get('taskId')
+
     const [loading, setLoading] = useState(0)
     const navigate = useNavigate()
 
@@ -50,6 +53,7 @@ const BottomOperator: FC<PropsType> = memo(
         return
       }
       setLoading(1)
+      let waylineTemplateId: number | undefined = undefined
       try {
         const data = generateTaskData()
         if (actionId) {
@@ -62,13 +66,27 @@ const BottomOperator: FC<PropsType> = memo(
             await updateActionItem(data)
           } else {
             // 创建子行动
-            await createActionItem(data)
+            const resp = await createActionItem(data)
+            waylineTemplateId = resp.data.id
           }
         } else {
           // 保存航线模板
-          await createActionItem(data)
+          const resp = await createActionItem(data)
+          waylineTemplateId = resp.data.id
         }
-        navigate(-1)
+        // 如果有回调地址 (第三方)
+        if (backUrl) {
+          let to = backUrl.includes('?') ? backUrl : `${backUrl}?`
+          if (waylineTemplateId) {
+            to += `waylineTemplateId=${waylineTemplateId}`
+          }
+          if (taskId) {
+            to += `&taskId=${taskId}`
+          }
+          location.href = to // 兼容第三方跳转
+        } else {
+          navigate(-1)
+        }
       } finally {
         setLoading(0)
       }
@@ -102,9 +120,21 @@ const BottomOperator: FC<PropsType> = memo(
         data['execute'] = true
         data['type'] = type
         data['deviceIds'] = deviceId
-        await createActionItem(data, false)
+        const resp = await createActionItem(data, false)
+        const waylineTemplateId = resp.data.id
         msgApi.success(t('api.success.msg'))
-        navigate(-1)
+        if (backUrl) {
+          let to = backUrl.includes('?') ? backUrl : `${backUrl}?`
+          if (waylineTemplateId) {
+            to += `waylineTemplateId=${waylineTemplateId}`
+          }
+          if (taskId) {
+            to += `&taskId=${taskId}`
+          }
+          history.replaceState(null, '', to)
+        } else {
+          navigate(-1)
+        }
       } catch (e) {
         if (isLiqunCommonError(e)) {
           // 该设备有正在执行的任务
