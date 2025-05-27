@@ -312,7 +312,7 @@ const DeviceLiveVideo = memo(
               }}
             >
               {errMsg ? (
-                <div className="text-[#fff] flex justify-center items-center h-full w-full">
+                <div className="absolute inset-0 flex justify-center items-center h-full w-full">
                   <div className="text-[rgb(228,89,81)]">{errMsg}</div>
                 </div>
               ) : (
