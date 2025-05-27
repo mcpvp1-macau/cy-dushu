@@ -106,7 +106,7 @@ const TargetPoints: React.FC = () => {
           })
         })}
         {/* 下面的代码 MOCK 测试用的 */}
-        <PointPrimitive
+        {/* <PointPrimitive
           color={Cesium.Color.fromCssColorString('#fff')}
           position={Cesium.Cartesian3.fromDegrees(120, 30, 0)}
           pixelSize={14}
@@ -118,7 +118,7 @@ const TargetPoints: React.FC = () => {
             menuRef.current?.open()
             setMenuPosition([120, 30, 0])
           }}
-        />
+        /> */}
       </PointPrimitiveCollection>
       <PositionMenu
         ref={menuRef}

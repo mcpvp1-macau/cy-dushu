@@ -171,7 +171,7 @@ const DeviceLiveVideo = memo(
                 }
               }
               LastUrlRef.current = ''
-              return data
+              return data ?? { url: '', streamList: [] }
             }
           },
         },
@@ -269,7 +269,7 @@ const DeviceLiveVideo = memo(
           // 没有 url 说明拉流接口一直在报错或没有返回
           !url ||
           // 视频 ts 超过 3 秒没有更新
-          (Date.now() - tsUpdateTime.current > 3000)
+          Date.now() - tsUpdateTime.current > 3000
         ) {
           refetch()
         }
@@ -472,7 +472,6 @@ const DeviceLiveVideo = memo(
                       }}
                       className="order-20 text-[13px]"
                       onClick={async () => {
-                        console.info('aaaaaaaa')
                         await handleRefresh()
                         setJessibucaKey((v) => v + 1)
                       }}

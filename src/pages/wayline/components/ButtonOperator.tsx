@@ -41,7 +41,10 @@ const BottomOperator: FC<PropsType> = memo(
     const actionItemId = searchParams.get('actionItemId')
     const deviceId = searchParams.get('deviceId')
 
-    const backUrl = searchParams.get('backUrl')
+    let backUrl = searchParams.get('backUrl')
+    if (backUrl) {
+      backUrl = decodeURIComponent(backUrl)
+    }
     const taskId = searchParams.get('taskId')
 
     const [loading, setLoading] = useState(0)
