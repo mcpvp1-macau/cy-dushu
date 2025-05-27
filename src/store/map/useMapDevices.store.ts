@@ -39,10 +39,15 @@ type StateType = {
   scanAreas: {
     [deviceId: string]: GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon>
   }
+  /** 扫描区域是否启用 */
+  scanAreasEnable: {
+    [deviceId: string]: boolean
+  }
   /** 视频跟踪 */
   followedVideos: {
     [deviceId: string]: { productKey: string; videoId: string }
   }
+  /** 视频投射 */
   projectedVideos: {
     [deviceId: string]: {
       videoElement: HTMLVideoElement | null
@@ -63,6 +68,7 @@ type ActionsType = {
   updateScanAreas: (scanAreas: StateType['scanAreas']) => void
   updateFollowedVideos: (followedVideos: StateType['followedVideos']) => void
   updateProjectedVideos: (projectedVideos: StateType['projectedVideos']) => void
+  updateScanAreasEnable: (scanAreasEnable: StateType['scanAreasEnable']) => void
 }
 
 const useMapDevicesStore = create<StateType & ActionsType>()(
@@ -78,6 +84,7 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       uavTracks: {},
       uavStates: {},
       scanAreas: {},
+      scanAreasEnable: {},
       followedVideos: {},
       projectedVideos: {},
       updateUavDevices: (uavDevices) => {
@@ -115,6 +122,9 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       },
       updateProjectedVideos: (projectedVideos) => {
         set({ projectedVideos }, false, 'updateProjectedVideos')
+      },
+      updateScanAreasEnable: (scanAreasEnable) => {
+        set({ scanAreasEnable }, false, 'updateScanAreasEnable')
       },
     }),
     {

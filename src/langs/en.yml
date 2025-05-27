@@ -528,6 +528,7 @@ common:
   lonLat: Longitude & Latitude
   videoProjection: Video Projection
   videoFollow: Video Follow
+  scan: Scan
 events:
   search:
     placeholder: Please search by event name or ID

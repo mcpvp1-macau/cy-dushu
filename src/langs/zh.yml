@@ -522,6 +522,7 @@ common:
   lonLat: 经纬度
   videoProjection: 视频投射
   videoFollow: 视频跟随
+  scan: 扫描
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索

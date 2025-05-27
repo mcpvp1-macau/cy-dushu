@@ -69,6 +69,7 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
         <UavDetailVideo
           videoSource={videoSource ?? ''}
           sn={isRtcDemo ? data.sn : undefined}
+          isInUavDetail
         />
       </section>
 

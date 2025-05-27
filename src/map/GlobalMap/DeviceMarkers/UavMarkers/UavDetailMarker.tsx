@@ -80,13 +80,21 @@ const UavDetailMarker: FC<PropsType> = memo(
       clear(true)
     }, [deviceId])
 
+    const enableAreaScan = useMapDevicesStore(
+      (s) => s.scanAreasEnable[deviceId],
+    ) // 订阅扫描区域开关状态
+
     useCollectCameraScanAreas(gimbalPick, (scanArea) => {
+      if (!enableAreaScan) {
+        return
+      }
       useMapDevicesStore.getState().updateScanAreas({
         ...useMapDevicesStore.getState().scanAreas,
         [deviceId]: scanArea,
       })
     })
 
+    // 关闭时清除扫描区域
     useEffect(() => {
       return () => {
         const next = { ...useMapDevicesStore.getState().scanAreas }
@@ -94,6 +102,15 @@ const UavDetailMarker: FC<PropsType> = memo(
         useMapDevicesStore.getState().updateScanAreas(next)
       }
     }, [deviceId])
+
+    // 开关扫描区域时清除之前的扫描区域
+    useEffect(() => {
+      if (!enableAreaScan) {
+        const next = { ...useMapDevicesStore.getState().scanAreas }
+        delete next[deviceId]
+        useMapDevicesStore.getState().updateScanAreas(next)
+      }
+    }, [enableAreaScan])
 
     const projectedVideo = useMapDevicesStore(
       (s) => s.projectedVideos[deviceId],
