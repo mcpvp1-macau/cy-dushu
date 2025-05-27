@@ -55,5 +55,6 @@ window.config = {
   },
   isHaveBacktracking: true,
   useTerrain: true,
+  // useGuizhouProjects: true,
   // terrainUrl: '/ja-map/terrain/{z}/{x}/{y}.png',
 }

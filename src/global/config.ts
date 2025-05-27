@@ -45,6 +45,8 @@ export type ConfigType = {
   useHangzhouBanAreas?: boolean
   /** 贵州自定义 */
   useGuizhouFarm?: boolean
+  /** 贵州项目点位 */
+  useGuizhouProjects?: boolean
   intelligentPhotographVersion?: number
 }
 

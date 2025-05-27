@@ -13,7 +13,14 @@ import BottomBar from './components/BottomBar'
 import FuzhouJiefangBridge from './components/custom/FuzhouJiefangBridge'
 import ErrorListener from './components/ErrorListener'
 import { Button } from 'antd'
-import HangzhouBanAreas from './components/custom/HangzhouBanAreas'
+
+const HangzhouBanAreas = lazy(
+  () => import('./components/custom/HangzhouBanAreas'),
+)
+
+const GuizhouProjects = lazy(
+  () => import('./components/custom/GuizhouProjects'),
+)
 
 const ShanghaiWarZoneConfig = lazy(
   () => import('./components/custom/ShanghaiWarZoneConfig'),
@@ -116,6 +123,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
         )}
         {globalConfig.useGuizhouFarm && <GuizhouFarm />}
         {globalConfig.useHangzhouBanAreas && <HangzhouBanAreas />}
+        {globalConfig.useGuizhouProjects && <GuizhouProjects />}
       </Suspense>
       <BottomBar />
       <FuzhouJiefangBridge />
