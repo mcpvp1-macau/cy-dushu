@@ -192,6 +192,8 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
 
   const deviceStatus = useDeviceStats()
 
+  const [ping, setPing] = useState(0)
+
   const { sendJsonMessage, sendMessage } = useWebSocket(
     metricsURL,
     {
@@ -321,10 +323,7 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
     // 检查是否无数据返回, 主要用于检查 ping pong
     jessibucaRef.current.on('websocketMessage', () => {
       const now = Date.now()
-      if (lastMsgTime.current > 0 && now - lastMsgTime.current > WS_TIMEOUT) {
-        console.log('ws timeout')
-        props.onTimeout?.()
-      }
+      setPing(0)
       lastMsgTime.current = now
     })
 
@@ -344,13 +343,19 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
     if (!src) {
       return
     }
-    jessibucaRef.current.play(src)
-  }, [src, refreshKey])
+    jessibucaRef.current.play(`${src}&ttt=${Date.now()}`).then(() => {
+      lastMsgTime.current = Date.now()
+    })
+  }, [src, refreshKey, ping])
 
   // 定时发送 ping
   useInterval(() => {
     if (!jessibucaRef.current) {
       return
+    }
+    const now = Date.now()
+    if (lastMsgTime.current > 0 && now - lastMsgTime.current > WS_TIMEOUT) {
+      setPing(1)
     }
     jessibucaRef.current?.sendWebsocketMessage?.('ping')
   }, SEND_PING_INTERVAL)

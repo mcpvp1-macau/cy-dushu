@@ -8,7 +8,13 @@ import { formatTs } from '@/utils/time'
 import IconButton from '../ui/button/IconButton'
 import IconRefresh from '@/assets/icons/jsx/IconRefresh'
 import IconFull from '@/assets/icons/jsx/IconFull'
-import { useFullscreen, useInterval, useSize, useThrottleFn } from 'ahooks'
+import {
+  useFullscreen,
+  useInterval,
+  useLatest,
+  useSize,
+  useThrottleFn,
+} from 'ahooks'
 import { ExpandOutlined, FullscreenExitOutlined } from '@ant-design/icons'
 import { forwardRef, useImperativeHandle } from 'react'
 import { calcStreamId } from '@/utils/video/stream'
@@ -97,6 +103,8 @@ const DeviceLiveVideo = memo(
       const queryClient = useQueryClient()
 
       const [errMsg, setErrMsg] = useState('')
+
+      const LastUrlRef = useRef('')
       // 获取设备视频流列表
       const deviceStreamListCache = useRef<
         Awaited<ReturnType<typeof getDeviceStreamList>>['data'] | null
@@ -129,7 +137,6 @@ const DeviceLiveVideo = memo(
                 fetchDeviceStreamList(), // 为了保证第一次拉流时, 能记住上一次选择的视频流, 所以一起请求
               ])
 
-              setFetchTime(Date.now())
               let url = (liveData.data.playUrl as string) || ''
 
               // 记忆化获取上次的流
@@ -139,6 +146,10 @@ const DeviceLiveVideo = memo(
                 if (find) {
                   url = find.playUrl
                 }
+              }
+              if (LastUrlRef.current !== url) {
+                LastUrlRef.current = url
+                setFetchTime(Date.now())
               }
               if (!url) {
                 return data
@@ -159,6 +170,7 @@ const DeviceLiveVideo = memo(
                   // 其他异常暂不提示
                 }
               }
+              LastUrlRef.current = ''
               return data
             }
           },
@@ -257,7 +269,7 @@ const DeviceLiveVideo = memo(
           // 没有 url 说明拉流接口一直在报错或没有返回
           !url ||
           // 视频 ts 超过 3 秒没有更新
-          (tsUpdateTime.current && Date.now() - tsUpdateTime.current > 3000)
+          (Date.now() - tsUpdateTime.current > 3000)
         ) {
           refetch()
         }
@@ -267,6 +279,8 @@ const DeviceLiveVideo = memo(
       const { safeY, topBar, bottomBar, videoWrapper } = useCalcSafeArea(size)
 
       const [aiData, setAIData] = useAIDataState()
+
+      const errMsg2 = useLatest(errMsg)
 
       const finalUrl = useMemo(() => {
         if (url) {
@@ -335,7 +349,11 @@ const DeviceLiveVideo = memo(
                   onSeiAIData={setAIData}
                   onSeiProperties={onUavProperties}
                   onFetchError={handleRefresh}
-                  onError={() => setJessibucaKey((prev) => prev + 1)}
+                  onError={() => {
+                    if (!errMsg2.current) {
+                      setJessibucaKey((prev) => prev + 1)
+                    }
+                  }}
                   onStreamEnd={handleRefresh}
                   onTimeout={handleRefresh}
                   onVideoElementChange={onVideoElementChange}
@@ -453,7 +471,11 @@ const DeviceLiveVideo = memo(
                           document.body,
                       }}
                       className="order-20 text-[13px]"
-                      onClick={handleRefresh}
+                      onClick={async () => {
+                        console.info('aaaaaaaa')
+                        await handleRefresh()
+                        setJessibucaKey((v) => v + 1)
+                      }}
                     >
                       <IconRefresh />
                     </IconButton>
