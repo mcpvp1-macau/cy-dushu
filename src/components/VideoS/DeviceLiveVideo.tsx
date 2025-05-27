@@ -115,6 +115,8 @@ const DeviceLiveVideo = memo(
         return deviceStreamListCache.current
       }
 
+      // 重新拉流的时间戳
+      const [fetchTime, setFetchTime] = useState(0)
       const { data, refetch } = useQuery(
         {
           queryKey: ['getVideoUrl', { productKey, deviceId, videoId }],
@@ -127,6 +129,7 @@ const DeviceLiveVideo = memo(
                 fetchDeviceStreamList(), // 为了保证第一次拉流时, 能记住上一次选择的视频流, 所以一起请求
               ])
 
+              setFetchTime(Date.now())
               let url = (liveData.data.playUrl as string) || ''
 
               // 记忆化获取上次的流
@@ -267,10 +270,10 @@ const DeviceLiveVideo = memo(
 
       const finalUrl = useMemo(() => {
         if (url) {
-          return url + `?t=-1&token=-1&tt=${Date.now()}`
+          return url + `?t=-1&token=-1&tt=${fetchTime}`
         }
         return ''
-      }, [url])
+      }, [url, fetchTime])
 
       return (
         <div
