@@ -263,6 +263,7 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
       /** @ts-ignore */
       // decoderHard: '/js/JessibucaPro/decoder-pro-hard.js',
       playFailedAndReplay: true,
+      backgroundLoadingShow: true,
     })
 
     jessibucaRef.current.on(
