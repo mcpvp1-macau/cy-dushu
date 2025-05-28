@@ -40,7 +40,9 @@ type StateType = {
   user: User | null
   menus: Menu[] | null
   menuMap: Record<string, Menu> | null
-  systemInfo: API_USER.res.GetSystemInfoRes & { config: Record<string, any> } | null
+  systemInfo:
+    | (API_USER.res.GetSystemInfoRes & { config: Record<string, any> })
+    | null
 }
 
 type ActionsType = {
@@ -63,9 +65,9 @@ const useUserStore = create<StateType & ActionsType>()(
         set({ token: null, user: null, menus: null }, false, 'logout')
         await local.removeItem('token')
         const { loginUrl, systemName } = globalConfig
-        location.href = `${loginUrl}?systemName=${systemName}&fallback=${
-          location.origin + location.pathname
-        }`
+        location.href = `${loginUrl}?systemName=${systemName}&fallback=${encodeURIComponent(
+          location.origin + location.pathname + location.search,
+        )}`
       },
       fetchUserInfoAndMenus: async () => {
         const { token } = get()

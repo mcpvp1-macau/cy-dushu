@@ -10,9 +10,7 @@ const initToken = async () => {
     history.replaceState(
       null,
       '',
-      encodeURIComponent(
-        `${location.pathname}${param.size > 0 ? '?' : ''}${param.toString()}`,
-      ),
+      `${location.pathname}${param.size > 0 ? '?' : ''}${param.toString()}`,
     )
   } else {
     token = await local.getItem('token')
