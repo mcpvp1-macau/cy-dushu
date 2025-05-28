@@ -34,7 +34,7 @@ type PropsType = {
   /** 时间持续更新回调 */
   onTimeUpdate?: (ts: number) => void
   onSeiProperties?: (data: SEI_TYPE[SeiEnum.JSON_PROPERTIES]) => void
-  onSeiAIData?: (data: SEI_TYPE[SeiEnum.Protobuf_SEI]) => void
+  onSeiAIData?: (data: SEI_TYPE[SeiEnum.Protobuf_SEI] | null) => void
   onFetchError?: () => void
   onError?: (err: Error) => void
   onStats?: (stats: any) => void
@@ -60,7 +60,10 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
   const jessibucaRef = useRef<JessibucaPro | null>(null)
 
   const videoEncoderValue = useVideoEncoderStore((s) => s.videoEncoderValue)
-  videoEncoderValue
+
+  const dataRef = useRef<any>([])
+
+  const lastRef = useRef(0)
 
   const lastVideoInfo = useRef<Partial<VideoInfo>>({})
   const handleVideoInfo = useMemoizedFn((data) => {
@@ -279,10 +282,32 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
 
     jessibucaRef.current.on(
       'videoSEI' as JessibucaPro.EVENTS.videoSEI,
-      ({ data }) => {
-        handleVideoSei(data)
+      ({ data, ts }) => {
+        // handleVideoSei(data)
+        dataRef.current.push({ ts: ts, data: data })
       },
     )
+
+    jessibucaRef.current.on('currentPts', (ts) => {
+      const data = dataRef.current.findLast((d: any) => d.ts <= ts) || null
+      if (data) {
+        lastRef.current = 0
+        handleVideoSei?.(data?.data)
+      } else if (!lastRef.current) {
+        console.info('=========清空')
+        // 如果已经清空，则不必触发
+        // 清空画框
+        lastRef.current += 1
+        if (lastRef.current > 8) {
+          props.onSeiAIData?.(null)
+        }
+        // props.onSeiAIData?.(null)
+      }
+
+      while (dataRef.current?.[0]?.ts <= ts) {
+        dataRef.current.shift()
+      }
+    })
 
     jessibucaRef.current.on(
       'error' as JessibucaPro.EVENTS.error,

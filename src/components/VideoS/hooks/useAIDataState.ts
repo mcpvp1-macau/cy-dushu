@@ -14,12 +14,18 @@ const useAIDataState = () => {
     { wait: 3000 },
   )
 
-  const setAiData = useMemoizedFn((data: SEI_TYPE[SeiEnum.Protobuf_SEI]) => {
-    if (!data.ref) {
-      _setAIData(data)
-    }
-    clearAIData()
-  })
+  const setAiData = useMemoizedFn(
+    (data: SEI_TYPE[SeiEnum.Protobuf_SEI] | null) => {
+      if (!data) {
+        _setAIData(null)
+        return
+      }
+      if (!data?.ref) {
+        _setAIData(data)
+      }
+      clearAIData()
+    },
+  )
 
   return [aiData, setAiData] as const
 }

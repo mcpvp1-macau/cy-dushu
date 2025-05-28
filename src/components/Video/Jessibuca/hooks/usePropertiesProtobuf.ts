@@ -18,8 +18,13 @@ const usePropertiesProtobuf = (callback?: (data: any) => void) => {
     if (!propertiesType.current) {
       return
     }
-    const data = propertiesType.current.decode(array)
-    callback?.(data)
+    try {
+      const data = propertiesType.current.decode(array)
+      callback?.(data)
+    } catch (error) {
+      console.error('r=', error)
+    }
+
   }
 
   return {
