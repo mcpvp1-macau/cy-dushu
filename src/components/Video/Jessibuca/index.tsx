@@ -14,6 +14,7 @@ import useWebSocket from 'react-use-websocket'
 import { heartbeat } from '@/constant/websocket'
 import useUserStore from '@/store/useUser.store'
 import useDeviceStats from './hooks/useDeviceStats'
+import './index.less';
 
 const SEND_PING_INTERVAL = 1000
 const WS_TIMEOUT = 3000
@@ -294,7 +295,6 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
         lastRef.current = 0
         handleVideoSei?.(data?.data)
       } else if (!lastRef.current) {
-        console.info('=========清空')
         // 如果已经清空，则不必触发
         // 清空画框
         lastRef.current += 1

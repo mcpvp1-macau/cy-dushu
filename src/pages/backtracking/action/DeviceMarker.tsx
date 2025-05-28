@@ -47,6 +47,7 @@ const DeviceMarker: React.FC<PropsType> = memo(() => {
     return deviceIds.filter((item) => item !== currentDeviceId)
   }, [deviceIds, currentDeviceId])
 
+
   return (
     <>
       {/** 除了打开了详情的设备 */}

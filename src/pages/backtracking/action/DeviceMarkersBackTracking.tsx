@@ -61,6 +61,7 @@ const DeviceMarkersBackTracking: FC<PropsType> = memo(
       deviceIds.length && run()
     }, [deviceIds, startTime, dataTime])
 
+
     return (
       <BillboardCollection>
         <LabelCollection>

@@ -50,16 +50,10 @@ export default mergeConfig(
           target: 'http://135.100.11.115:8080',
           changeOrigin: true,
         },
-        '/_proxy/http://135.100.11.130:28080': {
-          target: 'http://135.100.11.130:28080',
-          changeOrigin: true,
-          rewrite: (path) => path.replace('/_proxy/http://135.100.11.130:28080', ''),
-        },
-        '/_proxy/http://135.100.11.130:8082': {
-          target: 'http://135.100.11.130:8082',
-          changeOrigin: true,
-          rewrite: (path) => path.replace('/_proxy/http://135.100.11.130:8082', ''),
-        },
+        '/data': {
+          target: 'https://135.100.11.110:32713',
+          secure: false
+        }
       },
     },
     define: {
@@ -74,7 +68,7 @@ export default mergeConfig(
             max: 18,
           },
           {
-            url: '/ja-map/td_map/shanghai_cia-z0-18/{z}/{x}/{y}.jpg',
+            url: '/data/shanghai_cia_1_18/{z}/{x}/{y}.png',
             min: 0,
             max: 18,
           },
