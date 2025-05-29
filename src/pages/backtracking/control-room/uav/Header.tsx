@@ -97,7 +97,7 @@ const SignalStrength: React.FC<{
   const { t } = useTranslation()
   return (
     <I
-      t={t('controlRoom.uav.header.signal.title')}
+      t={(signalMode || '4G') + t('controlRoom.uav.header.signal.title')}
       l={signalMode || '4G'}
       v={<SignalStrengthIcon value={signalStrength ?? -1} max={5} />}
     />
@@ -222,52 +222,50 @@ type PropsType = {
   deviceId: string
   deviceName: string
 }
-const Header: React.FC<PropsType> = memo(
-  ({ productKey, deviceId, deviceName }) => {
-    const appHeader = document.getElementById('app-header-center')
+const Header: React.FC<PropsType> = memo(({ deviceId, deviceName }) => {
+  const appHeader = document.getElementById('app-header-center')
 
-    const curAttr = useBackTrackingInfo(deviceId)
+  const curAttr = useBackTrackingInfo(deviceId)
 
-    const properties = useMemo(() => {
-      return shouldJson(curAttr?.properties)?.[deviceId]
-    }, [deviceId, curAttr?.properties])
+  const properties = useMemo(() => {
+    return shouldJson(curAttr?.properties)?.[deviceId]
+  }, [deviceId, curAttr?.properties])
 
-    const h = (
-      <header className="h-7 flex justify-between gap-3 px-3 items-center text-sm">
-        {appHeader ? <HeaderLeft deviceName={deviceName} /> : <div />}
-        <section className="grow">
-          <ul className="flex justify-center gap-1 xl:gap-3 2xl:gap-5 whitespace-nowrap">
-            {/* <DeviceLinkSwitch
+  const h = (
+    <header className="h-7 flex justify-between gap-3 px-3 items-center text-sm">
+      {appHeader ? <HeaderLeft deviceName={deviceName} /> : <div />}
+      <section className="grow">
+        <ul className="flex justify-center gap-1 xl:gap-3 2xl:gap-5 whitespace-nowrap">
+          {/* <DeviceLinkSwitch
               productKey={productKey}
               deviceId={deviceId}
               className="text-fore"
             /> */}
-            <Signal14G value={properties?.signal} />
-            <SDRStrength value={properties?.sdrStrength} />
-            <SignalStrength
-              signalMode={properties?.signalMode}
-              signalStrength={properties?.signalStrength}
-            />
-            <SatelliteNumber value={properties?.satelliteNumber} />
-            <Battery value={properties?.electricity} />
-            <HorizontalSpeed value={properties?.horizontalSpeed} />
-            <Height value={properties?.height} />
-            <Altitude value={properties?.altitude} />
-            <HomeDistance value={properties?.homeDistance} />
-            <FT value={properties?.flyTime} />
-            <FD value={properties?.flyDistance} />
-          </ul>
-        </section>
-        <section>{/* <LatestTask deviceId={deviceId} /> */}</section>
-      </header>
-    )
+          <Signal14G value={properties?.signal} />
+          <SDRStrength value={properties?.sdrStrength} />
+          <SignalStrength
+            signalMode={properties?.signalMode}
+            signalStrength={properties?.signalStrength}
+          />
+          <SatelliteNumber value={properties?.satelliteNumber} />
+          <Battery value={properties?.electricity} />
+          <HorizontalSpeed value={properties?.horizontalSpeed} />
+          <Height value={properties?.height} />
+          <Altitude value={properties?.altitude} />
+          <HomeDistance value={properties?.homeDistance} />
+          <FT value={properties?.flyTime} />
+          <FD value={properties?.flyDistance} />
+        </ul>
+      </section>
+      <section>{/* <LatestTask deviceId={deviceId} /> */}</section>
+    </header>
+  )
 
-    if (appHeader) {
-      return createPortal(h, appHeader)
-    }
+  if (appHeader) {
+    return createPortal(h, appHeader)
+  }
 
-    return <div className="bg-ground-3 mx-2 rounded mt-2">{h}</div>
-  },
-)
+  return <div className="bg-ground-3 mx-2 rounded mt-2">{h}</div>
+})
 
 export default Header

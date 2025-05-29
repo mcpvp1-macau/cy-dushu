@@ -106,7 +106,7 @@ const SignalStrength = memo(() => {
 
   return (
     <I
-      t={t('controlRoom.uav.header.signal.title')}
+      t={`${signalMode} ${t('controlRoom.uav.header.signal.title')}`}
       l={signalMode || '4G'}
       v={<SignalStrengthIcon value={signalStrength ?? -1} max={5} />}
     />

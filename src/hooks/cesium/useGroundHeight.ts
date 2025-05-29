@@ -2,7 +2,11 @@ import { useAsyncEffect } from 'ahooks'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 
-const useGroundHeight = (lng: number | null, lat: number | null, level = 8) => {
+const useGroundHeight = (
+  lng: number | null,
+  lat: number | null,
+  level = 11,
+) => {
   const { viewer } = useCesium()
 
   const [groundHeight, setGroundHeight] = useState(0)
