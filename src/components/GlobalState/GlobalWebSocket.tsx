@@ -3,7 +3,7 @@ import { heartbeat } from '@/constant/websocket'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import useUserStore from '@/store/useUser.store'
 import { shouldJson } from '@/utils/json'
-import { useInterval } from 'ahooks'
+import { useInterval, useThrottleFn } from 'ahooks'
 import dayjs from 'dayjs'
 import { isEqual, isNil } from 'lodash'
 import { type FC } from 'react'
@@ -175,10 +175,17 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
 
   // 事件推送 ------------------------
   const { refetch } = useEventData()
+
+  const { run } = useThrottleFn(
+    () => {
+      refetch();
+    },
+    { wait: 2000 },
+  );
   const updateNewEvent = useGlobalWsStore((s) => s.updateNewEvent)
   const handleEventPush = useMemoizedFn((message: any) => {
     //
-    refetch()
+    run()
     updateNewEvent(message)
   })
 
