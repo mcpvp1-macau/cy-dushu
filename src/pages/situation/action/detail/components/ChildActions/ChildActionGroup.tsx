@@ -1,10 +1,6 @@
 import { Button } from 'antd'
 import ChildAction from './ChildAction'
-import IconSwarm from '@/assets/icons/jsx/IconSwarm'
 import { endActionItem, startActionItem } from '@/service/modules/action-item'
-import { Link } from 'react-router-dom'
-import { getWaylineEditURL } from '@/pages/wayline/components/AirlineTemplateListItem'
-import { WaylineEnum } from '@/constant/uav/wayline'
 import { Fragment } from 'react/jsx-runtime'
 
 type PropsType = {
@@ -60,8 +56,6 @@ const ChildActionGroup: FC<PropsType> = ({
     }
   }
 
-  const waylineTemplateId = data[0].extra.waylineTemplateId
-
   return (
     <div>
       <div className="flex gap-2 mb-3">
@@ -81,17 +75,6 @@ const ChildActionGroup: FC<PropsType> = ({
         >
           {t('action.item.stopAll')}
         </Button>
-        {waylineTemplateId && (
-          <Link
-            to={`${getWaylineEditURL(
-              WaylineEnum.SwarmWayline,
-            )}/${waylineTemplateId}`}
-          >
-            <Button size="small" icon={<IconSwarm />}>
-              编辑
-            </Button>
-          </Link>
-        )}
       </div>
       <ul className="flex flex-col gap-3">
         {data.map((e) => (
