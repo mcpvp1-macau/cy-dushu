@@ -24,6 +24,7 @@ const ActionConfig: React.FC<Props> = (props) => {
   const editCurrentAirPoint = useAirlineConfigStore(
     (s) => s.updateCurrentAirpoint,
   )
+  const globalSpeed = useAirlineConfigStore((s) => s.airlineConfig.speed)
 
   const actions = currentAirpoint?.actions || []
 
@@ -45,7 +46,7 @@ const ActionConfig: React.FC<Props> = (props) => {
   }
 
   const onChangePosition = (
-    type: 'pointX' | 'pointY' | 'pointZ',
+    type: 'pointX' | 'pointY' | 'pointZ' | 'speed',
     value: number,
   ) => {
     const updateCurrentAirpoint =
@@ -175,10 +176,20 @@ const ActionConfig: React.FC<Props> = (props) => {
       <div>
         <div className="my-2">{t('common.latitude')}</div>
         <InputNumber
-          value={Number(currentAirpoint?.pointY.toFixed(6) ?? 0)}
+          value={Number(currentAirpoint?.pointY.toFixed(6))}
           className="w-full"
           onChange={(value: number | null) =>
             value && onChangePosition('pointY', value)
+          }
+        />
+      </div>
+      <div>
+        <div className="my-2">{t('common.speed')} (m/s)</div>
+        <InputNumber
+          value={Number(currentAirpoint?.speed?.toFixed(2) ?? globalSpeed)}
+          className="w-full"
+          onChange={(value: number | null) =>
+            value && onChangePosition('speed', value)
           }
         />
       </div>

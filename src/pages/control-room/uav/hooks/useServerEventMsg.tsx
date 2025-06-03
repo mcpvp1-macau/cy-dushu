@@ -5,7 +5,7 @@ import { takePhotoEventEmitter } from '../components/ControlRoomVideo/hooks/useH
 import IconButton from '@/components/ui/button/IconButton'
 import IconClose from '@/assets/icons/jsx/IconClose'
 import { autoAIPhotoParamsEmitter } from '../components/AsideButtons/IntelligentPhotograph'
-// import { playTextToSpeech } from '@/utils/voice/textToSpeech'
+import { playTextToSpeech } from '@/utils/voice/textToSpeech'
 
 /** 处理 Websocket 服务端来的消息弹窗 */
 const useServerEventMsg = (msgApi?: MessageInstance) => {
@@ -29,7 +29,7 @@ const useServerEventMsg = (msgApi?: MessageInstance) => {
       if (kind === 'commonEvent' || kind === 'pipelineTaskEvent') {
         const id = uuidv4()
         if (wsData.data.voiceNotificationSwitch === 'ON') {
-          // playTextToSpeech(wsData.data.message)
+          playTextToSpeech(wsData.data.message)
         }
         msgApi.open({
           key: id,

@@ -29,10 +29,13 @@ type PropsType = unknown
 
 const Right: FC<PropsType> = memo(() => {
   const rightMode = useRightMode((s) => s.rightMode)
-  const RightComponent = rightMode && route[rightMode]
+  if (!rightMode) {
+    return null
+  }
 
+  const RightComponent = route[rightMode]
   if (!RightComponent) {
-    return <div className="p-3">404</div>
+    return <div className="absolute top-3 right-[54px] z-10 p-3">404</div>
   }
 
   return (

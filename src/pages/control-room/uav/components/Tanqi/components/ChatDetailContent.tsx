@@ -13,7 +13,13 @@ const ChatItem: FC<{
   content: string
 }> = memo(({ type, content }) => {
   if (type === 'TEXT') {
-    return <div dangerouslySetInnerHTML={{ __html: content }} />
+    return (
+      <div
+        dangerouslySetInnerHTML={{
+          __html: content,
+        }}
+      />
+    )
   }
 
   if (type === 'FILE') {
