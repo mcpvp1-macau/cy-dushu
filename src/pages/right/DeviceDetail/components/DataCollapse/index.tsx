@@ -24,7 +24,7 @@ const DataCollapse: FC<PropsType> = memo(({ ...props }) => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)
   const deviceList = useDeviceChildrenList(deviceDetail)
 
-  const [enablePictureOnMap, { toggle }] = useBoolean(true)
+  const [enablePictureOnMap, { toggle }] = useBoolean(false)
 
   const queryClient = useQueryClient()
 
@@ -62,7 +62,7 @@ const DataCollapse: FC<PropsType> = memo(({ ...props }) => {
                 </IconButton>
                 <IconButton
                   active={enablePictureOnMap}
-                  toolTipProps={{ title: '图片上图' }}
+                  toolTipProps={{ title: '照片上图' }}
                   onClick={toggle}
                 >
                   <IconMap />
