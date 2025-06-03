@@ -6,7 +6,7 @@ type PropsType = {
 
 // 为了更好的性能, 不添加 useSize 作为监控容器大小, 最好外部固定大小, 若要响应式, 可以另外实现
 
-/** 给 object-fit: contain 的图片添加绘制容器 */
+/** @deprecated 给 object-fit: contain 的图片添加绘制容器 */
 const ImageContainBox: FC<PropsType> = memo(({ src, alt, children }) => {
   const imgRef = useRef<HTMLImageElement>(null)
 

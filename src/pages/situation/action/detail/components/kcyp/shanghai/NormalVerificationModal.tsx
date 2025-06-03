@@ -1,4 +1,3 @@
-import ImageContainBox from '@/components/ImageContainBox'
 import XModal from '@/components/XModal'
 import { DictEnum } from '@/enum/dict'
 import { useAppMsg } from '@/hooks/useAppMsg'
@@ -7,7 +6,7 @@ import { commitKYCPOrder } from '@/service/modules/action/kcyp'
 import { useDictOptions } from '@/store/useDict.store'
 import { idCardReg, phoneReg } from '@/constant/regExp'
 import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons'
-import { Form, Input, Select } from 'antd'
+import { Form, Image, Input, Select } from 'antd'
 import { uniqWith } from 'lodash'
 
 const HeadLine: FC<{ title: string; suc?: boolean }> = memo(
@@ -369,7 +368,10 @@ const KCYPNormalVerificationModal: FC<PropsType> = memo(
                     </Form.Item>
                   </div>
                   <div className="w-full overflow-hidden aspect-video border border-solid border-ground-5">
-                    <ImageContainBox
+                    <Image
+                      className="object-contain"
+                      width="100%"
+                      height="100%"
                       src={`/storage${e.image || e.sourceImage}`}
                     />
                   </div>

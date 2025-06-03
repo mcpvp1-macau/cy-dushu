@@ -6,7 +6,7 @@ type PropsType = {
   children?: ReactNode
 }
 
-/** 由外界控制大小 */
+/** @deprecated 由外界控制大小 */
 const ImageContainBox2: FC<PropsType> = memo(({ src, alt, children }) => {
   const imgRef = useRef<HTMLImageElement>(null)
 
