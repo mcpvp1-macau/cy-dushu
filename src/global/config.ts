@@ -1,9 +1,26 @@
-export type ConfigType = {
-  systemName: string
-  title: string
+export type ConfigType = GlobalConfig
+
+type WindowType = Window & { config: ConfigType }
+
+/** 全局配置 window.config */
+const globalConfig = (window as unknown as WindowType).config
+
+if (import.meta.env.DEV && __DEV_MERGE_CONFIG__) {
+  Object.assign(globalConfig, __DEV_MERGE_CONFIG__)
+}
+
+globalConfig.loginUrl ??= `${globalConfig.loginHttps ? 'https' : 'http'}://${
+  location.hostname
+}:32712/login`
+
+globalConfig.uavHeightLimit ??= 1000
+
+class GlobalConfig {
+  systemName = 'jingqi'
+  title = '牍术·无人装备智能引擎'
   loginUrl?: string
   version?: string
-  globalWs: string
+  globalWs = 'ws'
   videoBuffer?: number
   loginHttps?: boolean
   videoBufferDelay?: number
@@ -33,7 +50,7 @@ export type ConfigType = {
     }
   }
   /** 无人机高度限制 */
-  uavHeightLimit: number
+  uavHeightLimit = 1000
   isHaveBacktracking?: boolean
   /** 地形服务 */
   terrainUrl?: string
@@ -48,21 +65,19 @@ export type ConfigType = {
   /** 贵州项目点位 */
   useGuizhouProjects?: boolean
   intelligentPhotographVersion?: number
+
+  constructor(def: ConfigType) {
+    Object.keys(def).forEach((key) => {
+      this[key] = def[key]
+    })
+  }
+  merge(configs: ConfigType) {
+    Object.keys(configs).forEach((key) => {
+      this[key] = configs[key]
+    })
+  }
 }
 
-type WindowType = Window & { config: ConfigType }
+const config = new GlobalConfig(globalConfig)
 
-/** 全局配置 window.config */
-const globalConfig = (window as unknown as WindowType).config
-
-if (import.meta.env.DEV && __DEV_MERGE_CONFIG__) {
-  Object.assign(globalConfig, __DEV_MERGE_CONFIG__)
-}
-
-globalConfig.loginUrl ??= `${globalConfig.loginHttps ? 'https' : 'http'}://${
-  location.hostname
-}:32712/login`
-
-globalConfig.uavHeightLimit ??= 1000
-
-export default globalConfig
+export default config

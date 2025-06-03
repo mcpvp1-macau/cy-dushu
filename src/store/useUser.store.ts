@@ -95,6 +95,7 @@ const useUserStore = create<StateType & ActionsType>()(
             false,
             'fetchSystemInfo',
           )
+          globalConfig.merge(config)
         } catch (error) {
           set(
             { systemInfo: { ...resp.data, config: {} } },
