@@ -7,6 +7,15 @@ export default mergeConfig(
     server: {
       host: '0.0.0.0',
       proxy: {
+        '/proxyApi/otherService/jingqi/autoPhotograph': {
+          target: 'http://172.21.30.163:11593',
+          changeOrigin: true,
+          rewrite: (path) =>
+            path.replace(
+              /^\/proxyApi\/otherService\/jingqi\/autoPhotograph/,
+              '',
+            ),
+        },
         // 4A 接口
         '/proxyApi': {
           target: 'http://172.21.30.105:31851/',

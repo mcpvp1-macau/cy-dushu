@@ -57,4 +57,5 @@ window.config = {
   useTerrain: true,
   // useGuizhouProjects: true,
   // terrainUrl: '/ja-map/terrain/{z}/{x}/{y}.png',
+  intelligentPhotographVersion: 3,
 }

@@ -22,11 +22,16 @@ type AutoAIPhotoParams = {
   point1: Record<string, any>
   point2: Record<string, any>
   speed: number
-  larser_height: number
+  larser_height?: number
+}
+
+type TakingRightPhotoParams = {
+  needTakePhoto: boolean
 }
 
 export const autoAIPhotoParamsEmitter = mitt<{
   autoAIPhotoParams: AutoAIPhotoParams
+  takingRightPhoto: TakingRightPhotoParams
 }>()
 
 /** 智能拍照 */

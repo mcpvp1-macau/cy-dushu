@@ -59,7 +59,7 @@ const AsideButtons: FC<PropsType> = memo(() => {
         >
           {t('controlRoom.uav.service.boxZoom.title')}
         </Button>
-        {globalConfig.intelligentPhotographVersion === 2 ? (
+        {[2, 3].includes(globalConfig.intelligentPhotographVersion ?? -1) ? (
           <IntelligentPhotography postServiceFn={postSerivce} />
         ) : (
           <IntelligentPhotographyV1 postServiceFn={postSerivce} />

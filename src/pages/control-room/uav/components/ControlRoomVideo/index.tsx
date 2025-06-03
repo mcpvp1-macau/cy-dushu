@@ -1,7 +1,6 @@
 import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import LaserRanging from './LaserRanging'
-import PositionZoom from './PositionZoom'
 import { useSearchParams } from 'react-router-dom'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
@@ -17,6 +16,7 @@ import useHandleTakePhotoEvent from './hooks/useHandleTakePhotoEvent'
 import ZoomFocusMode from '../AsideToolBar/ZoomFucusMode'
 import IrMetering from './components/IrMetering'
 import ExposureMode from '../AsideToolBar/ExposureMode'
+import PointOrBoxSelect from './components/PointOrBoxSelect/PointOrBoxSelect'
 
 const ExposureValue = lazy(() => import('./components/ExposureValue'))
 const ShutterValue = lazy(() => import('./components/ShutterValue'))
@@ -159,7 +159,8 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
             {irMeteringMode && irMeteringMode !== 'CLOSE' && <IrMetering />}
             <ZoomFocus />
             {posizionZoomOpen > 0 && (
-              <PositionZoom deviceLiveVideoRef={deviceLiveVideoRef} />
+              // <PositionZoom deviceLiveVideoRef={deviceLiveVideoRef} />
+              <PointOrBoxSelect deviceLiveVideoRef={deviceLiveVideoRef} />
             )}
           </>
         }

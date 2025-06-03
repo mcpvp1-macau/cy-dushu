@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { takePhotoEventEmitter } from '../components/ControlRoomVideo/hooks/useHandleTakePhotoEvent'
 import IconButton from '@/components/ui/button/IconButton'
 import IconClose from '@/assets/icons/jsx/IconClose'
+import { autoAIPhotoParamsEmitter } from '../components/AsideButtons/IntelligentPhotograph'
 // import { playTextToSpeech } from '@/utils/voice/textToSpeech'
 
 /** 处理 Websocket 服务端来的消息弹窗 */
@@ -17,6 +18,11 @@ const useServerEventMsg = (msgApi?: MessageInstance) => {
         fileId: wsData.data.fileId,
       })
       return
+    }
+    if (wsData.method === 'event.prePhotoEvent.info') {
+      autoAIPhotoParamsEmitter.emit('takingRightPhoto', {
+        needTakePhoto: wsData.data.method === '1',
+      })
     }
     const [c, kind, type] = wsData.method?.split('.') ?? []
     if (c === 'event') {

@@ -1,12 +1,11 @@
-import DrawBox from '@/components/DrawBox'
-import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import { ComponentRef, RefObject } from 'react'
-import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
-import { useAppMsg } from '@/hooks/useAppMsg'
 import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
-import { isNil } from 'lodash'
+import { useAppMsg } from '@/hooks/useAppMsg'
 import { autoPhotoGraphCalc } from '@/service/modules/autoPhotograph'
-import { autoAIPhotoParamsEmitter } from '../AsideButtons/IntelligentPhotograph'
+import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
+import { isNil } from 'lodash'
+import { ComponentRef, RefObject } from 'react'
+import { autoAIPhotoParamsEmitter } from '../../../AsideButtons/IntelligentPhotograph'
+import DrawBox from '@/components/DrawBox'
 
 type PropsType = {
   deviceLiveVideoRef: RefObject<ComponentRef<typeof DeviceLiveVideo>>
@@ -14,14 +13,11 @@ type PropsType = {
 
 type Box = [number, number, number, number]
 
-/** @deprecated 指点变焦 / 框选 */
-const PositionZoom: FC<PropsType> = memo(({ deviceLiveVideoRef }) => {
+/** 框选 V2 */
+const BoxSelectV2: FC<PropsType> = memo(({ deviceLiveVideoRef }) => {
   const msgApi = useAppMsg()
   const { t } = useTranslation()
 
-  const postService = usePostDeviceService()
-
-  const posizionZoomOpen = useUavControlRoomStore((s) => s.openPointZoom)
   const state = useUavControlRoomStore((s) => s.state)
   const speed = useUavControlRoomStore((s) => s.flyParams.flySpeed)
 
@@ -29,25 +25,6 @@ const PositionZoom: FC<PropsType> = memo(({ deviceLiveVideoRef }) => {
 
   const larserDistance =
     useUavControlRoomStore((s) => s.state.laserDistance) ?? -1
-
-  const handleDrawEnd = async ([x1, y1, x2, y2]: Box) => {
-    // 指点变焦 ------------------------------------------------------------
-    if (posizionZoomOpen === 1) {
-      postService('tapZoomAtTarget', { x1, y1, x2, y2 })
-      return
-    }
-
-    // 框选变焦 ------------------------------------------------------------
-
-    // 框选（v2）
-    if (globalConfig.intelligentPhotographVersion === 2) {
-      handleAIPhotographV2([x1, y1, x2, y2])
-    } else if (globalConfig.intelligentPhotographVersion === 3) {
-    } else {
-      postService('gimbalToPoint', { x1, y1, x2, y2 })
-    }
-    return
-  }
 
   // 获取视频截图 base64 数据
   const getVideoBase64Data = () => {
@@ -106,9 +83,13 @@ const PositionZoom: FC<PropsType> = memo(({ deviceLiveVideoRef }) => {
     }
   }
 
+  const handleDrawEnd = (rect: Box) => {
+    handleAIPhotographV2(rect)
+  }
+
   return <DrawBox onDrawEnd={handleDrawEnd} />
 })
 
-PositionZoom.displayName = 'PositionZoom'
+BoxSelectV2.displayName = 'BoxSelectV2'
 
-export default PositionZoom
+export default BoxSelectV2
