@@ -56,7 +56,7 @@ const EventResolvePage: FC<PropsType> = memo(() => {
             </div>
           </div>
           <ScrollArea className="p-3 flex-1">
-            <EventDetail eventId={eventId!} useCol useGo />
+            {data && <EventDetail data={data} useCol useGo />}
           </ScrollArea>
           <div className="flex justify-center p-3">
             {data.actionId ? (

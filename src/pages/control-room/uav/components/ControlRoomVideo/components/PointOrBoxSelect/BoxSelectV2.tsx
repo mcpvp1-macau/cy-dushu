@@ -60,7 +60,7 @@ const BoxSelectV2: FC<PropsType> = memo(({ deviceLiveVideoRef }) => {
 
     try {
       const resp = await autoPhotoGraphCalc({
-        photo: base64.split(';base64,')[1],
+        photo: base64,
         pictureBox: { x1, y1, x2, y2 },
         uav_parameters: state,
       })

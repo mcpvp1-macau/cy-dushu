@@ -23,7 +23,7 @@ import { useAppMsg } from '@/hooks/useAppMsg'
 import { ActionEnum } from '@/constant/action/action_type'
 import { lazy, Suspense } from 'react'
 import { LoadingOutlined, PictureFilled } from '@ant-design/icons'
-import ImageContainBoxPreview from '@/components/ImageContainBoxPreview'
+import ImageContainBoxPreview from '@/components/ui/ImageContainBoxPreview'
 
 type PropsType = {
   actionId: string

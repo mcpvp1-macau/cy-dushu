@@ -9,7 +9,7 @@ import AppSpin from '@/components/AppSpin'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import KCYPPanel from './components/kcyp/Panel'
 import { lazy } from 'react'
-import EventDetail from '@/pages/events/components/EventDetail'
+import ActionEventDetail from './components/ActionEventDetail'
 
 const ChildActions = lazy(
   () => import('./components/ChildActions/ChildActions'),
@@ -60,11 +60,7 @@ const PageActionDetailSub: FC<PropsType> = memo(
         items.push({
           label: t('common.event'),
           key: 'event',
-          children: (
-            <div className="p-3">
-              <EventDetail eventId={actionDetail.eventId} useCol useGo />,
-            </div>
-          ),
+          children: <ActionEventDetail eventId={actionDetail.eventId} />,
         })
       }
 

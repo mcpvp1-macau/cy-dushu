@@ -1,16 +1,14 @@
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
-import XModal from '@/components/XModal'
 import { DeviceEnum } from '@/enum/device'
 import { DictEnum } from '@/enum/dict'
+import useStartActionItem from '@/hooks/service/action/useStartActionItem'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import {
   createActionItem,
-  endActionItem,
   updateActionItem,
 } from '@/service/modules/action-item'
 import { getAllDeviceListV3 } from '@/service/modules/device'
-import { isLiqunCommonError } from '@/service/servers/liqunAxios'
 import { useDictOptions } from '@/store/useDict.store'
 import { Button } from 'antd'
 import { DefaultOptionType } from 'antd/es/select'
@@ -41,6 +39,7 @@ const BottomOperator: FC<PropsType> = memo(
     const actionItemId = searchParams.get('actionItemId')
     const deviceId = searchParams.get('deviceId')
 
+    // 跳回地址
     let backUrl = searchParams.get('backUrl')
     if (backUrl) {
       backUrl = decodeURIComponent(backUrl)
@@ -108,10 +107,7 @@ const BottomOperator: FC<PropsType> = memo(
       }
     }
 
-    const [runningActionPayload, setRunningActionPayload] = useState<{
-      actionItem: number
-      message: string
-    } | null>(null)
+    const { startActionItem, stopModalHolder } = useStartActionItem()
 
     const handleExecuteConfirm = async (deviceId: string, type?: string) => {
       setLoading(2)
@@ -137,25 +133,6 @@ const BottomOperator: FC<PropsType> = memo(
           history.replaceState(null, '', to)
         } else {
           navigate(-1)
-        }
-      } catch (e) {
-        if (isLiqunCommonError(e)) {
-          // 该设备有正在执行的任务
-          if (
-            Array.isArray(e.data?.actionItemIdList) &&
-            e.data.actionItemIdList.length
-          ) {
-            setRunningActionPayload({
-              actionItem: e.data.actionItemIdList[0],
-              message: e.message,
-            })
-          }
-          msgApi.error(
-            `${t('wayline.executeTask.error.msg')}${
-              e.message ? ` ${e.message}` : ''
-            }`,
-          )
-          return
         }
       } finally {
         setLoading(0)
@@ -221,15 +198,6 @@ const BottomOperator: FC<PropsType> = memo(
       [i18n.language, actionTypeOptions, allowMultipleDevice, deviceOptions],
     )
 
-    // 停止任务
-    const handleStopActionItem = async () => {
-      if (runningActionPayload) {
-        await endActionItem(runningActionPayload.actionItem)
-        msgApi.success(t('wayline.executeTask.success.stopTask.msg'))
-        setRunningActionPayload(null)
-      }
-    }
-
     return (
       <div className="m-3 flex gap-5 px-3">
         <Button
@@ -266,22 +234,7 @@ const BottomOperator: FC<PropsType> = memo(
             }}
           />
         )}
-        {runningActionPayload && (
-          <XModal
-            title={t('common.executeError')}
-            width={400}
-            centered
-            open={!!runningActionPayload}
-            noPadding
-            onClose={() => setRunningActionPayload(null)}
-            onConfirm={handleStopActionItem}
-          >
-            <p className="m-3">{runningActionPayload.message}</p>
-            <p className="m-3">
-              {t('wayline.executeTask.question.stopTask.msg')}
-            </p>
-          </XModal>
-        )}
+        {stopModalHolder}
       </div>
     )
   },

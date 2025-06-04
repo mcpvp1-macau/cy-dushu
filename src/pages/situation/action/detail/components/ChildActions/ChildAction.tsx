@@ -3,6 +3,7 @@ import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
 import IconVisible from '@/assets/icons/jsx/IconVisible'
 import IconButton from '@/components/ui/button/IconButton'
 import { RightModeEnum } from '@/enum/right-mode'
+import useStartActionItem from '@/hooks/service/action/useStartActionItem'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import {
   getWaylineEditURL,
@@ -56,11 +57,13 @@ const OperatorBtns: FC<PropsType> = ({ data, noEdit }) => {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
 
+  const { startActionItem: start, stopModalHolder } = useStartActionItem()
+
   const handleClick = async (action: string) => {
     setLoading(true)
     try {
       await {
-        start: () => startActionItem(data.id),
+        start: () => start(() => startActionItem(data.id)),
         pause: () => pauseActionItem({ actionItemId: data.id, isPause: true }),
         continue: () =>
           pauseActionItem({ actionItemId: data.id, isPause: false }),
@@ -116,6 +119,7 @@ const OperatorBtns: FC<PropsType> = ({ data, noEdit }) => {
           <Button size="small" onClick={() => handleClick('start')}>
             {t('action.detail.task.start.title')}
           </Button>
+          {stopModalHolder}
         </div>
       )
     case 'PROCESSING':

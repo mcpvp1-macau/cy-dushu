@@ -123,7 +123,12 @@ const PageEvents: FC<PropsType> = memo(() => {
         id: 'actions',
         header: t('common.operation'),
         cell: (cell) => {
-          return <EventDetailModal data={cell.row.original} />
+          return (
+            <EventDetailModal
+              data={cell.row.original}
+              rows={cell.table.getRowModel().rows.map((r) => r.original)}
+            />
+          )
         },
       }),
     ],

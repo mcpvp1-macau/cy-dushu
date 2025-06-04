@@ -5,6 +5,7 @@ import useRightMode from '@/store/layout/useRightMode.store'
 import { getEventDetail } from '@/service/modules/events'
 import { QuestionCircleFilled } from '@ant-design/icons'
 import { bigFlyEmitter } from '@/map/GlobalMap/BigFlyListener'
+import AppSpin from '@/components/AppSpin'
 
 type PropsType = unknown
 
@@ -12,7 +13,7 @@ const RightEventDetail: FC<PropsType> = memo(() => {
   const eventId = useRightMode((s) => s.detailId)
 
   const queryClient = useQueryClient()
-  const { data } = useQuery(
+  const { data, isLoading } = useQuery(
     {
       queryKey: ['getEventDetail', eventId],
       queryFn: () => getEventDetail(eventId!),
@@ -47,7 +48,11 @@ const RightEventDetail: FC<PropsType> = memo(() => {
         </div>
       </CloseableHeader>
       <div className="px-3 pb-3">
-        <EventDetail eventId={eventId ?? ''} useCol useGo />
+        {!isLoading && data ? (
+          <EventDetail data={data} useCol useGo />
+        ) : (
+          <AppSpin />
+        )}
       </div>
     </div>
   )

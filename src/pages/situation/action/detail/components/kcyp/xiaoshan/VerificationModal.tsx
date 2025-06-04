@@ -8,7 +8,7 @@ import { phoneReg } from '@/constant/regExp'
 import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons'
 import { Form, Input, Select } from 'antd'
 import { uniqWith } from 'lodash'
-import ImageContainBoxPreview from '@/components/ImageContainBoxPreview'
+import ImageContainBoxPreview from '@/components/ui/ImageContainBoxPreview'
 
 const areaMap = ['(省)', '(市)', '(区)', '(街道)', '(路名/门牌)']
 const areaNameMap = ['a1', 'a2', 'a3', 'a4', 'a5']

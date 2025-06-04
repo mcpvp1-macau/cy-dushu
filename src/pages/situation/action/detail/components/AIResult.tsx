@@ -9,6 +9,7 @@ import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import { useUpdateEffect } from 'ahooks'
 import { useDictOptions } from '@/store/useDict.store'
 import { DictEnum } from '@/enum/dict'
+import ImageContainBoxPreviewGroup from '@/components/ui/ImageContainBoxPreviewGroup'
 
 type PropsType = {
   actionId: string
@@ -70,11 +71,40 @@ const AIResult: FC<PropsType> = memo(
     return (
       <Spin spinning={isRefetching}>
         <ul className="p-3 flex flex-col gap-3 max-h-[400px] overflow-y-auto">
-          {renderData.map((e) => (
-            <li key={e.id}>
-              <AiResultItem data={e} />
-            </li>
-          ))}
+          <ImageContainBoxPreviewGroup
+            boxRender={(currentIndex) => {
+              console.log('currentIndex', currentIndex)
+              const data = renderData[currentIndex]
+              console.log('data', data)
+              return data.bboxWidth && data.bboxHeight ? (
+                <div
+                  className="absolute border border-solid border-red-400"
+                  style={{
+                    left: `${(data.leftTopX / data.sourceFrameWidth) * 100}%`,
+                    top: `${(data.leftTopY / data.sourceFrameHeight) * 100}%`,
+                    right: `${
+                      100 -
+                      ((data.leftTopX + data.bboxWidth) /
+                        data.sourceFrameWidth) *
+                        100
+                    }%`,
+                    bottom: `${
+                      100 -
+                      ((data.leftTopY + data.bboxHeight) /
+                        data.sourceFrameHeight) *
+                        100
+                    }%`,
+                  }}
+                />
+              ) : null
+            }}
+          >
+            {renderData.map((e) => (
+              <li key={e.id}>
+                <AiResultItem data={e} />
+              </li>
+            ))}
+          </ImageContainBoxPreviewGroup>
         </ul>
       </Spin>
     )

@@ -22,6 +22,11 @@ export const getEventDetail = (eventId: string) => {
   })
 }
 
+/** 获取当前事件前后 5 条数据 */
+export const getSurroundingEvents = (eventId: string) => {
+  return serverJingqi.post('/event/list/v2/surrounding', { eventId })
+}
+
 /** 忽略事件 */
 export const ignoreEvent = (eventId: string) => {
   return serverJingqi.get('/event/ignore', { params: { eventId } })

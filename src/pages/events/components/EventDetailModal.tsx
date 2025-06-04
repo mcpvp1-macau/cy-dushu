@@ -4,11 +4,17 @@ import TextButton from '@/components/ui/button/TextButton'
 
 type PropsType = {
   data: API_EVENTS.domain.Event
+  rows?: API_EVENTS.domain.Event[]
 }
 
-const EventDetailModal: FC<PropsType> = memo(({ data }) => {
+const EventDetailModal: FC<PropsType> = memo(({ data, rows }) => {
   const [open, { setTrue, setFalse }] = useBoolean()
   const { t } = useTranslation()
+
+  const [index, setIndex] = useState(-1)
+  const handleIndexChange = (index: number) => {
+    setIndex(index)
+  }
 
   return (
     <>
@@ -23,7 +29,14 @@ const EventDetailModal: FC<PropsType> = memo(({ data }) => {
           footer={false}
         >
           <div className="p-3">
-            <EventDetail eventId={data.eventId} />
+            <EventDetail
+              data={rows?.[index] ?? data}
+              swipper={
+                rows
+                  ? { swipperData: rows, onIndexChange: handleIndexChange }
+                  : undefined
+              }
+            />
           </div>
         </XModal>
       )}

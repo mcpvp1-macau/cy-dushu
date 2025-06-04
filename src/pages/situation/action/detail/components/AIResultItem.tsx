@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import ImageContainBoxPreview from '@/components/ImageContainBoxPreview'
+import ImageContainBoxPreview from '@/components/ui/ImageContainBoxPreview'
 
 type PropsType = {
   data: API_ACTION.domain.AIResultRecord
