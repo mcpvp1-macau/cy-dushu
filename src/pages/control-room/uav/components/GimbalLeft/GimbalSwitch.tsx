@@ -162,8 +162,8 @@ const GimbalSwitch: FC<PropsType> = memo(() => {
             {t(`device.lens.${type}.title`)}
           </Button>
         )
-        // 红外
-        if (type === 'ir') {
+        // TODO: 改回 ir
+        if (type === 'never') {
           return (
             <Tooltip
               placement="right"
