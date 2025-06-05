@@ -95,8 +95,8 @@ const TargetPoints: React.FC = () => {
                       outlineWidth={last ? 1.5 : 0}
                       // onClick={() => onClick(`${parentId}=${deviceId}=${id}`)}
                       onRightClick={() => {
-                        setMenuPosition([lng, lat, alt])
-                        menuRef.current?.open()
+                        // setMenuPosition([lng, lat, alt])
+                        // menuRef.current?.open()
                       }}
                     />
                   </React.Fragment>
