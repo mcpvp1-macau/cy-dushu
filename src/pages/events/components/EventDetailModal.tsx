@@ -31,9 +31,9 @@ const EventDetailModal: FC<PropsType> = memo(({ data, rows }) => {
           <div className="p-3">
             <EventDetail
               data={rows?.[index] ?? data}
-              swipper={
+              swiper={
                 rows
-                  ? { swipperData: rows, onIndexChange: handleIndexChange }
+                  ? { swiperData: rows, onIndexChange: handleIndexChange }
                   : undefined
               }
             />

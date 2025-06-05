@@ -1,7 +1,6 @@
 import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
 import { getAIResultList } from '@/service/modules/action'
-import { memo, type FC } from 'react'
 import useActionDetail from '../context'
 import AiResultItem from './AIResultItem'
 import { Spin } from 'antd'
@@ -73,9 +72,7 @@ const AIResult: FC<PropsType> = memo(
         <ul className="p-3 flex flex-col gap-3 max-h-[400px] overflow-y-auto">
           <ImageContainBoxPreviewGroup
             boxRender={(currentIndex) => {
-              console.log('currentIndex', currentIndex)
               const data = renderData[currentIndex]
-              console.log('data', data)
               return data.bboxWidth && data.bboxHeight ? (
                 <div
                   className="absolute border border-solid border-red-400"

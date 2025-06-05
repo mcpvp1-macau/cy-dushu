@@ -25,14 +25,14 @@ type PropsType = {
   data: API_EVENTS.domain.Event
   useCol?: boolean
   useGo?: boolean
-  swipper?: {
-    swipperData: API_EVENTS.domain.Event[]
+  swiper?: {
+    swiperData: API_EVENTS.domain.Event[]
     onIndexChange: (index: number) => void
   }
 }
 
 /** 事件详情 */
-const EventDetail: FC<PropsType> = memo(({ data, useCol, useGo, swipper }) => {
+const EventDetail: FC<PropsType> = memo(({ data, useCol, useGo, swiper }) => {
   const { t } = useTranslation()
 
   const queryClient = useQueryClient()
@@ -81,18 +81,25 @@ const EventDetail: FC<PropsType> = memo(({ data, useCol, useGo, swipper }) => {
     <div className={clsx('flex gap-3 text-sm', { 'flex-col': useCol })}>
       {data.sourceImage && (
         <div className="w-full aspect-video relative">
-          {swipper ? (
+          {swiper ? (
             // 如果有轮播数据
             <ImageContainBoxPreviewGroup
-              items={swipper.swipperData.map((e) =>
+              items={swiper.swiperData.map((e) =>
                 handleStorageURL(e.sourceImage ?? ''),
               )}
               preview={{
-                onChange: swipper.onIndexChange,
+                onChange: swiper.onIndexChange,
               }}
-              boxRender={(index) => (
-                <ObjectsRender data={swipper.swipperData[index].objectList} />
-              )}
+              boxRender={(index) => {
+                return (
+                  <ObjectsRender
+                    data={
+                      swiper.swiperData[index].objectList ??
+                      shouldJson(swiper.swiperData[index].objListJson)
+                    }
+                  />
+                )
+              }}
             >
               {eventImage}
             </ImageContainBoxPreviewGroup>

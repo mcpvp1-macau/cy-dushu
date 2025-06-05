@@ -4,17 +4,14 @@ import useReachBottom from '@/hooks/useReachBottom'
 import { getEventList, ignoreAllEvent } from '@/service/modules/events'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { Checkbox, Input, Spin } from 'antd'
-import { Fragment } from 'react'
 import EventItem from './EventItem'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import IconFilter from '@/assets/icons/jsx/IconFilter'
 import { LoadingOutlined } from '@ant-design/icons'
 import useEventTypeAndSourceOptions from './hooks/useEventTypeAndSourceOptions'
-import useRightMode from '@/store/layout/useRightMode.store'
-import { RightModeEnum } from '@/enum/right-mode'
 import IconButton from '@/components/ui/button/IconButton'
 import IconClear from '@/assets/icons/jsx/IconClear'
-import { useEventData } from '@/store/event/useEvent.store'
+import useEventStore, { useEventData } from '@/store/event/useEvent.store'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import { useDeepCompareEffect } from 'ahooks'
 import IconButtonWithDropDownDialog from '@/components/ui/button/IconButtonWithDropDownDialog'
@@ -36,13 +33,6 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
   const [processStatusList, setProcessStatusList] = useState<string[]>([])
 
   const newEvent = useGlobalWsStore((s) => s.newEvent)
-
-  const rightDetailId = useRightMode((s) => {
-    if (s.rightMode !== RightModeEnum.EVENT_DETAIL) {
-      return null
-    }
-    return s.detailId
-  })
 
   const {
     data,
@@ -133,6 +123,16 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
   }, [newEvent])
 
   const { t } = useTranslation()
+
+  const eventItems = useMemo(() => {
+    if (!data) return []
+    return data.pages.flatMap((page) => page.rows)
+  }, [data])
+
+  const detailEventId = useEventStore((s) => s.detailEventId)
+  useEffect(() => {
+    useEventStore.getState().updateSwiperEvents(eventItems)
+  }, [eventItems])
 
   return (
     <div className="h-full flex flex-col my-3 overflow-hidden">
@@ -235,16 +235,12 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
         ) : (
           <Spin spinning={isRefetching}>
             <ul className="flex flex-col gap-3">
-              {data.pages.map((page, idx) => (
-                <Fragment key={idx}>
-                  {page.rows.map((item) => (
-                    <EventItem
-                      key={item.id}
-                      data={item}
-                      active={item.eventId == rightDetailId}
-                    />
-                  ))}
-                </Fragment>
+              {eventItems.map((item) => (
+                <EventItem
+                  key={item.id}
+                  data={item}
+                  active={item.eventId == detailEventId}
+                />
               ))}
             </ul>
           </Spin>

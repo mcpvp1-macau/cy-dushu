@@ -41,7 +41,6 @@ const CommandControl: FC<PropsType> = memo(
         type={isCommandControl ? 'primary' : 'default'}
         shape="round"
         loading={isPending}
-        disabled={true}
         onClick={handleClick}
       >
         {t('tanqi.commandControl.title')}
