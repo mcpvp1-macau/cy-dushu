@@ -1,12 +1,11 @@
 import { Billboard, useCesium } from 'resium'
 import { ControlStationInfo, UavInfo } from './types'
-import icon from '/images/marker/icon/uav_rid.svg'
 import csIcon from '/images/marker/icon/controlStation.svg'
 import * as Cesium from 'cesium'
 import BoardMarker3D from '@/components/map/BoardCesium/BoardMarker3D'
 import IconButton from '@/components/ui/button/IconButton'
 import IconClose from '@/assets/icons/jsx/IconClose'
-import { getCitySituationUavDetail } from '@/service/modules/db-api'
+import { getCitySituationUavDetail } from '@/service/modules/db-api/citySituation'
 import AppSpin from '@/components/AppSpin'
 import HistoryTrack from '@/components/map/HistoryTrack'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
@@ -48,7 +47,7 @@ const RIDTarget: FC<PropsType> = memo(({ id, uav, cs }) => {
           <Billboard
             id={`uav-${id}`}
             position={postion}
-            image={icon}
+            image={'/images/marker/icon/uav_rid.svg'}
             width={26}
             height={26}
             disableDepthTestDistance={50000}
