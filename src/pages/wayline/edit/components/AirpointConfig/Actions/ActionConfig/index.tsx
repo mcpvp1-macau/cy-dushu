@@ -188,6 +188,8 @@ const ActionConfig: React.FC<Props> = (props) => {
         <InputNumber
           value={Number(currentAirpoint?.speed?.toFixed(2) ?? globalSpeed)}
           className="w-full"
+          min={1}
+          max={15}
           onChange={(value: number | null) =>
             value && onChangePosition('speed', value)
           }
