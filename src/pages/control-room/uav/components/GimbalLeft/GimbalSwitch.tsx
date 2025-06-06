@@ -49,7 +49,7 @@ const irStyles = [
     label: '北极',
     value: 8,
   },
-].toSorted((a, b) => a.value - b.value)
+].sort((a, b) => a.value - b.value)
 
 export const gimbalSwitchEmitter = mitt<{
   switch: number
