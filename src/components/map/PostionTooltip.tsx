@@ -11,7 +11,7 @@ import { wgs84ToDrawingBufferCoordinates } from '@/utils/cesium/sence-transform'
 import { attempt } from 'lodash'
 
 type PropsType = {
-  /** [lng, lat] */
+  /** [lng, lat, height?] */
   position: number[]
   /** 永远保持在视口内 */
   alwayInViewport?: boolean

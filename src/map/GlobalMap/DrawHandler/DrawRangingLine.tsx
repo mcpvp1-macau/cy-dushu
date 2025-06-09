@@ -25,9 +25,9 @@ const DrawRangingLine: FC<PropsType> = memo(() => {
       polyline: {
         positions: new Cesium.CallbackProperty(() => {
           if (path.current.length < 1 || !endPointRef.current) {
-            return Cesium.Cartesian3.fromDegreesArray([0, 0, 0, 0])
+            return Cesium.Cartesian3.fromDegreesArrayHeights([0, 0, 0, 0, 0, 0])
           }
-          return Cesium.Cartesian3.fromDegreesArray([
+          return Cesium.Cartesian3.fromDegreesArrayHeights([
             ...flatten(path.current),
             ...endPointRef.current,
           ])
@@ -43,6 +43,8 @@ const DrawRangingLine: FC<PropsType> = memo(() => {
     }
   }, [viewer])
 
+  // 当前测量是否涉及到三维模型
+  const is3dPick = useRef(false)
   useEffect(() => {
     if (!viewer) {
       return
@@ -50,34 +52,41 @@ const DrawRangingLine: FC<PropsType> = memo(() => {
     const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
 
     handler.setInputAction((e) => {
-      const ray = viewer.camera.getPickRay(e.position)
-      if (!ray) {
+      const pickResult = viewer.scene.pick(e.position)
+      if (pickResult?.primitive instanceof Cesium.Cesium3DTileset) {
+        is3dPick.current = true
+      }
+
+      let position: Cesium.Cartesian3 | undefined
+      if (is3dPick.current) {
+        position = viewer.scene.pickPosition(e.position)
+      } else {
+        const ray = viewer.camera.getPickRay(e.position)
+        position = ray ? viewer.scene.globe.pick(ray, viewer.scene) : undefined
+      }
+      if (!position) {
         return
       }
-      const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
-      if (!cartesian) {
-        return
-      }
-      path.current.push(cartesian3ToDegrees(cartesian).slice(0, 2))
+      path.current.push(cartesian3ToDegrees(position))
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
     handler.setInputAction((e) => {
-      if (!path.current.length) {
+      let position: Cesium.Cartesian3 | undefined
+      if (is3dPick.current) {
+        position = viewer.scene.pickPosition(e.endPosition)
+      } else {
+        const ray = viewer.camera.getPickRay(e.endPosition)
+        position = ray ? viewer.scene.globe.pick(ray, viewer.scene) : undefined
+      }
+      if (!position) {
         return
       }
-      const ray = viewer.camera.getPickRay(e.endPosition)
-      if (!ray) {
-        return
-      }
-      const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
-      if (!cartesian) {
-        return
-      }
-      setEndPoint(cartesian3ToDegrees(cartesian).slice(0, 2))
+      setEndPoint(cartesian3ToDegrees(position))
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
 
     handler.setInputAction(() => {
       path.current = []
+      is3dPick.current = false
       setEndPoint(null)
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK)
 
@@ -102,7 +111,10 @@ const DrawRangingLine: FC<PropsType> = memo(() => {
   }
 
   return (
-    <PositionTooltip position={[endPoint[0], endPoint[1]]} offset={[0, 20]}>
+    <PositionTooltip
+      position={[endPoint[0], endPoint[1], endPoint[2]]}
+      offset={[0, 20]}
+    >
       <div className="py-1 px-2">
         {t('common.distance')}: {distanceFmt}
       </div>
