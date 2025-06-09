@@ -14,11 +14,15 @@ import {
   DatePicker,
   Form,
   Input,
+  InputNumber,
   Radio,
   TimePicker,
   Tooltip,
 } from 'antd'
+import useFormInstance from 'antd/es/form/hooks/useFormInstance'
 import type { Dayjs } from 'dayjs'
+import DayOfMonthCheckboxGroup from './DayOfMonthCheckboxGroup'
+import DayOfWeekCheckboxGroup from './DayOfWeekCheckboxGroup copy'
 
 const TipInfo = memo(() => {
   const { t } = useTranslation()
@@ -48,6 +52,8 @@ const SingleFormItems = memo(() => {
 
 const REPEATFormItems = memo(() => {
   const { t } = useTranslation()
+  const form = useFormInstance()
+  const intervalType = Form.useWatch(['repeatFrequency', 'intervalType'], form)
 
   return (
     <>
@@ -63,7 +69,7 @@ const REPEATFormItems = memo(() => {
         {(fields, { add, remove }) => (
           <>
             {fields.map(({ key, ...restField }, i) => (
-              <div key={key} className="flex gap-2">
+              <div key={key} className="flex gap-2 items-center">
                 <Form.Item
                   {...restField}
                   className="w-full"
@@ -114,7 +120,7 @@ const REPEATFormItems = memo(() => {
                 >
                   <TimePicker className="w-full" />
                 </Form.Item>
-                <div className="mt-[30px] flex gap-2">
+                <div className="mt-2.5 flex gap-2">
                   <Button
                     size="small"
                     className="min-w-[22px] h-[22px]"
@@ -134,6 +140,53 @@ const REPEATFormItems = memo(() => {
           </>
         )}
       </Form.List>
+      <Form.Item label={t('common.repeatFrequency')}>
+        <div className="flex items-center gap-2">
+          <span>{t('common.every')}</span>
+          <Form.Item
+            noStyle
+            name={['repeatFrequency', 'intervalValue']}
+            initialValue={1}
+          >
+            <InputNumber className="flex-1" min={1} />
+          </Form.Item>
+          <Form.Item
+            noStyle
+            name={['repeatFrequency', 'intervalType']}
+            initialValue="DAILY"
+          >
+            <Select
+              className="flex-1"
+              options={[
+                { label: t('common.month'), value: 'MONTHLY' },
+                {
+                  label: t('common.week'),
+                  value: 'WEEKLY',
+                },
+                {
+                  label: t('common.day'),
+                  value: 'DAILY',
+                },
+              ]}
+            />
+          </Form.Item>
+        </div>
+        {intervalType === 'WEEKLY' ? (
+          <div className="mt-2">
+            <Form.Item noStyle name={['repeatFrequency', 'dayOfWeek']}>
+              <DayOfWeekCheckboxGroup />
+            </Form.Item>
+          </div>
+        ) : (
+          intervalType === 'MONTHLY' && (
+            <div className="mt-2">
+              <Form.Item noStyle name={['repeatFrequency', 'dayOfMonth']}>
+                <DayOfMonthCheckboxGroup />
+              </Form.Item>
+            </div>
+          )
+        )}
+      </Form.Item>
     </>
   )
 })
@@ -151,6 +204,12 @@ type FormValuesType = {
   | {
       type: 'REPEAT'
       executeTime: Dayjs[]
+      repeatFrequency: {
+        intervalValue: number
+        intervalType: 'MONTHLY' | 'WEEKLY' | 'DAILY'
+        dayOfWeek?: number[]
+        dayOfMonth?: number[]
+      }
     }
 )
 
@@ -196,6 +255,7 @@ const ScheduleModal: FC<PropsType> = memo(
       }))
     }, [airports])
 
+    // 初始化表单数据 ----------------------------------------------------------------
     useEffect(() => {
       if (!open) {
         form.resetFields()
@@ -233,11 +293,32 @@ const ScheduleModal: FC<PropsType> = memo(
               'executeTime',
               data.executeTime!.map((e) => dayjs(e, 'HH:mm:ss')),
             )
+            form.setFieldValue(
+              ['repeatFrequency', 'intervalValue'],
+              data.intervalValue ?? 1,
+            )
+            form.setFieldValue(
+              ['repeatFrequency', 'intervalType'],
+              data.cycleType ?? 'DAILY',
+            )
+            // 设置频率
+            if (data.cycleType === 'WEEKLY') {
+              form.setFieldValue(
+                ['repeatFrequency', 'dayOfWeek'],
+                (data.dayOfWeek ?? '').split(',').map((e) => parseInt(e)),
+              )
+            } else if (data.cycleType === 'MONTHLY') {
+              form.setFieldValue(
+                ['repeatFrequency', 'dayOfMonth'],
+                (data.dayOfMonth ?? '').split(',').map((e) => parseInt(e)),
+              )
+            }
             break
         }
       }
     }, [open])
 
+    // 提交数据 ---------------------------------------------------------------------
     const handleConfirm = async () => {
       await form.validateFields()
       const values = form.getFieldsValue()
@@ -274,7 +355,23 @@ const ScheduleModal: FC<PropsType> = memo(
           submitData.executeTime = values.executeTime.map((e) =>
             e.format('HH:mm:ss'),
           )
-          break
+          // 重复类型
+          submitData.cycleType = values.repeatFrequency.intervalType
+          // 间隔时间
+          submitData.intervalValue = values.repeatFrequency.intervalValue
+          // 处理 周/月 重复频率
+          if (values.repeatFrequency.intervalType === 'WEEKLY') {
+            // 将 数组 转化成 字符串
+            submitData.dayOfWeek = [...(values.repeatFrequency.dayOfWeek ?? [])]
+              .sort() // toSorted (v110^) 可能不兼容老电脑
+              .join(',')
+          } else if (values.repeatFrequency.intervalType === 'MONTHLY') {
+            submitData.dayOfMonth = [
+              ...(values.repeatFrequency.dayOfMonth ?? []),
+            ]
+              .sort((a, b) => a - b)
+              .join(',')
+          }
       }
       onConfirm?.(submitData)
     }

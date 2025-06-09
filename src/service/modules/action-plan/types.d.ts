@@ -49,6 +49,10 @@ declare namespace API_ACTION_PLAN {
        * SINGLE REPEAT
        */
       type?: string
+      cycleType?: string
+      dayOfMonth?: string
+      dayOfWeek?: string
+      intervalValue?: number
       [property: string]: any
     }
     interface PlanRecord {

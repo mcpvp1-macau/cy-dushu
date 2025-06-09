@@ -529,6 +529,11 @@ common:
   videoProjection: Video Projection
   videoFollow: Video Follow
   scan: Scan
+  repeatFrequency: Repeat Frequency
+  month: Month
+  week: Week
+  day: Day
+  every: Every
 events:
   search:
     placeholder: Please search by event name or ID
@@ -1311,3 +1316,11 @@ tanqi:
     title: Task Understand
   commandControl:
     title: Command Controll
+dayOfWeek:
+  sunday: Sunday
+  monday: Monday
+  tuesday: Tuesday
+  wednesday: Wednesday
+  thursday: Thursday
+  friday: Friday
+  saturday: Saturday
