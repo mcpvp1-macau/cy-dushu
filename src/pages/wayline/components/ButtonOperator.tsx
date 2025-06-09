@@ -70,15 +70,15 @@ const BottomOperator: FC<PropsType> = memo(
           } else {
             // 创建子行动
             const resp = await createActionItem(data)
-            waylineTemplateId = resp.data.id
+            waylineTemplateId = resp.data?.id
           }
         } else {
           // 保存航线模板
           const resp = await createActionItem(data)
-          waylineTemplateId = resp.data.id
+          waylineTemplateId = resp.data?.id
         }
         // 如果有回调地址 (第三方)
-        if (backUrl) {
+        if (backUrl && waylineTemplateId) {
           let to = backUrl.includes('?') ? backUrl : `${backUrl}?`
           if (waylineTemplateId) {
             to += `waylineTemplateId=${waylineTemplateId}`
@@ -124,9 +124,9 @@ const BottomOperator: FC<PropsType> = memo(
         data['type'] = type
         data['deviceIds'] = deviceId
         const resp = await createActionItem(data, false)
-        const waylineTemplateId = resp.data.id
+        const waylineTemplateId = resp.data?.id
         msgApi.success(t('api.success.msg'))
-        if (backUrl) {
+        if (backUrl && waylineTemplateId) {
           let to = backUrl.includes('?') ? backUrl : `${backUrl}?`
           if (waylineTemplateId) {
             to += `waylineTemplateId=${waylineTemplateId}`
