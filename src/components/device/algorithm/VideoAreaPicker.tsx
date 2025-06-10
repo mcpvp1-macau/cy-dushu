@@ -31,7 +31,12 @@ const VideoAreaPicker: FC<PropsType> = memo(({ filedName, videoInfo }) => {
           </IconButton>
           <VideoAreaPickerDrawer
             value={value}
-            onChange={(v) => form.setFieldValue(filedName, shouldJson(v))}
+            onChange={(v) =>
+              form.setFieldValue(
+                filedName,
+                shouldJson(v).filter((item) => Array.isArray(item)),
+              )
+            }
             visible={open}
             videoInfo={videoInfo}
             setVisible={set}
