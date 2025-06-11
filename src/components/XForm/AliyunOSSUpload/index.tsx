@@ -2,8 +2,7 @@ import { useAppMsg } from '@/hooks/useAppMsg'
 import { getMinioSignature } from '@/service/modules/minio'
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons'
 import type { UploadProps } from 'antd'
-import { Button, Input, message, Modal, Upload } from 'antd'
-import { v4 as uuidv4 } from 'uuid'
+import { Button, Input, message, Modal } from 'antd'
 
 interface AliyunOSSUploadProps {
   value?: string
@@ -12,105 +11,14 @@ interface AliyunOSSUploadProps {
   otherProps?: UploadProps
 }
 
-const AliyunOSSUpload = ({
-  value,
-  onChange,
-  children,
-  otherProps,
-}: AliyunOSSUploadProps) => {
+const AliyunOSSUpload = ({ value, onChange }: AliyunOSSUploadProps) => {
   const msgApi = useAppMsg()
 
-  // const [dataTime, setDataTime] = useState(0)
   const dataTimeRef = useRef(0)
   const signatureRef = useRef({})
-  // const [signature, setSignature] = useState({})
   const [progress, setProgress] = useState(0)
   const [count, setCount] = useState(0)
   const progressRef = useRef(0)
-
-  const handleChange: UploadProps['onChange'] = (value) => {
-    // setProgress(0)
-    setCount(value.fileList.length)
-    console.info(1)
-  }
-
-  const onRemove = () => {
-    if (onChange) {
-      onChange('')
-    }
-  }
-
-  const beforeUpload: UploadProps['beforeUpload'] = async (file) => {
-    setProgress(0)
-    setCount((v) => v + 1)
-    console.info(2)
-    return file
-  }
-
-  const uploadProps: UploadProps = {
-    name: 'file',
-    action: `/upload/${globalConfig.bucketName || 'minio-map'}`,
-    onChange: handleChange,
-    onRemove,
-    beforeUpload,
-    directory: true,
-    itemRender: () => null,
-    // maxCount: 1,
-    customRequest: async (info) => {
-      const { file } = info
-      const { webkitRelativePath } = file as any
-      if (!webkitRelativePath) {
-        return
-      }
-
-      let uploadSignature = signatureRef.current
-      if (Date.now() - dataTimeRef.current > 30 * 60 * 1000) {
-        const time = Date.now()
-        uploadSignature = await getMinioSignature().then((res) => res.data)
-        // setDataTime(time)
-        dataTimeRef.current = time
-        // setSignature(uploadSignature)
-        signatureRef.current = uploadSignature
-      } else {
-        //
-      }
-      // const uploadSignature: Record<string, any> = data || {}
-
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('key', webkitRelativePath)
-      formData.append('x-amz-algorithm', uploadSignature['x-amz-algorithm'])
-      formData.append('x-amz-credential', uploadSignature['x-amz-credential'])
-      formData.append('x-amz-signature', uploadSignature['x-amz-signature'])
-      formData.append('x-amz-date', uploadSignature['x-amz-date'])
-      formData.append('policy', uploadSignature['policy'])
-
-      const res = await fetch(
-        `/upload/${globalConfig.bucketName || 'minio-map'}`,
-        {
-          method: 'POST',
-          body: formData,
-        },
-      )
-
-      if (res.status.toString().startsWith('20')) {
-        const url = `/storage/${
-          globalConfig.bucketName || 'minio-map'
-        }/${webkitRelativePath}`
-        info.onSuccess?.(res, file)
-        onChange?.(url)
-        progressRef.current += 1
-        setProgress((v) => v + 1)
-      } else {
-        //
-        info.onError?.({} as any)
-        setCount(0)
-        progressRef.current = 0
-        setProgress(0)
-        msgApi.error('上传失败，请重试')
-      }
-    },
-  }
 
   const uploadFile = async (file) => {
     const { webkitRelativePath } = file as any
@@ -167,6 +75,7 @@ const AliyunOSSUpload = ({
       if (element.name === 'tileset.json') {
         is3d = true
         value = element.webkitRelativePath
+        break
       }
     }
     if (!is3d) {
@@ -187,24 +96,16 @@ const AliyunOSSUpload = ({
     onChange?.('/storage/minio-map' + value)
   }
 
-  // useEffect(() => {
-  //   if (progressRef.current === count) {
-  //     setCount(0)
-  //     progressRef.current = 0
-  //   }
-  // }, [progress, count])
   const ref = useRef<HTMLInputElement>(null)
 
   return (
     <div className="flex">
       <Input value={value} onChange={(e) => onChange?.(e.target.value)} />
-      {/* <Upload {...uploadProps} {...otherProps}>
-        {children}
-      </Upload> */}
       <input
         type="file"
         className={'!hidden'}
         onChange={onUploadFile}
+        // @ts-ignore
         directory={'true'}
         webkitdirectory={'true'}
         multiple
