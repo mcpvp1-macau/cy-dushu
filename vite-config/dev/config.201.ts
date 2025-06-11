@@ -42,6 +42,12 @@ export default mergeConfig(
           target: 'http://172.21.30.201:31118',
           changeOrigin: true,
         },
+        '/upload': {
+          target: 'http://172.21.30.201:32000',
+          changeOrigin: true,
+          // pathRewrite: { '^/upload': '' },
+          rewrite: (path) => path.replace(/^\/upload/, ''),
+        },
       },
     },
     define: {

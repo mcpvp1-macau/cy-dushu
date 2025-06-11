@@ -46,9 +46,10 @@ const useAddMapFormItems = () => {
           ],
         },
         {
-          label: t('mapLayer.createMap.form.url.title'),
+          label: `${t('mapLayer.createMap.form.url.title')}(上传功能仅适用于倾斜摄影)`,
           name: 'spaceMapUrl',
-          type: 'input',
+          // type: 'input',
+          type: 'upload-minio',
         },
         {
           label: t('mapLayer.createMap.form.permission.title'),
