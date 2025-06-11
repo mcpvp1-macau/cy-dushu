@@ -14,6 +14,12 @@ export default mergeConfig(
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/proxyApi/, '/'),
         },
+        '/proxy4aApi': {
+          // target: 'http://172.27.95.212:31851/',
+          target: 'http://172.27.95.212:32711/',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/proxy4aApi/, '/'),
+        },
         '/proxyWsApi': {
           target: 'ws://172.27.95.212:31851/',
           // target: 'ws://127.0.0.1:7001/',

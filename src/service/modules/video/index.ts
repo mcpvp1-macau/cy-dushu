@@ -13,3 +13,6 @@ export const getStreamQualityLevel = (data) => {
 export const getVodUrl = (hlsUrl: string) => {
   return serverVod.post('/vod/getVodUrl', { hlsUrl })
 }
+
+
+
