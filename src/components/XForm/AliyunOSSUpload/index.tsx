@@ -9,9 +9,14 @@ interface AliyunOSSUploadProps {
   onChange?: (data: string) => void
   children: JSX.Element
   otherProps?: UploadProps
+  getPath?: (files) => string | boolean
 }
 
-const AliyunOSSUpload = ({ value, onChange }: AliyunOSSUploadProps) => {
+const AliyunOSSUpload = ({
+  value,
+  onChange,
+  getPath,
+}: AliyunOSSUploadProps) => {
   const msgApi = useAppMsg()
 
   const dataTimeRef = useRef(0)
@@ -66,20 +71,22 @@ const AliyunOSSUpload = ({ value, onChange }: AliyunOSSUploadProps) => {
 
   const onUploadFile = async (e) => {
     const files = e.target.files
-    console.info(files)
-    //
-    let is3d = false
-    let value = ''
-    for (let index = 0; index < files.length; index++) {
-      const element = files[index]
-      if (element.name === 'tileset.json') {
-        is3d = true
-        value = element.webkitRelativePath
-        break
-      }
-    }
-    if (!is3d) {
-      message.error('请确认文件夹中是否含有tileset.json')
+    // let is3d = false
+    // let value = ''
+    // for (let index = 0; index < files.length; index++) {
+    //   const element = files[index]
+    //   if (element.name === 'tileset.json') {
+    //     is3d = true
+    //     value = element.webkitRelativePath
+    //     break
+    //   }
+    // }
+    // if (!is3d) {
+    //   message.error('请确认文件夹中是否含有tileset.json')
+    //   return
+    // }
+    const value = getPath?.(files)
+    if (!value) {
       return
     }
     setCount(files.length)
@@ -93,7 +100,7 @@ const AliyunOSSUpload = ({ value, onChange }: AliyunOSSUploadProps) => {
     setCount(0)
     progressRef.current = 0
     message.success('上传成功')
-    onChange?.('/storage/minio-map' + value)
+    onChange?.(`/storage/${globalConfig.bucketName || 'minio-map'}${value}`)
   }
 
   const ref = useRef<HTMLInputElement>(null)
