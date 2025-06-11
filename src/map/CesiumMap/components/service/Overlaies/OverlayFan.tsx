@@ -1,11 +1,11 @@
 import { memo, type FC } from 'react'
 import * as Cesium from 'cesium'
-import { OverlayPolygonPrimitive } from '@/utils/customPrimitive/OverlayPrimitive'
+import { OverlayFanPrimitive } from '@/utils/customPrimitive/OverlayPrimitive'
 
 type PropsType = {
   data: any
   viewer: Cesium.Viewer
-  path: number[][] // [[111,111,111], [222,222,222]]
+  positions: number[][] // [[111,111,111], [222,222,222]]
   asynchronous: boolean
   hide?: 0 | 1
   fill?: string
@@ -16,11 +16,11 @@ type PropsType = {
   strokeWeight: number
 }
 
-const DrawingPolygon: FC<PropsType> = memo((props) => {
+const OverlayFan: FC<PropsType> = memo((props) => {
   const {
     data,
     viewer,
-    path,
+    positions,
     asynchronous,
     hide = false,
     fill = '#4c90f0',
@@ -32,7 +32,7 @@ const DrawingPolygon: FC<PropsType> = memo((props) => {
   } = props
 
   const primitiveRef = useRef(
-    new OverlayPolygonPrimitive(
+    new OverlayFanPrimitive(
       {
         stroke,
         strokeStyle,
@@ -68,8 +68,8 @@ const DrawingPolygon: FC<PropsType> = memo((props) => {
   }, [hide])
 
   useEffect(() => {
-    primitiveRef.current.positions = path as [number, number][]
-  }, [path])
+    primitiveRef.current.positions = positions as [number, number][]
+  }, [positions])
 
   useEffect(() => {
     const preOptions = primitiveRef.current.styleOptions
@@ -87,6 +87,6 @@ const DrawingPolygon: FC<PropsType> = memo((props) => {
   return null
 })
 
-DrawingPolygon.displayName = 'Polygon'
+OverlayFan.displayName = 'OverlayFan'
 
-export default DrawingPolygon
+export default OverlayFan

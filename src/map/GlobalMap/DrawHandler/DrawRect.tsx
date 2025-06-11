@@ -7,7 +7,7 @@ import * as Cesium from 'cesium'
 import AddFormModal from './components/AddFormModal'
 import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
 import { createOverlay } from '@/service/modules/layer_overlay'
-import DrawingPolygon from './components/DrawingPolygon'
+import OverlayPolygon from '@/map/CesiumMap/components/service/Overlaies/OverlayPolygon'
 import { round } from 'lodash'
 
 type PropsType = {
@@ -123,6 +123,9 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
         fillColor: {
           '-value': `${fillColorARGB}`, //填充色（argb）
         },
+        fillOpacity: {
+          '-value': `${fillOpacity}`,
+        },
         labels_on: {
           '-value': 'false', //是否显示标签
         },
@@ -166,7 +169,7 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
         onConfirm={handleConfirm}
       />
       {positions && viewer && (
-        <DrawingPolygon
+        <OverlayPolygon
           data={''}
           viewer={viewer}
           path={positions}

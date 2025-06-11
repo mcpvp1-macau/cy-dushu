@@ -2,9 +2,10 @@ import { CotType } from '@/store/map/useDraw.store'
 import useMapLayerAndOverlayStore from '@/store/map/useLayerAndOverlay.store'
 import { LabelCollection, PointPrimitiveCollection } from 'resium'
 import OverlayPoint from './Point'
-import OverlayPolygon from './Polygon'
-import { circle } from '@turf/turf'
-import { shouldJson } from '@/utils/json'
+
+import ShowCircle from './ShowCircle'
+import ShowPolygon from './ShowPolygon'
+import ShowFan from './ShowFan'
 
 type PropsType = unknown
 
@@ -20,25 +21,13 @@ const LayerOverlaies: FC<PropsType> = memo(() => {
               return <OverlayPoint key={overlay.overlayId} data={overlay} />
             }
             if (overlay.cotType === CotType.SHAPE_CIRCLE) {
-              const overlayPositions = shouldJson(overlay.overlayPositions)[0]
-              const postion = overlayPositions.slice(0, 3)
-              const radius = overlayPositions[3]
-              const positions = JSON.stringify(
-                circle([postion[0], postion[1]], radius, { units: 'meters' })
-                  .geometry.coordinates[0],
-              )
-              return (
-                <OverlayPolygon
-                  key={overlay.overlayId}
-                  data={{
-                    ...overlay,
-                    overlayPositions: positions,
-                  }}
-                />
-              )
+              return <ShowCircle overlay={overlay} />
             }
             if (overlay.cotType === CotType.SHAPE_POLYGON) {
-              return <OverlayPolygon key={overlay.overlayId} data={overlay} />
+              return <ShowPolygon overlay={overlay} />
+            }
+            if (overlay.cotType === CotType.SHAPE_FAN) {
+              return <ShowFan overlay={overlay} />
             }
           })}
         </LabelCollection>

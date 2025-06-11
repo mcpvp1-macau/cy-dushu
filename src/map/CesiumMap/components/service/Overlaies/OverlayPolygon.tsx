@@ -1,28 +1,26 @@
-import { OverlayCirclePrimitive } from '@/utils/customPrimitive/OverlayPrimitive'
+import { memo, type FC } from 'react'
 import * as Cesium from 'cesium'
-import React, { FC, useEffect, useRef } from 'react'
+import { OverlayPolygonPrimitive } from '@/utils/customPrimitive/OverlayPrimitive'
 
-interface Props {
+type PropsType = {
   data: any
   viewer: Cesium.Viewer
-  center: [number, number]
-  radius: number
+  path: number[][] // [[111,111,111], [222,222,222]]
   asynchronous: boolean
-  label?: string
   hide?: 0 | 1
   fill?: string
   stroke?: string
   fillOpacity?: number
+  label?: string
   strokeStyle: 'solid' | 'dashed' | 'no-fly'
   strokeWeight: number
 }
 
-const DrawingCircle: FC<Props> = (props) => {
-  let {
+const OverlayPolygon: FC<PropsType> = memo((props) => {
+  const {
     data,
     viewer,
-    center,
-    radius,
+    path,
     asynchronous,
     hide = false,
     fill = '#4c90f0',
@@ -33,10 +31,8 @@ const DrawingCircle: FC<Props> = (props) => {
     strokeWeight = 2,
   } = props
 
-  radius = radius <= 1 ? 1 : radius
-
   const primitiveRef = useRef(
-    new OverlayCirclePrimitive(
+    new OverlayPolygonPrimitive(
       {
         stroke,
         strokeStyle,
@@ -64,7 +60,7 @@ const DrawingCircle: FC<Props> = (props) => {
       viewer.scene.primitives.remove(primitiveRef.current)
       viewer.scene.primitives.destroyPrimitives = preVal
     }
-  }, [viewer])
+  }, [])
 
   // 显示隐藏
   useEffect(() => {
@@ -72,9 +68,8 @@ const DrawingCircle: FC<Props> = (props) => {
   }, [hide])
 
   useEffect(() => {
-    primitiveRef.current.center = center
-    primitiveRef.current.radius = radius
-  }, [center, radius])
+    primitiveRef.current.positions = path as [number, number][]
+  }, [path])
 
   useEffect(() => {
     const preOptions = primitiveRef.current.styleOptions
@@ -90,8 +85,8 @@ const DrawingCircle: FC<Props> = (props) => {
   }, [stroke, strokeStyle, strokeWeight, fill, fillOpacity, label])
 
   return null
-}
+})
 
-DrawingCircle.displayName = 'DrawingCircle'
+OverlayPolygon.displayName = 'OverlayPolygon'
 
-export default React.memo(DrawingCircle)
+export default OverlayPolygon

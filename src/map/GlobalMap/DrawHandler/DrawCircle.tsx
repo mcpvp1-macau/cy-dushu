@@ -9,7 +9,7 @@ import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
 import useMapDrawStore, { CotType } from '@/store/map/useDraw.store'
 import { createOverlay } from '@/service/modules/layer_overlay'
 import AddFormModal from './components/AddFormModal'
-import DrawingCircle from './components/DrawingCircle'
+import OverlayCircle from '@/map/CesiumMap/components/service/Overlaies/OverlayCircle'
 
 type PropsType = {
   onSuccess?: () => void
@@ -148,6 +148,9 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
           //填充颜色（argb）
           '-value': `${fillColorARGB}`,
         },
+        fillOpacity: {
+          '-value': `${fillOpacity}`,
+        },
         strokeWeight: {
           //描边宽度
           '-value': '2.0',
@@ -175,7 +178,7 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
         onConfirm={handleConfirm}
       />
       {viewer && (
-        <DrawingCircle
+        <OverlayCircle
           data={''}
           viewer={viewer}
           center={circleCenter?.length ? [...circleCenter] : [0, 0]}

@@ -380,6 +380,7 @@ export class OverlayCirclePrimitive {
     if (this._center !== this.center || this._radius !== this.radius) {
       this._center = this.center;
       this._radius = this.radius;
+      console.log(this._center, this._circle)
       this.updateGeometry();
     }
 
