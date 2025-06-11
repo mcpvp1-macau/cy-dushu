@@ -15,6 +15,7 @@ type PropsType = {
 
 const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
   const { viewer } = useCesium()
+
   const [paths, setPaths] = useState<number[][]>([])
   const latestPaths = useLatest(paths)
   const [endPoint, setEndPoint] = useState<number[] | null>(null)
@@ -22,6 +23,8 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
   const [open, { setTrue, setFalse }] = useBoolean(false)
 
   const drawingColor = useMapDrawStore((s) => s.drawingColor)
+  const fillOpacity = useMapDrawStore((s) => s.fillOpacity)
+  const lineStyle = useMapDrawStore((s) => s.lineStyle)
 
   useEffect(() => {
     if (!viewer) {
@@ -116,7 +119,7 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
   }
 
   const positions = useMemo(() => {
-    if (!endPoint || paths.length < 2) {
+    if (!endPoint || paths.length < 1) {
       return paths
     }
     return [...paths, endPoint]
@@ -133,8 +136,18 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
         }}
         onConfirm={handleConfirm}
       />
-      {positions && (
-        <DrawingPolygon positions={positions} color={drawingColor} />
+      {positions && viewer && (
+        <DrawingPolygon
+          data={''}
+          viewer={viewer}
+          path={positions}
+          asynchronous={false}
+          fill={drawingColor}
+          fillOpacity={fillOpacity}
+          stroke={drawingColor}
+          strokeStyle={lineStyle}
+          strokeWeight={2}
+        />
       )}
     </>
   )

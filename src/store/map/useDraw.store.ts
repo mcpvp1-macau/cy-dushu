@@ -40,15 +40,21 @@ export type PointIconType =
   | 'COT_MAPPING_2525C/a-u/a-u-G'
   | ''
 
+export type LineStyle = 'solid' | 'dashed' | 'no-fly'
+
 type StateType = {
   drawing: DrawType
   drawingColor: string
+  lineStyle: LineStyle
+  fillOpacity: number
 }
 
 type ActionsType = {
   updateDrawing: (drawing: DrawType) => void
   updateDrawingColor: (color: string) => void
   quitRecontructionArea: () => void
+  updateLineStyle: (lineStyle: LineStyle) => void
+  updateFillOpacity: (fillOpacity: number) => void
 }
 
 // 新增的三维重建也有绘制逻辑，并且其优先级应该最高，也就是无法从三维重建状态转为普通绘制和测量
@@ -59,6 +65,8 @@ const useMapDrawStore = create<StateType & ActionsType>()(
     (set, get) => ({
       drawing: DrawType.None,
       drawingColor: '#0ea5e9',
+      lineStyle: 'solid',
+      fillOpacity: 0.5,
       updateDrawing: (drawing) => {
         // 如果是三维重建转为其他绘制，那么不响应，并且发送事件，在三维重建中收到事件并提醒用户
         const pre = get().drawing
@@ -79,6 +87,12 @@ const useMapDrawStore = create<StateType & ActionsType>()(
       quitRecontructionArea: () => {
         set({ drawing: DrawType.None }, false, 'quitRecontructionArea')
       },
+      updateLineStyle: (lineStyle: LineStyle) => {
+        set({ lineStyle }, false, 'updateLineStyle')
+      },
+      updateFillOpacity: (fillOpacity: number) => {
+        set({ fillOpacity }, false, 'updateFillOpacity')
+      }
     }),
     {
       name: 'map-draw-store',

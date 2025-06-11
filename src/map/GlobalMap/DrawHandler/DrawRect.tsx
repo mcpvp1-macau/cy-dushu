@@ -25,6 +25,8 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
   const [open, { setTrue, setFalse }] = useBoolean(false)
 
   const drawingColor = useMapDrawStore((s) => s.drawingColor)
+  const fillOpacity = useMapDrawStore((s) => s.fillOpacity)
+  const lineStyle = useMapDrawStore((s) => s.lineStyle)
 
   useEffect(() => {
     if (!viewer) {
@@ -42,9 +44,6 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
       if (!ray) return
       const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
       if (!cartesian) return
-      // 地形上的点
-      // pivot.current = cartesian3ToDegrees(cartesian)
-      // endPoint.current = cartesian3ToDegrees(cartesian)
       setPivot(cartesian3ToDegrees(cartesian))
       setEndPoint(cartesian3ToDegrees(cartesian))
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
@@ -166,8 +165,18 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
         }}
         onConfirm={handleConfirm}
       />
-      {positions && (
-        <DrawingPolygon positions={positions} color={drawingColor} />
+      {positions && viewer && (
+        <DrawingPolygon
+          data={''}
+          viewer={viewer}
+          path={positions}
+          asynchronous={false}
+          fill={drawingColor}
+          fillOpacity={fillOpacity}
+          stroke={drawingColor}
+          strokeStyle={lineStyle}
+          strokeWeight={2}
+        />
       )}
     </>
   )

@@ -7,7 +7,8 @@ import RightRangingPanel from './right-tools/Ranging'
 
 const RightDeviceDetail = lazy(() => import('./DeviceDetail'))
 const RightAddPoint = lazy(() => import('./right-tools/AddPoint'))
-const RightAddGeometry = lazy(() => import('./right-tools/AddGeometry'))
+// const RightAddGeometry = lazy(() => import('./right-tools/AddGeometry'))
+const RightAddGeometry = lazy(() => import('./right-tools/AddGeometry/index'))
 const RightEventDetail = lazy(() => import('./EventDetail'))
 const TargetDetail = lazy(() => import('./TargetDetail'))
 const ReconstructionDetail = lazy(
