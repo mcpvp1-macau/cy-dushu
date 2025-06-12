@@ -77,6 +77,9 @@ importers:
       comlink:
         specifier: ^4.4.2
         version: 4.4.2
+      crypto-js:
+        specifier: ^4.2.0
+        version: 4.2.0
       dayjs:
         specifier: ^1.11.12
         version: 1.11.12
@@ -2616,6 +2619,9 @@ packages:
 
   crypto-es@1.2.7:
     resolution: {integrity: sha512-UUqiVJ2gUuZFmbFsKmud3uuLcNP2+Opt+5ysmljycFCyhA0+T16XJmo1ev/t5kMChMqWh7IEvURNCqsg+SjZGQ==, tarball: https://registry.npmmirror.com/crypto-es/-/crypto-es-1.2.7.tgz}
+
+  crypto-js@4.2.0:
+    resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==, tarball: https://registry.npmmirror.com/crypto-js/-/crypto-js-4.2.0.tgz}
 
   csscolorparser@1.0.3:
     resolution: {integrity: sha512-umPSgYwZkdFoUrH5hIq5kf0wPSXiro51nPw0j2K/c83KflkPSTBGMz6NJvMB+07VlL0y7VPo6QJcDjcgKTTm3w==}
@@ -8133,6 +8139,8 @@ snapshots:
       which: 2.0.2
 
   crypto-es@1.2.7: {}
+
+  crypto-js@4.2.0: {}
 
   csscolorparser@1.0.3: {}
 

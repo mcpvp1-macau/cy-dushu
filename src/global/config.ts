@@ -66,6 +66,9 @@ class GlobalConfig {
   useGuizhouProjects?: boolean
   intelligentPhotographVersion?: number
 
+  /** minio */
+  bucketName: undefined
+
   constructor(def: ConfigType) {
     Object.keys(def).forEach((key) => {
       this[key] = def[key]

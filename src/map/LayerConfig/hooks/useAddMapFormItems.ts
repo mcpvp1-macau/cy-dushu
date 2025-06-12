@@ -1,4 +1,5 @@
 import { XFormItem } from '@/components/XForm/types'
+import { message } from 'antd'
 
 const useAddMapFormItems = () => {
   const { t } = useTranslation()
@@ -46,9 +47,29 @@ const useAddMapFormItems = () => {
           ],
         },
         {
-          label: t('mapLayer.createMap.form.url.title'),
+          label: `${t(
+            'mapLayer.createMap.form.url.title',
+          )}(上传功能仅适用于倾斜摄影)`,
           name: 'spaceMapUrl',
-          type: 'input',
+          // type: 'input',
+          type: 'upload-minio',
+          getPath: (files) => {
+            let is3d = false
+            let value = ''
+            for (let index = 0; index < files.length; index++) {
+              const element = files[index]
+              if (element.name === 'tileset.json') {
+                is3d = true
+                value = element.webkitRelativePath
+                break
+              }
+            }
+            if (!is3d) {
+              message.error('请确认文件夹中是否含有tileset.json')
+              return false
+            }
+            return value
+          },
         },
         {
           label: t('mapLayer.createMap.form.permission.title'),

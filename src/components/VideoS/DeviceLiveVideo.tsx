@@ -15,7 +15,11 @@ import {
   useSize,
   useThrottleFn,
 } from 'ahooks'
-import { ExpandOutlined, FullscreenExitOutlined } from '@ant-design/icons'
+import {
+  ExpandOutlined,
+  FullscreenExitOutlined,
+  ShareAltOutlined,
+} from '@ant-design/icons'
 import { forwardRef, useImperativeHandle } from 'react'
 import { calcStreamId } from '@/utils/video/stream'
 import { getStreamQualityLevel } from '@/service/modules/video'
@@ -27,7 +31,7 @@ import DrawBox from '../DrawBox'
 import useElectricScale from './hooks/useElectricScale'
 import { PropertiesData } from '../Video/Jessibuca/sei-types/properties'
 import VideoStream from './components/VideoStream'
-import { ConfigProvider } from 'antd'
+import { ConfigProvider, QRCode, Typography } from 'antd'
 import useCalcSafeArea from './hooks/useCalcSafeArea'
 import VideoDing from './components/VideoDing'
 import { AiObject } from '../Video/Jessibuca/sei-types/ai-data'
@@ -36,6 +40,8 @@ import DaoTongPlayer from '../Video/DaoTongPlayer'
 import SeiAIDataMetaInfo from './components/SeiAIDataMetaInfo'
 import { Responses } from '@/service/servers/liqunAxios'
 import useSnapshot from './hooks/useSnapshot'
+import { createToken } from '@/utils/ak'
+import ShareQRCode from './ShareQRCode'
 
 type PropsType = {
   videoContainerId?: string
@@ -478,6 +484,30 @@ const DeviceLiveVideo = memo(
                     >
                       <IconRefresh />
                     </IconButton>
+
+                    <IconButton
+                      toolTipProps={{
+                        title: '分享',
+                        overlay: (
+                          <ShareQRCode
+                            productKey={productKey}
+                            deviceId={deviceId}
+                            videoId={videoId}
+                          />
+                        ),
+                        getPopupContainer: () =>
+                          (document.fullscreenElement as HTMLElement) ??
+                          document.body,
+                      }}
+                      className="order-20 text-[13px]"
+                      onClick={async () => {
+                        await handleRefresh()
+                        setJessibucaKey((v) => v + 1)
+                      }}
+                    >
+                      <ShareAltOutlined />
+                    </IconButton>
+
                     {globalConfig.enableElectricScale && (
                       <IconButton
                         className="scale-90"
