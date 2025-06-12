@@ -8,6 +8,7 @@ import MapSetting from './setting/MapSetting'
 import WarnningSetting from './setting/WarnningSetting'
 import SystemSetting from './setting/SystemSetting'
 import SourceSetting from './setting/SourceSetting'
+import VoiceSetting from './setting/VoiceSetting'
 type PropsType = unknown
 
 const HeaderSetting: FC<PropsType> = memo(() => {
@@ -61,6 +62,11 @@ const HeaderSetting: FC<PropsType> = memo(() => {
                 key: 'source_setting',
                 label: '资源',
                 children: <SourceSetting />,
+              },
+              {
+                key: 'voice_setting',
+                label: t('setting.voice.title'),
+                children: <VoiceSetting />,
               },
             ]}
           />

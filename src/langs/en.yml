@@ -39,6 +39,8 @@ setting:
       title: Clear All
   warning:
     description: Enable or disable the above warning settings as needed
+  voice:
+    title: Voice
 situation:
   menus:
     action: Action

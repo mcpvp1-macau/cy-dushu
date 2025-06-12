@@ -6,7 +6,8 @@ export const textToSpeech = async (text: string) => {
     '/v1/audio/speech',
     {
       input: text,
-      voice: 'xw',
+      voice: 'girl',
+      model: 'fish-speech',
     },
     {
       responseType: 'blob',

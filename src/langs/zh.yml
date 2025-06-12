@@ -36,6 +36,8 @@ setting:
     isHaveLight: 光信号报警
   warning:
     description: 根据需要选择开启或关闭以上告警设置
+  voice:
+    title: 语音
 situation:
   menus:
     action: 行动

@@ -6,11 +6,14 @@ import IconButton from '@/components/ui/button/IconButton'
 import IconClose from '@/assets/icons/jsx/IconClose'
 import { autoAIPhotoParamsEmitter } from '../components/AsideButtons/IntelligentPhotograph'
 import { playTextToSpeech } from '@/utils/voice/textToSpeech'
+import useVoiceSettingStore from '@/store/setting/useVoiceSetting.store'
 
 /** 处理 Websocket 服务端来的消息弹窗 */
 const useServerEventMsg = (msgApi?: MessageInstance) => {
   const appMsgAPI = useAppMsg()
   msgApi ??= appMsgAPI
+  const enableVoiceSpeech = useVoiceSettingStore((s) => s.enableVoiceSpeech)
+
   const handle = useMemoizedFn((wsData) => {
     if (wsData.method === 'event.takePhotoEvent.info') {
       takePhotoEventEmitter.emit('takePhotoEvent', {
@@ -27,10 +30,13 @@ const useServerEventMsg = (msgApi?: MessageInstance) => {
     const [c, kind, type] = wsData.method?.split('.') ?? []
     if (c === 'event') {
       if (kind === 'commonEvent' || kind === 'pipelineTaskEvent') {
-        const id = uuidv4()
-        if (wsData.data.voiceNotificationSwitch === 'ON') {
+        // 语音播报
+        if (enableVoiceSpeech && wsData.data.voiceNotificationSwitch === 'ON') {
           playTextToSpeech(wsData.data.message)
         }
+
+        // 弹窗通知
+        const id = uuidv4()
         msgApi.open({
           key: id,
           type,
