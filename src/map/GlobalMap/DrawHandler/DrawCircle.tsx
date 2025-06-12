@@ -3,13 +3,13 @@ import { memo, type FC } from 'react'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { getSpaceDistance } from '@/utils/geo-math'
-import { attempt } from 'lodash'
 import { useBoolean } from 'ahooks'
 import { v4 } from 'uuid'
 import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
 import useMapDrawStore, { CotType } from '@/store/map/useDraw.store'
 import { createOverlay } from '@/service/modules/layer_overlay'
 import AddFormModal from './components/AddFormModal'
+import OverlayCircle from '@/map/CesiumMap/components/service/Overlaies/OverlayCircle'
 
 type PropsType = {
   onSuccess?: () => void
@@ -17,10 +17,24 @@ type PropsType = {
 
 const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
   const drawingColor = useMapDrawStore((s) => s.drawingColor)
+  const lineStyle = useMapDrawStore((s) => s.lineStyle)
+  const fillOpacity = useMapDrawStore((s) => s.fillOpacity)
 
-  /** 圆心 */
-  const circleCenter = useRef<number[] | null>(null)
-  const radius = useRef<number>(1e-5)
+  /**绘制的点 */
+  const [drawingPositions, setDrawingPositions] = useState<[number, number][]>(
+    [],
+  )
+  const circleCenter = useMemo(
+    () => drawingPositions[0] || [0, 0],
+    [drawingPositions],
+  )
+  const radius = useMemo(() => {
+    if (!drawingPositions[0] || !drawingPositions[1]) {
+      return 0
+    }
+
+    return getSpaceDistance(drawingPositions)
+  }, [drawingPositions])
 
   const [open, { setTrue, setFalse }] = useBoolean(false)
 
@@ -31,86 +45,46 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
       return
     }
 
-    const axis = new Cesium.CallbackProperty(
-      () => radius.current ?? 1e-5,
-      false,
-    )
-    const position = new Cesium.CallbackProperty(() => {
-      return Cesium.Cartesian3.fromDegrees(
-        circleCenter.current?.[0] ?? 0,
-        circleCenter.current?.[1] ?? 0,
-      )
-    }, false) as unknown as Cesium.PositionProperty
-
-    const e = viewer.entities.add({
-      position: position, // 初始圆心
-      ellipse: {
-        semiMajorAxis: axis, // 半径，单位为米
-        semiMinorAxis: axis, // 半径，设置为相同值使其为圆
-        material: Cesium.Color.fromCssColorString(drawingColor).withAlpha(0.4), // 半透明的颜色
-      },
-    })
-
-    const outlineE = viewer.entities.add({
-      position: position, // 初始圆心
-      ellipse: {
-        semiMajorAxis: axis, // 半径，单位为米
-        semiMinorAxis: axis, // 半径，设置为相同值使其为圆
-        material: Cesium.Color.TRANSPARENT, // 半透明的颜色
-        outline: true,
-        fill: false,
-        outlineColor: Cesium.Color.fromCssColorString(drawingColor),
-        outlineWidth: 3,
-      },
-    })
-
-    return () => {
-      attempt(() => {
-        viewer.entities.remove(e)
-        viewer.entities.remove(outlineE)
-      })
-    }
-  }, [viewer, drawingColor])
-
-  useEffect(() => {
-    if (!viewer) {
-      return
-    }
-
     const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas)
 
-    // 左键 选点
-    handler.setInputAction((e) => {
-      if (circleCenter.current) {
-        return
-      }
-      const ray = viewer.camera.getPickRay(e.position)
-      if (!ray) return
-      const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
-      if (!cartesian) return
-      // 地形上的点
-      circleCenter.current = cartesian3ToDegrees(cartesian)
-    }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
-
-    // 移动
-    handler.setInputAction((e) => {
-      if (!circleCenter.current) {
-        return
-      }
+    const moveHandler = (e) => {
       const ray = viewer.camera.getPickRay(e.endPosition)
       if (!ray) return
       const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
       if (!cartesian) return
       // 地形上的点
-      const geo = cartesian3ToDegrees(cartesian)
-      const distance = getSpaceDistance([circleCenter.current!, geo])
-      radius.current = distance
-    }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
+      const coord = cartesian3ToDegrees(cartesian)
+      setDrawingPositions((prePositions) => [
+        prePositions[0],
+        coord as [number, number],
+      ])
+    }
 
-    // 右键结束
-    handler.setInputAction(() => {
+    const upHandler = () => {
       setTrue()
-    }, Cesium.ScreenSpaceEventType.RIGHT_CLICK)
+    }
+
+    // 左键 选点
+    handler.setInputAction((e) => {
+      const ray = viewer.camera.getPickRay(e.position)
+      if (!ray) return
+      const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
+      if (!cartesian) return
+      // 地形上的点
+      const position = cartesian3ToDegrees(cartesian).slice(0, 2) as [
+        number,
+        number,
+      ]
+      setDrawingPositions([position, position])
+
+      // 移动
+      handler.setInputAction(
+        moveHandler,
+        Cesium.ScreenSpaceEventType.MOUSE_MOVE,
+      )
+      // 右键结束
+      handler.setInputAction(upHandler, Cesium.ScreenSpaceEventType.RIGHT_CLICK)
+    }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
     return () => {
       handler.destroy()
@@ -118,9 +92,8 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
   }, [viewer])
 
   const handleConfirm = async (data: any) => {
-    if (!circleCenter.current) {
-      return
-    }
+    if (radius < 1) return
+
     const uuid = v4()
 
     const strokeColorHex = getHexWithAlpha(drawingColor, 1)
@@ -131,8 +104,9 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
     const commitData = {
       ...data,
       overlayType: 'CIRCULAR',
+      // 圆的点位固定为四个
       overlayPositions: JSON.stringify([
-        [...circleCenter.current, radius.current],
+        [circleCenter[0], circleCenter[1], 0, radius],
       ]),
       overlayBindType: 'NORMAL',
       overlayUuid: uuid,
@@ -144,8 +118,8 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
           //形状信息
           ellipse: {
             //椭圆、圆形
-            '-major': `${radius.current}`, //椭圆形的最长距离
-            '-minor': `${radius.current}`, //椭圆形的最短距离
+            '-major': `${radius}`, //椭圆形的最长距离
+            '-minor': `${radius}`, //椭圆形的最短距离
             '-angle': '360', //角度
           },
           link: {
@@ -174,6 +148,9 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
           //填充颜色（argb）
           '-value': `${fillColorARGB}`,
         },
+        fillOpacity: {
+          '-value': `${fillOpacity}`,
+        },
         strokeWeight: {
           //描边宽度
           '-value': '2.0',
@@ -191,14 +168,30 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
   }
 
   return (
-    <AddFormModal
-      open={open}
-      onClose={() => {
-        setFalse()
-        circleCenter.current = null
-      }}
-      onConfirm={handleConfirm}
-    />
+    <>
+      <AddFormModal
+        open={open}
+        onClose={() => {
+          setFalse()
+          setDrawingPositions([])
+        }}
+        onConfirm={handleConfirm}
+      />
+      {viewer && (
+        <OverlayCircle
+          data={''}
+          viewer={viewer}
+          center={circleCenter?.length ? [...circleCenter] : [0, 0]}
+          radius={radius}
+          asynchronous={false}
+          fill={drawingColor}
+          fillOpacity={fillOpacity}
+          stroke={drawingColor}
+          strokeStyle={lineStyle}
+          strokeWeight={2}
+        />
+      )}
+    </>
   )
 })
 

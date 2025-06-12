@@ -6,7 +6,7 @@ import * as Cesium from 'cesium'
 import AddFormModal from './components/AddFormModal'
 import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
 import { createOverlay } from '@/service/modules/layer_overlay'
-import DrawingPolygon from './components/DrawingPolygon'
+import OverlayPolygon from '@/map/CesiumMap/components/service/Overlaies/OverlayPolygon'
 import { round } from 'lodash'
 
 type PropsType = {
@@ -15,6 +15,7 @@ type PropsType = {
 
 const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
   const { viewer } = useCesium()
+
   const [paths, setPaths] = useState<number[][]>([])
   const latestPaths = useLatest(paths)
   const [endPoint, setEndPoint] = useState<number[] | null>(null)
@@ -22,6 +23,8 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
   const [open, { setTrue, setFalse }] = useBoolean(false)
 
   const drawingColor = useMapDrawStore((s) => s.drawingColor)
+  const fillOpacity = useMapDrawStore((s) => s.fillOpacity)
+  const lineStyle = useMapDrawStore((s) => s.lineStyle)
 
   useEffect(() => {
     if (!viewer) {
@@ -97,6 +100,9 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
         fillColor: {
           '-value': `${fillColorARGB}`, //填充色（argb）
         },
+        fillOpacity: {
+          '-value': `${fillOpacity}`,
+        },
         labels_on: {
           '-value': 'false', //是否显示标签
         },
@@ -116,7 +122,7 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
   }
 
   const positions = useMemo(() => {
-    if (!endPoint || paths.length < 2) {
+    if (!endPoint || paths.length < 1) {
       return paths
     }
     return [...paths, endPoint]
@@ -133,8 +139,18 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
         }}
         onConfirm={handleConfirm}
       />
-      {positions && (
-        <DrawingPolygon positions={positions} color={drawingColor} />
+      {positions && viewer && (
+        <OverlayPolygon
+          data={''}
+          viewer={viewer}
+          path={positions}
+          asynchronous={false}
+          fill={drawingColor}
+          fillOpacity={fillOpacity}
+          stroke={drawingColor}
+          strokeStyle={lineStyle}
+          strokeWeight={2}
+        />
       )}
     </>
   )
