@@ -19,12 +19,23 @@ const ShareQRCode: React.FC<PropsType> = ({
         <span>分享</span>
         <Typography.Text
           copyable={{
-            text: `${location.origin}/share/video/${productKey}/${deviceId}/${videoId}/${encodeURIComponent(token)}`,
+            text: `${
+              location.origin
+            }/share/video/${productKey}/${deviceId}/${videoId}/${encodeURIComponent(
+              token,
+            )}`,
           }}
         />
       </div>
       <QRCode
-        value={`${location.origin}/share/video/${productKey}/${deviceId}/${videoId}/${encodeURIComponent(token)}`}
+        icon={globalConfig.logo ?? '/logo.svg'}
+        iconSize={20}
+        value={`${
+          location.origin
+        }/share/video/${productKey}/${deviceId}/${videoId}/${encodeURIComponent(
+          token,
+        )}`}
+        errorLevel="L"
       />
     </div>
   )
