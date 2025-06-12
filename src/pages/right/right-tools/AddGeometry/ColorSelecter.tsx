@@ -1,12 +1,8 @@
 import { ColorPicker } from 'antd'
-
-type Props = {
-  color: string
-  onChange: (color: string) => void
-}
+import useMapDrawStore from '@/store/map/useDraw.store'
 
 const presetColors = [
-  '#ffffff',
+  '#FFFFFF',
   '#FFFF00',
   '#FFA500',
   '#FF00FD',
@@ -17,27 +13,24 @@ const presetColors = [
   '#000000',
 ]
 
-const ColorSelecter: FC<Props> = (props) => {
-  const { color, onChange } = props
+const ColorSelecter: FC = () => {
+  const drawingColor = useMapDrawStore((s) => s.drawingColor)
+  const updateDrawingColor = useMapDrawStore((s) => s.updateDrawingColor)
 
-  const [selectedColor, setSelectedColor] = useState(color)
-
-  useEffect(() => {
-    setSelectedColor(color)
-    onChange(color)
-  }, [color])
+  const onChange = useMemoizedFn((val) => {
+    updateDrawingColor(val)
+  })
 
   return (
     <div className="flex justify-center items-center gap-2">
       <ColorPicker
-        defaultValue={color}
-        value={selectedColor}
+        defaultValue={drawingColor}
+        value={drawingColor}
         size="small"
         disabledAlpha
         format="hex"
         onChange={(val) => {
-          const color = val.toHexString().toUpperCase()
-          setSelectedColor(color)
+          const color = val.toHexString()
           onChange(color)
         }}
       />
@@ -49,10 +42,10 @@ const ColorSelecter: FC<Props> = (props) => {
             className="w-[14px] h-[14px] rounded-[2px] cursor-pointer"
             style={{
               backgroundColor: c,
-              boxShadow: selectedColor === c ? '0 0 0 2px #4c90f0' : '',
+              boxShadow:
+                drawingColor.toUpperCase() === c ? '0 0 0 2px #0ea5e9' : '',
             }}
             onClick={() => {
-              setSelectedColor(c)
               onChange(c)
             }}
           ></div>

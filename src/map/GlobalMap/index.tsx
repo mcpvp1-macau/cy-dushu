@@ -4,6 +4,7 @@ import CesiumGlobalPickEvent from './GlobalPickEvent'
 import BigFlyListener from './BigFlyListener'
 import CesiumDebug from './Debug'
 import LayerOverlay from './LayerOverlay'
+import OverlayEditor from './OverlayEditor'
 import MapSituation from './Situation'
 import MapViewSave from './MapViewSave'
 import DrawHandler from './DrawHandler'
@@ -33,6 +34,7 @@ const GlobalMap: FC<PropsType> = memo(() => {
           <CesiumGlobalPickEvent />
           <BigFlyListener />
           <LayerOverlay />
+          <OverlayEditor />
           <CesiumDebug />
           <MapSituation />
           <MapViewSave />

@@ -12,10 +12,11 @@ type PropsType = {
   stroke?: string
   fillOpacity?: number
   label?: string
-  strokeStyle: 'solid' | 'dashed' | 'no-fly'
-  strokeWeight: number
+  strokeStyle?: 'solid' | 'dashed' | 'no-fly'
+  strokeWeight?: number
 }
 
+/**用于渲染覆盖物扇形 */
 const OverlayFan: FC<PropsType> = memo((props) => {
   const {
     data,

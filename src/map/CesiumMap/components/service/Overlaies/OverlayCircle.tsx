@@ -13,11 +13,11 @@ interface Props {
   fill?: string
   stroke?: string
   fillOpacity?: number
-  strokeStyle: 'solid' | 'dashed' | 'no-fly'
-  strokeWeight: number
+  strokeStyle?: 'solid' | 'dashed' | 'no-fly'
+  strokeWeight?: number
 }
 
-/**用于显示覆盖物圆形 */
+/**用于渲染覆盖物圆形 */
 const OverlayCircle: FC<Props> = (props) => {
   let {
     data,

@@ -137,7 +137,7 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
         },
         remarks: '',
       }),
-      cotType: CotType.SHAPE_POLYGON,
+      cotType: CotType.SHAPE_RECT,
     }
     await createOverlay(commitData)
     onSuccess?.()

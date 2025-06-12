@@ -13,7 +13,7 @@ const ShowCircle: FC<PropsType> = ({ overlay }) => {
   const position = shouldJson(overlay.overlayPositions)?.[0]
   const style = shouldJson(overlay.overlayStyleConfig)
 
-  const label = style?.contact?.['-callsign']
+  const label = overlay.overlayName
   const fillColor =
     argbToHex(String(style?.fillColor?.['-value']))?.[0] || '#4c90f0'
   const fillOpacity = parseFloat(style?.fillOpacity?.['-value']) || 0.5
@@ -26,7 +26,7 @@ const ShowCircle: FC<PropsType> = ({ overlay }) => {
     <>
       {viewer && (
         <OverlayCircle
-          data={overlay}
+          data={`overlay--${overlay.overlayId}`}
           viewer={viewer}
           asynchronous={false}
           center={[position[0], position[1]]}

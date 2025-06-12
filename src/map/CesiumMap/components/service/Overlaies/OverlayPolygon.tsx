@@ -12,10 +12,11 @@ type PropsType = {
   stroke?: string
   fillOpacity?: number
   label?: string
-  strokeStyle: 'solid' | 'dashed' | 'no-fly'
-  strokeWeight: number
+  strokeStyle?: 'solid' | 'dashed' | 'no-fly'
+  strokeWeight?: number
 }
 
+/**用于渲染覆盖物多边形与矩形 */
 const OverlayPolygon: FC<PropsType> = memo((props) => {
   const {
     data,

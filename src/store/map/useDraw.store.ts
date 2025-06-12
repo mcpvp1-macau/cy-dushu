@@ -13,6 +13,7 @@ export enum CotType {
   SHAPE_POLYGON = 'u-d-f', // 多边形正方形
   SHAPE_CIRCLE = 'u-d-c-c', // 圆形
   SHAPE_FAN = 'shan-xing', // 扇形
+  SHAPE_RECT = 'rectangle',
   LINE_LUJING = 'b-m-r',
   CHEAT_LIAOTIAN = 'b-t-f',
   NONE = '',
@@ -42,11 +43,18 @@ export type PointIconType =
 
 export type LineStyle = 'solid' | 'dashed' | 'no-fly'
 
+// useRightMode保存处于详情编辑的覆盖物，此处的isEdit用于保存覆盖物是否处于编辑状态
+
 type StateType = {
   drawing: DrawType
   drawingColor: string
   lineStyle: LineStyle
+  /**透明度 0-1 */
   fillOpacity: number
+  /**编辑后的点位，不用于地图显示，用于上传 */
+  positions: [number, number][]
+  /**用于判断覆盖物是否处于编辑状态 */
+  isEdit: boolean
 }
 
 type ActionsType = {
@@ -55,6 +63,8 @@ type ActionsType = {
   quitRecontructionArea: () => void
   updateLineStyle: (lineStyle: LineStyle) => void
   updateFillOpacity: (fillOpacity: number) => void
+  updatePositions: (positions: [number, number][]) => void
+  updateIsEdit: (isEdit: boolean) => void
 }
 
 // 新增的三维重建也有绘制逻辑，并且其优先级应该最高，也就是无法从三维重建状态转为普通绘制和测量
@@ -64,9 +74,11 @@ const useMapDrawStore = create<StateType & ActionsType>()(
   devtools(
     (set, get) => ({
       drawing: DrawType.None,
-      drawingColor: '#0ea5e9',
+      drawingColor: '#4C90F0',
       lineStyle: 'solid',
       fillOpacity: 0.5,
+      positions: [],
+      isEdit: false,
       updateDrawing: (drawing) => {
         // 如果是三维重建转为其他绘制，那么不响应，并且发送事件，在三维重建中收到事件并提醒用户
         const pre = get().drawing
@@ -92,6 +104,12 @@ const useMapDrawStore = create<StateType & ActionsType>()(
       },
       updateFillOpacity: (fillOpacity: number) => {
         set({ fillOpacity }, false, 'updateFillOpacity')
+      },
+      updatePositions: (positions) => {
+        set({ positions }, false, 'updatePositions')
+      },
+      updateIsEdit: (isEdit) => {
+        set({ isEdit }, false, 'updateIsEdit')
       }
     }),
     {

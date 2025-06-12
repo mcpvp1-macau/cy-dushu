@@ -1,50 +1,40 @@
 import { Input } from 'antd'
+import useMapDrawStore from '@/store/map/useDraw.store'
 
-type PropsType = {
-  fillOpacity: number
-  onChange: (fillOpacity: number) => void
-}
-
-const OpacityInput: FC<PropsType> = (props) => {
-  const { fillOpacity, onChange } = props
+const OpacityInput: FC = (props) => {
+  // 0 - 1
+  const fillOpacity = useMapDrawStore((s) => s.fillOpacity)
+  const updateFillOpacity = useMapDrawStore((s) => s.updateFillOpacity)
 
   /**0 - 100 */
   const [opacity, setOpacity] = useState(fillOpacity * 100)
 
   useEffect(() => {
-    setOpacity(fillOpacity * 100)
-    onChange(fillOpacity)
-  }, [fillOpacity])
-
-  const onBlur = useMemoizedFn((e) => {
-    const val = parseFloat(e.target.value)
-
-    if (Number.isNaN(val)) {
-      setOpacity(0)
-      onChange(0)
+    let newFillOpacity = opacity / 100
+    if (Number.isNaN(opacity)) {
+      newFillOpacity = 0
       return
     }
-    if (val > 100) {
-      setOpacity(100)
-      onChange(1)
+    if (opacity > 100) {
+      newFillOpacity = 1
       return
     }
-    return onChange(val / 100)
-  })
+
+    updateFillOpacity(newFillOpacity)
+  }, [opacity])
 
   return (
     <div className="flex items-center justify-center">
       <span>透明度：</span>
       <div className="felx items-center w-[80px]">
         <Input
-          onBlur={onBlur}
           size="small"
           value={opacity}
           defaultValue={opacity}
           min={0}
           max={100}
           onChange={(e) => {
-            setOpacity(parseFloat(e.target.value))
+            setOpacity(parseFloat(e.target.value) || 0)
           }}
         />
       </div>

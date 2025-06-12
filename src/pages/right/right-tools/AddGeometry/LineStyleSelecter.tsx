@@ -3,20 +3,11 @@ import { Flex, Select } from 'antd'
 import React from 'react'
 import IconLine from '@/assets/icons/jsx/IconLine'
 import IconDashedLine from '@/assets/icons/jsx/IconDashedLine'
+import useMapDrawStore, { LineStyle } from '@/store/map/useDraw.store'
 
-type PropsType = {
-  lineStyle: 'solid' | 'dashed'
-  onChange: (dash: 'solid' | 'dashed') => void
-}
-
-const LineStyleSelecter: React.FC<PropsType> = (props) => {
-  const { lineStyle, onChange } = props
-
-  const [selectedStyle, setSelectedStyle] = useState(lineStyle)
-  useEffect(() => {
-    setSelectedStyle(lineStyle)
-    onChange(lineStyle)
-  }, [lineStyle])
+const LineStyleSelecter: FC = (props) => {
+  const lineStyle = useMapDrawStore((s) => s.lineStyle)
+  const updateLineStyle = useMapDrawStore((s) => s.updateLineStyle)
 
   return (
     <Flex gap={6}>
@@ -52,10 +43,9 @@ const LineStyleSelecter: React.FC<PropsType> = (props) => {
             ]}
             defaultValue={'solid'}
             size="small"
-            value={selectedStyle}
+            value={lineStyle}
             onChange={(val) => {
-              setSelectedStyle(val as 'solid' | 'dashed')
-              onChange(val as 'solid' | 'dashed')
+              updateLineStyle(val as LineStyle)
             }}
           />
         </div>

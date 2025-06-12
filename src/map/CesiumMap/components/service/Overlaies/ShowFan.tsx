@@ -13,7 +13,7 @@ const ShowFan: FC<PropsType> = ({ overlay }) => {
   const positions = shouldJson(overlay.overlayPositions) || []
   const style = shouldJson(overlay.overlayStyleConfig)
 
-  const label = style?.contact?.['-callsign']
+  const label = overlay.overlayName
   const fillColor =
     argbToHex(String(style?.fillColor?.['-value']))?.[0] || '#4c90f0'
   const fillOpacity = parseFloat(style?.fillOpacity?.['-value']) || 0.5
@@ -26,7 +26,7 @@ const ShowFan: FC<PropsType> = ({ overlay }) => {
     <>
       {viewer && (
         <OverlayFan
-          data={overlay}
+          data={`overlay--${overlay.overlayId}`}
           viewer={viewer}
           asynchronous={false}
           positions={positions}

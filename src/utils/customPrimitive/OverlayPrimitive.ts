@@ -380,7 +380,6 @@ export class OverlayCirclePrimitive {
     if (this._center !== this.center || this._radius !== this.radius) {
       this._center = this.center;
       this._radius = this.radius;
-      console.log(this._center, this._circle)
       this.updateGeometry();
     }
 
@@ -543,13 +542,14 @@ export class OverlayFanPrimitive {
       );
       this._fan = null;
     } else {
+      const fanPositions = this.fanCoordnates.map(point => Cesium.Cartesian3.fromDegrees(point[0], point[1]))
       this._fanOutline = createPolyline(
-        [...this.fanPositions, this.fanPositions[0]],
+        [...fanPositions, fanPositions[0]],
         this.styleOptions,
         this.asynchronous,
       );
       this._fan = createPolygon(
-        this.fanPositions,
+        fanPositions,
         this.styleOptions,
         this.asynchronous,
       );
@@ -566,7 +566,7 @@ export class OverlayFanPrimitive {
       // label值不为空才创建
       this._label.removeAll();
       if (this.styleOptions.label) {
-        const center = getCenter(this._positions);
+        const center = getCenter(this.fanCoordnates);
         this._label.add(
           createLabel(
             Cesium.Cartesian3.fromDegrees(center[0], center[1]),
@@ -607,7 +607,7 @@ export class OverlayFanPrimitive {
   }
 
   /**根据三个支点生成的类扇形多边形点 */
-  get fanPositions() {
+  get fanCoordnates() {
     const [pivot, startPoint, endPoint] = this._positions
 
     const pp = turf.point(pivot)
@@ -633,7 +633,7 @@ export class OverlayFanPrimitive {
     }
     res.push(turf.destination(pp, distance, endBearing).geometry.coordinates as [number, number])
 
-    return res.map(point => Cesium.Cartesian3.fromDegrees(point[0], point[1]))
+    return res
   }
 
   setProps(data: any) {

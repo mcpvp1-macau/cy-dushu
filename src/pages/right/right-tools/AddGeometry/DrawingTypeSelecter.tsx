@@ -1,5 +1,5 @@
 import { Select } from 'antd'
-import useMapDrawStore, { DrawType } from '@/store/map/useDraw.store'
+import { DrawType } from '@/store/map/useDraw.store'
 
 const opts = [
   {
@@ -21,24 +21,33 @@ const opts = [
 ]
 
 type PropsType = {
-  onChange: (type: DrawType) => void
+  onChange?: (type: DrawType) => void
+  lockedType?: DrawType
 }
 
-const DrawingTypeSelecter: FC<PropsType> = ({ onChange }) => {
+const DrawingTypeSelecter: FC<PropsType> = ({ onChange, lockedType }) => {
   const onChangeType = useMemoizedFn((val) => {
-    onChange(val)
+    onChange && onChange(val)
   })
 
   useEffect(() => {
     onChangeType(opts[0].value)
   }, [])
 
+  const options = useMemo(() => {
+    if (!lockedType) {
+      return opts
+    } else {
+      return opts.filter((item) => item.value === lockedType)
+    }
+  }, [lockedType])
+
   return (
     <Select
-      options={opts}
+      options={options}
       className="w-[100px]"
       onChange={onChangeType}
-      defaultValue={opts[0]}
+      defaultValue={options[0]}
       variant="borderless"
       size="small"
     />
