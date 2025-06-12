@@ -24,6 +24,7 @@ const AliyunOSSUpload = ({
   const [progress, setProgress] = useState(0)
   const [count, setCount] = useState(0)
   const progressRef = useRef(0)
+  const isCloseRef = useRef(false)
 
   const uploadFile = async (file) => {
     const { webkitRelativePath } = file as any
@@ -32,7 +33,7 @@ const AliyunOSSUpload = ({
     }
 
     let uploadSignature = signatureRef.current
-    if (Date.now() - dataTimeRef.current > 30 * 60 * 1000) {
+    if (Date.now() - dataTimeRef.current > 30 * 60 * 1000 || !uploadSignature) {
       const time = Date.now()
       uploadSignature = await getMinioSignature().then((res) => res.data)
       dataTimeRef.current = time
@@ -70,22 +71,10 @@ const AliyunOSSUpload = ({
   }
 
   const onUploadFile = async (e) => {
+    isCloseRef.current = false
     const files = e.target.files
-    // let is3d = false
-    // let value = ''
-    // for (let index = 0; index < files.length; index++) {
-    //   const element = files[index]
-    //   if (element.name === 'tileset.json') {
-    //     is3d = true
-    //     value = element.webkitRelativePath
-    //     break
-    //   }
-    // }
-    // if (!is3d) {
-    //   message.error('请确认文件夹中是否含有tileset.json')
-    //   return
-    // }
     const value = getPath?.(files)
+
     if (!value) {
       return
     }
@@ -94,13 +83,16 @@ const AliyunOSSUpload = ({
 
     for (let index = 0; index < files.length; index++) {
       const element = files[index]
+      if (isCloseRef.current) {
+        return
+      }
       await uploadFile(element)
     }
 
     setCount(0)
     progressRef.current = 0
     message.success('上传成功')
-    onChange?.(`/storage/${globalConfig.bucketName || 'minio-map'}${value}`)
+    onChange?.(`/storage/${globalConfig.bucketName || 'minio-map'}/${value}`)
   }
 
   const ref = useRef<HTMLInputElement>(null)
@@ -134,6 +126,17 @@ const AliyunOSSUpload = ({
           </div>
           <div className="text-center">
             {progressRef.current} / {count} <LoadingOutlined />
+          </div>
+          <div className="text-center mt-10">
+            <Button
+              onClick={() => {
+                setCount(0)
+                progressRef.current = 0
+                isCloseRef.current = true
+              }}
+            >
+              取消
+            </Button>
           </div>
         </div>
       </Modal>

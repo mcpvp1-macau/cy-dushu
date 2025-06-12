@@ -63,6 +63,12 @@ export default mergeConfig(
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/asr/, '/'),
         },
+        '/upload': {
+          target: 'http://172.27.95.212:32000',
+          changeOrigin: true,
+          // pathRewrite: { '^/upload': '' },
+          rewrite: (path) => path.replace(/^\/upload/, ''),
+        },
       },
     },
     define: {
