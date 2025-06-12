@@ -14,6 +14,7 @@ export const useMouseStyle = (open: boolean = true) => {
     useShallow((s) => ({
       isDrawHome: s.isDrawHome,
       isDrawPoint: s.isDrawPoint,
+      isDrawRoadTarget: s.isDrawRoadTarget,
     })),
   )
   const currentIndex = useAirlineConfigStore((s) => s.currentIndex)
@@ -38,6 +39,11 @@ export const useMouseStyle = (open: boolean = true) => {
       }
       if (configRef.current.isDrawPoint) {
         viewer.scene.canvas.style.cursor = `url(/images/airline/add-point.svg) 10 10, auto`
+        return
+      }
+      if (configRef.current.isDrawRoadTarget) {
+        // TODO修改图标
+        viewer.scene.canvas.style.cursor = `url(/images/airline/takeoff-cur.svg) 15 15, auto`
         return
       }
 

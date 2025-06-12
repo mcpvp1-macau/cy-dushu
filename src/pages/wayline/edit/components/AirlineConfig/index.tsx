@@ -10,6 +10,7 @@ import TakeoffSpeedConfig from './components/TakeOffSpeedConfig'
 // import { pick } from 'lodash'
 import { takePhotoIgnoreDevices } from './constant/ignore-device'
 import GoHomeHeightConfig from './components/GoHomeHeightConfig'
+import RoadNetworkMode from './components/RoadNetworkMode'
 
 type PropsType = {
   info: ReactNode
@@ -28,6 +29,7 @@ const AirlineConfig: FC<PropsType> = ({ info, pilot }) => {
     <div className={styles.airlineConfig}>
       {info}
       <TakeOffPointConfig />
+      <RoadNetworkMode />
       {pilot}
       {!takePhotoIgnoreDevices.includes(modelName) && <TakePhotoConfig />}
       {/* 爬升模式设置 */}

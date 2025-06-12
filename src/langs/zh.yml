@@ -847,6 +847,8 @@ wayline:
     msg: 飞行路径撞到地形
   nearTerrain:
     msg: 飞行路径距离地形高度过近
+  roadNetwork:
+    title: 路网模式
 schedue:
   list:
     title: 计划库

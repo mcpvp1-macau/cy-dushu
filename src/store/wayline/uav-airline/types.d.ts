@@ -23,6 +23,8 @@ export type AirlineConfigType = {
   waypointHeadingMode: string
   gimbalPitchMode: string
   finishAction: string
+  roadNetworkMode?: boolean
+  roadNetworkTargetPosition?: number[]
   [key: string]: any
 }
 

@@ -859,6 +859,8 @@ wayline:
     msg: The flight route hit the terrain
   nearTerrain:
     msg: The flight path is too close to the terrain height
+  roadNetwork:
+    title: Road Network Mode
 schedue:
   list:
     title: Schedule List
