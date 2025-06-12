@@ -6,8 +6,6 @@ import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.
 /** 取消设置起飞点和航点 */
 export const useCancelSetPoint = () => {
   const { viewer } = useCesium()
-  const setIsDrawHome = useAirlineConfigStore((s) => s.updateIsDrawHome)
-  const setIsDrawPoint = useAirlineConfigStore((s) => s.updateIsDrawPoint)
 
   useEffect(() => {
     if (!viewer?.scene) return
@@ -15,8 +13,10 @@ export const useCancelSetPoint = () => {
     const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas)
 
     handler.setInputAction(() => {
-      setIsDrawPoint(false)
-      setIsDrawHome(false)
+      const store = useAirlineConfigStore.getState()
+      store.updateIsDrawHome(false)
+      store.updateIsDrawPoint(false)
+      store.updateIsDrawRoadTarget(false)
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK)
     return () => {
       handler.destroy()

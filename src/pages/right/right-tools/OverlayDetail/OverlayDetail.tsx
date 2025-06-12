@@ -2,6 +2,7 @@ import IconAddMark from '@/assets/icons/jsx/right-tools/IconAddMark'
 import { ComponentRef, memo, type FC } from 'react'
 import CloseableHeader from '../../components/CloseableHeader'
 import useRightMode from '@/store/layout/useRightMode.store'
+import useMapDrawStore from '@/store/map/useDraw.store'
 import AppEmpty from '@/components/AppEmpty'
 import { shouldJson } from '@/utils/json'
 import IconButton from '@/components/ui/button/IconButton'
@@ -13,6 +14,8 @@ import { CotType } from '@/store/map/useDraw.store'
 import IconDrawArea from '@/assets/icons/jsx/right-tools/IconDrawArea'
 import IconTick from '@/assets/icons/jsx/IconTick'
 import useOverlayDetail from './useOverlayDetail'
+import OverlayStyleEditor from '../AddGeometry/OverlayStyleEditor'
+import { createPortal } from 'react-dom'
 
 type PropsType = unknown
 
@@ -40,93 +43,94 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
   const inputRef = useRef<ComponentRef<typeof Input>>(null)
 
   return (
-    <div className="w-[350px]">
-      <Form form={form}>
-        <CloseableHeader>
-          <div className="flex justify-between">
-            <div className="flex gap-2 items-center">
-              {overlay?.cotType === CotType.POINT ? (
-                <IconAddMark className="device-detail-icon" />
-              ) : (
-                <IconDrawArea className="device-detail-icon" />
-              )}
-              <Form.Item noStyle name="overlayName">
-                {isEdit ? (
-                  <Input
-                    ref={inputRef}
-                    size="small"
-                    // value={renameValue}
-                    // onChange={(e) => setRenameValue(e.currentTarget.value)}
-                  />
+    <>
+      <div className="w-[350px]">
+        <Form form={form}>
+          <CloseableHeader>
+            <div className="flex justify-between">
+              <div className="flex gap-2 items-center">
+                {overlay?.cotType === CotType.POINT ? (
+                  <IconAddMark className="device-detail-icon" />
                 ) : (
-                  <h6 className="text-white text-base max-w-[190px] truncate">
-                    {overlay?.overlayName || '-'}
-                  </h6>
+                  <IconDrawArea className="device-detail-icon" />
                 )}
-              </Form.Item>
-            </div>
-            <div className="flex gap-2">
-              {isConfirmLoading ? (
-                <LoadingOutlined />
-              ) : (
-                <>
+                <Form.Item noStyle name="overlayName">
                   {isEdit ? (
-                    <>
-                      <IconButton
-                        toolTipProps={{ title: t('common.save') }}
-                        onClick={handleSave}
-                      >
-                        <IconTick className="scale-90" />
-                      </IconButton>
-                    </>
+                    <Input
+                      ref={inputRef}
+                      size="small"
+                      // value={renameValue}
+                      // onChange={(e) => setRenameValue(e.currentTarget.value)}
+                    />
                   ) : (
-                    <IconButton
-                      toolTipProps={{ title: t('common.edit') }}
-                      onClick={() => {
-                        toggle()
-                        setTimeout(() => {
-                          inputRef.current?.focus()
-                        }, 333)
-                      }}
-                    >
-                      <IconEdit className="scale-90" />
-                    </IconButton>
+                    <h6 className="text-white text-base max-w-[190px] truncate">
+                      {overlay?.overlayName || '-'}
+                    </h6>
                   )}
-                  {/* <IconButton toolTipProps={{ title: '分享' }}>
+                </Form.Item>
+              </div>
+              <div className="flex gap-2">
+                {isConfirmLoading ? (
+                  <LoadingOutlined />
+                ) : (
+                  <>
+                    {isEdit ? (
+                      <>
+                        <IconButton
+                          toolTipProps={{ title: t('common.save') }}
+                          onClick={handleSave}
+                        >
+                          <IconTick className="scale-90" />
+                        </IconButton>
+                      </>
+                    ) : (
+                      <IconButton
+                        toolTipProps={{ title: t('common.edit') }}
+                        onClick={() => {
+                          toggle()
+                          setTimeout(() => {
+                            inputRef.current?.focus()
+                          }, 333)
+                        }}
+                      >
+                        <IconEdit className="scale-90" />
+                      </IconButton>
+                    )}
+                    {/* <IconButton toolTipProps={{ title: '分享' }}>
                   <IconShare className="scale-90" />
                 </IconButton> */}
-                  <IconButton
-                    toolTipProps={{ title: t('common.delete') }}
-                    onClick={handleDelete}
-                  >
-                    <IconDelete className="scale-90" />
-                  </IconButton>
-                </>
-              )}
+                    <IconButton
+                      toolTipProps={{ title: t('common.delete') }}
+                      onClick={handleDelete}
+                    >
+                      <IconDelete className="scale-90" />
+                    </IconButton>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        </CloseableHeader>
+          </CloseableHeader>
 
-        {overlay ? (
-          <div className="mx-3 mb-3 flex flex-col gap-2 text-sm">
-            <p className="flex gap-2">
-              {t('common.createTime')}:
-              <span className="text-white">{overlay.gmtCreate}</span>
-            </p>
-            <p className="flex gap-2">
-              {t('overlay.detail.createUser.title')}:
-              <span className="text-white">{overlay.name}</span>
-            </p>
-            <p className="flex gap-2">
-              {t('overlay.detail.position.title')}:
-              <span className="text-white">
-                {shouldJson(overlay.overlayPositions)?.[0]
-                  ?.slice(0, 2)
-                  ?.join(', ')}
-              </span>
-            </p>
+          {overlay ? (
+            <div className="mx-3 mb-3 flex flex-col gap-2 text-sm">
+              <p className="flex gap-2">
+                {t('common.createTime')}:
+                <span className="text-white">{overlay.gmtCreate}</span>
+              </p>
+              <p className="flex gap-2">
+                {t('overlay.detail.createUser.title')}:
+                <span className="text-white">{overlay.name}</span>
+              </p>
+              <p className="flex gap-2">
+                {t('overlay.detail.position.title')}:
+                <span className="text-white">
+                  {shouldJson(overlay.overlayPositions)?.[0]
+                    ?.slice(0, 2)
+                    ?.join(', ')}
+                </span>
+              </p>
 
-            <div className="flex gap-2 items-center">
+              {/* <div className="flex gap-2 items-center">
               {t('overlay.detail.color.title')}:
               <Form.Item noStyle name="color">
                 {isEdit ? (
@@ -142,28 +146,35 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                   </div>
                 )}
               </Form.Item>
-            </div>
+            </div> */}
 
-            <p className="flex gap-2">
-              <span className="whitespace-nowrap">
-                {t('overlay.detail.mark.title')}:
-              </span>
-              <Form.Item noStyle name="remarks">
-                {isEdit ? (
-                  <Input size="small" className="h-5" />
-                ) : (
-                  <span className="text-white">
-                    {styleConfig.remarks || '-'}
-                  </span>
-                )}
-              </Form.Item>
-            </p>
-          </div>
-        ) : (
-          <AppEmpty />
+              <p className="flex gap-2">
+                <span className="whitespace-nowrap">
+                  {t('overlay.detail.mark.title')}:
+                </span>
+                <Form.Item noStyle name="remarks">
+                  {isEdit ? (
+                    <Input size="small" className="h-5" />
+                  ) : (
+                    <span className="text-white">
+                      {styleConfig.remarks || '-'}
+                    </span>
+                  )}
+                </Form.Item>
+              </p>
+            </div>
+          ) : (
+            <AppEmpty />
+          )}
+        </Form>
+      </div>
+
+      {isEdit &&
+        createPortal(
+          <OverlayStyleEditor overlay={overlay!} />,
+          document.querySelector('#global-map')!,
         )}
-      </Form>
-    </div>
+    </>
   )
 })
 

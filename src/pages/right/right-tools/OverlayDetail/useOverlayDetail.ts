@@ -8,9 +8,19 @@ import { deleteOverlaies, updateOverlay } from '@/service/modules/layer_overlay'
 import { useForm } from 'antd/es/form/Form'
 import { argbToHex } from '@/utils/color'
 import { AggregationColor } from 'antd/es/color-picker/color'
+import useMapDrawStore from '@/store/map/useDraw.store'
 
 const useOverlayDetail = (detailId: string | null, onDelete?: () => void) => {
   const overlayList = useMapLayerAndOverlayStore((s) => s.overlayList)
+  const drawingColor = useMapDrawStore(s => s.drawingColor)
+  const updateDrawingColor = useMapDrawStore(s => s.updateDrawingColor)
+  const fillOpacity = useMapDrawStore(s => s.fillOpacity)
+  const updateFillOpacity = useMapDrawStore(s => s.updateFillOpacity)
+  const lineStyle = useMapDrawStore(s => s.lineStyle)
+  const updateLineStyle = useMapDrawStore(s => s.updateLineStyle)
+  const positions = useMapDrawStore(s => s.positions)
+  const updatePositions = useMapDrawStore(s => s.updatePositions)
+  const updateIsEdit = useMapDrawStore(s => s.updateIsEdit)
 
   const overlay = useMemo(() => {
     if (!detailId) return null
@@ -20,6 +30,10 @@ const useOverlayDetail = (detailId: string | null, onDelete?: () => void) => {
 
   const [isEdit, { toggle, setFalse }] = useBoolean(false)
 
+  useEffect(() => {
+    updateIsEdit(isEdit)
+  }, [isEdit])
+
   const queryClient = useQueryClient()
 
   const styleConfig = useMemo(
@@ -27,25 +41,41 @@ const useOverlayDetail = (detailId: string | null, onDelete?: () => void) => {
     [overlay],
   )
 
+  // 同步样式状态
+  useEffect(() => {
+    const overlayPositions = shouldJson(overlay?.overlayPositions)
+    const style = shouldJson(overlay?.overlayStyleConfig)
+
+    const fillColor =
+      argbToHex(String(style?.fillColor?.['-value']))?.[0] || '#4c90f0'
+    const fillOpacity = parseFloat(style?.fillOpacity?.['-value']) || 0.5
+    const strokeStyle = style?.strokeStyle?.['-value'] || 'solid'
+
+    updateDrawingColor(fillColor)
+    updateFillOpacity(fillOpacity)
+    updateLineStyle(strokeStyle)
+    updatePositions(overlayPositions)
+  }, [overlay])
+
   const [isConfirmLoading, setConfirmLoading] = useState(false)
   const handleSave = async () => {
     const value = form.getFieldsValue()
-    const hexStr = value.color.toHexString()
+
     let overlayStyleConfig: Record<string, any> = {}
     if (overlay?.cotType === CotType.POINT) {
-      const colorRGBA = hexToARGB(hexStr)
+      const colorRGBA = hexToARGB(drawingColor)
       overlayStyleConfig = {
         ...styleConfig,
         color: {
           '-argb': colorRGBA,
-          hex: hexStr,
+          hex: drawingColor,
         },
         remarks: value.remarks,
       }
     } else {
-      const strokeColorHex = getHexWithAlpha(hexStr, 1)
+      const strokeColorHex = getHexWithAlpha(drawingColor, 1)
       const strokeColorARGB = hexToARGB(strokeColorHex)
-      const fillColorHex = getHexWithAlpha(hexStr, 0.5)
+      const fillColorHex = getHexWithAlpha(drawingColor, 0.5)
       const fillColorARGB = hexToARGB(fillColorHex)
       overlayStyleConfig = {
         ...styleConfig,
@@ -55,6 +85,12 @@ const useOverlayDetail = (detailId: string | null, onDelete?: () => void) => {
         fillColor: {
           '-value': `${fillColorARGB}`, //填充色（argb）
         },
+        fillOpacity: {
+          '-value': `${fillOpacity}`//填充透明度0-1
+        },
+        strokeStyle: {
+          '-value': `${lineStyle}`  // 描边类型 'solid|'dashed'
+        },
         remarks: value.remarks,
       }
     }
@@ -63,11 +99,15 @@ const useOverlayDetail = (detailId: string | null, onDelete?: () => void) => {
       setConfirmLoading(true)
       await updateOverlay({
         ...overlay!,
+        overlayPositions: JSON.stringify(positions),
         overlayBindActions: overlay!.overlayBindType,
         overlayName: (value.overlayName || overlay?.overlayName) ?? '',
         overlayStyleConfig: JSON.stringify(overlayStyleConfig),
       })
-      setFalse()
+      // 预防抖动，更新完成后数据无法立刻请求到最新的，所以先保留编辑状态一下下
+      setTimeout(() => {
+        setFalse()
+      }, 200)
       queryClient.invalidateQueries({
         queryKey: ['overlayList'],
         exact: false,

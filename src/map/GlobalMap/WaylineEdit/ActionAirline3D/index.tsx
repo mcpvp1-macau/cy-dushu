@@ -5,6 +5,7 @@ import { useMouseStyle } from './hooks/useMouseStyle'
 import { useCancelSetPoint } from './hooks/useCancelSetPoint'
 import MenuBox from './MenuBox'
 import UavPoint from './UavPoint'
+import RoadTargetPoint from './RoadTargetPoint'
 
 type PropsType = unknown
 
@@ -15,6 +16,7 @@ const ActionAirline: FC<PropsType> = () => {
   return (
     <>
       <HomePoint />
+      <RoadTargetPoint />
       <AirPoints />
       <AddAirPoint />
       <MenuBox />

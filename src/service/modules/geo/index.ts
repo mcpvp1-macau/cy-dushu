@@ -32,3 +32,13 @@ export const getGeoSearchRoadData = (params: GeoRect) => {
     params,
   })
 }
+
+/** 计算路网航线 */
+export const getCalcUavRoadShortestPath = (params: {
+  sLng: number
+  sLat: number
+  tLng: number
+  tLat: number
+}) => {
+  return serverGeoSearch.get<number[][]>('/calc/uavShortestPath', { params })
+}

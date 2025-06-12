@@ -23,6 +23,7 @@ type StateType = {
   open: boolean
   isDrawHome: boolean
   isDrawPoint: boolean
+  isDrawRoadTarget: boolean
   airlineTemplateInfo: WaylineTemplateType
   airlineConfig: AirlineConfigType
   airpointsConfig: AirpointsConfigItem[]
@@ -46,6 +47,10 @@ type ActionsType = {
   updateIsDrawHome: (isDrawHome: StateType['isDrawHome']) => void
   /** 设置是否在绘制航点 */
   updateIsDrawPoint: (isDrawPoint: StateType['isDrawPoint']) => void
+  /** 设置是否在绘制道路目标点 */
+  updateIsDrawRoadTarget: (
+    isDrawRoadTarget: StateType['isDrawRoadTarget'],
+  ) => void
   /** 更新航线模板信息 */
   updateAirlineTemplateInfo: (
     airlineTemplateInfo: StateType['airlineTemplateInfo'],
@@ -86,6 +91,7 @@ const initialState = () =>
     open: false,
     isDrawHome: false,
     isDrawPoint: false,
+    isDrawRoadTarget: false,
     airlineTemplateInfo: {},
     airlineConfig: createInitAirlineConfig(),
     airpointsConfig: [],
@@ -206,6 +212,9 @@ const useAirlineConfigStore = create<
       },
       updateIsDrawPoint: (isDrawPoint) => {
         set({ isDrawPoint }, false, 'updateIsDrawPoint')
+      },
+      updateIsDrawRoadTarget: (isDrawRoadTarget) => {
+        set({ isDrawRoadTarget }, false, 'updateIsDrawRoadTarget')
       },
       updateAirlineTemplateInfo: (airlineTemplateInfo) => {
         set({ airlineTemplateInfo }, false, 'updateAirlineTemplateInfo')
