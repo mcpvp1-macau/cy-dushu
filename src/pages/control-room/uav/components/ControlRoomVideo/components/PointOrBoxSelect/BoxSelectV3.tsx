@@ -66,6 +66,7 @@ const BoxSelectV3: FC<PropsType> = memo(({ deviceLiveVideoRef }) => {
         y2: rect[3],
       },
     }
+    autoAIPhotoParamsEmitter.emit('autoAIPhotoParams', null)
     postService(
       'preAutoPhoto',
       {

@@ -23,7 +23,7 @@ type AutoAIPhotoParams = {
   point2: Record<string, any>
   speed: number
   larser_height?: number
-}
+} | null
 
 type TakingRightPhotoParams = {
   needTakePhoto: boolean
@@ -98,6 +98,7 @@ const IntelligentPhotography: FC<PropsType> = memo(({ postServiceFn }) => {
       username: useUserStore.getState().user?.username,
     })
     updateOpenPointZoom(0)
+    setAutoAIPhotoParams(null)
   }
 
   return (
