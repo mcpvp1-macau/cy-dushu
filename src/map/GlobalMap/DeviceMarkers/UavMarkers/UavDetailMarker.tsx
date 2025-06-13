@@ -14,6 +14,7 @@ import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
 import * as Cesium from 'cesium'
 import VideoProjection from '@/pages/control-room/uav/components/ControlRoomMap/components/VideoProjection'
+import useMapSettingStore from '@/store/setting/useMapSetting.store'
 
 type PropsType = {
   deviceId: string
@@ -126,6 +127,8 @@ const UavDetailMarker: FC<PropsType> = memo(
       }
     }, [state, onPositionChange])
 
+    const enableUavDetailFrustum = useMapSettingStore((s) => s.uavDetailFrustum)
+
     if (!state) {
       return null
     }
@@ -149,12 +152,15 @@ const UavDetailMarker: FC<PropsType> = memo(
           color="#fff"
         />
         <DeviceLabel id={deviceId} text={deviceName} position={position} />
-        <MapUavRealMarker data={state} useGimbal={!gimbalPickExist} />
+        <MapUavRealMarker
+          data={state}
+          useGimbal={!enableUavDetailFrustum || !gimbalPickExist}
+        />
         {historyTrack.map((track, index) => (
           <HistoryTrack key={index} value={track} />
         ))}
         {realTrack.length > 1 && <HistoryTrack value={realTrack} useCallback />}
-        {gimbalPickExist && (
+        {gimbalPickExist && enableUavDetailFrustum && (
           <CameraGroundFrustum
             gimbalPick={gimbalPick as any}
             position={[state.longitude, state.latitude, state.altitude ?? 0]}
