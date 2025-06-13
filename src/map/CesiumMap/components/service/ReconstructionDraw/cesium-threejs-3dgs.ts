@@ -219,6 +219,7 @@ class CesiumThreeJS3DGS {
     for (const splatViewer of this.three.splatViewers) {
       await splatViewer.dispose()
     }
+    this.threeContainer.remove()
   }
 
   async load3dgs({

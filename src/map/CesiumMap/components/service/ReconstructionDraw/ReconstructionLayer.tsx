@@ -25,7 +25,7 @@ const ReconstructionLayer: FC<PropsType> = memo(() => {
       }
     }
     return false
-  }, [showLayerIds, showGroupIds])
+  }, [layerList, showLayerIds, showGroupIds])
 
   if (!has) {
     return null
