@@ -56,8 +56,17 @@ const UavDetailMarker: FC<PropsType> = memo(
       state.zoomFactor,
     )
 
+    const projectedVideo = useMapDevicesStore(
+      (s) => s.projectedVideos[deviceId],
+    )
+
+    const enableUavDetailFrustum = useMapSettingStore((s) => s.uavDetailFrustum)
+
     const gimbalPick = useMemo(() => {
-      if (!pickerRef.current) {
+      if (
+        !pickerRef.current ||
+        (!enableUavDetailFrustum && !projectedVideo?.videoElement)
+      ) {
         return {}
       }
 
@@ -113,10 +122,6 @@ const UavDetailMarker: FC<PropsType> = memo(
       }
     }, [enableAreaScan])
 
-    const projectedVideo = useMapDevicesStore(
-      (s) => s.projectedVideos[deviceId],
-    )
-
     useEffect(() => {
       if (onPositionChange) {
         onPositionChange({
@@ -126,8 +131,6 @@ const UavDetailMarker: FC<PropsType> = memo(
         })
       }
     }, [state, onPositionChange])
-
-    const enableUavDetailFrustum = useMapSettingStore((s) => s.uavDetailFrustum)
 
     if (!state) {
       return null

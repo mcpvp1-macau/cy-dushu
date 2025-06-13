@@ -42,8 +42,17 @@ const UavMarker: FC<PropsType> = memo(() => {
     state.zoomFactor,
   )
 
+  const enableUavDetailFrustum = useMapSettingStore((s) => s.uavDetailFrustum)
+
+  const openVideoProjection = useUavControlRoomStore(
+    (s) => s.openVideoProjection,
+  )
+
   const gimbalPick = useMemo(() => {
-    if (!pickerRef.current) {
+    if (
+      !pickerRef.current ||
+      (!enableUavDetailFrustum && !openVideoProjection)
+    ) {
       return {}
     }
 
@@ -61,7 +70,7 @@ const UavMarker: FC<PropsType> = memo(() => {
     )
 
     return res
-  }, [state, gimbalState])
+  }, [state, gimbalState, enableUavDetailFrustum])
 
   const gimbalPickExist =
     gimbalPick.leftTop &&
@@ -69,13 +78,7 @@ const UavMarker: FC<PropsType> = memo(() => {
     gimbalPick.rightBottom &&
     gimbalPick.leftBottom
 
-  const openVideoProjection = useUavControlRoomStore(
-    (s) => s.openVideoProjection,
-  )
-
   const videoElement = useUavControlRoomStore((s) => s.videoElement)
-
-  const enableUavDetailFrustum = useMapSettingStore((s) => s.uavDetailFrustum)
 
   return (
     <>
