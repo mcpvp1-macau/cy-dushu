@@ -19,6 +19,11 @@ const MapSetting: FC<PropsType> = memo(() => {
   const webgl1 = useMapSettingStore((s) => s.webgl1)
   const updateWebgl1 = useMapSettingStore((s) => s.updateWebgl1)
 
+  const uavDetailFrustum = useMapSettingStore((s) => s.uavDetailFrustum)
+  const updateUavDetailFrustum = useMapSettingStore(
+    (s) => s.updateUavDetailFrustum,
+  )
+
   const options = [
     {
       value: '0',
@@ -71,6 +76,12 @@ const MapSetting: FC<PropsType> = memo(() => {
           onChange={(e) => updateWebgl1(e.target.checked)}
         >
           <p>WebGL 1</p>
+        </Checkbox>
+        <Checkbox
+          checked={uavDetailFrustum}
+          onChange={(e) => updateUavDetailFrustum(e.target.checked)}
+        >
+          <p>无人机视锥</p>
         </Checkbox>
       </div>
       <div className="flex gap-2 text-fore mt-3">
