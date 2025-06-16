@@ -8,6 +8,7 @@ declare namespace API_ACTION {
       status: string
       eventId: string
       startTime: string
+      type: string
       endTime: string
       gmtCreate: string
       gmtModified: string
@@ -71,6 +72,7 @@ declare namespace API_ACTION {
   namespace req {
     type ActionListReq = API_COMMON.PageParam & {
       name?: string
+      type?: string
       startTime?: string
       endTime?: string
       status?: string[]

@@ -331,7 +331,7 @@ action:
       continue:
         title: Continue
       people:
-        title: Staff
+        title: Pilot
       device:
         title: Device
       status:

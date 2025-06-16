@@ -325,11 +325,11 @@ action:
       continue:
         title: 继续
       people:
-        title: 执行人员
+        title: 飞手
       device:
-        title: 执行设备
+        title: 设备
       status:
-        title: 任务状态
+        title: 状态
         RUNNING:
           title: 任务中
         HANGUP:

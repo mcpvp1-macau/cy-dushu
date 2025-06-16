@@ -61,16 +61,16 @@ const LayerOverlaies: FC<PropsType> = memo(() => {
               return <OverlayPoint key={overlay.overlayId} data={overlay} />
             }
             if (overlay.cotType === CotType.SHAPE_CIRCLE) {
-              return <ShowCircle overlay={overlay} />
+              return <ShowCircle key={overlay.overlayId} overlay={overlay} />
             }
             if (
               overlay.cotType === CotType.SHAPE_POLYGON ||
               overlay.cotType === CotType.SHAPE_RECT
             ) {
-              return <ShowPolygon overlay={overlay} />
+              return <ShowPolygon key={overlay.overlayId} overlay={overlay} />
             }
             if (overlay.cotType === CotType.SHAPE_FAN) {
-              return <ShowFan overlay={overlay} />
+              return <ShowFan key={overlay.overlayId} overlay={overlay} />
             }
           })}
         </LabelCollection>

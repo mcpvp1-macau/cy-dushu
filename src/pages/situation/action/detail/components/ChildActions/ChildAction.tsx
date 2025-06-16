@@ -24,6 +24,7 @@ type PropsType = {
   data: API_ACTION_ITEM.domain.ActionItem
   noEdit?: boolean
   visible?: boolean
+  waylineNameMap?: Record<string, string>
   onVisibleChange?: (visible: boolean) => void
 }
 
@@ -150,7 +151,7 @@ const OperatorBtns: FC<PropsType> = ({ data, noEdit }) => {
 
 /** 子任务 */
 const ChildAction: FC<PropsType> = memo(
-  ({ data, visible, onVisibleChange, noEdit }) => {
+  ({ data, visible, noEdit, waylineNameMap, onVisibleChange }) => {
     const { t, i18n } = useTranslation()
 
     // 执行人员
@@ -213,6 +214,15 @@ const ChildAction: FC<PropsType> = memo(
             </span>
           </p>
         </div>
+        {data.taskTplId && (
+          <div>
+            <p>
+              <span className="mr-1 text-nowrap">
+                {t('wayline.title')}: {waylineNameMap?.[data.templateId] || '-'}
+              </span>
+            </p>
+          </div>
+        )}
       </>
     )
   },

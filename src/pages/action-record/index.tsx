@@ -1,15 +1,17 @@
 import MenuIconAction from '@/assets/icons/jsx/menus/MenuIconAction'
+import Select from '@/components/AntdOverride/Select'
 import TextButton from '@/components/ui/button/TextButton'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import XTable from '@/components/ui/XTable.tsx'
 import { emtpyArray } from '@/constant/data'
 import { dft } from '@/constant/time-fmt'
+import { DictEnum } from '@/enum/dict'
 import usePageSearchParams from '@/hooks/useTableSearchParams'
 import { getActionRecordList } from '@/service/modules/action'
 import serverJingqi from '@/service/servers/serverJingqi'
+import { useDictOptions } from '@/store/useDict.store'
 import useUserStore from '@/store/useUser.store'
 import { downloadAndRename } from '@/utils/download'
-import { itemsEqual } from '@dnd-kit/sortable/dist/utilities'
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -28,6 +30,7 @@ const PageActionRecord: FC<PropsType> = memo(() => {
   const { t, i18n } = useTranslation()
 
   const kw = searchParams.get('kw') || undefined
+  const type = searchParams.get('type') || undefined
 
   const page = Number(searchParams.get('page') ?? 1)
   const size = Number(searchParams.get('size') ?? 30)
@@ -43,13 +46,14 @@ const PageActionRecord: FC<PropsType> = memo(() => {
 
   const { data, isLoading, isRefetching } = useQuery(
     {
-      queryKey: ['getActionRecordList', { page, size, kw }],
+      queryKey: ['getActionRecordList', { page, size, kw, type }],
       queryFn: () =>
         getActionRecordList({
           name: kw,
           isPage: true,
           page,
           size,
+          type,
           startTime: rangeValue?.[0].startOf('day').format(dft),
           endTime: rangeValue?.[1].endOf('day').format(dft),
         }),
@@ -59,6 +63,15 @@ const PageActionRecord: FC<PropsType> = memo(() => {
   )
 
   const { handleValueChange, handlePaginationChange } = usePageSearchParams()
+
+  const actionTypeOptions = useDictOptions(DictEnum.ACTION_TYPE)
+  const actionTypeMap = useMemo(
+    () =>
+      new Map<string, string>(
+        actionTypeOptions.map((item) => [item.value, item.label]),
+      ),
+    [actionTypeOptions],
+  )
 
   const columns = useMemo(
     () => [
@@ -73,6 +86,13 @@ const PageActionRecord: FC<PropsType> = memo(() => {
             <span className="truncate">{r.getValue()}</span>
           </div>
         ),
+      }),
+      h.accessor('type', {
+        header: t('action.add.form.type.label'),
+        cell: (r) => {
+          const value = r.getValue()
+          return actionTypeMap.get(value) ?? value
+        },
       }),
       h.accessor('startTime', {
         header: t('common.startTime'),
@@ -121,7 +141,7 @@ const PageActionRecord: FC<PropsType> = memo(() => {
         },
       }),
     ],
-    [t],
+    [t, actionTypeMap],
   )
 
   const table = useReactTable<API_ACTION.domain.ActionRecord>({
@@ -140,6 +160,19 @@ const PageActionRecord: FC<PropsType> = memo(() => {
           placeholder={t('actionRecord.table.actionName.title')}
           className="w-56"
           onSearch={(e) => handleValueChange('kw', e)}
+        />
+        <Select
+          options={actionTypeOptions}
+          className="w-56"
+          onChange={(v) => {
+            setSearchParams(
+              {
+                ...Object.fromEntries(searchParams.entries()),
+                type: v ?? '',
+              },
+              { replace: true },
+            )
+          }}
         />
         <DatePicker.RangePicker
           defaultValue={rangeValue}
