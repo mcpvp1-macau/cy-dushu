@@ -7,6 +7,7 @@ import CameraGroundFrustum from '@/components/map/device/CameraGroundFrustum'
 import useCalcGimbalParams from '@/hooks/device/uav/useCalcGimbalParams'
 import HeightDashLine from '@/map/CesiumMap/components/service/common/HeightDashLine'
 import VideoProjection from './VideoProjection'
+import useMapSettingStore from '@/store/setting/useMapSetting.store'
 
 type PropsType = unknown
 
@@ -41,8 +42,17 @@ const UavMarker: FC<PropsType> = memo(() => {
     state.zoomFactor,
   )
 
+  const enableUavDetailFrustum = useMapSettingStore((s) => s.uavDetailFrustum)
+
+  const openVideoProjection = useUavControlRoomStore(
+    (s) => s.openVideoProjection,
+  )
+
   const gimbalPick = useMemo(() => {
-    if (!pickerRef.current) {
+    if (
+      !pickerRef.current ||
+      (!enableUavDetailFrustum && !openVideoProjection)
+    ) {
       return {}
     }
 
@@ -60,7 +70,7 @@ const UavMarker: FC<PropsType> = memo(() => {
     )
 
     return res
-  }, [state, gimbalState])
+  }, [state, gimbalState, enableUavDetailFrustum])
 
   const gimbalPickExist =
     gimbalPick.leftTop &&
@@ -68,22 +78,21 @@ const UavMarker: FC<PropsType> = memo(() => {
     gimbalPick.rightBottom &&
     gimbalPick.leftBottom
 
-  const openVideoProjection = useUavControlRoomStore(
-    (s) => s.openVideoProjection,
-  )
-
   const videoElement = useUavControlRoomStore((s) => s.videoElement)
 
   return (
     <>
-      {gimbalPickExist && (
+      {gimbalPickExist && enableUavDetailFrustum && (
         <CameraGroundFrustum
           gimbalPick={gimbalPick as any}
           position={[state.longitude, state.latitude, state.altitude ?? 0]}
           useBottomSurface={!openVideoProjection}
         />
       )}
-      <MapUavRealMarker data={state} useGimbal={!gimbalPickExist} />
+      <MapUavRealMarker
+        data={state}
+        useGimbal={!enableUavDetailFrustum && !gimbalPickExist}
+      />
       <HeightDashLine
         position={[state.longitude, state.latitude, state.altitude ?? 0]}
       />

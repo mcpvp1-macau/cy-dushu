@@ -4,11 +4,13 @@ import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 type StateType = {
   resolution: string
   webgl1: boolean
+  uavDetailFrustum: boolean
 }
 
 type ActionsType = {
   updateResolution: (data: string) => void
   updateWebgl1: (data: boolean) => void
+  updateUavDetailFrustum: (data: boolean) => void
 }
 
 const useMapSettingStore = create<StateType & ActionsType>()(
@@ -17,6 +19,7 @@ const useMapSettingStore = create<StateType & ActionsType>()(
       (set) => ({
         resolution: '2',
         webgl1: false,
+        uavDetailFrustum: false,
         updateResolution: (data) => {
           set(
             {
@@ -27,6 +30,9 @@ const useMapSettingStore = create<StateType & ActionsType>()(
         },
         updateWebgl1: (data) => {
           set({ webgl1: data }, false)
+        },
+        updateUavDetailFrustum: (data) => {
+          set({ uavDetailFrustum: data }, false)
         },
       }),
       {

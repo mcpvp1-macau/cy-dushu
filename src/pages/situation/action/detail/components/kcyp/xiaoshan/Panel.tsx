@@ -9,6 +9,7 @@ import { Form } from 'antd'
 import { DictEnum } from '@/enum/dict'
 import dayjs from 'dayjs'
 import { statusColorMap } from '../shanghai/normal.constant'
+// import '../kcform.less'
 
 type PropsType = { actionId: string }
 
@@ -99,20 +100,23 @@ const KCYPXSPanel: FC<PropsType> = memo(({ actionId }) => {
           {statusColorMap[data.processStatus!]?.label[i18n.language] || '-'}
         </span>
       </p>
-      <XForm
-        form={form}
-        disabled={data.processStatus !== ProcessStatusEnum.INIT}
-        items={formItems}
-        layout="vertical"
-        colsProps={{ span: 12 }}
-        rowsProps={{ gutter: 12 }}
-        themeConfig={{
-          verticalLabelPadding: 4,
-          labelFontSize: 12,
-          itemMarginBottom: 0,
-        }}
-        onValuesChange={handleValuesChange}
-      />
+      <div className="kcform">
+        <XForm
+          form={form}
+          disabled={data.processStatus !== ProcessStatusEnum.INIT}
+          items={formItems}
+          layout="vertical"
+          colsProps={{ span: 12 }}
+          rowsProps={{ gutter: 12 }}
+          themeKey="dushu-kcyp"
+          themeConfig={{
+            verticalLabelPadding: 4,
+            labelFontSize: 12,
+            itemMarginBottom: 0,
+          }}
+          onValuesChange={handleValuesChange}
+        />
+      </div>
     </div>
   )
 })
