@@ -530,6 +530,9 @@ common:
   week: 周
   day: 天
   every: 每
+  device: 设备
+  date: 日期
+  frequency: 频率
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索

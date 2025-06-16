@@ -536,6 +536,9 @@ common:
   week: Week
   day: Day
   every: Every
+  device: Device
+  date: Date
+  frequency: Frequency
 events:
   search:
     placeholder: Please search by event name or ID

@@ -15,6 +15,7 @@ import IconButtonWithDropDown from '@/components/ui/button/IconButtonWithDropDow
 import { Link } from 'react-router-dom'
 import IconButton from '@/components/ui/button/IconButton'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
+import { dateOnly } from '@/constant/time-fmt'
 
 type PropsType = {
   data: API_ACTION_PLAN.domain.Plan
@@ -25,6 +26,16 @@ const StatusColorMap = {
   PROCESSING: '#15B371',
   TERMINATE: '#DD4444',
 }
+
+const weekOfDayMap = new Map<string, string>([
+  ['0', 'sunday'],
+  ['1', 'monday'],
+  ['2', 'tuesday'],
+  ['3', 'wednesday'],
+  ['4', 'thursday'],
+  ['5', 'friday'],
+  ['6', 'saturday'],
+])
 
 const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
   const { t } = useTranslation()
@@ -82,6 +93,25 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
     msgApi.success(t('api.success.msg'))
   }
 
+  const frequencyFmt = useMemo(() => {
+    if (data.cycleType === 'DAILY') {
+      return `${t('common.every')} ${data.intervalValue} ${t('common.day')}`
+    }
+    if (data.cycleType === 'WEEKLY') {
+      return `${t('common.every')} ${data.intervalValue} ${t(
+        'common.week',
+      )} (${data.dayOfWeek
+        ?.split(',')
+        .map((day) => t(`dayOfWeek.${weekOfDayMap.get(day)}`))
+        .join(', ')})`
+    }
+    if (data.cycleType === 'MONTHLY') {
+      return `${t('common.every')} ${data.intervalValue} ${t(
+        'common.month',
+      )} (${data.dayOfMonth?.split(',').join(', ')})`
+    }
+  }, [data, t])
+
   return (
     <li className="my-1">
       <Link
@@ -93,12 +123,12 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
         to={`/schedule/${data.id!}`}
         replace
       >
-        <div>
-          <MenuIconSchedule />
-        </div>
         <div className="flex-1">
           <div className="flex justify-between items-center">
-            <span className="text-white">{data.name}</span>
+            <div className="flex items-center gap-2">
+              <MenuIconSchedule />
+              <span className="text-white">{data.name}</span>
+            </div>
             {data.status !== 'TERMINATE' ? (
               <div
                 className="flex items-center gap-3"
@@ -142,18 +172,45 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
               </IconButton>
             )}
           </div>
-          <div className="mt-1 text-xs flex gap-2 justify-between">
-            <TagItem
-              label={t(`schedule.status.${data.status}.title`)}
-              color={StatusColorMap[data.status!]}
-              bgColor={`${StatusColorMap[data.status!]}33`}
-            />
-            <span className="flex-1">
-              {t('common.creator')}: {data.gmtCreateBy}
-            </span>
-            <span className="flex-1">
+          <div className="mt-1 text-xs flex justify-between">
+            <div className="w-2/3 flex gap-2 items-center">
+              <TagItem
+                label={t(`schedule.status.${data.status}.title`)}
+                color={StatusColorMap[data.status!]}
+                bgColor={`${StatusColorMap[data.status!]}33`}
+              />
+              <span>
+                {t('common.creator')}: {data.gmtCreateBy}
+              </span>
+            </div>
+
+            <p className="w-1/3">
               {t('common.type')}: {t(`schedule.type.${data.type}.title`)}
-            </span>
+            </p>
+          </div>
+          <div className="mt-1 text-xs flex">
+            <p className="w-2/3">
+              <span>
+                {t('common.device')}: {data.actionConfig?.deviceNames || '-'}
+              </span>
+            </p>
+            <p className="w-1/3">
+              <span>断点续飞: -</span>
+            </p>
+          </div>
+          <div className="mt-1 text-xs">
+            {t('wayline.title')}: {data.actionConfig?.templateName}
+          </div>
+          <div className="mt-1 text-xs">
+            {t('common.date')}: {dayjs(data.startTime).format(dateOnly)} -{' '}
+            {dayjs(data.endTime).format(dateOnly)}
+          </div>
+          <div className="mt-1 text-xs">
+            {t('common.frequency')}: {frequencyFmt}
+          </div>
+          <div className="mt-1 text-xs">
+            {t('common.time')}:{' '}
+            {data.executeTime?.map((e) => e).join(', ') || '-'}
           </div>
         </div>
       </Link>

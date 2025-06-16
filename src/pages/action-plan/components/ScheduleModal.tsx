@@ -328,6 +328,8 @@ const ScheduleModal: FC<PropsType> = memo(
         name: values.name,
         actionConfig: {
           deviceIds: values.deviceId,
+          deviceNames: uavDevices.find((e) => e.value === values.deviceId)
+            ?.label,
           deviceType: DeviceEnum.UAV,
           taskTemplateInfo: {
             parameters,
