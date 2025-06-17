@@ -29,9 +29,9 @@ const AliyunOSSUpload = ({
   const progressRef = useRef(0)
   const isCloseRef = useRef(false)
 
-  const uploadFile = async (file) => {
-    const { webkitRelativePath } = file as any
-    if (!webkitRelativePath) {
+  const uploadFile = async (file: File, randomPath?: string) => {
+    const { name } = file
+    if (!name) {
       return
     }
 
@@ -47,7 +47,7 @@ const AliyunOSSUpload = ({
 
     const formData = new FormData()
     formData.append('file', file)
-    formData.append('key', webkitRelativePath)
+    formData.append('key', randomPath + '/' + name)
     formData.append('x-amz-algorithm', uploadSignature['x-amz-algorithm'])
     formData.append('x-amz-credential', uploadSignature['x-amz-credential'])
     formData.append('x-amz-signature', uploadSignature['x-amz-signature'])
@@ -77,7 +77,7 @@ const AliyunOSSUpload = ({
     isCloseRef.current = false
     let files = e.target.files
     const value = getPath?.(files)
-    console.log(files, !!filesFilter)
+
     files = !!filesFilter ? filesFilter(files) : files
 
     if (!value) {
@@ -91,7 +91,7 @@ const AliyunOSSUpload = ({
       if (isCloseRef.current) {
         return
       }
-      await uploadFile(element)
+      await uploadFile(element, value === true ? '' : value)
     }
 
     setCount(0)

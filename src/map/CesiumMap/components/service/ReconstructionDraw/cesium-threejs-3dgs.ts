@@ -155,12 +155,16 @@ class CesiumThreeJS3DGS {
   }
 
   private createPickCircle(layerAttr: API_RECONSTRUCTION.Layer) {
-    const positions = JSON.parse(layerAttr.overlayPositions)[0]
+    const positions = JSON.parse(layerAttr.overlayPositions)?.[0]
 
-    const circleCenter = Cartesian3.fromDegrees(positions[0], positions[1])
-    const radius = positions[3] || 100
+    const circleCenter = Cartesian3.fromDegrees(
+      positions?.[0] || 0,
+      positions?.[1] || 0,
+    )
+    const radius = positions?.[3] || 100
 
     const PickCircle = new GroundPrimitive({
+      show: !!positions,
       geometryInstances: new GeometryInstance({
         geometry: new CircleGeometry({
           center: circleCenter,

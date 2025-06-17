@@ -74,7 +74,7 @@ declare namespace API_RECONSTRUCTION {
 
     type StartBuild = {
       taskId: number
-      bucket: 'ja-media-storage'
+      bucket: string
       minioPath: string
     }
   }

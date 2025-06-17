@@ -69,7 +69,11 @@ const ReconstructionMapListConfig: FC = memo(() => {
         getPath: (files: FileList) => {
           const path = files.item(0)!.webkitRelativePath.split('/')[0]
 
-          return path
+          const randomPath = `map${Math.random()
+            .toString(36)
+            .slice(2)}/${path}/input`
+          setUploadPath(randomPath)
+          return randomPath
         },
         filesFilter: (files: FileList) => {
           const newFiles: File[] = []
@@ -89,6 +93,8 @@ const ReconstructionMapListConfig: FC = memo(() => {
 
   const [createOpen, setCreateOpen] = useState(false)
   const [createLayerId, setCreateLayerId] = useState<any>()
+  const [uploadPath, setUploadPath] = useState('')
+  const [confirmLoading, setConfirmLoading] = useState(false)
 
   const handleCreate = useMemoizedFn((id: number) => {
     setCreateOpen(true)
@@ -96,6 +102,7 @@ const ReconstructionMapListConfig: FC = memo(() => {
   })
 
   const handleConfirmCreate = async (form: any) => {
+    setConfirmLoading(true)
     try {
       const overlayRes = await createLayer({
         overlayName: form.overlayName,
@@ -105,22 +112,26 @@ const ReconstructionMapListConfig: FC = memo(() => {
         overlayStyleConfig: '',
         cotType: CotType.SHAPE_CIRCLE,
       })
-
       const overlayId = overlayRes.data.overlayId
       const taskRes = await startReconstructionTask({
         deviceId: '123',
         overlayId,
         needFly: false,
       })
-      const buildRes = await startBuild({
+      await startBuild({
         taskId: taskRes.data,
-        bucket: 'ja-media-storage',
-        minioPath: form.minioPath,
+        bucket: 'minio-map',
+        // 文件上传minio需要加input，但是任务不能给
+        minioPath: uploadPath.replace('/input', ''),
       })
-      console.log(overlayRes.data, taskRes.data, buildRes.data)
       msgApi.success(t('mapLayer.reconstructionMap.create.overlay.start'))
+      setCreateOpen(false)
+      setUploadPath('')
+      setConfirmLoading(false)
     } catch (error) {
       msgApi.error(t('mapLayer.reconstructionMap.create.overlay.failed'))
+      setCreateOpen(false)
+      setConfirmLoading(false)
     }
   }
 
@@ -191,6 +202,7 @@ const ReconstructionMapListConfig: FC = memo(() => {
           onClose={() => setCreateOpen(false)}
           items={items}
           onConfirm={handleConfirmCreate}
+          confirmLoading={confirmLoading}
         />
       )}
     </>
