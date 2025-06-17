@@ -1131,6 +1131,8 @@ controlRoom:
           title: 拍照模式
         record:
           title: 录像模式
+        panorama:
+          title: 全景模式
       videoRecord:
         title: 录像
       hover:
@@ -1145,6 +1147,8 @@ controlRoom:
         title: 对焦模式
       exposureMode:
         title: 镜头曝光模式
+      panorama:
+        title: 全景
     gamepad:
       title: 摇杆
     goHome:

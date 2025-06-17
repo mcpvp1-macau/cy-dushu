@@ -2,11 +2,12 @@ import IconClose from '@/assets/icons/jsx/IconClose'
 import Select from '@/components/AntdOverride/Select'
 import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
+import PanoramaViewer from '@/components/ui/PanoramaViewer'
 import usePicutreSourceTypeOptions from '@/constant/options/pictureSourceTypeOptions'
 import { beginDay, dft, timeOnly } from '@/constant/time-fmt'
 import { getPlatformCapture } from '@/service/modules/db-api'
 import useMediaOnMapStore from '@/store/map/useMediaOnMap.store'
-import { makeToolbarRender } from '@/utils/antd/image'
+import { makePanormaToolbarRender, makeToolbarRender } from '@/utils/antd/image'
 import { Col, Image, Pagination, Row, Spin } from 'antd'
 import { Dayjs } from 'dayjs'
 import { v4 } from 'uuid'
@@ -53,7 +54,9 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
             deviceId,
             type: 'PICTURE',
             sourceId: mode,
-            startTime: (timeRange?.[0] || dayjs()).format(beginDay),
+            startTime: (timeRange?.[0] || dayjs().subtract(1, 'day')).format(
+              beginDay,
+            ),
             endTime: (timeRange?.[1] || dayjs()).format(dft),
             page,
             pageSize,
@@ -93,6 +96,21 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
       }
     }, [id, enablePictureOnMap])
 
+    const [usePanorama, setUsePanorama] = useState(false)
+    const handleCheckImage = async (url: string) => {
+      try {
+        // 获取图像数据
+        const response = await fetch(url)
+        if (!response.ok) throw new Error('Failed to fetch image')
+        const arrayBuffer = await response.arrayBuffer()
+        const data = new Uint8Array(arrayBuffer)
+
+        // 查找 XMP 数据块
+        const text = new TextDecoder().decode(data)
+        setUsePanorama(text.includes('GPano:UsePanoramaViewer="True"'))
+      } catch (e) {}
+    }
+
     return (
       <div>
         <section className="m-3 flex gap-2">
@@ -122,8 +140,19 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
             <Spin spinning={isRefetching}>
               <Image.PreviewGroup
                 preview={{
+                  destroyOnClose: true,
                   closeIcon: <IconClose className="scale-125" />,
                   imageRender: (e, info) => {
+                    handleCheckImage(info.image.url)
+
+                    if (usePanorama) {
+                      return (
+                        <div className="absolute inset-0">
+                          <PanoramaViewer src={info.image.url} />
+                        </div>
+                      )
+                    }
+
                     return (
                       <>
                         <div
@@ -141,7 +170,9 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
                       </>
                     )
                   },
-                  toolbarRender: makeToolbarRender(1, 50),
+                  toolbarRender: usePanorama
+                    ? makePanormaToolbarRender()
+                    : makeToolbarRender(1, 50),
                 }}
               >
                 <Row className="mt-3" gutter={[8, 8]}>
@@ -159,10 +190,6 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
                           loading="lazy"
                           className="block size-full object-cover"
                           src={`/storage/${e.url}`}
-                          preview={{
-                            destroyOnClose: true,
-                            toolbarRender: makeToolbarRender(1, 50),
-                          }}
                           alt={e.url.slice(e.url.lastIndexOf('/') + 1)}
                         />
                       </div>

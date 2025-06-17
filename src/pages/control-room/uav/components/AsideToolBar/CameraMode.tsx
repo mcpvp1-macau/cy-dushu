@@ -8,6 +8,7 @@ import { setDeviceProp } from '@/service/modules/device'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { GetProps, Menu, Tooltip } from 'antd'
 import { borderedBtnClassName } from '.'
+import IconPanorama from '@/assets/icons/jsx/IconPanorma'
 
 type PropsType = unknown
 
@@ -62,6 +63,23 @@ const CameraMode: FC<PropsType> = memo(() => {
               <IconCameraVideo />
               <span className="text-[8px] h-[10px] leading-[10px]">
                 {t('controlRoom.uav.service.videoRecord.title')}
+              </span>
+            </div>
+          </Tooltip>
+        ),
+      },
+      // 全景拍摄模式
+      {
+        key: '3',
+        label: (
+          <Tooltip
+            title={t('controlRoom.uav.service.cameraMode.panorama.title')}
+            placement="right"
+          >
+            <div className={clsx('flex flex-col items-center')}>
+              <IconPanorama />
+              <span className="text-[8px] h-[10px] leading-[10px]">
+                {t('controlRoom.uav.service.panorama.title')}
               </span>
             </div>
           </Tooltip>
