@@ -12,7 +12,6 @@ interface AliyunOSSUploadProps {
   getPath?: (files: FileList) => string | boolean
   /**先出发getPath，再触发filesFilter */
   filesFilter?: (files: FileList) => File[]
-  getAppendPath?: (files: FileList) => string
 }
 
 const AliyunOSSUpload = ({
@@ -20,7 +19,6 @@ const AliyunOSSUpload = ({
   onChange,
   getPath,
   filesFilter,
-  getAppendPath,
 }: AliyunOSSUploadProps) => {
   const msgApi = useAppMsg()
 

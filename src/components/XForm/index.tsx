@@ -114,7 +114,6 @@ const XForm: FC<PropsType> = memo(
               otherProps={item.otherProps}
               getPath={item.getPath}
               filesFilter={item.filesFilter}
-              appendPath={item.appendPath}
             >
               <Button
                 icon={<UploadOutlined />}
