@@ -45,6 +45,7 @@ export type XFormItem = CommonProps &
         /** 获取文件地址 返回false可以阻止上传 */
         getPath?: (files: FileList) => string | boolean
         filesFilter: (files: FileList) => File[]
+        getAppendPath?: (files: FileList) => string
         otherProps?: UploadProps
       }
     | {

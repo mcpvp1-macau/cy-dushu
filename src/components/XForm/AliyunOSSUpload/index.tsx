@@ -12,6 +12,7 @@ interface AliyunOSSUploadProps {
   getPath?: (files: FileList) => string | boolean
   /**先出发getPath，再触发filesFilter */
   filesFilter?: (files: FileList) => File[]
+  getAppendPath?: (files: FileList) => string
 }
 
 const AliyunOSSUpload = ({
@@ -19,6 +20,7 @@ const AliyunOSSUpload = ({
   onChange,
   getPath,
   filesFilter,
+  getAppendPath,
 }: AliyunOSSUploadProps) => {
   const msgApi = useAppMsg()
 
@@ -29,9 +31,9 @@ const AliyunOSSUpload = ({
   const progressRef = useRef(0)
   const isCloseRef = useRef(false)
 
-  const uploadFile = async (file: File, randomPath?: string) => {
-    const { name } = file
-    if (!name) {
+  const uploadFile = async (file: File) => {
+    const { webkitRelativePath } = file
+    if (!webkitRelativePath) {
       return
     }
 
@@ -47,7 +49,7 @@ const AliyunOSSUpload = ({
 
     const formData = new FormData()
     formData.append('file', file)
-    formData.append('key', randomPath + '/' + name)
+    formData.append('key', webkitRelativePath)
     formData.append('x-amz-algorithm', uploadSignature['x-amz-algorithm'])
     formData.append('x-amz-credential', uploadSignature['x-amz-credential'])
     formData.append('x-amz-signature', uploadSignature['x-amz-signature'])
@@ -91,7 +93,7 @@ const AliyunOSSUpload = ({
       if (isCloseRef.current) {
         return
       }
-      await uploadFile(element, value === true ? '' : value)
+      await uploadFile(element)
     }
 
     setCount(0)

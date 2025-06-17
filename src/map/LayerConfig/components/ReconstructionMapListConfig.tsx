@@ -67,13 +67,16 @@ const ReconstructionMapListConfig: FC = memo(() => {
         type: 'upload-minio',
         rules: [{ required: true }],
         getPath: (files: FileList) => {
-          const path = files.item(0)!.webkitRelativePath.split('/')[0]
+          for (let i = 0; i < files.length; i++) {
+            const file = files.item(i)!
+            if (file.type.startsWith('image')) {
+              const name = file.name
 
-          const randomPath = `map${Math.random()
-            .toString(36)
-            .slice(2)}/${path}/input`
-          setUploadPath(randomPath)
-          return randomPath
+              return file.webkitRelativePath.replace('/' + name, '')
+            }
+          }
+
+          return false
         },
         filesFilter: (files: FileList) => {
           const newFiles: File[] = []
@@ -93,14 +96,13 @@ const ReconstructionMapListConfig: FC = memo(() => {
 
   const [createOpen, setCreateOpen] = useState(false)
   const [createLayerId, setCreateLayerId] = useState<any>()
-  const [uploadPath, setUploadPath] = useState('')
   const [confirmLoading, setConfirmLoading] = useState(false)
 
   const handleCreate = useMemoizedFn((id: number) => {
     setCreateOpen(true)
     setCreateLayerId(id)
   })
-
+  // /storage/minio-map/W1029/input
   const handleConfirmCreate = async (form: any) => {
     setConfirmLoading(true)
     try {
@@ -122,11 +124,10 @@ const ReconstructionMapListConfig: FC = memo(() => {
         taskId: taskRes.data,
         bucket: 'minio-map',
         // 文件上传minio需要加input，但是任务不能给
-        minioPath: uploadPath.replace('/input', ''),
+        minioPath: form.minioPath.replace('/input', ''),
       })
       msgApi.success(t('mapLayer.reconstructionMap.create.overlay.start'))
       setCreateOpen(false)
-      setUploadPath('')
       setConfirmLoading(false)
     } catch (error) {
       msgApi.error(t('mapLayer.reconstructionMap.create.overlay.failed'))
