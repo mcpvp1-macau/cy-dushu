@@ -8,7 +8,7 @@ export default mergeConfig(
       host: '0.0.0.0',
       proxy: {
         '/proxyApi/otherService/jingqi/autoPhotograph': {
-          target: 'http://172.21.30.163:11593',
+          target: 'http://172.21.30.231:11593',
           changeOrigin: true,
           rewrite: (path) =>
             path.replace(
@@ -18,34 +18,34 @@ export default mergeConfig(
         },
         // 4A 接口
         '/proxyApi': {
-          target: 'http://172.21.30.105:31851/',
+          target: 'http://172.21.30.231:31851/',
           // target: 'http://127.0.0.1:7001/',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/proxyApi/, '/'),
         },
         // 全局 WebSocket
         '/ws': {
-          target: 'ws://172.21.30.105:32201',
+          target: 'ws://172.21.30.231:32201',
           ws: true,
           changeOrigin: true,
         },
         // 设备websocket直连
         '/v3': {
-          target: 'ws://172.21.30.105:32041',
+          target: 'ws://172.21.30.231:32041',
           ws: true,
           changeOrigin: true,
         },
         '/storage': {
-          target: 'http://172.21.30.105:32205',
+          target: 'http://172.21.30.231:32205',
           changeOrigin: true,
         },
         // 历史视频
         '/stream': {
-          target: 'http://172.21.30.105:32011',
+          target: 'http://172.21.30.231:32011',
           changeOrigin: true,
         },
         '/_ws_proxy/': {
-          target: 'ws://172.21.30.105:10080', // 默认需要动态设置，见 `configure` 部分
+          target: 'ws://172.21.30.231:10080', // 默认需要动态设置，见 `configure` 部分
           ws: true, // 启用 WebSocket 支持
           changeOrigin: true, // 修改请求头中的 `Host` 为目标地址
           rewrite: (path) => {
@@ -54,7 +54,7 @@ export default mergeConfig(
           },
         },
         '/upload': {
-          target: 'http://172.21.30.201:32000',
+          target: 'http://172.21.30.231:32000',
           changeOrigin: true,
           // pathRewrite: { '^/upload': '' },
           rewrite: (path) => path.replace(/^\/upload/, ''),
@@ -65,7 +65,7 @@ export default mergeConfig(
       // 用于合并 window.config 的配置
       __DEV_MERGE_CONFIG__: {
         systemName: 'jingqi',
-        loginUrl: 'http://172.21.30.105:32712/login',
+        loginUrl: 'https://172.21.30.231:32712/login',
         videoProxy: true,
       },
     },

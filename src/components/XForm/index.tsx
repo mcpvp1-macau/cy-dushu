@@ -110,7 +110,11 @@ const XForm: FC<PropsType> = memo(
           break
         case 'upload-minio':
           newItem.render = (
-            <AliyunOSSUpload otherProps={item.otherProps}>
+            <AliyunOSSUpload
+              otherProps={item.otherProps}
+              getPath={item.getPath}
+              filesFilter={item.filesFilter}
+            >
               <Button
                 icon={<UploadOutlined />}
                 style={{

@@ -50,7 +50,13 @@ export const deleteLayer = (overlayId: number) => {
 export const startReconstructionTask = (
   data: API_RECONSTRUCTION.req.StartTask,
 ) => {
-  return serverJingqi.post<{
-    taskId: number
-  }>('/reconstruction/task/start', data)
+  return serverJingqi.post<number>('/reconstruction/task/start', data)
+}
+
+/**执行三维重建 */
+export const startBuild = (data: API_RECONSTRUCTION.req.StartBuild) => {
+  return serverJingqi.post<API_RECONSTRUCTION.res.BuildResult>(
+    '/reconstruction/task/startBuild',
+    data,
+  )
 }
