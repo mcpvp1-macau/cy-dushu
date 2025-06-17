@@ -1023,6 +1023,13 @@ mapLayer:
       success: 三维重建完成
       layer:
         title: 创建三维图层
+      overlay:
+        title: 创建重建图层
+        start: 开始三维重建
+        failed: 三维重建失败
+        form:
+          overlayName: 图层名称
+          uploadLabel: 上传重建资源
       form:
         groupName: 三维图层组名称
         layerName: 三维图层名称
