@@ -9,6 +9,7 @@ import IconAIEnable from '@/assets/icons/jsx/IconAIEnable'
 import IconAIDisable from '@/assets/icons/jsx/IconAIDisable'
 import IconFocus from '@/assets/icons/jsx/IconFocus'
 import { QuestionCircleOutlined } from '@ant-design/icons'
+import IconCameraMode from '@/assets/icons/jsx/IconCameraMode'
 
 export type ActionConfigType = {
   actionName: string
@@ -40,6 +41,8 @@ export enum ActionTypeEnum {
   LEN_CHANGE = 8,
   /** 对焦 */
   FOCUS_CENTER = 9,
+  /** 镜头模式 */
+  CAMERA_MODE = 10,
 }
 
 export const actionMap = new Map<ActionTypeEnum, ActionConfigType>([
@@ -149,6 +152,17 @@ export const actionMap = new Map<ActionTypeEnum, ActionConfigType>([
       config: {},
     },
   ],
+  [
+    ActionTypeEnum.CAMERA_MODE,
+    {
+      key: 'CAMERA_MODE_SET',
+      type: 'CAMERA_MODE_SET',
+      actionName: '镜头模式',
+      config: {
+        mode: '0', // 0 拍照 1 录像 2 低光 3 全景
+      },
+    },
+  ],
 ])
 
 export const iconMap = new Map<ActionTypeEnum, React.ReactNode>([
@@ -173,6 +187,10 @@ export const iconMap = new Map<ActionTypeEnum, React.ReactNode>([
   [
     ActionTypeEnum.FOCUS_CENTER,
     <IconFocus key={ActionTypeEnum.FOCUS_CENTER} />,
+  ],
+  [
+    ActionTypeEnum.CAMERA_MODE,
+    <IconCameraMode key={ActionTypeEnum.CAMERA_MODE} />,
   ],
 ])
 
@@ -209,6 +227,9 @@ export const getIcon = (action: any) => {
   }
   if (action?.type === 'FOCUS_CENTER') {
     return <IconFocus />
+  }
+  if (action?.type === 'CAMERA_MODE_SET') {
+    return <IconCameraMode />
   }
   return <QuestionCircleOutlined />
 }

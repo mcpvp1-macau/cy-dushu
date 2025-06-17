@@ -755,6 +755,8 @@ wayline:
             msg: 请选择算法
       CLOSE_AI:
         title: 关闭算法
+      CAMERA_MODE_SET:
+        title: '镜头模式'
     addBefore: 在航点 {{i}} 后添加
     addAfter: 在航点 {{i}} 后添加
     addLast: 在最后添加

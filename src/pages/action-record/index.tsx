@@ -164,6 +164,7 @@ const PageActionRecord: FC<PropsType> = memo(() => {
         <Select
           options={actionTypeOptions}
           className="w-56"
+          placeholder={t('action.add.form.type.label')}
           onChange={(v) => {
             setSearchParams(
               {

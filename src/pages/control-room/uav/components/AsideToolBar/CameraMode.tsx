@@ -43,9 +43,9 @@ const CameraMode: FC<PropsType> = memo(() => {
             title={t('controlRoom.uav.service.cameraMode.photo.title')}
             placement="right"
           >
-            <div className={clsx('flex flex-col items-center')}>
+            <div className={clsx('flex flex-col items-center my-0.5')}>
               <IconCamera />
-              <span className="text-[8px] h-[10px] leading-[10px]">
+              <span className="text-[8px] h-[10px] leading-3">
                 {t('controlRoom.uav.service.takePhoto.title')}
               </span>
             </div>
@@ -59,7 +59,7 @@ const CameraMode: FC<PropsType> = memo(() => {
             title={t('controlRoom.uav.service.cameraMode.record.title')}
             placement="right"
           >
-            <div className={clsx('flex flex-col items-center')}>
+            <div className={clsx('flex flex-col items-center my-0.5')}>
               <IconCameraVideo />
               <span className="text-[8px] h-[10px] leading-[10px]">
                 {t('controlRoom.uav.service.videoRecord.title')}
@@ -76,7 +76,7 @@ const CameraMode: FC<PropsType> = memo(() => {
             title={t('controlRoom.uav.service.cameraMode.panorama.title')}
             placement="right"
           >
-            <div className={clsx('flex flex-col items-center')}>
+            <div className={clsx('flex flex-col items-center my-0.5')}>
               <IconPanorama />
               <span className="text-[8px] h-[10px] leading-[10px]">
                 {t('controlRoom.uav.service.panorama.title')}
@@ -100,7 +100,11 @@ const CameraMode: FC<PropsType> = memo(() => {
         },
       }}
     >
-      <IconCameraMode />
+      {{
+        '0': <IconCamera />,
+        '1': <IconCameraVideo />,
+        '3': <IconPanorama />,
+      }[cameraMode ?? '-1'] || <IconCameraMode />}
     </IconButtonWithDropDown>
   )
 })

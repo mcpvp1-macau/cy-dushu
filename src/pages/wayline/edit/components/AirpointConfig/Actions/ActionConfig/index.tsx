@@ -12,6 +12,7 @@ import LenChange from './LenChange'
 import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import { useCurrentAirpoint } from '@/store/wayline/uav-airline/select'
 import AppEmpty from '@/components/AppEmpty'
+import CameraModeSet from './CameraModeSet'
 
 interface Props {
   activeOperator: string
@@ -131,6 +132,14 @@ const ActionConfig: React.FC<Props> = (props) => {
     }
     if (action?.type === 'CLOSE_AI') {
       return <CloseAI config={action.config ?? {}} onChange={onChange} />
+    }
+    if (action?.type === 'CAMERA_MODE_SET') {
+      return (
+        <CameraModeSet
+          config={action.config ?? { cameraMode: '0' }}
+          onChange={onChange}
+        />
+      )
     }
     return (
       <AppEmpty

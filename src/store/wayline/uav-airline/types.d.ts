@@ -100,6 +100,13 @@ export type ActionCloseAIType = {
   }
 }
 
+export type ActionCameraModeSetType = {
+  type: 'CAMERA_MODE_SET'
+  config: {
+    cameraMode: '0' | '1' // 0: wide, 1: ir
+  }
+}
+
 export type ActionUnknownType = {
   type: 'UNKNOWN'
   config: unknown
@@ -116,6 +123,7 @@ export type ActionType = (
   | ActionOpenAIType
   | ActionCloseAIType
   | ActionUnknownType
+  | ActionCameraModeSetType
 ) & {
   xid: string
 }
