@@ -16,6 +16,7 @@ type ToolbarRenderProps = Exclude<
   boolean
 >['toolbarRender']
 
+/** 普通照片工具栏 */
 export const makeToolbarRender = (min = 1, max = 50): ToolbarRenderProps => {
   return (
     _,
@@ -50,6 +51,24 @@ export const makeToolbarRender = (min = 1, max = 50): ToolbarRenderProps => {
         <ZoomOutOutlined disabled={scale === min} onClick={onZoomOut} />
         <ZoomInOutlined disabled={scale === max} onClick={onZoomIn} />
         <UndoOutlined onClick={onReset} />
+      </Space>
+    )
+  }
+}
+
+/** 全景照片工具栏 */
+export const makePanormaToolbarRender = () => {
+  return (_, { image }) => {
+    return (
+      <Space size={12} className="toolbar-wrapper">
+        <DownloadOutlined
+          onClick={() => {
+            downloadAndRename(
+              image.url,
+              image.url.slice(image.url.lastIndexOf('/') + 1),
+            )
+          }}
+        />
       </Space>
     )
   }

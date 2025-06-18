@@ -1,11 +1,12 @@
 import MenuIconAction from '@/assets/icons/jsx/menus/MenuIconAction'
 import EditableNameHeader from '@/components/EditableNameHeader'
 import { getAction, updAction } from '@/service/modules/action'
-import { GetProps, Tabs } from 'antd'
+import { GetProps, Spin, Tabs } from 'antd'
 import SourceTypeSelect from '../../components/SourceTypeSelect'
 import { Outlet } from 'react-router'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import { Provider } from './context'
+import ActionTypeCheckout from './components/ActionTypeCheckout'
 
 type PropsType = unknown
 
@@ -20,7 +21,7 @@ const PageSituationActionDetail: FC<PropsType> = memo(() => {
     ? 'source'
     : 'action'
 
-  const { data, isLoading } = useQuery(
+  const { data, isLoading, isRefetching } = useQuery(
     {
       queryKey: ['action', actionId],
       queryFn: () => getAction({ actionId }),
@@ -84,27 +85,30 @@ const PageSituationActionDetail: FC<PropsType> = memo(() => {
 
   return (
     <div className="h-full flex flex-col overflow-y-hidden">
-      <EditableNameHeader
-        loading={isLoading || changeLoading}
-        value={data?.name}
-        className="px-3"
-        onBackClick={() => navigate('/', { replace: true })}
-        onFinish={handleNameChangeFinish}
-      />
-      <Tabs
-        className="px-3 mt-2"
-        items={menus}
-        size="small"
-        onChange={handleTabChange}
-        activeKey={defaultActiveTab}
-      />
-      <div className="flex-1 overflow-y-hidden">
-        <Provider value={data}>
-          <AppViewSuspense>
-            <Outlet />
-          </AppViewSuspense>
-        </Provider>
-      </div>
+      <Spin spinning={isRefetching}>
+        <EditableNameHeader
+          loading={isLoading || changeLoading}
+          value={data?.name}
+          className="px-3"
+          right={<ActionTypeCheckout data={data} />}
+          onBackClick={() => navigate('/', { replace: true })}
+          onFinish={handleNameChangeFinish}
+        />
+        <Tabs
+          className="px-3 mt-2"
+          items={menus}
+          size="small"
+          onChange={handleTabChange}
+          activeKey={defaultActiveTab}
+        />
+        <div className="flex-1 overflow-y-hidden">
+          <Provider value={data}>
+            <AppViewSuspense>
+              <Outlet />
+            </AppViewSuspense>
+          </Provider>
+        </div>
+      </Spin>
     </div>
   )
 })

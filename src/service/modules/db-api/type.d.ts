@@ -231,11 +231,12 @@ declare namespace API_DBAPI {
   // ------------------ req ------------------
   namespace req {
     type GetPlatformCaptureReq = {
-      deviceId: string
+      actionId?: string
+      deviceId?: string
       type: 'PICTURE' | 'HISTORY_VIDEO'
       sourceId?: string
-      startTime: string
-      endTime: string
+      startTime?: string
+      endTime?: string
       page?: number
       pageSize?: number
       isPage?: boolean

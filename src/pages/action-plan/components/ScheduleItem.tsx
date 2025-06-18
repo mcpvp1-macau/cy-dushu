@@ -1,4 +1,3 @@
-import MenuIconSchedule from '@/assets/icons/jsx/menus/MenuIconSchedule'
 import TagItem from '@/components/TagItem'
 import { Switch } from 'antd'
 import ScheduleModal from './ScheduleModal'
@@ -16,6 +15,7 @@ import { Link } from 'react-router-dom'
 import IconButton from '@/components/ui/button/IconButton'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import { dateOnly } from '@/constant/time-fmt'
+import CustomExpandIcon from '@/components/CustomExpandIcon'
 
 type PropsType = {
   data: API_ACTION_PLAN.domain.Plan
@@ -112,6 +112,8 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
     }
   }, [data, t])
 
+  const [expand, { toggle: toggleExpand }] = useBoolean(false)
+
   return (
     <li className="my-1">
       <Link
@@ -126,7 +128,16 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
         <div className="flex-1">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
-              <MenuIconSchedule />
+              {/* <MenuIconSchedule /> */}
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation()
+                  e.preventDefault()
+                  toggleExpand()
+                }}
+              >
+                <CustomExpandIcon isActive={expand} />
+              </IconButton>
               <span className="text-white">{data.name}</span>
             </div>
             {data.status !== 'TERMINATE' ? (
@@ -201,17 +212,21 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
           <div className="mt-1 text-xs">
             {t('wayline.title')}: {data.actionConfig?.templateName}
           </div>
-          <div className="mt-1 text-xs">
-            {t('common.date')}: {dayjs(data.startTime).format(dateOnly)} -{' '}
-            {dayjs(data.endTime).format(dateOnly)}
-          </div>
-          <div className="mt-1 text-xs">
-            {t('common.frequency')}: {frequencyFmt}
-          </div>
-          <div className="mt-1 text-xs">
-            {t('common.time')}:{' '}
-            {data.executeTime?.map((e) => e).join(', ') || '-'}
-          </div>
+          {expand && (
+            <>
+              <div className="mt-1 text-xs">
+                {t('common.date')}: {dayjs(data.startTime).format(dateOnly)} -{' '}
+                {dayjs(data.endTime).format(dateOnly)}
+              </div>
+              <div className="mt-1 text-xs">
+                {t('common.frequency')}: {frequencyFmt}
+              </div>
+              <div className="mt-1 text-xs">
+                {t('common.time')}:{' '}
+                {data.executeTime?.map((e) => e).join(', ') || '-'}
+              </div>
+            </>
+          )}
         </div>
       </Link>
       {open && (

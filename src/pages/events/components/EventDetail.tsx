@@ -24,6 +24,7 @@ export const handleStorageURL = (url: string) => {
 type PropsType = {
   data: API_EVENTS.domain.Event
   useCol?: boolean
+  /** @deprecated 没用了 */
   useGo?: boolean
   swiper?: {
     swiperData: API_EVENTS.domain.Event[]
@@ -32,9 +33,7 @@ type PropsType = {
 }
 
 /** 事件详情 */
-const EventDetail: FC<PropsType> = memo(({ data, useCol, useGo, swiper }) => {
-  const { t } = useTranslation()
-
+const EventDetail: FC<PropsType> = memo(({ data, useCol, swiper }) => {
   const queryClient = useQueryClient()
   const { data: eventData, isLoading: isTypeLoading } = useQuery(
     {
@@ -118,7 +117,24 @@ const EventDetail: FC<PropsType> = memo(({ data, useCol, useGo, swiper }) => {
               properties.map((e) => (
                 <li key={e.label} className="flex gap-3">
                   <label>{e.label}:</label>
-                  <span className="text-white">{e.value}</span>
+                  <p className="text-white">
+                    <span>{e.value}</span>
+                    {e.label === '位置' && (
+                      <IconButton className="ml-1">
+                        <IconToLocation
+                          onClick={() => {
+                            if (!data.longitude || !data.latitude) {
+                              return
+                            }
+                            bigFlyEmitter.emit('bigFly', {
+                              lng: data.longitude,
+                              lat: data.latitude,
+                            })
+                          }}
+                        />
+                      </IconButton>
+                    )}
+                  </p>
                 </li>
               ))}
             {Object.keys(expand).map((e) => (
@@ -127,24 +143,6 @@ const EventDetail: FC<PropsType> = memo(({ data, useCol, useGo, swiper }) => {
                 <span className="text-white">{JSON.stringify(expand[e])}</span>
               </li>
             ))}
-            {useGo && (
-              <li>
-                <label>{t('common.position')}: </label>
-                <IconButton>
-                  <IconToLocation
-                    onClick={() => {
-                      if (!data.longitude || !data.latitude) {
-                        return
-                      }
-                      bigFlyEmitter.emit('bigFly', {
-                        lng: data.longitude,
-                        lat: data.latitude,
-                      })
-                    }}
-                  />
-                </IconButton>
-              </li>
-            )}
           </ul>
         )}
       </div>

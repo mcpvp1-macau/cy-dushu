@@ -15,6 +15,7 @@ type PropsType = {
     content: ReactNode
     placement?: TooltipPlacement
   }
+  right?: ReactNode
   /** 文本改变时 */
   onChange?: (value: string) => void
   /** 点保存时 */
@@ -23,7 +24,15 @@ type PropsType = {
 }
 
 const EditableNameHeader: FC<PropsType> = memo(
-  ({ value, className, loading, onFinish, backConfirm, onBackClick }) => {
+  ({
+    value,
+    className,
+    loading,
+    right,
+    onFinish,
+    backConfirm,
+    onBackClick,
+  }) => {
     const [isEdit, setIsEdit] = useState(false)
     const { t } = useTranslation()
 
@@ -86,7 +95,8 @@ const EditableNameHeader: FC<PropsType> = memo(
             )}
           </Form>
         </div>
-        <div className="text-sm">
+        <div className="text-sm flex items-center">
+          {right}
           {isEdit ? (
             <IconButton
               toolTipProps={{ title: t('common.save') }}

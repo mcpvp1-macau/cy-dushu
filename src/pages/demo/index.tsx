@@ -1,7 +1,13 @@
+import PanoramaViewer from '@/components/ui/PanoramaViewer'
+
 type PropsType = unknown
 
 const Thing: FC<PropsType> = () => {
-  return <div></div>
+  return (
+    <div className="w-[600px] h-[400px]">
+      <PanoramaViewer src="/storage//ja-media-storage/cloud-sample/dd29f4c6-59fe-4795-812b-0bb9f19f8bdc/DJI_202506161642_051_dd29f4c6-59fe-4795-812b-0bb9f19f8bdc/DJI_20250616164811_0001_V.jpeg" />
+    </div>
+  )
 }
 
 export default Thing

@@ -1,73 +1,41 @@
 import IconClose from '@/assets/icons/jsx/IconClose'
-import Select from '@/components/AntdOverride/Select'
 import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
 import PanoramaViewer from '@/components/ui/PanoramaViewer'
-import usePicutreSourceTypeOptions from '@/constant/options/pictureSourceTypeOptions'
 import { dft, timeOnly } from '@/constant/time-fmt'
 import { getPlatformCapture } from '@/service/modules/db-api'
 import useMediaOnMapStore from '@/store/map/useMediaOnMap.store'
 import { makePanormaToolbarRender, makeToolbarRender } from '@/utils/antd/image'
-import { Col, Image, Pagination, Row, Spin } from 'antd'
-import { Dayjs } from 'dayjs'
+import { Pagination, Spin, Image, Row, Col } from 'antd'
 import { v4 } from 'uuid'
 
 type PropsType = {
-  deviceList: API_DEVICE.domain.Device[]
-  timeRange?: [Dayjs, Dayjs]
+  actionId: string
   enablePictureOnMap?: boolean
 }
 
 const pageSize = 9
 
-const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
-  ({ deviceList, timeRange, enablePictureOnMap }) => {
-    const [mode, setMode] = useState('ALL')
-
-    const deviceOptions = useMemo(
-      () =>
-        deviceList.map((e) => ({
-          label: e.name,
-          value: e.deviceId,
-        })),
-      deviceList,
-    )
-    const [deviceId, setDeviceId] = useState(deviceOptions?.[0]?.value)
-    useEffect(() => {
-      setDeviceId(deviceOptions?.[0]?.value)
-    }, [deviceOptions])
+const ActionMediaPicture: FC<PropsType> = memo(
+  ({ actionId, enablePictureOnMap }) => {
+    const [page, setPage] = useState(1)
 
     const queryClient = useQueryClient()
-    const [page, setPage] = useState(1)
     const { data, isLoading, isRefetching } = useQuery(
       {
-        queryKey: [
-          'getPlatformCapture',
-          'PICTURE',
-          deviceId,
-          mode,
-          'today',
-          page,
-        ],
+        queryKey: ['actionMediaPicture', actionId, page],
         queryFn: () =>
           getPlatformCapture({
-            deviceId,
+            actionId,
             type: 'PICTURE',
-            sourceId: mode,
-            startTime: (timeRange?.[0] || dayjs().subtract(1, 'day')).format(
-              dft,
-            ),
-            endTime: (timeRange?.[1] || dayjs()).format(dft),
+            isPage: true,
             page,
             pageSize,
           }),
-        enabled: !!deviceId,
         select: (d) => d.data,
       },
       queryClient,
     )
-
-    const pictureSourceTypeOptions = usePicutreSourceTypeOptions()
 
     // 照片上图 -------------------------------------------------------------------
     const id = useMemo(() => v4(), [])
@@ -112,25 +80,7 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
     }
 
     return (
-      <div>
-        <section className="m-3 flex gap-2">
-          <div className="flex-1">
-            <Select
-              className="w-full"
-              value={mode}
-              options={pictureSourceTypeOptions}
-              onChange={setMode}
-            />
-          </div>
-          <div className="flex-1">
-            <Select
-              className="w-full"
-              value={deviceId}
-              options={deviceOptions}
-              onChange={setDeviceId}
-            />
-          </div>
-        </section>
+      <>
         {isLoading || !data ? (
           <AppSpin />
         ) : data[1]?.[0]?.cnt === 0 || !data[0]?.length ? (
@@ -209,11 +159,11 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
             </div>
           </div>
         )}
-      </div>
+      </>
     )
   },
 )
 
-DeviceDetailMediaDataPicture.displayName = 'UavDetailMediaDataPicture'
+ActionMediaPicture.displayName = 'ActionMediaPicture'
 
-export default DeviceDetailMediaDataPicture
+export default ActionMediaPicture

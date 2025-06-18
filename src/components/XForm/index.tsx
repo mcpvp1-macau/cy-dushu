@@ -22,6 +22,7 @@ import Select from '../AntdOverride/Select'
 
 type PropsType = GetProps<typeof Form> & {
   items: XFormItem[]
+  themeKey?: string
   themeConfig?: NonNullable<ThemeConfig['components']>['Form']
   rowsProps?: GetProps<typeof Row>
   colsProps?: GetProps<typeof Col>
@@ -29,7 +30,14 @@ type PropsType = GetProps<typeof Form> & {
 
 /** 表单 */
 const XForm: FC<PropsType> = memo(
-  ({ items, rowsProps, themeConfig = {}, colsProps, ...restProps }) => {
+  ({
+    items,
+    rowsProps,
+    themeKey = 'dushu',
+    themeConfig = {},
+    colsProps,
+    ...restProps
+  }) => {
     const { t } = useTranslation()
 
     // 处理 items
@@ -145,7 +153,7 @@ const XForm: FC<PropsType> = memo(
       <ConfigProvider
         theme={{
           cssVar: {
-            key: 'dushu',
+            key: themeKey,
           },
           hashed: false,
           components: {

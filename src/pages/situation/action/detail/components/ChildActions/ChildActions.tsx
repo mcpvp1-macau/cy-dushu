@@ -8,6 +8,7 @@ import { useBackTrackingStore } from '@/store/context-store/useBackTracking.stor
 import useVisibleCheck from './useVisibleCheck'
 import { shouldJson } from '@/utils/json'
 import ChildActionGroup from './ChildActionGroup'
+import { getAirlineTemplateList } from '@/service/modules/airline'
 
 type PropsType = {
   actionId: string
@@ -80,6 +81,21 @@ const ChildActions: FC<PropsType> = memo(({ actionId, isBacktracking }) => {
     return res
   }, [data])
 
+  const { data: airlineTemplateList } = useQuery(
+    {
+      queryKey: ['airlineTemplate'],
+      queryFn: () => getAirlineTemplateList({ isPage: false }),
+      select: (d) => d?.data.rows ?? [],
+    },
+    queryClient,
+  )
+
+  const waylineNameMap = useMemo(() => {
+    return Object.fromEntries(
+      airlineTemplateList?.map((e) => [e.templateId, e.taskName]) ?? [],
+    )
+  }, [airlineTemplateList])
+
   return (
     <>
       <div>
@@ -114,6 +130,7 @@ const ChildActions: FC<PropsType> = memo(({ actionId, isBacktracking }) => {
                         onVisibleChange={(visible) =>
                           handleVisibleChange((item as item).id, visible)
                         }
+                        waylineNameMap={waylineNameMap}
                       />
                     )}
                   </li>

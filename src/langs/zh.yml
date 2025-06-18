@@ -325,11 +325,11 @@ action:
       continue:
         title: 继续
       people:
-        title: 执行人员
+        title: 飞手
       device:
-        title: 执行设备
+        title: 设备
       status:
-        title: 任务状态
+        title: 状态
         RUNNING:
           title: 任务中
         HANGUP:
@@ -755,6 +755,8 @@ wayline:
             msg: 请选择算法
       CLOSE_AI:
         title: 关闭算法
+      CAMERA_MODE_SET:
+        title: '镜头模式'
     addBefore: 在航点 {{i}} 后添加
     addAfter: 在航点 {{i}} 后添加
     addLast: 在最后添加
@@ -1131,6 +1133,8 @@ controlRoom:
           title: 拍照模式
         record:
           title: 录像模式
+        panorama:
+          title: 全景模式
       videoRecord:
         title: 录像
       hover:
@@ -1145,6 +1149,8 @@ controlRoom:
         title: 对焦模式
       exposureMode:
         title: 镜头曝光模式
+      panorama:
+        title: 全景
     gamepad:
       title: 摇杆
     goHome:
