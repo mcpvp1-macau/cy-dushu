@@ -58,4 +58,5 @@ window.config = {
   // useGuizhouProjects: true,
   // terrainUrl: '/ja-map/terrain/{z}/{x}/{y}.png',
   intelligentPhotographVersion: 3,
+  intelligentPhotographV1Filter: ['M350 RTK', 'M300'],
 }

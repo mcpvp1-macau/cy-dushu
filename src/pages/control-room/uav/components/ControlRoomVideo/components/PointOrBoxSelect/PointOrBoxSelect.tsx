@@ -5,6 +5,7 @@ import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
 import BoxSelectV1 from './BoxSelectV1'
 import BoxSelectV2 from './BoxSelectV2'
 import BoxSelectV3 from './BoxSelectV3'
+import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 
 type PropsType = {
   deviceLiveVideoRef: RefObject<ComponentRef<typeof DeviceLiveVideo>>
@@ -14,8 +15,18 @@ type PropsType = {
 const PointOrBoxSelect: FC<PropsType> = memo(({ deviceLiveVideoRef }) => {
   const posizionZoomOpen = useUavControlRoomStore((s) => s.openPointZoom)
 
+  const modelNumber = useDeviceDetailStore(
+    (s) =>
+      s.deviceDetail?.deviceTags.find((e) => e.tagName === 'MODEL_NUMBER')
+        ?.tagValue || 'UNKNOWN',
+  )
+
   if (posizionZoomOpen === 1) {
     return <PointZoom />
+  }
+
+  if (globalConfig.intelligentPhotographV1Filter?.includes(modelNumber)) {
+    return <BoxSelectV1 />
   }
 
   if (globalConfig.intelligentPhotographVersion === 2) {

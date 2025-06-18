@@ -44,6 +44,12 @@ const AsideButtons: FC<PropsType> = memo(() => {
 
   const postSerivce = usePostDeviceService(productKey, deviceId)
 
+  const deviceModel = useDeviceDetailStore(
+    (s) =>
+      s.deviceDetail?.deviceTags.find((e) => e.tagName === 'MODEL_NUMBER')
+        ?.tagValue || 'UNKNOWN',
+  )
+
   return (
     <div className="flex flex-col gap-2.5">
       <div>
@@ -59,7 +65,9 @@ const AsideButtons: FC<PropsType> = memo(() => {
         >
           {t('controlRoom.uav.service.boxZoom.title')}
         </Button>
-        {[2, 3].includes(globalConfig.intelligentPhotographVersion ?? -1) ? (
+        {globalConfig.intelligentPhotographV1Filter?.includes(deviceModel) ? (
+          <IntelligentPhotographyV1 postServiceFn={postSerivce} />
+        ) : [2, 3].includes(globalConfig.intelligentPhotographVersion ?? -1) ? (
           <IntelligentPhotography postServiceFn={postSerivce} />
         ) : (
           <IntelligentPhotographyV1 postServiceFn={postSerivce} />

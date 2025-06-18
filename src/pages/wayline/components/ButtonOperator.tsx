@@ -119,7 +119,7 @@ const BottomOperator: FC<PropsType> = memo(
         data['execute'] = true
         data['type'] = type
         data['deviceIds'] = deviceId
-        const resp = await createActionItem(data, false)
+        const resp = await startActionItem(() => createActionItem(data, false))
         const waylineTemplateId = resp.data?.id
         msgApi.success(t('api.success.msg'))
         if (backUrl && waylineTemplateId) {
