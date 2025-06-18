@@ -32,6 +32,8 @@ const useStartActionItem = () => {
             actionItem: e.data.actionItemIdList[0],
             message: e.message,
           })
+        } else {
+          msgApi.error(e.message)
         }
       }
       throw e

@@ -65,6 +65,7 @@ class GlobalConfig {
   /** 贵州项目点位 */
   useGuizhouProjects?: boolean
   intelligentPhotographVersion?: number
+  intelligentPhotographV1Filter?: string[]
 
   constructor(def: ConfigType) {
     Object.keys(def).forEach((key) => {
