@@ -533,6 +533,7 @@ common:
   device: 设备
   date: 日期
   frequency: 频率
+  pictureData: 图片数据
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -756,7 +757,7 @@ wayline:
       CLOSE_AI:
         title: 关闭算法
       CAMERA_MODE_SET:
-        title: '镜头模式'
+        title: 镜头模式
     addBefore: 在航点 {{i}} 后添加
     addAfter: 在航点 {{i}} 后添加
     addLast: 在最后添加

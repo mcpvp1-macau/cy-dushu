@@ -91,7 +91,7 @@ const PageActionDetailSub: FC<PropsType> = memo(
       }
 
       const pictures = {
-        label: t('common.picture'),
+        label: t('common.pictureData'),
         key: 'picture',
         extra: (
           <div onClick={(e) => e.stopPropagation()}>
