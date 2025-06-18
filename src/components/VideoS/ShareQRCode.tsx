@@ -1,5 +1,6 @@
 import { createToken } from '@/utils/ak'
-import { QRCode, Typography } from 'antd'
+import { Typography } from 'antd'
+import { QRCode } from 'qrcode-react-next'
 
 type PropsType = {
   productKey: string
@@ -28,14 +29,27 @@ const ShareQRCode: React.FC<PropsType> = ({
         />
       </div>
       <QRCode
-        icon={globalConfig.logo ?? '/logo.svg'}
-        iconSize={20}
+        logoConfig={{
+          src: globalConfig.logo ?? '/logo.svg',
+          width: 20,
+          height: 20,
+          x: 170,
+          y: 168,
+        }}
         value={`${
           location.origin
         }/share/video/${productKey}/${deviceId}/${videoId}/${encodeURIComponent(
           token,
         )}`}
-        errorLevel="L"
+        styleConfig={{
+          bgColor: '#000',
+          color: '#fff',
+          pointType: 'circle',
+          pointSize: 'xs',
+          margin: 10,
+        }}
+        config={{}}
+        mode="svg"
       />
     </div>
   )
