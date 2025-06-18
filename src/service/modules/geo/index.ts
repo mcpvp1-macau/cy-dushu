@@ -40,5 +40,5 @@ export const getCalcUavRoadShortestPath = (params: {
   tLng: number
   tLat: number
 }) => {
-  return serverGeoSearch.get<number[][]>('/calc/uavShortestPath', { params })
+  return serverGeoSearch.get<number[][]>('/calc/uavRoadPath', { params })
 }
