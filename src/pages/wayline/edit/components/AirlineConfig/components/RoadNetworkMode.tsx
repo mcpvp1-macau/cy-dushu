@@ -55,6 +55,8 @@ const RoadNetworkMode: FC<PropsType> = memo(() => {
           positionName: `航点${airpoints.length + 1}`,
         })
         store.updateAirpointsConfig(airpoints)
+        store.updateCurrentIndex(0)
+        store.updateCurrentActionIndex(0)
       } else {
         msgApi.error(resp.message)
       }
