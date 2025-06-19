@@ -77,6 +77,13 @@ type DeviceLiveVideoRefType = {
   snapshot: (mediaTypes?: string, quality?: any) => string
 }
 
+function isDomainOrIP() {
+  var hostname = window.location.hostname
+  var ipRegex =
+    /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+  return ipRegex.test(hostname) ? 'IP' : 'Domain'
+}
+
 /** 设备直播 */
 const DeviceLiveVideo = memo(
   forwardRef<DeviceLiveVideoRefType, PropsType>(
@@ -484,29 +491,32 @@ const DeviceLiveVideo = memo(
                     >
                       <IconRefresh />
                     </IconButton>
-
-                    <IconButton
-                      toolTipProps={{
-                        title: '分享',
-                        overlay: (
-                          <ShareQRCode
-                            productKey={productKey}
-                            deviceId={deviceId}
-                            videoId={videoId}
-                          />
-                        ),
-                        getPopupContainer: () =>
-                          (document.fullscreenElement as HTMLElement) ??
-                          document.body,
-                      }}
-                      className="order-20 text-[13px]"
-                      onClick={async () => {
-                        await handleRefresh()
-                        setJessibucaKey((v) => v + 1)
-                      }}
-                    >
-                      <ShareAltOutlined />
-                    </IconButton>
+                    {isDomainOrIP() === 'Domain' ? (
+                      <IconButton
+                        toolTipProps={{
+                          title: '分享',
+                          overlay: (
+                            <ShareQRCode
+                              productKey={productKey}
+                              deviceId={deviceId}
+                              videoId={videoId}
+                            />
+                          ),
+                          getPopupContainer: () =>
+                            (document.fullscreenElement as HTMLElement) ??
+                            document.body,
+                        }}
+                        className="order-20 text-[13px]"
+                        onClick={async () => {
+                          await handleRefresh()
+                          setJessibucaKey((v) => v + 1)
+                        }}
+                      >
+                        <ShareAltOutlined />
+                      </IconButton>
+                    ) : (
+                      <></>
+                    )}
 
                     {globalConfig.enableElectricScale && (
                       <IconButton

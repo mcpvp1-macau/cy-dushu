@@ -13,6 +13,7 @@
     "dev:201": "vite --config ./vite-config/dev/config.201.ts",
     "dev:216": "vite --config ./vite-config/dev/config.216.ts",
     "dev:235": "vite --config ./vite-config/dev/config.235.ts",
+    "dev:231": "vite --config ./vite-config/dev/config.231.ts",
     "dev:idc": "vite --config ./vite-config/dev/config.idc.ts",
     "dev:yz": "vite --config ./vite-config/dev/config.yz.ts",
     "dev:wanglou": "vite --config ./vite-config/dev/config.wanglou.ts",

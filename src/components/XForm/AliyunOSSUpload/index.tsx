@@ -9,13 +9,16 @@ interface AliyunOSSUploadProps {
   onChange?: (data: string) => void
   children: JSX.Element
   otherProps?: UploadProps
-  getPath?: (files) => string | boolean
+  getPath?: (files: FileList) => string | boolean
+  /**先出发getPath，再触发filesFilter */
+  filesFilter?: (files: FileList) => File[]
 }
 
 const AliyunOSSUpload = ({
   value,
   onChange,
   getPath,
+  filesFilter,
 }: AliyunOSSUploadProps) => {
   const msgApi = useAppMsg()
 
@@ -26,8 +29,8 @@ const AliyunOSSUpload = ({
   const progressRef = useRef(0)
   const isCloseRef = useRef(false)
 
-  const uploadFile = async (file) => {
-    const { webkitRelativePath } = file as any
+  const uploadFile = async (file: File) => {
+    const { webkitRelativePath } = file
     if (!webkitRelativePath) {
       return
     }
@@ -72,8 +75,10 @@ const AliyunOSSUpload = ({
 
   const onUploadFile = async (e) => {
     isCloseRef.current = false
-    const files = e.target.files
+    let files = e.target.files
     const value = getPath?.(files)
+
+    files = !!filesFilter ? filesFilter(files) : files
 
     if (!value) {
       return

@@ -1,5 +1,6 @@
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconVisible from '@/assets/icons/jsx/IconVisible'
+import IconPlus from '@/assets/icons/jsx/IconPlus'
 import AppCollapse from '@/components/AppCollapse'
 import AppEmpty from '@/components/AppEmpty'
 import IconButton from '@/components/ui/button/IconButton'
@@ -10,7 +11,15 @@ import { groupBy } from 'lodash'
 import ReconstructionMapConfig from './ReconstructionMapConfig'
 import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
 import { useAppMsg } from '@/hooks/useAppMsg'
-import { deleteLayerGroupList } from '@/service/modules/reconstruction'
+import {
+  createLayer,
+  deleteLayerGroupList,
+  startReconstructionTask,
+  startBuild,
+} from '@/service/modules/reconstruction'
+import FormModal from '@/components/XForm/Modal'
+import { XFormItem } from '@/components/XForm/types'
+import { CotType } from '@/store/map/useDraw.store'
 
 const ReconstructionMapListConfig: FC = memo(() => {
   const { t } = useTranslation()
@@ -45,54 +54,159 @@ const ReconstructionMapListConfig: FC = memo(() => {
     msgApi.success(t('api.success.msg'))
   }
 
+  const items = useMemo<XFormItem[]>(
+    () => [
+      {
+        label: t('mapLayer.reconstructionMap.create.overlay.form.overlayName'),
+        name: 'overlayName',
+        type: 'input',
+      },
+      {
+        label: t('mapLayer.reconstructionMap.create.overlay.form.uploadLabel'),
+        name: 'minioPath',
+        type: 'upload-minio',
+        rules: [{ required: true }],
+        getPath: (files: FileList) => {
+          for (let i = 0; i < files.length; i++) {
+            const file = files.item(i)!
+            if (file.type.startsWith('image')) {
+              const name = file.name
+
+              return file.webkitRelativePath.replace('/' + name, '')
+            }
+          }
+
+          return false
+        },
+        filesFilter: (files: FileList) => {
+          const newFiles: File[] = []
+          for (let i = 0; i < files.length; i++) {
+            const file = files.item(i)
+            if (file?.type.startsWith('image')) {
+              newFiles.push(file)
+            }
+          }
+
+          return newFiles
+        },
+      },
+    ],
+    [],
+  )
+
+  const [createOpen, setCreateOpen] = useState(false)
+  const [createLayerId, setCreateLayerId] = useState<any>()
+  const [confirmLoading, setConfirmLoading] = useState(false)
+
+  const handleCreate = useMemoizedFn((id: number) => {
+    setCreateOpen(true)
+    setCreateLayerId(id)
+  })
+  // /storage/minio-map/W1029/input
+  const handleConfirmCreate = async (form: any) => {
+    setConfirmLoading(true)
+    try {
+      const overlayRes = await createLayer({
+        overlayName: form.overlayName,
+        layerId: createLayerId,
+        overlayType: 'CIRCULAR',
+        overlayBindType: 'NORMAL',
+        overlayStyleConfig: '',
+        cotType: CotType.SHAPE_CIRCLE,
+      })
+      const overlayId = overlayRes.data.overlayId
+      const taskRes = await startReconstructionTask({
+        deviceId: '123',
+        overlayId,
+        needFly: false,
+      })
+      await startBuild({
+        taskId: taskRes.data,
+        bucket: 'minio-map',
+        // 文件上传minio需要加input，但是任务不能给
+        minioPath: form.minioPath.replace('/input', ''),
+      })
+      msgApi.success(t('mapLayer.reconstructionMap.create.overlay.start'))
+      setCreateOpen(false)
+      setConfirmLoading(false)
+    } catch (error) {
+      msgApi.error(t('mapLayer.reconstructionMap.create.overlay.failed'))
+      setCreateOpen(false)
+      setConfirmLoading(false)
+    }
+  }
+
   return (
-    <AppCollapse
-      defaultActiveKey={defaultExpandLayerIds}
-      accordion
-      items={layerGroupList.map((layerGroup) => ({
-        key: layerGroup.id,
-        label: ` - ${layerGroup.layerName}`,
-        extra: (
-          <div className="flex gap-3" onClick={(e) => e.stopPropagation()}>
-            <IconButton
-              onClick={() => {
-                if (showGroupIds.has(layerGroup.id)) {
-                  showGroupIds.delete(layerGroup.id)
-                } else {
-                  showGroupIds.add(layerGroup.id)
-                }
-                updateShowGroupIds(new Set(showGroupIds))
-              }}
-            >
-              {showGroupIds.has(layerGroup.id) ? (
-                <IconVisible />
-              ) : (
-                <IconNotVisible />
-              )}
-            </IconButton>
-            {layerGroup.layerType !== 'DEFAULT' && (
+    <>
+      <AppCollapse
+        defaultActiveKey={defaultExpandLayerIds}
+        accordion
+        items={layerGroupList.map((layerGroup) => ({
+          key: layerGroup.id,
+          label: ` - ${layerGroup.layerName}`,
+          extra: (
+            <div className="flex gap-3" onClick={(e) => e.stopPropagation()}>
               <IconButton
-                className="scale-90"
-                onClick={() => handleDelGroup(layerGroup.id)}
+                onClick={() => {
+                  if (showGroupIds.has(layerGroup.id)) {
+                    showGroupIds.delete(layerGroup.id)
+                  } else {
+                    showGroupIds.add(layerGroup.id)
+                  }
+                  updateShowGroupIds(new Set(showGroupIds))
+                }}
               >
-                <IconDelete />
+                {showGroupIds.has(layerGroup.id) ? (
+                  <IconVisible />
+                ) : (
+                  <IconNotVisible />
+                )}
               </IconButton>
-            )}
-          </div>
-        ),
-        children: (
-          <ul className="p-3 flex flex-col gap-2 max-h-[300px] overflow-y-auto">
-            {(layerListGroup[layerGroup.id] ?? []).length === 0 ? (
-              <AppEmpty />
-            ) : (
-              (layerListGroup[layerGroup.id] ?? []).map((e) => (
-                <ReconstructionMapConfig key={e.overlayId} data={e} />
-              ))
-            )}
-          </ul>
-        ),
-      }))}
-    />
+
+              <IconButton
+                toolTipProps={{
+                  title: t('mapLayer.reconstructionMap.create.overlay.title'),
+                }}
+                onClick={() => handleCreate(layerGroup.id)}
+              >
+                <IconPlus />
+              </IconButton>
+
+              {layerGroup.layerType !== 'DEFAULT' && (
+                <IconButton
+                  className="scale-90"
+                  onClick={() => handleDelGroup(layerGroup.id)}
+                >
+                  <IconDelete />
+                </IconButton>
+              )}
+            </div>
+          ),
+          children: (
+            <ul className="p-3 flex flex-col gap-2 max-h-[300px] overflow-y-auto">
+              {(layerListGroup[layerGroup.id] ?? []).length === 0 ? (
+                <AppEmpty />
+              ) : (
+                (layerListGroup[layerGroup.id] ?? []).map((e) => (
+                  <ReconstructionMapConfig key={e.overlayId} data={e} />
+                ))
+              )}
+            </ul>
+          ),
+        }))}
+      />
+
+      {createOpen && (
+        <FormModal
+          title={t('mapLayer.reconstructionMap.create.overlay.title')}
+          open={createOpen}
+          onClose={() => setCreateOpen(false)}
+          items={items}
+          onConfirm={handleConfirmCreate}
+          confirmLoading={confirmLoading}
+        />
+      )}
+    </>
   )
 })
 

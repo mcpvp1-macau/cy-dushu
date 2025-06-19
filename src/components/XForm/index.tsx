@@ -113,6 +113,7 @@ const XForm: FC<PropsType> = memo(
             <AliyunOSSUpload
               otherProps={item.otherProps}
               getPath={item.getPath}
+              filesFilter={item.filesFilter}
             >
               <Button
                 icon={<UploadOutlined />}
