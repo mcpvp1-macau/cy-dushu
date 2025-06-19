@@ -16,12 +16,14 @@ const EventDetailModal: FC<PropsType> = memo(({ data, rows }) => {
     setIndex(index)
   }
 
+  const currentData = rows?.[index] ?? data
+
   return (
     <>
       <TextButton onClick={setTrue}>{t('common.detail')}</TextButton>
       {open && (
         <XModal
-          title={`${data.eventName}(${data.id})`}
+          title={`${currentData.eventName}(${currentData.id})`}
           centered
           noPadding
           open={open}
@@ -30,7 +32,7 @@ const EventDetailModal: FC<PropsType> = memo(({ data, rows }) => {
         >
           <div className="p-3">
             <EventDetail
-              data={rows?.[index] ?? data}
+              data={currentData}
               swiper={
                 rows
                   ? { swiperData: rows, onIndexChange: handleIndexChange }
