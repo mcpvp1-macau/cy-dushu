@@ -9,7 +9,7 @@ import { Form } from 'antd'
 import { DictEnum } from '@/enum/dict'
 import dayjs from 'dayjs'
 import { statusColorMap } from '../shanghai/normal.constant'
-// import '../kcform.less'
+import { LoadingOutlined } from '@ant-design/icons'
 
 type PropsType = { actionId: string }
 
@@ -20,7 +20,7 @@ const KCYPXSPanel: FC<PropsType> = memo(({ actionId }) => {
 
   const { data, isLoading } = useQuery(
     {
-      queryKey: ['getXSKYCPOrder', actionId],
+      queryKey: ['getXSKCYPOrder', actionId],
       queryFn: () => getXSKCYPOrder({ caseId: actionId }),
       enabled: !!actionId,
       select: (d) => d.data,
@@ -59,6 +59,7 @@ const KCYPXSPanel: FC<PropsType> = memo(({ actionId }) => {
       queryClient.invalidateQueries({
         queryKey: ['getXSKCYPOrder', actionId],
       })
+      setSaveState(2) // 保存成功
     },
   })
 
@@ -67,6 +68,7 @@ const KCYPXSPanel: FC<PropsType> = memo(({ actionId }) => {
       await form.validateFields()
       const { caseHapTime } = values
       const caseHapTimeFormat = dayjs(caseHapTime).valueOf()
+      setSaveState(1)
       saveMutation.mutate({
         ...data,
         ...values,
@@ -76,7 +78,9 @@ const KCYPXSPanel: FC<PropsType> = memo(({ actionId }) => {
     { wait: 3_000, trailing: true },
   )
 
+  const [saveState, setSaveState] = useState(-1) // 0 未保存 1 保存中 2 保存成功
   const handleValuesChange = useMemoizedFn((_, values: any) => {
+    setSaveState(0)
     save(values)
   })
 
@@ -86,12 +90,23 @@ const KCYPXSPanel: FC<PropsType> = memo(({ actionId }) => {
 
   return (
     <div className="text-fore p-3">
-      <p className="flex gap-2">
-        <span className="text-white">
-          {t('action.detail.kcyp.case_code.title')}:
-        </span>
-        <span>{data.caseId}</span>
-      </p>
+      <div className="flex items-center justify-between">
+        <p className="flex gap-2">
+          <span className="text-white">
+            {t('action.detail.kcyp.case_code.title')}:
+          </span>
+          <span>{data.caseId}</span>
+        </p>
+        {saveState === 0 ? (
+          <p className="text-orange-600">等待暂存</p>
+        ) : saveState === 1 ? (
+          <p className="text-blue-600">
+            <LoadingOutlined /> 暂存中
+          </p>
+        ) : saveState === 2 ? (
+          <p className="text-green-600">暂存成功</p>
+        ) : null}
+      </div>
       <p className="flex gap-2 mt-1">
         <span className="text-white">
           {t('action.detail.kcyp.process_status.title')}:
