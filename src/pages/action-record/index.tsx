@@ -27,7 +27,7 @@ const h = createColumnHelper<API_ACTION.domain.ActionRecord>()
 
 const PageActionRecord: FC<PropsType> = memo(() => {
   const [searchParams, setSearchParams] = useSearchParams()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   const kw = searchParams.get('kw') || undefined
   const type = searchParams.get('type') || undefined
@@ -65,11 +65,9 @@ const PageActionRecord: FC<PropsType> = memo(() => {
   const { handleValueChange, handlePaginationChange } = usePageSearchParams()
 
   const actionTypeOptions = useDictOptions(DictEnum.ACTION_TYPE)
+
   const actionTypeMap = useMemo(
-    () =>
-      new Map<string, string>(
-        actionTypeOptions.map((item) => [item.value, item.label]),
-      ),
+    () => Object.fromEntries(actionTypeOptions.map((o) => [o.value, o.label])),
     [actionTypeOptions],
   )
 
@@ -91,18 +89,18 @@ const PageActionRecord: FC<PropsType> = memo(() => {
         header: t('action.add.form.type.label'),
         cell: (r) => {
           const value = r.getValue()
-          return actionTypeMap.get(value) ?? value
+          return actionTypeMap[value] ?? value
         },
       }),
       h.accessor('startTime', {
         header: t('common.startTime'),
         minSize: 200,
-        maxSize: 500,
+        maxSize: 200,
       }),
       h.accessor('endTime', {
         header: t('common.endTime'),
         minSize: 200,
-        maxSize: 500,
+        maxSize: 200,
       }),
       h.accessor('description', {
         header: t('common.description'),
@@ -145,10 +143,10 @@ const PageActionRecord: FC<PropsType> = memo(() => {
   )
 
   const table = useReactTable<API_ACTION.domain.ActionRecord>({
-    columns: columns,
+    columns,
     data: data?.rows ?? emtpyArray,
     getCoreRowModel: getCoreRowModel(),
-    getRowId: (r) => String(r.actionId),
+    getRowId: (r) => String(r.id),
   })
 
   return (
@@ -165,6 +163,7 @@ const PageActionRecord: FC<PropsType> = memo(() => {
           options={actionTypeOptions}
           className="w-56"
           placeholder={t('action.add.form.type.label')}
+          allowClear
           onChange={(v) => {
             setSearchParams(
               {
@@ -193,9 +192,9 @@ const PageActionRecord: FC<PropsType> = memo(() => {
         <div className="flex-1 border border-solid border-ground-1 rounded-[3px] overflow-hidden">
           <ScrollArea className="size-full x-table">
             <XTable
-              key={i18n.language}
               table={table}
               loading={isLoading || isRefetching}
+              render={columns}
             />
             <ScrollBar orientation="horizontal" />
           </ScrollArea>

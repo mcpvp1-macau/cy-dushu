@@ -4,6 +4,7 @@ import { Spin } from 'antd'
 
 type PropsType = {
   table: Table<any>
+  render?: unknown
   loading?: boolean
 }
 
