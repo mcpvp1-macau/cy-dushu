@@ -38,6 +38,7 @@ const BottomOperator: FC<PropsType> = memo(
     const actionId = searchParams.get('actionId')
     const actionItemId = searchParams.get('actionItemId')
     const deviceId = searchParams.get('deviceId')
+    const useClone = !!searchParams.get('useClone')
 
     // 跳回地址
     let backUrl = searchParams.get('backUrl')
@@ -54,10 +55,17 @@ const BottomOperator: FC<PropsType> = memo(
       if (invalidate()) {
         return
       }
+
       setLoading(1)
       let waylineTemplateId: number | undefined = undefined
       try {
         const data = generateTaskData()
+
+        // 如果是克隆的航线模板，则不需要传 templateId
+        if (useClone) {
+          delete data['templateId']
+        }
+
         if (actionId) {
           // 说明是行动过来的
           data['actionId'] = actionId
@@ -113,6 +121,11 @@ const BottomOperator: FC<PropsType> = memo(
       setLoading(2)
       try {
         const data = generateTaskData()
+
+        if (useClone) {
+          delete data['templateId']
+        }
+
         if (actionId) {
           data['actionId'] = actionId
         }
