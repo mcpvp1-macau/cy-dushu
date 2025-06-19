@@ -52,6 +52,7 @@ const VideoAreaPickerDrawer: React.FC<Props> = (props) => {
       const y = e.nativeEvent.offsetY
       const width = ref.current?.offsetWidth
       const height = ref.current?.offsetHeight
+      console.log(x, y, width, height)
 
       setPositions((v) => {
         if (v.length > 1) {
@@ -110,7 +111,7 @@ const VideoAreaPickerDrawer: React.FC<Props> = (props) => {
             <Button onClick={start}>开始框选</Button>
             <Button onClick={del}>删除选中</Button>
           </div>
-          <div className="relative w-full aspect-video mb-3 bg-black" ref={ref}>
+          <div className="relative w-full aspect-video mb-3 bg-black">
             {props.videoInfo && (
               <DeviceLiveVideo
                 deviceId={props.videoInfo.deviceId}
@@ -123,6 +124,7 @@ const VideoAreaPickerDrawer: React.FC<Props> = (props) => {
                     onClick={onClick}
                     onMouseMove={onMouseMove}
                     onContextMenu={onContextMenu}
+                    ref={ref}
                     className="absolute z-[999] top-0 left-0 w-full h-full border-[red] border-solid border-[1px] pointer-events-auto"
                   >
                     <svg className="absolute z-[999] top-0 left-0  w-full h-full">
