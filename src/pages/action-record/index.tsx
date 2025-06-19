@@ -46,7 +46,7 @@ const PageActionRecord: FC<PropsType> = memo(() => {
 
   const { data, isLoading, isRefetching } = useQuery(
     {
-      queryKey: ['getActionRecordList', { page, size, kw, type }],
+      queryKey: ['getActionRecordList', { page, size, kw, type, rangeValue }],
       queryFn: () =>
         getActionRecordList({
           name: kw,
