@@ -16,9 +16,6 @@ const LayerOverlaies: FC<PropsType> = memo(() => {
   const overlayList = useMapLayerAndOverlayStore((s) => s.overlayList)
   const isEdit = useMapDrawStore((s) => s.isEdit)
   const detailId = useRightMode((s) => s.detailId)
-  const hiddenLayerIds = useMapLayerAndOverlayConfigStore(
-    (s) => s.hiddenLayerIds,
-  )
   const hiddenOverlayIds = useMapLayerAndOverlayConfigStore(
     (s) => s.hiddenOverlayIds,
   )
@@ -28,10 +25,7 @@ const LayerOverlaies: FC<PropsType> = memo(() => {
     // 先把隐藏的去掉
     const filteredOverlays: API_LAYER_OVERLAY.domain.Overlay[] = []
     overlayList.forEach((item) => {
-      if (
-        hiddenLayerIds.has(item.layerId) ||
-        hiddenOverlayIds.has(item.overlayId)
-      ) {
+      if (hiddenOverlayIds.has(item.overlayId)) {
         return
       } else {
         filteredOverlays.push(item)
@@ -50,7 +44,7 @@ const LayerOverlaies: FC<PropsType> = memo(() => {
       })
       return newOverlays
     }
-  }, [detailId, overlayList, isEdit, hiddenLayerIds, hiddenOverlayIds])
+  }, [detailId, overlayList, isEdit, hiddenOverlayIds])
 
   return (
     <>

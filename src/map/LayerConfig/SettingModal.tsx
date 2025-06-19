@@ -13,6 +13,7 @@ import { v4 } from 'uuid'
 import useAddMapFormItems from './hooks/useAddMapFormItems'
 import ReconstructionMapListConfig from './components/ReconstructionMapListConfig'
 import AddReconstructionLayerGroup from './components/AddReconstructionLayerGroup'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 type PropsType = {
   open: boolean
@@ -63,47 +64,51 @@ const MapLayerSettingModal: FC<PropsType> = ({ open, onClose }) => {
       centered
       footer={false}
     >
-      <AppCollapse
-        defaultActiveKey={['map']}
-        accordion
-        items={[
-          {
-            key: 'map',
-            label: t('common.map'),
-            extra: (
-              <div onClick={(e) => e.stopPropagation()}>
-                <IconButton
-                  toolTipProps={{ title: t('mapLayer.createMap.title') }}
-                  onClick={openAddSpace}
-                >
-                  <IconPlus />
-                </IconButton>
-              </div>
-            ),
-            children: <MapSpaceListConfig />,
-          },
-          {
-            key: 'layer',
-            label: t('common.layer'),
-            extra: (
-              <div onClick={(e) => e.stopPropagation()}>
-                <AddLayerController />
-              </div>
-            ),
-            children: <MapLayerListConfig />,
-          },
-          {
-            key: 'reconstruction',
-            label: t('common.threeMap'),
-            extra: (
-              <div onClick={(e) => e.stopPropagation()}>
-                <AddReconstructionLayerGroup />
-              </div>
-            ),
-            children: <ReconstructionMapListConfig />,
-          },
-        ]}
-      />
+      <div className="max-h-[80vh] flex flex-col overflow-hidden">
+        <ScrollArea>
+          <AppCollapse
+            defaultActiveKey={['map']}
+            accordion
+            items={[
+              {
+                key: 'map',
+                label: t('common.map'),
+                extra: (
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <IconButton
+                      toolTipProps={{ title: t('mapLayer.createMap.title') }}
+                      onClick={openAddSpace}
+                    >
+                      <IconPlus />
+                    </IconButton>
+                  </div>
+                ),
+                children: <MapSpaceListConfig />,
+              },
+              {
+                key: 'layer',
+                label: t('common.layer'),
+                extra: (
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <AddLayerController />
+                  </div>
+                ),
+                children: <MapLayerListConfig />,
+              },
+              {
+                key: 'reconstruction',
+                label: t('common.threeMap'),
+                extra: (
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <AddReconstructionLayerGroup />
+                  </div>
+                ),
+                children: <ReconstructionMapListConfig />,
+              },
+            ]}
+          />
+        </ScrollArea>
+      </div>
       {addSpaceOpen && (
         <FormModal
           title={t('mapLayer.createMap.title')}

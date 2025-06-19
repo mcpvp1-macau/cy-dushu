@@ -16,9 +16,6 @@ const OverlayPoint: FC<PropsType> = memo(({ data }) => {
   const hiddenOverlayIds = useMapLayerAndOverlayConfigStore(
     (s) => s.hiddenOverlayIds,
   )
-  const hiddenLayerIds = useMapLayerAndOverlayConfigStore(
-    (s) => s.hiddenLayerIds,
-  )
 
   const { viewer } = useCesium()
 
@@ -26,10 +23,7 @@ const OverlayPoint: FC<PropsType> = memo(({ data }) => {
     if (!viewer) {
       return
     }
-    if (
-      hiddenOverlayIds.has(data.overlayId) ||
-      hiddenLayerIds.has(data.layerId)
-    ) {
+    if (hiddenOverlayIds.has(data.overlayId)) {
       return
     }
 
@@ -74,12 +68,9 @@ const OverlayPoint: FC<PropsType> = memo(({ data }) => {
         viewer.entities.remove(entity)
       })
     }
-  }, [hiddenOverlayIds, hiddenLayerIds, data.overlayId, data.layerId, postion])
+  }, [hiddenOverlayIds, data.overlayId, data.layerId, postion])
 
-  if (
-    hiddenOverlayIds.has(data.overlayId) ||
-    hiddenLayerIds.has(data.layerId)
-  ) {
+  if (hiddenOverlayIds.has(data.overlayId)) {
     return null
   }
 

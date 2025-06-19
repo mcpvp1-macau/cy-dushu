@@ -29,12 +29,21 @@ const MapLayerListConfig: FC<PropsType> = memo(() => {
     [overlayList],
   )
 
-  const hiddenLayerIds = useMapLayerAndOverlayConfigStore(
-    (s) => s.hiddenLayerIds,
+  const hiddenOverlayIds = useMapLayerAndOverlayConfigStore(
+    (s) => s.hiddenOverlayIds,
   )
-  const updateHiddenLayerIds = useMapLayerAndOverlayConfigStore(
-    (s) => s.updateHiddenLayerIds,
-  )
+
+  const hiddenLayerIds = useMemo(() => {
+    const hiddenLayerIds = new Set<number>()
+    layerList.forEach((e) => {
+      if (
+        overlayGroup[e.layerId]?.every((o) => hiddenOverlayIds.has(o.overlayId))
+      ) {
+        hiddenLayerIds.add(e.layerId)
+      }
+    })
+    return hiddenLayerIds
+  }, [layerList, overlayGroup, hiddenOverlayIds])
 
   const msgApi = useAppMsg()
   const queryClient = useQueryClient()
@@ -57,12 +66,19 @@ const MapLayerListConfig: FC<PropsType> = memo(() => {
           <div className="flex gap-3" onClick={(e) => e.stopPropagation()}>
             <IconButton
               onClick={() => {
+                const newHiddenOverlayIds = new Set(hiddenOverlayIds)
                 if (hiddenLayerIds.has(e.layerId)) {
-                  hiddenLayerIds.delete(e.layerId)
+                  overlayGroup[e.layerId]?.forEach((o) => {
+                    newHiddenOverlayIds.delete(o.overlayId)
+                  })
                 } else {
-                  hiddenLayerIds.add(e.layerId)
+                  overlayGroup[e.layerId]?.forEach((o) => {
+                    newHiddenOverlayIds.add(o.overlayId)
+                  })
                 }
-                updateHiddenLayerIds(new Set(hiddenLayerIds))
+                useMapLayerAndOverlayConfigStore.setState({
+                  hiddenOverlayIds: newHiddenOverlayIds,
+                })
               }}
             >
               {hiddenLayerIds.has(e.layerId) ? (
