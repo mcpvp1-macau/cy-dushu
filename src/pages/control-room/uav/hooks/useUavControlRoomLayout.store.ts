@@ -41,6 +41,9 @@ const initialLayout: DynamicLayoutType = {
                 {
                   key: 'flyParams',
                 },
+                {
+                  key: 'controlParamsSetting',
+                },
               ],
             },
             {
@@ -199,7 +202,7 @@ export const useUavControlRoomLayoutStore = create<StateType & ActionsType>()(
     }),
     {
       name: 'uavControlRoomLayout',
-      version: 2,
+      version: 3,
     },
   ),
 )

@@ -34,6 +34,8 @@ type StateType = {
     isExecute: boolean
     flySpeed: number
     targetHeight?: number
+    gimbalYawSpeed?: number
+    gimbalPitchSpeed?: number
   }
   pointFly: {
     /** 是否开启指点飞行 */
@@ -136,6 +138,8 @@ const createInitialState = () =>
       isExecute: false,
       flySpeed: 10,
       targetHeight: 120,
+      gimbalYawSpeed: 10,
+      gimbalPitchSpeed: 10,
     },
     pointFly: {
       open: false,
@@ -342,6 +346,11 @@ export const useUavControlRoomStore = <T>(
 ) => {
   const store = useContext(UavControlRoomStoreContext)!
   return useStore(store, select)
+}
+
+export const useUavControlRoomStoreInstance = () => {
+  const store = useContext(UavControlRoomStoreContext)!
+  return store
 }
 
 /**
