@@ -141,8 +141,7 @@ const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
           disabled={data.processStatus !== ProcessStatusEnum.INIT}
           items={formItems}
           layout="vertical"
-          colsProps={{ span: 12 }}
-          rowsProps={{ gutter: 12 }}
+          rowsProps={{ gutter: 8 }}
           themeKey="dushu-kcyp"
           themeConfig={{
             verticalLabelPadding: 4,
