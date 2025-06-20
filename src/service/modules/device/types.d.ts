@@ -311,6 +311,161 @@ declare namespace API_DEVICE {
       active: boolean
       great: boolean
     }
+    interface UavDocDetail {
+      /**
+       * 安装地址
+       */
+      address?: string
+      /**
+       * 行政区划
+       */
+      administrativeDivision?: string
+      /**
+       * 建设应用类别
+       */
+      buildType?: string
+      /**
+       * 摄像机类型
+       */
+      cameraType?: string
+      /**
+       * 对应存储设备通道
+       */
+      deviceChannel?: string
+      /**
+       * 设备名称
+       */
+      deviceName?: string
+      /**
+       * 设备型号
+       */
+      deviceType?: string
+      /**
+       * 出入方向
+       */
+      direction?: string
+      /**
+       * 设备编码
+       */
+      gbId?: string
+      /**
+       * 安装高度（单位米）
+       */
+      height?: string
+      /**
+       * 主键ID
+       */
+      id?: number
+      /**
+       * 安装时间
+       */
+      installTime?: string
+      /**
+       * IPV4地址
+       */
+      ip?: string
+      /**
+       * 是否对外共享
+       */
+      isShare?: string
+      /**
+       * 是否接入三级平台
+       */
+      isThird?: string
+      /**
+       * 键盘编号
+       */
+      keyNumber?: string
+      /**
+       * 纬度
+       */
+      latitude?: string
+      /**
+       * 定位模块
+       */
+      locationMode?: string
+      /**
+       * 经度
+       */
+      longitude?: string
+      /**
+       * 设备厂商
+       */
+      manufacturer?: string
+      /**
+       * 监视方向
+       */
+      monitorDirection?: string
+      /**
+       * 监控点类型
+       */
+      monitorPointType?: string
+      /**
+       * 点位俗称
+       */
+      nickName?: string
+      /**
+       * 场所名称
+       */
+      placeName?: string
+      /**
+       * 场所编号
+       */
+      placeNumber?: string
+      /**
+       * 摄像机位置类型
+       */
+      positionType?: string
+      /**
+       * 所属辖区公安机关
+       */
+      publicSecurityBureau?: string
+      /**
+       * 遥控器编码
+       */
+      rcSn?: string
+      /**
+       * 录像或图片保存天数
+       */
+      recordDays?: string
+      /**
+       * 对应存储设备IP
+       */
+      recordIp?: string
+      /**
+       * 分辨率
+       */
+      resolution?: string
+      /**
+       * 部位类型
+       */
+      sectionType?: string
+      /**
+       * 视频信号类型
+       */
+      signalType?: string
+      /**
+       * SN码
+       */
+      sn?: string
+      /**
+       * 设备状态
+       */
+      status?: string
+      /**
+       * 管理单位
+       */
+      unit?: string
+      /**
+       * 管理单位联系方式
+       */
+      unitContact?: string
+      /**
+       * 可视距离（单位米）
+       */
+      visibleDistance?: string
+      [property: string]: any
+    }
   }
   // ------------------ req ------------------
   namespace req {
@@ -339,5 +494,6 @@ declare namespace API_DEVICE {
       videoList: API_DEVICE.domain.HistoryVideoListItem[]
     }
     type GetDeviceLinkRes = { links: API_DEVICE.domain.DeviceLink[] }
+    type GetUavDocDetailRes = API_DEVICE.domain.UavDocDetail
   }
 }

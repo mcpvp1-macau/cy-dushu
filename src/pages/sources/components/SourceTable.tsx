@@ -1,5 +1,5 @@
 import { StatusColorMap } from '@/enum/device'
-import { getAllDeviceList } from '@/service/modules/device'
+import { getAllDeviceList, getUavDocSnList } from '@/service/modules/device'
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -14,6 +14,7 @@ import usePageSearchParams from '@/hooks/useTableSearchParams'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import DeviceIcon from '@/components/device/DeviceIcon'
 import TextButton from '@/components/ui/button/TextButton'
+import UavDetail from './UavDetail'
 
 type PropsType = unknown
 
@@ -61,6 +62,18 @@ const SourceTable: FC<PropsType> = memo(() => {
     },
     queryClient,
   )
+
+  const { data: uavDocSnList = [] } = useQuery({
+    queryKey: ['getUavDocSnList'],
+    queryFn: async () => {
+      const res = await getUavDocSnList()
+      return res.data || []
+    },
+  })
+
+  const uavDocSnSet = useMemo(() => {
+    return new Set(uavDocSnList)
+  }, [uavDocSnList])
 
   const columns = useMemo(() => {
     const columns = [
@@ -138,6 +151,9 @@ const SourceTable: FC<PropsType> = memo(() => {
                   )}
                 </>
               ) : null}
+              {data.deviceType === 'UAV' && uavDocSnSet.has(data.sn) && (
+                <UavDetail sn={data.sn} />
+              )}
             </div>
           )
         },

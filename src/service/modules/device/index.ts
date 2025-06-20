@@ -168,7 +168,6 @@ export const getHistoryVideo2 = async (
   )
 }
 
-
 /** 获取历史视频 */
 export const getHistoryM3u8Video = async (
   productKey: string,
@@ -246,4 +245,17 @@ export const setDeviceLink = (data: {
       msgPrefix: '设置设备链路失败',
     },
   })
+}
+
+/** 获取无人机一机一档详情 */
+export const getUavDocDetail = (sn: string) => {
+  return serverJingqi.post<API_DEVICE.res.GetUavDocDetailRes>(
+    `/device/doc/get`,
+    { sn },
+  )
+}
+
+/** 获取一机一档所有sn */
+export const getUavDocSnList = () => {
+  return serverJingqi.get<string[]>(`/device/doc/sn/list`)
 }
