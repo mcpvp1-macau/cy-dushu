@@ -94,10 +94,14 @@ const TargetPoints: React.FC = () => {
                       outlineColor={Cesium.Color.fromCssColorString('#fff')}
                       outlineWidth={last ? 1.5 : 0}
                       // onClick={() => onClick(`${parentId}=${deviceId}=${id}`)}
-                      onRightClick={() => {
-                        // setMenuPosition([lng, lat, alt])
-                        // menuRef.current?.open()
-                      }}
+                      onRightClick={
+                        globalConfig.is72
+                          ? () => {
+                              setMenuPosition([lng, lat, alt])
+                              menuRef.current?.open()
+                            }
+                          : undefined
+                      }
                     />
                   </React.Fragment>
                 )

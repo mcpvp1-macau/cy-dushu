@@ -178,10 +178,10 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
 
   const { run } = useThrottleFn(
     () => {
-      refetch();
+      refetch()
     },
     { wait: 2000 },
-  );
+  )
   const updateNewEvent = useGlobalWsStore((s) => s.updateNewEvent)
   const handleEventPush = useMemoizedFn((message: any) => {
     //
@@ -289,30 +289,33 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
   })
 
   // 1分钟清除一次目标
-  useInterval(() => {
-    const target = useGlobalWsStore.getState().radarTarget || {}
-    const newObj = {}
-    Object.keys(target).forEach((parentId) => {
-      const parentDevice = target[parentId] || {}
-      Object.keys(parentDevice).forEach((deviceId) => {
-        const oldmap = parentDevice?.[deviceId] || {}
-        Object.keys(oldmap).forEach((targetId) => {
-          const t = oldmap[targetId]
-          const last = t[t.length - 1]
-          if (dayjs().diff(dayjs(last.acquireTimestampFormat), 's') < 30) {
-            if (!newObj[parentId]) {
-              newObj[parentId] = {}
+  useInterval(
+    () => {
+      const target = useGlobalWsStore.getState().radarTarget || {}
+      const newObj = {}
+      Object.keys(target).forEach((parentId) => {
+        const parentDevice = target[parentId] || {}
+        Object.keys(parentDevice).forEach((deviceId) => {
+          const oldmap = parentDevice?.[deviceId] || {}
+          Object.keys(oldmap).forEach((targetId) => {
+            const t = oldmap[targetId]
+            const last = t[t.length - 1]
+            if (dayjs().diff(dayjs(last.acquireTimestampFormat), 's') < 30) {
+              if (!newObj[parentId]) {
+                newObj[parentId] = {}
+              }
+              if (!newObj[parentId][deviceId]) {
+                newObj[parentId][deviceId] = {}
+              }
+              newObj[parentId][deviceId][targetId] = t
             }
-            if (!newObj[parentId][deviceId]) {
-              newObj[parentId][deviceId] = {}
-            }
-            newObj[parentId][deviceId][targetId] = t
-          }
+          })
         })
       })
-    })
-    updateRadarTarget(newObj)
-  }, 10 * 1000)
+      updateRadarTarget(newObj)
+    },
+    globalConfig.is72 ? 15 * 60 * 1000 : 10 * 1000,
+  )
 
   return null
 })
