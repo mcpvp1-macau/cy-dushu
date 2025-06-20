@@ -66,6 +66,8 @@ class GlobalConfig {
   useGuizhouProjects?: boolean
   intelligentPhotographVersion?: number
   intelligentPhotographV1Filter?: string[]
+  /** 是否 72 */
+  is72?: boolean
 
   constructor(def: ConfigType) {
     Object.keys(def).forEach((key) => {
