@@ -64,6 +64,7 @@ export const createFormItems = ({
       label: t('action.detail.kcyp.form.driverName.label'),
       name: 'driverName',
       type: 'input',
+      colsProps: { span: 11 },
     },
     {
       label: t('action.detail.kcyp.form.phone.label'),
@@ -72,12 +73,15 @@ export const createFormItems = ({
       rules: [
         { pattern: phoneReg, message: t('action.detail.kcyp.form.phone.msg') },
       ],
+      colsProps: { span: 13 },
     },
+
     {
       label: t('action.detail.kcyp.form.idType.label'),
       name: 'idType',
       type: 'select',
       options: cardTypeOptions,
+      colsProps: { span: 11 },
     },
     {
       label: t('action.detail.kcyp.form.cardNo.label'),
@@ -89,11 +93,13 @@ export const createFormItems = ({
           message: t('action.detail.kcyp.form.cardNo.msg'),
         },
       ],
+      colsProps: { span: 13 },
     },
     {
       label: t('action.detail.kcyp.form.otherDriverName.label'),
       name: 'otherDriverName',
       type: 'input',
+      colsProps: { span: 11 },
     },
     {
       label: t('action.detail.kcyp.form.otherPhone.label'),
@@ -102,12 +108,14 @@ export const createFormItems = ({
       rules: [
         { pattern: phoneReg, message: t('action.detail.kcyp.form.phone.msg') },
       ],
+      colsProps: { span: 13 },
     },
     {
       label: t('action.detail.kcyp.form.otherIdType.label'),
       name: 'otherIdType',
       type: 'select',
       options: cardTypeOptions,
+      colsProps: { span: 11 },
     },
     {
       label: t('action.detail.kcyp.form.otherCardNo.label'),
@@ -119,39 +127,54 @@ export const createFormItems = ({
           message: t('action.detail.kcyp.form.cardNo.msg'),
         },
       ],
+      colsProps: { span: 13 },
     },
     {
       label: t('action.detail.kcyp.form.brokenPart.label'),
       name: 'brokenPart',
       type: 'select',
       options: brokenPartTypeOptions,
+      otherProps: {
+        mode: 'multiple',
+        maxTagCount: 'responsive',
+      },
+      colsProps: { span: 11 },
     },
     {
       label: t('action.detail.kcyp.form.otherBrokenPart.label'),
       name: 'otherBrokenPart',
       type: 'select',
       options: brokenPartTypeOptions,
+      otherProps: {
+        mode: 'multiple',
+        maxTagCount: 'responsive',
+      },
+      colsProps: { span: 13 },
     },
     {
       label: t('action.detail.kcyp.form.carNo.label'),
       name: 'carNo',
       type: 'input',
+      colsProps: { span: 11 },
     },
     {
       label: t('action.detail.kcyp.form.otherCarNo.label'),
       name: 'otherCarNo',
       type: 'input',
+      colsProps: { span: 13 },
     },
     {
       label: t('action.detail.kcyp.form.firstScene.label'),
       name: 'firstScene',
       type: 'select',
       options: firstSceneOptions,
+      colsProps: { span: 11 },
     },
     {
       label: t('action.detail.kcyp.form.accidentTime.label'),
       name: 'accidentType',
       type: 'select',
       options: accidentTypeOptions,
+      colsProps: { span: 13 },
     },
   ] as XFormItem[]
