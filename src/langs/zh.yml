@@ -1220,6 +1220,9 @@ controlRoom:
       title: 快门速度
     gimbalYaw:
       title: 云台偏航角
+    controlParams:
+      gimbalYawSpeed: 云台偏航速度
+      gimbalPitchSpeed: 云台俯仰速度
   control:
     uavTurnLeft:
       title: 无人机左转
@@ -1329,3 +1332,5 @@ dayOfWeek:
   thursday: 周四
   friday: 周五
   saturday: 周六
+unit:
+  degreePerSecond: 度/秒

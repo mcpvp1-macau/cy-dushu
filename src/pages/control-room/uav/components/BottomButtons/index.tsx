@@ -14,6 +14,7 @@ import GimbalService from './GimbalService'
 import { Btn } from './type'
 import { Tooltip } from 'antd'
 import { useKeyDownGroup } from '@/hooks/useKeyDownGroup'
+import { useLatest } from 'ahooks'
 
 type PropsType = unknown
 
@@ -110,6 +111,13 @@ const BottomButtons: FC<PropsType> = memo(() => {
     [t],
   )
 
+  const gimbalYawSpeed = useUavControlRoomStore(
+    (s) => s.flyParams.gimbalYawSpeed ?? 10,
+  )
+  const gimbalPitchSpeed = useUavControlRoomStore(
+    (s) => s.flyParams.gimbalPitchSpeed ?? 10,
+  )
+
   const gimbalButtons = useMemo(
     () =>
       [
@@ -117,7 +125,7 @@ const BottomButtons: FC<PropsType> = memo(() => {
           btn: 'arrowup',
           identifier: 'pitch',
           icon: <IconUp />,
-          value: { pitch: 15 },
+          value: { pitch: gimbalPitchSpeed },
           method: 'service.moveGimbal.post',
           label: t('controlRoom.control.gimbalTiltUp.title'),
         },
@@ -125,7 +133,7 @@ const BottomButtons: FC<PropsType> = memo(() => {
           btn: 'arrowdown',
           icon: <IconDown />,
           identifier: 'pitch',
-          value: { pitch: -15 },
+          value: { pitch: -gimbalPitchSpeed },
           method: 'service.moveGimbal.post',
           label: t('controlRoom.control.gimbalTiltDown.title'),
         },
@@ -133,7 +141,7 @@ const BottomButtons: FC<PropsType> = memo(() => {
           btn: 'arrowleft',
           identifier: 'yaw',
           icon: <IconLeft />,
-          value: { yaw: -15 },
+          value: { yaw: -gimbalYawSpeed },
           method: 'service.moveGimbal.post',
           label: t('controlRoom.control.gimbalTurnLeft.title'),
         },
@@ -141,12 +149,12 @@ const BottomButtons: FC<PropsType> = memo(() => {
           btn: 'arrowright',
           identifier: 'yaw',
           icon: <IconRight />,
-          value: { yaw: 15 },
+          value: { yaw: gimbalYawSpeed },
           method: 'service.moveGimbal.post',
           label: t('controlRoom.control.gimbalTurnRight.title'),
         },
       ] as Btn[],
-    [t],
+    [t, gimbalYawSpeed, gimbalPitchSpeed],
   )
 
   const handleUp = useMemoizedFn(() => {
@@ -171,13 +179,13 @@ const BottomButtons: FC<PropsType> = memo(() => {
     ]
   }
 
-  const keyMap = useRef<Record<string, Btn> | null>(null)
-  if (!keyMap.current) {
-    keyMap.current = Object.fromEntries([
+  const keyMap = useMemo(() => {
+    return Object.fromEntries([
       ...buttons.map((e) => [e.btn.toLowerCase(), e]),
       ...gimbalButtons.map((e) => [e.btn.toLowerCase(), e]),
     ])
-  }
+  }, [buttons, gimbalButtons])
+  const latestKeymap = useLatest(keyMap)
 
   const activeBtns = useKeyDownGroup({
     keyFilter: keyFilter.current,
@@ -205,7 +213,7 @@ const BottomButtons: FC<PropsType> = memo(() => {
       yaw: 0,
     }
     for (const key of activeBtns) {
-      const btn = keyMap.current![key]
+      const btn = latestKeymap.current![key]
       if (btn.method === 'service.moveUav.post') {
         // 不能控制飞行
         if (!hasControlPower || isLimitedFly) {
