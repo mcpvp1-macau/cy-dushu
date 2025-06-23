@@ -10,33 +10,30 @@ type PropsType = unknown
 /** 三维重建图层 */
 const ReconstructionLayer: FC<PropsType> = memo(() => {
   const layerList = useReconstructionMapStore((s) => s.layerList)
-  const [showLayerIds, showGroupIds] = useReconstructionMapConfigStore((s) => [
-    s.showLayerIds,
-    s.showGroupIds,
-  ])
+  const showLayerIds = useReconstructionMapConfigStore((s) => s.showLayerIds)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   const has = useMemo(() => {
     for (const overlay of layerList) {
-      if (
-        showLayerIds.has(overlay.overlayId) &&
-        showGroupIds.has(overlay.layerId)
-      ) {
+      if (showLayerIds.has(overlay.overlayId)) {
         return true
       }
     }
     return false
-  }, [layerList, showLayerIds, showGroupIds])
+  }, [layerList, showLayerIds])
 
-  if (!has) {
+  useEffect(() => {
+    if (has) {
+      setIsLoaded(true)
+    }
+  }, [has])
+
+  if (!has && !isLoaded) {
     return null
   }
 
   return (
-    <ReconstructionDraw
-      layerList={layerList}
-      showLayerIds={showLayerIds}
-      showGroupIds={showGroupIds}
-    />
+    <ReconstructionDraw layerList={layerList} showLayerIds={showLayerIds} />
   )
 })
 

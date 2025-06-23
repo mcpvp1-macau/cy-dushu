@@ -43,18 +43,12 @@ const useReconstructionMapStore = create<StateType & ActionsType>()(
 )
 
 type ConfigStateType = {
-  showGroupIds: Set<number>
   showLayerIds: Set<number>
   activeLayerIds: Set<string>
 }
 
 type ConfigActionsType = {
-  updateShowGroupIds: (
-    showGroupIds: ConfigStateType['showGroupIds'],
-  ) => void
-  updateShowLayerIds: (
-    hiddenLayerIds: ConfigStateType['showLayerIds'],
-  ) => void
+  updateShowLayerIds: (hiddenLayerIds: ConfigStateType['showLayerIds']) => void
   updateActiveLayerIds: (
     activeLayerIds: ConfigStateType['activeLayerIds'],
   ) => void
@@ -66,12 +60,8 @@ const useReconstructionMapConfigStore = create<
   devtools(
     persist(
       (set) => ({
-        showGroupIds: new Set(),
         showLayerIds: new Set(),
         activeLayerIds: new Set(),
-        updateShowGroupIds: (showGroupIds) => {
-          set({ showGroupIds }, false, 'updateShowGroupIds')
-        },
         updateShowLayerIds: (showLayerIds) => {
           set({ showLayerIds }, false, 'updateShowLayerIds')
         },
@@ -83,21 +73,13 @@ const useReconstructionMapConfigStore = create<
         name: 'reconstruction-map-config',
         storage: createJSONStorage(() => sessionStorage, {
           replacer: (key: string, value: any) => {
-            if (
-              key === 'showGroupIds' ||
-              key === 'showLayerIds' ||
-              key === 'activeLayerIds'
-            ) {
+            if (key === 'showLayerIds' || key === 'activeLayerIds') {
               return Array.from(value)
             }
             return value
           },
           reviver: (key: string, value: any) => {
-            if (
-              key === 'showGroupIds' ||
-              key === 'showLayerIds' ||
-              key === 'activeLayerIds'
-            ) {
+            if (key === 'showLayerIds' || key === 'activeLayerIds') {
               return new Set(value)
             }
             return value

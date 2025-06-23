@@ -39,10 +39,37 @@ const ReconstructionMapListConfig: FC = memo(() => {
     [layerList],
   )
 
-  const showGroupIds = useReconstructionMapConfigStore((s) => s.showGroupIds)
-  const updateShowGroupIds = useReconstructionMapConfigStore(
-    (s) => s.updateShowGroupIds,
+  const showLayerIds = useReconstructionMapConfigStore((s) => s.showLayerIds)
+  const updateShowLayerIds = useReconstructionMapConfigStore(
+    (s) => s.updateShowLayerIds,
   )
+
+  const showGroupIds = useMemo(() => {
+    const showGroupIds = new Set<number>()
+    layerList.forEach((e) => {
+      if (
+        !layerListGroup[e.layerId]?.every((o) => !showLayerIds.has(o.overlayId))
+      ) {
+        showGroupIds.add(e.layerId)
+      }
+    })
+    return showGroupIds
+  }, [layerList, layerListGroup, showLayerIds])
+
+  const updateShow = useMemoizedFn((groupId: number, show: boolean) => {
+    const newShowLayerIds = new Set(showLayerIds)
+
+    if (show) {
+      layerListGroup[groupId]?.forEach((e) => {
+        newShowLayerIds.add(e.overlayId)
+      })
+    } else {
+      layerListGroup[groupId]?.forEach((e) => {
+        newShowLayerIds.delete(e.overlayId)
+      })
+    }
+    updateShowLayerIds(newShowLayerIds)
+  })
 
   const msgApi = useAppMsg()
   const queryClient = useQueryClient()
@@ -148,12 +175,7 @@ const ReconstructionMapListConfig: FC = memo(() => {
             <div className="flex gap-3" onClick={(e) => e.stopPropagation()}>
               <IconButton
                 onClick={() => {
-                  if (showGroupIds.has(layerGroup.id)) {
-                    showGroupIds.delete(layerGroup.id)
-                  } else {
-                    showGroupIds.add(layerGroup.id)
-                  }
-                  updateShowGroupIds(new Set(showGroupIds))
+                  updateShow(layerGroup.id, !showGroupIds.has(layerGroup.id))
                 }}
               >
                 {showGroupIds.has(layerGroup.id) ? (
