@@ -54,11 +54,18 @@ const ReconstructionDraw: FC<PropsType> = memo(
               layer.modelLayerLat,
               layer.modelLayerHeight + 1000,
             ] as const
-            viewer.camera.flyTo({
-              destination: Cesium.Cartesian3.fromDegrees(...llh),
-              duration: 1,
-            })
 
+            const distance = Cesium.Cartesian3.distance(
+              viewer.camera.position,
+              Cesium.Cartesian3.fromDegrees(...llh),
+            )
+            // 暂定相机离模型1000米外再跳转
+            if (distance > 1000) {
+              viewer.camera.flyTo({
+                destination: Cesium.Cartesian3.fromDegrees(...llh),
+                duration: 1,
+              })
+            }
             return
           }
         })
