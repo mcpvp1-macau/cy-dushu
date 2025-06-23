@@ -15,6 +15,7 @@ import AppViewSuspense from '@/components/AppViewSuspense'
 import IconSmartTrack from '@/assets/icons/jsx/uav/IconSmartTrack'
 import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 import IrMeteringMode from './IrMeteringMode'
+import IconTrack from '@/assets/icons/jsx/IconTrack'
 
 const ARSetting = lazy(() => import('@/components/Header/setting/ar'))
 
@@ -77,6 +78,8 @@ const AsideToolBar: FC<PropsType> = memo(() => {
     updateEnableReconstruction(!enableReconstruction)
   }
 
+  const hasConfirmTrack = serviceHave['confirmStartTrack']
+
   return (
     <div className="flex gap-2.5 text-base">
       <ConfigProvider
@@ -135,6 +138,14 @@ const AsideToolBar: FC<PropsType> = memo(() => {
             }}
           >
             <IconSmartTrack />
+          </IconButton>
+        )}
+        {hasConfirmTrack && (
+          <IconButton
+            toolTipProps={{ title: '确认追踪' }}
+            onClick={() => postDeviceService('confirmStartTrack')}
+          >
+            <IconTrack />
           </IconButton>
         )}
         {hasAr && (
