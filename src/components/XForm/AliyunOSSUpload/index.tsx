@@ -55,7 +55,7 @@ const AliyunOSSUpload = ({
     formData.append('policy', uploadSignature['policy'])
 
     const res = await fetch(
-      `/upload/${globalConfig.bucketName || 'minio-map'}`,
+      `/upload/${globalConfig.bucketName || 'ja-media-storage'}`,
       {
         method: 'POST',
         body: formData,
@@ -97,7 +97,9 @@ const AliyunOSSUpload = ({
     setCount(0)
     progressRef.current = 0
     message.success('上传成功')
-    onChange?.(`/storage/${globalConfig.bucketName || 'minio-map'}/${value}`)
+    onChange?.(
+      `/storage/${globalConfig.bucketName || 'ja-media-storage'}/${value}`,
+    )
   }
 
   const ref = useRef<HTMLInputElement>(null)

@@ -102,7 +102,7 @@ const ReconstructionMapListConfig: FC = memo(() => {
     setCreateOpen(true)
     setCreateLayerId(id)
   })
-  // /storage/minio-map/W1029/input
+  // /storage/ja-media-storage/W1029/input
   const handleConfirmCreate = async (form: any) => {
     setConfirmLoading(true)
     try {
@@ -122,7 +122,7 @@ const ReconstructionMapListConfig: FC = memo(() => {
       })
       await startBuild({
         taskId: taskRes.data,
-        bucket: 'minio-map',
+        bucket: 'ja-media-storage',
         // 文件上传minio需要加input，但是任务不能给
         minioPath: form.minioPath.replace('/input', ''),
       })
