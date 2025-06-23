@@ -34,10 +34,17 @@ const LayerOverlay: FC<PropsType> = () => {
         if (typeof e.id?.id === 'string' && e.id.id.startsWith('overlay--')) {
           return true
         }
+        if (
+          typeof e.primitive?.props === 'string' &&
+          e.primitive.props.startsWith('overlay--')
+        ) {
+          return true
+        }
         return false
       })
 
-      const id = res?.id?.id ?? res?.id
+      const id = res?.id?.id ?? res?.id ?? res?.primitive?.props
+
       if (typeof id === 'string' && id.startsWith('overlay--')) {
         const [, overlayId] = id.split('--')
         const overlayTab = {
