@@ -18,7 +18,7 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
     dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
     dayjs().format('YYYY-MM-DD HH:mm:ss'),
   ])
-  const [type, setType] = useState<'services' | 'events'>('services')
+  const [type, setType] = useState<'services' | 'events' | 'all'>('all')
   const [selectedRows, setSelectedRows] = useState<
     API_DBAPI.domain.OperateLog[]
   >([])
@@ -74,7 +74,7 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
   const dataSource = useMemo(() => {
     return data
       .filter((item) => {
-        if (!type) {
+        if (!type || type === 'all') {
           return true
         }
         return item.type === type
@@ -155,6 +155,7 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
           options={[
             { label: '指令', value: 'services' },
             { label: '事件', value: 'events' },
+            { label: '全部', value: 'all' },
           ]}
           placeholder="请选择操作类型"
           allowClear
