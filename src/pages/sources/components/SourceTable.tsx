@@ -155,7 +155,10 @@ const SourceTable: FC<PropsType> = memo(() => {
               {data.deviceType === 'UAV' && uavDocSnSet.has(data.sn) && (
                 <UavDetail sn={data.sn} />
               )}
-              <Logs deviceId={data.deviceId} />
+              {(data.deviceType === 'UAV' ||
+                data.deviceType === 'UAV_AIRPORT') && (
+                <Logs deviceId={data.deviceId} />
+              )}
             </div>
           )
         },
