@@ -1,10 +1,7 @@
 import CryptoJS from 'crypto-js'
 
-const AccessKeyId = globalConfig.accessKeyId || 'qgckfetkfojcsgur'
-const SecretAccessKey = globalConfig.secretAccessKey || 'K2AqfD1wl+ZfeJnTBWgQ4g=='
-
 const createSign = (params) => {
-  const newParams = { ...params, AccessKeyId }
+  const newParams = { ...params, AccessKeyId: globalConfig.accessKeyId }
   const keys = Object.keys(newParams).sort()
 
   const paramsStr = keys
@@ -21,10 +18,10 @@ const createSign = (params) => {
       return str
     })
     .join('&')
-  const words = CryptoJS.HmacSHA1(SecretAccessKey, paramsStr)
+  const words = CryptoJS.HmacSHA1(globalConfig.secretAccessKey, paramsStr)
   const sign = CryptoJS.enc.Base64.stringify(words)
   return {
-    AccessKeyId,
+    AccessKeyId: globalConfig.accessKeyId,
     Signature: sign,
   }
 }
@@ -36,12 +33,12 @@ export const createToken = (param) => {
     ...param,
   }
   const s = JSON.stringify(params)
-  const encrypted = CryptoJS.AES.encrypt(s, AccessKeyId)
+  const encrypted = CryptoJS.AES.encrypt(s, globalConfig.accessKeyId)
   return encrypted.toString()
 }
 
 export const verifyToken = (token) => {
-  const encrypted = CryptoJS.AES.decrypt(token, AccessKeyId)
+  const encrypted = CryptoJS.AES.decrypt(token, globalConfig.accessKeyId)
 
   return encrypted.toString(CryptoJS.enc.Utf8)
 }
