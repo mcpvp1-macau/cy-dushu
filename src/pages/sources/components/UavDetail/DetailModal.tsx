@@ -2,6 +2,7 @@ import { FC, memo } from 'react'
 import XModal from '@/components/XModal'
 import { getUavDocDetail } from '@/service/modules/device'
 import { useQuery } from '@tanstack/react-query'
+import { Tooltip } from 'antd'
 
 type PropsType = {
   sn: string
@@ -24,11 +25,11 @@ const DetailModal: FC<PropsType> = memo(({ sn, open, onClose }) => {
       value: data?.deviceName,
     },
     {
-      label: '设备序列号',
+      label: '设备编号',
       value: data?.rcSn,
     },
     {
-      label: '设备编码',
+      label: '设备SN',
       value: data?.sn,
     },
     {
@@ -82,11 +83,11 @@ const DetailModal: FC<PropsType> = memo(({ sn, open, onClose }) => {
     },
     {
       label: '经度',
-      value: data?.longitude,
+      value: data?.longitude ? Number(data?.longitude)?.toFixed(6) : '-',
     },
     {
       label: '纬度',
-      value: data?.latitude,
+      value: data?.latitude ? Number(data?.latitude)?.toFixed(6) : '-',
     },
   ]
   return (
@@ -101,9 +102,11 @@ const DetailModal: FC<PropsType> = memo(({ sn, open, onClose }) => {
     >
       <div className="flex flex-wrap gap-2 pb-2">
         {fields.map((item) => (
-          <div key={item.label} className='min-w-[240px]'>
-            <span>{item.label}：</span>
-            <span>{item.value || '-'}</span>
+          <div key={item.label} className="flex min-w-[240px]">
+            <div>{item.label}：</div>
+            <div className="max-w-[200px] text-ellipsis overflow-hidden whitespace-nowrap">
+              <Tooltip title={item.value}>{item.value || '-'}</Tooltip>
+            </div>
           </div>
         ))}
       </div>

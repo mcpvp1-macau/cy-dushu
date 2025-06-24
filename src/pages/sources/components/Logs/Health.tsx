@@ -1,7 +1,7 @@
 import { FC, memo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getDeviceHealthLogs } from '@/service/modules/db-api'
-import { Button, DatePicker, Table } from 'antd'
+import { Button, DatePicker, Table, Tooltip } from 'antd'
 import * as XLSX from 'xlsx'
 
 const { RangePicker } = DatePicker
@@ -47,6 +47,15 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
       title: '内容',
       dataIndex: 'messageInfo',
       width: 200,
+      render: (text: string) => {
+        return (
+          <Tooltip title={text}>
+            <div className="text-ellipsis overflow-hidden whitespace-nowrap">
+              {text}
+            </div>
+          </Tooltip>
+        )
+      },
     },
   ]
   const handleExport = () => {

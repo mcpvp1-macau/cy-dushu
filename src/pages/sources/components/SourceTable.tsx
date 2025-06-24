@@ -174,7 +174,7 @@ const SourceTable: FC<PropsType> = memo(() => {
       }),
     ]
     return columns
-  }, [i18n.language, searchParams.get('type')])
+  }, [i18n.language, searchParams.get('type'), uavDocSnSet])
 
   const table = useReactTable({
     data: data?.rows ?? defaultData,
