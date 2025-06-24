@@ -26,9 +26,7 @@ const ReconstructionMap: FC = memo(() => {
       updateLayerGroupList(groupList)
       const layerIds = groupList.map((item) => item.id)
       getLayerList({ layerIds }).then((d) => {
-        // 没有路径说明没有建模完成，不添加到图层数据中
-        const filterData = d.data.filter((item) => !!item.modelPath)
-        updateLayerList(filterData)
+        updateLayerList(d.data)
       })
     }
   }, [groupList])

@@ -46,7 +46,10 @@ const ReconstructionMapListConfig: FC = memo(() => {
 
   const showGroupIds = useMemo(() => {
     const showGroupIds = new Set<number>()
-    layerList.forEach((e) => {
+
+    const finishedLayerList = layerList.filter((e) => e.status === 'FINISHED')
+
+    finishedLayerList.forEach((e) => {
       if (
         !layerListGroup[e.layerId]?.every((o) => !showLayerIds.has(o.overlayId))
       ) {
@@ -56,12 +59,13 @@ const ReconstructionMapListConfig: FC = memo(() => {
     return showGroupIds
   }, [layerList, layerListGroup, showLayerIds])
 
+  /**更新图层组内重建图层的显示状态 */
   const updateShow = useMemoizedFn((groupId: number, show: boolean) => {
     const newShowLayerIds = new Set(showLayerIds)
 
     if (show) {
       layerListGroup[groupId]?.forEach((e) => {
-        newShowLayerIds.add(e.overlayId)
+        e.status === 'FINISHED' && newShowLayerIds.add(e.overlayId)
       })
     } else {
       layerListGroup[groupId]?.forEach((e) => {

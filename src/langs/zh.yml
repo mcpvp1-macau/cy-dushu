@@ -1044,6 +1044,13 @@ mapLayer:
         groupName: 三维图层组名称
     task:
       completed: 三维重建完成
+      restart: 重启三维重建
+    layer:
+      status:
+        PENDING: 未开始
+        PROCESSING: 进行中
+        FINISHED: 已完成
+        PAUSE: 失败
 message:
   success:
     saveMapView: 地图视角保存成功

@@ -35,6 +35,8 @@ declare namespace API_RECONSTRUCTION {
     cameraPitch: number
     cameraRoll: number
     modelPath: string
+    status: 'PENDING' | 'PROCESSING' | 'FINISHED' | 'PAUSE'
+    imagesFolderPath: string
   }
 
   namespace req {

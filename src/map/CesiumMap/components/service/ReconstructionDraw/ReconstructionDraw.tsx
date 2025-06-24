@@ -86,7 +86,7 @@ const ReconstructionDraw: FC<PropsType> = memo(
           splatUrl: '/storage' + layer.modelPath,
           lat: layer.modelLayerLat,
           lon: layer.modelLayerLon,
-          height: layer.modelLayerHeight - 12,
+          height: layer.modelLayerHeight - 7,
           headingPitchRoll: { heading: 0.0, pitch: 0.0, roll: -90 },
           scale: 1,
           camera: {

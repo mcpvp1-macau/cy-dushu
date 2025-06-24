@@ -46,7 +46,7 @@ export const deleteLayer = (overlayId: number) => {
   return serverJingqi.post('/reconstruction/overlay/delete', { overlayId })
 }
 
-/**创建并执行三维建图任务 */
+/**创建并执行三维建图任务，返回taskId */
 export const startReconstructionTask = (
   data: API_RECONSTRUCTION.req.StartTask,
 ) => {
