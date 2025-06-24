@@ -105,3 +105,34 @@ export const getTargetDetail = (data: {
 export async function targetListEnumDict(options: any) {
   return serverDBAPI.post(`/api/targetListEnumDict`, options)
 }
+
+/** 获取设备健康日志 */
+export const getDeviceHealthLogs = (data: {
+  deviceId: string
+  startTime: string
+  endTime: string
+}) => {
+  return serverDBAPI.post<API_DBAPI.res.GetDeviceHealthLogsRes>(
+    'api/deviceHealthLogs',
+    data,
+  )
+}
+
+/** 获取设备操作日志 */
+export const getDeviceOperateLogs = (data: {
+  deviceId: string
+  startTime: string
+  endTime: string
+}) => {
+  return serverDBAPI.post<API_DBAPI.res.GetDeviceOperateLogsRes>(
+    'api/deviceOperateLogs',
+    data,
+  )
+}
+
+/** 获取设备容量枚举 */
+export const getDeviceCapacityEnum = () => {
+  return serverDBAPI.post<API_DBAPI.res.GetDeviceCapacityEnumRes>(
+    'api/deviceCapacityEnum', {}
+  )
+}

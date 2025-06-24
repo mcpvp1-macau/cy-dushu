@@ -227,6 +227,28 @@ declare namespace API_DBAPI {
       objectLabel: string
       longitude: number
     }
+    type HealthLog = {
+      messageInfo: string
+      startTime: string
+      endTime: string
+    }
+    type OperateLog = {
+      method: string
+      acquireTime: string
+      productKey: string
+      type: string
+      properties: string
+      operator: string
+      messageInfo: string
+    }
+    type DeviceCapacityEnum = {
+      functionName: 'events' | 'services' | 'properties'
+      id: number
+      functionType: string
+      functionIdentifier: string
+      productKey: string
+      productName: string
+    }
   }
   // ------------------ req ------------------
   namespace req {
@@ -249,6 +271,7 @@ declare namespace API_DBAPI {
       deviceId?: string
       level: number
     }
+ 
   }
   // ------------------ res ------------------
   namespace res {
@@ -268,5 +291,9 @@ declare namespace API_DBAPI {
       controlStationInfo: domain.ControlStationInfo[]
     }
     export type GetAllTargets = domain.TargetData[]
+
+    type GetDeviceHealthLogsRes = API_DBAPI.domain.HealthLog[]
+    type GetDeviceOperateLogsRes = API_DBAPI.domain.OperateLog[]
+    type GetDeviceCapacityEnumRes = API_DBAPI.domain.DeviceCapacityEnum[]
   }
 }

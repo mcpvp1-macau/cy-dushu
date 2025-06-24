@@ -99,6 +99,7 @@
     "vis-timeline": "^7.7.3",
     "xgplayer": "^3.0.22",
     "xgplayer-hls": "^3.0.22",
+    "xlsx": "^0.18.5",
     "zustand": "^4.5.2",
     "zustand-computed": "^2.0.0"
   },

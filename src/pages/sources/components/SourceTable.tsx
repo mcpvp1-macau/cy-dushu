@@ -15,6 +15,7 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import DeviceIcon from '@/components/device/DeviceIcon'
 import TextButton from '@/components/ui/button/TextButton'
 import UavDetail from './UavDetail'
+import Logs from './Logs'
 
 type PropsType = unknown
 
@@ -154,6 +155,7 @@ const SourceTable: FC<PropsType> = memo(() => {
               {data.deviceType === 'UAV' && uavDocSnSet.has(data.sn) && (
                 <UavDetail sn={data.sn} />
               )}
+              <Logs deviceId={data.deviceId} />
             </div>
           )
         },
