@@ -5,7 +5,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { Badge, Input, Pagination } from 'antd'
+import { Badge, Button, Input, Pagination } from 'antd'
 import { Link, useSearchParams } from 'react-router-dom'
 import OTAUpdateColumn from './OTAUpdateColumn'
 import DeviceData from './DeviceData'
@@ -16,6 +16,7 @@ import DeviceIcon from '@/components/device/DeviceIcon'
 import TextButton from '@/components/ui/button/TextButton'
 import UavDetail from './UavDetail'
 import Logs from './Logs'
+import UploadDetail from './UavDetail/UploadDetail'
 
 type PropsType = unknown
 
@@ -64,13 +65,16 @@ const SourceTable: FC<PropsType> = memo(() => {
     queryClient,
   )
 
-  const { data: uavDocSnList = [] } = useQuery({
-    queryKey: ['getUavDocSnList'],
-    queryFn: async () => {
-      const res = await getUavDocSnList()
-      return res.data || []
+  const { data: uavDocSnList = [] } = useQuery(
+    {
+      queryKey: ['getUavDocSnList'],
+      queryFn: async () => {
+        const res = await getUavDocSnList()
+        return res.data || []
+      },
     },
-  })
+    queryClient,
+  )
 
   const uavDocSnSet = useMemo(() => {
     return new Set(uavDocSnList)
@@ -178,12 +182,15 @@ const SourceTable: FC<PropsType> = memo(() => {
 
   return (
     <div className="grow mt-3 overflow-y-hidden flex flex-col">
-      <div className="w-72">
+      <div className="flex gap-3 items-center">
         <Input.Search
           placeholder={t('resource.table.deviceName.title')}
           defaultValue={kw ?? undefined}
           onSearch={(e) => handleValueChange('kw', e)}
+          className="w-72"
         />
+        {globalConfig.useUavAirportDoc &&
+          (type === 'UAV_AIRPORT' || type === 'UAV') && <UploadDetail />}
       </div>
       <div className="mt-3 w-full grow rounded overflow-hidden border border-solid border-[#23272D]">
         <ScrollArea className="h-full">

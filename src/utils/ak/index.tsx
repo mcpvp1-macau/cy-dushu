@@ -1,7 +1,7 @@
 import CryptoJS from 'crypto-js'
 
-const AccessKeyId = 'qgckfetkfojcsgur'
-const SecretAccessKey = 'K2AqfD1wl+ZfeJnTBWgQ4g=='
+const AccessKeyId = globalConfig.accessKeyId || 'qgckfetkfojcsgur'
+const SecretAccessKey = globalConfig.secretAccessKey || 'K2AqfD1wl+ZfeJnTBWgQ4g=='
 
 const createSign = (params) => {
   const newParams = { ...params, AccessKeyId }

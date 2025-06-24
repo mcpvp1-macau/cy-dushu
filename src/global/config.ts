@@ -72,6 +72,14 @@ class GlobalConfig {
   /** minio */
   bucketName: undefined
 
+  /** 是否使用一机一档 */
+  useUavAirportDoc?: boolean | undefined
+
+  /** 访问密钥 */
+  accessKeyId?: string
+  /** 访问密钥 */
+  secretAccessKey?: string
+
   constructor(def: ConfigType) {
     Object.keys(def).forEach((key) => {
       this[key] = def[key]
