@@ -158,9 +158,14 @@ const SourceTable: FC<PropsType> = memo(() => {
               ) : null}
               {(data.deviceType === 'UAV' ||
                 data.deviceType === 'UAV_AIRPORT') &&
-                uavDocSnSet.has(data.sn) && <UavDetail sn={data.sn} />}
+                // 如果配置了使用一机一档, 则显示一机一档详情, 否则不显示
+                uavDocSnSet.has(data.sn) &&
+                // 如果配置了使用一机一档, 则显示一机一档详情, 否则不显示
+                globalConfig.useUavAirportDoc && <UavDetail sn={data.sn} />}
+              {/* 日志 */}
               {(data.deviceType === 'UAV' ||
-                data.deviceType === 'UAV_AIRPORT') && (
+                data.deviceType === 'UAV_AIRPORT') &&
+                globalConfig.useUavLogs && (
                 <Logs deviceId={data.deviceId} />
               )}
             </div>
