@@ -1,7 +1,6 @@
 import Select from '@/components/AntdOverride/Select'
 import XCard from '@/components/ui/XCard'
 import useAreaWaylineStore from '@/store/wayline/uav-area-wayline/useAreaWayline.store'
-import { InputNumber } from 'antd'
 
 type PropsType = unknown
 
@@ -10,10 +9,6 @@ const CameraModeConfig: FC<PropsType> = memo(() => {
 
   const actionTriggerType = useAreaWaylineStore(
     (s) => s.airlineConfig.actionTriggerType,
-  )
-
-  const actionTriggerParam = useAreaWaylineStore(
-    (s) => s.airlineConfig.actionTriggerParam,
   )
 
   return (
@@ -42,21 +37,6 @@ const CameraModeConfig: FC<PropsType> = memo(() => {
             },
           ]}
         />
-        {['multipleTiming', 'multipleDistance'].includes(actionTriggerType) && (
-          <InputNumber
-            className="w-full mt-3"
-            value={actionTriggerParam}
-            min={0}
-            onChange={(v) => {
-              const s = useAreaWaylineStore.getState()
-              s.updateAirlineConfig({
-                ...s.airlineConfig,
-                actionTriggerParam: v,
-              })
-            }}
-            suffix={actionTriggerType === 'multipleTiming' ? 's' : 'm'}
-          />
-        )}
       </div>
     </XCard>
   )
