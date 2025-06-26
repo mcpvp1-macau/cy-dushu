@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { getDeviceHealthLogs } from '@/service/modules/db-api'
 import { Button, DatePicker, Table, Tooltip } from 'antd'
 import * as XLSX from 'xlsx'
+import { HealthInfo } from '@/components/device/HealthInfoList'
 
 const { RangePicker } = DatePicker
 
@@ -32,6 +33,8 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
     enabled: !!dateRange[0] && !!dateRange[1],
   })
 
+  
+
   const columns = [
     {
       title: '开始时间',
@@ -51,7 +54,7 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
         return (
           <Tooltip title={text}>
             <div className="text-ellipsis overflow-hidden whitespace-nowrap">
-              {text}
+              <HealthInfo data={text} />
             </div>
           </Tooltip>
         )

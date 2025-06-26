@@ -1,4 +1,4 @@
-const HealthInfo: FC<{ data: string }> = memo(({ data }) => {
+export const HealthInfo: FC<{ data: string }> = memo(({ data }) => {
   if (data.startsWith('Info')) {
     return <li className="bg-blue-600 px-2 rounded">{data.slice(4)}</li>
   }

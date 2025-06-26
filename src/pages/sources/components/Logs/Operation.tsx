@@ -149,6 +149,7 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
               setDateRange([start, end])
             }
           }}
+          className="w-[270px]"
         />
         <Select
           value={type}
@@ -159,7 +160,7 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
           ]}
           placeholder="请选择操作类型"
           allowClear
-          style={{ width: 150 }}
+          style={{ width: 100 }}
           onChange={(value) => {
             setType(value)
           }}
@@ -167,7 +168,7 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
         <Input
           placeholder="请输入内容"
           value={searchValue}
-          //   style={{ width: 150 }}
+          style={{ maxWidth: 350 }}
           onChange={(e) => {
             setSearchValue(e.target.value)
           }}

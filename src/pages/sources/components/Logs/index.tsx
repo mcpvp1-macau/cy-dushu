@@ -4,16 +4,24 @@ import LogsModal from './LogsModal'
 
 type PropsType = {
     deviceId: string
+    deviceName: string
 }
 
-const Logs: FC<PropsType> = memo(({ deviceId }) => {
+const Logs: FC<PropsType> = memo(({ deviceId, deviceName }) => {
   const [open, setOpen] = useState(false)
   const { t } = useTranslation()
 
   return (
     <div>
       <TextButton onClick={() => setOpen(true)}>日志</TextButton>
-      {open && <LogsModal deviceId={deviceId} open={open} onClose={() => setOpen(false)} />}
+      {open && (
+        <LogsModal
+          deviceId={deviceId}
+          deviceName={deviceName}
+          open={open}
+          onClose={() => setOpen(false)}
+        />
+      )}
     </div>
   )
 })

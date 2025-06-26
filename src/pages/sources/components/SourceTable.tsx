@@ -166,8 +166,8 @@ const SourceTable: FC<PropsType> = memo(() => {
               {(data.deviceType === 'UAV' ||
                 data.deviceType === 'UAV_AIRPORT') &&
                 globalConfig.useUavLogs && (
-                <Logs deviceId={data.deviceId} />
-              )}
+                  <Logs deviceId={data.deviceId} deviceName={data.deviceName} />
+                )}
             </div>
           )
         },
