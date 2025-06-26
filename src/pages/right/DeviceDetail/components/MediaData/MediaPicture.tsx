@@ -18,8 +18,6 @@ type PropsType = {
   enablePictureOnMap?: boolean
 }
 
-const pageSize = 9
-
 const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
   ({ deviceList, timeRange, enablePictureOnMap }) => {
     const [mode, setMode] = useState('ALL')
@@ -39,6 +37,7 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
 
     const queryClient = useQueryClient()
     const [page, setPage] = useState(1)
+    const [pageSize, setPageSize] = useState(9)
     const { data, isLoading, isRefetching } = useQuery(
       {
         queryKey: [
@@ -48,6 +47,7 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
           mode,
           'today',
           page,
+          pageSize,
         ],
         queryFn: () =>
           getPlatformCapture({
@@ -204,7 +204,14 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
                 current={page}
                 pageSize={pageSize}
                 total={data[1]?.[0]?.cnt}
-                onChange={(page) => setPage(page)}
+                pageSizeOptions={Array.from(
+                  { length: 8 },
+                  (_, i) => (i + 1) * 9,
+                )}
+                onChange={(page, pageSize) => {
+                  setPage(page)
+                  setPageSize(pageSize)
+                }}
               />
             </div>
           </div>

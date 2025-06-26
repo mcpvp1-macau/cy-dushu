@@ -14,16 +14,15 @@ type PropsType = {
   enablePictureOnMap?: boolean
 }
 
-const pageSize = 9
-
 const ActionMediaPicture: FC<PropsType> = memo(
   ({ actionId, enablePictureOnMap }) => {
     const [page, setPage] = useState(1)
+    const [pageSize, setPageSize] = useState(9)
 
     const queryClient = useQueryClient()
     const { data, isLoading, isRefetching } = useQuery(
       {
-        queryKey: ['actionMediaPicture', actionId, page],
+        queryKey: ['actionMediaPicture', actionId, page, pageSize],
         queryFn: () =>
           getPlatformCapture({
             actionId,
@@ -154,7 +153,14 @@ const ActionMediaPicture: FC<PropsType> = memo(
                 current={page}
                 pageSize={pageSize}
                 total={data[1]?.[0]?.cnt}
-                onChange={(page) => setPage(page)}
+                pageSizeOptions={Array.from(
+                  { length: 8 },
+                  (_, i) => (i + 1) * 9,
+                )}
+                onChange={(page, pageSize) => {
+                  setPage(page)
+                  setPageSize(pageSize)
+                }}
               />
             </div>
           </div>
