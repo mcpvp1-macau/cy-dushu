@@ -8,6 +8,12 @@ type PropsType = unknown
 const RoadTargetPoint: FC<PropsType> = memo(() => {
   const isDrawRoadTarget = useAirlineConfigStore((s) => s.isDrawRoadTarget)
   const { viewer } = useCesium()
+  const roadNetworkTargetPosition = useAirlineConfigStore(
+    (s) => s.airlineConfig.roadNetworkTargetPosition,
+  )
+  const openRoadNetworkMode = useAirlineConfigStore(
+    (s) => s.airlineConfig.roadNetworkMode,
+  )
 
   useEffect(() => {
     if (!viewer) return
@@ -40,6 +46,35 @@ const RoadTargetPoint: FC<PropsType> = memo(() => {
       handler.destroy()
     }
   }, [isDrawRoadTarget, viewer])
+
+  useEffect(() => {
+    if (!roadNetworkTargetPosition || !openRoadNetworkMode || !viewer) {
+      return
+    }
+
+    const e = viewer.entities.add({
+      position: Cesium.Cartesian3.fromDegrees(
+        roadNetworkTargetPosition[0],
+        roadNetworkTargetPosition[1],
+        roadNetworkTargetPosition[2],
+      ),
+      billboard: {
+        image: '/images/airline/inverted-triangle-T.svg',
+        height: 26,
+        width: 26,
+        disableDepthTestDistance: 10000,
+      },
+      properties: {
+        xtype: 'roadTarget',
+      },
+    })
+
+    return () => {
+      if (viewer.entities.contains(e)) {
+        viewer.entities.remove(e)
+      }
+    }
+  }, [roadNetworkTargetPosition, openRoadNetworkMode])
 
   return null
 })
