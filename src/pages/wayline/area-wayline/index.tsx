@@ -14,6 +14,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import BottomButtions from './components/BottomButtions'
 import useAirlineInit from './hooks/useWaylineInit'
 import CameraModeConfig from './components/CameraModeConfig'
+import GSDConfig from './components/GSDConfig'
 
 type PropsType = unknown
 
@@ -54,6 +55,9 @@ const PageAreaWaylineEdit: FC<PropsType> = memo(() => {
           <ScrollArea className="flex-1">
             <div className="m-3">
               <InfoCard />
+            </div>
+            <div className="m-3">
+              <GSDConfig />
             </div>
             <div className="m-3">
               <TakeoffRef />

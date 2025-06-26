@@ -5,6 +5,8 @@ type GimbalType = {
     focal: number
     width: number
     height: number
+    frameWidth: number
+    frameHeight: number
   }
   /** 中长焦/长焦/等等 */
   tele?: {
@@ -12,6 +14,8 @@ type GimbalType = {
     width: number
     height: number
     radio: number
+    frameWidth: number
+    frameHeight: number
   }[]
   /** 变焦 */
   zoom?: {
@@ -20,12 +24,16 @@ type GimbalType = {
     minFocal: number
     maxFocal: number
     maxRatio: number
+    frameWidth: number
+    frameHeight: number
   }
   /** 红外相机 */
   ir?: {
     focal: number
     width: number
     height: number
+    frameWidth: number
+    frameHeight: number
   }
 }
 
@@ -59,6 +67,8 @@ export const gimbalMap: Record<string, GimbalType> = {
       focal: 4.5,
       width: 6.4,
       height: 4.8,
+      frameWidth: 4000,
+      frameHeight: 3000,
     },
     zoom: {
       width: 6.4,
@@ -66,11 +76,15 @@ export const gimbalMap: Record<string, GimbalType> = {
       minFocal: 21,
       maxFocal: 75,
       maxRatio: 16,
+      frameWidth: 4000,
+      frameHeight: 3000,
     },
     ir: {
       width: 7.68,
       height: 6.144,
       focal: 9.1,
+      frameWidth: 640,
+      frameHeight: 512,
     },
   },
   H20N: {
@@ -79,6 +93,8 @@ export const gimbalMap: Record<string, GimbalType> = {
       focal: 4.5,
       width: 5.76,
       height: 3.24,
+      frameWidth: 1920,
+      frameHeight: 1080,
     },
     zoom: {
       width: 7.79,
@@ -86,6 +102,8 @@ export const gimbalMap: Record<string, GimbalType> = {
       minFocal: 6.8,
       maxFocal: 119.9,
       maxRatio: 20,
+      frameWidth: 2688,
+      frameHeight: 1512,
     },
   },
   H20T: {
@@ -94,6 +112,8 @@ export const gimbalMap: Record<string, GimbalType> = {
       focal: 4.5,
       width: 6.29,
       height: 4.71,
+      frameWidth: 4056,
+      frameHeight: 3040,
     },
     zoom: {
       minFocal: 6.83,
@@ -101,26 +121,34 @@ export const gimbalMap: Record<string, GimbalType> = {
       maxRatio: 23,
       width: 7.41,
       height: 5.66,
+      frameWidth: 5184,
+      frameHeight: 3888,
     },
     ir: {
       focal: 13.5,
       width: 17.4,
       height: 13,
+      frameWidth: 640,
+      frameHeight: 512,
     },
   },
   H30T: {
     name: 'H30T Camera',
     wide: {
-      focal: 4.5,
-      width: 6.4,
-      height: 4.8,
+      focal: 6.72,
+      width: 7.386,
+      height: 5.539,
+      frameWidth: 3840,
+      frameHeight: 2160,
     },
     zoom: {
-      width: 6.4,
-      height: 4.8,
-      minFocal: 21,
-      maxFocal: 75,
-      maxRatio: 16,
+      width: 9.652,
+      height: 7.239,
+      minFocal: 7.1,
+      maxFocal: 172,
+      maxRatio: 32,
+      frameWidth: 3840,
+      frameHeight: 2160,
     },
   },
   M3E: {
@@ -129,6 +157,8 @@ export const gimbalMap: Record<string, GimbalType> = {
       width: 17.4,
       height: 13,
       focal: 12.29,
+      frameWidth: 5280,
+      frameHeight: 3956,
     },
     tele: [
       {
@@ -136,15 +166,19 @@ export const gimbalMap: Record<string, GimbalType> = {
         height: 4.8,
         focal: 30,
         radio: 8,
+        frameWidth: 4000,
+        frameHeight: 3000,
       },
     ],
   },
   M3T: {
     name: 'M3T Camera',
     wide: {
-      width: 6.4,
-      height: 4.8,
-      focal: 4.4,
+      width: 9.691,
+      height: 7.278,
+      focal: 6.78,
+      frameWidth: 8064,
+      frameHeight: 6048,
     },
     tele: [
       {
@@ -152,12 +186,16 @@ export const gimbalMap: Record<string, GimbalType> = {
         height: 4.8,
         focal: 30,
         radio: 8,
+        frameWidth: 4000,
+        frameHeight: 3000,
       },
     ],
     ir: {
       width: 7.68,
       height: 6.144,
       focal: 9.1,
+      frameWidth: 640,
+      frameHeight: 512,
     },
   },
   M4T: {
@@ -166,6 +204,8 @@ export const gimbalMap: Record<string, GimbalType> = {
       width: 9.69,
       height: 7.27,
       focal: 6.73,
+      frameWidth: 8064,
+      frameHeight: 6048,
     },
     tele: [
       {
@@ -173,18 +213,24 @@ export const gimbalMap: Record<string, GimbalType> = {
         height: 7.27,
         focal: 19.35,
         radio: 3,
+        frameWidth: 8064,
+        frameHeight: 6048,
       },
       {
         width: 8.29,
         height: 6.23,
         focal: 40,
         radio: 7,
+        frameWidth: 8192,
+        frameHeight: 6144,
       },
     ],
     ir: {
       width: 7.68,
       height: 6.14,
       focal: 12,
+      frameWidth: 640,
+      frameHeight: 512,
     },
   },
   M4E: {
@@ -193,6 +239,8 @@ export const gimbalMap: Record<string, GimbalType> = {
       width: 9.69,
       height: 7.27,
       focal: 6.73,
+      frameWidth: 8064,
+      frameHeight: 6048,
     },
     tele: [
       {
@@ -200,12 +248,16 @@ export const gimbalMap: Record<string, GimbalType> = {
         height: 7.27,
         focal: 19.35,
         radio: 3,
+        frameWidth: 8064,
+        frameHeight: 6048,
       },
       {
         width: 8.29,
         height: 6.23,
         focal: 40,
         radio: 7,
+        frameWidth: 8192,
+        frameHeight: 6144,
       },
     ],
   },

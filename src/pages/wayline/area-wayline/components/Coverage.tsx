@@ -35,7 +35,11 @@ const Coverage: FC<PropsType> = memo(() => {
 
   useEffect(() => {
     const lat = takeoffPoint?.[1] ?? 30
-    const w = hFov * height * Math.abs(Math.cos((lat * Math.PI) / 180))
+    const w =
+      Math.tan(hFov / 2) *
+      height *
+      Math.abs(Math.cos((lat * Math.PI) / 180)) *
+      2
     updateTemplateConfig({
       interval: w * (1 - coverage / 100),
     })

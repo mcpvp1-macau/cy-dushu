@@ -41,6 +41,7 @@ const createInitialState = (): StateType => ({
   airlineConfig: {
     ...createInitAirlineConfig(),
     globalWaypointTurnMode: 'toPointAndPassWithContinuityCurvature',
+    height: 140.6,
   },
   templateConfig: {
     waylineTemplateId: 0,
@@ -55,6 +56,7 @@ const createInitialState = (): StateType => ({
     mainK: 0,
     interval: 0,
     coverage: 10,
+    wideGSD: 5,
   },
   isDrawHome: false,
   cameraInfo: {
