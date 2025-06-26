@@ -31,7 +31,7 @@ import DrawBox from '../DrawBox'
 import useElectricScale from './hooks/useElectricScale'
 import { PropertiesData } from '../Video/Jessibuca/sei-types/properties'
 import VideoStream from './components/VideoStream'
-import { ConfigProvider, QRCode, Typography } from 'antd'
+import { ConfigProvider } from 'antd'
 import useCalcSafeArea from './hooks/useCalcSafeArea'
 import VideoDing from './components/VideoDing'
 import { AiObject } from '../Video/Jessibuca/sei-types/ai-data'
@@ -40,7 +40,6 @@ import DaoTongPlayer from '../Video/DaoTongPlayer'
 import SeiAIDataMetaInfo from './components/SeiAIDataMetaInfo'
 import { Responses } from '@/service/servers/liqunAxios'
 import useSnapshot from './hooks/useSnapshot'
-import { createToken } from '@/utils/ak'
 import ShareQRCode from './ShareQRCode'
 
 type PropsType = {
@@ -78,8 +77,8 @@ type DeviceLiveVideoRefType = {
 }
 
 function isDomainOrIP() {
-  var hostname = window.location.hostname
-  var ipRegex =
+  const hostname = window.location.hostname
+  const ipRegex =
     /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
   return ipRegex.test(hostname) ? 'IP' : 'Domain'
 }
@@ -485,6 +484,7 @@ const DeviceLiveVideo = memo(
                       }}
                       className="order-20 text-[13px]"
                       onClick={async () => {
+                        deviceStreamListCache.current = null
                         await handleRefresh()
                         setJessibucaKey((v) => v + 1)
                       }}
