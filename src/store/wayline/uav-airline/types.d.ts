@@ -25,6 +25,8 @@ export type AirlineConfigType = {
   finishAction: string
   roadNetworkMode?: boolean
   roadNetworkTargetPosition?: number[]
+  actionTriggerType: 'reachPoint' | 'multipleTiming' | 'multipleDistance'
+  actionTriggerParam: number | null
   [key: string]: any
 }
 

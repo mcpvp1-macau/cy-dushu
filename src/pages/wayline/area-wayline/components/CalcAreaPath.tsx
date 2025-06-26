@@ -82,6 +82,17 @@ const CalcAreaPath: FC<PropsType> = memo(() => {
         xid: v4(),
       })
 
+      for (const p of points) {
+        p.actions.push({
+          type: 'GET_PICTURE',
+          xid: v4(),
+          config: {
+            useGlobalPayloadLensIndex: 0,
+            payloadLensIndex: ['wide'],
+          },
+        })
+      }
+
       updateAirpointsConfig(points)
       updateFirstAirpoint(points[0])
     },

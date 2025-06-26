@@ -60,12 +60,13 @@ export const shouldShowError = (resp: any) => {
     (resp.config as any as LiqunAxiosRequestConfig<any>)?.xCustomConfig ?? {}
   if (
     xCustomConfig?.autoShowMessageOnNotSuccess !== false &&
-    resp.data?.message
+    'message' in resp.data
   ) {
+    const msg = resp.data.message ?? 'Unknown service error'
     const prefix = xCustomConfig.msgPrefix ? `${xCustomConfig.msgPrefix}: ` : ''
     msgMitt.emit('open', {
       type: 'error',
-      content: `${prefix}${resp.data.message}`,
+      content: `${prefix}${msg}`,
     })
   }
 }

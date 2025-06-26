@@ -13,6 +13,7 @@ import Coverage from './components/Coverage'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import BottomButtions from './components/BottomButtions'
 import useAirlineInit from './hooks/useWaylineInit'
+import CameraModeConfig from './components/CameraModeConfig'
 
 type PropsType = unknown
 
@@ -71,6 +72,9 @@ const PageAreaWaylineEdit: FC<PropsType> = memo(() => {
             </div>
             <div className="m-3">
               <SpeedConfig />
+            </div>
+            <div className="m-3">
+              <CameraModeConfig />
             </div>
             <div className="m-3">
               <FinishActionConfig />
