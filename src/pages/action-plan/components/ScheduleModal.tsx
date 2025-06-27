@@ -16,6 +16,7 @@ import {
   Input,
   InputNumber,
   Radio,
+  Switch,
   TimePicker,
   Tooltip,
 } from 'antd'
@@ -196,6 +197,7 @@ type FormValuesType = {
   deviceId: string
   airlineIndex: number
   timeRange: Dayjs[]
+  breakPointEnable?: boolean
 } & (
   | {
       type: 'SINGLE'
@@ -339,6 +341,7 @@ const ScheduleModal: FC<PropsType> = memo(
           waylineTemplateId: activeAirline.waylineTemplateId,
           templateName: activeAirline.taskName,
         },
+        breakPointEnable: values.breakPointEnable ? 'YES' : 'NO',
         type: values.type,
       }
       switch (values.type) {
@@ -473,6 +476,17 @@ const ScheduleModal: FC<PropsType> = memo(
                 REPEAT: <REPEATFormItems />,
               }[type]
             }
+            <Form.Item name="breakPointEnable" noStyle valuePropName="checked">
+              <div className="flex justify-between items-center mb-1">
+                <div>
+                  断点续飞{' '}
+                  <Tooltip title="开启后，若飞行架次因电量不足等原因无法完成整个航线飞行，系统将记录待执行任务。">
+                    <InfoCircleOutlined />
+                  </Tooltip>
+                </div>
+                <Switch size="small" />
+              </div>
+            </Form.Item>
             <TipInfo />
           </Form>
         </ConfigProvider>
