@@ -13,6 +13,7 @@ import BottomBar from './components/BottomBar'
 import FuzhouJiefangBridge from './components/custom/FuzhouJiefangBridge'
 import ErrorListener from './components/ErrorListener'
 import { Button } from 'antd'
+import MapSpace from '../LayerConfig/components/MapSpace/MapSpace'
 
 const HangzhouBanAreas = lazy(
   () => import('./components/custom/HangzhouBanAreas'),
@@ -106,6 +107,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
       </Suspense>
       {useToolBar && (
         <div className="absolute right-3 bottom-8 flex flex-col gap-3 z-10">
+          <MapSpace />
           {globalConfig.useShanghaiBanRoutes && <ShanghaiWarZoneConfig />}
           <FloatIconButton onClick={toggle}>
             {is2D ? '2D' : '3D'}

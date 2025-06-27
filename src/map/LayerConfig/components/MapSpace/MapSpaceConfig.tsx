@@ -10,7 +10,7 @@ import { shouldJson } from '@/utils/json'
 import { LoadingOutlined } from '@ant-design/icons'
 import { Checkbox, Form } from 'antd'
 import { v4 } from 'uuid'
-import useAddMapFormItems from '../hooks/useAddMapFormItems'
+import useAddMapFormItems from '../../hooks/useAddMapFormItems'
 
 type PropsType = {
   data: API_LAYER_OVERLAY.domain.SpaceItem
