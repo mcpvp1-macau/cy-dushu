@@ -1067,8 +1067,8 @@ mapLayer:
       restart: Restart 3D reconstruction
     layer:
       status:
-        PENDING: Not started
-        PROCESSING: In progress
+        PENDING: Pending
+        PROCESSING: Progressing
         FINISHED: Completed
         PAUSE: Failed
 message:
