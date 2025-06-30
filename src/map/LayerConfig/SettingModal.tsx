@@ -2,8 +2,8 @@ import AppCollapse from '@/components/AppCollapse'
 import XModal from '@/components/XModal'
 import MapLayerListConfig from './components/LayerOverlay/MapLayerListConfig'
 import AddLayerController from './components/LayerOverlay/AddLayerController'
-import ReconstructionMapListConfig from './components/ReconstructionMapListConfig'
-import AddReconstructionLayerGroup from './components/AddReconstructionLayerGroup'
+import ReconstructionMapListConfig from './components/Reconstruction3D/ReconstructionMapListConfig'
+import AddReconstructionLayerGroup from './components/Reconstruction3D/AddReconstructionLayerGroup'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 type PropsType = {

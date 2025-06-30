@@ -1,8 +1,8 @@
 import IconPlus from '@/assets/icons/jsx/IconPlus'
-import IconButton from '@/components/ui/button/IconButton'
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
 import { addLayer } from '@/service/modules/layer_overlay'
+import { Button } from 'antd'
 
 type PropsType = unknown
 
@@ -35,12 +35,11 @@ const AddLayerController: FC<PropsType> = memo(() => {
 
   return (
     <>
-      <IconButton
-        toolTipProps={{ title: t('mapLayer.setting.addLayer.title') }}
-        onClick={openAddLayer}
-      >
-        <IconPlus />
-      </IconButton>
+      <div className="p-3">
+        <Button block icon={<IconPlus />} onClick={openAddLayer}>
+          {t('mapLayer.setting.addLayer.title')}
+        </Button>
+      </div>
       <FormModal
         title={t('mapLayer.setting.addLayer.title')}
         open={addLayerOpen}

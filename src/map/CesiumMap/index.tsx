@@ -3,7 +3,6 @@ import { lazy, memo, ReactNode, Suspense, type FC } from 'react'
 import * as Cesium from 'cesium'
 import DefaultImageryLayer from './components/DefaultImageryLayer'
 import CesiumDefaultConfig from './components/CesiumDefaultConfig'
-import MapLayerConfig from '../LayerConfig/LayerConfig'
 import CustomImageryLayer from './components/CustomImageryLayer'
 import FloatIconButton from '@/components/ui/button/FloatIconButton'
 import CustomCesiumGlobalTerrain from './components/CustomCesiumGlobalTerrain'
@@ -14,6 +13,9 @@ import FuzhouJiefangBridge from './components/custom/FuzhouJiefangBridge'
 import ErrorListener from './components/ErrorListener'
 import { Button } from 'antd'
 import MapSpace from '../LayerConfig/components/MapSpace/MapSpace'
+import LayerOverlay from '../LayerConfig/components/LayerOverlay/LayerOverlay'
+import Reconstruction3D from '../LayerConfig/components/Reconstruction3D/Reconstruction3D'
+import FloatIconButtonGroup from '@/components/ui/button/FloatIconButton/FloatIconButtonGroup'
 
 const HangzhouBanAreas = lazy(
   () => import('./components/custom/HangzhouBanAreas'),
@@ -107,12 +109,15 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
       </Suspense>
       {useToolBar && (
         <div className="absolute right-3 bottom-8 flex flex-col gap-3 z-10">
-          <MapSpace />
+          <FloatIconButtonGroup mode="vertical">
+            <MapSpace />
+            <LayerOverlay />
+            <Reconstruction3D />
+          </FloatIconButtonGroup>
           {globalConfig.useShanghaiBanRoutes && <ShanghaiWarZoneConfig />}
           <FloatIconButton onClick={toggle}>
             {is2D ? '2D' : '3D'}
           </FloatIconButton>
-          <MapLayerConfig />
         </div>
       )}
       <Suspense fallback={null}>

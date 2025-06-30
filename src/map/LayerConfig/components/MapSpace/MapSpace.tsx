@@ -1,5 +1,4 @@
 import IconMap from '@/assets/icons/jsx/IconMap'
-import FloatIconButton from '@/components/ui/button/FloatIconButton'
 import XModal from '@/components/XModal'
 import MapSpaceListConfig from './MapSpaceListConfig'
 import { Button } from 'antd'
@@ -10,6 +9,7 @@ import { fileToBase64 } from '@/utils/base64'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { v4 } from 'uuid'
 import { addSpace } from '@/service/modules/layer_overlay'
+import FloatIconButton from '@/components/ui/button/FloatIconButton'
 
 type PropsType = unknown
 
@@ -50,7 +50,15 @@ const MapSpace: FC<PropsType> = memo(() => {
 
   return (
     <>
-      <FloatIconButton onClick={toggle}>
+      <FloatIconButton
+        variant="borderless"
+        toolTipProps={{
+          title: t('common.map'),
+          placement: 'left',
+          mouseEnterDelay: 0.5,
+        }}
+        onClick={toggle}
+      >
         <IconMap />
       </FloatIconButton>
       {open && (

@@ -1,9 +1,9 @@
 import IconPlus from '@/assets/icons/jsx/IconPlus'
-import IconButton from '@/components/ui/button/IconButton'
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
 import { createLayerGroupList } from '@/service/modules/reconstruction'
 import { useAppMsg } from '@/hooks/useAppMsg'
+import { Button } from 'antd'
 export const AddReconstructionLayerGroup: FC = () => {
   const { t } = useTranslation()
   const msgApi = useAppMsg()
@@ -38,16 +38,9 @@ export const AddReconstructionLayerGroup: FC = () => {
 
   return (
     <>
-      <IconButton
-        toolTipProps={{
-          title: t('mapLayer.reconstructionMap.create.tooltip'),
-        }}
-        onClick={() => {
-          open()
-        }}
-      >
-        <IconPlus />
-      </IconButton>
+      <Button icon={<IconPlus />} block onClick={open}>
+        {t('mapLayer.reconstructionMap.create.tooltip')}
+      </Button>
       <FormModal
         title={t('mapLayer.reconstructionMap.create.tooltip')}
         open={isOpened}
