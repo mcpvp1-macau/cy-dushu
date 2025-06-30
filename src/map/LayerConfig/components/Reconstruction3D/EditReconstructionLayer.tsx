@@ -7,7 +7,7 @@ import { updateLayer, getLayerList } from '@/service/modules/reconstruction'
 import { useAppMsg } from '@/hooks/useAppMsg'
 
 type PropsType = {
-  id: number
+  data: API_RECONSTRUCTION.Layer
 }
 
 export const EditReconstructionLayer: FC<PropsType> = (props) => {
@@ -25,7 +25,7 @@ export const EditReconstructionLayer: FC<PropsType> = (props) => {
   }) => {
     try {
       await updateLayer({
-        overlayId: props.id,
+        overlayId: props.data.layerId,
         overlayName: values.layerName,
         layerId: values.layerId,
       })
@@ -59,26 +59,28 @@ export const EditReconstructionLayer: FC<PropsType> = (props) => {
           rules: [{ required: true }],
         },
       ] as XFormItem[],
-    [t],
+    [t, layerGroupList],
   )
 
   return (
     <>
-      <IconButton
-        className="scale-90"
-        onClick={() => {
-          open()
-        }}
-      >
+      <IconButton className="scale-90" onClick={open}>
         <IconEdit />
       </IconButton>
-      <FormModal
-        title={t('mapLayer.reconstructionMap.edit.layer.title')}
-        open={isOpened}
-        onClose={close}
-        items={formItems}
-        onConfirm={handleConfirm}
-      />
+      {isOpened && (
+        <FormModal
+          mask
+          title={t('mapLayer.reconstructionMap.edit.layer.title')}
+          open={isOpened}
+          onClose={close}
+          items={formItems}
+          initialValues={{
+            layerName: props.data.overlayName,
+            layerId: props.data.layerId,
+          }}
+          onConfirm={handleConfirm}
+        />
+      )}
     </>
   )
 }

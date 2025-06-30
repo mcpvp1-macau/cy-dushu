@@ -1,7 +1,7 @@
 import IconMap from '@/assets/icons/jsx/IconMap'
 import XModal from '@/components/XModal'
 import MapSpaceListConfig from './MapSpaceListConfig'
-import { Button } from 'antd'
+import { Button, Input } from 'antd'
 import IconPlus from '@/assets/icons/jsx/IconPlus'
 import FormModal from '@/components/XForm/Modal'
 import useAddMapFormItems from '../../hooks/useAddMapFormItems'
@@ -48,9 +48,12 @@ const MapSpace: FC<PropsType> = memo(() => {
     closeAddSpace()
   }
 
+  const [kw, setKw] = useState('')
+
   return (
     <>
       <FloatIconButton
+        active={open}
         variant="borderless"
         toolTipProps={{
           title: t('common.map'),
@@ -63,24 +66,39 @@ const MapSpace: FC<PropsType> = memo(() => {
       </FloatIconButton>
       {open && (
         <XModal
-          title={t('common.map')}
+          title={
+            <div className="flex items-center gap-2">
+              <IconMap />
+              {t('common.map')}
+            </div>
+          }
           open={open}
           width={350}
           onClose={setFalse}
           noPadding
           footer={false}
         >
-          <MapSpaceListConfig />
-          <div className="px-3 mb-3">
-            <Button icon={<IconPlus />} onClick={openAddSpace} block>
-              {t('mapLayer.createMap.title')}
-            </Button>
+          <div className="max-h-[75vh] flex flex-col">
+            <div className="m-3 mb-0">
+              <Input.Search
+                placeholder={t('poi_searcher.placeholder')}
+                allowClear
+                onSearch={setKw}
+              />
+            </div>
+            <MapSpaceListConfig searchKw={kw} />
+            <div className="px-3 mb-3">
+              <Button icon={<IconPlus />} onClick={openAddSpace} block>
+                {t('mapLayer.createMap.title')}
+              </Button>
+            </div>
           </div>
         </XModal>
       )}
       {addSpaceOpen && (
         <FormModal
           title={t('mapLayer.createMap.title')}
+          mask
           open={addSpaceOpen}
           onClose={closeAddSpace}
           items={spaceFormItems}

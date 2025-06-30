@@ -24,7 +24,7 @@ const ImageContainBoxPreview: FC<PropsType> = memo((props) => {
       </div>
       <Image
         className="size-full object-contain"
-        rootClassName="size-full"
+        rootClassName="size-full align-top"
         width="100%"
         height="100%"
         src={props.src}

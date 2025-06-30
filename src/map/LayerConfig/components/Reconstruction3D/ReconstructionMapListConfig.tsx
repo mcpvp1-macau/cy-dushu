@@ -21,7 +21,13 @@ import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
 import { CotType } from '@/store/map/useDraw.store'
 
-const ReconstructionMapListConfig: FC = memo(() => {
+type PropsType = {
+  searchKw?: string
+  searchStatus?: string
+}
+
+/** 三维重建 列表 */
+const ReconstructionMapListConfig: FC<PropsType> = memo((props) => {
   const { t } = useTranslation()
 
   const layerGroupList = useReconstructionMap((s) => s.layerGroupList)
@@ -34,10 +40,17 @@ const ReconstructionMapListConfig: FC = memo(() => {
   }, [layerList])
 
   /**分组后的layerList */
-  const layerListGroup = useMemo(
-    () => groupBy(layerList, 'layerId'),
-    [layerList],
-  )
+  const layerListGroup = useMemo(() => {
+    const grouped = groupBy(layerList, 'layerId')
+    for (const key in grouped) {
+      grouped[key] = grouped[key].filter(
+        (e) =>
+          e.overlayName.includes(props.searchKw ?? '') &&
+          (!props.searchStatus || e.status === props.searchStatus),
+      )
+    }
+    return grouped
+  }, [layerList, props.searchKw, props.searchStatus])
 
   const showLayerIds = useReconstructionMapConfigStore((s) => s.showLayerIds)
   const updateShowLayerIds = useReconstructionMapConfigStore(
@@ -224,6 +237,7 @@ const ReconstructionMapListConfig: FC = memo(() => {
 
       {createOpen && (
         <FormModal
+          mask
           title={t('mapLayer.reconstructionMap.create.overlay.title')}
           open={createOpen}
           onClose={() => setCreateOpen(false)}

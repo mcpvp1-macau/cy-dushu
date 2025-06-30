@@ -29,6 +29,7 @@ const EventDetailModal: FC<PropsType> = memo(({ data, rows }) => {
           open={open}
           onClose={setFalse}
           footer={false}
+          width="50%"
         >
           <div className="p-3">
             <EventDetail

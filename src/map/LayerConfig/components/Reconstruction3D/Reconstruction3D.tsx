@@ -3,6 +3,9 @@ import FloatIconButton from '@/components/ui/button/FloatIconButton'
 import XModal from '@/components/XModal'
 import ReconstructionMapListConfig from './ReconstructionMapListConfig'
 import AddReconstructionLayerGroup from './AddReconstructionLayerGroup'
+import { Input } from 'antd'
+import Select from '@/components/AntdOverride/Select'
+import { createReconstructionStatus } from './ReconstructionMapConfig'
 
 type PropsType = unknown
 
@@ -10,9 +13,15 @@ const Reconstruction3D: FC<PropsType> = memo(() => {
   const { t } = useTranslation()
   const [open, { toggle, setFalse }] = useBoolean(false)
 
+  const [kw, setKw] = useState('')
+  const [status, setStatus] = useState<string | undefined>(undefined)
+
+  const reconstructionStatus = useMemo(() => createReconstructionStatus(), [t])
+
   return (
     <>
       <FloatIconButton
+        active={open}
         toolTipProps={{
           title: t('common.threeMap'),
           placement: 'left',
@@ -23,19 +32,49 @@ const Reconstruction3D: FC<PropsType> = memo(() => {
       >
         <IconRebuild3d />
       </FloatIconButton>
-      <XModal
-        title={t('common.threeMap')}
-        open={open}
-        width={350}
-        noPadding
-        footer={false}
-        onClose={setFalse}
-      >
-        <ReconstructionMapListConfig />
-        <div className="p-3">
-          <AddReconstructionLayerGroup />
-        </div>
-      </XModal>
+      {open && (
+        <XModal
+          title={
+            <div className="flex items-center gap-2">
+              <IconRebuild3d />
+              {t('common.threeMap')}
+            </div>
+          }
+          open={open}
+          width={350}
+          noPadding
+          footer={false}
+          onClose={setFalse}
+        >
+          <div className="max-h-[75vh] flex flex-col overflow-hidden">
+            <div className="m-3 flex gap-1">
+              <Input.Search
+                className="w-2/3"
+                placeholder={t('poi_searcher.placeholder')}
+                allowClear
+                onSearch={setKw}
+              />
+              <Select
+                className="w-1/3"
+                options={Object.entries(reconstructionStatus).map(
+                  ([key, value]) => ({
+                    label: value,
+                    value: key,
+                  }),
+                )}
+                allowClear
+                placeholder={t('common.all')}
+                onChange={setStatus}
+                value={status}
+              />
+            </div>
+            <ReconstructionMapListConfig searchKw={kw} searchStatus={status} />
+            <div className="p-3">
+              <AddReconstructionLayerGroup />
+            </div>
+          </div>
+        </XModal>
+      )}
     </>
   )
 })

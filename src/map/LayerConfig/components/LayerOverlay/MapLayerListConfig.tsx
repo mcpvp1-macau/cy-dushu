@@ -12,9 +12,11 @@ import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
 import { delLayer } from '@/service/modules/layer_overlay'
 import { useAppMsg } from '@/hooks/useAppMsg'
 
-type PropsType = unknown
+type PropsType = {
+  searchKw?: string
+}
 
-const MapLayerListConfig: FC<PropsType> = memo(() => {
+const MapLayerListConfig: FC<PropsType> = memo((props) => {
   const layerList = useMapLayerAndOverlayStore((s) => s.layerList)
   const overlayList = useMapLayerAndOverlayStore((s) => s.overlayList)
 
@@ -24,10 +26,15 @@ const MapLayerListConfig: FC<PropsType> = memo(() => {
       .map((e) => e.layerId)
   }, [layerList])
 
-  const overlayGroup = useMemo(
-    () => groupBy(overlayList, 'layerId'),
-    [overlayList],
-  )
+  const overlayGroup = useMemo(() => {
+    const grouped = groupBy(overlayList, (e) => e.layerId)
+    for (const k in grouped) {
+      grouped[k] = grouped[k].filter((e) =>
+        e.overlayName.includes(props.searchKw ?? ''),
+      )
+    }
+    return grouped
+  }, [overlayList, props.searchKw])
 
   const hiddenOverlayIds = useMapLayerAndOverlayConfigStore(
     (s) => s.hiddenOverlayIds,

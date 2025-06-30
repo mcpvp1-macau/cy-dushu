@@ -4,10 +4,13 @@ import { getSpaceList } from '@/service/modules/layer_overlay'
 import MapSpaceConfig from './MapSpaceConfig'
 import { useAsyncEffect } from 'ahooks'
 import AppEmpty from '@/components/AppEmpty'
+import { emtpyArray } from '@/constant/data'
 
-type PropsType = unknown
+type PropsType = {
+  searchKw?: string
+}
 
-const MapSpaceListConfig: FC<PropsType> = memo(() => {
+const MapSpaceListConfig: FC<PropsType> = memo((props) => {
   const queryClient = useQueryClient()
   const { data, isLoading } = useQuery(
     {
@@ -27,15 +30,22 @@ const MapSpaceListConfig: FC<PropsType> = memo(() => {
     }
   }, [data])
 
+  const renderData = useMemo(() => {
+    return (
+      data?.filter((e) => e.spaceName.includes(props.searchKw ?? '')) ||
+      emtpyArray
+    )
+  }, [data, props.searchKw])
+
   if (isLoading || !data) {
     return <AppSpin />
   }
 
   return (
-    <ScrollArea className="p-3 max-h-[384px]">
-      {data?.length > 0 ? (
+    <ScrollArea className="p-3">
+      {renderData.length > 0 ? (
         <div className="flex flex-col gap-3">
-          {data.map((e) => (
+          {renderData.map((e) => (
             <MapSpaceConfig key={e.id} data={e} />
           ))}
         </div>

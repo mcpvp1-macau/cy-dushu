@@ -541,6 +541,7 @@ common:
   frequency: Frequency
   pictureData: Pictures
   mapPlotting: Plotting
+  all: All
 events:
   search:
     placeholder: Please search by event name or ID

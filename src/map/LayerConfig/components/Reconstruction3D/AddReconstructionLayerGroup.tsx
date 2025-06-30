@@ -43,6 +43,7 @@ export const AddReconstructionLayerGroup: FC = () => {
       </Button>
       <FormModal
         title={t('mapLayer.reconstructionMap.create.tooltip')}
+        mask
         open={isOpened}
         onClose={close}
         items={formItems}

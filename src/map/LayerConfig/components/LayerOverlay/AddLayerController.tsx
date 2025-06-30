@@ -42,6 +42,7 @@ const AddLayerController: FC<PropsType> = memo(() => {
       </div>
       <FormModal
         title={t('mapLayer.setting.addLayer.title')}
+        mask
         open={addLayerOpen}
         onClose={closeAddLayer}
         items={formItems}

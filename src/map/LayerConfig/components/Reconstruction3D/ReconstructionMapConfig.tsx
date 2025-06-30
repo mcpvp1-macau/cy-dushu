@@ -15,25 +15,36 @@ import useRightMode from '@/store/layout/useRightMode.store'
 import useReconstructionMap, {
   useReconstructionMapConfigStore,
 } from '@/store/map/useReconstructionMap.store'
-import { LoadingOutlined } from '@ant-design/icons'
+import {
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  CloseCircleOutlined,
+  LoadingOutlined,
+  SyncOutlined,
+} from '@ant-design/icons'
 import EditReconstructionLayer from './EditReconstructionLayer'
 import { Tooltip } from 'antd'
 import IconRefresh from '@/assets/icons/jsx/IconRefresh'
 import { t } from 'i18next'
+import TagItemV2 from '@/components/ui/TagItemV2'
 
 type PropsType = {
   data: API_RECONSTRUCTION.Layer
 }
 
-const reconstructionStatus = {
+export const createReconstructionStatus = () => ({
   PENDING: t('mapLayer.reconstructionMap.layer.status.PENDING'),
   PROCESSING: t('mapLayer.reconstructionMap.layer.status.PROCESSING'),
   FINISHED: t('mapLayer.reconstructionMap.layer.status.FINISHED'),
   PAUSE: t('mapLayer.reconstructionMap.layer.status.PAUSE'),
-}
+})
 
 const ReconstructionMapConfig: FC<PropsType> = memo((props) => {
   const data = props.data
+
+  const { t } = useTranslation()
+
+  const reconstructionStatus = useMemo(() => createReconstructionStatus(), [t])
 
   const msgApi = useAppMsg()
   const [loading, setLoading] = useState(false)
@@ -125,35 +136,35 @@ const ReconstructionMapConfig: FC<PropsType> = memo((props) => {
   })
 
   const statusText = useMemoizedFn((data: API_RECONSTRUCTION.Layer) => {
-    if (data.status === 'FINISHED') {
-      return <></>
+    const statusMap = {
+      PENDING: 'default',
+      PROCESSING: 'primary',
+      FINISHED: 'success',
+      PAUSE: 'error',
     }
 
-    const statusColor = {
-      PENDING: 'text-[#F29D49]',
-      PROCESSING: 'text-[#fff8]',
-      FINISHED: 'text-[#fff]',
-      PAUSE: 'text-[#ff4d4f]',
+    const iconMap = {
+      PENDING: <ClockCircleOutlined />,
+      PROCESSING: <SyncOutlined spin />,
+      FINISHED: <CheckCircleOutlined />,
+      PAUSE: <CloseCircleOutlined />,
     }
 
     return (
-      <div className="flex items-center ml-3 text-[12px]">
-        <span className={statusColor[data.status]}>
-          {reconstructionStatus[data.status]}
-        </span>
-      </div>
+      <TagItemV2 type={statusMap[data.status]} icon={iconMap[data.status]}>
+        {reconstructionStatus[data.status]}
+      </TagItemV2>
     )
   })
 
   return (
-    <>
-      <li key={data.overlayId} className="flex justify-between">
+    <li>
+      <div className="flex justify-between">
         <div className="flex gap-2">
           <IconRebuild3d className="text-primary" />
-          <p className="truncate w-[160px] overflow-hidden text-ellipsis  ">
+          <p className="truncate w-[210px] overflow-hidden text-ellipsis  ">
             <Tooltip title={data.overlayName}>{data.overlayName}</Tooltip>
           </p>
-          {statusText(data)}
         </div>
         <div className="flex gap-3" onClick={(e) => e.stopPropagation()}>
           {loading ? (
@@ -161,7 +172,7 @@ const ReconstructionMapConfig: FC<PropsType> = memo((props) => {
           ) : (
             <>
               {statusBtn(data)}
-              <EditReconstructionLayer id={data.overlayId} />
+              <EditReconstructionLayer data={data} />
               <IconButton
                 className="scale-90"
                 onClick={() => handleDelte(data.overlayId)}
@@ -171,8 +182,9 @@ const ReconstructionMapConfig: FC<PropsType> = memo((props) => {
             </>
           )}
         </div>
-      </li>
-    </>
+      </div>
+      <div className="mt-1 ml-5">{statusText(data)}</div>
+    </li>
   )
 })
 

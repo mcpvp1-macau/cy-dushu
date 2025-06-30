@@ -96,7 +96,7 @@ const XModal: FC<PropsType> = ({
         <div className="liqun-modal">
           <div className="header" onMouseDown={handleHeaderMouseDown}>
             <div className="title">{title}</div>
-            <IconButton className="text-lg" onClick={onClose}>
+            <IconButton className="text-xl" onClick={onClose}>
               <IconClose />
             </IconButton>
           </div>

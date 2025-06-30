@@ -535,6 +535,7 @@ common:
   frequency: 频率
   pictureData: 图片数据
   mapPlotting: 标绘
+  all: 所有
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索

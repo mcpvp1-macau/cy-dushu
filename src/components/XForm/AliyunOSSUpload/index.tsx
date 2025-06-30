@@ -1,3 +1,4 @@
+import IconButton from '@/components/ui/button/IconButton'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { getMinioSignature } from '@/service/modules/minio'
 import { LoadingOutlined, UploadOutlined } from '@ant-design/icons'
@@ -21,6 +22,7 @@ const AliyunOSSUpload = ({
   filesFilter,
 }: AliyunOSSUploadProps) => {
   const msgApi = useAppMsg()
+  const [t] = useTranslation()
 
   const dataTimeRef = useRef(0)
   const signatureRef = useRef({})
@@ -106,7 +108,19 @@ const AliyunOSSUpload = ({
 
   return (
     <div className="flex">
-      <Input value={value} onChange={(e) => onChange?.(e.target.value)} />
+      <Input
+        value={value}
+        placeholder={t('common.form.pleaseInput')}
+        onChange={(e) => onChange?.(e.target.value)}
+        addonAfter={
+          <IconButton
+            className="px-3 py-1.5"
+            onClick={() => ref.current?.click()}
+          >
+            <UploadOutlined />
+          </IconButton>
+        }
+      />
       <input
         type="file"
         className={'!hidden'}
@@ -117,9 +131,7 @@ const AliyunOSSUpload = ({
         multiple
         ref={ref}
       />
-      <Button onClick={() => ref.current?.click()}>
-        <UploadOutlined />
-      </Button>
+
       <Modal
         open={!!count}
         title=""
