@@ -7,6 +7,7 @@ import IconClose from '@/assets/icons/jsx/IconClose'
 import { autoAIPhotoParamsEmitter } from '../components/AsideButtons/IntelligentPhotograph'
 import { playTextToSpeech } from '@/utils/voice/textToSpeech'
 import useVoiceSettingStore from '@/store/setting/useVoiceSetting.store'
+import { autoAIPhotoParamsPredictEmitter } from '../components/ControlRoomMap/components/AIPhotoPredict/AIPhotoPredict'
 
 /** 处理 Websocket 服务端来的消息弹窗 */
 const useServerEventMsg = (msgApi?: MessageInstance) => {
@@ -26,6 +27,9 @@ const useServerEventMsg = (msgApi?: MessageInstance) => {
       autoAIPhotoParamsEmitter.emit('takingRightPhoto', {
         needTakePhoto: wsData.data.method === '1',
       })
+    }
+    if (wsData.method === 'event.finishAiPhotoPoint.info') {
+      autoAIPhotoParamsPredictEmitter.emit('autoAIPhotoParams', null)
     }
     const [c, kind, type] = wsData.method?.split('.') ?? []
     if (c === 'event') {

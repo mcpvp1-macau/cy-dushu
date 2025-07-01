@@ -22,6 +22,7 @@ import EventMarkers from '@/map/GlobalMap/EventMarkers'
 import PickEvent from './components/PickEvent'
 import PicutreOnMap from '@/map/CesiumMap/components/service/PictureOnMap'
 import CitySituation from './components/CitySituation/CitySituation'
+import AIPhotoPredict from './components/AIPhotoPredict/AIPhotoPredict'
 
 type PropsType = unknown
 
@@ -60,6 +61,7 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
       <EventMarkers />
       <PickEvent />
       <PicutreOnMap />
+      <AIPhotoPredict />
     </CesiumMap>
   )
 })

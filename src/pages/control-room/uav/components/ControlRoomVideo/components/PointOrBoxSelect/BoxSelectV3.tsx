@@ -10,6 +10,7 @@ import {
   autoPhotoGraphCalcV2,
 } from '@/service/modules/autoPhotograph'
 import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
+import { autoAIPhotoParamsPredictEmitter } from '../../../ControlRoomMap/components/AIPhotoPredict/AIPhotoPredict'
 
 type PropsType = {
   deviceLiveVideoRef: RefObject<ComponentRef<typeof DeviceLiveVideo>>
@@ -150,6 +151,10 @@ const BoxSelectV3: FC<PropsType> = memo(({ deviceLiveVideoRef }) => {
             larser_height,
             speed,
           })
+          autoAIPhotoParamsPredictEmitter.emit(
+            'autoAIPhotoParams',
+            resp.data.data,
+          )
         } else {
           throw new Error(resp.data.message)
         }

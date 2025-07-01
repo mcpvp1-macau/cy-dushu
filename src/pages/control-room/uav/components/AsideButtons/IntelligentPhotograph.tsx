@@ -17,7 +17,7 @@ type PropsType = {
   postServiceFn: (identifier: string, data?: any) => Promise<void>
 }
 
-type AutoAIPhotoParams = {
+export type AutoAIPhotoParams = {
   mid_point: Record<string, any>
   point1: Record<string, any>
   point2: Record<string, any>
