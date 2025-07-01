@@ -9,7 +9,7 @@ import { Form } from 'antd'
 import { DictEnum } from '@/enum/dict'
 import useWatch from '@/hooks/useWatch'
 import dayjs from 'dayjs'
-import { LoadingOutlined } from '@ant-design/icons'
+import { SyncOutlined } from '@ant-design/icons'
 
 type PropsType = { actionId: string }
 
@@ -118,10 +118,13 @@ const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
           <span>{data.caseId}</span>
         </p>
         {saveState === 0 ? (
-          <p className="text-orange-600">等待暂存</p>
+          <p className="text-orange-600 items-center flex gap-1">
+            <SyncOutlined />
+            等待暂存
+          </p>
         ) : saveState === 1 ? (
-          <p className="text-blue-600">
-            <LoadingOutlined /> 暂存中
+          <p className="text-blue-600  items-center flex gap-1">
+            <SyncOutlined spin /> 暂存中
           </p>
         ) : saveState === 2 ? (
           <p className="text-green-600">暂存成功</p>
