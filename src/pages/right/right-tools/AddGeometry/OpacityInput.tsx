@@ -1,7 +1,9 @@
 import { Input } from 'antd'
 import useMapDrawStore from '@/store/map/useDraw.store'
+import { useTranslation } from 'react-i18next'
 
 const OpacityInput: FC = (props) => {
+  const { t } = useTranslation()
   // 0 - 1
   const fillOpacity = useMapDrawStore((s) => s.fillOpacity)
   const updateFillOpacity = useMapDrawStore((s) => s.updateFillOpacity)
@@ -25,7 +27,7 @@ const OpacityInput: FC = (props) => {
 
   return (
     <div className="flex items-center justify-center">
-      <span>透明度：</span>
+      <span>{t('overlay.drawing.opacity.title')}：</span>
       <div className="felx items-center w-[80px]">
         <Input
           size="small"

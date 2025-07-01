@@ -1,24 +1,6 @@
 import { Select } from 'antd'
 import { DrawType } from '@/store/map/useDraw.store'
-
-const opts = [
-  {
-    label: '圆形',
-    value: DrawType.Circle,
-  },
-  {
-    label: '方形',
-    value: DrawType.Rect,
-  },
-  {
-    label: '多边形',
-    value: DrawType.Polygon,
-  },
-  {
-    label: '扇形',
-    value: DrawType.Fan,
-  },
-]
+import { useTranslation } from 'react-i18next'
 
 type PropsType = {
   onChange?: (type: DrawType) => void
@@ -29,6 +11,27 @@ const DrawingTypeSelecter: FC<PropsType> = ({ onChange, lockedType }) => {
   const onChangeType = useMemoizedFn((val) => {
     onChange && onChange(val)
   })
+
+  const { t } = useTranslation()
+
+  const opts = [
+    {
+      label: t('overlay.drawing.circle.title'),
+      value: DrawType.Circle,
+    },
+    {
+      label: t('overlay.drawing.rect.title'),
+      value: DrawType.Rect,
+    },
+    {
+      label: t('overlay.drawing.polygon.title'),
+      value: DrawType.Polygon,
+    },
+    {
+      label: t('overlay.drawing.sector.title'),
+      value: DrawType.Fan,
+    },
+  ]
 
   useEffect(() => {
     onChangeType(opts[0].value)

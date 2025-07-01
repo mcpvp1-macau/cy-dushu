@@ -3,22 +3,26 @@ import { Flex, Select } from 'antd'
 import React from 'react'
 import IconLine from '@/assets/icons/jsx/IconLine'
 import IconDashedLine from '@/assets/icons/jsx/IconDashedLine'
+import IconNoFly from '@/assets/icons/jsx/IconNoFly'
 import useMapDrawStore, { LineStyle } from '@/store/map/useDraw.store'
+import { useTranslation } from 'react-i18next'
 
 const LineStyleSelecter: FC = (props) => {
   const lineStyle = useMapDrawStore((s) => s.lineStyle)
   const updateLineStyle = useMapDrawStore((s) => s.updateLineStyle)
 
+  const { t } = useTranslation()
+
   return (
     <Flex gap={6}>
       <Flex align="center">
-        <div>虚实：</div>
+        <div>{t('overlay.drawing.lineStyle.title')}：</div>
         <div className="flex items-cente w-[80px]">
           <Select
             options={[
               {
                 label: (
-                  <Tooltip title="实线">
+                  <Tooltip title={t('overlay.drawing.lineStyle.solid')}>
                     <IconLine className="text-[30px]" />
                   </Tooltip>
                 ),
@@ -26,20 +30,20 @@ const LineStyleSelecter: FC = (props) => {
               },
               {
                 label: (
-                  <Tooltip title="虚线">
+                  <Tooltip title={t('overlay.drawing.lineStyle.dashed')}>
                     <IconDashedLine className="text-[30px]" />
                   </Tooltip>
                 ),
                 value: 'dashed',
               },
-              // {
-              //   label: (
-              //     <Tooltip title="禁飞区">
-              //       <IconLine className="text-[30px]" />
-              //     </Tooltip>
-              //   ),
-              //   value: 'no-fly',
-              // },
+              {
+                label: (
+                  <Tooltip title={t('overlay.drawing.lineStyle.noFly')}>
+                    <IconNoFly className="text-[30px]" />
+                  </Tooltip>
+                ),
+                value: 'no-fly',
+              },
             ]}
             defaultValue={'solid'}
             size="small"

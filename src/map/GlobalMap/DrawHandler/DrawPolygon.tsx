@@ -95,7 +95,7 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
           '-value': '2.0', //描边宽度
         },
         strokeStyle: {
-          '-value': 'solid', //描边样式(solid:实线;dashed:虚线;dotted:斑点线,outlined:轮廓线)
+          '-value': `${lineStyle}`, //描边样式(solid:实线;dashed:虚线;dotted:斑点线,outlined:轮廓线)
         },
         fillColor: {
           '-value': `${fillColorARGB}`, //填充色（argb）
@@ -114,6 +114,7 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
         },
         remarks: '',
       }),
+      overlayExtType: data.overlayExtType,
       cotType: CotType.SHAPE_POLYGON,
     }
     await createOverlay(commitData)

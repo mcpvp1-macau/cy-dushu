@@ -156,10 +156,11 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
           '-value': '2.0',
         },
         strokeStyle: {
-          '-value': 'solid',
+          '-value': `${lineStyle}`,
         },
         remarks: '',
       }),
+      overlayExtType: data.overlayExtType,
       cotType: CotType.SHAPE_CIRCLE,
     }
 

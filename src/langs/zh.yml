@@ -945,6 +945,13 @@ overlay:
           required_msg: 请选择所属图层
   drawing:
     title: 画区
+    lineStyle:
+      title: 线型
+      solid: 实线
+      dashed: 虚线
+      noFly: 禁飞区
+    opacity:
+      title: 透明度
     circle:
       title: 圆形
     rect:
@@ -965,6 +972,23 @@ overlay:
       title: 测圆
     angle:
       title: 测角
+  type:
+    title: 覆盖物类型
+    normal:
+      title: 普通区域
+      info: 仅做地理标记或地理区分的展示
+    noFly:
+      title: 禁飞区
+      info: 限制飞行器进入的区域
+    electronicFence:
+      title: 电子围栏
+      info: 飞行器只能在此作业的特定区域
+    countZone:
+      title: AI计算区
+      info: 适用于算法需要特别处理的区域，如数据分析区域
+    noCountZone:
+      title: 非计算区
+      info: 适用于算法忽略的区域，如非监控区域。
 tools:
   saveMapView:
     title: 保存地图视角

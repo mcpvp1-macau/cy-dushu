@@ -8,8 +8,8 @@ import { shouldJson } from '@/utils/json'
 import IconButton from '@/components/ui/button/IconButton'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconEdit from '@/assets/icons/jsx/IconEdit'
-import { ColorPicker, Form, Input } from 'antd'
-import { LoadingOutlined } from '@ant-design/icons'
+import { ColorPicker, Form, Input, Select, Tooltip } from 'antd'
+import { InfoCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 import { CotType } from '@/store/map/useDraw.store'
 import IconDrawArea from '@/assets/icons/jsx/right-tools/IconDrawArea'
 import IconTick from '@/assets/icons/jsx/IconTick'
@@ -23,6 +23,34 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
   const detailId = useRightMode((s) => s.detailId)
 
   const { t } = useTranslation()
+
+  const overlayExtTypeOptions = [
+    {
+      label: t('overlay.type.normal.title'),
+      value: '',
+      info: t('overlay.type.normal.info'),
+    },
+    {
+      label: t('overlay.type.electronicFence.title'),
+      value: 'ELECTRONIC_FENCE',
+      info: t('overlay.type.electronicFence.info'),
+    },
+    {
+      label: t('overlay.type.noFly.title'),
+      value: 'NO_FLY_ZONE',
+      info: t('overlay.type.noFly.info'),
+    },
+    {
+      label: t('overlay.type.countZone.title'),
+      value: 'AI_COUNT_ZONE',
+      info: t('overlay.type.countZone.info'),
+    },
+    {
+      label: t('overlay.type.noCountZone.title'),
+      value: 'NO_COUNT_ZONE',
+      info: t('overlay.type.noCountZone.info'),
+    },
+  ]
 
   const {
     isEdit,
@@ -158,6 +186,40 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                   ) : (
                     <span className="text-white">
                       {styleConfig.remarks || '-'}
+                    </span>
+                  )}
+                </Form.Item>
+              </p>
+
+              <p className="flex gap-2">
+                <span className="whitespace-nowrap">
+                  {t('overlay.type.title')}:
+                </span>
+                <Form.Item noStyle name="overlayExtType">
+                  {isEdit ? (
+                    <Select
+                      size="small"
+                      className="h-5 w-[140px]"
+                      options={overlayExtTypeOptions}
+                      optionRender={(option, { index }) => {
+                        return (
+                          <div className="flex items-center gap-3">
+                            <span>{option.label}</span>
+                            <Tooltip title={overlayExtTypeOptions[index].info}>
+                              <InfoCircleOutlined />
+                            </Tooltip>
+                          </div>
+                        )
+                      }}
+                    />
+                  ) : (
+                    <span className="text-white">
+                      {
+                        overlayExtTypeOptions.find(
+                          (item) =>
+                            item.value === (overlay?.overlayExtType || ''),
+                        )?.label
+                      }
                     </span>
                   )}
                 </Form.Item>

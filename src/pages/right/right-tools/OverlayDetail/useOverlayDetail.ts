@@ -12,15 +12,15 @@ import useMapDrawStore from '@/store/map/useDraw.store'
 
 const useOverlayDetail = (detailId: string | null, onDelete?: () => void) => {
   const overlayList = useMapLayerAndOverlayStore((s) => s.overlayList)
-  const drawingColor = useMapDrawStore(s => s.drawingColor)
-  const updateDrawingColor = useMapDrawStore(s => s.updateDrawingColor)
-  const fillOpacity = useMapDrawStore(s => s.fillOpacity)
-  const updateFillOpacity = useMapDrawStore(s => s.updateFillOpacity)
-  const lineStyle = useMapDrawStore(s => s.lineStyle)
-  const updateLineStyle = useMapDrawStore(s => s.updateLineStyle)
-  const positions = useMapDrawStore(s => s.positions)
-  const updatePositions = useMapDrawStore(s => s.updatePositions)
-  const updateIsEdit = useMapDrawStore(s => s.updateIsEdit)
+  const drawingColor = useMapDrawStore((s) => s.drawingColor)
+  const updateDrawingColor = useMapDrawStore((s) => s.updateDrawingColor)
+  const fillOpacity = useMapDrawStore((s) => s.fillOpacity)
+  const updateFillOpacity = useMapDrawStore((s) => s.updateFillOpacity)
+  const lineStyle = useMapDrawStore((s) => s.lineStyle)
+  const updateLineStyle = useMapDrawStore((s) => s.updateLineStyle)
+  const positions = useMapDrawStore((s) => s.positions)
+  const updatePositions = useMapDrawStore((s) => s.updatePositions)
+  const updateIsEdit = useMapDrawStore((s) => s.updateIsEdit)
 
   const overlay = useMemo(() => {
     if (!detailId) return null
@@ -86,10 +86,10 @@ const useOverlayDetail = (detailId: string | null, onDelete?: () => void) => {
           '-value': `${fillColorARGB}`, //填充色（argb）
         },
         fillOpacity: {
-          '-value': `${fillOpacity}`//填充透明度0-1
+          '-value': `${fillOpacity}`, //填充透明度0-1
         },
         strokeStyle: {
-          '-value': `${lineStyle}`  // 描边类型 'solid|'dashed'
+          '-value': `${lineStyle}`, // 描边类型 'solid|'dashed'
         },
         remarks: value.remarks,
       }
@@ -144,6 +144,7 @@ const useOverlayDetail = (detailId: string | null, onDelete?: () => void) => {
     overlayName?: string
     color: AggregationColor
     remarks?: string
+    overlayExtType?: string
   }>()
 
   useEffect(() => {
@@ -151,6 +152,7 @@ const useOverlayDetail = (detailId: string | null, onDelete?: () => void) => {
       overlayName: overlay?.overlayName,
       color: new AggregationColor(renderColor),
       remarks: styleConfig?.remarks,
+      overlayExtType: overlay?.overlayExtType || '',
     })
   }, [styleConfig, renderColor])
 

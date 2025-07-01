@@ -151,7 +151,7 @@ const DrawFan: FC<PropsType> = memo(({ onSuccess }) => {
           '-value': '2.0', //描边宽度
         },
         strokeStyle: {
-          '-value': 'solid', //描边样式(solid:实线;dashed:虚线;no-fly:禁飞区样式线)
+          '-value': `${lineStyle}`, //描边样式(solid:实线;dashed:虚线;no-fly:禁飞区样式线)
         },
         fillColor: {
           '-value': `${fillColorARGB}`, //填充色（argb）
@@ -170,6 +170,7 @@ const DrawFan: FC<PropsType> = memo(({ onSuccess }) => {
         },
         remarks: '',
       }),
+      overlayExtType: data.overlayExtType,
       cotType: CotType.SHAPE_FAN,
     }
     await createOverlay(commitData)

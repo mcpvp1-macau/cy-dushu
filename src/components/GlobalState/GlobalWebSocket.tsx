@@ -14,6 +14,7 @@ import useReconstructionMapStore, {
   reconstructionMitt,
 } from '@/store/map/useReconstructionMap.store'
 import { useAppNotification } from '@/hooks/useNotification'
+import { message as messageAntd } from 'antd'
 
 type PropsType = unknown
 
@@ -275,6 +276,12 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         break
       case 'RECONSTRUCTION_TASK_END':
         handleReconstructionTaskEnd(message)
+        break
+      case 'NO_FLY_ZONE_WARN':
+        messageAntd.warning(message)
+        break
+      case 'ELECTRONIC_FENCE_WARN':
+        messageAntd.warning(message)
         break
     }
   })
