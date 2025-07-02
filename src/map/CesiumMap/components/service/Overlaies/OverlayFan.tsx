@@ -52,11 +52,11 @@ const OverlayFan: FC<PropsType> = memo((props) => {
   }, [data])
 
   useEffect(() => {
-    if (!viewer) return
+    if (!viewer?.scene?.primitives) return
     viewer.scene.primitives.add(primitiveRef.current)
 
     return () => {
-      if (!viewer) return
+      if (!viewer?.scene?.primitives) return
 
       const preVal = viewer.scene.primitives.destroyPrimitives
       viewer.scene.primitives.destroyPrimitives = false
