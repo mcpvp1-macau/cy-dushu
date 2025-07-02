@@ -60,6 +60,8 @@ const OverlayCircle: FC<Props> = (props) => {
     viewer.scene.primitives.add(primitiveRef.current)
 
     return () => {
+      if (!viewer) return
+
       const preVal = viewer.scene.primitives.destroyPrimitives
       viewer.scene.primitives.destroyPrimitives = false
       viewer.scene.primitives.remove(primitiveRef.current)
