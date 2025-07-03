@@ -52,7 +52,7 @@ type ActionsType = {
   logout: () => void
   fetchUserInfoAndMenus: () => void
   fetchSystemInfo: () => void
-  fetchGroupTree: () => void
+  fetchGroupTree: (groupId: string) => void
 }
 
 /** 用户与组织信息 */
@@ -80,6 +80,8 @@ const useUserStore = create<StateType & ActionsType>()(
           getUserByToken(token!),
           getSystemRoleMenu({}),
         ])
+        const groupId = resp1.data.groupId
+        get().fetchGroupTree(groupId)
         const m = {}
         resp2.data.rows.forEach((e) => {
           m[e.url] = e
@@ -109,8 +111,8 @@ const useUserStore = create<StateType & ActionsType>()(
           )
         }
       },
-      fetchGroupTree: async () => {
-        const resp = await getGroupTree()
+      fetchGroupTree: async (groupId: string) => {
+        const resp = await getGroupTree(groupId)
         set({ groupTree: resp.data }, false, 'fetchGroupTree')
       },
     }),

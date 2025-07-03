@@ -50,7 +50,7 @@ const videoRouter = createBrowserRouter([
     }
     useUserStore.getState().fetchUserInfoAndMenus()
     useUserStore.getState().fetchSystemInfo()
-    useUserStore.getState().fetchGroupTree()
+
     ReactDOM.createRoot(document.getElementById('root')!).render(
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen buttonPosition="bottom-left" />
