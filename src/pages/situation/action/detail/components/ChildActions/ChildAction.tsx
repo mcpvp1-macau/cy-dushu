@@ -180,49 +180,52 @@ const ChildAction: FC<PropsType> = memo(
             </IconButton>
             <span className="text-white">{data.actionItemName || '-'}</span>
           </div>
+          <OperatorBtns data={data} noEdit={noEdit} />
+        </div>
+        <div className="flex flex-col gap-1 text-xs">
           <div>
-            <OperatorBtns data={data} noEdit={noEdit} />
+            <span className="mr-1">
+              {t('action.detail.task.people.title')}:
+            </span>
+            <span>{pilotsStr || '-'}</span>
           </div>
-        </div>
-        <div>
-          <span className="mr-1">{t('action.detail.task.people.title')}:</span>
-          <span>{pilotsStr || '-'}</span>
-        </div>
-        <div className="flex gap-2 overflow-hidden">
-          <div className="grow flex overflow-hidden">
-            <span className="mr-1 text-nowrap">
-              {t('action.detail.task.device.title')}:
-            </span>
-            <div className="flex items-center gap-1 overflow-hidden">
-              {data.deviceId && (
-                <IconButton
-                  toolTipProps={{ title: t('common.detail') }}
-                  onClick={handleDetailClick}
-                >
-                  <IconDetail />
-                </IconButton>
-              )}
-              <p className="flex-1 truncate">{data.deviceName || '-'}</p>
-            </div>
-          </div>
-          <p className="shrink-0">
-            <span className="mr-1 text-nowrap">
-              {t('action.detail.task.status.title')}:
-            </span>
-            <span style={{ color: statusColor[data.status!] }}>
-              {taskStatusMap[i18n.language][data.status!]}
-            </span>
-          </p>
-        </div>
-        {data.taskTplId && (
-          <div>
-            <p>
+          <div className="flex gap-2 overflow-hidden">
+            <div className="grow flex overflow-hidden">
               <span className="mr-1 text-nowrap">
-                {t('wayline.title')}: {waylineNameMap?.[data.templateId] || '-'}
+                {t('action.detail.task.device.title')}:
+              </span>
+              <div className="flex items-center gap-1 overflow-hidden">
+                {data.deviceId && (
+                  <IconButton
+                    toolTipProps={{ title: t('common.detail') }}
+                    onClick={handleDetailClick}
+                  >
+                    <IconDetail />
+                  </IconButton>
+                )}
+                <p className="flex-1 truncate">{data.deviceName || '-'}</p>
+              </div>
+            </div>
+            <p className="shrink-0">
+              <span className="mr-1 text-nowrap">
+                {t('action.detail.task.status.title')}:
+              </span>
+              <span style={{ color: statusColor[data.status!] }}>
+                {taskStatusMap[i18n.language][data.status!]}
               </span>
             </p>
           </div>
-        )}
+          {data.taskTplId && (
+            <div>
+              <p>
+                <span className="mr-1 text-nowrap">
+                  {t('wayline.title')}:{' '}
+                  {waylineNameMap?.[data.templateId] || '-'}
+                </span>
+              </p>
+            </div>
+          )}
+        </div>
       </>
     )
   },

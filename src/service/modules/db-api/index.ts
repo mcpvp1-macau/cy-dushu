@@ -133,6 +133,20 @@ export const getDeviceOperateLogs = (data: {
 /** 获取设备容量枚举 */
 export const getDeviceCapacityEnum = () => {
   return serverDBAPI.post<API_DBAPI.res.GetDeviceCapacityEnumRes>(
-    'api/deviceCapacityEnum', {}
+    'api/deviceCapacityEnum',
+    {},
+  )
+}
+
+/** 获取密集数据 */
+export const getDensityStatistics = (data: {
+  actionId?: number
+  deviceId?: string
+  startTime: string
+  endTime: string
+}) => {
+  return serverDBAPI.post<API_DBAPI.res.GetDensityStatisticsRes>(
+    '/api/denseDataStatistics',
+    data,
   )
 }

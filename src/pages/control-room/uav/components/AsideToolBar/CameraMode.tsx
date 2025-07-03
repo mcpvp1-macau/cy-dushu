@@ -94,7 +94,7 @@ const CameraMode: FC<PropsType> = memo(() => {
       disabled={cameraModeMenuItems?.length === 0}
       menu={{
         items: cameraModeMenuItems,
-        activeKey: cameraMode,
+        openKeys: [cameraMode ?? 'NEVER'],
         onClick: (info) => {
           handleClick(info.key)
         },

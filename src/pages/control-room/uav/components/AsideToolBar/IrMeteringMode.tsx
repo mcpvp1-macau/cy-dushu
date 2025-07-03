@@ -50,7 +50,7 @@ const IrMeteringMode: FC<PropsType> = memo(({ postServiceFn }) => {
       }}
       menu={{
         items: menuItems,
-        activeKey: irMeteringMode,
+        openKeys: [irMeteringMode ?? 'NEVER'],
         onClick: (info) => {
           postServiceFn('irMeteringModeSet', {
             irMeteringMode: info.key,

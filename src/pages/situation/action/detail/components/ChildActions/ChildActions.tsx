@@ -2,13 +2,17 @@ import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
 import { getActionItemList } from '@/service/modules/action-item'
 import ChildAction from './ChildAction'
-import { Spin } from 'antd'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useBackTrackingStore } from '@/store/context-store/useBackTracking.store'
 import useVisibleCheck from './useVisibleCheck'
 import { shouldJson } from '@/utils/json'
 import ChildActionGroup from './ChildActionGroup'
 import { getAirlineTemplateList } from '@/service/modules/airline'
+import {
+  useGetDensityStatistics,
+  useListenRealDensityMap,
+} from '@/store/map/useDensityMap.store'
+import { Spin } from 'antd'
 
 type PropsType = {
   actionId: string
@@ -95,6 +99,26 @@ const ChildActions: FC<PropsType> = memo(({ actionId, isBacktracking }) => {
       airlineTemplateList?.map((e) => [e.templateId, e.taskName]) ?? [],
     )
   }, [airlineTemplateList])
+
+  const runningDeviceIds = useMemo(() => {
+    if (!data?.length) {
+      return new Set<string>()
+    }
+    const set = new Set<string>()
+    data.forEach((item) => {
+      if (item.status === 'PROCESSING' && item.deviceId) {
+        item.deviceId.split(',').forEach((deviceId) => {
+          if (deviceId) {
+            set.add(deviceId)
+          }
+        })
+      }
+    })
+    return set
+  }, [data])
+
+  useGetDensityStatistics({ actionId: Number(actionId ?? 0) })
+  useListenRealDensityMap((deviceId) => runningDeviceIds.has(deviceId))
 
   return (
     <>
