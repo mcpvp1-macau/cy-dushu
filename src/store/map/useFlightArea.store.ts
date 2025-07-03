@@ -2,8 +2,8 @@ import { create } from 'zustand'
 import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 
 type StateType = {
-  flightAreaGroupList: API_LAYER_OVERLAY.domain.Layer[]
-  flightAreaList: API_LAYER_OVERLAY.domain.Overlay[]
+  flightAreaGroupList: API_FLIGHT_AREA.domain.FlightAreaGroup[]
+  flightAreaList: API_FLIGHT_AREA.domain.FlightArea[]
 }
 
 type ActionsType = {

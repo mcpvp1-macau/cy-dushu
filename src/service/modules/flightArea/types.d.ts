@@ -3,6 +3,8 @@ declare namespace API_FLIGHT_AREA {
     type FlightAreaGroup = API_LAYER_OVERLAY.domain.Layer & {
       effectiveGroups: string
     }
+
+    type FlightArea = API_LAYER_OVERLAY.domain.Overlay
   }
 
   namespace req {
