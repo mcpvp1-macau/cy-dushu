@@ -10,11 +10,15 @@ const RightAddGeometry = lazy(
 const RightRangingPanel = lazy(
   () => import('@/pages/right/right-tools/Ranging'),
 )
+const RightAddFlightArea = lazy(
+  () => import('@/pages/right/right-tools/AddGeometry'),
+)
 
 const route = {
   [RightModeEnum.SET_POINT]: RightAddPoint,
   [RightModeEnum.DRAW_GEOMETRY]: RightAddGeometry,
   [RightModeEnum.RANGING]: RightRangingPanel,
+  [RightModeEnum.DRAW_FLIGHT_AREA]: RightAddFlightArea,
 }
 
 type PropsType = unknown

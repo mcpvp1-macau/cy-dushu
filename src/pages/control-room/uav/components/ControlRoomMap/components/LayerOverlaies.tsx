@@ -1,6 +1,7 @@
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import LayerOverlaies from '@/map/CesiumMap/components/service/Overlaies/Overlaies'
+import FlightAreas from '@/map/CesiumMap/components/service/FlightAreas/FlightAreas'
 import { useUavControlRoomLayoutStore } from '../../../hooks/useUavControlRoomLayout.store'
 
 type PropsType = unknown
@@ -54,6 +55,16 @@ const LayerOverlay: FC<PropsType> = () => {
         activeOrAppendTabAfterTab(overlayTab)
         updateOverlayDetailId(overlayId)
       }
+
+      if (id?.startsWith('flightArea--')) {
+        const overlayId = id.slice('flightArea--'.length)
+        // const overlayTab = {
+        //   key: 'overlay',
+        //   closeable: true,
+        // }
+        // activeOrAppendTabAfterTab(overlayTab)
+        updateOverlayDetailId(overlayId)
+      }
     }
 
     handler.setInputAction(
@@ -68,6 +79,7 @@ const LayerOverlay: FC<PropsType> = () => {
   return (
     <>
       <LayerOverlaies />
+      <FlightAreas />
     </>
   )
 }

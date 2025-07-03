@@ -8,12 +8,15 @@ import { useUavControlRoomLayoutStore } from '@/pages/control-room/uav/hooks/use
 import WirelessSituationTool from '@/components/right-tools/components/WirelessSituationTool'
 import IconVideoProjection from '@/assets/icons/jsx/IconVideoProjection'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
+import useMapDrawStore from '@/store/map/useDraw.store'
+import IconCreateFlightArea from '@/assets/icons/jsx/IconCreateFlightArea'
 
 type PropsType = unknown
 
 const RightTools: FC<PropsType> = memo(() => {
   const rightMode = useUavControlRoomLayoutStore((s) => s.mapRight)
   const updateRightMode = useUavControlRoomLayoutStore((s) => s.updateMapRight)
+  const updateIsFlightArea = useMapDrawStore((s) => s.updateIsFlightArea)
 
   const { t } = useTranslation()
 
@@ -49,7 +52,10 @@ const RightTools: FC<PropsType> = memo(() => {
               }}
               variant="borderless"
               active={rightMode === RightModeEnum.DRAW_GEOMETRY}
-              onClick={() => updateRightMode(RightModeEnum.DRAW_GEOMETRY)}
+              onClick={() => {
+                updateIsFlightArea(false)
+                updateRightMode(RightModeEnum.DRAW_GEOMETRY)
+              }}
             >
               <IconDrawArea />
             </FloatIconButton>
@@ -64,6 +70,21 @@ const RightTools: FC<PropsType> = memo(() => {
               onClick={() => updateRightMode(RightModeEnum.RANGING)}
             >
               <IconRangeFinder />
+            </FloatIconButton>
+            <FloatIconButton
+              toolTipProps={{
+                title: t('flightArea.create.title'),
+                placement: 'left',
+                mouseEnterDelay: 0.5,
+              }}
+              variant="borderless"
+              active={rightMode === RightModeEnum.DRAW_FLIGHT_AREA}
+              onClick={() => {
+                updateRightMode(RightModeEnum.DRAW_FLIGHT_AREA)
+                updateIsFlightArea(true)
+              }}
+            >
+              <IconCreateFlightArea />
             </FloatIconButton>
           </>
         </FloatIconButtonGroup>
