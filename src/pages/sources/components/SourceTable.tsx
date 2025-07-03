@@ -5,7 +5,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { Badge, Button, Input, Pagination } from 'antd'
+import { Badge, Input, Pagination } from 'antd'
 import { Link, useSearchParams } from 'react-router-dom'
 import OTAUpdateColumn from './OTAUpdateColumn'
 import DeviceData from './DeviceData'

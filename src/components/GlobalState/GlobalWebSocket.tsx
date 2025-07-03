@@ -15,6 +15,7 @@ import useReconstructionMapStore, {
 } from '@/store/map/useReconstructionMap.store'
 import { useAppNotification } from '@/hooks/useNotification'
 import { message as messageAntd } from 'antd'
+import { realDensityMapEmitter } from '@/store/map/useDensityMap.store'
 
 type PropsType = unknown
 
@@ -169,6 +170,20 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
       case 'DEVICE_EVENT':
         if (data.method === 'event.targetInfo.info') {
           handleRadarTarget(obj)
+        } else if (data.method === 'event.densityMap.info') {
+          const data2 = data.data as {
+            densityMap: {
+              h3Code: string
+              averageDensity: number
+            }[]
+            statisticalInterval: number
+            resolution: number
+            timestamp: number
+          }
+          realDensityMapEmitter.emit('densityMap', {
+            deviceId: obj.deviceId,
+            data: data2.densityMap,
+          })
         }
         break
     }

@@ -19,6 +19,7 @@ import ReconstructionLayer from '../CesiumMap/components/service/ReconstructionD
 import DeferredRender from '@/components/DeferredRender'
 import CesiumMap from '../CesiumMap'
 import PicutreOnMap from '../CesiumMap/components/service/PictureOnMap'
+import DensityMap from './DensityMap/DensityMap'
 
 type PropsType = unknown
 
@@ -47,6 +48,7 @@ const GlobalMap: FC<PropsType> = memo(() => {
           <Waylines />
           <ReconstructionLayer />
           <PicutreOnMap />
+          <DensityMap />
         </CesiumMap>
       </DeferredRender>
     </div>

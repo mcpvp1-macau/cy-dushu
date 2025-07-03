@@ -47,6 +47,10 @@ import MenuIconEvents from '@/assets/icons/jsx/menus/MenuIconEvents'
 import ControlRoomEventDetail from './components/EventDetail'
 import DeferredRender from '@/components/DeferredRender'
 import ControlParamsSetting from './components/ControlParamsSetting'
+import {
+  useGetDensityStatistics,
+  useListenRealDensityMap,
+} from '@/store/map/useDensityMap.store'
 
 type PropsType = unknown
 
@@ -171,6 +175,11 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
   )
 
   const { pathname } = useLocation()
+
+  useGetDensityStatistics({
+    deviceId: deviceId,
+  })
+  useListenRealDensityMap((id) => id === deviceId)
 
   return (
     <DeviceDetailStoreContext.Provider key={deviceId} value={store}>

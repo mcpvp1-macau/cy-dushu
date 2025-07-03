@@ -25,7 +25,7 @@ const TagItemV2: FC<PropsType> = memo((props) => {
 
   return (
     <div
-      className="text-xs inline-flex items-center gap-1 h-[18px] p-1 px-2 rounded-md"
+      className="text-xs inline-flex items-center gap-1 h-[18px] p-1 px-2 rounded-sm"
       style={{ color: foreColor, background: bgColor }}
     >
       {props.icon}
