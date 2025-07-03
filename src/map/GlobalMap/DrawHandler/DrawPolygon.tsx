@@ -8,6 +8,8 @@ import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
 import { createOverlay } from '@/service/modules/layer_overlay'
 import OverlayPolygon from '@/map/CesiumMap/components/service/Overlaies/OverlayPolygon'
 import { round } from 'lodash'
+import AddFlightAreaModal from './components/AddFlightAreaModal'
+import { createFlightArea } from '@/service/modules/flightArea'
 
 type PropsType = {
   onSuccess?: () => void
@@ -25,6 +27,15 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
   const drawingColor = useMapDrawStore((s) => s.drawingColor)
   const fillOpacity = useMapDrawStore((s) => s.fillOpacity)
   const lineStyle = useMapDrawStore((s) => s.lineStyle)
+  const isFlightArea = useMapDrawStore((s) => s.isFlightArea)
+
+  const createFn = useMemo(() => {
+    if (isFlightArea) {
+      return createFlightArea
+    } else {
+      return createOverlay
+    }
+  }, [isFlightArea])
 
   useEffect(() => {
     if (!viewer) {
@@ -117,7 +128,7 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
       overlayExtType: data.overlayExtType,
       cotType: CotType.SHAPE_POLYGON,
     }
-    await createOverlay(commitData)
+    await createFn(commitData)
     onSuccess?.()
     setFalse()
   }
@@ -131,15 +142,27 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
 
   return (
     <>
-      <AddFormModal
-        open={open}
-        onClose={() => {
-          setFalse()
-          setPaths([])
-          setEndPoint(null)
-        }}
-        onConfirm={handleConfirm}
-      />
+      {isFlightArea ? (
+        <AddFlightAreaModal
+          open={open}
+          onClose={() => {
+            setFalse()
+            setPaths([])
+            setEndPoint(null)
+          }}
+          onConfirm={handleConfirm}
+        />
+      ) : (
+        <AddFormModal
+          open={open}
+          onClose={() => {
+            setFalse()
+            setPaths([])
+            setEndPoint(null)
+          }}
+          onConfirm={handleConfirm}
+        />
+      )}
       {positions && viewer && (
         <OverlayPolygon
           data={''}

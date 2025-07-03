@@ -972,8 +972,20 @@ overlay:
       title: 测圆
     angle:
       title: 测角
+flightArea:
+  title: 飞行区域
+  create:
+    title: 创建飞行区域
+    form:
+      name: 飞行区域名称
+      layerName: 飞行区域分组名称
+      effectiveGroups: 生效组织
+    group:
+      tooltip: 创建飞行区域分组
+  edit:
+    title: 编辑飞行区域
   type:
-    title: 覆盖物类型
+    title: 飞行区域类型
     normal:
       title: 普通区域
       info: 仅做地理标记或地理区分的展示
@@ -988,7 +1000,7 @@ overlay:
       info: 适用于算法需要特别处理的区域，如数据分析区域
     noCountZone:
       title: 非计算区
-      info: 适用于算法忽略的区域，如非监控区域。
+      info: 适用于算法忽略的区域，如非监控区域
 tools:
   saveMapView:
     title: 保存地图视角
@@ -1081,9 +1093,11 @@ message:
   success:
     saveMapView: 地图视角保存成功
     save: 保存成功
+    delete: 删除成功
     savefile: 入库成功
   error:
     save: 保存失败
+    delete: 删除失败
     savefile: 上传失败
   warnning:
     delete: 是否删除!

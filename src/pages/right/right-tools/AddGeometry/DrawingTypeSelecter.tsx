@@ -9,6 +9,7 @@ type PropsType = {
 
 const DrawingTypeSelecter: FC<PropsType> = ({ onChange, lockedType }) => {
   const onChangeType = useMemoizedFn((val) => {
+    setType(val)
     onChange && onChange(val)
   })
 
@@ -33,15 +34,19 @@ const DrawingTypeSelecter: FC<PropsType> = ({ onChange, lockedType }) => {
     },
   ]
 
+  const [type, setType] = useState<DrawType>(opts[0].value)
+
   useEffect(() => {
-    onChangeType(opts[0].value)
+    onChangeType(type)
   }, [])
 
   const options = useMemo(() => {
     if (!lockedType) {
       return opts
     } else {
-      return opts.filter((item) => item.value === lockedType)
+      const newOpts = opts.filter((item) => item.value === lockedType)
+      setType(lockedType)
+      return newOpts
     }
   }, [lockedType])
 
@@ -50,7 +55,7 @@ const DrawingTypeSelecter: FC<PropsType> = ({ onChange, lockedType }) => {
       options={options}
       className="w-[100px]"
       onChange={onChangeType}
-      defaultValue={options[0]}
+      value={type}
       variant="borderless"
       size="small"
     />

@@ -8,8 +8,8 @@ import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
 import { createOverlay } from '@/service/modules/layer_overlay'
 import * as turf from '@turf/turf'
 import OverlayFan from '@/map/CesiumMap/components/service/Overlaies/OverlayFan'
-import { round } from 'lodash'
-import { number, re } from 'mathjs'
+import AddFlightAreaModal from './components/AddFlightAreaModal'
+import { createFlightArea } from '@/service/modules/flightArea'
 
 type PropsType = {
   onSuccess?: () => void
@@ -55,6 +55,15 @@ const DrawFan: FC<PropsType> = memo(({ onSuccess }) => {
   const drawingColor = useMapDrawStore((s) => s.drawingColor)
   const fillOpacity = useMapDrawStore((s) => s.fillOpacity)
   const lineStyle = useMapDrawStore((s) => s.lineStyle)
+  const isFlightArea = useMapDrawStore((s) => s.isFlightArea)
+
+  const createFn = useMemo(() => {
+    if (isFlightArea) {
+      return createFlightArea
+    } else {
+      return createOverlay
+    }
+  }, [isFlightArea])
 
   useEffect(() => {
     if (!viewer) {
@@ -173,21 +182,33 @@ const DrawFan: FC<PropsType> = memo(({ onSuccess }) => {
       overlayExtType: data.overlayExtType,
       cotType: CotType.SHAPE_FAN,
     }
-    await createOverlay(commitData)
+    await createFn(commitData)
     onSuccess?.()
     setFalse()
   }
 
   return (
     <>
-      <AddFormModal
-        open={open}
-        onClose={() => {
-          setFalse()
-          setDrawingPositions([])
-        }}
-        onConfirm={handleConfirm}
-      />
+      {isFlightArea ? (
+        <AddFlightAreaModal
+          open={open}
+          onClose={() => {
+            setFalse()
+            setDrawingPositions([])
+          }}
+          onConfirm={handleConfirm}
+        />
+      ) : (
+        <AddFormModal
+          open={open}
+          onClose={() => {
+            setFalse()
+            setDrawingPositions([])
+          }}
+          onConfirm={handleConfirm}
+        />
+      )}
+
       {viewer && (
         <OverlayFan
           data={''}

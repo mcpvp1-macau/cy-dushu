@@ -16,6 +16,7 @@ const AddGeometry: FC<PropsType> = (props) => {
   const { onClose } = props
   const updateRightMode = useRightMode((s) => s.updateRightMode)
   const updateDrawing = useMapDrawStore((s) => s.updateDrawing)
+  const isFlightArea = useMapDrawStore((s) => s.isFlightArea)
 
   const onCloseFn = useMemoizedFn(() => {
     updateDrawing(DrawType.None)
@@ -31,7 +32,7 @@ const AddGeometry: FC<PropsType> = (props) => {
         }}
       />
       <ColorSelecter />
-      <LineStyleSelecter />
+      <LineStyleSelecter showNoFly={isFlightArea} />
       <OpacityInput />
       <div className="flex items-center justify-center gap-2 ml-3">
         <IconClose

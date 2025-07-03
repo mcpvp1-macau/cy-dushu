@@ -8,6 +8,7 @@ import { useMapLayerAndOverlayConfigStore } from '@/store/map/useLayerAndOverlay
 import ShowCircle from './ShowCircle'
 import ShowPolygon from './ShowPolygon'
 import ShowFan from './ShowFan'
+import { RightModeEnum } from '@/enum/right-mode'
 
 type PropsType = unknown
 
@@ -15,6 +16,7 @@ type PropsType = unknown
 const LayerOverlaies: FC<PropsType> = memo(() => {
   const overlayList = useMapLayerAndOverlayStore((s) => s.overlayList)
   const isEdit = useMapDrawStore((s) => s.isEdit)
+  const rightMode = useRightMode((s) => s.rightMode)
   const detailId = useRightMode((s) => s.detailId)
   const hiddenOverlayIds = useMapLayerAndOverlayConfigStore(
     (s) => s.hiddenOverlayIds,
@@ -31,6 +33,9 @@ const LayerOverlaies: FC<PropsType> = memo(() => {
         filteredOverlays.push(item)
       }
     })
+
+    // 如果没有进入详情，更不会在编辑，所以直接返回隐藏后的数据
+    if (rightMode !== RightModeEnum.OVERLYA_DETAIL) return filteredOverlays
 
     // 再把编辑的去掉
     if (!detailId || !isEdit) {
@@ -55,16 +60,34 @@ const LayerOverlaies: FC<PropsType> = memo(() => {
               return <OverlayPoint key={overlay.overlayId} data={overlay} />
             }
             if (overlay.cotType === CotType.SHAPE_CIRCLE) {
-              return <ShowCircle key={overlay.overlayId} overlay={overlay} />
+              return (
+                <ShowCircle
+                  key={overlay.overlayId}
+                  overlayExtType={'overlay'}
+                  overlay={overlay}
+                />
+              )
             }
             if (
               overlay.cotType === CotType.SHAPE_POLYGON ||
               overlay.cotType === CotType.SHAPE_RECT
             ) {
-              return <ShowPolygon key={overlay.overlayId} overlay={overlay} />
+              return (
+                <ShowPolygon
+                  key={overlay.overlayId}
+                  overlayExtType={'overlay'}
+                  overlay={overlay}
+                />
+              )
             }
             if (overlay.cotType === CotType.SHAPE_FAN) {
-              return <ShowFan key={overlay.overlayId} overlay={overlay} />
+              return (
+                <ShowFan
+                  key={overlay.overlayId}
+                  overlayExtType={'overlay'}
+                  overlay={overlay}
+                />
+              )
             }
           })}
         </LabelCollection>

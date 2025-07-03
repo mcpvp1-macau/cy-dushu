@@ -21,6 +21,10 @@ const getOverlayType = (overlay: API_LAYER_OVERLAY.domain.Overlay) => {
 }
 
 const OverlayStyleEditor: FC<PropsType> = ({ overlay }) => {
+  const overlayType = useMemo(() => {
+    return getOverlayType(overlay)
+  }, [overlay])
+
   return (
     <div
       className={clsx(
@@ -29,7 +33,7 @@ const OverlayStyleEditor: FC<PropsType> = ({ overlay }) => {
         'bg-[#16202be6] rounded-[3px] backdrop-blur-sm text-white',
       )}
     >
-      <DrawingTypeSelecter lockedType={getOverlayType(overlay)} />
+      <DrawingTypeSelecter lockedType={overlayType} />
       <ColorSelecter />
       <LineStyleSelecter />
       <OpacityInput />

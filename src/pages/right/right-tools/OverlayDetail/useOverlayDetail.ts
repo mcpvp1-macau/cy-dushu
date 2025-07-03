@@ -144,7 +144,7 @@ const useOverlayDetail = (detailId: string | null, onDelete?: () => void) => {
     overlayName?: string
     color: AggregationColor
     remarks?: string
-    overlayExtType?: string
+    // overlayExtType?: string
   }>()
 
   useEffect(() => {
@@ -152,7 +152,7 @@ const useOverlayDetail = (detailId: string | null, onDelete?: () => void) => {
       overlayName: overlay?.overlayName,
       color: new AggregationColor(renderColor),
       remarks: styleConfig?.remarks,
-      overlayExtType: overlay?.overlayExtType || '',
+      // overlayExtType: overlay?.overlayExtType || '',
     })
   }, [styleConfig, renderColor])
 

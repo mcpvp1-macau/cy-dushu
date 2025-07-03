@@ -3,7 +3,7 @@ import * as Cesium from 'cesium'
 import CesiumGlobalPickEvent from './GlobalPickEvent'
 import BigFlyListener from './BigFlyListener'
 import CesiumDebug from './Debug'
-import LayerOverlay from './LayerOverlay'
+import OverlayAndFlightArea from './OverlayAndFlightArea'
 import OverlayEditor from './OverlayEditor'
 import MapSituation from './Situation'
 import MapViewSave from './MapViewSave'
@@ -33,7 +33,7 @@ const GlobalMap: FC<PropsType> = memo(() => {
           <DeviceMarkers />
           <CesiumGlobalPickEvent />
           <BigFlyListener />
-          <LayerOverlay />
+          <OverlayAndFlightArea />
           <OverlayEditor />
           <CesiumDebug />
           <MapSituation />

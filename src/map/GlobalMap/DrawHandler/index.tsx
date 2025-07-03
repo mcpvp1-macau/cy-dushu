@@ -18,6 +18,7 @@ type PropsType = unknown
 const DrawHandler: FC<PropsType> = memo(() => {
   const drawingType = useMapDrawStore((s) => s.drawing)
   const updateDrawingType = useMapDrawStore((s) => s.updateDrawing)
+  const isFlightArea = useMapDrawStore((s) => s.isFlightArea)
 
   const { t } = useTranslation()
 
@@ -37,10 +38,16 @@ const DrawHandler: FC<PropsType> = memo(() => {
   const handleSuccess = useMemoizedFn(async () => {
     updateDrawingType(DrawType.None)
     msgApi.success(t('common.success'))
-    await queryClient.invalidateQueries({
-      queryKey: ['overlayList'],
-      exact: false,
-    })
+    if (isFlightArea) {
+      await queryClient.invalidateQueries({
+        queryKey: ['getFlightAreaList'],
+      })
+    } else {
+      await queryClient.invalidateQueries({
+        queryKey: ['overlayList'],
+        exact: false,
+      })
+    }
   })
 
   if (drawingType === DrawType.Point) {

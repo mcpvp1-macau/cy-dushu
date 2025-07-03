@@ -24,33 +24,33 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
 
   const { t } = useTranslation()
 
-  const overlayExtTypeOptions = [
-    {
-      label: t('overlay.type.normal.title'),
-      value: '',
-      info: t('overlay.type.normal.info'),
-    },
-    {
-      label: t('overlay.type.electronicFence.title'),
-      value: 'ELECTRONIC_FENCE',
-      info: t('overlay.type.electronicFence.info'),
-    },
-    {
-      label: t('overlay.type.noFly.title'),
-      value: 'NO_FLY_ZONE',
-      info: t('overlay.type.noFly.info'),
-    },
-    {
-      label: t('overlay.type.countZone.title'),
-      value: 'AI_COUNT_ZONE',
-      info: t('overlay.type.countZone.info'),
-    },
-    {
-      label: t('overlay.type.noCountZone.title'),
-      value: 'NO_COUNT_ZONE',
-      info: t('overlay.type.noCountZone.info'),
-    },
-  ]
+  // const overlayExtTypeOptions = [
+  //   {
+  //     label: t('flightArea.type.normal.title'),
+  //     value: '',
+  //     info: t('flightArea.type.normal.info'),
+  //   },
+  //   {
+  //     label: t('flightArea.type.electronicFence.title'),
+  //     value: 'ELECTRONIC_FENCE',
+  //     info: t('flightArea.type.electronicFence.info'),
+  //   },
+  //   {
+  //     label: t('flightArea.type.noFly.title'),
+  //     value: 'NO_FLY_ZONE',
+  //     info: t('flightArea.type.noFly.info'),
+  //   },
+  //   {
+  //     label: t('flightArea.type.countZone.title'),
+  //     value: 'AI_COUNT_ZONE',
+  //     info: t('flightArea.type.countZone.info'),
+  //   },
+  //   {
+  //     label: t('flightArea.type.noCountZone.title'),
+  //     value: 'NO_COUNT_ZONE',
+  //     info: t('flightArea.type.noCountZone.info'),
+  //   },
+  // ]
 
   const {
     isEdit,
@@ -191,9 +191,9 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                 </Form.Item>
               </p>
 
-              <p className="flex gap-2">
+              {/* <p className="flex gap-2">
                 <span className="whitespace-nowrap">
-                  {t('overlay.type.title')}:
+                  {t('flightArea.type.title')}:
                 </span>
                 <Form.Item noStyle name="overlayExtType">
                   {isEdit ? (
@@ -223,7 +223,7 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                     </span>
                   )}
                 </Form.Item>
-              </p>
+              </p> */}
             </div>
           ) : (
             <AppEmpty />

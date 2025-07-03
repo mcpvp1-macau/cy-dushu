@@ -17,6 +17,7 @@ type PropsType = {
 }
 
 const MapOverlayConfig: FC<PropsType> = memo(({ data }) => {
+  const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const msgApi = useAppMsg()
   const queryClient = useQueryClient()
@@ -28,9 +29,9 @@ const MapOverlayConfig: FC<PropsType> = memo(({ data }) => {
     setLoading(true)
     try {
       await deleteOverlaies([data.overlayId])
-      msgApi.success('删除成功')
+      msgApi.success(t('message.success.delete'))
       if (
-        rightMode === RightModeEnum.POINT_DETAIL &&
+        rightMode === RightModeEnum.OVERLYA_DETAIL &&
         rightDetailId == String(data.overlayId)
       ) {
         useRightMode.setState({ rightMode: null })

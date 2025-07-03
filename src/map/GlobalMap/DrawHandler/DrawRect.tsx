@@ -7,8 +7,10 @@ import * as Cesium from 'cesium'
 import AddFormModal from './components/AddFormModal'
 import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
 import { createOverlay } from '@/service/modules/layer_overlay'
+import { createFlightArea } from '@/service/modules/flightArea'
 import OverlayPolygon from '@/map/CesiumMap/components/service/Overlaies/OverlayPolygon'
 import { round } from 'lodash'
+import AddFlightAreaModal from './components/AddFlightAreaModal'
 
 type PropsType = {
   onSuccess?: () => void
@@ -27,6 +29,15 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
   const drawingColor = useMapDrawStore((s) => s.drawingColor)
   const fillOpacity = useMapDrawStore((s) => s.fillOpacity)
   const lineStyle = useMapDrawStore((s) => s.lineStyle)
+  const isFlightArea = useMapDrawStore((s) => s.isFlightArea)
+
+  const createFn = useMemo(() => {
+    if (isFlightArea) {
+      return createFlightArea
+    } else {
+      return createOverlay
+    }
+  }, [isFlightArea])
 
   useEffect(() => {
     if (!viewer) {
@@ -140,7 +151,7 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
       overlayExtType: data.overlayExtType,
       cotType: CotType.SHAPE_RECT,
     }
-    await createOverlay(commitData)
+    await createFn(commitData)
     onSuccess?.()
     setFalse()
   }
@@ -160,15 +171,28 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
 
   return (
     <>
-      <AddFormModal
-        open={open}
-        onClose={() => {
-          setFalse()
-          setPivot(null)
-          setEndPoint(null)
-        }}
-        onConfirm={handleConfirm}
-      />
+      {isFlightArea ? (
+        <AddFlightAreaModal
+          open={open}
+          onClose={() => {
+            setFalse()
+            setPivot(null)
+            setEndPoint(null)
+          }}
+          onConfirm={handleConfirm}
+        />
+      ) : (
+        <AddFormModal
+          open={open}
+          onClose={() => {
+            setFalse()
+            setPivot(null)
+            setEndPoint(null)
+          }}
+          onConfirm={handleConfirm}
+        />
+      )}
+
       {positions && viewer && (
         <OverlayPolygon
           data={''}

@@ -2,6 +2,7 @@ import {
   getSystemInfo,
   getSystemRoleMenu,
   getUserByToken,
+  getGroupTree,
 } from '@/service/modules/user'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
@@ -43,15 +44,18 @@ type StateType = {
   systemInfo:
     | (API_USER.res.GetSystemInfoRes & { config: Record<string, any> })
     | null
+  /** 组织树 */
+  groupTree: API_USER.res.GetGroupTreeRes | null
 }
 
 type ActionsType = {
   logout: () => void
   fetchUserInfoAndMenus: () => void
   fetchSystemInfo: () => void
+  fetchGroupTree: () => void
 }
 
-/** 用户信息 */
+/** 用户与组织信息 */
 const useUserStore = create<StateType & ActionsType>()(
   devtools(
     (set, get) => ({
@@ -60,6 +64,7 @@ const useUserStore = create<StateType & ActionsType>()(
       menus: null,
       menuMap: null,
       systemInfo: null,
+      groupTree: null,
       // 登出
       logout: async () => {
         set({ token: null, user: null, menus: null }, false, 'logout')
@@ -103,6 +108,10 @@ const useUserStore = create<StateType & ActionsType>()(
             'fetchSystemInfo',
           )
         }
+      },
+      fetchGroupTree: async () => {
+        const resp = await getGroupTree()
+        set({ groupTree: resp.data }, false, 'fetchGroupTree')
       },
     }),
     {

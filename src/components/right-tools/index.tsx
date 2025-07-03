@@ -4,16 +4,19 @@ import FloatIconButtonGroup from '@/components/ui/button/FloatIconButton/FloatIc
 import IconDrawArea from '@/assets/icons/jsx/right-tools/IconDrawArea'
 import IconRangeFinder from '@/assets/icons/jsx/right-tools/IconRangeFinder'
 import IconSave from '@/assets/icons/jsx/IconSave'
+import IconCreateFlightArea from '@/assets/icons/jsx/IconCreateFlightArea'
 import { RightModeEnum } from '@/enum/right-mode'
 import useRightMode from '@/store/layout/useRightMode.store'
 import WirelessSituationTool from './components/WirelessSituationTool'
 import { mapViewSaveEmitter } from '@/map/GlobalMap/MapViewSave'
+import useMapDrawStore from '@/store/map/useDraw.store'
 
 type PropsType = unknown
 
 const RightTools: FC<PropsType> = memo(() => {
   const rightMode = useRightMode((s) => s.rightMode)
   const updateRightMode = useRightMode((s) => s.updateRightMode)
+  const updateIsFlightArea = useMapDrawStore((s) => s.updateIsFlightArea)
 
   const { t } = useTranslation()
 
@@ -42,7 +45,10 @@ const RightTools: FC<PropsType> = memo(() => {
               }}
               variant="borderless"
               active={rightMode === RightModeEnum.DRAW_GEOMETRY}
-              onClick={() => updateRightMode(RightModeEnum.DRAW_GEOMETRY)}
+              onClick={() => {
+                updateRightMode(RightModeEnum.DRAW_GEOMETRY)
+                updateIsFlightArea(false)
+              }}
             >
               <IconDrawArea />
             </FloatIconButton>
@@ -57,6 +63,21 @@ const RightTools: FC<PropsType> = memo(() => {
               onClick={() => updateRightMode(RightModeEnum.RANGING)}
             >
               <IconRangeFinder />
+            </FloatIconButton>
+            <FloatIconButton
+              toolTipProps={{
+                title: t('flightArea.create.title'),
+                placement: 'left',
+                mouseEnterDelay: 0.5,
+              }}
+              variant="borderless"
+              active={rightMode === RightModeEnum.DRAW_FLIGHT_AREA}
+              onClick={() => {
+                updateRightMode(RightModeEnum.DRAW_FLIGHT_AREA)
+                updateIsFlightArea(true)
+              }}
+            >
+              <IconCreateFlightArea />
             </FloatIconButton>
           </>
         </FloatIconButtonGroup>

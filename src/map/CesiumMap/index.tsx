@@ -15,6 +15,7 @@ import { Button } from 'antd'
 import MapSpace from '../LayerConfig/components/MapSpace/MapSpace'
 import LayerOverlay from '../LayerConfig/components/LayerOverlay/LayerOverlay'
 import Reconstruction3D from '../LayerConfig/components/Reconstruction3D/Reconstruction3D'
+import FlightAreaConfig from '../LayerConfig/components/FlightArea/FlightArea'
 import FloatIconButtonGroup from '@/components/ui/button/FloatIconButton/FloatIconButtonGroup'
 
 const HangzhouBanAreas = lazy(
@@ -113,6 +114,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
             <MapSpace />
             <LayerOverlay />
             <Reconstruction3D />
+            <FlightAreaConfig />
           </FloatIconButtonGroup>
           {globalConfig.useShanghaiBanRoutes && <ShanghaiWarZoneConfig />}
           <FloatIconButton onClick={toggle}>

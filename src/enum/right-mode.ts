@@ -3,7 +3,8 @@ export enum RightModeEnum {
   DRAW_POLYGON = 'drawPolygon',
   RANGING = 'ranging',
   SHOW_LAYER = 'showMapLayer',
-  POINT_DETAIL = 'pointDetail',
+  /**实际表示覆盖物详情，OverlayDetail */
+  OVERLYA_DETAIL = 'overlayDetail',
   MARKER_DETAIL = 'markerDetail',
   POLYGON_DETAIL = 'polygonDetail',
   CIRCLE_DETAIL = 'circleDetail',
@@ -19,5 +20,7 @@ export enum RightModeEnum {
   RADAR_TARGET = 'radarTarget',
   DRAW_SHAPE = 'drawShape',
   DRAW_GEOMETRY = 'drawGeometry',
+  DRAW_FLIGHT_AREA = 'drawFlightArea',
   RECONSTRUCTION_DETAIL = 'reconstructionDetail',
+  FLIGHT_AREA_DETAIL = 'flightAreaDetail',
 }

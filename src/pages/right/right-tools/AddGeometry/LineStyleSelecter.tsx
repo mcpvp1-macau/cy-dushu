@@ -7,11 +7,49 @@ import IconNoFly from '@/assets/icons/jsx/IconNoFly'
 import useMapDrawStore, { LineStyle } from '@/store/map/useDraw.store'
 import { useTranslation } from 'react-i18next'
 
-const LineStyleSelecter: FC = (props) => {
+type PropsType = {
+  showNoFly?: boolean
+}
+
+const LineStyleSelecter: FC<PropsType> = ({ showNoFly = false }) => {
   const lineStyle = useMapDrawStore((s) => s.lineStyle)
   const updateLineStyle = useMapDrawStore((s) => s.updateLineStyle)
 
   const { t } = useTranslation()
+
+  const options = useMemo(() => {
+    const options = [
+      {
+        label: (
+          <Tooltip title={t('overlay.drawing.lineStyle.solid')}>
+            <IconLine className="text-[30px]" />
+          </Tooltip>
+        ),
+        value: 'solid',
+      },
+      {
+        label: (
+          <Tooltip title={t('overlay.drawing.lineStyle.dashed')}>
+            <IconDashedLine className="text-[30px]" />
+          </Tooltip>
+        ),
+        value: 'dashed',
+      },
+    ]
+
+    if (showNoFly) {
+      options.push({
+        label: (
+          <Tooltip title={t('overlay.drawing.lineStyle.noFly')}>
+            <IconNoFly className="text-[30px]" />
+          </Tooltip>
+        ),
+        value: 'no-fly',
+      })
+    }
+
+    return options
+  }, [showNoFly])
 
   return (
     <Flex gap={6}>
@@ -19,32 +57,7 @@ const LineStyleSelecter: FC = (props) => {
         <div>{t('overlay.drawing.lineStyle.title')}：</div>
         <div className="flex items-cente w-[80px]">
           <Select
-            options={[
-              {
-                label: (
-                  <Tooltip title={t('overlay.drawing.lineStyle.solid')}>
-                    <IconLine className="text-[30px]" />
-                  </Tooltip>
-                ),
-                value: 'solid',
-              },
-              {
-                label: (
-                  <Tooltip title={t('overlay.drawing.lineStyle.dashed')}>
-                    <IconDashedLine className="text-[30px]" />
-                  </Tooltip>
-                ),
-                value: 'dashed',
-              },
-              {
-                label: (
-                  <Tooltip title={t('overlay.drawing.lineStyle.noFly')}>
-                    <IconNoFly className="text-[30px]" />
-                  </Tooltip>
-                ),
-                value: 'no-fly',
-              },
-            ]}
+            options={options}
             defaultValue={'solid'}
             size="small"
             value={lineStyle}

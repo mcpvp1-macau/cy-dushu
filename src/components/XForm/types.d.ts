@@ -55,6 +55,7 @@ export type XFormItem = CommonProps &
         type: 'tree-select'
         treeData: TreeSelectProps<any>['treeData']
         otherProps?: TreeSelectProps<any>
+        treeExpandAction?: TreeSelectProps<any>['treeExpandAction']
       }
     | {
         type: 'input-number'

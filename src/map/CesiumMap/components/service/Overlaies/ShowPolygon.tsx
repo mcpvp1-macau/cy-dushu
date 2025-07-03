@@ -4,10 +4,11 @@ import OverlayPolygon from './OverlayPolygon'
 import { argbToHex } from '@/utils/color'
 
 type PropsType = {
+  overlayExtType: 'overlay' | 'flightArea'
   overlay: API_LAYER_OVERLAY.domain.Overlay
 }
 
-const ShowPolygon: FC<PropsType> = ({ overlay }) => {
+const ShowPolygon: FC<PropsType> = ({ overlayExtType, overlay }) => {
   const { viewer } = useCesium()
 
   const positions = shouldJson(overlay.overlayPositions)
@@ -26,7 +27,7 @@ const ShowPolygon: FC<PropsType> = ({ overlay }) => {
     <>
       {viewer && (
         <OverlayPolygon
-          data={`overlay--${overlay.overlayId}`}
+          data={`${overlayExtType}--${overlay.overlayId}`}
           viewer={viewer}
           asynchronous={false}
           path={positions}

@@ -992,8 +992,21 @@ overlay:
       title: Circle
     angle:
       title: Angle
+flightArea:
+  title: Flight Area
+  create:
+    title: Create Flight Area
+    form:
+      name: Flight Area Name
+      layerName: Flight Area Group Name
+      effectiveGroups: Effective Groups
+  group:
+    create:
+      tooltip: Create Flight Area Group
+    edit:
+      title: Edit Flight Area Group
   type:
-    title: Overlay Type
+    title: Flight Area Type
     normal:
       title: Normal Area
       info: Only for geographic marking or geographic differentiation
@@ -1101,9 +1114,11 @@ message:
   success:
     saveMapView: Map view saved successfully
     save: Saved successfully
+    delete: Delete successfully
     savefile: Storage successful
   error:
     save: Save failed
+    delete: Delete failed
     savefile: Upload failed
   warnning:
     delete: Delete or not!

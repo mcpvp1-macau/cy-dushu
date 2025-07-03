@@ -9,7 +9,9 @@ import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
 import useMapDrawStore, { CotType } from '@/store/map/useDraw.store'
 import { createOverlay } from '@/service/modules/layer_overlay'
 import AddFormModal from './components/AddFormModal'
+import AddFlightAreaModal from './components/AddFlightAreaModal'
 import OverlayCircle from '@/map/CesiumMap/components/service/Overlaies/OverlayCircle'
+import { createFlightArea } from '@/service/modules/flightArea'
 
 type PropsType = {
   onSuccess?: () => void
@@ -19,6 +21,7 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
   const drawingColor = useMapDrawStore((s) => s.drawingColor)
   const lineStyle = useMapDrawStore((s) => s.lineStyle)
   const fillOpacity = useMapDrawStore((s) => s.fillOpacity)
+  const isFlightArea = useMapDrawStore((s) => s.isFlightArea)
 
   /**绘制的点 */
   const [drawingPositions, setDrawingPositions] = useState<[number, number][]>(
@@ -39,6 +42,14 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
   const [open, { setTrue, setFalse }] = useBoolean(false)
 
   const { viewer } = useCesium()
+
+  const createFn = useMemo(() => {
+    if (isFlightArea) {
+      return createFlightArea
+    } else {
+      return createOverlay
+    }
+  }, [isFlightArea])
 
   useEffect(() => {
     if (!viewer) {
@@ -164,20 +175,32 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
       cotType: CotType.SHAPE_CIRCLE,
     }
 
-    await createOverlay(commitData)
+    await createFn(commitData)
     onSuccess?.()
   }
 
   return (
     <>
-      <AddFormModal
-        open={open}
-        onClose={() => {
-          setFalse()
-          setDrawingPositions([])
-        }}
-        onConfirm={handleConfirm}
-      />
+      {isFlightArea ? (
+        <AddFlightAreaModal
+          open={open}
+          onClose={() => {
+            setFalse()
+            setDrawingPositions([])
+          }}
+          onConfirm={handleConfirm}
+        />
+      ) : (
+        <AddFormModal
+          open={open}
+          onClose={() => {
+            setFalse()
+            setDrawingPositions([])
+          }}
+          onConfirm={handleConfirm}
+        />
+      )}
+
       {viewer && (
         <OverlayCircle
           data={''}

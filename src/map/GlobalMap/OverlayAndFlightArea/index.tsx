@@ -4,10 +4,11 @@ import * as Cesium from 'cesium'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { RightModeEnum } from '@/enum/right-mode'
 import LayerOverlaies from '@/map/CesiumMap/components/service/Overlaies/Overlaies'
+import FlightAreas from '@/map/CesiumMap/components/service/FlightAreas/FlightAreas'
 
 type PropsType = unknown
 
-const LayerOverlay: FC<PropsType> = () => {
+const OverlayAndFlightArea: FC<PropsType> = () => {
   const updateRightMode = useRightMode((s) => s.updateRightMode)
   const updateDetailId = useRightMode((s) => s.updateDetailId)
 
@@ -26,12 +27,17 @@ const LayerOverlay: FC<PropsType> = () => {
         // 在这里处理双击事件，例如打印信息或执行其他操作
         if (id?.startsWith('overlay--')) {
           const overlayId = id.slice('overlay--'.length)
-          updateRightMode(RightModeEnum.POINT_DETAIL)
+          updateRightMode(RightModeEnum.OVERLYA_DETAIL)
           updateDetailId(overlayId)
         }
         if (id?.startsWith('reconstruction--')) {
           const overlayId = id.slice('reconstruction--'.length)
           updateRightMode(RightModeEnum.RECONSTRUCTION_DETAIL)
+          updateDetailId(overlayId)
+        }
+        if (id?.startsWith('flightArea--')) {
+          const overlayId = id.slice('flightArea--'.length)
+          updateRightMode(RightModeEnum.FLIGHT_AREA_DETAIL)
           updateDetailId(overlayId)
         }
       }
@@ -45,8 +51,11 @@ const LayerOverlay: FC<PropsType> = () => {
     <>
       <LayerPOI />
       <LayerOverlaies />
+      <FlightAreas />
     </>
   )
 }
 
-export default LayerOverlay
+OverlayAndFlightArea.displayName = 'OverlayAndFlightArea'
+
+export default OverlayAndFlightArea

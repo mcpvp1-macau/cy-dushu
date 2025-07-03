@@ -4,10 +4,11 @@ import OverlayFan from './OverlayFan'
 import { argbToHex } from '@/utils/color'
 
 type PropsType = {
+  overlayExtType: 'overlay' | 'flightArea'
   overlay: API_LAYER_OVERLAY.domain.Overlay
 }
 
-const ShowFan: FC<PropsType> = ({ overlay }) => {
+const ShowFan: FC<PropsType> = ({ overlayExtType, overlay }) => {
   const { viewer } = useCesium()
 
   const positions = shouldJson(overlay.overlayPositions) || []
@@ -26,7 +27,7 @@ const ShowFan: FC<PropsType> = ({ overlay }) => {
     <>
       {viewer && (
         <OverlayFan
-          data={`overlay--${overlay.overlayId}`}
+          data={`${overlayExtType}--${overlay.overlayId}`}
           viewer={viewer}
           asynchronous={false}
           positions={positions}

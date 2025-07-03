@@ -86,7 +86,7 @@ const XForm: FC<PropsType> = memo(
             <TreeSelect
               placeholder={item.placeholder ?? t('common.form.pleaseSelect')}
               treeData={item.treeData}
-              treeExpandAction={'click'}
+              treeExpandAction={item.treeExpandAction ?? 'click'}
               treeNodeFilterProp={'label'}
               showSearch={true}
               suffixIcon={<CaretDownFilled style={{ pointerEvents: 'none' }} />}

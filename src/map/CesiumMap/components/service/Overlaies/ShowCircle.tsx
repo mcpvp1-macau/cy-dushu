@@ -4,10 +4,11 @@ import OverlayCircle from './OverlayCircle'
 import { argbToHex } from '@/utils/color'
 
 type PropsType = {
+  overlayExtType: 'overlay' | 'flightArea'
   overlay: API_LAYER_OVERLAY.domain.Overlay
 }
 
-const ShowCircle: FC<PropsType> = ({ overlay }) => {
+const ShowCircle: FC<PropsType> = ({ overlayExtType, overlay }) => {
   const { viewer } = useCesium()
 
   const position = shouldJson(overlay.overlayPositions)?.[0]
@@ -26,7 +27,7 @@ const ShowCircle: FC<PropsType> = ({ overlay }) => {
     <>
       {viewer && (
         <OverlayCircle
-          data={`overlay--${overlay.overlayId}`}
+          data={`${overlayExtType}--${overlay.overlayId}`}
           viewer={viewer}
           asynchronous={false}
           center={[position[0], position[1]]}
