@@ -2,26 +2,50 @@ import IconAddMark from '@/assets/icons/jsx/right-tools/IconAddMark'
 import { ComponentRef, memo, type FC } from 'react'
 import CloseableHeader from '../../components/CloseableHeader'
 import useRightMode from '@/store/layout/useRightMode.store'
+import useMapDrawStore from '@/store/map/useDraw.store'
 import AppEmpty from '@/components/AppEmpty'
 import { shouldJson } from '@/utils/json'
 import IconButton from '@/components/ui/button/IconButton'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconEdit from '@/assets/icons/jsx/IconEdit'
-import { Form, Input } from 'antd'
-import { LoadingOutlined } from '@ant-design/icons'
+import { Form, Input, Select, Tooltip } from 'antd'
+import { InfoCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 import { CotType } from '@/store/map/useDraw.store'
 import IconDrawArea from '@/assets/icons/jsx/right-tools/IconDrawArea'
 import IconTick from '@/assets/icons/jsx/IconTick'
-import useOverlayDetail from './useOverlayDetail'
+import useFlightAreaDetail from './useFlightAreaDetail'
 import OverlayStyleEditor from '../AddGeometry/OverlayStyleEditor'
 import { createPortal } from 'react-dom'
 
 type PropsType = unknown
 
-const RightOverlayDetail: FC<PropsType> = memo(() => {
+const FlightAreaDetail: FC<PropsType> = memo(() => {
   const detailId = useRightMode((s) => s.detailId)
 
   const { t } = useTranslation()
+
+  const overlayExtTypeOptions = [
+    {
+      label: t('flightArea.type.electronicFence.title'),
+      value: 'ELECTRONIC_FENCE',
+      info: t('flightArea.type.electronicFence.info'),
+    },
+    {
+      label: t('flightArea.type.noFly.title'),
+      value: 'NO_FLY_ZONE',
+      info: t('flightArea.type.noFly.info'),
+    },
+    {
+      label: t('flightArea.type.countZone.title'),
+      value: 'AI_COUNT_ZONE',
+      info: t('flightArea.type.countZone.info'),
+    },
+    {
+      label: t('flightArea.type.noCountZone.title'),
+      value: 'NO_COUNT_ZONE',
+      info: t('flightArea.type.noCountZone.info'),
+    },
+  ]
 
   const {
     isEdit,
@@ -31,11 +55,20 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
     isConfirmLoading,
     form,
     overlay,
-    renderColor,
     styleConfig,
-  } = useOverlayDetail(detailId!, () => {
+  } = useFlightAreaDetail(detailId!, () => {
     updateRightMode(null)
   })
+
+  const updateIsFlightArea = useMapDrawStore((s) => s.updateIsFlightArea)
+
+  useEffect(() => {
+    if (isEdit) {
+      updateIsFlightArea(true)
+    } else {
+      updateIsFlightArea(false)
+    }
+  }, [isEdit])
 
   const updateRightMode = useRightMode((s) => s.updateRightMode)
 
@@ -55,12 +88,7 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                 )}
                 <Form.Item noStyle name="overlayName">
                   {isEdit ? (
-                    <Input
-                      ref={inputRef}
-                      size="small"
-                      // value={renameValue}
-                      // onChange={(e) => setRenameValue(e.currentTarget.value)}
-                    />
+                    <Input ref={inputRef} size="small" />
                   ) : (
                     <h6 className="text-white text-base max-w-[190px] truncate">
                       {overlay?.overlayName || '-'}
@@ -95,9 +123,6 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                         <IconEdit className="scale-90" />
                       </IconButton>
                     )}
-                    {/* <IconButton toolTipProps={{ title: '分享' }}>
-                  <IconShare className="scale-90" />
-                </IconButton> */}
                     <IconButton
                       toolTipProps={{ title: t('common.delete') }}
                       onClick={handleDelete}
@@ -129,23 +154,39 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                 </span>
               </p>
 
-              {/* <div className="flex gap-2 items-center">
-              {t('overlay.detail.color.title')}:
-              <Form.Item noStyle name="color">
-                {isEdit ? (
-                  <ColorPicker size="small" disabledAlpha />
-                ) : (
-                  <div className="text-white">
-                    <div
-                      className="w-3.5 h-3.5 rounded border border-solid border-white"
-                      style={{
-                        backgroundColor: renderColor,
+              <p className="flex gap-2">
+                <span className="whitespace-nowrap">
+                  {t('flightArea.type.title')}:
+                </span>
+                <Form.Item noStyle name="overlayExtType">
+                  {isEdit ? (
+                    <Select
+                      size="small"
+                      className="h-5 w-[140px]"
+                      options={overlayExtTypeOptions}
+                      optionRender={(option, { index }) => {
+                        return (
+                          <div className="flex items-center gap-3">
+                            <span>{option.label}</span>
+                            <Tooltip title={overlayExtTypeOptions[index].info}>
+                              <InfoCircleOutlined />
+                            </Tooltip>
+                          </div>
+                        )
                       }}
                     />
-                  </div>
-                )}
-              </Form.Item>
-            </div> */}
+                  ) : (
+                    <span className="text-white">
+                      {
+                        overlayExtTypeOptions.find(
+                          (item) =>
+                            item.value === (overlay?.overlayExtType || ''),
+                        )?.label
+                      }
+                    </span>
+                  )}
+                </Form.Item>
+              </p>
 
               <p className="flex gap-2">
                 <span className="whitespace-nowrap">
@@ -177,6 +218,6 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
   )
 })
 
-RightOverlayDetail.displayName = 'RightPointDetail'
+FlightAreaDetail.displayName = 'FlightAreaDetail'
 
-export default RightOverlayDetail
+export default FlightAreaDetail

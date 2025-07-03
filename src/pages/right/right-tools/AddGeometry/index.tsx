@@ -2,9 +2,8 @@ import DrawingTypeSelecter from './DrawingTypeSelecter'
 import ColorSelecter from './ColorSelecter'
 import LineStyleSelecter from './LineStyleSelecter'
 import OpacityInput from './OpacityInput'
-import IconFinish from '@/assets/icons/jsx/IconFinish'
 import IconClose from '@/assets/icons/jsx/IconClose'
-import useMapDrawStore, { DrawType, LineStyle } from '@/store/map/useDraw.store'
+import useMapDrawStore, { DrawType } from '@/store/map/useDraw.store'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { RightModeEnum } from '@/enum/right-mode'
 
@@ -17,6 +16,15 @@ const AddGeometry: FC<PropsType> = (props) => {
   const updateRightMode = useRightMode((s) => s.updateRightMode)
   const updateDrawing = useMapDrawStore((s) => s.updateDrawing)
   const isFlightArea = useMapDrawStore((s) => s.isFlightArea)
+  const lineStyle = useMapDrawStore((s) => s.lineStyle)
+  const updateLineStyle = useMapDrawStore((s) => s.updateLineStyle)
+
+  // 飞行区域转到普通绘制时，描边类型如果是禁飞区那就改为实线
+  useEffect(() => {
+    if (!isFlightArea && lineStyle === 'no-fly') {
+      updateLineStyle('solid')
+    }
+  }, [isFlightArea])
 
   const onCloseFn = useMemoizedFn(() => {
     updateDrawing(DrawType.None)

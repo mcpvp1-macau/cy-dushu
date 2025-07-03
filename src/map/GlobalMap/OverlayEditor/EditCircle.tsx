@@ -103,10 +103,7 @@ const EditCircle: React.FC<Props> = (props) => {
       return
     }
 
-    if (
-      pickResult?.primitive?.props?.slice('overlay--'.length) ==
-      overlay.overlayId
-    ) {
+    if (pickResult?.primitive?.props == overlay.overlayId) {
       moveIndex.current = -1
       // 禁止地球旋转和缩放，地球的旋转会对鼠标移动监听有影响，所以需要禁止
       viewer.scene.screenSpaceCameraController.enableRotate = false
@@ -191,7 +188,7 @@ const EditCircle: React.FC<Props> = (props) => {
   return (
     <>
       <OverlayCircle
-        data={`overlay--${overlay.overlayId}`}
+        data={`${overlay.overlayId}`}
         viewer={viewer}
         center={[lnglatHRadius[0], lnglatHRadius[1]]}
         radius={lnglatHRadius[3]}

@@ -24,7 +24,17 @@ const FlightAreas: FC<PropsType> = memo(() => {
   const overlays = useMemo(() => {
     if (rightMode !== RightModeEnum.FLIGHT_AREA_DETAIL) return flightAreaList
 
-    return flightAreaList
+    if (!detailId || !isEdit) {
+      return flightAreaList
+    } else {
+      const newOverlays: API_LAYER_OVERLAY.domain.Overlay[] = []
+      flightAreaList.forEach((item) => {
+        if (String(item.overlayId) !== detailId) {
+          newOverlays.push(item)
+        }
+      })
+      return newOverlays
+    }
   }, [detailId, flightAreaList, isEdit])
 
   return (

@@ -24,5 +24,9 @@ declare namespace API_FLIGHT_AREA {
       layerId: number
       effectiveGroups?: string
     }
+
+    type UpdateOverlayReq = API_LAYER_OVERLAY.req.UpdateOverlayReq & {
+      overlayExtType?: string
+    }
   }
 }

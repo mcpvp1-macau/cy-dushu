@@ -47,7 +47,7 @@ export const createFlightArea = (data: any) => {
 
 /** 更新飞行区域 */
 export const updateFlightArea = (
-  data: API_LAYER_OVERLAY.req.UpdateOverlayReq,
+  data: API_FLIGHT_AREA.req.UpdateOverlayReq,
 ) => {
   return serverJingqi.post('/zone/overlay/modify', data)
 }

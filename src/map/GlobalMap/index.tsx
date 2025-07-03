@@ -20,6 +20,7 @@ import DeferredRender from '@/components/DeferredRender'
 import CesiumMap from '../CesiumMap'
 import PicutreOnMap from '../CesiumMap/components/service/PictureOnMap'
 import DensityMap from './DensityMap/DensityMap'
+import FlightAreaEditor from './OverlayEditor/FlightAreaEditor'
 
 type PropsType = unknown
 
@@ -36,6 +37,7 @@ const GlobalMap: FC<PropsType> = memo(() => {
           <BigFlyListener />
           <OverlayAndFlightArea />
           <OverlayEditor />
+          <FlightAreaEditor />
           <CesiumDebug />
           <MapSituation />
           <MapViewSave />

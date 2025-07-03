@@ -2,7 +2,7 @@ import DrawingTypeSelecter from './DrawingTypeSelecter'
 import ColorSelecter from './ColorSelecter'
 import LineStyleSelecter from './LineStyleSelecter'
 import OpacityInput from './OpacityInput'
-import useMapDrawStore, { DrawType, LineStyle } from '@/store/map/useDraw.store'
+import useMapDrawStore, { DrawType } from '@/store/map/useDraw.store'
 import { CotType } from '@/store/map/useDraw.store'
 
 type PropsType = {
@@ -25,6 +25,8 @@ const OverlayStyleEditor: FC<PropsType> = ({ overlay }) => {
     return getOverlayType(overlay)
   }, [overlay])
 
+  const isFlightArea = useMapDrawStore((s) => s.isFlightArea)
+
   return (
     <div
       className={clsx(
@@ -35,7 +37,7 @@ const OverlayStyleEditor: FC<PropsType> = ({ overlay }) => {
     >
       <DrawingTypeSelecter lockedType={overlayType} />
       <ColorSelecter />
-      <LineStyleSelecter />
+      <LineStyleSelecter showNoFly={isFlightArea} />
       <OpacityInput />
     </div>
   )
