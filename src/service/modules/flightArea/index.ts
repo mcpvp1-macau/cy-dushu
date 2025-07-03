@@ -9,7 +9,7 @@ tip：
 
 /** 获取飞行区域分组 */
 export const getFlightAreaGroupList = (data: any = {}) => {
-  return serverJingqi.post<API_LAYER_OVERLAY.res.GetLayerListRes>(
+  return serverJingqi.post<API_FLIGHT_AREA.res.getFlightAreaGroupList>(
     '/zone/layer/list',
     data,
   )
@@ -34,7 +34,10 @@ export const deleteFlightAreaGroup = (layerId: number) => {
 
 /** 获取分组下的飞行区域列表 */
 export const getFlightAreaList = (data: { layerIds: number[] }) => {
-  return serverJingqi.post('/zone/overlay/list', data)
+  return serverJingqi.post<API_FLIGHT_AREA.res.getFlightAreaList>(
+    '/zone/overlay/list',
+    data,
+  )
 }
 
 /** 创建飞行区域 */

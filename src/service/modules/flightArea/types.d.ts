@@ -7,6 +7,14 @@ declare namespace API_FLIGHT_AREA {
     type FlightArea = API_LAYER_OVERLAY.domain.Overlay
   }
 
+  namespace res {
+    type getFlightAreaGroupList =
+      API_COMMON.PageRes<API_FLIGHT_AREA.domain.FlightAreaGroup>
+
+    type getFlightAreaList =
+      API_COMMON.PageRes<API_FLIGHT_AREA.domain.FlightArea>
+  }
+
   namespace req {
     type AddLayerReq = API_LAYER_OVERLAY.req.AddLayerReq & {
       effectiveGroups?: string
