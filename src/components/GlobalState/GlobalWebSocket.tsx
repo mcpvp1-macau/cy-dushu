@@ -261,6 +261,21 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
     })
   })
 
+  const handleFlightAreaMessage = useMemoizedFn((message: any, key: string) => {
+    notificationApi.success({
+      message: message,
+      duration: 0,
+      key,
+      style: {
+        backgroundColor: '#dd4444',
+        padding: '8px 0',
+        width: '280px',
+        borderRadius: '4px',
+      },
+      icon: <></>,
+    })
+  })
+
   // websocket message
   const handleMessage = useMemoizedFn((event: WebSocketEventMap['message']) => {
     const { type, message } = shouldJson(event.data) ?? {}
@@ -293,10 +308,10 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         handleReconstructionTaskEnd(message)
         break
       case 'NO_FLY_ZONE_WARN':
-        messageAntd.warning(message)
+        handleFlightAreaMessage(message, 'NO_FLY_ZONE_WARN')
         break
       case 'ELECTRONIC_FENCE_WARN':
-        messageAntd.warning(message)
+        handleFlightAreaMessage(message, 'ELECTRONIC_FENCE_WARN')
         break
     }
   })
