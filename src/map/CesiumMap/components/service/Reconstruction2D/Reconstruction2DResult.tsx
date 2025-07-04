@@ -11,21 +11,22 @@ type PropsType = {
 const Reconstruction2DResultItem: FC<PropsType> = memo(({ data }) => {
   const { viewer } = useCesium()
   const unmountedRef = useUnmountedRef()
-  const currentImagery = useRef<Cesium.ImageryProvider | null>(null)
+  const currentImagery = useRef<Cesium.ImageryLayer | null>(null)
   const latestUrl = useLatest(data.imageUrl)
 
   const addImageryProvider = useMemoizedFn(async () => {
     const imageUrl = data.imageUrl
+    console.log('imageUrl', imageUrl)
     const provider = (await TIFFImageryProvider.fromUrl(data.imageUrl, {
       projFunc: (code) => {
         if (code === 32650) {
           proj4.defs(
-            'EPSG:6326',
-            '+proj=utm +zone=50 +south +datum=WGS84 +units=m +no_defs +type=crs',
+            'EPSG:32650',
+            '+proj=utm +zone=50 +north +datum=WGS84 +units=m +no_defs +type=crs',
           )
           return {
-            project: proj4('EPSG:4326', 'EPSG:6326').forward,
-            unproject: proj4('EPSG:4326', 'EPSG:6326').inverse,
+            project: proj4('EPSG:4326', 'EPSG:32650').forward,
+            unproject: proj4('EPSG:4326', 'EPSG:32650').inverse,
           }
         }
       },
@@ -33,14 +34,14 @@ const Reconstruction2DResultItem: FC<PropsType> = memo(({ data }) => {
     if (unmountedRef.current || !viewer || imageUrl !== latestUrl.current) {
       return
     }
-    viewer.imageryLayers.addImageryProvider(
+
+    currentImagery.current = viewer.imageryLayers.addImageryProvider(
       provider as unknown as Cesium.ImageryProvider,
     )
-    currentImagery.current = provider
   })
 
   useEffect(() => {
-    if (!viewer) {
+    if (!viewer || !data.imageUrl) {
       return
     }
 
@@ -50,8 +51,7 @@ const Reconstruction2DResultItem: FC<PropsType> = memo(({ data }) => {
   useEffect(() => {
     return () => {
       if (currentImagery.current && viewer) {
-        // @ts-ignore
-        // viewer.imageryLayers.remove(currentImagery.current, true)
+        viewer.imageryLayers.remove(currentImagery.current, true)
       }
     }
   }, [viewer])
