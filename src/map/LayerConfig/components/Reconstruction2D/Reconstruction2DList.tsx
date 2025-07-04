@@ -26,7 +26,7 @@ const Reconstruction2DList: FC<PropsType> = memo(({ searchKw }) => {
 
   return (
     <ul className="flex flex-col gap-2 m-3">
-      {list.map((e) => (
+      {renderList.map((e) => (
         <li key={e.id} className="flex justify-between">
           <span>{e.name}</span>
           <IconButton>
