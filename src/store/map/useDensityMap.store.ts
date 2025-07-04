@@ -3,6 +3,7 @@ import mitt from 'mitt'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { getResolution } from 'h3-js'
+import { dft } from '@/constant/time-fmt'
 
 type StateType = {
   /** 历史 (丁串串) */
@@ -21,11 +22,13 @@ type StateType = {
       color: string
     }
   >
+  densityMapExpiration: number
 }
 
 type ActionsType = {
   updateDensityMap: (data: StateType['densityMap']) => void
   updateRealDensityMap: (data: StateType['realDensityMap']) => void
+  updateDensityMapExpiration: (data: number) => void
 }
 
 const useDensityMapStore = create<StateType & ActionsType>()(
@@ -33,11 +36,15 @@ const useDensityMapStore = create<StateType & ActionsType>()(
     (set) => ({
       densityMap: new Map(),
       realDensityMap: new Map(),
+      densityMapExpiration: 60, // 默认 60 分钟
       updateDensityMap: (data) => {
         set({ densityMap: data }, false, 'updateDensityMap')
       },
       updateRealDensityMap: (data) => {
         set({ realDensityMap: data }, false, 'updateRealDensityMap')
+      },
+      updateDensityMapExpiration: (data) => {
+        set({ densityMapExpiration: data }, false, 'updateDensityMapExpiration')
       },
     }),
     {
@@ -100,16 +107,19 @@ export const getCrowdedColor = (
 export const useGetDensityStatistics = (payload: {
   actionId?: number
   deviceId?: string
+  expireTime?: number
 }) => {
   const queryClient = useQueryClient()
   const { data } = useQuery(
     {
-      queryKey: ['densityStatistics'],
+      queryKey: ['densityStatistics', payload],
       queryFn: () =>
         getDensityStatistics({
           ...payload,
-          startTime: '1970-01-01 00:00:00',
-          endTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+          startTime: payload.expireTime
+            ? dayjs().subtract(payload.expireTime, 'minute').format(dft)
+            : '1970-01-01 00:00:00',
+          endTime: dayjs().format(dft),
         }),
       select: (data) => data.data,
     },

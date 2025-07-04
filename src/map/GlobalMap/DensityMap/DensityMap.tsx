@@ -4,8 +4,6 @@ import useDensityMapStore from '@/store/map/useDensityMap.store'
 type PropsType = unknown
 
 const DensityMap: FC<PropsType> = memo(() => {
-  // const { viewer } = useCesium()
-
   const historydensityMap = useDensityMapStore((s) => s.densityMap)
   const realDensityMap = useDensityMapStore((s) => s.realDensityMap)
 

@@ -1,11 +1,11 @@
 import { ConfigProvider, Form, GetProps } from 'antd'
-import { useLayoutEffect, type FC } from 'react'
+import { ReactNode, useLayoutEffect, type FC } from 'react'
 import XForm from '../index'
 import XModal from '@/components/XModal'
 
-type PropsType = GetProps<typeof XForm> & {
+type PropsType = Omit<GetProps<typeof XForm>, 'title'> & {
   width?: string
-  title: string
+  title?: ReactNode
   open?: boolean
   /** FormModal 内部自动会处理 loading 状态 */
   confirmLoading?: boolean
