@@ -268,9 +268,10 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
       key,
       style: {
         backgroundColor: '#dd4444',
-        padding: '8px 0',
-        width: '280px',
+        padding: '8px 20px 8px 0px',
+        width: 'fit-content',
         borderRadius: '4px',
+        whiteSpace: 'nowrap',
       },
       icon: <></>,
     })
