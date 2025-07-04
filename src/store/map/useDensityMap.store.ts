@@ -168,10 +168,9 @@ export const useListenRealDensityMap = (
       if (!filterFn(deviceId)) {
         return
       }
-      const realDensityMap = new Map<
-        string,
-        { h3Code: string; color: string }
-      >()
+      const realDensityMap = new Map<string, { h3Code: string; color: string }>(
+        useDensityMapStore.getState().realDensityMap.entries(),
+      )
 
       data.forEach((item) => {
         realDensityMap.set(item.h3Code, {
@@ -182,7 +181,6 @@ export const useListenRealDensityMap = (
           ),
         })
       })
-
       useDensityMapStore.getState().updateRealDensityMap(realDensityMap)
     }
 
