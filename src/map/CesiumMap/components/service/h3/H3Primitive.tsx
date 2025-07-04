@@ -60,7 +60,7 @@ const H3Primitive: FC<PropsType> = memo((data) => {
     viewer.scene.primitives.add(outlinePrimitive)
 
     return () => {
-      if (viewer.scene?.primitives) {
+      if (viewer?.scene?.primitives) {
         // 清除所有的H3图形
         viewer.scene.primitives.remove(primitive)
         viewer.scene.primitives.remove(outlinePrimitive)

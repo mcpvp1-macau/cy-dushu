@@ -51,6 +51,7 @@ import {
   useGetDensityStatistics,
   useListenRealDensityMap,
 } from '@/store/map/useDensityMap.store'
+import { useListenRealProcessedResults } from '@/store/map/useReconstruction2DMap.store'
 
 type PropsType = unknown
 
@@ -179,7 +180,9 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
   useGetDensityStatistics({
     deviceId: deviceId,
   })
+
   useListenRealDensityMap((id) => id === deviceId)
+  useListenRealProcessedResults((id) => id === deviceId)
 
   return (
     <DeviceDetailStoreContext.Provider key={deviceId} value={store}>

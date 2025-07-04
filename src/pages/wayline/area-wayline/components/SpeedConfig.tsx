@@ -17,7 +17,7 @@ const SpeedConfig: FC<PropsType> = memo(() => {
         className="mt-3"
         value={speed}
         unit="m"
-        min={5}
+        min={1}
         max={15}
         onChange={(e) => {
           setAirlineConfig({

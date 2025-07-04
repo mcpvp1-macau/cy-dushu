@@ -14,8 +14,8 @@ import useReconstructionMapStore, {
   reconstructionMitt,
 } from '@/store/map/useReconstructionMap.store'
 import { useAppNotification } from '@/hooks/useNotification'
-import { message as messageAntd } from 'antd'
 import { realDensityMapEmitter } from '@/store/map/useDensityMap.store'
+import { processEventImageDataEmitter } from '@/store/map/useReconstruction2DMap.store'
 
 type PropsType = unknown
 
@@ -276,6 +276,31 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
       icon: <></>,
     })
   })
+  interface ImageData {
+    requestId: string
+    actionId: number
+    deviceId: string
+    index: number
+    imageUrl: string // 图片地址
+    taskDone: boolean // 是否已完成，为true时imageUrl为合成的大图
+    imageType: 'jpeg' | 'tiff' // jpeg/tiff
+    meta?: {
+      // 图片格式为 tiff 时为空
+      absoluteAltitude: number
+      gimbalPitch: number
+      gimbalRoll: number
+      gimbalYaw: number
+      gpsLatitude: number
+      gpsLongitude: number
+      lenType: 'WIDE' | 'IR' | 'ZOOM' // WIDE/IR/ZOOM
+      productName: string // 有镜头型号使用镜头型号，没有镜头使用无人机型号，如 H30T,ZH20T,M30T,M3TD,M4TD
+      relativeAltitude: number
+    }
+  }
+  /** 处理二维重建结果 */
+  const handle2DResult = useMemoizedFn((message: ImageData) => {
+    processEventImageDataEmitter.emit('processEventImageData', message)
+  })
 
   // websocket message
   const handleMessage = useMemoizedFn((event: WebSocketEventMap['message']) => {
@@ -313,6 +338,9 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         break
       case 'ELECTRONIC_FENCE_WARN':
         handleFlightAreaMessage(message, 'ELECTRONIC_FENCE_WARN')
+        break
+      case 'TWO_DIMENSION_RESULT':
+        handle2DResult(message)
         break
     }
   })

@@ -1,4 +1,4 @@
-import H3Primitive from '@/map/CesiumMap/components/H3Primitive'
+import H3Primitive from '@/map/CesiumMap/components/service/h3/H3Primitive'
 import useDensityMapStore from '@/store/map/useDensityMap.store'
 
 type PropsType = unknown

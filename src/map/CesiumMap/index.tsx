@@ -17,6 +17,7 @@ import LayerOverlay from '../LayerConfig/components/LayerOverlay/LayerOverlay'
 import Reconstruction3D from '../LayerConfig/components/Reconstruction3D/Reconstruction3D'
 import FlightAreaConfig from '../LayerConfig/components/FlightArea/FlightArea'
 import FloatIconButtonGroup from '@/components/ui/button/FloatIconButton/FloatIconButtonGroup'
+import Reconstruction2D from '../LayerConfig/components/Reconstruction2D/Reconstruction2D'
 
 const HangzhouBanAreas = lazy(
   () => import('./components/custom/HangzhouBanAreas'),
@@ -98,7 +99,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
       <DefaultImageryLayer />
       <CustomImageryLayer />
       <CesiumDefaultConfig />
-      {/* {globalConfig.useTerrain && <CustomCesiumGlobalTerrain />} */}
+      {globalConfig.useTerrain && <CustomCesiumGlobalTerrain />}
       <Suspense
         fallback={
           <div className="absolute inset-0 bg-ground-1/20 backdrop-blur-sm flex justify-center items-center">
@@ -115,6 +116,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
             <LayerOverlay />
             <Reconstruction3D />
             <FlightAreaConfig />
+            <Reconstruction2D />
           </FloatIconButtonGroup>
           {globalConfig.useShanghaiBanRoutes && <ShanghaiWarZoneConfig />}
           <FloatIconButton onClick={toggle}>

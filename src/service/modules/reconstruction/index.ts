@@ -60,3 +60,16 @@ export const startBuild = (data: API_RECONSTRUCTION.req.StartBuild) => {
     data,
   )
 }
+
+/** 获取二维重建结果列表 */
+export const getReconstruction2DList = (data: {
+  actionId?: number
+  deviceId?: string
+  startTime?: string
+  endTime?: string
+}) => {
+  return serverJingqi.post<API_RECONSTRUCTION.res.GetReconstruction2DList>(
+    '/reconstruction/twoDimension/list',
+    data,
+  )
+}
