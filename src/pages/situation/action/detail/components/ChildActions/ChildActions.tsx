@@ -13,6 +13,7 @@ import {
   useListenRealDensityMap,
 } from '@/store/map/useDensityMap.store'
 import { Spin } from 'antd'
+import { useListenRealProcessedResults } from '@/store/map/useReconstruction2DMap.store'
 
 type PropsType = {
   actionId: string
@@ -119,6 +120,7 @@ const ChildActions: FC<PropsType> = memo(({ actionId, isBacktracking }) => {
 
   useGetDensityStatistics({ actionId: Number(actionId ?? 0) })
   useListenRealDensityMap((deviceId) => runningDeviceIds.has(deviceId))
+  useListenRealProcessedResults((_, actId) => actId === Number(actionId ?? 0))
 
   return (
     <>

@@ -39,6 +39,40 @@ declare namespace API_RECONSTRUCTION {
     imagesFolderPath: string
   }
 
+  interface Reconstruction2DListItem {
+    id: number
+    actionId: number
+    deviceId: string
+    name: string
+    gmtCreateBy: string
+    gmtCreate: string
+    imageUrl: string // 大图地址
+    imageType: 'jpeg' | 'tiff' // jpeg/tiff
+    processNum: number
+    process: ProcessItem[]
+  }
+
+  interface ProcessItem {
+    requestId: string
+    actionId: number
+    deviceId: string
+    index: number
+    imageUrl: string // 过程图地址
+    imageType: 'jpeg' | 'tiff' // jpeg/tiff
+    meta: {
+      // 图片格式为 tiff 时为空
+      absoluteAltitude?: number
+      gimbalPitch?: number
+      gimbalRoll?: number
+      gimbalYaw?: number
+      gpsLatitude?: number
+      gpsLongitude?: number
+      lenType?: 'WIDE' | 'IR' | 'ZOOM' // WIDE/IR/ZOOM
+      productName?: string // 有镜头型号使用镜头型号，没有镜头使用无人机型号，如 H30T,ZH20T,M30T,M3TD,M4TD
+      relativeAltitude?: number
+    }
+  }
+
   namespace req {
     type GetLayerList = {
       layerIds: number[]
@@ -91,5 +125,6 @@ declare namespace API_RECONSTRUCTION {
       requestId: string
       success: boolean
     }
+    type GetReconstruction2DList = Reconstruction2DListItem[]
   }
 }
