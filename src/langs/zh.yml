@@ -980,6 +980,7 @@ flightArea:
       name: 飞行区域名称
       layerName: 飞行区域分组名称
       effectiveGroups: 生效组织
+      effective: 生效范围
     group:
       tooltip: 创建飞行区域分组
   edit:

@@ -17,7 +17,8 @@ declare namespace API_FLIGHT_AREA {
 
   namespace req {
     type AddLayerReq = API_LAYER_OVERLAY.req.AddLayerReq & {
-      effectiveGroups?: string
+      effectiveGroups: string
+      effectiveDevices: string
     }
 
     type UpdateLayerReq = API_LAYER_OVERLAY.req.AddLayerReq & {

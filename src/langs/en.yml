@@ -1000,6 +1000,7 @@ flightArea:
       name: Flight Area Name
       layerName: Flight Area Group Name
       effectiveGroups: Effective Groups
+      effective: Effective Range
   group:
     create:
       tooltip: Create Flight Area Group

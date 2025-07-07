@@ -8,7 +8,7 @@ import { groupBy } from 'lodash'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import useFlightAreaStore from '@/store/map/useFlightArea.store'
 import FlightAreaItemConfig from './FlightAreaConfig'
-import EditFlightAreaGroup from './EditFlightAreaGroup'
+import EditFlightAreaGroup from './AddFlightAreaGroup'
 import { deleteFlightAreaGroup } from '@/service/modules/flightArea'
 
 type PropsType = {
@@ -74,7 +74,7 @@ const FlightAreaGroupConfig: FC<PropsType> = memo((props) => {
                 )}
               </IconButton> */}
 
-              <EditFlightAreaGroup data={layerGroup} />
+              <EditFlightAreaGroup data={layerGroup} type="edit" />
 
               {layerGroup.layerType !== 'DEFAULT' && (
                 <IconButton

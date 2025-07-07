@@ -92,7 +92,7 @@ const FlightAreaConfig: FC<PropsType> = memo(() => {
             </div>
             <FlightAreaGroupConfig searchKw={kw} searchType={type} />
             <div className="p-3">
-              <AddFlightAreaGroup />
+              <AddFlightAreaGroup type="add" />
             </div>
           </div>
         </XModal>
