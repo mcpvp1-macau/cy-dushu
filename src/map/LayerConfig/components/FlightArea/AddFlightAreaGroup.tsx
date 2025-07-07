@@ -3,7 +3,10 @@ import IconEdit from '@/assets/icons/jsx/IconEdit'
 import IconButton from '@/components/ui/button/IconButton'
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
-import { addFlightAreaGroup } from '@/service/modules/flightArea'
+import {
+  addFlightAreaGroup,
+  updateFlightAreaGroup,
+} from '@/service/modules/flightArea'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import useUserStore, { type GroupDeviceTree } from '@/store/useUser.store'
 import { Button, TreeSelect } from 'antd'
@@ -90,11 +93,22 @@ export const AddFlightAreaGroup: FC<PropsAddType | PropsEditType> = (props) => {
   const [isOpened, { setTrue: open, setFalse: close }] = useBoolean(false)
   const queryClient = useQueryClient()
   const handleConfirm = async (values: any) => {
-    const data = await addFlightAreaGroup({
-      layerName: values.layerName,
-      effectiveGroups: groupIds.join(','),
-      effectiveDevices: deviceIds.join(','),
-    })
+    let data
+    if (props.type === 'add') {
+      data = await addFlightAreaGroup({
+        layerName: values.layerName,
+        effectiveGroups: groupIds.join(','),
+        effectiveDevices: deviceIds.join(','),
+      })
+    } else {
+      data = await updateFlightAreaGroup({
+        layerId: props.data.layerId,
+        layerName: values.layerName,
+        effectiveGroups: groupIds.join(','),
+        effectiveDevices: deviceIds.join(','),
+      })
+    }
+
     if (data.code === 'SUCCESS') {
       msgApi.success(t('api.success.msg'))
     } else {
@@ -168,7 +182,11 @@ export const AddFlightAreaGroup: FC<PropsAddType | PropsEditType> = (props) => {
       )}
 
       <FormModal
-        title={t('flightArea.create.group.tooltip')}
+        title={
+          props.type === 'add'
+            ? t('flightArea.create.group.tooltip')
+            : t('flightArea.edit.group.tooltip')
+        }
         mask
         open={isOpened}
         onClose={close}
@@ -177,7 +195,7 @@ export const AddFlightAreaGroup: FC<PropsAddType | PropsEditType> = (props) => {
           layerName: props?.type === 'edit' ? props.data?.layerName : '',
           effective:
             props?.type === 'edit'
-              ? props.data?.effectiveGroups.split(',')
+              ? props.data?.effectiveDevices?.split(',')
               : [],
         }}
         onConfirm={handleConfirm}

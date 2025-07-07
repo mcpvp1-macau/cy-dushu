@@ -2,6 +2,7 @@ declare namespace API_FLIGHT_AREA {
   namespace domain {
     type FlightAreaGroup = API_LAYER_OVERLAY.domain.Layer & {
       effectiveGroups: string
+      effectiveDevices: string
     }
 
     type FlightArea = API_LAYER_OVERLAY.domain.Overlay
@@ -23,7 +24,8 @@ declare namespace API_FLIGHT_AREA {
 
     type UpdateLayerReq = API_LAYER_OVERLAY.req.AddLayerReq & {
       layerId: number
-      effectiveGroups?: string
+      effectiveGroups: string
+      effectiveDevices: string
     }
 
     type UpdateOverlayReq = API_LAYER_OVERLAY.req.UpdateOverlayReq & {

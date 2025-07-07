@@ -986,6 +986,8 @@ flightArea:
       tooltip: 创建飞行区域分组
   edit:
     title: 编辑飞行区域
+    group:
+      tooltip: 编辑飞行区域分组
   type:
     title: 飞行区域类型
     normal:
