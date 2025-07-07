@@ -6,6 +6,7 @@ import Reconstruction2DList from './Reconstruction2DList'
 
 type PropsType = unknown
 
+/** 地图 二维图 列表框 */
 const Reconstruction2D: FC<PropsType> = memo(() => {
   const { t } = useTranslation()
   const [open, { toggle }] = useBoolean()
@@ -13,12 +14,21 @@ const Reconstruction2D: FC<PropsType> = memo(() => {
 
   return (
     <>
-      <FloatIconButton variant="borderless">
-        <IconReconstruction2D onClick={toggle} />
+      <FloatIconButton
+        variant="borderless"
+        toolTipProps={{
+          title: t('common.2dMap'),
+          placement: 'left',
+          mouseEnterDelay: 0.5,
+        }}
+        active={open}
+        onClick={toggle}
+      >
+        <IconReconstruction2D />
       </FloatIconButton>
       {open && (
         <XModal
-          title="二维图"
+          title={t('common.2dMap')}
           open={open}
           width={350}
           footer={false}

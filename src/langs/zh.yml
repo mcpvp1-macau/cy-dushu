@@ -536,6 +536,7 @@ common:
   pictureData: 图片数据
   mapPlotting: 标绘
   all: 所有
+  2dMap: 二维图
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索

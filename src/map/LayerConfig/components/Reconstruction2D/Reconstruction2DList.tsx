@@ -1,3 +1,4 @@
+import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
 import IconVisible from '@/assets/icons/jsx/IconVisible'
 import AppEmpty from '@/components/AppEmpty'
 import IconButton from '@/components/ui/button/IconButton'
@@ -20,17 +21,33 @@ const Reconstruction2DList: FC<PropsType> = memo(({ searchKw }) => {
     [list, searchKw],
   )
 
+  const hiddenSet = useReconstruction2DMapStore(
+    (s) => s.hiddenReconstruction2DSet,
+  )
+
   if (renderList.length === 0) {
     return <AppEmpty />
   }
 
   return (
     <ul className="flex flex-col gap-2 m-3">
-      {list.map((e) => (
+      {renderList.map((e) => (
         <li key={e.id} className="flex justify-between">
           <span>{e.name}</span>
-          <IconButton>
-            <IconVisible />
+          <IconButton
+            onClick={() => {
+              const newSet = new Set(hiddenSet)
+              if (newSet.has(e.id)) {
+                newSet.delete(e.id)
+              } else {
+                newSet.add(e.id)
+              }
+              useReconstruction2DMapStore
+                .getState()
+                .updateHiddenReconstruction2DSet(newSet)
+            }}
+          >
+            {hiddenSet.has(e.id) ? <IconNotVisible /> : <IconVisible />}
           </IconButton>
         </li>
       ))}

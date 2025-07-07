@@ -23,6 +23,11 @@ import PickEvent from './components/PickEvent'
 import PicutreOnMap from '@/map/CesiumMap/components/service/PictureOnMap'
 import CitySituation from './components/CitySituation/CitySituation'
 import DensityMap from '@/map/GlobalMap/DensityMap/DensityMap'
+import useDensityMapStore, {
+  useGetDensityStatistics,
+  useListenRealDensityMap,
+} from '@/store/map/useDensityMap.store'
+import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 
 type PropsType = unknown
 
@@ -36,6 +41,14 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
   const enableReconstruction = useUavControlRoomStore(
     (s) => s.enableReconstruction,
   )
+
+  const deviceId = useDeviceDetailStore((s) => s.deviceId)
+  const densityMapExpiration = useDensityMapStore((s) => s.densityMapExpiration)
+  useGetDensityStatistics({
+    deviceId: deviceId,
+    expireTime: densityMapExpiration,
+  })
+  useListenRealDensityMap((id) => id === deviceId)
 
   return (
     <CesiumMap id="uav-control-room-map">

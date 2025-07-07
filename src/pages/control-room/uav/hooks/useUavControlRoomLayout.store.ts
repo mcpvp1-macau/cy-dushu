@@ -159,7 +159,6 @@ export const useUavControlRoomLayoutStore = create<StateType & ActionsType>()(
         }
         updateLayoutNode(newLayout)
 
-        console.log('found', found)
         // 没找到就添加到指定的 key 后面
         if (!found) {
           updateLayoutNode = (node: DynamicLayoutType) => {

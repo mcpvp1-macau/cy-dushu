@@ -10,6 +10,7 @@ import IconVideoProjection from '@/assets/icons/jsx/IconVideoProjection'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import useMapDrawStore from '@/store/map/useDraw.store'
 import IconCreateFlightArea from '@/assets/icons/jsx/IconCreateFlightArea'
+import DensityExpirationSetting from './components/DensityExpirationSetting'
 
 type PropsType = unknown
 
@@ -99,6 +100,7 @@ const RightTools: FC<PropsType> = memo(() => {
         >
           <IconVideoProjection />
         </FloatIconButton>
+        <DensityExpirationSetting />
       </div>
     </div>
   )

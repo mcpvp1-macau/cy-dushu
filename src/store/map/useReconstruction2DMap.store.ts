@@ -1,4 +1,5 @@
 import { getGimbalInfo } from '@/constant/uav/gimbalV2'
+import { createJSONStorage, persist } from 'zustand/middleware'
 import mitt from 'mitt'
 import { create } from 'zustand'
 
@@ -20,6 +21,7 @@ type StateType = {
   reconstruction2DList: API_RECONSTRUCTION.Reconstruction2DListItem[]
   /** 过程中的照片结果 (边飞边建) */
   processedResults: ProcessedResultType[]
+  hiddenReconstruction2DSet: Set<number>
 }
 
 type ActionsType = {
@@ -28,6 +30,7 @@ type ActionsType = {
   ) => void
   /** 更新过程中的照片结果 */
   updateProcessedResults: (results: ProcessedResultType[]) => void
+  updateHiddenReconstruction2DSet: (set: Set<number>) => void
 }
 
 // const g = getGimbalInfo('M4TD')
@@ -92,15 +95,40 @@ type ActionsType = {
 // ]
 
 const useReconstruction2DMapStore = create<StateType & ActionsType>()(
-  (set) => ({
-    processedResults: [],
-    reconstruction2DList: [],
-    updateReconstruction2DList: (data) => set({ reconstruction2DList: data }),
-    updateProcessedResults: (results) =>
-      set({
-        processedResults: results,
+  persist(
+    (set) => ({
+      processedResults: [],
+      reconstruction2DList: [],
+      hiddenReconstruction2DSet: new Set(),
+      updateReconstruction2DList: (data) => set({ reconstruction2DList: data }),
+      updateProcessedResults: (results) =>
+        set({
+          processedResults: results,
+        }),
+      updateHiddenReconstruction2DSet: (st) => {
+        set({
+          hiddenReconstruction2DSet: st,
+        })
+      },
+    }),
+    {
+      storage: createJSONStorage(() => sessionStorage, {
+        replacer: (key: string, value: any) => {
+          if (key === 'hiddenReconstruction2DSet') {
+            return Array.from(value)
+          }
+          return value
+        },
+        reviver: (key: string, value: any) => {
+          if (key === 'hiddenReconstruction2DSet') {
+            return new Set(value)
+          }
+          return value
+        },
       }),
-  }),
+      name: 'reconstruction-2d-map',
+    },
+  ),
 )
 
 export interface ProcessEventImageData {
@@ -174,6 +202,8 @@ export const useListenRealProcessedResults = (
 
     return () => {
       processEventImageDataEmitter.off('processEventImageData', fn)
+      // 清空处理结果
+      useReconstruction2DMapStore.getState().updateProcessedResults([])
     }
   }, [])
 }
