@@ -125,7 +125,6 @@ export const useUavControlRoomLayoutStore = create<StateType & ActionsType>()(
             const overlayIndex = node.children.findIndex(
               (t) => t.key === tab.key,
             )
-            console.log('overlayIndex', overlayIndex)
             if (overlayIndex >= 0) {
               node.children = [
                 ...node.children.slice(0, overlayIndex),

@@ -114,6 +114,16 @@ export type ActionUnknownType = {
   config: unknown
 }
 
+export type ActionSpeakerPlayType = {
+  type: 'SPEAKER_PLAY'
+  config: {
+    action: string // start 开始播放 stop 停止播放
+    mode: string // single 单次播放 loop 循环播放
+    volume: number // 音量
+    text: string
+  }
+}
+
 /** 航点动作配置 */
 export type ActionType = (
   | ActionHoverType
@@ -126,6 +136,7 @@ export type ActionType = (
   | ActionCloseAIType
   | ActionUnknownType
   | ActionCameraModeSetType
+  | ActionSpeakerPlayType
 ) & {
   xid: string
 }

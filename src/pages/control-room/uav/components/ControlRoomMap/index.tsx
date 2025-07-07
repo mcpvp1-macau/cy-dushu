@@ -48,7 +48,10 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
     deviceId: deviceId,
     expireTime: densityMapExpiration,
   })
-  useListenRealDensityMap((id) => id === deviceId)
+
+  useListenRealDensityMap((id) => {
+    return id === deviceId
+  })
 
   return (
     <CesiumMap id="uav-control-room-map">

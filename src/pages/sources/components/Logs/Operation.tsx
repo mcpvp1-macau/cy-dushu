@@ -130,7 +130,6 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
         item.messageInfo,
       ]),
     ]
-    console.log(selectedRows, data)
     // 将数据转换为工作表
     const ws = XLSX.utils.aoa_to_sheet(data)
     const wb = XLSX.utils.book_new()

@@ -15,6 +15,7 @@ export type ProcessedResultType = {
   aspectRatio: number
   zoomFactor: number
   imgUrl: string
+  imgType: 'jpeg' | 'tiff' // 图片类型
 }
 
 type StateType = {
@@ -190,11 +191,17 @@ export const useListenRealProcessedResults = (
       aspectRatio: lenInfo.width / lenInfo.height,
       zoomFactor: 1,
       imgUrl: data.imageUrl,
+      imgType: data.imageType,
     }
 
-    useReconstruction2DMapStore
-      .getState()
-      .updateProcessedResults([...processedResults, newResult])
+    if (data.imageType === 'jpeg') {
+      useReconstruction2DMapStore
+        .getState()
+        .updateProcessedResults([...processedResults, newResult])
+    } else if (data.imageType === 'tiff') {
+      // tiff 说明前面的 jepg 都已经处理合成过了
+      useReconstruction2DMapStore.getState().updateProcessedResults([newResult])
+    }
   }
 
   useEffect(() => {

@@ -163,9 +163,11 @@ export const realDensityMapEmitter = mitt<{
 export const useListenRealDensityMap = (
   filterFn: (deviceId: string) => boolean,
 ) => {
+  const _filterFn = useMemoizedFn(filterFn)
+
   useEffect(() => {
     const fn = ({ data, deviceId }: Payload) => {
-      if (!filterFn(deviceId)) {
+      if (!_filterFn(deviceId)) {
         return
       }
       const realDensityMap = new Map<string, { h3Code: string; color: string }>(
@@ -181,6 +183,7 @@ export const useListenRealDensityMap = (
           ),
         })
       })
+      console.log('gengxin')
       useDensityMapStore.getState().updateRealDensityMap(realDensityMap)
     }
 

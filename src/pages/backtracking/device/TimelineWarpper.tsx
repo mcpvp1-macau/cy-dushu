@@ -31,7 +31,6 @@ const TimelineWarpper: React.FC<PropsType> = memo(({ startTime, endTime }) => {
 
   const handleTimeChange = useMemoizedFn((time: DayjsInstance) => {
     updateCurrentTime(time)
-  
   })
 
   // 处理时间范围变化
@@ -56,8 +55,7 @@ const TimelineWarpper: React.FC<PropsType> = memo(({ startTime, endTime }) => {
   }, [multiple, playing])
 
   useEffect(() => {
-    console.log('====startTime, endTime', startTime, endTime)
-    if(startTime && endTime) {
+    if (startTime && endTime) {
       updateCurrentTime(dayjs(endTime))
       updateTimeRange([dayjs(startTime), dayjs(endTime)])
     }

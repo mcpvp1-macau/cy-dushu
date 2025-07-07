@@ -1,3 +1,4 @@
+import TiffLoader32650 from '../common/TiffLoader32650'
 import Reconstruction2DCollection from './Reconstruction2DCollection'
 import Reconstruction2DItem from './Reconstruction2DItem'
 import useReconstruction2DMapStore from '@/store/map/useReconstruction2DMap.store'
@@ -9,9 +10,13 @@ const Reconstruction2D: FC<PropsType> = memo(() => {
 
   return (
     <Reconstruction2DCollection>
-      {processResults.map((e) => (
-        <Reconstruction2DItem key={e.imgUrl} data={e} />
-      ))}
+      {processResults.map((e) =>
+        e.imgType === 'jpeg' ? (
+          <Reconstruction2DItem key={e.imgUrl} data={e} />
+        ) : e.imgType === 'tiff' ? (
+          <TiffLoader32650 key={e.imgUrl} url={e.imgUrl} />
+        ) : null,
+      )}
     </Reconstruction2DCollection>
   )
 })

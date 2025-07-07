@@ -537,6 +537,14 @@ common:
   mapPlotting: 标绘
   all: 所有
   2dMap: 二维图
+  start: 开始
+  stop: 停止
+  mode: 模式
+  single: 单次
+  loop: 循环
+  content: 内容
+  action: 动作
+  voiceVolume: 音量
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -761,6 +769,8 @@ wayline:
         title: 关闭算法
       CAMERA_MODE_SET:
         title: 镜头模式
+      SPEAKER_PLAY:
+        title: 喊话器
     addBefore: 在航点 {{i}} 后添加
     addAfter: 在航点 {{i}} 后添加
     addLast: 在最后添加

@@ -56,6 +56,13 @@ const AirpointAddAction: FC<PropsType> = memo(({ setActiveOperator }) => {
       type === ActionTypeEnum.CLOSE_AI
     ) {
       action.config = { actionTiming: 'ARRIVE' }
+    } else if (type === ActionTypeEnum.SPEAKER_PLAY) {
+      action.config = {
+        action: 'start', // start 开始播放 stop 停止播放
+        mode: 'single', // single 单次播放 loop 循环播放
+        text: '',
+        volume: 100, // 音量
+      }
     }
 
     editCurrentAirPoint({
