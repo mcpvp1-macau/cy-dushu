@@ -1,11 +1,13 @@
 import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import usePicutreSourceTypeOptions from '@/constant/options/pictureSourceTypeOptions'
 import { dft } from '@/constant/time-fmt'
 import { getPlatformCapture } from '@/service/modules/db-api'
 import { makeToolbarRender } from '@/utils/antd/image'
 import { Col, DatePicker, Image, Pagination, Row, Select } from 'antd'
 import { Dayjs } from 'dayjs'
+import { round } from 'lodash'
 
 const { RangePicker } = DatePicker
 
@@ -56,7 +58,7 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
           endTime: dateRange![1].format(dft),
           isPage: true,
           page,
-          pageSize: 12,
+          pageSize: 24,
         }),
       enabled: !!deviceId && !!dateRange,
       select: (d) => d.data,
@@ -100,38 +102,50 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
         ) : !records || total?.[0].cnt === 0 || records.length === 0 ? (
           <AppEmpty className="my-10" />
         ) : (
-          <div>
-            <Image.PreviewGroup
-              preview={{ toolbarRender: makeToolbarRender(1, 50) }}
-            >
-              <Row gutter={[12, 12]}>
-                {records.map((e) => (
-                  <Col key={e.id} span={24} md={12} lg={8}>
-                    <div className="h-20 p-2 flex items-center gap-2 border border-solid border-ground-5 rounded-[3px]">
-                      <div className="h-full aspect-[4/3]">
-                        <Image
-                          src={`/storage/${e.url}`}
-                          className="h-full aspect-[4/3] object-cover"
-                        />
-                      </div>
-                      <div className="h-full flex flex-col justify-between text-xs">
-                        <p>{e.startTime}</p>
-                        <div className="flex">
-                          <p className="flex-1">
-                            <span>{t('common.longitude')}:</span>
-                            <span>{e.longitude || '-'}</span>
-                          </p>
-                          <p className="flex-1">
-                            <span>{t('common.latitude')}:</span>
-                            <span>{e.latitude || '-'}</span>
-                          </p>
+          <>
+            <ScrollArea className="max-h-[70vh] -mx-3">
+              <div className="mx-3">
+                <Image.PreviewGroup
+                  preview={{ toolbarRender: makeToolbarRender(1, 50) }}
+                >
+                  <Row gutter={[12, 12]}>
+                    {records.map((e) => (
+                      <Col key={e.id} span={24} md={12} lg={8} xxl={6}>
+                        <div className="h-24 p-2 flex items-center gap-2 border border-solid border-ground-5 rounded-[3px]">
+                          <div className="h-full aspect-[4/3]">
+                            <Image
+                              src={`/storage/${e.url}`}
+                              className="h-full aspect-[4/3] object-cover"
+                            />
+                          </div>
+                          <div className="h-full flex flex-col justify-between text-xs">
+                            <p>
+                              <span>{t('common.time')}: </span>
+                              {e.startTime}
+                            </p>
+                            <p>
+                              <span>{t('common.type')}: </span>
+                              {e.type === 'PICTURE'
+                                ? t('device.pictureFilter.photograph.title')
+                                : t('device.pictureFilter.screenshot.title')}
+                            </p>
+                            <div className="flex whitespace-nowrap">
+                              <p className="flex-1">
+                                <span>{t('common.position')}: </span>
+                                <span>
+                                  {round(e.longitude ?? 0, 5) || '-'},{' '}
+                                </span>
+                                <span>{round(e.latitude ?? 0, 5) || '-'}</span>
+                              </p>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </Col>
-                ))}
-              </Row>
-            </Image.PreviewGroup>
+                      </Col>
+                    ))}
+                  </Row>
+                </Image.PreviewGroup>
+              </div>
+            </ScrollArea>
             <div className="my-3 flex justify-end">
               <Pagination
                 size="small"
@@ -142,7 +156,7 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
                 onChange={setPage}
               />
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>

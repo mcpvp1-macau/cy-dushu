@@ -35,11 +35,19 @@ const DataModal: FC<PropsType> = memo(({ deviceId, open, onClose }) => {
 
   return (
     <XModal
-      width={830}
       title={t('common.data')}
       open={open}
       footer={false}
       onClose={onClose}
+      centered
+      width={{
+        xs: '100%',
+        sm: '100%',
+        md: '80%',
+        lg: '70%',
+        xl: '65%',
+        xxl: '65%',
+      }}
     >
       {isLoading || !data ? (
         <AppSpin />
