@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { createJSONStorage, devtools, persist } from 'zustand/middleware'
+import { devtools } from 'zustand/middleware'
 
 type StateType = {
   flightAreaGroupList: API_FLIGHT_AREA.domain.FlightAreaGroup[]

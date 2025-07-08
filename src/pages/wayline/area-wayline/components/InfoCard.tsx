@@ -65,12 +65,15 @@ const InfoCard: FC<PropsType> = memo(() => {
   const photoWaylineCoverage = useAreaWaylineStore(
     (s) => s.templateConfig.photoWaylineCoverage,
   )
+  const cameraInfo = useAreaWaylineStore((s) => s.cameraInfo)
 
   const cntPhoto = useMemo(() => {
     // 处理等距拍照/等时拍照
     if (['multipleTiming', 'multipleDistance'].includes(actionTriggerType)) {
       const intervalDistance =
-        Math.tan(calcFovRadiation(4.5, 4.8, 1) / 2) *
+        Math.tan(
+          calcFovRadiation(cameraInfo.focal, cameraInfo.sensorHeight, 1) / 2,
+        ) *
         height *
         2 *
         (1 - photoWaylineCoverage)

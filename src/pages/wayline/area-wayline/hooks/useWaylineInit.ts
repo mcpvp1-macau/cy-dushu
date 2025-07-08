@@ -35,14 +35,30 @@ const useAirlineInit = () => {
       ...useAreaWaylineStore.getState().airlineConfig,
       camera,
     })
-    const cameraParams = shouldJson(camera?.defaultParam)
+    const cameraParams = shouldJson(camera?.defaultParam) ?? {
+      focal: 4.5,
+      sensorWidth: 6.4,
+      sensorHeight: 4.8,
+      pixelWidth: 4000,
+      pixelHeight: 3000,
+    }
     if (cameraParams) {
       updateCameraInfo({
-        focal: cameraParams.focal ?? 24,
-        sensorWidth: cameraParams.sensorWidth ?? 40,
-        sensorHeight: cameraParams.sensorHeight ?? 30,
+        focal: cameraParams.focal ?? 4.5,
+        sensorWidth: cameraParams.sensorWidth ?? 6.4,
+        sensorHeight: cameraParams.sensorHeight ?? 4.8,
+        pixelWidth: cameraParams.pixelWidth ?? 4000,
+        pixelHeight: cameraParams.pixelHeight ?? 3000,
       })
     }
+
+    const height =
+      ((5 / 100) * (cameraParams.focal * cameraParams.pixelWidth)) /
+      cameraParams.sensorWidth
+    updateAirlineConfig({
+      ...useAreaWaylineStore.getState().airlineConfig,
+      height: height,
+    })
 
     const takeoffRefQ = searchParams.get('takeoffRef')
     if (takeoffRefQ) {
@@ -75,9 +91,11 @@ const useAirlineInit = () => {
           const cameraParams = shouldJson(camera?.defaultParam)
           if (cameraParams) {
             updateCameraInfo({
-              focal: cameraParams.focal ?? 24,
-              sensorWidth: cameraParams.sensorWidth ?? 40,
-              sensorHeight: cameraParams.sensorHeight ?? 30,
+              focal: cameraParams.focal ?? 4.5,
+              sensorWidth: cameraParams.sensorWidth ?? 6.4,
+              sensorHeight: cameraParams.sensorHeight ?? 4.8,
+              pixelWidth: cameraParams.pixelWidth ?? 4000,
+              pixelHeight: cameraParams.pixelHeight ?? 3000,
             })
           }
         }
@@ -122,15 +140,17 @@ const useAirlineInit = () => {
     })
     const waylineConfig = shouldJson(data.taskBasic)
     const { camera } = waylineConfig
-
+    const cameraParams = shouldJson(camera?.defaultParam)
     if (waylineConfig) {
       updateAirlineConfig({ camera, ...resolveAirlineConifg(waylineConfig) })
     }
 
     updateCameraInfo({
-      focal: camera?.focal ?? 24,
-      sensorWidth: camera?.sensorWidth ?? 40,
-      sensorHeight: camera?.sensorHeight ?? 30,
+      focal: cameraParams.focal ?? 4.5,
+      sensorWidth: cameraParams.sensorWidth ?? 6.4,
+      sensorHeight: cameraParams.sensorHeight ?? 4.8,
+      pixelWidth: cameraParams.pixelWidth ?? 4000,
+      pixelHeight: cameraParams.pixelHeight ?? 3000,
     })
 
     const o2 = pick(waylineConfig, ['coverage', 'mainK', 'polygon'])

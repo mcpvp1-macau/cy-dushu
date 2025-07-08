@@ -22,6 +22,8 @@ type StateType = {
     focal: number
     sensorWidth: number
     sensorHeight: number
+    pixelWidth: number
+    pixelHeight: number
   }
   firstAirpoint: AirlinePoint | null
 }
@@ -62,9 +64,11 @@ const createInitialState = (): StateType => ({
   },
   isDrawHome: false,
   cameraInfo: {
-    focal: 24,
-    sensorWidth: 40,
-    sensorHeight: 30,
+    focal: 4.5,
+    sensorWidth: 6.4,
+    sensorHeight: 4.8,
+    pixelWidth: 4000,
+    pixelHeight: 3000,
   },
   airpointsConfig: [],
   firstAirpoint: null,

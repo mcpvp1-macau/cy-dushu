@@ -56,8 +56,9 @@ const BottomButtions: FC<PropsType> = memo(() => {
         taskBasic.actionTriggerType,
       )
     ) {
+      const c = useAreaWaylineStore.getState().cameraInfo
       const intervalDistance =
-        Math.tan(calcFovRadiation(4.5, 4.8, 1) / 2) *
+        Math.tan(calcFovRadiation(c.focal, c.sensorHeight, 1) / 2) *
         taskBasic.height *
         2 *
         (1 - useAreaWaylineStore.getState().templateConfig.photoWaylineCoverage)
