@@ -1,3 +1,4 @@
+import { handleStorageURL } from '@/pages/events/components/EventDetail'
 import TiffLoader32650 from '../common/TiffLoader32650'
 import Reconstruction2DCollection from './Reconstruction2DCollection'
 import Reconstruction2DItem from './Reconstruction2DItem'
@@ -14,7 +15,7 @@ const Reconstruction2D: FC<PropsType> = memo(() => {
         e.imgType === 'jpeg' ? (
           <Reconstruction2DItem key={e.imgUrl} data={e} />
         ) : e.imgType === 'tiff' ? (
-          <TiffLoader32650 key={e.imgUrl} url={e.imgUrl} />
+          <TiffLoader32650 key={e.imgUrl} url={handleStorageURL(e.imgUrl)} />
         ) : null,
       )}
     </Reconstruction2DCollection>

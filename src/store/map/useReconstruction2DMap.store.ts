@@ -34,67 +34,6 @@ type ActionsType = {
   updateHiddenReconstruction2DSet: (set: Set<number>) => void
 }
 
-// const g = getGimbalInfo('M4TD')
-
-// const MOCK: ProcessedResultType[] = [
-//   {
-//     lon: 119.957709,
-//     lat: 30.270891,
-//     alt: 204,
-//     yaw: -137.2,
-//     pitch: -90,
-//     roll: 0,
-//     focal: g.wide.focal,
-//     width: g.wide.width,
-//     aspectRatio: g.wide.width / g.wide.height,
-//     zoomFactor: 1,
-//     imgUrl:
-//       '/storage//ja-media-storage/cloud-sample/1892f8e7-fa36-4630-a919-570f445eb51c/Remote-Control/DJI_20250703144430_0001_V.jpeg',
-//   },
-//   {
-//     lon: 119.956031,
-//     lat: 30.270701,
-//     alt: 204,
-//     yaw: -123.7,
-//     pitch: -90,
-//     roll: 0,
-//     focal: g.wide.focal,
-//     width: g.wide.width,
-//     aspectRatio: g.wide.width / g.wide.height,
-//     zoomFactor: 1,
-//     imgUrl:
-//       '/storage//ja-media-storage/cloud-sample/9c104f9b-a60b-4dd9-80c9-e4991083b998/Remote-Control/DJI_20250703163501_0001_V.jpeg',
-//   },
-//   {
-//     lon: 119.959669,
-//     lat: 30.271087,
-//     alt: 203.9,
-//     yaw: 83.1,
-//     pitch: -90,
-//     roll: 0,
-//     focal: g.wide.focal,
-//     width: g.wide.width,
-//     aspectRatio: g.wide.width / g.wide.height,
-//     zoomFactor: 1,
-//     imgUrl:
-//       '/storage//ja-media-storage/cloud-sample/9c104f9b-a60b-4dd9-80c9-e4991083b998/Remote-Control/DJI_20250703163625_0003_V.jpeg',
-//   },
-//   {
-//     lon: 119.957634,
-//     lat: 30.272419,
-//     alt: 204,
-//     yaw: -52.5,
-//     pitch: -90,
-//     roll: 0,
-//     focal: g.wide.focal,
-//     width: g.wide.width,
-//     aspectRatio: g.wide.width / g.wide.height,
-//     zoomFactor: 1,
-//     imgUrl:
-//       '/storage//ja-media-storage/cloud-sample/9c104f9b-a60b-4dd9-80c9-e4991083b998/Remote-Control/DJI_20250703163718_0004_V.jpeg',
-//   },
-// ]
-
 const useReconstruction2DMapStore = create<StateType & ActionsType>()(
   persist(
     (set) => ({

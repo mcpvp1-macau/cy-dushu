@@ -2,6 +2,7 @@ import { useCesium } from 'resium'
 import { VertexPickerContext } from './Reconstruction2DCollection'
 import * as Cesium from 'cesium'
 import { ProcessedResultType } from '@/store/map/useReconstruction2DMap.store'
+import { handleStorageURL } from '@/pages/events/components/EventDetail'
 
 type dataType = {
   data: ProcessedResultType
@@ -43,7 +44,7 @@ const Reconstruction2DItem: FC<dataType> = memo(({ data }) => {
       fabric: {
         type: 'Image',
         uniforms: {
-          image: data.imgUrl, // 替换为你的图片路径
+          image: handleStorageURL(data.imgUrl), // 替换为你的图片路径
         },
       },
     })

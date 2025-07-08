@@ -1,3 +1,4 @@
+import { handleStorageURL } from '@/pages/events/components/EventDetail'
 import TiffLoader32650 from '../common/TiffLoader32650'
 
 type PropsType = {
@@ -5,7 +6,7 @@ type PropsType = {
 }
 
 const Reconstruction2DResultItem: FC<PropsType> = memo(({ data }) => {
-  return <TiffLoader32650 url={data.imageUrl} />
+  return <TiffLoader32650 url={handleStorageURL(data.imageUrl)} />
 })
 
 Reconstruction2DResultItem.displayName = 'Reconstruction2DResultItem'
