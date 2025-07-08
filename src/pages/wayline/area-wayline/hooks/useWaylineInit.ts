@@ -1,5 +1,4 @@
 import { getAirlineTemplateList } from '@/service/modules/airline'
-import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import { shouldJson } from '@/utils/json'
 import { useSearchParams } from 'react-router-dom'
 import { pick } from 'lodash'
@@ -26,14 +25,14 @@ const useAirlineInit = () => {
     const name = searchParams.get('name')
     if (name) {
       updateAirlineTemplateInfo({
-        ...useAirlineConfigStore.getState().airlineTemplateInfo,
+        ...useAreaWaylineStore.getState().templateConfig,
         taskName: name,
       })
     }
 
     const camera = shouldJson(searchParams.get('camera') ?? '')
     updateAirlineConfig({
-      ...useAirlineConfigStore.getState().airlineConfig,
+      ...useAreaWaylineStore.getState().airlineConfig,
       camera,
     })
     const cameraParams = shouldJson(camera?.defaultParam)
@@ -49,7 +48,7 @@ const useAirlineInit = () => {
     if (takeoffRefQ) {
       const takeoffRef = shouldJson(takeoffRefQ)
       updateAirlineConfig({
-        ...useAirlineConfigStore.getState().airlineConfig,
+        ...useAreaWaylineStore.getState().airlineConfig,
         takeOffRefPoint: takeoffRef,
       })
     }

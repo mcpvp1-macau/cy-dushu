@@ -714,6 +714,8 @@ wayline:
       title: 行进速度
     height:
       tooltip: 航线起飞高度
+    lateralCoverage:
+      title: 旁向覆盖率
   waylinePoint:
     config: 航点设置
     waypointList:

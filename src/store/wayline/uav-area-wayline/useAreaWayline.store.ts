@@ -15,6 +15,7 @@ type StateType = {
     mainK: number
     interval: number
     coverage: number
+    photoWaylineCoverage: number
   }
   isDrawHome: boolean
   cameraInfo: {
@@ -57,6 +58,7 @@ const createInitialState = (): StateType => ({
     interval: 0,
     coverage: 10,
     wideGSD: 5,
+    photoWaylineCoverage: 0.7,
   },
   isDrawHome: false,
   cameraInfo: {

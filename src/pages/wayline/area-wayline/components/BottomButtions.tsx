@@ -60,7 +60,7 @@ const BottomButtions: FC<PropsType> = memo(() => {
         Math.tan(calcFovRadiation(4.5, 4.8, 1) / 2) *
         taskBasic.height *
         2 *
-        (1 - 0.7)
+        (1 - useAreaWaylineStore.getState().templateConfig.photoWaylineCoverage)
       if (taskBasic.actionTriggerType === 'multipleDistance') {
         taskBasic.actionTriggerParam = round(intervalDistance, 2)
       } else {
