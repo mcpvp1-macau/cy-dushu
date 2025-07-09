@@ -28,6 +28,7 @@ import useDensityMapStore, {
   useListenRealDensityMap,
 } from '@/store/map/useDensityMap.store'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import Reconstruction2D from '@/map/CesiumMap/components/service/Reconstruction2D/Reconstruction2D'
 
 type PropsType = unknown
 
@@ -78,6 +79,7 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
       <PickEvent />
       <PicutreOnMap />
       <DensityMap />
+      <Reconstruction2D />
     </CesiumMap>
   )
 })
