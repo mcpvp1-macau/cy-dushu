@@ -12,6 +12,7 @@ type StateType = {
     {
       h3Code: string
       color: string
+      value: number
     }
   >
   /** 实时 (十七) */
@@ -20,6 +21,7 @@ type StateType = {
     {
       h3Code: string
       color: string
+      value: number
     }
   >
   densityMapExpiration: number
@@ -131,12 +133,16 @@ export const useGetDensityStatistics = (payload: {
       return
     }
 
-    const densityMap = new Map<string, { h3Code: string; color: string }>()
+    const densityMap = new Map<
+      string,
+      { h3Code: string; color: string; value: number }
+    >()
 
     data.forEach((item) => {
       densityMap.set(item.h3Code, {
         h3Code: item.h3Code,
         color: getCrowdedColor(item.averageDensity, item.resolution),
+        value: item.averageDensity,
       })
     })
 
@@ -170,9 +176,10 @@ export const useListenRealDensityMap = (
       if (!_filterFn(deviceId)) {
         return
       }
-      const realDensityMap = new Map<string, { h3Code: string; color: string }>(
-        useDensityMapStore.getState().realDensityMap.entries(),
-      )
+      const realDensityMap = new Map<
+        string,
+        { h3Code: string; color: string; value: number }
+      >(useDensityMapStore.getState().realDensityMap.entries())
 
       data.forEach((item) => {
         realDensityMap.set(item.h3Code, {
@@ -181,6 +188,7 @@ export const useListenRealDensityMap = (
             item.averageDensity,
             getResolution(item.h3Code),
           ),
+          value: item.averageDensity,
         })
       })
       console.log('gengxin')

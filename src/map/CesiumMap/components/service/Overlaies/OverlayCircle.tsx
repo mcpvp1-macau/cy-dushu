@@ -1,5 +1,6 @@
 import { OverlayCirclePrimitive } from '@/utils/customPrimitive/OverlayPrimitive'
 import * as Cesium from 'cesium'
+import { attempt } from 'lodash'
 import React, { FC, useEffect, useRef } from 'react'
 
 interface Props {
@@ -60,12 +61,12 @@ const OverlayCircle: FC<Props> = (props) => {
     viewer.scene.primitives.add(primitiveRef.current)
 
     return () => {
-      if (!viewer?.scene?.primitives) return
-
-      const preVal = viewer.scene.primitives.destroyPrimitives
-      viewer.scene.primitives.destroyPrimitives = false
-      viewer.scene.primitives.remove(primitiveRef.current)
-      viewer.scene.primitives.destroyPrimitives = preVal
+      attempt(() => {
+        const preVal = viewer.scene.primitives.destroyPrimitives
+        viewer.scene.primitives.destroyPrimitives = false
+        viewer.scene.primitives.remove(primitiveRef.current)
+        viewer.scene.primitives.destroyPrimitives = preVal
+      })
     }
   }, [viewer])
 
