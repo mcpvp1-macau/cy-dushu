@@ -140,7 +140,13 @@ const useAirlineInit = () => {
     })
     const waylineConfig = shouldJson(data.taskBasic)
     const { camera } = waylineConfig
-    const cameraParams = shouldJson(camera?.defaultParam)
+    const cameraParams = shouldJson(camera?.defaultParam) ?? {
+      focal: 4.5,
+      sensorWidth: 6.4,
+      sensorHeight: 4.8,
+      pixelWidth: 4000,
+      pixelHeight: 3000,
+    }
     if (waylineConfig) {
       updateAirlineConfig({ camera, ...resolveAirlineConifg(waylineConfig) })
     }
