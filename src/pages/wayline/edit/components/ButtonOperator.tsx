@@ -26,6 +26,24 @@ const BottomOperator: FC<PropsType> = memo(({ disabled }) => {
       msgApi.error(t('wayline.executeTask.error.rthHeightNotSet'))
       return true
     }
+
+    // 校验喊话器位置
+    let s = 0
+    for (const point of airpointsConfig) {
+      for (const action of point.actions) {
+        if (action.type === 'SPEAKER_PLAY') {
+          if (action.config.action === 'start') {
+            s++
+          } else {
+            s--
+          }
+          if (s < 0 || s > 1) {
+            msgApi.error('请检查语音播报的起始和结束动作是否匹配')
+            return true
+          }
+        }
+      }
+    }
     return false
   }
 
