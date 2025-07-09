@@ -29,6 +29,12 @@ import useDensityMapStore, {
 } from '@/store/map/useDensityMap.store'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import Reconstruction2D from '@/map/CesiumMap/components/service/Reconstruction2D/Reconstruction2D'
+import { getReconstruction2DList } from '@/service/modules/reconstruction'
+import useReconstruction2DMapStore, {
+  ProcessedResultType,
+} from '@/store/map/useReconstruction2DMap.store'
+import { isNil } from 'lodash'
+import { getGimbalInfo } from '@/constant/uav/gimbalV2'
 
 type PropsType = unknown
 
@@ -43,6 +49,7 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
     (s) => s.enableReconstruction,
   )
 
+  // 热力图相关 --------------------------------------------------------------------
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
   const densityMapExpiration = useDensityMapStore((s) => s.densityMapExpiration)
   useGetDensityStatistics({
@@ -53,6 +60,75 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
   useListenRealDensityMap((id) => {
     return id === deviceId
   })
+
+  // 二维重建 ---------------------------------------------------------------------
+  const queryClient = useQueryClient()
+  const { data: data2dList } = useQuery(
+    {
+      queryKey: ['reconstruction2dList', { deviceId }],
+      queryFn: () => getReconstruction2DList({ deviceId, needProcess: true }),
+      select: (d) => d.data,
+    },
+    queryClient,
+  )
+  useEffect(() => {
+    if (!data2dList?.length) {
+      return
+    }
+    if (data2dList[0].process && data2dList[0].status === '"PROCESSING"') {
+      const processedResults: ProcessedResultType[] = []
+      for (const item of data2dList.at(-1)!.process ?? []) {
+        if (item.imageType === 'tiff') {
+          processedResults.length = 0
+          processedResults.push({
+            imgUrl: item.imageUrl,
+            lon: 0,
+            lat: 0,
+            alt: 0,
+            yaw: 0,
+            pitch: 0,
+            roll: 0,
+            focal: 0,
+            width: 0,
+            aspectRatio: 1,
+            zoomFactor: 1,
+            imgType: 'tiff',
+          })
+          continue
+        }
+        const meta = item.meta || {}
+        if (
+          isNil(meta.gpsLongitude) ||
+          isNil(meta.gpsLatitude) ||
+          isNil(meta.gimbalPitch) ||
+          isNil(meta.gimbalYaw) ||
+          isNil(meta.gimbalRoll) ||
+          isNil(meta.productName) ||
+          isNil(meta.absoluteAltitude)
+        ) {
+          continue
+        }
+        const g = getGimbalInfo(meta.productName)
+        processedResults.push({
+          imgUrl: item.imageUrl,
+          lon: meta.gpsLongitude,
+          lat: meta.gpsLatitude,
+          alt: meta.absoluteAltitude,
+          yaw: meta.gimbalYaw,
+          pitch: meta.gimbalPitch,
+          roll: meta.gimbalRoll,
+          focal: g.wide.focal,
+          width: g.wide.width,
+          aspectRatio: g.wide.width / g.wide.height,
+          zoomFactor: 1,
+          imgType: 'jpeg',
+        })
+      }
+      useReconstruction2DMapStore
+        .getState()
+        .updateProcessedResults(processedResults)
+    }
+  }, [data2dList])
 
   return (
     <CesiumMap id="uav-control-room-map">

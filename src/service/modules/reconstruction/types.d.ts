@@ -50,6 +50,7 @@ declare namespace API_RECONSTRUCTION {
     imageType: 'jpeg' | 'tiff' // jpeg/tiff
     processNum: number
     process: ProcessItem[]
+    status: string
   }
 
   interface ProcessItem {
@@ -59,6 +60,7 @@ declare namespace API_RECONSTRUCTION {
     index: number
     imageUrl: string // 过程图地址
     imageType: 'jpeg' | 'tiff' // jpeg/tiff
+    id: number
     meta: {
       // 图片格式为 tiff 时为空
       absoluteAltitude?: number

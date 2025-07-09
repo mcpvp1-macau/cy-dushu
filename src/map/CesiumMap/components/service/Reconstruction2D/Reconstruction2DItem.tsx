@@ -65,7 +65,7 @@ const Reconstruction2DItem: FC<dataType> = memo(({ data }) => {
             ]),
           ),
           vertexFormat: Cesium.VertexFormat.POSITION_AND_ST,
-          stRotation: Cesium.Math.toRadians(data.yaw),
+          stRotation: Cesium.Math.toRadians(data.yaw - 180),
           perPositionHeight: true,
         }),
       }),

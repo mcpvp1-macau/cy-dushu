@@ -67,6 +67,7 @@ export const getReconstruction2DList = (data: {
   deviceId?: string
   startTime?: string
   endTime?: string
+  needProcess?: boolean
 }) => {
   return serverJingqi.post<API_RECONSTRUCTION.res.GetReconstruction2DList>(
     '/reconstruction/twoDimension/list',
