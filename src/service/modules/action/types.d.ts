@@ -21,7 +21,7 @@ declare namespace API_ACTION {
       name: string
       description: any
       eventId: any
-      type: 'normal' | 'kcyp_action' | 'xiaoshan_kcyp_action'
+      type: 'normal' | 'kcyp_action' | 'xiaoshan_kcyp_action' | 'ewjt_action'
       status: string
       isValid: any
       gmtCreate: string
@@ -84,7 +84,7 @@ declare namespace API_ACTION {
       rows: API_ACTION.domain.ActionRecord[]
       total: number
     }
-    type ActionDetailRes = ActionDetail
+    type ActionDetailRes = API_ACTION.domain.ActionDetail
     interface AIResultListRes {
       rows: API_ACTION.domain.AIResultRecord[]
       total: number
