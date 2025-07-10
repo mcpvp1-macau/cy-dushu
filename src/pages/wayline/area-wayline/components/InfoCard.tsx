@@ -79,6 +79,7 @@ const InfoCard: FC<PropsType> = memo(() => {
         (1 - photoWaylineCoverage)
       return Math.floor(totalDistance / intervalDistance)
     }
+    return 0
   }, [totalDistance, height, actionTriggerType, photoWaylineCoverage])
 
   return (
