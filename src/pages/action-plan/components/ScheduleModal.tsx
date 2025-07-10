@@ -476,17 +476,21 @@ const ScheduleModal: FC<PropsType> = memo(
                 REPEAT: <REPEATFormItems />,
               }[type]
             }
-            <Form.Item name="breakPointEnable" noStyle valuePropName="checked">
-              <div className="flex justify-between items-center mb-1">
-                <div>
-                  断点续飞{' '}
-                  <Tooltip title="开启后，若飞行架次因电量不足等原因无法完成整个航线飞行，系统将记录待执行任务。">
-                    <InfoCircleOutlined />
-                  </Tooltip>
-                </div>
-                <Switch size="small" />
+            <div className="flex justify-between items-center mb-1">
+              <div>
+                断点续飞{' '}
+                <Tooltip title="开启后，若飞行架次因电量不足等原因无法完成整个航线飞行，系统将记录待执行任务。">
+                  <InfoCircleOutlined />
+                </Tooltip>
               </div>
-            </Form.Item>
+              <Form.Item
+                name="breakPointEnable"
+                noStyle
+                valuePropName="checked"
+              >
+                <Switch size="small" />
+              </Form.Item>
+            </div>
             <TipInfo />
           </Form>
         </ConfigProvider>
