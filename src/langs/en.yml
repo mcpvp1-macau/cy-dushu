@@ -551,6 +551,9 @@ common:
   content: Content
   action: Action
   voiceVolume: Volume
+  checkAll: Check All
+  batchDownload: Batch Download
+  downloadedPictureCount: '{{count}} pictures have been downloaded'
 events:
   search:
     placeholder: Please search by event name or ID
@@ -1413,3 +1416,6 @@ dayOfWeek:
   saturday: Saturday
 unit:
   degreePerSecond: Degree / Second
+media:
+  photoSelectCountMsg: '{count} photos have been selected'
+  makingZipMsg: A compressed package is being generated

@@ -545,6 +545,9 @@ common:
   content: 内容
   action: 动作
   voiceVolume: 音量
+  checkAll: 全选
+  batchDownload: 批量下载
+  downloadedPictureCount: 已下载 {{count}} 张图片
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -1397,3 +1400,6 @@ dayOfWeek:
   saturday: 周六
 unit:
   degreePerSecond: 度/秒
+media:
+  photoSelectCountMsg: 已经选择 {{count}} 张图片
+  makingZipMsg: 正在生成压缩包

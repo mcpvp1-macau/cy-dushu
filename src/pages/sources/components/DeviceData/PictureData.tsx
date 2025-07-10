@@ -5,9 +5,21 @@ import usePicutreSourceTypeOptions from '@/constant/options/pictureSourceTypeOpt
 import { dft } from '@/constant/time-fmt'
 import { getPlatformCapture } from '@/service/modules/db-api'
 import { makeToolbarRender } from '@/utils/antd/image'
-import { Col, DatePicker, Image, Pagination, Row, Select } from 'antd'
+import {
+  Button,
+  Checkbox,
+  Col,
+  DatePicker,
+  Image,
+  Pagination,
+  Progress,
+  Row,
+  Select,
+} from 'antd'
 import { Dayjs } from 'dayjs'
 import { round } from 'lodash'
+import { SyncOutlined } from '@ant-design/icons'
+import useBatchDownloadWithZip from '@/hooks/useBatchDownloadWithZip'
 
 const { RangePicker } = DatePicker
 
@@ -70,6 +82,22 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
   const records = data?.[0] ?? 0
   const total = data?.[1]
 
+  const [checkedIds, setCheckedIds] = useState<number[]>([])
+
+  const { downloading, downloadedCnt, totalCnt, startDownload } =
+    useBatchDownloadWithZip()
+
+  const handleBatchDownload = async () => {
+    if (!Array.isArray(records)) {
+      return
+    }
+    const set = new Set(checkedIds)
+    await startDownload(
+      records.filter((e) => set.has(e.id)).map((e) => e.url),
+      `一堆图片${dayjs().format('YYYYMMDDHHmm')}`,
+    )
+  }
+
   return (
     <div>
       <div className="py-3 flex gap-3">
@@ -103,57 +131,117 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
           <AppEmpty className="my-10" />
         ) : (
           <>
+            <div className="mb-2 flex">
+              <Checkbox
+                indeterminate={
+                  checkedIds.length > 0 && checkedIds.length < records.length
+                }
+                checked={checkedIds.length === records.length}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setCheckedIds(records.map((r) => r.id))
+                  } else {
+                    setCheckedIds([])
+                  }
+                }}
+              >
+                {t('media.photoSelectCountMsg', {
+                  count: checkedIds.length,
+                })}
+              </Checkbox>
+              <Button
+                size="small"
+                type="primary"
+                disabled={!checkedIds.length}
+                loading={downloading}
+                onClick={handleBatchDownload}
+              >
+                {t('common.batchDownload')}
+              </Button>
+              {downloading &&
+                (downloadedCnt < totalCnt ? (
+                  <div className="px-3 flex-1 flex whitespace-nowrap">
+                    <Progress
+                      className="w-full"
+                      percent={Math.floor((downloadedCnt / totalCnt) * 100)}
+                    />
+                    <span className="ml-2">
+                      {t('common.downloadedPictureCount', {
+                        count: downloadedCnt,
+                      })}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex gap-2 ml-3">
+                    <SyncOutlined spin />
+                    {t('media.makingZipMsg')}
+                  </div>
+                ))}
+            </div>
             <ScrollArea className="max-h-[70vh] -mx-3">
               <div className="mx-3">
-                <Image.PreviewGroup
-                  preview={{ toolbarRender: makeToolbarRender(1, 50) }}
-                >
-                  <Row gutter={[12, 12]}>
-                    {records.map((e) => (
-                      <Col key={e.id} span={24} md={12} lg={8} xxl={6}>
-                        <div className="h-24 p-2 flex items-center gap-2 border border-solid border-ground-5 rounded-[3px]">
-                          <div className="h-full aspect-[4/3]">
-                            <Image
-                              src={`/storage/${e.url}`}
-                              className="h-full aspect-[4/3] object-cover"
-                            />
-                          </div>
-                          <div className="h-full flex flex-col justify-between text-xs">
-                            <p>
-                              <span>{t('common.time')}: </span>
-                              {e.startTime}
-                            </p>
-                            <p>
-                              <span>{t('common.type')}: </span>
-                              {e.type === 'PICTURE'
-                                ? t('device.pictureFilter.photograph.title')
-                                : t('device.pictureFilter.screenshot.title')}
-                            </p>
-                            <div className="flex whitespace-nowrap">
-                              <p className="flex-1">
-                                <span>{t('common.position')}: </span>
-                                <span>
-                                  {round(e.longitude ?? 0, 5) || '-'},{' '}
-                                </span>
-                                <span>{round(e.latitude ?? 0, 5) || '-'}</span>
+                <Checkbox.Group value={checkedIds} onChange={setCheckedIds}>
+                  <Image.PreviewGroup
+                    preview={{ toolbarRender: makeToolbarRender(1, 50) }}
+                  >
+                    <Row gutter={[12, 12]}>
+                      {records.map((e) => (
+                        <Col key={e.id} span={24} md={12} lg={8} xxl={6}>
+                          <div className="h-24 p-2 flex items-center gap-2 border border-solid border-ground-5 rounded-[3px]">
+                            <div className="h-full aspect-[4/3] relative">
+                              <Image
+                                src={`/storage/${e.url}`}
+                                className="h-full aspect-[4/3] object-cover"
+                              />
+                              <div>
+                                <Checkbox
+                                  className="absolute left-1 top-1"
+                                  value={e.id}
+                                />
+                              </div>
+                            </div>
+                            <div className="h-full flex flex-col justify-between text-xs">
+                              <p>
+                                <span>{t('common.time')}: </span>
+                                {e.startTime}
                               </p>
+                              <p>
+                                <span>{t('common.type')}: </span>
+                                {e.type === 'PICTURE'
+                                  ? t('device.pictureFilter.photograph.title')
+                                  : t('device.pictureFilter.screenshot.title')}
+                              </p>
+                              <div className="flex whitespace-nowrap">
+                                <p className="flex-1">
+                                  <span>{t('common.position')}: </span>
+                                  <span>
+                                    {round(e.longitude ?? 0, 5) || '-'},{' '}
+                                  </span>
+                                  <span>
+                                    {round(e.latitude ?? 0, 5) || '-'}
+                                  </span>
+                                </p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </Col>
-                    ))}
-                  </Row>
-                </Image.PreviewGroup>
+                        </Col>
+                      ))}
+                    </Row>
+                  </Image.PreviewGroup>
+                </Checkbox.Group>
               </div>
             </ScrollArea>
             <div className="my-3 flex justify-end">
               <Pagination
                 size="small"
-                pageSize={10}
                 current={page}
+                pageSize={24}
                 total={total?.[0].cnt}
                 showSizeChanger={false}
-                onChange={setPage}
+                onChange={(page) => {
+                  setPage(page)
+                  setCheckedIds([]) // Reset selection on page change
+                }}
               />
             </div>
           </>
