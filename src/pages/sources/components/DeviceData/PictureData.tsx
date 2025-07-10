@@ -18,8 +18,9 @@ import {
 } from 'antd'
 import { Dayjs } from 'dayjs'
 import { round } from 'lodash'
-import { SyncOutlined } from '@ant-design/icons'
+import { CloudDownloadOutlined, SyncOutlined } from '@ant-design/icons'
 import useBatchDownloadWithZip from '@/hooks/useBatchDownloadWithZip'
+import { handleStorageURL } from '@/pages/events/components/EventDetail'
 
 const { RangePicker } = DatePicker
 
@@ -93,7 +94,7 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
     }
     const set = new Set(checkedIds)
     await startDownload(
-      records.filter((e) => set.has(e.id)).map((e) => e.url),
+      records.filter((e) => set.has(e.id)).map((e) => handleStorageURL(e.url)),
       `一堆图片${dayjs().format('YYYYMMDDHHmm')}`,
     )
   }
@@ -154,6 +155,7 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
                 type="primary"
                 disabled={!checkedIds.length}
                 loading={downloading}
+                icon={<CloudDownloadOutlined />}
                 onClick={handleBatchDownload}
               >
                 {t('common.batchDownload')}
