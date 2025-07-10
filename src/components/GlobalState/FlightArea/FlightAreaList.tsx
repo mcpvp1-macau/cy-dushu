@@ -21,9 +21,12 @@ const FlightAreaList = memo(() => {
     queryClient,
   )
 
-  if (data) {
+  useEffect(() => {
+    if (!data) {
+      return
+    }
     updateFlightAreaList(data)
-  }
+  }, [data])
 
   return <></>
 })

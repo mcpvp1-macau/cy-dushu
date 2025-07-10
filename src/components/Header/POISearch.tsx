@@ -94,7 +94,7 @@ const POISearch: FC<PropsType> = memo(() => {
             </div>
           )
         }}
-        dropdownRender={(menu) => (
+        popupRender={(menu) => (
           <>
             <div className="px-3 py-1">
               {t('poi_searcher.result_tip', { count: data?.length })}

@@ -1,4 +1,3 @@
-import { memo, type FC } from 'react'
 import useFlightAreaStore from '@/store/map/useFlightArea.store'
 import { getFlightAreaGroupList } from '@/service/modules/flightArea'
 import FlightAreaList from './FlightAreaList'
@@ -6,10 +5,6 @@ import FlightAreaList from './FlightAreaList'
 type PropsType = unknown
 
 const FlightArea: FC<PropsType> = memo(() => {
-  const updateFlightAreaGroupList = useFlightAreaStore(
-    (s) => s.updateFlightAreaGroupList,
-  )
-
   const queryClient = useQueryClient()
   const { data } = useQuery(
     {
@@ -20,9 +15,12 @@ const FlightArea: FC<PropsType> = memo(() => {
     queryClient,
   )
 
-  if (data) {
-    updateFlightAreaGroupList(data)
-  }
+  useEffect(() => {
+    if (!data) {
+      return
+    }
+    useFlightAreaStore.getState().updateFlightAreaGroupList(data)
+  })
 
   return <FlightAreaList />
 })
