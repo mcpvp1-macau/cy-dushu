@@ -24,9 +24,9 @@ const useQueryHistoryReconstruction2DProcessedResult = (queryData: {
     if (!data2dList?.length) {
       return
     }
-    if (data2dList[0].process && data2dList[0].status === '"PROCESSING"') {
+    if (data2dList[0].process && data2dList[0].status === 'PROCESSING') {
       const processedResults: ProcessedResultType[] = []
-      for (const item of data2dList.at(-1)!.process ?? []) {
+      for (const item of data2dList[0].process ?? []) {
         if (item.imageType === 'tiff') {
           processedResults.length = 0
           processedResults.push({

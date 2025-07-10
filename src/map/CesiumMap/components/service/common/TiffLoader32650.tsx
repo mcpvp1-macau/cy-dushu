@@ -30,6 +30,18 @@ const TiffLoader32650: FC<PropsType> = memo(({ url }) => {
           }
         }
       },
+      renderOptions: {
+        convertToRGB: true, // 尝试将多波段转为 RGB 显示
+        resampleMethod: 'bilinear',
+        nodata: 0,
+      },
+      tileSize: 256, // 瓦片大小，常用 256 或 512
+      // maximumLevel: 8, // 增加最大缩放级别，视数据分辨率调整
+      // minimumLevel: 0,
+      requestOptions: {
+        allowFullFile: true,
+      },
+      // minimumLevel: 0,
     })) as unknown as Cesium.ImageryProvider
     if (unmountedRef.current || !viewer || imageUrl !== latestUrl.current) {
       return
