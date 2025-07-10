@@ -61,6 +61,8 @@ export const startBuild = (data: API_RECONSTRUCTION.req.StartBuild) => {
   )
 }
 
+// 二维重建相关 ---------------------------------------------------------------------
+
 /** 获取二维重建结果列表 */
 export const getReconstruction2DList = (data: {
   actionId?: number
@@ -73,4 +75,19 @@ export const getReconstruction2DList = (data: {
     '/reconstruction/twoDimension/list',
     data,
   )
+}
+
+/** 更新二维创建名称 */
+export const updateReconstruction2D = (data: { id: number; name: string }) => {
+  return serverJingqi.post('/reconstruction/twoDimension/update', data)
+}
+
+/** 删除二维重建 */
+export const deleteReconstruction2D = (id: number) => {
+  return serverJingqi.post('/reconstruction/twoDimension/delete', { id })
+}
+
+/** 重启二维重建 */
+export const restartReconstruction2D = (id: number) => {
+  return serverJingqi.post('/reconstruction/twoDimension/restart', { id })
 }
