@@ -8,6 +8,10 @@ const TextButton: FC<PropsType> = memo((props) => {
       {...props}
       className={clsx(
         'text-primary hover:text-primary-color-4',
+        {
+          'opacity-80': props.disabled,
+          'cursor-not-allowed': props.disabled,
+        },
         props.className,
       )}
     ></button>

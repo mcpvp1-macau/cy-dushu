@@ -103,6 +103,24 @@ declare namespace API_ACTION_PLAN {
        * 未执行 PENDING
        */
       status?: string
+      actionBreakPoint?: {
+        actionPlanId?: number
+        /**
+         * 断点对应的飞行任务id
+         */
+        breakFlightId?: string
+        deviceId?: string
+        flightId?: string
+        gmtCreate?: string
+        gmtCreateBy?: string
+        gmtModified?: string
+        gmtModifiedBy?: string
+        id?: number
+        isValid?: IsValid
+        status?: string
+        templateId?: string
+        [property: string]: any
+      }
       [property: string]: any
     }
   }
