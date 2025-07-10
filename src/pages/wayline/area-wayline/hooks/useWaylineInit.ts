@@ -159,11 +159,19 @@ const useAirlineInit = () => {
       pixelHeight: cameraParams.pixelHeight ?? 3000,
     })
 
-    const o2 = pick(waylineConfig, ['coverage', 'mainK', 'polygon'])
+    const o2 = pick(waylineConfig, [
+      'coverage',
+      'mainK',
+      'polygon',
+      'wideGSD',
+      'photoWaylineCoverage',
+    ])
     updateAirlineTemplateInfo({
       polygon: o2.polygon,
       mainK: o2.mainK,
       coverage: o2.coverage,
+      wideGSD: o2.wideGSD ?? 5,
+      photoWaylineCoverage: o2.photoWaylineCoverage ?? 0.7,
     })
 
     if (Array.isArray(o2.polygon)) {

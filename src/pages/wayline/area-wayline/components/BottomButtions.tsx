@@ -38,6 +38,8 @@ const BottomButtions: FC<PropsType> = memo(() => {
       mainK: templateConfig.mainK,
       polygon: templateConfig.polygon,
       waylineType: 'area_waypoint',
+      wideGSD: templateConfig.wideGSD ?? 5,
+      photoWaylineCoverage: templateConfig.photoWaylineCoverage ?? 0.7, // 航线拍照重叠度
     }
 
     const parameters = {
