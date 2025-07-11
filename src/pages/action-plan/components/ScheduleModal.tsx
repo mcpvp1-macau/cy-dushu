@@ -275,6 +275,7 @@ const ScheduleModal: FC<PropsType> = memo(
 
           type: data.type as any,
           timeRange: [dayjs(data.startTime), dayjs(data.endTime)],
+          breakPointEnable: data.breakPointEnable === 'YES',
         })
         switch (data.type) {
           case 'SINGLE':
@@ -477,8 +478,8 @@ const ScheduleModal: FC<PropsType> = memo(
               }[type]
             }
             <div className="flex justify-between items-center mb-1">
-              <div>
-                断点续飞{' '}
+              <div className="flex gap-1">
+                断点续飞
                 <Tooltip title="开启后，若飞行架次因电量不足等原因无法完成整个航线飞行，系统将记录待执行任务。">
                   <InfoCircleOutlined />
                 </Tooltip>
