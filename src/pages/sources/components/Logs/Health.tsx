@@ -78,7 +78,7 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
     XLSX.writeFile(wb, 'output.xlsx')
   }
   return (
-    <div className="flex flex-col gap-2 p-2">
+    <div className="flex flex-col gap-2 py-2">
       <div className="flex items-center gap-2">
         <RangePicker
           value={[dayjs(dateRange[0]), dayjs(dateRange[1])]}
@@ -106,7 +106,7 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
           pagination={false}
           rowKey="startTime"
           virtual
-          scroll={{ x: 1000, y: 500 }}
+          scroll={{ x: 'max-content', y: 500 }}
           rowSelection={{
             type: 'checkbox',
             onChange: (selectedRowKeys, selectedRows) => {

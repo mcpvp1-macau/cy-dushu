@@ -33,16 +33,18 @@ const SourceTable: FC<PropsType> = memo(() => {
   const page = Number(searchParams.get('page') ?? 1)
   const size = Number(searchParams.get('size') ?? 20)
   const kw = searchParams.get('kw')
+  const sn = searchParams.get('sn')
 
   const queryClient = useQueryClient()
 
   const { data, isLoading, isRefetching } = useQuery(
     {
-      queryKey: ['getAllDeviceList', type, page, size, kw],
+      queryKey: ['getAllDeviceList', type, page, size, kw, sn],
       queryFn: () =>
         getAllDeviceList({
           type: type!,
           deviceName: kw || undefined,
+          sn: sn || undefined,
           otaInfo: true,
           isPage: true,
           page,
@@ -192,6 +194,12 @@ const SourceTable: FC<PropsType> = memo(() => {
           placeholder={t('resource.table.deviceName.title')}
           defaultValue={kw ?? undefined}
           onSearch={(e) => handleValueChange('kw', e)}
+          className="w-72"
+        />
+        <Input.Search
+          placeholder={'设备序列号'}
+          defaultValue={sn ?? undefined}
+          onSearch={(e) => handleValueChange('sn', e)}
           className="w-72"
         />
         {globalConfig.useUavAirportDoc &&
