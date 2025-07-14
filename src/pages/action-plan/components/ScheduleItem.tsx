@@ -137,48 +137,60 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
               </TagItemV2>
               <span className="text-white">{data.name}</span>
             </div>
-            {data.status !== 'TERMINATE' ? (
-              <div
-                className="flex items-center gap-3"
+            <div className="flex items-center gap-2">
+              {data.status !== 'TERMINATE' ? (
+                <div
+                  className="flex items-center gap-2"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    e.preventDefault()
+                  }}
+                >
+                  <IconButtonWithDropDown
+                    menu={{
+                      items: [
+                        {
+                          key: 'edit',
+                          label: t('common.edit'),
+                          onClick: () => setOpen(true),
+                        },
+                        {
+                          key: 'terminate',
+                          label: t('common.terminate'),
+                          onClick: handleTerminate,
+                        },
+                      ],
+                    }}
+                    trigger={['click']}
+                  >
+                    <IconMore />
+                  </IconButtonWithDropDown>
+                  <Switch
+                    size="small"
+                    className=" scale-[85%]"
+                    checked={data.isValid === 'YES'}
+                    onChange={handleChangeValid}
+                  />
+                </div>
+              ) : (
+                <IconAsyncButton
+                  toolTipProps={{ title: t('common.delete') }}
+                  onClick={handleDelete}
+                >
+                  <IconDelete />
+                </IconAsyncButton>
+              )}
+              <IconButton
+                className="ml-auto"
                 onClick={(e) => {
                   e.stopPropagation()
                   e.preventDefault()
+                  toggleExpand()
                 }}
               >
-                <IconButtonWithDropDown
-                  menu={{
-                    items: [
-                      {
-                        key: 'edit',
-                        label: t('common.edit'),
-                        onClick: () => setOpen(true),
-                      },
-                      {
-                        key: 'terminate',
-                        label: t('common.terminate'),
-                        onClick: handleTerminate,
-                      },
-                    ],
-                  }}
-                  trigger={['click']}
-                >
-                  <IconMore />
-                </IconButtonWithDropDown>
-                <Switch
-                  size="small"
-                  className=" scale-90"
-                  checked={data.isValid === 'YES'}
-                  onChange={handleChangeValid}
-                />
-              </div>
-            ) : (
-              <IconAsyncButton
-                toolTipProps={{ title: t('common.delete') }}
-                onClick={handleDelete}
-              >
-                <IconDelete />
-              </IconAsyncButton>
-            )}
+                <CustomExpandIcon isActive={expand} />
+              </IconButton>
+            </div>
           </div>
           <div className="mt-1 text-xs flex justify-between">
             <div className="w-2/3 flex gap-2 items-center">
@@ -209,19 +221,9 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
             </p>
           </div>
           <div className="mt-1 text-xs flex">
-            <p className="w-2/3 truncate">
+            <p className="w-full truncate">
               {t('wayline.title')}: {data.actionConfig?.templateName}
             </p>
-            <IconButton
-              className="ml-auto"
-              onClick={(e) => {
-                e.stopPropagation()
-                e.preventDefault()
-                toggleExpand()
-              }}
-            >
-              <CustomExpandIcon isActive={expand} />
-            </IconButton>
           </div>
           {expand && (
             <>
