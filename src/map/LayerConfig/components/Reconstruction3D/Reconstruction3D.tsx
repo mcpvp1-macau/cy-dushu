@@ -6,12 +6,15 @@ import AddReconstructionLayerGroup from './AddReconstructionLayerGroup'
 import { Input } from 'antd'
 import Select from '@/components/AntdOverride/Select'
 import { createReconstructionStatus } from './ReconstructionMapConfig'
+import IconRefresh from '@/assets/icons/jsx/IconRefresh'
+import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
 
 type PropsType = unknown
 
 const Reconstruction3D: FC<PropsType> = memo(() => {
   const { t } = useTranslation()
   const [open, { toggle, setFalse }] = useBoolean(false)
+  const queryClient = useQueryClient()
 
   const [kw, setKw] = useState('')
   const [status, setStatus] = useState<string | undefined>(undefined)
@@ -39,6 +42,18 @@ const Reconstruction3D: FC<PropsType> = memo(() => {
               <IconRebuild3d />
               {t('common.threeMap')}
             </div>
+          }
+          titleRight={
+            <IconAsyncButton
+              className="scale-90"
+              onClick={async () => {
+                await queryClient.invalidateQueries({
+                  queryKey: ['reconstruction-layerList'],
+                })
+              }}
+            >
+              <IconRefresh />
+            </IconAsyncButton>
           }
           open={open}
           width={350}

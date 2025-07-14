@@ -24,14 +24,29 @@ const ReconstructionMap: FC = memo(() => {
   )
 
   useEffect(() => {
-    if (groupList) {
-      updateLayerGroupList(groupList)
-      const layerIds = groupList.map((item) => item.id)
-      getLayerList({ layerIds }).then((d) => {
-        updateLayerList(d.data)
-      })
+    if (!groupList) {
+      return
     }
+    updateLayerGroupList(groupList)
   }, [groupList])
+
+  const { data: layerList } = useQuery(
+    {
+      queryKey: ['reconstruction-layerList'],
+      queryFn: async () =>
+        getLayerList({ layerIds: groupList!.map((e) => e.id) || [] }),
+      select: (d) => d.data,
+      enabled: !!groupList,
+    },
+    queryClient,
+  )
+
+  useEffect(() => {
+    if (!layerList) {
+      return
+    }
+    updateLayerList(layerList)
+  }, [layerList])
 
   const { data: reconstruction2dList } = useQuery({
     queryKey: ['reconstruction2dList'],

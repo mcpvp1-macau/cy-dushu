@@ -3,6 +3,8 @@ import FloatIconButton from '@/components/ui/button/FloatIconButton'
 import XModal from '@/components/XModal'
 import { Input } from 'antd'
 import Reconstruction2DList from './Reconstruction2DList'
+import IconRefresh from '@/assets/icons/jsx/IconRefresh'
+import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
 
 type PropsType = unknown
 
@@ -11,6 +13,7 @@ const Reconstruction2D: FC<PropsType> = memo(() => {
   const { t } = useTranslation()
   const [open, { toggle }] = useBoolean()
   const [kw, setKw] = useState('')
+  const queryClient = useQueryClient()
 
   return (
     <>
@@ -33,6 +36,18 @@ const Reconstruction2D: FC<PropsType> = memo(() => {
           width={350}
           footer={false}
           noPadding
+          titleRight={
+            <IconAsyncButton
+              className="scale-90"
+              onClick={async () => {
+                await queryClient.invalidateQueries({
+                  queryKey: ['reconstruction-layerList'],
+                })
+              }}
+            >
+              <IconRefresh />
+            </IconAsyncButton>
+          }
           onClose={toggle}
         >
           <div className="m-3">
