@@ -1,4 +1,3 @@
-import TagItem from '@/components/TagItem'
 import { Switch } from 'antd'
 import ScheduleModal from './ScheduleModal'
 import {
@@ -16,6 +15,9 @@ import IconButton from '@/components/ui/button/IconButton'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import { dateOnly } from '@/constant/time-fmt'
 import CustomExpandIcon from '@/components/CustomExpandIcon'
+import TagItemV2 from '@/components/ui/TagItemV2'
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
+import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
 
 type PropsType = {
   data: API_ACTION_PLAN.domain.Plan
@@ -85,12 +87,12 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
     msgApi.success(t('api.success.msg'))
   }
 
-  const handleDelete = async () => {
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation()
     await deleteActionPlan(data.id!)
-    queryClient.invalidateQueries({
+    await queryClient.invalidateQueries({
       queryKey: ['getActionPlanList'],
     })
-    msgApi.success(t('api.success.msg'))
   }
 
   const frequencyFmt = useMemo(() => {
@@ -115,29 +117,22 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
   const [expand, { toggle: toggleExpand }] = useBoolean(false)
 
   return (
-    <li className="my-1">
-      <Link
-        className={clsx(
-          'flex px-3 p-2 gap-2  cursor-pointer text-sm',
-          'hover:bg-[#242E37] hover:text-fore',
-          actionPlanId == data.id && 'bg-[#242E37] text-fore',
-        )}
-        to={`/schedule/${data.id!}`}
-        replace
-      >
+    <li
+      className={clsx(
+        'card-border text-sm p-2 bg-ground-1 hover:border-primary cursor-pointer text-fore',
+        actionPlanId == data.id && 'border-primary',
+      )}
+    >
+      <Link to={`/schedule/${data.id!}`} className="hover:text-fore" replace>
         <div className="flex-1">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
-              {/* <MenuIconSchedule /> */}
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation()
-                  e.preventDefault()
-                  toggleExpand()
-                }}
+              <TagItemV2
+                color={StatusColorMap[data.status!]}
+                bgColor={`${StatusColorMap[data.status!]}33`}
               >
-                <CustomExpandIcon isActive={expand} />
-              </IconButton>
+                {t(`schedule.status.${data.status}.title`)}
+              </TagItemV2>
               <span className="text-white">{data.name}</span>
             </div>
             {data.status !== 'TERMINATE' ? (
@@ -175,21 +170,16 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
                 />
               </div>
             ) : (
-              <IconButton
+              <IconAsyncButton
                 toolTipProps={{ title: t('common.delete') }}
                 onClick={handleDelete}
               >
                 <IconDelete />
-              </IconButton>
+              </IconAsyncButton>
             )}
           </div>
           <div className="mt-1 text-xs flex justify-between">
             <div className="w-2/3 flex gap-2 items-center">
-              <TagItem
-                label={t(`schedule.status.${data.status}.title`)}
-                color={StatusColorMap[data.status!]}
-                bgColor={`${StatusColorMap[data.status!]}33`}
-              />
               <span>
                 {t('common.creator')}: {data.gmtCreateBy}
               </span>
@@ -206,11 +196,30 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
               </span>
             </p>
             <p className="w-1/3">
-              <span>断点续飞: -</span>
+              <span>
+                断点续飞:{' '}
+                {data.breakPointEnable === 'YES' ? (
+                  <CheckCircleOutlined className="text-green-600" />
+                ) : (
+                  <CloseCircleOutlined />
+                )}
+              </span>
             </p>
           </div>
-          <div className="mt-1 text-xs">
-            {t('wayline.title')}: {data.actionConfig?.templateName}
+          <div className="mt-1 text-xs flex">
+            <p className="w-2/3 truncate">
+              {t('wayline.title')}: {data.actionConfig?.templateName}
+            </p>
+            <IconButton
+              className="ml-auto"
+              onClick={(e) => {
+                e.stopPropagation()
+                e.preventDefault()
+                toggleExpand()
+              }}
+            >
+              <CustomExpandIcon isActive={expand} />
+            </IconButton>
           </div>
           {expand && (
             <>
