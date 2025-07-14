@@ -18,9 +18,16 @@ import {
 } from 'antd'
 import { Dayjs } from 'dayjs'
 import { round } from 'lodash'
-import { CloudDownloadOutlined, SyncOutlined } from '@ant-design/icons'
+import {
+  CloudDownloadOutlined,
+  CopyOutlined,
+  SyncOutlined,
+} from '@ant-design/icons'
 import useBatchDownloadWithZip from '@/hooks/useBatchDownloadWithZip'
 import { handleStorageURL } from '@/pages/events/components/EventDetail'
+import IconButton from '@/components/ui/button/IconButton'
+import { useAppMsg } from '@/hooks/useAppMsg'
+import useRangePickerPreset from '@/hooks/useRangePickerPreset'
 
 const { RangePicker } = DatePicker
 
@@ -30,6 +37,8 @@ type PropsType = {
 
 const PictureData: FC<PropsType> = memo(({ deviceList }) => {
   const { t } = useTranslation()
+  const msgApi = useAppMsg()
+
   const deviceOptions = useMemo(
     () =>
       deviceList.map((e) => ({
@@ -99,11 +108,14 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
     )
   }
 
+  const presets = useRangePickerPreset()
+
   return (
     <div>
       <div className="py-3 flex gap-3">
         <RangePicker
           value={dateRange}
+          presets={presets}
           onChange={(s) => {
             if (!s) {
               setDateRange(null)
@@ -222,6 +234,20 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
                                   <span>
                                     {round(e.latitude ?? 0, 5) || '-'}
                                   </span>
+                                  <IconButton
+                                    className="ml-1"
+                                    onClick={async () => {
+                                      await navigator.clipboard.writeText(
+                                        `${round(e.longitude ?? 0, 6)}, ${round(
+                                          e.latitude ?? 0,
+                                          6,
+                                        )}`,
+                                      )
+                                      msgApi.success(t('common.copySuccess'))
+                                    }}
+                                  >
+                                    <CopyOutlined />
+                                  </IconButton>
                                 </p>
                               </div>
                             </div>

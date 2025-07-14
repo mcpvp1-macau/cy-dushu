@@ -554,6 +554,7 @@ common:
   checkAll: Check All
   batchDownload: Batch Download
   downloadedPictureCount: '{{count}} pictures have been downloaded'
+  copySuccess: Copy Successfully
 events:
   search:
     placeholder: Please search by event name or ID
@@ -1419,3 +1420,12 @@ unit:
 media:
   photoSelectCountMsg: '{count} photos have been selected'
   makingZipMsg: A compressed package is being generated
+timeRange:
+  today: Today
+  recent1Day: Last 1 Day
+  last1Day: Last 1 Day
+  last7Days: Last 7 Days
+  last30Days: Last 30 Days
+  last90Days: Last 90 Days
+  last365Days: Last 1 Year
+  last100Years: Last 100 Years

@@ -548,6 +548,7 @@ common:
   checkAll: 全选
   batchDownload: 批量下载
   downloadedPictureCount: 已下载 {{count}} 张图片
+  copySuccess: 复制成功
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -1403,3 +1404,12 @@ unit:
 media:
   photoSelectCountMsg: 已经选择 {{count}} 张图片
   makingZipMsg: 正在生成压缩包
+timeRange:
+  today: 今日
+  recent1Day: 最近 1 天
+  last1Day: 最近 1 天
+  last7Days: 最近 7 天
+  last30Days: 最近 30 天
+  last90Days: 最近 90 天
+  last365Days: 最近 1 年
+  last100Years: 最近 100 年

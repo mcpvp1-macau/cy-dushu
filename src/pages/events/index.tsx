@@ -17,6 +17,7 @@ import type { Dayjs } from 'dayjs'
 import { useSearchParams } from 'react-router-dom'
 import useEventTypeOptions from './hooks/useEventTypeOptions'
 import EventDetailModal from './components/EventDetailModal'
+import useRangePickerPreset from '@/hooks/useRangePickerPreset'
 
 const h = createColumnHelper<API_EVENTS.domain.Event>()
 
@@ -144,6 +145,8 @@ const PageEvents: FC<PropsType> = memo(() => {
 
   const { handleValueChange, handlePaginationChange } = usePageSearchParams()
 
+  const presets = useRangePickerPreset()
+
   return (
     <div className="page-full p-3 bg-ground-2 flex flex-col overflow-y-hidden">
       <h2 className="text-white">{t('events.title')}</h2>
@@ -156,6 +159,7 @@ const PageEvents: FC<PropsType> = memo(() => {
         />
         <DatePicker.RangePicker
           defaultValue={rangeValue}
+          presets={presets}
           onChange={(d) => {
             setSearchParams(
               {
