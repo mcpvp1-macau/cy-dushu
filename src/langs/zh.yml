@@ -1021,6 +1021,10 @@ flightArea:
     noCountZone:
       title: 非计算区
       info: 适用于算法忽略的区域，如非监控区域
+  relatedGroup:
+    title: 关联分组
+    effective:
+      title: 生效范围
 tools:
   saveMapView:
     title: 保存地图视角

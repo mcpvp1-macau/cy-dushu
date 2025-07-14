@@ -8,7 +8,7 @@ import { shouldJson } from '@/utils/json'
 import IconButton from '@/components/ui/button/IconButton'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconEdit from '@/assets/icons/jsx/IconEdit'
-import { Form, Input, Select, Tooltip } from 'antd'
+import { Form, Input, Select, Tooltip, TreeSelect } from 'antd'
 import { InfoCircleOutlined, LoadingOutlined } from '@ant-design/icons'
 import { CotType } from '@/store/map/useDraw.store'
 import IconDrawArea from '@/assets/icons/jsx/right-tools/IconDrawArea'
@@ -16,8 +16,11 @@ import IconTick from '@/assets/icons/jsx/IconTick'
 import useFlightAreaDetail from './useFlightAreaDetail'
 import OverlayStyleEditor from '../AddGeometry/OverlayStyleEditor'
 import { createPortal } from 'react-dom'
+import useUserStore, { type GroupDeviceTree } from '@/store/useUser.store'
 
 type PropsType = unknown
+// 无人机和无人机机场可以使用飞行区域
+const usedFlightAreaDevice = ['UAV', 'UAV_AIRPORT']
 
 const FlightAreaDetail: FC<PropsType> = memo(() => {
   const detailId = useRightMode((s) => s.detailId)
@@ -55,6 +58,7 @@ const FlightAreaDetail: FC<PropsType> = memo(() => {
     isConfirmLoading,
     form,
     overlay,
+    relatedGroup,
     styleConfig,
   } = useFlightAreaDetail(detailId!, () => {
     updateRightMode(null)
@@ -73,6 +77,68 @@ const FlightAreaDetail: FC<PropsType> = memo(() => {
   const updateRightMode = useRightMode((s) => s.updateRightMode)
 
   const inputRef = useRef<ComponentRef<typeof Input>>(null)
+
+  const groupDeviceTree = useUserStore((s) => s.groupDeviceTree)
+  /** 过滤掉除无人机和机场外的设备树，且去其中掉没有设备的组织 */
+  const fliterGroupDeviceTree = useMemo(() => {
+    // 先过滤掉除无人机和机场外的设备树
+    const result: GroupDeviceTree[] = []
+    usedFlightAreaDevice.forEach((key) => {
+      const item = groupDeviceTree.find((e) => e.value === key)
+      if (item) {
+        result.push(item)
+      }
+    })
+
+    /**递归的判断该组织下以及所有子组织是否有设备 */
+    const hasDevice = (data: GroupDeviceTree[]) => {
+      let has = false
+
+      const recursiveFn = (data: GroupDeviceTree[]) => {
+        data.forEach((item) => {
+          if (item.type === 'DeviceItem') {
+            has = true
+            return
+          }
+          if (item.type === 'Group' && item.children.length === 0) {
+            return
+          } else {
+            recursiveFn(item.children)
+          }
+        })
+      }
+      recursiveFn(data)
+
+      return has
+    }
+
+    /**递归的删除没有设备的组织 */
+    const deleteGroupWithoutDevice = (data: GroupDeviceTree[]) => {
+      const tempResult: GroupDeviceTree[] = []
+      data.forEach((item) => {
+        if (item.type === 'DeviceType' || item.type === 'DeviceItem') {
+          tempResult.push({
+            ...item,
+            children: deleteGroupWithoutDevice(item.children),
+          })
+        } else if (item.type === 'Group' && hasDevice(item.children)) {
+          tempResult.push({
+            ...item,
+            children: deleteGroupWithoutDevice(item.children),
+          })
+        } else {
+          // 没有设备的组织就不添加进新树中了
+        }
+      })
+      return tempResult
+    }
+
+    return deleteGroupWithoutDevice(result)
+  }, [groupDeviceTree])
+
+  useEffect(() => {
+    console.log(relatedGroup?.effectiveDevices?.split(',') || [])
+  }, [relatedGroup])
 
   return (
     <>
@@ -155,6 +221,11 @@ const FlightAreaDetail: FC<PropsType> = memo(() => {
               </p>
 
               <p className="flex gap-2">
+                {t('overlay.detail.createUser.title')}:
+                <span className="text-white">{relatedGroup?.layerName}</span>
+              </p>
+
+              <p className="flex gap-2">
                 <span className="whitespace-nowrap">
                   {t('flightArea.type.title')}:
                 </span>
@@ -201,6 +272,28 @@ const FlightAreaDetail: FC<PropsType> = memo(() => {
                     </span>
                   )}
                 </Form.Item>
+              </p>
+
+              <p className="flex gap-2">
+                <span className="whitespace-nowrap">
+                  {t('flightArea.relatedGroup.effective.title')}:
+                </span>
+                <div>
+                  <TreeSelect
+                    size="small"
+                    className="w-[240px]"
+                    value={relatedGroup?.effectiveDevices?.split(',') || []}
+                    defaultValue={
+                      relatedGroup?.effectiveDevices?.split(',') || []
+                    }
+                    treeData={fliterGroupDeviceTree}
+                    treeCheckable
+                    showCheckedStrategy={TreeSelect.SHOW_CHILD}
+                    allowClear
+                    maxTagCount={6}
+                    onChange={(value) => {}}
+                  />
+                </div>
               </p>
             </div>
           ) : (

@@ -17,6 +17,7 @@ const useFlightAreaDetail = (
   onDelete?: () => void,
 ) => {
   const flightAreaList = useFlightAreaStore((s) => s.flightAreaList)
+  const flightAreaGroupList = useFlightAreaStore((s) => s.flightAreaGroupList)
   const drawingColor = useMapDrawStore((s) => s.drawingColor)
   const updateDrawingColor = useMapDrawStore((s) => s.updateDrawingColor)
   const fillOpacity = useMapDrawStore((s) => s.fillOpacity)
@@ -32,6 +33,10 @@ const useFlightAreaDetail = (
     const d = +detailId
     return flightAreaList.find((e) => e.overlayId === d)
   }, [detailId, flightAreaList])
+
+  const relatedGroup = useMemo(() => {
+    return flightAreaGroupList.find((e) => e.layerId === overlay?.layerId)
+  }, [overlay, flightAreaGroupList])
 
   const [isEdit, { toggle, setFalse }] = useBoolean(false)
 
@@ -156,6 +161,7 @@ const useFlightAreaDetail = (
     isConfirmLoading,
     isEdit,
     overlay,
+    relatedGroup,
     styleConfig,
     setFalse,
     toggle,
