@@ -89,6 +89,8 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
 
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation()
+    // 防止默认行为 (Link 的跳转)
+    e.preventDefault()
     await deleteActionPlan(data.id!)
     await queryClient.invalidateQueries({
       queryKey: ['getActionPlanList'],
