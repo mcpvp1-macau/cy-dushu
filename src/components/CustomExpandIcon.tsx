@@ -13,7 +13,7 @@ const CustomExpandIcon: FC<PropsType> = ({ isActive, ...restProps }) => {
   const icon = (
     <IconExpand
       className={clsx(
-        'text-fore text-xs transition-transform duration-300',
+        'text-xs transition-transform duration-300',
         restProps.className,
       )}
       style={{

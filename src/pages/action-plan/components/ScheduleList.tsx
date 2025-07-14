@@ -6,6 +6,7 @@ import { addActionPlan, getActionPlanList } from '@/service/modules/action-plan'
 import AppSpin from '@/components/AppSpin'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import AppEmpty from '@/components/AppEmpty'
+import MenuIconSchedule from '@/assets/icons/jsx/menus/MenuIconSchedule'
 
 type PropsType = unknown
 
@@ -40,7 +41,12 @@ const ScheduleList: FC<PropsType> = memo(() => {
 
   return (
     <div className="h-full min-w-[350px] w-[350px] border-r border-solid border-ground-4 flex flex-col">
-      <h2 className="p-3 py-2 text-white">{t('schedue.list.title')}</h2>
+      <header className="flex justify-between items-center p-3 border-b border-solid border-ground-4">
+        <div className="flex gap-1">
+          <MenuIconSchedule />
+          <h2 className="text-white">{t('schedue.list.title')}</h2>
+        </div>
+      </header>
       <div className="h-[1px] bg-ground-4" />
       <ScrollArea className="grow">
         {isLoading || !data ? (
@@ -50,7 +56,7 @@ const ScheduleList: FC<PropsType> = memo(() => {
             {data.length === 0 ? (
               <AppEmpty />
             ) : (
-              <ul>
+              <ul className="flex flex-col gap-3 p-3">
                 {data.map((e) => (
                   <ScheduleListItem key={e.id} data={e} />
                 ))}
