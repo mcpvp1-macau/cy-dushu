@@ -477,6 +477,7 @@ declare namespace API_DEVICE {
       Partial<{
         otaInfo: boolean
         deviceName: string
+        sn: string
         type: string
       }>
   }

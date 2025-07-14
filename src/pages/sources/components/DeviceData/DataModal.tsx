@@ -12,11 +12,12 @@ const HistoryTrack = lazy(() => import('./HistoryTrack'))
 
 type PropsType = {
   deviceId: string
+  deviceName: string
   open: boolean
   onClose?: () => void
 }
 
-const DataModal: FC<PropsType> = memo(({ deviceId, open, onClose }) => {
+const DataModal: FC<PropsType> = memo(({ deviceId, deviceName, open, onClose }) => {
   const queryClient = useQueryClient()
 
   // 获取设备详情
@@ -35,7 +36,7 @@ const DataModal: FC<PropsType> = memo(({ deviceId, open, onClose }) => {
 
   return (
     <XModal
-      title={t('common.data')}
+      title={deviceName + ' ' + t('common.data')}
       open={open}
       footer={false}
       onClose={onClose}
