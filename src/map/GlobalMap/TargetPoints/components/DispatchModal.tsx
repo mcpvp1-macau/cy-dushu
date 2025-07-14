@@ -86,16 +86,17 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
 
   const [form] = useForm()
 
-  const handleDispatchClick = () => {
+  const handleDispatchClick = (devices?: string[]) => {
     setFlyModalOpen(true)
-    checkedDevices.forEach((e, i) => {
+    ;(devices ?? checkedDevices).forEach((e, i) => {
       const { deviceId, productKey, deviceType } = deviceMap.get(e)!
-
       form.setFieldValue([deviceId, 'height'], 120 + i * 10)
       form.setFieldValue([deviceId, 'gohomeAltitude'], 120 + i * 10)
       form.setFieldValue(
         [deviceId, 'speed'],
-        deviceType === DeviceEnum.UAV ? 10 : 3,
+        deviceType === DeviceEnum.UAV || deviceType === DeviceEnum.UAV_AIRPORT
+          ? 10
+          : 3,
       )
       form.setFieldValue([deviceId, 'deviceId'], deviceId)
       form.setFieldValue([deviceId, 'productKey'], productKey)
@@ -116,7 +117,10 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
           longitude: position[0],
           latitude: position[1],
         }
-        if (dev.deviceType === DeviceEnum.UAV) {
+        if (
+          dev.deviceType === DeviceEnum.UAV ||
+          dev.deviceType === DeviceEnum.UAV_AIRPORT
+        ) {
           payload.speed = e.speed
           payload.height = e.height
           payload.gohomeAltitude = e.gohomeAltitude
@@ -191,16 +195,6 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
                   onPressEnter={(e) => setName(e.currentTarget.value)}
                 />
               </div>
-              {/* <div className="px-3 mt-2 flex justify-between">
-                <SourceStatusCheckGroup />
-                <IconButton
-                  toolTipProps={{ title: '编组' }}
-                  active={isGroup}
-                  onClick={() => setIsGroup(!isGroup)}
-                >
-                  <IconSwarm />
-                </IconButton>
-              </div> */}
               <ScrollArea className="flex-1">
                 {!data || isLoading ? (
                   <AppSpin />
@@ -220,7 +214,7 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
                           className="mr-2 text-xs"
                           onClick={() => {
                             setCheckDevices([e.deviceId])
-                            handleDispatchClick()
+                            handleDispatchClick([e.deviceId])
                           }}
                         >
                           派遣
@@ -269,7 +263,7 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
                               className="mr-2 text-xs"
                               onClick={() => {
                                 setCheckDevices([e.deviceId])
-                                handleDispatchClick()
+                                handleDispatchClick([e.deviceId])
                               }}
                             >
                               派遣
@@ -309,7 +303,7 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
 
             <div className="flex justify-end gap-2">
               <Button onClick={onClose}>取消</Button>
-              <Button type="primary" onClick={handleDispatchClick}>
+              <Button type="primary" onClick={() => handleDispatchClick()}>
                 派遣
               </Button>
             </div>
@@ -337,7 +331,8 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
                     {deviceName}
                   </div>
                   <div className="flex gap-3">
-                    {deviceType === DeviceEnum.UAV && (
+                    {(deviceType === DeviceEnum.UAV ||
+                      deviceType === DeviceEnum.UAV_AIRPORT) && (
                       <>
                         <Form.Item
                           className="w-1/3"

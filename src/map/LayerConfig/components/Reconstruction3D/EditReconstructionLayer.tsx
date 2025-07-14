@@ -3,8 +3,7 @@ import IconButton from '@/components/ui/button/IconButton'
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
 import useReconstructionMap from '@/store/map/useReconstructionMap.store'
-import { updateLayer, getLayerList } from '@/service/modules/reconstruction'
-import { useAppMsg } from '@/hooks/useAppMsg'
+import { updateLayer } from '@/service/modules/reconstruction'
 
 type PropsType = {
   data: API_RECONSTRUCTION.Layer
@@ -12,13 +11,11 @@ type PropsType = {
 
 export const EditReconstructionLayer: FC<PropsType> = (props) => {
   const { t } = useTranslation()
-  const msgApi = useAppMsg()
 
   const [isOpened, { setTrue: open, setFalse: close }] = useBoolean(false)
-  const [layerGroupList, updateLayerList] = useReconstructionMap((s) => [
-    s.layerGroupList,
-    s.updateLayerList,
-  ])
+  const [layerGroupList] = useReconstructionMap((s) => [s.layerGroupList])
+  const queryClient = useQueryClient()
+
   const handleConfirm = async (values: {
     layerName: string
     layerId: number
@@ -29,11 +26,9 @@ export const EditReconstructionLayer: FC<PropsType> = (props) => {
         overlayName: values.layerName,
         layerId: values.layerId,
       })
-      const data = await getLayerList({
-        layerIds: layerGroupList.map((item) => item.id),
+      await queryClient.invalidateQueries({
+        queryKey: ['reconstruction-layerList'],
       })
-      updateLayerList(data.data)
-      msgApi.success(t('api.success.msg'))
     } finally {
       close()
     }

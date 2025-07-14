@@ -4,22 +4,17 @@ import IconRebuild3d from '@/assets/icons/jsx/IconRebuild3d'
 import IconVisible from '@/assets/icons/jsx/IconVisible'
 import IconButton from '@/components/ui/button/IconButton'
 import { RightModeEnum } from '@/enum/right-mode'
-import { useAppMsg } from '@/hooks/useAppMsg'
 import {
   deleteLayer,
-  getLayerList,
   startBuild,
   startReconstructionTask,
 } from '@/service/modules/reconstruction'
 import useRightMode from '@/store/layout/useRightMode.store'
-import useReconstructionMap, {
-  useReconstructionMapConfigStore,
-} from '@/store/map/useReconstructionMap.store'
+import { useReconstructionMapConfigStore } from '@/store/map/useReconstructionMap.store'
 import {
   CheckCircleOutlined,
   ClockCircleOutlined,
   CloseCircleOutlined,
-  LoadingOutlined,
   SyncOutlined,
 } from '@ant-design/icons'
 import EditReconstructionLayer from './EditReconstructionLayer'
@@ -27,6 +22,7 @@ import { Tooltip } from 'antd'
 import IconRefresh from '@/assets/icons/jsx/IconRefresh'
 import { t } from 'i18next'
 import TagItemV2 from '@/components/ui/TagItemV2'
+import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
 
 type PropsType = {
   data: API_RECONSTRUCTION.Layer
@@ -46,9 +42,6 @@ const ReconstructionMapConfig: FC<PropsType> = memo((props) => {
 
   const reconstructionStatus = useMemo(() => createReconstructionStatus(), [t])
 
-  const msgApi = useAppMsg()
-  const [loading, setLoading] = useState(false)
-
   const rightMode = useRightMode((s) => s.rightMode)
   const rightDetailId = useRightMode((s) => s.detailId)
 
@@ -56,29 +49,18 @@ const ReconstructionMapConfig: FC<PropsType> = memo((props) => {
   const updateShowLayerIds = useReconstructionMapConfigStore(
     (s) => s.updateShowLayerIds,
   )
-  const [layerGroupList, updateLayerList] = useReconstructionMap((s) => [
-    s.layerGroupList,
-    s.updateLayerList,
-  ])
 
+  const queryClient = useQueryClient()
   const handleDelte = async (overlayId: number) => {
-    setLoading(true)
-    try {
-      await deleteLayer(overlayId)
-      const data = await getLayerList({
-        layerIds: layerGroupList.map((item) => item.id),
-      })
-      updateLayerList(data.data)
-      msgApi.success(t('api.success.msg'))
-
-      if (
-        rightMode === RightModeEnum.RECONSTRUCTION_DETAIL &&
-        rightDetailId == String(overlayId)
-      ) {
-        useRightMode.setState({ rightMode: null })
-      }
-    } finally {
-      setLoading(false)
+    await deleteLayer(overlayId)
+    await queryClient.invalidateQueries({
+      queryKey: ['reconstruction-layerList'],
+    })
+    if (
+      rightMode === RightModeEnum.RECONSTRUCTION_DETAIL &&
+      rightDetailId == String(overlayId)
+    ) {
+      useRightMode.setState({ rightMode: null })
     }
   }
 
@@ -95,11 +77,9 @@ const ReconstructionMapConfig: FC<PropsType> = memo((props) => {
         bucket: globalConfig.bucketName || 'ja-media-storage',
         minioPath: data.imagesFolderPath,
       })
-      msgApi.success(t('api.success.msg'))
-      const res2 = await getLayerList({
-        layerIds: layerGroupList.map((item) => item.id),
+      await queryClient.invalidateQueries({
+        queryKey: ['reconstruction-layerList'],
       })
-      updateLayerList(res2.data)
     },
   )
 
@@ -126,11 +106,14 @@ const ReconstructionMapConfig: FC<PropsType> = memo((props) => {
       )
     } else if (data.status === 'PROCESSING' || data.status === 'PAUSE') {
       return (
-        <Tooltip title={t('mapLayer.reconstructionMap.task.restart')}>
-          <IconButton onClick={() => restartReconstruction(data)}>
-            <IconRefresh className="cursor-pointer text-[14px]" />
-          </IconButton>
-        </Tooltip>
+        <IconAsyncButton
+          toolTipProps={{
+            title: t('mapLayer.reconstructionMap.task.restart'),
+          }}
+          onClick={async () => await restartReconstruction(data)}
+        >
+          <IconRefresh className="cursor-pointer text-[14px]" />
+        </IconAsyncButton>
       )
     }
   })
@@ -167,20 +150,16 @@ const ReconstructionMapConfig: FC<PropsType> = memo((props) => {
           </p>
         </div>
         <div className="flex gap-3" onClick={(e) => e.stopPropagation()}>
-          {loading ? (
-            <LoadingOutlined />
-          ) : (
-            <>
-              {statusBtn(data)}
-              <EditReconstructionLayer data={data} />
-              <IconButton
-                className="scale-90"
-                onClick={() => handleDelte(data.overlayId)}
-              >
-                <IconDelete />
-              </IconButton>
-            </>
-          )}
+          <>
+            {statusBtn(data)}
+            <EditReconstructionLayer data={data} />
+            <IconAsyncButton
+              className="scale-90"
+              onClick={async () => await handleDelte(data.overlayId)}
+            >
+              <IconDelete />
+            </IconAsyncButton>
+          </>
         </div>
       </div>
       <div className="mt-1 ml-5">{statusText(data)}</div>
