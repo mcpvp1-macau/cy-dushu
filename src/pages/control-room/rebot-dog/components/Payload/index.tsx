@@ -44,7 +44,6 @@ const labelMap: { [key in MountType]: string } = {
 const UavPayload: FC<PropsType> = memo(() => {
   // TODO mock 挂载
   const mount: string[] = useRebotDogControlRoomStore((s) => s.state.mounts) || []
-  console.log('mount', mount)
   // || [
   //   'PARACHUTE',
   //   'MMC_Gimbal_P3',
