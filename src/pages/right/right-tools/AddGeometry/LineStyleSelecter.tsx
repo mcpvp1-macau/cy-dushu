@@ -1,11 +1,11 @@
 import { Tooltip } from 'antd'
-import { Flex, Select } from 'antd'
 import React from 'react'
 import IconLine from '@/assets/icons/jsx/IconLine'
 import IconDashedLine from '@/assets/icons/jsx/IconDashedLine'
 import IconNoFly from '@/assets/icons/jsx/IconNoFly'
 import useMapDrawStore, { LineStyle } from '@/store/map/useDraw.store'
 import { useTranslation } from 'react-i18next'
+import Select from '@/components/AntdOverride/Select'
 
 type PropsType = {
   showNoFly?: boolean
@@ -22,7 +22,7 @@ const LineStyleSelecter: FC<PropsType> = ({ showNoFly = false }) => {
       {
         label: (
           <Tooltip title={t('overlay.drawing.lineStyle.solid')}>
-            <IconLine className="text-[30px]" />
+            <IconLine className="text-2xl" />
           </Tooltip>
         ),
         value: 'solid',
@@ -30,7 +30,7 @@ const LineStyleSelecter: FC<PropsType> = ({ showNoFly = false }) => {
       {
         label: (
           <Tooltip title={t('overlay.drawing.lineStyle.dashed')}>
-            <IconDashedLine className="text-[30px]" />
+            <IconDashedLine className="text-2xl" />
           </Tooltip>
         ),
         value: 'dashed',
@@ -41,7 +41,7 @@ const LineStyleSelecter: FC<PropsType> = ({ showNoFly = false }) => {
       options.push({
         label: (
           <Tooltip title={t('overlay.drawing.lineStyle.noFly')}>
-            <IconNoFly className="text-[30px]" />
+            <IconNoFly className="text-2xl" />
           </Tooltip>
         ),
         value: 'no-fly',
@@ -52,22 +52,19 @@ const LineStyleSelecter: FC<PropsType> = ({ showNoFly = false }) => {
   }, [showNoFly])
 
   return (
-    <Flex gap={6}>
-      <Flex align="center">
-        <div>{t('overlay.drawing.lineStyle.title')}：</div>
-        <div className="flex items-cente w-[80px]">
-          <Select
-            options={options}
-            defaultValue={'solid'}
-            size="small"
-            value={lineStyle}
-            onChange={(val) => {
-              updateLineStyle(val as LineStyle)
-            }}
-          />
-        </div>
-      </Flex>
-    </Flex>
+    <div className="flex items-center gap-2">
+      <div>{t('overlay.drawing.lineStyle.title')}</div>
+      <Select
+        className="w-16"
+        options={options}
+        defaultValue={'solid'}
+        size="small"
+        value={lineStyle}
+        onChange={(val) => {
+          updateLineStyle(val as LineStyle)
+        }}
+      />
+    </div>
   )
 }
 

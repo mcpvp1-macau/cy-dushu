@@ -17,6 +17,7 @@ const ShowPolygon: FC<PropsType> = ({ overlayExtType, overlay }) => {
   const label = overlay.overlayName
   const fillColor =
     argbToHex(String(style?.fillColor?.['-value']))?.[0] || '#4c90f0'
+  console.log('fillColor', fillColor, style?.fillColor)
   const fillOpacity = parseFloat(style?.fillOpacity?.['-value']) || 0.5
   const strokeColor =
     argbToHex(String(style?.strokeColor?.['-value']))?.[0] || '#4c90f0'

@@ -430,6 +430,7 @@ const DeviceLiveVideo = memo(
                     {leftTop}
                   </section>
                   <section className="flex items-center gap-3">
+                    {rightTop}
                     {useDing && (
                       <VideoDing
                         productKey={productKey}
@@ -437,7 +438,6 @@ const DeviceLiveVideo = memo(
                         videoId={videoId}
                       />
                     )}
-                    {rightTop}
                   </section>
                 </div>
               </aside>

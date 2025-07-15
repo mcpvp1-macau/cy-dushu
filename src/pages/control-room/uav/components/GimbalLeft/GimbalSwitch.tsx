@@ -172,6 +172,8 @@ const GimbalSwitch: FC<PropsType> = memo(() => {
                     <li key={e.value}>
                       <Button
                         type="text"
+                        size="small"
+                        className="p-3 w-14"
                         onClick={() => handleChangeThermalStyle(e.value)}
                       >
                         <span

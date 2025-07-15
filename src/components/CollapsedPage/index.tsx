@@ -1,5 +1,6 @@
 import IconLeft from '@/assets/icons/jsx/IconLeft'
 import IconRight from '@/assets/icons/jsx/IconRight'
+import useSituationLayoutStore from '@/store/layout/useSituationLayout.store'
 import { ReactNode } from 'react'
 
 type PropsType = {
@@ -8,7 +9,14 @@ type PropsType = {
 
 /** 可折叠页面 */
 const CollapsedPage: FC<PropsType> = memo(({ children }) => {
+  // 为什么不直接使用  useSituationLayoutStore 的 collapsedOpen？
+  // 因为 useSituationLayoutStore 的 collapsedOpen 是全局状态，
+  // 需要再每次创建时都是默认打开的
   const [open, setOpen] = useState(true)
+  useEffect(() => {
+    useSituationLayoutStore.getState().updateCollapsedOpen(open)
+  }, [open])
+
   return (
     <div className="h-full overflow-y-hidden flex">
       <div

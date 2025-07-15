@@ -1,4 +1,4 @@
-import { Select } from 'antd'
+import Select from '@/components/AntdOverride/Select'
 import { DrawType } from '@/store/map/useDraw.store'
 import { useTranslation } from 'react-i18next'
 
@@ -53,10 +53,9 @@ const DrawingTypeSelecter: FC<PropsType> = ({ onChange, lockedType }) => {
   return (
     <Select
       options={options}
-      className="w-[100px]"
+      className="w-20"
       onChange={onChangeType}
       value={type}
-      variant="borderless"
       size="small"
     />
   )

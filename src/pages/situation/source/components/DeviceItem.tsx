@@ -6,11 +6,11 @@ import IconTaskRunning from '@/assets/icons/jsx/IconTaskRunning'
 import IconVisible from '@/assets/icons/jsx/IconVisible'
 import DeviceIcon from '@/components/device/DeviceIcon'
 import IconButton from '@/components/ui/button/IconButton'
-import TagItem from '@/components/TagItem'
 import { Badge, Tooltip } from 'antd'
 import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
 import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
 import { DeviceEnum } from '@/enum/device'
+import TagItemV2 from '@/components/ui/TagItemV2'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -39,19 +39,19 @@ const TaskStatusTag: FC<{ taskStatus: string }> = ({ taskStatus }) => {
     ) : (
       <IconTaskIdle className="text-[10px]" />
     )
-  return <TagItem label={label} color={color} bgColor={bgColor} icon={icon} />
+  return (
+    <TagItemV2 color={color} bgColor={bgColor} icon={icon}>
+      {label}
+    </TagItemV2>
+  )
 }
 
 /** 电量状态 */
 const BatteryStatusTag: FC<{ battery: number }> = ({ battery }) => {
   return (
-    <TagItem
-      label={`${battery}%`}
-      icon={<IconBattery className="text-[10px]" />}
-      color="rgb(199, 209, 220)"
-      bgColor="rgba(199, 209, 220, 0.1)"
-      width="60px"
-    />
+    <TagItemV2
+      icon={<IconBattery className="text-[10px]" type="success" />}
+    >{`${battery}%`}</TagItemV2>
   )
 }
 

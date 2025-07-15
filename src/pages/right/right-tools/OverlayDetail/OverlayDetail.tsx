@@ -55,12 +55,7 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                 )}
                 <Form.Item noStyle name="overlayName">
                   {isEdit ? (
-                    <Input
-                      ref={inputRef}
-                      size="small"
-                      // value={renameValue}
-                      // onChange={(e) => setRenameValue(e.currentTarget.value)}
-                    />
+                    <Input ref={inputRef} size="small" />
                   ) : (
                     <h6 className="text-white text-base max-w-[190px] truncate">
                       {overlay?.overlayName || '-'}
@@ -89,15 +84,12 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                           toggle()
                           setTimeout(() => {
                             inputRef.current?.focus()
-                          }, 333)
+                          })
                         }}
                       >
                         <IconEdit className="scale-90" />
                       </IconButton>
                     )}
-                    {/* <IconButton toolTipProps={{ title: '分享' }}>
-                  <IconShare className="scale-90" />
-                </IconButton> */}
                     <IconButton
                       toolTipProps={{ title: t('common.delete') }}
                       onClick={handleDelete}
@@ -128,25 +120,6 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                     ?.join(', ')}
                 </span>
               </p>
-
-              {/* <div className="flex gap-2 items-center">
-              {t('overlay.detail.color.title')}:
-              <Form.Item noStyle name="color">
-                {isEdit ? (
-                  <ColorPicker size="small" disabledAlpha />
-                ) : (
-                  <div className="text-white">
-                    <div
-                      className="w-3.5 h-3.5 rounded border border-solid border-white"
-                      style={{
-                        backgroundColor: renderColor,
-                      }}
-                    />
-                  </div>
-                )}
-              </Form.Item>
-            </div> */}
-
               <p className="flex gap-2">
                 <span className="whitespace-nowrap">
                   {t('overlay.detail.mark.title')}:

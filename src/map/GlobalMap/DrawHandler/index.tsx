@@ -1,6 +1,4 @@
 import useMapDrawStore, { DrawType } from '@/store/map/useDraw.store'
-import { memo, type FC } from 'react'
-import { useCesium } from 'resium'
 import DrawPoint from './DrawPoint'
 import DrawCircle from './DrawCircle'
 import { useAppMsg } from '@/hooks/useAppMsg'
@@ -11,32 +9,23 @@ import DrawRangingLine from './DrawRangingLine'
 import DrawRangingArea from './DrawRangingArea'
 import DrawRangingCircle from './DrawRangingCircle'
 import DrawRangingAngle from './DrawRangingAngle'
+import useCesiumMouseCrosshair from '@/map/CesiumMap/hooks/useCesiumMouseCrosshair'
 
 type PropsType = unknown
 
 /** 绘制相关 (打点, 划线) */
 const DrawHandler: FC<PropsType> = memo(() => {
   const drawingType = useMapDrawStore((s) => s.drawing)
-  const updateDrawingType = useMapDrawStore((s) => s.updateDrawing)
   const isFlightArea = useMapDrawStore((s) => s.isFlightArea)
 
   const { t } = useTranslation()
 
-  const { viewer } = useCesium()
-  useEffect(() => {
-    if (drawingType === DrawType.None) {
-      return
-    }
-    viewer?.canvas.setAttribute('style', 'cursor: crosshair')
-    return () => {
-      viewer?.canvas.setAttribute('style', 'cursor: auto')
-    }
-  }, [drawingType])
+  useCesiumMouseCrosshair(drawingType !== DrawType.None)
 
   const msgApi = useAppMsg()
   const queryClient = useQueryClient()
   const handleSuccess = useMemoizedFn(async () => {
-    updateDrawingType(DrawType.None)
+    useMapDrawStore.getState().updateDrawing(DrawType.None)
     msgApi.success(t('common.success'))
     if (isFlightArea) {
       await queryClient.invalidateQueries({

@@ -1,6 +1,6 @@
-import { memo, type FC } from 'react'
 import * as Cesium from 'cesium'
 import { OverlayPolygonPrimitive } from '@/utils/customPrimitive/OverlayPrimitive'
+import { attempt } from 'lodash'
 
 type PropsType = {
   data: any
@@ -58,10 +58,12 @@ const OverlayPolygon: FC<PropsType> = memo((props) => {
     return () => {
       if (!viewer?.scene?.primitives) return
 
-      const preVal = viewer.scene.primitives.destroyPrimitives
-      viewer.scene.primitives.destroyPrimitives = false
-      viewer.scene.primitives.remove(primitiveRef.current)
-      viewer.scene.primitives.destroyPrimitives = preVal
+      attempt(() => {
+        const preVal = viewer.scene.primitives.destroyPrimitives
+        viewer.scene.primitives.destroyPrimitives = false
+        viewer.scene.primitives.remove(primitiveRef.current)
+        viewer.scene.primitives.destroyPrimitives = preVal
+      })
     }
   }, [])
 

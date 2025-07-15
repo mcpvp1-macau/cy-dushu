@@ -9,6 +9,7 @@ import IconRefresh from '@/assets/icons/jsx/IconRefresh'
 import { GetProps } from 'antd'
 import { twMerge } from 'tailwind-merge'
 import IconMap from '@/assets/icons/jsx/IconMap'
+import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
 
 const DeviceDetailMediaDataPicture = lazy(
   () => import('../MediaData/MediaPicture'),
@@ -43,30 +44,35 @@ const DataCollapse: FC<PropsType> = memo(({ ...props }) => {
         items={[
           {
             label: (
-              <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+              <div className="flex gap-2 justify-between">
                 {t('common.picture')}
-                <IconButton
-                  className="text-xs"
-                  onClick={() => {
-                    queryClient.invalidateQueries({
-                      queryKey: [
-                        'getPlatformCapture',
-                        'PICTURE',
-                        deviceDetail.deviceId,
-                      ],
-                      exact: false,
-                    })
-                  }}
+                <div
+                  className="flex items-center gap-3"
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <IconRefresh />
-                </IconButton>
-                <IconButton
-                  active={enablePictureOnMap}
-                  toolTipProps={{ title: '照片上图' }}
-                  onClick={toggle}
-                >
-                  <IconMap />
-                </IconButton>
+                  <IconAsyncButton
+                    className="text-xs"
+                    onClick={async () => {
+                      await queryClient.invalidateQueries({
+                        queryKey: [
+                          'getPlatformCapture',
+                          'PICTURE',
+                          deviceDetail.deviceId,
+                        ],
+                        exact: false,
+                      })
+                    }}
+                  >
+                    <IconRefresh />
+                  </IconAsyncButton>
+                  <IconButton
+                    active={enablePictureOnMap}
+                    toolTipProps={{ title: '照片上图' }}
+                    onClick={toggle}
+                  >
+                    <IconMap />
+                  </IconButton>
+                </div>
               </div>
             ),
             key: 0,
@@ -81,20 +87,21 @@ const DataCollapse: FC<PropsType> = memo(({ ...props }) => {
           },
           {
             label: (
-              <div className="flex gap-2">
+              <div className="flex gap-2 justify-between">
                 {t('common.video')}
-                <IconButton
-                  className="text-xs"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    queryClient.invalidateQueries({
-                      queryKey: ['getHistoryVideo', deviceDetail.deviceId],
-                      exact: false,
-                    })
-                  }}
-                >
-                  <IconRefresh />
-                </IconButton>
+                <div onClick={(e) => e.stopPropagation()}>
+                  <IconAsyncButton
+                    className="text-xs"
+                    onClick={async () => {
+                      await queryClient.invalidateQueries({
+                        queryKey: ['getHistoryVideo', deviceDetail.deviceId],
+                        exact: false,
+                      })
+                    }}
+                  >
+                    <IconRefresh />
+                  </IconAsyncButton>
+                </div>
               </div>
             ),
             key: 1,

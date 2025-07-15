@@ -1,6 +1,9 @@
 import XCard from '@/components/ui/XCard'
 import useAreaWaylineStore from '@/store/wayline/uav-area-wayline/useAreaWayline.store'
 import HNumber from '../../edit/components/HNumber'
+import coverageImg from '../assets/coverage.png'
+import { Tooltip } from 'antd'
+import { InfoCircleOutlined } from '@ant-design/icons'
 
 type PropsType = unknown
 
@@ -18,6 +21,17 @@ const Coverage: FC<PropsType> = memo(() => {
       title={
         <div className="flex items-center gap-1">
           {t('wayline.waylineConfig.coverage.title')}
+          <Tooltip
+            className="ml-1"
+            title={
+              <div className="flex flex-col items-center gap-1">
+                <p>{t('wayline.waylineConfig.coverage.tooltip')}</p>
+                <img src={coverageImg} className="w-40" alt="coverage" />
+              </div>
+            }
+          >
+            <InfoCircleOutlined />
+          </Tooltip>
         </div>
       }
     >

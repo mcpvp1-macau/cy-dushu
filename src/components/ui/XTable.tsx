@@ -22,7 +22,7 @@ const XTable: FC<PropsType> = memo(({ table, loading }) => {
             />
           ))}
         </colgroup>
-        <thead className="sticky top-0  z-10">
+        <thead className="sticky top-0 z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr
               key={headerGroup.id}
@@ -49,9 +49,9 @@ const XTable: FC<PropsType> = memo(({ table, loading }) => {
             </tr>
           ))}
         </thead>
-        <tbody className="text-[14px]">
+        <tbody className="text-sm">
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="bg-[#28323C] hover:bg-ground-20">
+            <tr key={row.id} className="bg-ground-4 hover:bg-ground-5">
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}

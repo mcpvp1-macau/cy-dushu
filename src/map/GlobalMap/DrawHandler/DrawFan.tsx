@@ -6,40 +6,12 @@ import * as Cesium from 'cesium'
 import AddFormModal from './components/AddFormModal'
 import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
 import { createOverlay } from '@/service/modules/layer_overlay'
-import * as turf from '@turf/turf'
 import OverlayFan from '@/map/CesiumMap/components/service/Overlaies/OverlayFan'
 import AddFlightAreaModal from './components/AddFlightAreaModal'
 import { createFlightArea } from '@/service/modules/flightArea'
 
 type PropsType = {
   onSuccess?: () => void
-}
-
-const getFan = (pivot: number[], startPoint: number[], endPoint: number[]) => {
-  const pp = turf.point(pivot)
-  const sp = turf.point(startPoint)
-  const ep = turf.point(endPoint)
-  const startBearing = (turf.rhumbBearing(pp, sp) + 360) % 360
-  let endBearing = (turf.rhumbBearing(pp, ep) + 360) % 360
-  if (endBearing < startBearing) {
-    endBearing += 360
-  }
-  const distance = turf.distance(pp, ep)
-  const res = [pivot]
-  for (let current = startBearing; current < endBearing; current += 2) {
-    let bearing = current
-    if (bearing >= 360) {
-      bearing -= 360
-    }
-    if (bearing > 180) {
-      bearing -= 360
-    }
-    const newPoint = turf.destination(pp, distance, bearing)
-    res.push([...newPoint.geometry.coordinates, pivot[2]])
-  }
-  res.push(turf.destination(pp, distance, endBearing).geometry.coordinates)
-  res.push(pivot)
-  return res
 }
 
 const DrawFan: FC<PropsType> = memo(({ onSuccess }) => {

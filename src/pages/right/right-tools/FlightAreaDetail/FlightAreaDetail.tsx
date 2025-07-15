@@ -8,8 +8,12 @@ import { shouldJson } from '@/utils/json'
 import IconButton from '@/components/ui/button/IconButton'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconEdit from '@/assets/icons/jsx/IconEdit'
-import { Form, Input, Select, Tooltip, TreeSelect } from 'antd'
-import { InfoCircleOutlined, LoadingOutlined } from '@ant-design/icons'
+import { Form, Input, Tooltip, TreeSelect } from 'antd'
+import {
+  CaretDownFilled,
+  InfoCircleOutlined,
+  LoadingOutlined,
+} from '@ant-design/icons'
 import { CotType } from '@/store/map/useDraw.store'
 import IconDrawArea from '@/assets/icons/jsx/right-tools/IconDrawArea'
 import IconTick from '@/assets/icons/jsx/IconTick'
@@ -17,6 +21,7 @@ import useFlightAreaDetail from './useFlightAreaDetail'
 import OverlayStyleEditor from '../AddGeometry/OverlayStyleEditor'
 import { createPortal } from 'react-dom'
 import useUserStore, { type GroupDeviceTree } from '@/store/useUser.store'
+import Select from '@/components/AntdOverride/Select'
 
 type PropsType = unknown
 // 无人机和无人机机场可以使用飞行区域
@@ -202,16 +207,16 @@ const FlightAreaDetail: FC<PropsType> = memo(() => {
           </CloseableHeader>
 
           {overlay ? (
-            <div className="mx-3 mb-3 flex flex-col gap-2 text-sm">
-              <p className="flex gap-2">
+            <div className="mx-3 mb-3 flex flex-col gap-1 text-sm">
+              <p className="flex gap-2 h-6">
                 {t('common.createTime')}:
                 <span className="text-white">{overlay.gmtCreate}</span>
               </p>
-              <p className="flex gap-2">
+              <p className="flex gap-2 h-6">
                 {t('overlay.detail.createUser.title')}:
                 <span className="text-white">{overlay.name}</span>
               </p>
-              <p className="flex gap-2">
+              <p className="flex gap-2 h-6">
                 {t('overlay.detail.position.title')}:
                 <span className="text-white">
                   {shouldJson(overlay.overlayPositions)?.[0]
@@ -220,20 +225,22 @@ const FlightAreaDetail: FC<PropsType> = memo(() => {
                 </span>
               </p>
 
-              <p className="flex gap-2">
+              <p className="flex gap-2 h-6">
                 {t('overlay.detail.createUser.title')}:
-                <span className="text-white">{relatedGroup?.layerName}</span>
+                <span className="text-white flex-1">
+                  {relatedGroup?.layerName}
+                </span>
               </p>
 
-              <p className="flex gap-2">
+              <p className="flex gap-2 items-center h-6">
                 <span className="whitespace-nowrap">
                   {t('flightArea.type.title')}:
                 </span>
                 <Form.Item noStyle name="overlayExtType">
                   {isEdit ? (
                     <Select
+                      className="flex-1"
                       size="small"
-                      className="h-5 w-[140px]"
                       options={overlayExtTypeOptions}
                       optionRender={(option, { index }) => {
                         return (
@@ -278,22 +285,22 @@ const FlightAreaDetail: FC<PropsType> = memo(() => {
                 <span className="whitespace-nowrap">
                   {t('flightArea.relatedGroup.effective.title')}:
                 </span>
-                <div>
-                  <TreeSelect
-                    size="small"
-                    className="w-[240px]"
-                    value={relatedGroup?.effectiveDevices?.split(',') || []}
-                    defaultValue={
-                      relatedGroup?.effectiveDevices?.split(',') || []
-                    }
-                    treeData={fliterGroupDeviceTree}
-                    treeCheckable
-                    showCheckedStrategy={TreeSelect.SHOW_CHILD}
-                    allowClear
-                    maxTagCount={6}
-                    onChange={(value) => {}}
-                  />
-                </div>
+                <TreeSelect
+                  size="small"
+                  value={relatedGroup?.effectiveDevices?.split(',') || []}
+                  defaultValue={
+                    relatedGroup?.effectiveDevices?.split(',') || []
+                  }
+                  treeData={fliterGroupDeviceTree}
+                  treeCheckable
+                  showCheckedStrategy={TreeSelect.SHOW_CHILD}
+                  allowClear
+                  className="w-full"
+                  suffixIcon={<CaretDownFilled />}
+                  maxTagCount="responsive"
+                  popupMatchSelectWidth={false}
+                  onChange={(value) => {}}
+                />
               </p>
             </div>
           ) : (

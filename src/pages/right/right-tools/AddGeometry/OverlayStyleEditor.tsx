@@ -4,6 +4,7 @@ import LineStyleSelecter from './LineStyleSelecter'
 import OpacityInput from './OpacityInput'
 import useMapDrawStore, { DrawType } from '@/store/map/useDraw.store'
 import { CotType } from '@/store/map/useDraw.store'
+import useSituationLayoutStore from '@/store/layout/useSituationLayout.store'
 
 type PropsType = {
   overlay: API_LAYER_OVERLAY.domain.Overlay
@@ -27,12 +28,15 @@ const OverlayStyleEditor: FC<PropsType> = ({ overlay }) => {
 
   const isFlightArea = useMapDrawStore((s) => s.isFlightArea)
 
+  const collapsedOpen = useSituationLayoutStore((s) => s.collapsedOpen)
+
   return (
     <div
       className={clsx(
-        'absolute right-[430px] top-3 z-50',
-        'flex p-1 gap-2',
-        'bg-[#16202be6] rounded-[3px] backdrop-blur-sm text-white',
+        'absolute top-3 z-50',
+        'flex items-center p-1 gap-2 px-2',
+        'bg-[#16202be6] rounded backdrop-blur-sm text-white text-xs',
+        collapsedOpen ? 'left-[362px]' : 'left-3',
       )}
     >
       <DrawingTypeSelecter lockedType={overlayType} />

@@ -14,24 +14,24 @@ const OverlayEditor: FC = () => {
   const isEdit = useMapDrawStore((s) => s.isEdit)
 
   const editComp = useMemo(() => {
-    if (!viewer || !detailId || !isEdit) return <></>
+    if (!viewer || !detailId || !isEdit) return null
 
     const d = +detailId
     const editOverlay = overlayList.find((e) => e.overlayId === d)
-    if (!editOverlay) return <></>
+    if (!editOverlay) return null
 
     if (editOverlay.cotType === CotType.SHAPE_POLYGON) {
       return (
         <EditPolygon overlay={editOverlay} viewer={viewer} isRect={false} />
       )
     } else if (editOverlay.cotType === CotType.SHAPE_RECT) {
-      return <EditPolygon overlay={editOverlay} viewer={viewer} isRect={true} />
+      return <EditPolygon overlay={editOverlay} viewer={viewer} isRect />
     } else if (editOverlay.cotType === CotType.SHAPE_CIRCLE) {
       return <EditCircle overlay={editOverlay} viewer={viewer} />
     } else if (editOverlay.cotType === CotType.SHAPE_FAN) {
       return <EditFan overlay={editOverlay} viewer={viewer} />
     }
-    return <></>
+    return null
   }, [detailId, overlayList, viewer, isEdit])
 
   return editComp

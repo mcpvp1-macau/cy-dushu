@@ -128,7 +128,7 @@ const EditPolygon: React.FC<Props> = (props) => {
     }
   })
 
-  const onLeftUp = useMemoizedFn((e: any) => {
+  const onLeftUp = useMemoizedFn(() => {
     handlerRef.current.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE)
     handlerRef.current.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_UP)
     viewer.scene.screenSpaceCameraController.enableRotate = true
@@ -205,19 +205,17 @@ const EditPolygon: React.FC<Props> = (props) => {
   }, [drawingPositions])
 
   return (
-    <>
-      <OverlayPolygon
-        data={`${overlay.overlayId}`}
-        viewer={viewer}
-        path={drawingPositions}
-        asynchronous={false}
-        fill={drawingColor}
-        fillOpacity={fillOpacity}
-        stroke={drawingColor}
-        strokeStyle={lineStyle}
-        strokeWeight={2}
-      ></OverlayPolygon>
-    </>
+    <OverlayPolygon
+      data={`${overlay.overlayId}`}
+      viewer={viewer}
+      path={drawingPositions}
+      asynchronous={false}
+      fill={drawingColor}
+      fillOpacity={fillOpacity}
+      stroke={drawingColor}
+      strokeStyle={lineStyle}
+      strokeWeight={2}
+    />
   )
 }
 

@@ -34,11 +34,7 @@ const AddGeometry: FC<PropsType> = (props) => {
 
   return (
     <div className="flex p-1 gap-2 flex-wrap">
-      <DrawingTypeSelecter
-        onChange={(type) => {
-          updateDrawing(type)
-        }}
-      />
+      <DrawingTypeSelecter onChange={updateDrawing} />
       <ColorSelecter />
       <LineStyleSelecter showNoFly={isFlightArea} />
       <OpacityInput />

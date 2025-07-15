@@ -4,7 +4,7 @@ import HNumber from '../../edit/components/HNumber'
 import { calcFovRadiation } from '@/utils/fov'
 import { InfoCircleOutlined } from '@ant-design/icons'
 import { Tooltip } from 'antd'
-import coverageImg from '../assets/coverage.png'
+import coverageImg from '../assets/coverage2.png'
 
 type PropsType = unknown
 
@@ -54,7 +54,7 @@ const LateralCoverage: FC<PropsType> = memo(() => {
             className="ml-1"
             title={
               <div className="flex flex-col items-center gap-1">
-                <p>{t('wayline.waylineConfig.coverage.tooltip')}</p>
+                <p>{t('wayline.waylineConfig.lateralCoverage.tooltip')}</p>
                 <img src={coverageImg} className="w-40" alt="coverage" />
               </div>
             }
