@@ -1,0 +1,134 @@
+import Icon from '@/components/Icon'
+import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
+import useWatch from '@/hooks/useWatch'
+import { useRebotDogControlRoomStore } from '@/store/context-store/useRebotDogControlRoom.store'
+import { useDebounceFn } from 'ahooks'
+import { Slider, Tabs, TabsProps } from 'antd'
+import PitchControl from './PitchControl'
+import TextTo from './TextTo'
+import FileTo from './FileTo'
+import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+
+type PropsType = {
+  noFile?: boolean
+}     
+
+const MMC_Gimbal_P3: React.FC<PropsType> = ({ noFile }) => {
+  const productKey = useDeviceDetailStore(
+    (s) =>
+      s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey,
+  )!
+
+  const deviceId = useRebotDogControlRoomStore((s) => s.deviceId)
+  const postSerivce = usePostDeviceService(productKey, deviceId)
+  const status: string | undefined = useRebotDogControlRoomStore(
+    (s) => s.state.megaphoneStatus,
+  )
+  const systemVolume = useRebotDogControlRoomStore((s) => s.state.systemVolume)
+  const audioPayloadPitch = useRebotDogControlRoomStore(
+    (s) => s.state.audioPayloadPitch,
+  )
+
+  const [activeKey, setActiveKey] = useState('1')
+  const [volume, setVolume] = useState(systemVolume || 0)
+
+  useWatch(systemVolume, setVolume)
+
+  const { run } = useDebounceFn(
+    (value) => {
+      postSerivce('volumeControl', {
+        volume: value,
+        type: 'system',
+      })
+    },
+    {
+      wait: 500,
+    },
+  )
+
+  const onChangeVolume = (value: number) => {
+    setVolume(value)
+    run(value)
+  }
+
+  const onPlay = (voice: string, speed: string, text: string) => {
+    postSerivce('ttsControl', {
+      voice,
+      speed,
+      action: status === '文转音播报中' ? 'stop' : 'play',
+      text,
+    })
+  }
+
+  const handlePlay = (fileName: string, action: 'play' | 'pause') => {
+    postSerivce('recordAudioFileControl', {
+      fileName,
+      action,
+    })
+  }
+
+  const onChangeMode = (mode: string) => {
+    postSerivce('ttsMode', {
+      mode,
+    })
+  }
+
+  // "audioPayloadControl"
+  const onClick = (value: number) => {
+    postSerivce('audioPayloadControl', {
+      pitch: (audioPayloadPitch || 0) + value,
+    })
+  }
+
+  const items: TabsProps['items'] = [
+    {
+      key: '1',
+      label: '文字转语音',
+      children: (
+        <>
+          <TextTo
+            onPlay={onPlay}
+            playing={status === '文转音播报中'}
+            onChangeMode={onChangeMode}
+          />
+        </>
+      ),
+    },
+    {
+      key: '2',
+      label: '实时广播',
+      children: <>实时广播</>,
+      disabled: true,
+    },
+    {
+      key: '3',
+      label: '音频文件',
+      disabled: noFile,
+      children: (
+        <>
+          <FileTo onPlay={handlePlay} playing={status === '录音音乐播报中'} />
+        </>
+      ),
+    },
+  ]
+  return (
+    <div className="p-[12px]">
+      <div className="flex space-x-2 mb-[10px]">
+        <PitchControl onClick={onClick} value={audioPayloadPitch} />
+        <div className="flex leading-[32px] space-x-2 w-full pt-[12px]">
+          <Icon
+            id="icon-volume-up"
+            className="pt-[8px] text-[24px] text-[#C7D1DC]"
+          />
+          <Slider value={volume} onChange={onChangeVolume} className="w-full" />
+          <span>{volume}%</span>
+        </div>
+      </div>
+      <div>
+        <Tabs activeKey={activeKey} items={items} onChange={setActiveKey} />
+      </div>
+    </div>
+  )
+}
+
+export default MMC_Gimbal_P3
