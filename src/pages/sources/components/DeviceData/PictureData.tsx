@@ -4,7 +4,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import usePicutreSourceTypeOptions from '@/constant/options/pictureSourceTypeOptions'
 import { dft } from '@/constant/time-fmt'
 import { getPlatformCapture } from '@/service/modules/db-api'
-import { makeToolbarRender } from '@/utils/antd/image'
+import { makePanormaToolbarRender, makeToolbarRender } from '@/utils/antd/image'
 import {
   Button,
   Checkbox,
@@ -28,6 +28,8 @@ import { handleStorageURL } from '@/pages/events/components/EventDetail'
 import IconButton from '@/components/ui/button/IconButton'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import useRangePickerPreset from '@/hooks/useRangePickerPreset'
+import IconClose from '@/assets/icons/jsx/IconClose'
+import PanoramaViewer from '@/components/ui/PanoramaViewer'
 
 const { RangePicker } = DatePicker
 
@@ -109,6 +111,21 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
   }
 
   const presets = useRangePickerPreset()
+
+  const [usePanorama, setUsePanorama] = useState(false)
+  const handleCheckImage = async (url: string) => {
+    try {
+      // 获取图像数据
+      const response = await fetch(url)
+      if (!response.ok) throw new Error('Failed to fetch image')
+      const arrayBuffer = await response.arrayBuffer()
+      const data = new Uint8Array(arrayBuffer)
+
+      // 查找 XMP 数据块
+      const text = new TextDecoder().decode(data)
+      setUsePanorama(text.includes('GPano:UsePanoramaViewer="True"'))
+    } catch (e) {}
+  }
 
   return (
     <div>
@@ -196,7 +213,26 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
               <div className="mx-3">
                 <Checkbox.Group value={checkedIds} onChange={setCheckedIds}>
                   <Image.PreviewGroup
-                    preview={{ toolbarRender: makeToolbarRender(1, 50) }}
+                    preview={{
+                      destroyOnClose: true,
+                      closeIcon: <IconClose className="scale-125" />,
+                      imageRender: (e, info) => {
+                        handleCheckImage(info.image.url)
+
+                        if (usePanorama) {
+                          return (
+                            <div className="absolute inset-0">
+                              <PanoramaViewer src={info.image.url} />
+                            </div>
+                          )
+                        }
+
+                        return e
+                      },
+                      toolbarRender: usePanorama
+                        ? makePanormaToolbarRender()
+                        : makeToolbarRender(1, 50),
+                    }}
                   >
                     <Row gutter={[12, 12]}>
                       {records.map((e) => (
