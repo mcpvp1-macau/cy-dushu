@@ -99,12 +99,12 @@ const Reconstruction2DItem: FC<dataType> = memo(({ data }) => {
   useEffect(() => {
     addPrimitive()
     return () => {
-      if (viewer?.scene?.primitives && primitiveRef.current) {
-        attempt(() => {
+      attempt(() => {
+        if (viewer?.scene?.primitives && primitiveRef.current) {
           viewer.scene.primitives.remove(primitiveRef.current)
           primitiveRef.current = null
-        })
-      }
+        }
+      })
     }
   }, [picker, data])
 
