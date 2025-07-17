@@ -12,7 +12,9 @@ import IconClose from '@/assets/icons/jsx/IconClose'
 
 export type DynamicLayoutTabsType = {
   key: string
+  /** 在隐藏时, 是否保持活跃 */
   keeyRenderOnHidden?: boolean
+  /** 是否允许关闭 */
   closeable?: boolean
   params?: Record<string, any>
 }[]

@@ -655,16 +655,29 @@ export class OverlayFanPrimitive {
   }
 }
 
-/**拖拽点集合 */
+type Coordinate = [number, number] | [number, number, number]
+
+/**拖拽点集合，可以开启贴地 */
 export class DragPointCollection {
   private _pointCollection: Cesium.PointPrimitiveCollection
-  private _positions: [number, number][]
-  positions: [number, number][]
+  private _positions: Coordinate[]
+  private _viewer: Cesium.Viewer
+  private _clampToGround: boolean
+  positions: Coordinate[]
+  /**点是否开启贴地 */
+  clampToGround: boolean
 
-  constructor(positions: [number, number][]) {
+  constructor(
+    positions: Coordinate[],
+    viewer: Cesium.Viewer,
+    clampToGround: boolean = true,
+  ) {
     this.positions = positions
     this._positions = [...positions]
     this._pointCollection = new Cesium.PointPrimitiveCollection()
+    this._viewer = viewer
+    this._clampToGround = clampToGround
+    this.clampToGround = clampToGround
   }
 
   update(frameState: any) {
@@ -680,7 +693,13 @@ export class DragPointCollection {
   private updateGeometry() {
     this._pointCollection.removeAll()
     this._positions.forEach((coord, index) => {
-      const position = Cesium.Cartesian3.fromDegrees(coord[0], coord[1])
+      const carto = Cesium.Cartographic.fromDegrees(coord[0], coord[1])
+      if (this._clampToGround) {
+        const height = this._viewer.scene.globe.getHeight(carto)
+        carto.height = height || 0
+      }
+      const position = Cesium.Cartographic.toCartesian(carto)
+
       this._pointCollection.add(createDragPoint(position))
       this._pointCollection.get(index).id = Math.random()
         .toString(36)

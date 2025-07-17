@@ -43,6 +43,7 @@ const initialLayout: DynamicLayoutType = {
                 },
                 {
                   key: 'controlParamsSetting',
+                  keeyRenderOnHidden: false,
                 },
               ],
             },
@@ -55,6 +56,7 @@ const initialLayout: DynamicLayoutType = {
                 },
                 {
                   key: 'flyParamsSetting',
+                  keeyRenderOnHidden: false,
                 },
               ],
             },
@@ -69,12 +71,15 @@ const initialLayout: DynamicLayoutType = {
       children: [
         {
           key: 'payload',
+          keeyRenderOnHidden: false,
         },
         {
           key: 'ai-list',
+          keeyRenderOnHidden: false,
         },
         {
           key: 'device-data',
+          keeyRenderOnHidden: false,
         },
         {
           key: 'tanqi',

@@ -114,9 +114,9 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
           <FloatIconButtonGroup mode="vertical">
             <MapSpace />
             <LayerOverlay />
-            <FlightAreaConfig />
-            <Reconstruction3D />
-            <Reconstruction2D />
+            {/* <FlightAreaConfig /> */}
+            {/* <Reconstruction3D /> */}
+            {/* <Reconstruction2D /> */}
           </FloatIconButtonGroup>
           {globalConfig.useShanghaiBanRoutes && <ShanghaiWarZoneConfig />}
           <FloatIconButton onClick={toggle}>

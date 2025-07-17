@@ -15,8 +15,8 @@ const GlobalState: FC<PropsType> = memo(() => {
       <MapDevices />
       <LayerAndOverlay />
       <GlobalMessage />
-      <ReconstructionMap />
-      <FlightArea />
+      {/* <ReconstructionMap /> */}
+      {/* <FlightArea /> */}
     </>
   )
 })

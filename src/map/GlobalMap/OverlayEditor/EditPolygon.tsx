@@ -31,7 +31,7 @@ const EditPolygon: React.FC<Props> = (props) => {
   const handlerRef = useRef(
     new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas),
   )
-  const dragPointRef = useRef(new DragPointCollection([]))
+  const dragPointRef = useRef(new DragPointCollection([], viewer))
   const moveIndex = useRef(-1) // 本次移动的点对应的索引
   const preLnglat = useRef<number[] | null>(null)
   // 整体移动
