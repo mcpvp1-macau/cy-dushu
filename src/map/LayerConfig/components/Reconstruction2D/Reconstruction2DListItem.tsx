@@ -50,6 +50,7 @@ const Recon2DListItem: FC<PropsType> = memo(
       msgApi.success('操作成功')
       queryClient.invalidateQueries({
         queryKey: ['reconstruction2dList'],
+        exact: true,
       })
     }
 

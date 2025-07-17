@@ -14,6 +14,7 @@ const useQueryHistoryReconstruction2DProcessedResult = (queryData: {
   const { data: data2dList } = useQuery(
     {
       queryKey: ['reconstruction2dList', queryData],
+      enabled: !!queryData.deviceId || !!queryData.actionId,
       queryFn: () =>
         getReconstruction2DList({ ...queryData, needProcess: true }),
       select: (d) => d.data,

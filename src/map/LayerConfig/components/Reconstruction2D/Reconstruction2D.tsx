@@ -42,6 +42,7 @@ const Reconstruction2D: FC<PropsType> = memo(() => {
               onClick={async () => {
                 await queryClient.invalidateQueries({
                   queryKey: ['reconstruction2dList'],
+                  exact: true,
                 })
               }}
             >

@@ -15,8 +15,12 @@ const GlobalState: FC<PropsType> = memo(() => {
       <MapDevices />
       <LayerAndOverlay />
       <GlobalMessage />
-      {/* <ReconstructionMap /> */}
-      {/* <FlightArea /> */}
+      {!globalConfig.useShanghaiBanRoutes && (
+        <>
+          <ReconstructionMap />
+          <FlightArea />
+        </>
+      )}
     </>
   )
 })
