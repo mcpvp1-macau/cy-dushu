@@ -41,7 +41,7 @@ const Reconstruction2D: FC<PropsType> = memo(() => {
               className="scale-90"
               onClick={async () => {
                 await queryClient.invalidateQueries({
-                  queryKey: ['reconstruction-layerList'],
+                  queryKey: ['reconstruction2dList'],
                 })
               }}
             >

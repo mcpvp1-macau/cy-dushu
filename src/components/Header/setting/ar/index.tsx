@@ -26,6 +26,9 @@ const bigTypes = [
   'ScienceEducationAndCulture', // 科教文化服务
   'PublicFacilities', // 公共设施
   'LifeService', // 生活服务
+  'Activity', // 事件活动
+  'IndoorFacilities', // 室内设施
+  'Other', // 其他
 ]
 
 const bigTypeMapping = {
@@ -48,6 +51,9 @@ const bigTypeMapping = {
     ScienceEducationAndCulture: 'ScienceEducationAndCulture',
     PublicFacilities: 'PublicFacilities',
     LifeService: 'LifeService',
+    Activity: 'Activity',
+    IndoorFacilities: 'IndoorFacilities',
+    Other: 'Other',
   },
   zh: {
     GovernmentAndSocialOrganizations: '政府机构及社会团体',
@@ -68,6 +74,9 @@ const bigTypeMapping = {
     ScienceEducationAndCulture: '科教文化服务',
     PublicFacilities: '公共设施',
     LifeService: '生活服务',
+    Activity: '事件活动',
+    IndoorFacilities: '室内设施',
+    Other: '其他',
   },
 }
 

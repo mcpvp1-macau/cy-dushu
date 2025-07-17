@@ -1,4 +1,4 @@
-import { Switch } from 'antd'
+import { Switch, Tooltip } from 'antd'
 import ScheduleModal from './ScheduleModal'
 import {
   deleteActionPlan,
@@ -135,7 +135,11 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
               >
                 {t(`schedule.status.${data.status}.title`)}
               </TagItemV2>
-              <span className="text-white">{data.name}</span>
+              <Tooltip title={data.name}>
+                <span className="text-white flex-1 truncate max-w-40">
+                  {data.name}
+                </span>
+              </Tooltip>
             </div>
             <div className="flex items-center gap-2">
               {data.status !== 'TERMINATE' ? (
