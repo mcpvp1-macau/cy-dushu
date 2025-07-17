@@ -202,7 +202,7 @@ const SourceTable: FC<PropsType> = memo(() => {
           onSearch={(e) => handleValueChange('sn', e)}
           className="w-72"
         />
-        {globalConfig.useUavAirportDoc &&
+        {globalConfig.useUavAirportDocUpload &&
           (type === 'UAV_AIRPORT' || type === 'UAV') && <UploadDetail />}
       </div>
       <div className="mt-3 w-full grow rounded overflow-hidden border border-solid border-[#23272D]">

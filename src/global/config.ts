@@ -75,6 +75,9 @@ class GlobalConfig {
   /** 是否使用一机一档 */
   useUavAirportDoc?: boolean | undefined
 
+  /** 是否使用一机一档上传 */
+  useUavAirportDocUpload?: boolean | undefined
+
   /** 是否使用无人机日志 */
   useUavLogs?: boolean | undefined
 
