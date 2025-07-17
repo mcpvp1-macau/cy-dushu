@@ -115,7 +115,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
   )
 
   const [layout, setLayout] = useLocalStorageState<DynamicLayoutType>(
-    'rebotDogControlRoomLayout',
+    'rebotDogControlRoomLayoutV2',
     {
       defaultValue: initialLayout,
     },

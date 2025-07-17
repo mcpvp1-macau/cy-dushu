@@ -51,8 +51,8 @@ const MMC_Gimbal_P3: React.FC<PropsType> = ({ noFile }) => {
     run(value)
   }
 
-  const onPlay = (voice: string, speed: string, text: string) => {
-    postSerivce('ttsControl', {
+  const onPlay = async (voice: string, speed: string, text: string) => {
+    await postSerivce('ttsControl', {
       voice,
       speed,
       action: status === '文转音播报中' ? 'stop' : 'play',
@@ -60,17 +60,17 @@ const MMC_Gimbal_P3: React.FC<PropsType> = ({ noFile }) => {
     })
   }
 
-  const handlePlay = (fileName: string, action: 'play' | 'pause') => {
-    postSerivce('recordAudioFileControl', {
+  const handlePlay = async (fileName: string, action: 'play' | 'pause') => {
+    await postSerivce('recordAudioFileControl', {
       fileName,
       action,
     })
   }
 
-  const onChangeMode = (mode: string) => {
-    postSerivce('ttsMode', {
+  const onChangeMode = async (mode: string, showMsg = true) => {
+    await postSerivce('ttsMode', {
       mode,
-    })
+    }, undefined, showMsg)
   }
 
   // "audioPayloadControl"

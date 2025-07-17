@@ -53,6 +53,8 @@ export const usePostDeviceServiceHandler = () => {
             content: fmt(message, msgPrefix),
             duration: 3,
           })
+        } else if (showMsg === false) {
+          msgApi.destroy(id)
         }
       } catch (e: any) {
         let content = t('api.error.msg')

@@ -1,7 +1,7 @@
 import { FC, memo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getDeviceHealthLogs } from '@/service/modules/db-api'
-import { Button, DatePicker, Table, Tooltip } from 'antd'
+import { Button, ConfigProvider, DatePicker, Table, Tooltip } from 'antd'
 import * as XLSX from 'xlsx'
 import { HealthInfo } from '@/components/device/HealthInfoList'
 
@@ -97,7 +97,17 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
           导出
         </Button>
       </div>
+      {/**bg-[#2E3A46]  bg-[#28323C]*/}
       <div>
+        <ConfigProvider theme={{
+          components: {
+            Table: {
+              headerBg: '#2E3A46',
+              colorBgContainer: '#28323C',
+              borderColor: '#23272D',
+            },
+          },
+        }}>
         <Table
           dataSource={data}
           columns={columns}
@@ -114,7 +124,9 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
             },
             columnWidth: 20,
           }}
+          bordered
         />
+        </ConfigProvider>
       </div>
     </div>
   )

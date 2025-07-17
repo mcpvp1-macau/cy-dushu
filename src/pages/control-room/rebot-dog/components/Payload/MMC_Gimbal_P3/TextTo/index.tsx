@@ -6,8 +6,8 @@ const { TextArea } = Input
 
 type Props = {
   playing: boolean
-  onPlay: (voice: string, speed: string, text: string) => void
-  onChangeMode: (mode: string) => void
+  onPlay: (voice: string, speed: string, text: string) => Promise<void>
+  onChangeMode: (mode: string, showMsg?: boolean) => Promise<void>
 }
 
 const TextTo: React.FC<Props> = (props) => {
@@ -36,13 +36,14 @@ const TextTo: React.FC<Props> = (props) => {
 
   const [voiceValue, setVoiceValue] = useState('0')
   const [speedValue, setSpeedValue] = useState('0')
-//   const [modeValue, setModeValue] = useState('single')
+  const [modeValue, setModeValue] = useState('single')
   const [textValue, setTextValue] = useState('')
   //   const speed = getInputMethodField(ttsControl, 'speed');
   //   const speedSpecs = speed?.dataType?.specs || {};
 
-  const onClick = () => {
-    onPlay(voiceValue, speedValue, textValue)
+  const onClick = async () => {
+    await onChangeMode(modeValue, false)
+    await onPlay(voiceValue, speedValue, textValue)
   }
   return (
     <div className="flex space-x-[10px] pt-[10px]">
@@ -90,9 +91,12 @@ const TextTo: React.FC<Props> = (props) => {
         <div className="mt-[12px]">
           <Select
             className="w-[96px] h-[26px]"
-            // value={modeValue}
+            value={modeValue}
             defaultValue={'single'}
-            onChange={onChangeMode}
+            onChange={(value) => {
+              setModeValue(value)
+              onChangeMode(value)
+            }}
           >
             {Object.entries(modeSpecs)?.map(([key, value]) => (
               <Select.Option key={key}>{value as string}</Select.Option>

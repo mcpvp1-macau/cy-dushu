@@ -24,6 +24,7 @@ const useAddMapFormItems = () => {
             },
             // { label: '点云地图', value: 'POINT_CLOUD', disabled: true },
           ],
+          rules: [{ required: true }],
         },
         {
           label: t('mapLayer.createMap.form.tileType.title'),
@@ -45,6 +46,7 @@ const useAddMapFormItems = () => {
               value: '3D_TILES',
             },
           ],
+          rules: [{ required: true }],
         },
         {
           label: `${t(
@@ -70,6 +72,7 @@ const useAddMapFormItems = () => {
             }
             return value
           },
+          rules: [{ required: true }],
         },
         {
           label: t('mapLayer.createMap.form.permission.title'),
@@ -89,6 +92,7 @@ const useAddMapFormItems = () => {
               value: 'NORMAL',
             },
           ],
+          rules: [{ required: true }],
         },
         {
           label: t('mapLayer.createMap.form.overview.title'),

@@ -40,8 +40,8 @@ const labelMap: { [key in MountType]: string } = {
   MMC_Gimbal_LP12_NOFile: '喊话器',
 }
 
-/** 无人机负载 */
-const UavPayload: FC<PropsType> = memo(() => {
+/** 机器狗负载 */
+const RebotDogPayload: FC<PropsType> = memo(() => {
   // TODO mock 挂载
   const mount: string[] = useRebotDogControlRoomStore((s) => s.state.mounts) || []
   // || [
@@ -112,6 +112,6 @@ const UavPayload: FC<PropsType> = memo(() => {
   )
 })
 
-UavPayload.displayName = 'UavPayload'
+RebotDogPayload.displayName = 'RebotDogPayload'
 
-export default UavPayload
+export default RebotDogPayload

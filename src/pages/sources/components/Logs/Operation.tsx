@@ -4,7 +4,15 @@ import {
   getDeviceCapacityEnum,
   getDeviceOperateLogs,
 } from '@/service/modules/db-api'
-import { Button, DatePicker, Input, Select, Table, Tag } from 'antd'
+import {
+  Button,
+  ConfigProvider,
+  DatePicker,
+  Input,
+  Select,
+  Table,
+  Tag,
+} from 'antd'
 import * as XLSX from 'xlsx'
 
 const { RangePicker } = DatePicker
@@ -181,23 +189,35 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
         </Button>
       </div>
       <div>
-        <Table
-          dataSource={dataSource}
-          columns={columns}
-          loading={isLoading}
-          size="small"
-          pagination={false}
-          rowKey="acquireTime"
-          virtual
-          scroll={dataSource.length > 0 ? { x: 1000, y: 500 } : undefined}
-          rowSelection={{
-            type: 'checkbox',
-            onChange: (selectedRowKeys, selectedRows) => {
-              setSelectedRows(selectedRows)
+        <ConfigProvider
+          theme={{
+            components: {
+              Table: {
+                headerBg: '#2E3A46',
+                colorBgContainer: '#28323C',
+                borderColor: '#23272D',
+              },
             },
-            columnWidth: 20,
           }}
-        />
+        >
+          <Table
+            dataSource={dataSource}
+            columns={columns}
+            loading={isLoading}
+            size="small"
+            pagination={false}
+            rowKey="acquireTime"
+            virtual
+            scroll={dataSource.length > 0 ? { x: 1000, y: 500 } : undefined}
+            rowSelection={{
+              type: 'checkbox',
+              onChange: (selectedRowKeys, selectedRows) => {
+                setSelectedRows(selectedRows)
+              },
+              columnWidth: 20,
+            }}
+          />
+        </ConfigProvider>
       </div>
     </div>
   )

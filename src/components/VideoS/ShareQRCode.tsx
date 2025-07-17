@@ -16,7 +16,7 @@ const ShareQRCode: React.FC<PropsType> = ({
   const [token] = useState(createToken({ productKey, deviceId, videoId }))
   return (
     <div>
-      <div>
+      <div className="flex items-center gap-2">
         <span>分享</span>
         <Typography.Text
           copyable={{
