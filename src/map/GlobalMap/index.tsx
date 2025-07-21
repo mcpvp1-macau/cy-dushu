@@ -23,6 +23,7 @@ import DensityMap from './DensityMap/DensityMap'
 import FlightAreaEditor from './OverlayEditor/FlightAreaEditor'
 import Reconstruction2D from '../CesiumMap/components/service/Reconstruction2D/Reconstruction2D'
 import Reconstruction2DResultList from '../CesiumMap/components/service/Reconstruction2D/Reconstruction2DResultList'
+// import Demo from './Test'
 
 type PropsType = unknown
 
@@ -55,6 +56,7 @@ const GlobalMap: FC<PropsType> = memo(() => {
           <DensityMap />
           <Reconstruction2D />
           <Reconstruction2DResultList />
+          {/* <Demo /> */}
         </CesiumMap>
       </DeferredRender>
     </div>
