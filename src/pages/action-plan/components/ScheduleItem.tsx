@@ -225,7 +225,7 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
             </p>
           </div>
           <div className="mt-1 text-xs flex">
-            <p className="w-full truncate">
+            <p className="w-full truncate max-w-72">
               {t('wayline.title')}: {data.actionConfig?.templateName}
             </p>
           </div>

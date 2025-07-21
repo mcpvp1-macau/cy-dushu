@@ -24,6 +24,7 @@ import useFormInstance from 'antd/es/form/hooks/useFormInstance'
 import type { Dayjs } from 'dayjs'
 import DayOfMonthCheckboxGroup from './DayOfMonthCheckboxGroup'
 import DayOfWeekCheckboxGroup from './DayOfWeekCheckboxGroup copy'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 const TipInfo = memo(() => {
   const { t } = useTranslation()
@@ -412,88 +413,90 @@ const ScheduleModal: FC<PropsType> = memo(
             },
           }}
         >
-          <Form
-            className="m-3"
-            autoComplete="off"
-            layout="vertical"
-            initialValues={{ type: 'SINGLE' }}
-            form={form}
-          >
-            <Form.Item
-              label={t('schedule.form.name.title')}
-              name="name"
-              required
-              rules={[{ required: true }]}
+          <ScrollArea className="max-h-[80vh] mb-3">
+            <Form
+              className="m-3"
+              autoComplete="off"
+              layout="vertical"
+              initialValues={{ type: 'SINGLE' }}
+              form={form}
             >
-              <Input placeholder={t('common.form.pleaseInput')} />
-            </Form.Item>
-            <Form.Item
-              label={t('schedule.form.device.title')}
-              name="deviceId"
-              rules={[{ required: true }]}
-            >
-              <Select
-                placeholder={t('common.form.pleaseSelect')}
-                showSearch
-                optionFilterProp="label"
-                options={uavDevices}
-              />
-            </Form.Item>
-            <Form.Item
-              label={t('schedule.form.wayline.title')}
-              name="airlineIndex"
-              required
-              rules={[{ required: true }]}
-            >
-              <Select
-                placeholder={t('common.form.pleaseSelect')}
-                showSearch
-                optionFilterProp="label"
-                options={airlineOptions}
-              />
-            </Form.Item>
-            <Form.Item
-              label={t('schedule.form.type.title')}
-              name="type"
-              required
-              rules={[{ required: true }]}
-            >
-              <Radio.Group
-                optionType="button"
-                buttonStyle="solid"
-                className="w-full flex gap-[1px]"
-              >
-                <Radio.Button className="flex-1 text-center" value="SINGLE">
-                  {t('schedule.type.SINGLE.title')}
-                </Radio.Button>
-                <Radio.Button className="flex-1 text-center" value="REPEAT">
-                  {t('schedule.type.REPEAT.title')}
-                </Radio.Button>
-              </Radio.Group>
-            </Form.Item>
-            {
-              {
-                SINGLE: <SingleFormItems />,
-                REPEAT: <REPEATFormItems />,
-              }[type]
-            }
-            <div className="flex justify-between items-center mb-1">
-              <div className="flex gap-1">
-                断点续飞
-                <Tooltip title="开启后，若飞行架次因电量不足等原因无法完成整个航线飞行，系统将记录待执行任务。">
-                  <InfoCircleOutlined />
-                </Tooltip>
-              </div>
               <Form.Item
-                name="breakPointEnable"
-                noStyle
-                valuePropName="checked"
+                label={t('schedule.form.name.title')}
+                name="name"
+                required
+                rules={[{ required: true }]}
               >
-                <Switch size="small" />
+                <Input placeholder={t('common.form.pleaseInput')} />
               </Form.Item>
-            </div>
-            <TipInfo />
-          </Form>
+              <Form.Item
+                label={t('schedule.form.device.title')}
+                name="deviceId"
+                rules={[{ required: true }]}
+              >
+                <Select
+                  placeholder={t('common.form.pleaseSelect')}
+                  showSearch
+                  optionFilterProp="label"
+                  options={uavDevices}
+                />
+              </Form.Item>
+              <Form.Item
+                label={t('schedule.form.wayline.title')}
+                name="airlineIndex"
+                required
+                rules={[{ required: true }]}
+              >
+                <Select
+                  placeholder={t('common.form.pleaseSelect')}
+                  showSearch
+                  optionFilterProp="label"
+                  options={airlineOptions}
+                />
+              </Form.Item>
+              <Form.Item
+                label={t('schedule.form.type.title')}
+                name="type"
+                required
+                rules={[{ required: true }]}
+              >
+                <Radio.Group
+                  optionType="button"
+                  buttonStyle="solid"
+                  className="w-full flex gap-[1px]"
+                >
+                  <Radio.Button className="flex-1 text-center" value="SINGLE">
+                    {t('schedule.type.SINGLE.title')}
+                  </Radio.Button>
+                  <Radio.Button className="flex-1 text-center" value="REPEAT">
+                    {t('schedule.type.REPEAT.title')}
+                  </Radio.Button>
+                </Radio.Group>
+              </Form.Item>
+              {
+                {
+                  SINGLE: <SingleFormItems />,
+                  REPEAT: <REPEATFormItems />,
+                }[type]
+              }
+              <div className="flex justify-between items-center mb-1">
+                <div className="flex gap-1">
+                  断点续飞
+                  <Tooltip title="开启后，若飞行架次因电量不足等原因无法完成整个航线飞行，系统将记录待执行任务。">
+                    <InfoCircleOutlined />
+                  </Tooltip>
+                </div>
+                <Form.Item
+                  name="breakPointEnable"
+                  noStyle
+                  valuePropName="checked"
+                >
+                  <Switch size="small" />
+                </Form.Item>
+              </div>
+              <TipInfo />
+            </Form>
+          </ScrollArea>
         </ConfigProvider>
       </XModal>
     )
