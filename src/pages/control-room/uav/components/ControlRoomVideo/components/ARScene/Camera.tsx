@@ -6,6 +6,7 @@ import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import useARSettingStore from '@/store/setting/useARSetting.store'
 import { limitNum } from '@/utils/math'
+import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 
 type PropsType = unknown
 
@@ -13,7 +14,17 @@ type PropsType = unknown
 const ARSceneCamera: FC<PropsType> = memo(() => {
   const uav = useMixARStore((s) => s.uavProperties)
   const { viewer } = useCesium()
-  const shiftSetting = useARSettingStore((s) => s.shift)
+  const deviceId = useDeviceDetailStore((s) => s.deviceId)
+  const shiftSetting = useARSettingStore(
+    (s) =>
+      s.shift[deviceId] ?? {
+        gimbalYaw: 0,
+        gimbalPitch: 0,
+        height: 0,
+        lng: 0,
+        lat: 0,
+      },
+  )
 
   const updateGimbalPick = useMixARStore((s) => s.updateGimbalPick)
 

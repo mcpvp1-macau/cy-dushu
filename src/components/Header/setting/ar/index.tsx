@@ -5,7 +5,9 @@ import { UndoOutlined } from '@ant-design/icons'
 import { Col, ColorPicker, Form, InputNumber, Row, Slider, Switch } from 'antd'
 import { isNil } from 'lodash'
 
-type PropsType = unknown
+type PropsType = {
+  deviceId: string
+}
 
 const bigTypes = [
   'GovernmentAndSocialOrganizations', // 政府机构及社会团体
@@ -81,7 +83,7 @@ const bigTypeMapping = {
 }
 
 /** 虚实融合相关设置 */
-const ARSetting: FC<PropsType> = memo(() => {
+const ARSetting: FC<PropsType> = memo(({ deviceId }) => {
   const ar = useARSettingStore((s) => s)
   const updAR = useARSettingStore((s) => s.updateAR)
 
@@ -153,12 +155,23 @@ const ARSetting: FC<PropsType> = memo(() => {
     })
   }
 
-  const updateShift = (data: Partial<(typeof ar)['shift']>) => {
+  const shift = ar.shift[deviceId] || {
+    gimbalYaw: 0,
+    gimbalPitch: 0,
+    height: 0,
+    lng: 0,
+    lat: 0,
+  }
+
+  const updateShift = (data: Partial<(typeof ar)['shift'][string]>) => {
     updAR({
       ...ar,
       shift: {
         ...ar.shift,
-        ...data,
+        [deviceId]: {
+          ...shift,
+          ...data,
+        },
       },
     })
   }
@@ -584,11 +597,11 @@ const ARSetting: FC<PropsType> = memo(() => {
                   min={-45}
                   max={45}
                   step={0.1}
-                  value={ar.shift.gimbalYaw}
+                  value={shift.gimbalYaw}
                   onChange={(e) => updateShift({ gimbalYaw: e })}
                 />
                 <div className="w-11 text-right whitespace-nowrap">
-                  {ar.shift.gimbalYaw} °
+                  {shift.gimbalYaw} °
                 </div>
               </div>
             </Form.Item>
@@ -602,11 +615,11 @@ const ARSetting: FC<PropsType> = memo(() => {
                   min={-30}
                   max={30}
                   step={0.1}
-                  value={ar.shift.gimbalPitch}
+                  value={shift.gimbalPitch}
                   onChange={(e) => updateShift({ gimbalPitch: e })}
                 />
                 <div className="w-11 text-right whitespace-nowrap">
-                  {ar.shift.gimbalPitch} °
+                  {shift.gimbalPitch} °
                 </div>
               </div>
             </Form.Item>
@@ -620,7 +633,7 @@ const ARSetting: FC<PropsType> = memo(() => {
                   min={-120}
                   max={120}
                   step={0.1}
-                  value={ar.shift.height}
+                  value={shift.height}
                   onChange={(e) =>
                     updateShift({
                       height: e,
@@ -628,7 +641,7 @@ const ARSetting: FC<PropsType> = memo(() => {
                   }
                 />
                 <div className="w-11 text-right whitespace-nowrap">
-                  {ar.shift.height} m
+                  {shift.height} m
                 </div>
               </div>
             </Form.Item>
@@ -641,7 +654,7 @@ const ARSetting: FC<PropsType> = memo(() => {
                   className="grow"
                   min={-100}
                   max={100}
-                  value={ar.shift.lat}
+                  value={shift.lat}
                   onChange={(e) =>
                     updateShift({
                       lat: e,
@@ -649,7 +662,7 @@ const ARSetting: FC<PropsType> = memo(() => {
                   }
                 />
                 <div className="w-11 text-right whitespace-nowrap">
-                  {ar.shift.lat} m
+                  {shift.lat} m
                 </div>
               </div>
             </Form.Item>
@@ -662,7 +675,7 @@ const ARSetting: FC<PropsType> = memo(() => {
                   className="grow"
                   min={-100}
                   max={100}
-                  value={ar.shift.lng}
+                  value={shift.lng}
                   onChange={(e) =>
                     updateShift({
                       lng: e,
@@ -670,7 +683,7 @@ const ARSetting: FC<PropsType> = memo(() => {
                   }
                 />
                 <div className="w-11 text-right whitespace-nowrap">
-                  {ar.shift.lng} m
+                  {shift.lng} m
                 </div>
               </div>
             </Form.Item>

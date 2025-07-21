@@ -26,6 +26,8 @@ export const borderedBtnClassName =
 const AsideToolBar: FC<PropsType> = memo(() => {
   const { t } = useTranslation()
 
+  const deviceId = useDeviceDetailStore((s) => s.deviceId)
+
   const openLarser = useUavControlRoomStore((s) => s.openLarser)
   const updateOpenLarser = useUavControlRoomStore((s) => s.updateOpenLarser)
   const openPositionZoom = useUavControlRoomStore((s) => s.openPointZoom)
@@ -166,7 +168,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
               onClose={setVRFalse}
             >
               <AppViewSuspense>
-                <ARSetting />
+                <ARSetting deviceId={deviceId} />
               </AppViewSuspense>
             </Drawer>
           </>

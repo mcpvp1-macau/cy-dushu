@@ -1,5 +1,6 @@
 import { calcFovRadiation } from '@/utils/fov'
 import * as Cesium from 'cesium'
+import { attempt } from 'lodash'
 
 /** Cesium 在地图上的四个角 */
 export type GimbalPick = Partial<{
@@ -95,42 +96,44 @@ export class CameraVertexPicker {
     // 视锥四个角的经纬度
     const gimbalPick: GimbalPick = {}
 
-    // 如果相机高度小于地形高度，则不进行计算
-    const height = this.viewer.scene.globe.getHeight(
-      Cesium.Cartographic.fromDegrees(position.lon, position.lat),
-    )
-    if (height && height > position.alt) {
-      return gimbalPick
-    }
-
-    for (const [key, fovX, fovY] of directionTuples) {
-      const direction = calcDirection(fovX, fovY)
-      const ray = new Cesium.Ray(camera.position, direction)
-
-      // 计算射线与地球地形的交点
-      const p = this.viewer.scene.globe.pick(ray, this.viewer.scene)
-      if (p) {
-        const cartographic = Cesium.Cartographic.fromCartesian(p)
-        const lon = Cesium.Math.toDegrees(cartographic.longitude)
-        const lat = Cesium.Math.toDegrees(cartographic.latitude)
-        gimbalPick[key] = [lon, lat]
-        continue
-      }
-
-      // 计算射线与地球球面的交点
-      const intersection = Cesium.IntersectionTests.rayEllipsoid(
-        ray,
-        this.viewer.scene.globe.ellipsoid,
+    attempt(() => {
+      // 如果相机高度小于地形高度，则不进行计算
+      const height = this.viewer.scene.globe.getHeight(
+        Cesium.Cartographic.fromDegrees(position.lon, position.lat),
       )
-      if (Cesium.defined(intersection)) {
-        const point = Cesium.Ray.getPoint(ray, intersection.start)
-        const cartographic =
-          this.viewer.scene.globe.ellipsoid.cartesianToCartographic(point)
-        const lon = Cesium.Math.toDegrees(cartographic.longitude)
-        const lat = Cesium.Math.toDegrees(cartographic.latitude)
-        gimbalPick[key] = [lon, lat]
+      if (height && height > position.alt) {
+        return gimbalPick
       }
-    }
+
+      for (const [key, fovX, fovY] of directionTuples) {
+        const direction = calcDirection(fovX, fovY)
+        const ray = new Cesium.Ray(camera.position, direction)
+
+        // 计算射线与地球地形的交点
+        const p = this.viewer.scene.globe.pick(ray, this.viewer.scene)
+        if (p) {
+          const cartographic = Cesium.Cartographic.fromCartesian(p)
+          const lon = Cesium.Math.toDegrees(cartographic.longitude)
+          const lat = Cesium.Math.toDegrees(cartographic.latitude)
+          gimbalPick[key] = [lon, lat]
+          continue
+        }
+
+        // 计算射线与地球球面的交点
+        const intersection = Cesium.IntersectionTests.rayEllipsoid(
+          ray,
+          this.viewer.scene.globe.ellipsoid,
+        )
+        if (Cesium.defined(intersection)) {
+          const point = Cesium.Ray.getPoint(ray, intersection.start)
+          const cartographic =
+            this.viewer.scene.globe.ellipsoid.cartesianToCartographic(point)
+          const lon = Cesium.Math.toDegrees(cartographic.longitude)
+          const lat = Cesium.Math.toDegrees(cartographic.latitude)
+          gimbalPick[key] = [lon, lat]
+        }
+      }
+    })
 
     return gimbalPick
   }
