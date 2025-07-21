@@ -555,6 +555,9 @@ common:
   batchDownload: Batch Download
   downloadedPictureCount: '{{count}} pictures have been downloaded'
   copySuccess: Copy Successfully
+  restart: Restart
+  show: Show
+  hide: Hide
 events:
   search:
     placeholder: Please search by event name or ID

@@ -3,6 +3,7 @@ import TIFFImageryProvider from 'terriajs-tiff-imagery-provider'
 import { useLatest, useUnmountedRef } from 'ahooks'
 import * as Cesium from 'cesium'
 import proj4 from 'proj4'
+import { attempt } from 'lodash'
 
 type PropsType = {
   url: string
@@ -38,10 +39,8 @@ const TiffLoader32650: FC<PropsType> = memo(({ url }) => {
       tileSize: 256, // 瓦片大小，常用 256 或 512
       // maximumLevel: 8, // 增加最大缩放级别，视数据分辨率调整
       // minimumLevel: 0,
-      requestOptions: {
-        allowFullFile: true,
-      },
       // minimumLevel: 0,
+      cacheSize: 10,
     })) as unknown as Cesium.ImageryProvider
     if (unmountedRef.current || !viewer || imageUrl !== latestUrl.current) {
       return
@@ -58,13 +57,22 @@ const TiffLoader32650: FC<PropsType> = memo(({ url }) => {
     }
 
     addImageryProvider()
+    return () => {
+      attempt(() => {
+        if (currentImagery.current && viewer) {
+          viewer.imageryLayers.remove(currentImagery.current, true)
+        }
+      })
+    }
   }, [viewer, url])
 
   useEffect(() => {
     return () => {
-      if (currentImagery.current && viewer) {
-        viewer.imageryLayers.remove(currentImagery.current, true)
-      }
+      attempt(() => {
+        if (currentImagery.current && viewer) {
+          viewer.imageryLayers.remove(currentImagery.current, true)
+        }
+      })
     }
   }, [viewer])
 

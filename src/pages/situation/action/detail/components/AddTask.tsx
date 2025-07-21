@@ -216,7 +216,10 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
   )
 
   return (
-    <div onClick={(e) => e.stopPropagation()}>
+    <div
+      onClick={(e) => e.stopPropagation()}
+      onKeyDown={(e) => e.stopPropagation()}
+    >
       <IconButton onClick={() => setOpen(true)}>
         <IconPlus />
       </IconButton>

@@ -171,7 +171,7 @@ const ChildAction: FC<PropsType> = memo(
     return (
       <>
         <div className="flex items-center justify-between mb-0.5">
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-start">
             <IconButton
               disabled={!data.taskTplId}
               onClick={() => onVisibleChange?.(!visible)}

@@ -21,6 +21,7 @@ import {
   LoadingOutlined,
   SyncOutlined,
 } from '@ant-design/icons'
+import { t } from 'i18next'
 
 type PropsType = {
   data: API_RECONSTRUCTION.Reconstruction2DListItem
@@ -66,6 +67,11 @@ const Recon2DListItem: FC<PropsType> = memo(
             </div>
             <div className="flex items-center gap-2">
               <IconButton
+                toolTipProps={{
+                  title: hiddenSet.has(data.id)
+                    ? t('common.show')
+                    : t('common.hide'),
+                }}
                 onClick={() => {
                   const newSet = new Set(hiddenSet)
                   if (newSet.has(data.id)) {
@@ -86,6 +92,9 @@ const Recon2DListItem: FC<PropsType> = memo(
                 <>
                   <IconButton
                     className="scale-90"
+                    toolTipProps={{
+                      title: t('common.restart'),
+                    }}
                     onClick={async () => {
                       setIsLoading(true)
                       try {
@@ -98,11 +107,16 @@ const Recon2DListItem: FC<PropsType> = memo(
                   >
                     <IconRefresh />
                   </IconButton>
-                  <IconButton className="scale-90" onClick={setTrue}>
+                  <IconButton
+                    className="scale-90"
+                    toolTipProps={{ title: t('common.edit') }}
+                    onClick={setTrue}
+                  >
                     <IconEdit />
                   </IconButton>
                   <IconButton
                     className="scale-90"
+                    toolTipProps={{ title: t('common.delete') }}
                     onClick={async () => {
                       setIsLoading(true)
                       try {

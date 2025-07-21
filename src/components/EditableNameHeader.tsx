@@ -91,7 +91,7 @@ const EditableNameHeader: FC<PropsType> = memo(
                 <Input size="small" onPressEnter={handlePressEnter} />
               </Form.Item>
             ) : (
-              <h3 className="text-white text-base truncate">{value}</h3>
+              <h3 className="text-white text-base truncate pr-1">{value}</h3>
             )}
           </Form>
         </div>

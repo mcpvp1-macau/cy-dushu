@@ -50,7 +50,10 @@ const Header: FC<PropsType> = memo(() => {
         </IconButton>
         <Fullscreen target={document.documentElement} />
         {globalConfig.useShanghaiBanRoutes && (
-          <Link to="http://15.38.12.10:8081/airservice-thirdapi/external-login?signature=yvclOAQoG2SP5ugISaxTnIIhMUETFzv5">
+          <Link
+            to="http://15.38.12.10:8081/airservice-thirdapi/external-login?signature=yvclOAQoG2SP5ugISaxTnIIhMUETFzv5"
+            target="_blank"
+          >
             <IconButton toolTipProps={{ title: '风筝线' }}>
               <IconThirdPartyPlatform />
             </IconButton>
