@@ -1,15 +1,15 @@
-import { DatePicker, Flex, Form, Input, Select } from 'antd';
-import locale from 'antd/es/date-picker/locale/zh_CN';
-import FilterPopover, { FilterPopoverProps } from './FilterPopover';
-import { XFormItem } from './types';
-import { useEffect } from 'react';
+import { Flex, Form, Input, Select } from 'antd'
+import locale from 'antd/es/date-picker/locale/zh_CN'
+import FilterPopover, { FilterPopoverProps } from './FilterPopover'
+import { XFormItem } from './types'
+import DateRangePicker from '../AntdOverride/DateRangePicker'
 
 interface FilterProps {
-  onChange: (values: any) => void;
-  popover: FilterPopoverProps;
-  items: XFormItem[];
-  initValues?: any;
-  buttons?: JSX.Element | JSX.Element[];
+  onChange: (values: any) => void
+  popover: FilterPopoverProps
+  items: XFormItem[]
+  initValues?: any
+  buttons?: JSX.Element | JSX.Element[]
 }
 
 const Filter = ({
@@ -19,7 +19,7 @@ const Filter = ({
   initValues = {},
   buttons = <></>,
 }: FilterProps) => {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
   // useEffect(() => {
   //   form.setFieldsValue(initValues);
@@ -27,8 +27,8 @@ const Filter = ({
 
   // 处理 items
   const renderItems = items.map((item) => {
-    if (item.render) return item;
-    const newItem = { ...item };
+    if (item.render) return item
+    const newItem = { ...item }
     switch (item.type) {
       case 'input':
         newItem.render = (
@@ -37,11 +37,11 @@ const Filter = ({
             {...item.otherProps}
             autoComplete="off"
           />
-        );
-        break;
+        )
+        break
       case 'date-range':
         newItem.render = (
-          <DatePicker.RangePicker
+          <DateRangePicker
             placeholder={item.placeholder ?? '请输入'}
             format="MM-DD HH:mm:ss"
             showTime
@@ -49,8 +49,8 @@ const Filter = ({
             locale={locale}
             {...item.otherProps}
           />
-        );
-        break;
+        )
+        break
       case 'select':
         newItem.render = (
           <Select
@@ -60,12 +60,12 @@ const Filter = ({
             optionFilterProp="label"
             {...item.otherProps}
           />
-        );
-        break;
+        )
+        break
     }
-    return newItem;
-  });
-  const lastRender = renderItems.splice(-1, 1)[0];
+    return newItem
+  })
+  const lastRender = renderItems.splice(-1, 1)[0]
 
   return (
     <Form
@@ -76,7 +76,7 @@ const Filter = ({
         onChange({
           ...initValues,
           ...values,
-        });
+        })
       }}
       initialValues={initValues}
       className="mt-[10px]"
@@ -98,7 +98,7 @@ const Filter = ({
         <FilterPopover {...popover} />
       </Flex>
     </Form>
-  );
-};
+  )
+}
 
-export default Filter;
+export default Filter

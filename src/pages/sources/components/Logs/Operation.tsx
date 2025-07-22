@@ -4,18 +4,9 @@ import {
   getDeviceCapacityEnum,
   getDeviceOperateLogs,
 } from '@/service/modules/db-api'
-import {
-  Button,
-  ConfigProvider,
-  DatePicker,
-  Input,
-  Select,
-  Table,
-  Tag,
-} from 'antd'
+import { Button, ConfigProvider, Input, Select, Table, Tag } from 'antd'
 import * as XLSX from 'xlsx'
-
-const { RangePicker } = DatePicker
+import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
 
 type PropsType = {
   deviceId: string
@@ -148,7 +139,7 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
   return (
     <div className="flex flex-col gap-2 py-2">
       <div className="flex items-center gap-2">
-        <RangePicker
+        <DateRangePicker
           value={[dayjs(dateRange[0]), dayjs(dateRange[1])]}
           onChange={(dates, dateStrings) => {
             if (dates) {

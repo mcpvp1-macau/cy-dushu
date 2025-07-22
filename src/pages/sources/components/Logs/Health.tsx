@@ -1,11 +1,10 @@
 import { FC, memo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getDeviceHealthLogs } from '@/service/modules/db-api'
-import { Button, ConfigProvider, DatePicker, Table, Tooltip } from 'antd'
+import { Button, ConfigProvider, Table, Tooltip } from 'antd'
 import * as XLSX from 'xlsx'
 import { HealthInfo } from '@/components/device/HealthInfoList'
-
-const { RangePicker } = DatePicker
+import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
 
 type PropsType = {
   deviceId: string
@@ -32,8 +31,6 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
     },
     enabled: !!dateRange[0] && !!dateRange[1],
   })
-
-  
 
   const columns = [
     {
@@ -80,7 +77,7 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
   return (
     <div className="flex flex-col gap-2 py-2">
       <div className="flex items-center gap-2">
-        <RangePicker
+        <DateRangePicker
           value={[dayjs(dateRange[0]), dayjs(dateRange[1])]}
           onChange={(dates, dateStrings) => {
             if (dates) {
@@ -99,33 +96,35 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
       </div>
       {/**bg-[#2E3A46]  bg-[#28323C]*/}
       <div>
-        <ConfigProvider theme={{
-          components: {
-            Table: {
-              headerBg: '#2E3A46',
-              colorBgContainer: '#28323C',
-              borderColor: '#23272D',
+        <ConfigProvider
+          theme={{
+            components: {
+              Table: {
+                headerBg: '#2E3A46',
+                colorBgContainer: '#28323C',
+                borderColor: '#23272D',
+              },
             },
-          },
-        }}>
-        <Table
-          dataSource={data}
-          columns={columns}
-          loading={isLoading}
-          size="small"
-          pagination={false}
-          rowKey="startTime"
-          virtual
-          scroll={{ x: 'max-content', y: 500 }}
-          rowSelection={{
-            type: 'checkbox',
-            onChange: (selectedRowKeys, selectedRows) => {
-              setSelectedRows(selectedRows)
-            },
-            columnWidth: 20,
           }}
-          bordered
-        />
+        >
+          <Table
+            dataSource={data}
+            columns={columns}
+            loading={isLoading}
+            size="small"
+            pagination={false}
+            rowKey="startTime"
+            virtual
+            scroll={{ x: 'max-content', y: 500 }}
+            rowSelection={{
+              type: 'checkbox',
+              onChange: (selectedRowKeys, selectedRows) => {
+                setSelectedRows(selectedRows)
+              },
+              columnWidth: 20,
+            }}
+            bordered
+          />
         </ConfigProvider>
       </div>
     </div>

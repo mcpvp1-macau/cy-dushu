@@ -3,11 +3,10 @@ import AppSpin from '@/components/AppSpin'
 import VideoPreview from '@/components/VideoPreview'
 import { dft } from '@/constant/time-fmt'
 import { getHistoryVideo2 } from '@/service/modules/device'
-import { Col, DatePicker, Row, Select } from 'antd'
+import { Col, Row, Select } from 'antd'
 import { Dayjs } from 'dayjs'
 import VideoViewModal from './VideoViewModal'
-
-const { RangePicker } = DatePicker
+import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
 
 type PropsType = {
   deviceList: API_DEVICE.domain.Device[]
@@ -64,7 +63,7 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
   return (
     <div>
       <div className="py-3 flex gap-2">
-        <RangePicker
+        <DateRangePicker
           showTime={{
             showSecond: false,
           }}

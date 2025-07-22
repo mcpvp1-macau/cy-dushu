@@ -25,6 +25,7 @@ import type { Dayjs } from 'dayjs'
 import DayOfMonthCheckboxGroup from './DayOfMonthCheckboxGroup'
 import DayOfWeekCheckboxGroup from './DayOfWeekCheckboxGroup copy'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
 
 const TipInfo = memo(() => {
   const { t } = useTranslation()
@@ -65,7 +66,7 @@ const REPEATFormItems = memo(() => {
         required
         rules={[{ required: true }]}
       >
-        <DatePicker.RangePicker className="w-full" />
+        <DateRangePicker className="w-full" />
       </Form.Item>
       <Form.List name="executeTime">
         {(fields, { add, remove }) => (
@@ -228,7 +229,7 @@ type PropsType = {
 const ScheduleModal: FC<PropsType> = memo(
   ({ title, data, open, loading, onClose, onConfirm }) => {
     const { t } = useTranslation()
-    const { data: airlines, airlineOptions } = useAirlineOptions()
+    const { data: airlines, airlineOptions, holder } = useAirlineOptions()
 
     const [form] = Form.useForm<FormValuesType>()
 
@@ -498,6 +499,7 @@ const ScheduleModal: FC<PropsType> = memo(
             </Form>
           </ScrollArea>
         </ConfigProvider>
+        {holder}
       </XModal>
     )
   },

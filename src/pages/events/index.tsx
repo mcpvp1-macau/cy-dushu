@@ -12,12 +12,12 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { DatePicker, Input, Pagination } from 'antd'
+import { Input, Pagination } from 'antd'
 import type { Dayjs } from 'dayjs'
 import { useSearchParams } from 'react-router-dom'
 import useEventTypeOptions from './hooks/useEventTypeOptions'
 import EventDetailModal from './components/EventDetailModal'
-import useRangePickerPreset from '@/hooks/useRangePickerPreset'
+import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
 
 const h = createColumnHelper<API_EVENTS.domain.Event>()
 
@@ -145,8 +145,6 @@ const PageEvents: FC<PropsType> = memo(() => {
 
   const { handleValueChange, handlePaginationChange } = usePageSearchParams()
 
-  const presets = useRangePickerPreset()
-
   return (
     <div className="page-full p-3 bg-ground-2 flex flex-col overflow-y-hidden">
       <h2 className="text-white">{t('events.title')}</h2>
@@ -157,9 +155,8 @@ const PageEvents: FC<PropsType> = memo(() => {
           className="w-56"
           onSearch={(e) => handleValueChange('kw', e)}
         />
-        <DatePicker.RangePicker
+        <DateRangePicker
           defaultValue={rangeValue}
-          presets={presets}
           onChange={(d) => {
             setSearchParams(
               {

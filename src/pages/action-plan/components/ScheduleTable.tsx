@@ -8,9 +8,10 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { DatePicker, Pagination, Select, Tooltip } from 'antd'
+import { Pagination, Select, Tooltip } from 'antd'
 import { Dayjs } from 'dayjs'
 import StartBreakPoint from './StartBreakPoint'
+import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
 
 type PropsType = unknown
 
@@ -126,7 +127,7 @@ const ScheduleTable: FC<PropsType> = memo(() => {
   return (
     <div className="grow flex flex-col overflow-hidden">
       <section className="m-3 flex gap-3">
-        <DatePicker.RangePicker
+        <DateRangePicker
           value={timeRange}
           onChange={(v) => setTimeRange(v ? [v[0]!, v[1]!] : null)}
         />

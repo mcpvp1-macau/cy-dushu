@@ -9,7 +9,6 @@ import {
   Button,
   Checkbox,
   Col,
-  DatePicker,
   Image,
   Pagination,
   Progress,
@@ -27,11 +26,9 @@ import useBatchDownloadWithZip from '@/hooks/useBatchDownloadWithZip'
 import { handleStorageURL } from '@/pages/events/components/EventDetail'
 import IconButton from '@/components/ui/button/IconButton'
 import { useAppMsg } from '@/hooks/useAppMsg'
-import useRangePickerPreset from '@/hooks/useRangePickerPreset'
 import IconClose from '@/assets/icons/jsx/IconClose'
 import PanoramaViewer from '@/components/ui/PanoramaViewer'
-
-const { RangePicker } = DatePicker
+import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
 
 type PropsType = {
   deviceList: API_DEVICE.domain.Device[]
@@ -110,8 +107,6 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
     )
   }
 
-  const presets = useRangePickerPreset()
-
   const [usePanorama, setUsePanorama] = useState(false)
   const handleCheckImage = async (url: string) => {
     try {
@@ -130,9 +125,8 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
   return (
     <div>
       <div className="py-3 flex gap-3">
-        <RangePicker
+        <DateRangePicker
           value={dateRange}
-          presets={presets}
           onChange={(s) => {
             if (!s) {
               setDateRange(null)
@@ -211,7 +205,11 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
             </div>
             <ScrollArea className="max-h-[70vh] -mx-3">
               <div className="mx-3">
-                <Checkbox.Group value={checkedIds} onChange={setCheckedIds}>
+                <Checkbox.Group
+                  className="w-full"
+                  value={checkedIds}
+                  onChange={setCheckedIds}
+                >
                   <Image.PreviewGroup
                     preview={{
                       destroyOnClose: true,
@@ -234,7 +232,7 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
                         : makeToolbarRender(1, 50),
                     }}
                   >
-                    <Row gutter={[12, 12]}>
+                    <Row className="w-full" gutter={[12, 12]}>
                       {records.map((e) => (
                         <Col key={e.id} span={24} md={12} lg={8} xxl={6}>
                           <div className="h-24 p-2 flex items-center gap-2 border border-solid border-ground-5 rounded-[3px]">

@@ -1,4 +1,5 @@
 import MenuIconAction from '@/assets/icons/jsx/menus/MenuIconAction'
+import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
 import Select from '@/components/AntdOverride/Select'
 import TextButton from '@/components/ui/button/TextButton'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
@@ -17,7 +18,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { DatePicker, Input, Pagination } from 'antd'
+import { Input, Pagination } from 'antd'
 import { Dayjs } from 'dayjs'
 import { Link, useSearchParams } from 'react-router-dom'
 
@@ -174,7 +175,7 @@ const PageActionRecord: FC<PropsType> = memo(() => {
             )
           }}
         />
-        <DatePicker.RangePicker
+        <DateRangePicker
           defaultValue={rangeValue}
           onChange={(d) => {
             setSearchParams(

@@ -3,12 +3,10 @@ import { dft } from '@/constant/time-fmt'
 import MapboxMap from '@/map/MapboxMap'
 import { getTrackQuery } from '@/service/modules/db-api'
 import { pathCompress } from '@/utils/path'
-import { DatePicker } from 'antd'
 import { Dayjs } from 'dayjs'
 import { Layer, Source, useMap } from 'react-map-gl'
 import { bbox } from '@turf/turf'
-
-const { RangePicker } = DatePicker
+import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
 
 type PropsType = {
   deviceList: API_DEVICE.domain.Device[]
@@ -71,7 +69,7 @@ const HistoryTrackChildren: FC<{ tracks: API_DBAPI.res.GetTrackQueryRes }> =
               'line-color': '#ef4444',
               'line-width': 2,
             }}
-          ></Layer>
+          />
         </Source>
       </>
     )
@@ -123,7 +121,7 @@ const HistoryTrack: FC<PropsType> = memo(({ deviceList }) => {
   return (
     <div>
       <div className="my-3 flex gap-2">
-        <RangePicker
+        <DateRangePicker
           showTime={{
             showSecond: false,
           }}
