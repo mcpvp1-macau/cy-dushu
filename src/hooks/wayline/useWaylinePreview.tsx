@@ -185,6 +185,7 @@ const useWaylinePreview = () => {
         noPadding
         centered
         width={800}
+        mask
       >
         <div className="w-full aspect-video">
           <MapboxMap style={{ width: '100%', height: '100%' }}>
