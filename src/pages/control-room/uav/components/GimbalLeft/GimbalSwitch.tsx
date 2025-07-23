@@ -85,20 +85,20 @@ const GimbalSwitch: FC<PropsType> = memo(() => {
       return
     }
     const n = gimbalTypes.length
-    let idx = gimbalTypes.findIndex((e) => e[0] === lensType)
+    let idx = gimbalTypes.findIndex((e) => e === lensType)
     idx = (((idx + delta) % n) + n) % n
     let isHave = !!gimbalData?.types?.find(
-      (item: any) => item.type === gimbalTypes[idx][0],
+      (item: any) => item.type === gimbalTypes[idx],
     )
     if (isHave) {
-      handleClick(gimbalTypes[idx][0])
+      handleClick(gimbalTypes[idx])
     } else {
       idx = (((idx + delta) % n) + n) % n
       isHave = !!gimbalData?.types?.find(
-        (item: any) => item.type === gimbalTypes[idx][0],
+        (item: any) => item.type === gimbalTypes[idx],
       )
       if (isHave) {
-        handleClick(gimbalTypes[idx][0])
+        handleClick(gimbalTypes[idx])
       }
     }
   })
