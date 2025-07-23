@@ -74,6 +74,12 @@ const useMapLayerAndOverlayConfigStore = create<
             if (key === 'hiddenOverlayIds' || key === 'activeSpaceIds') {
               return Array.from(value)
             }
+            if (key === 'layerList') {
+              return []
+            }
+            if (key === 'overlayList') {
+              return []
+            }
             return value
           },
           reviver: (key: string, value: any) => {

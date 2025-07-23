@@ -16,6 +16,11 @@ export type ProcessedResultType = {
   zoomFactor: number
   imgUrl: string
   imgType: 'jpeg' | 'tiff' // 图片类型
+  layer?: string // 图层名称，tiff 时有
+  bboxMinX?: number // tiff 时有
+  bboxMinY?: number // tiff 时有
+  bboxMaxX?: number // tiff 时有
+  bboxMaxY?: number // tiff 时有
 }
 
 type StateType = {
@@ -52,10 +57,16 @@ const useReconstruction2DMapStore = create<StateType & ActionsType>()(
       },
     }),
     {
-      storage: createJSONStorage(() => sessionStorage, {
+      storage: createJSONStorage(() => localStorage, {
         replacer: (key: string, value: any) => {
           if (key === 'hiddenReconstruction2DSet') {
             return Array.from(value)
+          }
+          if (key === 'reconstruction2DList') {
+            return []
+          }
+          if (key === 'processedResults') {
+            return []
           }
           return value
         },

@@ -1,8 +1,7 @@
-import { handleStorageURL } from '@/pages/events/components/EventDetail'
-import TiffLoader32650 from '../common/TiffLoader32650'
 import Reconstruction2DCollection from './Reconstruction2DCollection'
 import Reconstruction2DItem from './Reconstruction2DItem'
 import useReconstruction2DMapStore from '@/store/map/useReconstruction2DMap.store'
+import TiffWMTSLoader4326 from '../common/TiffWMTSLoader4326'
 
 type PropsType = unknown
 
@@ -15,7 +14,20 @@ const Reconstruction2D: FC<PropsType> = memo(() => {
         e.imgType === 'jpeg' ? (
           <Reconstruction2DItem key={e.imgUrl} data={e} />
         ) : e.imgType === 'tiff' ? (
-          <TiffLoader32650 key={e.imgUrl} url={handleStorageURL(e.imgUrl)} />
+          e.layer &&
+          e.bboxMinX &&
+          e.bboxMaxX &&
+          e.bboxMinY &&
+          e.bboxMaxY && (
+            <TiffWMTSLoader4326
+              key={e.imgUrl}
+              layer={e.layer}
+              bboxMinX={e.bboxMinX}
+              bboxMinY={e.bboxMinY}
+              bboxMaxX={e.bboxMaxX}
+              bboxMaxY={e.bboxMaxY}
+            />
+          )
         ) : null,
       )}
     </Reconstruction2DCollection>

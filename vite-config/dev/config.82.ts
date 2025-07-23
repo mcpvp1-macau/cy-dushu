@@ -69,6 +69,10 @@ export default mergeConfig(
           // pathRewrite: { '^/upload': '' },
           rewrite: (path) => path.replace(/^\/upload/, ''),
         },
+        '/geoserver': {
+          target: 'http://172.22.219.30:31880',
+          changeOrigin: true,
+        },
       },
     },
     define: {

@@ -18,6 +18,9 @@ export const handleStorageURL = (url: string) => {
   if (url.includes('/storage')) {
     return '/storage' + url?.split('/storage')?.[1]
   }
+  if (url.startsWith('http://')) {
+    return url
+  }
   return '/storage' + url
 }
 

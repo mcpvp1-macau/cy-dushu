@@ -2,7 +2,7 @@ import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconEdit from '@/assets/icons/jsx/IconEdit'
 import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
 import IconReconstruction2D from '@/assets/icons/jsx/IconReconstruction2D'
-import IconRefresh from '@/assets/icons/jsx/IconRefresh'
+import IconRestart from '@/assets/icons/jsx/IconRestart'
 import IconVisible from '@/assets/icons/jsx/IconVisible'
 import IconButton from '@/components/ui/button/IconButton'
 import TagItemV2 from '@/components/ui/TagItemV2'
@@ -105,7 +105,7 @@ const Recon2DListItem: FC<PropsType> = memo(
                       }
                     }}
                   >
-                    <IconRefresh />
+                    <IconRestart />
                   </IconButton>
                   <IconButton
                     className="scale-90"

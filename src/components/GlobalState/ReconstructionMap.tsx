@@ -6,6 +6,7 @@ import {
 } from '@/service/modules/reconstruction'
 import { memo } from 'react'
 import useReconstruction2DMapStore from '@/store/map/useReconstruction2DMap.store'
+import useDelayState from '@/hooks/useDelay'
 
 const ReconstructionMap: FC = memo(() => {
   const updateLayerGroupList = useReconstructionMap(
@@ -14,11 +15,14 @@ const ReconstructionMap: FC = memo(() => {
   const updateLayerList = useReconstructionMap((state) => state.updateLayerList)
   const queryClient = useQueryClient()
 
+  const openLayer = useDelayState(2000)
+
   const { data: groupList } = useQuery(
     {
       queryKey: ['reconstruction-groupList'],
       queryFn: () => getLayerGroupList(),
       select: (d) => d.data,
+      enabled: openLayer,
     },
     queryClient,
   )
@@ -51,6 +55,7 @@ const ReconstructionMap: FC = memo(() => {
   const { data: reconstruction2dList } = useQuery({
     queryKey: ['reconstruction2dList'],
     queryFn: () => getReconstruction2DList({}),
+    enabled: openLayer,
     select: (d) => d.data,
   })
 

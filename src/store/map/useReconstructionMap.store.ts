@@ -71,10 +71,16 @@ const useReconstructionMapConfigStore = create<
       }),
       {
         name: 'reconstruction-map-config',
-        storage: createJSONStorage(() => sessionStorage, {
+        storage: createJSONStorage(() => localStorage, {
           replacer: (key: string, value: any) => {
             if (key === 'showLayerIds' || key === 'activeLayerIds') {
               return Array.from(value)
+            }
+            if (key === 'layerList') {
+              return []
+            }
+            if (key === 'layerGroupList') {
+              return []
             }
             return value
           },

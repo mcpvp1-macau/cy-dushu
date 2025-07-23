@@ -51,6 +51,11 @@ declare namespace API_RECONSTRUCTION {
     processNum: number
     process: ProcessItem[]
     status: string
+    bboxMinX?: string
+    bboxMinY?: string
+    bboxMaxX?: string
+    bboxMaxY?: string
+    layer?: string
   }
 
   interface ProcessItem {
