@@ -17,6 +17,7 @@ import ZoomFocusMode from '../AsideToolBar/ZoomFucusMode'
 import IrMetering from './components/IrMetering'
 import ExposureMode from '../AsideToolBar/ExposureMode'
 import PointOrBoxSelect from './components/PointOrBoxSelect/PointOrBoxSelect'
+import TapToFlyOnVideo from './components/TapToFlyOnVideo'
 
 const ExposureValue = lazy(() => import('./components/ExposureValue'))
 const ShutterValue = lazy(() => import('./components/ShutterValue'))
@@ -109,6 +110,10 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
 
   const updateVideoElement = useUavControlRoomStore((s) => s.updateVideoElement)
 
+  const openTapToFlyOnVideo = useUavControlRoomStore(
+    (s) => s.openTapToFlyOnVideo,
+  )
+
   return (
     <div className="absolute inset-0  bg-black">
       <DeviceLiveVideo
@@ -162,6 +167,7 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
               // <PositionZoom deviceLiveVideoRef={deviceLiveVideoRef} />
               <PointOrBoxSelect deviceLiveVideoRef={deviceLiveVideoRef} />
             )}
+            {openTapToFlyOnVideo && <TapToFlyOnVideo />}
           </>
         }
         videoSafeAreaChildren={<Avoidance />}

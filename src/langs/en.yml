@@ -1253,6 +1253,8 @@ controlRoom:
         title: Exposure Mode
       panorama:
         title: Panorama
+      gotoPosAtTarget:
+        title: Point-and-fly on video
     gamepad:
       title: Gamepad
     goHome:

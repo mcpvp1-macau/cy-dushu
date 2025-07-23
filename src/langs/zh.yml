@@ -1234,6 +1234,8 @@ controlRoom:
         title: 镜头曝光模式
       panorama:
         title: 全景
+      gotoPosAtTarget:
+        title: 视频指点飞行
     gamepad:
       title: 摇杆
     goHome:

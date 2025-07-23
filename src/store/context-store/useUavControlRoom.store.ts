@@ -66,6 +66,8 @@ type StateType = {
   openLarser: boolean
   /** 是否打开指点变焦 */
   openPointZoom: 0 | 1 | 2
+  /** 是否打开视频指点飞行 */
+  openTapToFlyOnVideo: boolean
   /** 是否打开指点飞行 */
   // openPointFly: boolean
   /** 是否启用摇杆 */
@@ -95,8 +97,6 @@ type ActionsType = {
   updateGimbalControlInfo: (value: StateType['gimbalControlInfo']) => void
   /** 更新鼠标按下的按钮 */
   updateActiveMouseBtn: (btn: Btn | null) => void
-  /** 更新激光测距 */
-  updateOpenLarser: (open: boolean) => void
   /** 更新指点变焦 */
   updateOpenPointZoom: (open: StateType['openPointZoom']) => void
   /** 更新指点飞行 */
@@ -154,6 +154,7 @@ const createInitialState = () =>
     openLarser: false,
     openPointZoom: 0,
     openPointFly: false,
+    openTapToFlyOnVideo: false,
     enableGamepad: false,
     historyTracks: [],
     enableSmartTrack: false,

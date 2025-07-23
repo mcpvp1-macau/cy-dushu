@@ -1,7 +1,10 @@
 import IconLaser from '@/assets/icons/jsx/uav/IconLaser'
 import IconPositionZoom from '@/assets/icons/jsx/uav/IconPositionZoom'
 import IconButton from '@/components/ui/button/IconButton'
-import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
+import {
+  useUavControlRoomStore,
+  useUavControlRoomStoreInstance,
+} from '@/store/context-store/useUavControlRoom.store'
 import { lazy } from 'react'
 import CameraMode from './CameraMode'
 import TakePhoto from './TakePhoto'
@@ -15,6 +18,7 @@ import AppViewSuspense from '@/components/AppViewSuspense'
 import IconSmartTrack from '@/assets/icons/jsx/uav/IconSmartTrack'
 import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 import IrMeteringMode from './IrMeteringMode'
+import IconGoToPosOnVideo from '@/assets/icons/jsx/IconGoToPosOnVideo'
 
 const ARSetting = lazy(() => import('@/components/Header/setting/ar'))
 
@@ -29,17 +33,9 @@ const AsideToolBar: FC<PropsType> = memo(() => {
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
 
   const openLarser = useUavControlRoomStore((s) => s.openLarser)
-  const updateOpenLarser = useUavControlRoomStore((s) => s.updateOpenLarser)
   const openPositionZoom = useUavControlRoomStore((s) => s.openPointZoom)
 
   const enableSmartTrack = useUavControlRoomStore((s) => s.enableSmartTrack)
-  const updateEnableSmartTrack = useUavControlRoomStore(
-    (s) => s.updateEnableSmartTrack,
-  )
-
-  const updateOpenPositionZoom = useUavControlRoomStore(
-    (s) => s.updateOpenPointZoom,
-  )
 
   const serviceHave = useDeviceDetailStore((s) => s.serviceHave)
   const propsHave = useDeviceDetailStore((s) => s.propsHave)
@@ -72,12 +68,21 @@ const AsideToolBar: FC<PropsType> = memo(() => {
   const enableReconstruction = useUavControlRoomStore(
     (s) => s.enableReconstruction,
   )
-  const updateEnableReconstruction = useUavControlRoomStore(
-    (s) => s.updateEnableReconstruction,
-  )
+
+  const uavControlRoomStore = useUavControlRoomStoreInstance()
+
   const handleToggleReconstruction = () => {
-    updateEnableReconstruction(!enableReconstruction)
+    uavControlRoomStore
+      .getState()
+      .updateEnableReconstruction(!enableReconstruction)
   }
+
+  const openTapToFlyOnVideo = useUavControlRoomStore(
+    (s) => s.openTapToFlyOnVideo,
+  )
+
+  // 是否有 视频指点 飞行
+  const hasGotoPosAtTarget = !!serviceHave['gotoPosAtTarget']
 
   return (
     <div className="flex gap-2.5 text-base">
@@ -98,7 +103,9 @@ const AsideToolBar: FC<PropsType> = memo(() => {
               title: t('controlRoom.uav.service.laserRanging.title'),
             }}
             active={openLarser}
-            onClick={() => updateOpenLarser(!openLarser)}
+            onClick={() =>
+              uavControlRoomStore.setState({ openLarser: !openLarser })
+            }
           >
             <IconLaser />
           </IconButton>
@@ -111,10 +118,28 @@ const AsideToolBar: FC<PropsType> = memo(() => {
             }}
             active={openPositionZoom === 1}
             onClick={() =>
-              updateOpenPositionZoom(openPositionZoom === 1 ? 0 : 1)
+              uavControlRoomStore
+                .getState()
+                .updateOpenPointZoom(openPositionZoom === 1 ? 0 : 1)
             }
           >
             <IconPositionZoom />
+          </IconButton>
+        )}
+        {hasGotoPosAtTarget && (
+          <IconButton
+            className={borderedBtnClassName}
+            toolTipProps={{
+              title: t('controlRoom.uav.service.gotoPosAtTarget.title'),
+            }}
+            active={openTapToFlyOnVideo}
+            onClick={() => {
+              uavControlRoomStore.setState({
+                openTapToFlyOnVideo: !openTapToFlyOnVideo,
+              })
+            }}
+          >
+            <IconGoToPosOnVideo />
           </IconButton>
         )}
         {hasCameraMode && <CameraMode />}
@@ -128,10 +153,10 @@ const AsideToolBar: FC<PropsType> = memo(() => {
             active={enableSmartTrack}
             onClick={() => {
               if (!enableSmartTrack) {
-                updateEnableSmartTrack(true)
-                updateOpenPositionZoom(0)
+                uavControlRoomStore.getState().updateEnableSmartTrack(true)
+                uavControlRoomStore.getState().updateOpenPointZoom(0)
               } else {
-                updateEnableSmartTrack(false)
+                uavControlRoomStore.getState().updateEnableSmartTrack(false)
                 postDeviceService('autoTrack', { enable: false })
               }
             }}
