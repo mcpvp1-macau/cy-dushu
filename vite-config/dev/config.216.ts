@@ -11,13 +11,13 @@ export default mergeConfig(
       proxy: {
         // 4A 接口
         '/proxyApi': {
-          target: 'http://172.27.95.216:31851/',
+          target: 'http://47.96.225.165:31851/',
           // target: 'http://127.0.0.1:7001/',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/proxyApi/, '/'),
         },
         '/proxyWsApi': {
-          target: 'ws://172.27.95.216:31851/',
+          target: 'ws://47.96.225.165:31851/',
           // target: 'ws://127.0.0.1:7001/',
           ws: true,
           changeOrigin: true,
@@ -25,18 +25,18 @@ export default mergeConfig(
         },
         // 全局 WebSocket
         '/ws': {
-          target: 'ws://172.27.95.216:32201',
+          target: 'ws://47.96.225.165:32201',
           ws: true,
           changeOrigin: true,
         },
         // 设备websocket直连
         '/v3': {
-          target: 'ws://172.27.95.216:32041',
+          target: 'ws://47.96.225.165:32041',
           ws: true,
           changeOrigin: true,
         },
         '/storage': {
-          target: 'http://172.27.95.216:32205',
+          target: 'http://47.96.225.165:32205',
           changeOrigin: true,
         },
         '/data': {
@@ -50,12 +50,12 @@ export default mergeConfig(
         },
         // 历史视频
         '/stream': {
-          target: 'http://172.27.95.216:32011',
+          target: 'http://47.96.225.165:32011',
           changeOrigin: true,
         },
         // 视频下载
         '/vod/download': {
-          target: 'http://172.27.95.216:31118',
+          target: 'http://47.96.225.165:31118',
           changeOrigin: true,
         },
         '/_ws_proxy/': {
