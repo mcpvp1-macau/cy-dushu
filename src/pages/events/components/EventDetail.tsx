@@ -21,7 +21,11 @@ export const handleStorageURL = (url: string) => {
   if (url.startsWith('http://')) {
     return url
   }
-  return '/storage' + url
+  if (url.startsWith('/')) {
+    // 如果是以 / 开头的路径，直接加上 /storage 前缀
+    return '/storage' + url
+  }
+  return '/storage/' + url
 }
 
 type PropsType = {

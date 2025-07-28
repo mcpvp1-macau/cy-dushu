@@ -26,7 +26,7 @@ const TiffWMTSLoader4326: FC<PropsType> = memo((props) => {
 
     // Example: Add a custom imagery layer
     const imageryProvider = new Cesium.UrlTemplateImageryProvider({
-      url: `/geoserver/gwc/service/wmts/rest/${props.layer}/ja:ja/EPSG:4326/EPSG:4326:{z}/{y}/{x}?format=image/png`,
+      url: `/geoserver/ja/gwc/service/wmts/rest/${props.layer}/ja:ja/EPSG:4326/EPSG:4326:{z}/{y}/{x}?format=image/png`,
       tilingScheme: new Cesium.GeographicTilingScheme(),
       rectangle,
       maximumLevel: 21,

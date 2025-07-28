@@ -115,6 +115,8 @@ export const processEventImageDataEmitter = mitt<{
 export const useListenRealProcessedResults = (
   filterFn: (deviceId: string, actionId: number) => boolean,
 ) => {
+  const queryClient = useQueryClient()
+
   const fn = (data: ProcessEventImageData) => {
     if (!filterFn(data.deviceId, data.actionId)) {
       return
@@ -151,6 +153,11 @@ export const useListenRealProcessedResults = (
     } else if (data.imageType === 'tiff') {
       // tiff 说明前面的 jepg 都已经处理合成过了
       useReconstruction2DMapStore.getState().updateProcessedResults([newResult])
+      if (data.taskDone) {
+        queryClient.invalidateQueries({
+          queryKey: ['reconstruction2dList'],
+        })
+      }
     }
   }
 

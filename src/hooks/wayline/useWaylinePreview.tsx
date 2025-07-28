@@ -15,6 +15,8 @@ const WaylinePreview: FC<{ data: API_AIRLINE.domain.AIRLINE_TEMPLATE }> = ({
   useEffect(() => {
     if (!map) return
 
+    map.showTileBoundaries = true
+
     // 加载航点图标
     if (!map.hasImage('wayline-point-icon')) {
       map.loadImage('/images/airline/inverted-triangle.png', (error, image) => {
@@ -53,8 +55,6 @@ const WaylinePreview: FC<{ data: API_AIRLINE.domain.AIRLINE_TEMPLATE }> = ({
       },
     )
   }, [positions, map])
-
-  console.log('positions', positions)
 
   return (
     <>
