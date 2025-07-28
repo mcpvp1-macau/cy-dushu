@@ -118,16 +118,16 @@ const useGamepad = (
       }
       const data: Record<string, number> = {}
       if (Math.abs(x) >= 0.05) {
-        data.x = 15 * (x / 0.7)
+        data.x = 15 * Math.min(x, 1)
       }
       if (Math.abs(y) >= 0.05) {
-        data.y = -15 * (y / 0.7) // -15 是因为摇杆向上是负数, 向下是正数
+        data.y = -15 * Math.min(y, 1) // -15 是因为摇杆向上是负数, 向下是正数
       }
       if (Math.abs(z) >= 0.1) {
         data.z = limitNum(-5 * z, -3, 5)
       }
       if (Math.abs(yaw) >= 0.05) {
-        data.yaw = 13 * (yaw / 0.7)
+        data.yaw = 13 * Math.min(yaw, 1)
       }
       if (isFly && data.z > 0) {
         msgApi.destroy('uavMoveBottom')

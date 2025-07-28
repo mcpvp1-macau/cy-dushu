@@ -46,11 +46,48 @@ export const deleteLayer = (overlayId: number) => {
   return serverJingqi.post('/reconstruction/overlay/delete', { overlayId })
 }
 
-/**创建并执行三维建图任务 */
+/**创建并执行三维建图任务，返回taskId */
 export const startReconstructionTask = (
   data: API_RECONSTRUCTION.req.StartTask,
 ) => {
-  return serverJingqi.post<{
-    taskId: number
-  }>('/reconstruction/task/start', data)
+  return serverJingqi.post<number>('/reconstruction/task/start', data)
+}
+
+/**执行三维重建 */
+export const startBuild = (data: API_RECONSTRUCTION.req.StartBuild) => {
+  return serverJingqi.post<API_RECONSTRUCTION.res.BuildResult>(
+    '/reconstruction/task/startBuild',
+    data,
+  )
+}
+
+// 二维重建相关 ---------------------------------------------------------------------
+
+/** 获取二维重建结果列表 */
+export const getReconstruction2DList = (data: {
+  actionId?: number
+  deviceId?: string
+  startTime?: string
+  endTime?: string
+  needProcess?: boolean
+}) => {
+  return serverJingqi.post<API_RECONSTRUCTION.res.GetReconstruction2DList>(
+    '/reconstruction/twoDimension/list',
+    data,
+  )
+}
+
+/** 更新二维创建名称 */
+export const updateReconstruction2D = (data: { id: number; name: string }) => {
+  return serverJingqi.post('/reconstruction/twoDimension/update', data)
+}
+
+/** 删除二维重建 */
+export const deleteReconstruction2D = (id: number) => {
+  return serverJingqi.post('/reconstruction/twoDimension/delete', { id })
+}
+
+/** 重启二维重建 */
+export const restartReconstruction2D = (id: number) => {
+  return serverJingqi.post('/reconstruction/twoDimension/restart', { id })
 }

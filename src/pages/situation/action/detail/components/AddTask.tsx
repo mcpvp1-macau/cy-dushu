@@ -1,4 +1,5 @@
 import IconPlus from '@/assets/icons/jsx/IconPlus'
+import IconPreview from '@/assets/icons/jsx/IconPreview'
 import DeviceIcon from '@/components/device/DeviceIcon'
 import IconButton from '@/components/ui/button/IconButton'
 import FormModal from '@/components/XForm/Modal'
@@ -7,6 +8,7 @@ import { emtpyArray } from '@/constant/data'
 import { WaylineEnum } from '@/constant/uav/wayline'
 import { DeviceEnum } from '@/enum/device'
 import { usePilotTreeData } from '@/hooks/jinghang/usePilots'
+import useWaylinePreview from '@/hooks/wayline/useWaylinePreview'
 import { WaylineIcon } from '@/pages/wayline/components/AirlineTemplateListItem'
 import { createActionItem, getPilotTree } from '@/service/modules/action-item'
 import { getAirlineTemplateList } from '@/service/modules/airline'
@@ -140,13 +142,30 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
     }))
   }, [allDevices, taskType])
 
+  const { holder, handlePreview } = useWaylinePreview()
   const airlineTemplateOptions = useMemo(
     () =>
       airlineTemplateList?.map((e, i) => ({
         label: (
-          <div className="flex gap-2">
-            <WaylineIcon type={e.taskType} />
-            {e.taskName}
+          <div className="flex justify-between">
+            <div className="flex gap-2">
+              <WaylineIcon type={e.taskType} />
+              {e.taskName}
+            </div>
+            <IconButton
+              toolTipProps={{ title: t('common.preview') }}
+              onClick={(evt) => {
+                evt.stopPropagation()
+                handlePreview(e)
+              }}
+              onMouseDown={(e) => {
+                e.stopPropagation()
+                e.preventDefault()
+              }}
+              className="hover:text-white scale-90"
+            >
+              <IconPreview />
+            </IconButton>
           </div>
         ),
         value: i,
@@ -216,7 +235,10 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
   )
 
   return (
-    <div onClick={(e) => e.stopPropagation()}>
+    <div
+      onClick={(e) => e.stopPropagation()}
+      onKeyDown={(e) => e.stopPropagation()}
+    >
       <IconButton onClick={() => setOpen(true)}>
         <IconPlus />
       </IconButton>
@@ -231,6 +253,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
         }}
         onConfirm={handleConfirm}
       />
+      {holder}
     </div>
   )
 })

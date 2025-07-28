@@ -30,7 +30,7 @@ const HeaderSetting: FC<PropsType> = memo(() => {
         onClose={setFalse}
         width={600}
         footer={false}
-        destroyOnClose
+        destroyOnHidden
       >
         <div className="p-3">
           <Tabs

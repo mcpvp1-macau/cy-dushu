@@ -1,14 +1,14 @@
 import { useCesium } from 'resium'
 import CesiumThreeJS3DGS from './cesium-threejs-3dgs'
+import * as Cesium from 'cesium'
 
 type PropsType = {
   layerList: API_RECONSTRUCTION.Layer[]
   showLayerIds: Set<number>
-  showGroupIds: Set<number>
 }
 
 const ReconstructionDraw: FC<PropsType> = memo(
-  ({ layerList, showLayerIds, showGroupIds }) => {
+  ({ layerList, showLayerIds }) => {
     const resiumContext = useCesium()
 
     const cesium3dgsRef = useRef<CesiumThreeJS3DGS | null>(null)
@@ -30,15 +30,54 @@ const ReconstructionDraw: FC<PropsType> = memo(
     }, [])
 
     useEffect(() => {
-      cesium3dgsRef.current!.showLayerIds = showLayerIds
-      cesium3dgsRef.current!.showGroupIds = showGroupIds
+      if (!cesium3dgsRef.current) return
+
+      const viewer = resiumContext.viewer!
+
+      const preShowLayerIds = cesium3dgsRef.current!.showLayerIds
+      // 之前未显示，现在开启显示，就跳转到模型位置
+      if (layerList) {
+        layerList.forEach((layer) => {
+          let preShow = 0
+          let curShow = 0
+
+          if (preShowLayerIds.has(layer.overlayId)) {
+            preShow = 1
+          }
+          if (showLayerIds.has(layer.overlayId)) {
+            curShow = 1
+          }
+
+          if (curShow > preShow) {
+            const llh = [
+              layer.modelLayerLon,
+              layer.modelLayerLat,
+              layer.modelLayerHeight + 1000,
+            ] as const
+
+            const distance = Cesium.Cartesian3.distance(
+              viewer.camera.position,
+              Cesium.Cartesian3.fromDegrees(...llh),
+            )
+            // 暂定相机离模型1000米外再跳转
+            if (distance > 1000) {
+              viewer.camera.flyTo({
+                destination: Cesium.Cartesian3.fromDegrees(...llh),
+                duration: 1,
+              })
+            }
+            return
+          }
+        })
+      }
+
+      cesium3dgsRef.current!.showLayerIds = new Set(showLayerIds)
 
       layerList.forEach((layer) => {
         // 如果已经添加了或者被隐藏了，则不加载
         if (
           cesium3dgsRef.current!.has(layer.overlayId) ||
-          !showLayerIds.has(layer.overlayId) ||
-          !showGroupIds.has(layer.layerId)
+          !showLayerIds.has(layer.overlayId)
         ) {
           return
         }
@@ -47,7 +86,7 @@ const ReconstructionDraw: FC<PropsType> = memo(
           splatUrl: '/storage' + layer.modelPath,
           lat: layer.modelLayerLat,
           lon: layer.modelLayerLon,
-          height: layer.modelLayerHeight - 12,
+          height: layer.modelLayerHeight - 7,
           headingPitchRoll: { heading: 0.0, pitch: 0.0, roll: -90 },
           scale: 1,
           camera: {
@@ -62,7 +101,7 @@ const ReconstructionDraw: FC<PropsType> = memo(
       })
 
       return () => {}
-    }, [layerList, showLayerIds, showGroupIds])
+    }, [layerList, showLayerIds])
 
     return null
   },

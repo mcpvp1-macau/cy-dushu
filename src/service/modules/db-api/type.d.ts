@@ -227,15 +227,52 @@ declare namespace API_DBAPI {
       objectLabel: string
       longitude: number
     }
+    type HealthLog = {
+      messageInfo: string
+      startTime: string
+      endTime: string
+    }
+    type OperateLog = {
+      method: string
+      acquireTime: string
+      productKey: string
+      type: string
+      properties: string
+      operator: string
+      messageInfo: string
+    }
+    type DeviceCapacityEnum = {
+      functionName: 'events' | 'services' | 'properties'
+      id: number
+      functionType: string
+      functionIdentifier: string
+      productKey: string
+      productName: string
+    }
+
+    type DensityItem = {
+      deviceId: string
+      h3Code: string
+      /** 层级 */
+      resolution: number
+      /** 该地区的过去一段时间的平均人数 */
+      averageDensity: number
+      /** 单位秒，表示统计人群密度的间隔 */
+      statisticalInterval: number
+      /** 采集时间 */
+      acquireTimestampFormat: string
+    }
   }
+
   // ------------------ req ------------------
   namespace req {
     type GetPlatformCaptureReq = {
-      deviceId: string
+      actionId?: string
+      deviceId?: string
       type: 'PICTURE' | 'HISTORY_VIDEO'
       sourceId?: string
-      startTime: string
-      endTime: string
+      startTime?: string
+      endTime?: string
       page?: number
       pageSize?: number
       isPage?: boolean
@@ -267,5 +304,10 @@ declare namespace API_DBAPI {
       controlStationInfo: domain.ControlStationInfo[]
     }
     export type GetAllTargets = domain.TargetData[]
+
+    type GetDeviceHealthLogsRes = API_DBAPI.domain.HealthLog[]
+    type GetDeviceOperateLogsRes = API_DBAPI.domain.OperateLog[]
+    type GetDeviceCapacityEnumRes = API_DBAPI.domain.DeviceCapacityEnum[]
+    type GetDensityStatisticsRes = API_DBAPI.domain.DensityItem[]
   }
 }

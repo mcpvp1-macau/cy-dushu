@@ -1,0 +1,35 @@
+import { create } from 'zustand'
+import { devtools } from 'zustand/middleware'
+
+type StateType = {
+  flightAreaGroupList: API_FLIGHT_AREA.domain.FlightAreaGroup[]
+  flightAreaList: API_FLIGHT_AREA.domain.FlightArea[]
+}
+
+type ActionsType = {
+  updateFlightAreaGroupList: (
+    flightAreaGroupList: StateType['flightAreaGroupList'],
+  ) => void
+  updateFlightAreaList: (flightAreaList: StateType['flightAreaList']) => void
+}
+
+const useFlightAreaStore = create<StateType & ActionsType>()(
+  devtools(
+    (set) => ({
+      flightAreaGroupList: [],
+      flightAreaList: [],
+      updateFlightAreaGroupList: (flightAreaGroupList) => {
+        set({ flightAreaGroupList }, false, 'updateFlightAreaGroupList')
+      },
+      updateFlightAreaList: (flightAreaList) => {
+        set({ flightAreaList }, false, 'updateFlightAreaList')
+      },
+    }),
+    {
+      name: 'flight-area',
+      enabled: import.meta.env.DEV,
+    },
+  ),
+)
+
+export default useFlightAreaStore

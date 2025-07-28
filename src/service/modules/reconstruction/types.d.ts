@@ -35,6 +35,49 @@ declare namespace API_RECONSTRUCTION {
     cameraPitch: number
     cameraRoll: number
     modelPath: string
+    status: 'PENDING' | 'PROCESSING' | 'FINISHED' | 'PAUSE'
+    imagesFolderPath: string
+  }
+
+  interface Reconstruction2DListItem {
+    id: number
+    actionId: number
+    deviceId: string
+    name: string
+    gmtCreateBy: string
+    gmtCreate: string
+    imageUrl: string // 大图地址
+    imageType: 'jpeg' | 'tiff' // jpeg/tiff
+    processNum: number
+    process: ProcessItem[]
+    status: string
+    bboxMinX?: string
+    bboxMinY?: string
+    bboxMaxX?: string
+    bboxMaxY?: string
+    layer?: string
+  }
+
+  interface ProcessItem {
+    requestId: string
+    actionId: number
+    deviceId: string
+    index: number
+    imageUrl: string // 过程图地址
+    imageType: 'jpeg' | 'tiff' // jpeg/tiff
+    id: number
+    meta: {
+      // 图片格式为 tiff 时为空
+      absoluteAltitude?: number
+      gimbalPitch?: number
+      gimbalRoll?: number
+      gimbalYaw?: number
+      gpsLatitude?: number
+      gpsLongitude?: number
+      lenType?: 'WIDE' | 'IR' | 'ZOOM' // WIDE/IR/ZOOM
+      productName?: string // 有镜头型号使用镜头型号，没有镜头使用无人机型号，如 H30T,ZH20T,M30T,M3TD,M4TD
+      relativeAltitude?: number
+    }
   }
 
   namespace req {
@@ -49,7 +92,7 @@ declare namespace API_RECONSTRUCTION {
       /**范围类型，示例：POLYGON */
       overlayType: string
       /**范围，示例：[[116.317447,38.291992],[117.0413,37.865668],[117.026106,37.852659],[117.026106,37.852659]] */
-      overlayPositions: string
+      overlayPositions?: string
       overlayBindType: string
       overlayStyleConfig: string
       cotType: string
@@ -63,16 +106,32 @@ declare namespace API_RECONSTRUCTION {
 
     type StartTask = {
       overlayId: number
-      deviceId: string
+      deviceId?: string
       //飞行参数
-      flightAltitude: number //飞行高度
-      returnAltitude: number //返航高度
-      taskCompletionAction: 'GO_HOME' | 'HOVER' //任务完成动作 返航：GO_HONE 悬停：HOVER
+      flightAltitude?: number //飞行高度
+      returnAltitude?: number //返航高度
+      taskCompletionAction?: 'GO_HOME' | 'HOVER' //任务完成动作 返航：GO_HONE 悬停：HOVER
+      /**是否是通过飞行进行重建 */
+      needFly?: boolean
+    }
+
+    type StartBuild = {
+      taskId: number
+      bucket: string
+      minioPath: string
     }
   }
 
   namespace res {
     type LayerGroupList = LayerGroup[]
     type LayerList = Layer[]
+    type BuildResult = {
+      code: string
+      message: string
+      data: any
+      requestId: string
+      success: boolean
+    }
+    type GetReconstruction2DList = Reconstruction2DListItem[]
   }
 }

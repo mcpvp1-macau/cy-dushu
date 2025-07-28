@@ -1,6 +1,4 @@
-import MenuIconSchedule from '@/assets/icons/jsx/menus/MenuIconSchedule'
-import TagItem from '@/components/TagItem'
-import { Switch } from 'antd'
+import { Switch, Tooltip } from 'antd'
 import ScheduleModal from './ScheduleModal'
 import {
   deleteActionPlan,
@@ -15,6 +13,11 @@ import IconButtonWithDropDown from '@/components/ui/button/IconButtonWithDropDow
 import { Link } from 'react-router-dom'
 import IconButton from '@/components/ui/button/IconButton'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
+import { dateOnly } from '@/constant/time-fmt'
+import CustomExpandIcon from '@/components/CustomExpandIcon'
+import TagItemV2 from '@/components/ui/TagItemV2'
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
+import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
 
 type PropsType = {
   data: API_ACTION_PLAN.domain.Plan
@@ -25,6 +28,16 @@ const StatusColorMap = {
   PROCESSING: '#15B371',
   TERMINATE: '#DD4444',
 }
+
+const weekOfDayMap = new Map<string, string>([
+  ['0', 'sunday'],
+  ['1', 'monday'],
+  ['2', 'tuesday'],
+  ['3', 'wednesday'],
+  ['4', 'thursday'],
+  ['5', 'friday'],
+  ['6', 'saturday'],
+])
 
 const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
   const { t } = useTranslation()
@@ -74,87 +87,163 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
     msgApi.success(t('api.success.msg'))
   }
 
-  const handleDelete = async () => {
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+    // 防止默认行为 (Link 的跳转)
+    e.preventDefault()
     await deleteActionPlan(data.id!)
-    queryClient.invalidateQueries({
+    await queryClient.invalidateQueries({
       queryKey: ['getActionPlanList'],
     })
-    msgApi.success(t('api.success.msg'))
   }
 
+  const frequencyFmt = useMemo(() => {
+    if (data.cycleType === 'DAILY') {
+      return `${t('common.every')} ${data.intervalValue} ${t('common.day')}`
+    }
+    if (data.cycleType === 'WEEKLY') {
+      return `${t('common.every')} ${data.intervalValue} ${t(
+        'common.week',
+      )} (${data.dayOfWeek
+        ?.split(',')
+        .map((day) => t(`dayOfWeek.${weekOfDayMap.get(day)}`))
+        .join(', ')})`
+    }
+    if (data.cycleType === 'MONTHLY') {
+      return `${t('common.every')} ${data.intervalValue} ${t(
+        'common.month',
+      )} (${data.dayOfMonth?.split(',').join(', ')})`
+    }
+  }, [data, t])
+
+  const [expand, { toggle: toggleExpand }] = useBoolean(false)
+
   return (
-    <li className="my-1">
-      <Link
-        className={clsx(
-          'flex px-3 p-2 gap-2  cursor-pointer text-sm',
-          'hover:bg-[#242E37] hover:text-fore',
-          actionPlanId == data.id && 'bg-[#242E37] text-fore',
-        )}
-        to={`/schedule/${data.id!}`}
-        replace
-      >
-        <div>
-          <MenuIconSchedule />
-        </div>
+    <li
+      className={clsx(
+        'card-border text-sm p-2 bg-ground-1 hover:border-primary cursor-pointer text-fore',
+        actionPlanId == data.id && 'border-primary',
+      )}
+    >
+      <Link to={`/schedule/${data.id!}`} className="hover:text-fore" replace>
         <div className="flex-1">
           <div className="flex justify-between items-center">
-            <span className="text-white">{data.name}</span>
-            {data.status !== 'TERMINATE' ? (
-              <div
-                className="flex items-center gap-3"
+            <div className="flex items-center gap-2">
+              <TagItemV2
+                color={StatusColorMap[data.status!]}
+                bgColor={`${StatusColorMap[data.status!]}33`}
+              >
+                {t(`schedule.status.${data.status}.title`)}
+              </TagItemV2>
+              <Tooltip title={data.name}>
+                <span className="text-white flex-1 truncate max-w-40">
+                  {data.name}
+                </span>
+              </Tooltip>
+            </div>
+            <div className="flex items-center gap-2">
+              {data.status !== 'TERMINATE' ? (
+                <div
+                  className="flex items-center gap-2"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    e.preventDefault()
+                  }}
+                >
+                  <IconButtonWithDropDown
+                    menu={{
+                      items: [
+                        {
+                          key: 'edit',
+                          label: t('common.edit'),
+                          onClick: () => setOpen(true),
+                        },
+                        {
+                          key: 'terminate',
+                          label: t('common.terminate'),
+                          onClick: handleTerminate,
+                        },
+                      ],
+                    }}
+                    trigger={['click']}
+                  >
+                    <IconMore />
+                  </IconButtonWithDropDown>
+                  <Switch
+                    size="small"
+                    className=" scale-[85%]"
+                    checked={data.isValid === 'YES'}
+                    onChange={handleChangeValid}
+                  />
+                </div>
+              ) : (
+                <IconAsyncButton
+                  toolTipProps={{ title: t('common.delete') }}
+                  onClick={handleDelete}
+                >
+                  <IconDelete />
+                </IconAsyncButton>
+              )}
+              <IconButton
+                className="ml-auto"
                 onClick={(e) => {
                   e.stopPropagation()
                   e.preventDefault()
+                  toggleExpand()
                 }}
               >
-                <IconButtonWithDropDown
-                  menu={{
-                    items: [
-                      {
-                        key: 'edit',
-                        label: t('common.edit'),
-                        onClick: () => setOpen(true),
-                      },
-                      {
-                        key: 'terminate',
-                        label: t('common.terminate'),
-                        onClick: handleTerminate,
-                      },
-                    ],
-                  }}
-                  trigger={['click']}
-                >
-                  <IconMore />
-                </IconButtonWithDropDown>
-                <Switch
-                  size="small"
-                  className=" scale-90"
-                  checked={data.isValid === 'YES'}
-                  onChange={handleChangeValid}
-                />
-              </div>
-            ) : (
-              <IconButton
-                toolTipProps={{ title: t('common.delete') }}
-                onClick={handleDelete}
-              >
-                <IconDelete />
+                <CustomExpandIcon isActive={expand} />
               </IconButton>
-            )}
+            </div>
           </div>
-          <div className="mt-1 text-xs flex gap-2 justify-between">
-            <TagItem
-              label={t(`schedule.status.${data.status}.title`)}
-              color={StatusColorMap[data.status!]}
-              bgColor={`${StatusColorMap[data.status!]}33`}
-            />
-            <span className="flex-1">
-              {t('common.creator')}: {data.gmtCreateBy}
-            </span>
-            <span className="flex-1">
+          <div className="mt-1 text-xs flex justify-between">
+            <div className="w-2/3 flex gap-2 items-center">
+              <span>
+                {t('common.creator')}: {data.gmtCreateBy}
+              </span>
+            </div>
+
+            <p className="w-1/3">
               {t('common.type')}: {t(`schedule.type.${data.type}.title`)}
-            </span>
+            </p>
           </div>
+          <div className="mt-1 text-xs flex">
+            <p className="w-2/3">
+              <span>
+                {t('common.device')}: {data.actionConfig?.deviceNames || '-'}
+              </span>
+            </p>
+            <p className="w-1/3">
+              <span>
+                断点续飞:{' '}
+                {data.breakPointEnable === 'YES' ? (
+                  <CheckCircleOutlined className="text-green-600" />
+                ) : (
+                  <CloseCircleOutlined />
+                )}
+              </span>
+            </p>
+          </div>
+          <div className="mt-1 text-xs flex">
+            <p className="w-full truncate max-w-72">
+              {t('wayline.title')}: {data.actionConfig?.templateName}
+            </p>
+          </div>
+          {expand && (
+            <>
+              <div className="mt-1 text-xs">
+                {t('common.date')}: {dayjs(data.startTime).format(dateOnly)} -{' '}
+                {dayjs(data.endTime).format(dateOnly)}
+              </div>
+              <div className="mt-1 text-xs">
+                {t('common.frequency')}: {frequencyFmt}
+              </div>
+              <div className="mt-1 text-xs">
+                {t('common.time')}:{' '}
+                {data.executeTime?.map((e) => e).join(', ') || '-'}
+              </div>
+            </>
+          )}
         </div>
       </Link>
       {open && (

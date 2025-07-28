@@ -8,8 +8,10 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { DatePicker, Pagination, Select, Tooltip } from 'antd'
+import { Pagination, Select, Tooltip } from 'antd'
 import { Dayjs } from 'dayjs'
+import StartBreakPoint from './StartBreakPoint'
+import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
 
 type PropsType = unknown
 
@@ -35,7 +37,7 @@ const ScheduleTable: FC<PropsType> = memo(() => {
   const endTime = timeRange?.[1]?.format('YYYY-MM-DD 23:59:59')
 
   const queryClient = useQueryClient()
-  const { data, isLoading, isRefetching } = useQuery(
+  const { data, isLoading, isRefetching, refetch } = useQuery(
     {
       queryKey: [
         'getActionPlanRecordList',
@@ -102,8 +104,18 @@ const ScheduleTable: FC<PropsType> = memo(() => {
         header: t('schedule.table.deviceName.title'),
         cell: (cell) => cell.getValue() || '-',
       }),
+      columnHelper.accessor('operation', {
+        header: t('common.operation'),
+        cell: (cell) => {
+          const abp = cell.row.original.actionBreakPoint
+          if (!abp?.id) {
+            return '-'
+          }
+          return <StartBreakPoint id={abp.id} onSuccess={refetch} />
+        },
+      }),
     ]
-  }, [t])
+  }, [t, refetch])
 
   const table = useReactTable({
     data: data?.rows ?? emtpyArray,
@@ -115,7 +127,7 @@ const ScheduleTable: FC<PropsType> = memo(() => {
   return (
     <div className="grow flex flex-col overflow-hidden">
       <section className="m-3 flex gap-3">
-        <DatePicker.RangePicker
+        <DateRangePicker
           value={timeRange}
           onChange={(v) => setTimeRange(v ? [v[0]!, v[1]!] : null)}
         />

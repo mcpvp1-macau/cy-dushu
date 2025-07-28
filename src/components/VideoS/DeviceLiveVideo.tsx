@@ -15,7 +15,11 @@ import {
   useSize,
   useThrottleFn,
 } from 'ahooks'
-import { ExpandOutlined, FullscreenExitOutlined } from '@ant-design/icons'
+import {
+  ExpandOutlined,
+  FullscreenExitOutlined,
+  ShareAltOutlined,
+} from '@ant-design/icons'
 import { forwardRef, useImperativeHandle } from 'react'
 import { calcStreamId } from '@/utils/video/stream'
 import { getStreamQualityLevel } from '@/service/modules/video'
@@ -36,6 +40,7 @@ import DaoTongPlayer from '../Video/DaoTongPlayer'
 import SeiAIDataMetaInfo from './components/SeiAIDataMetaInfo'
 import { Responses } from '@/service/servers/liqunAxios'
 import useSnapshot from './hooks/useSnapshot'
+import ShareQRCode from './ShareQRCode'
 
 type PropsType = {
   videoContainerId?: string
@@ -69,6 +74,13 @@ type PropsType = {
 type DeviceLiveVideoRefType = {
   /** 截图 */
   snapshot: (mediaTypes?: string, quality?: any) => string
+}
+
+function isDomainOrIP() {
+  const hostname = window.location.hostname
+  const ipRegex =
+    /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
+  return ipRegex.test(hostname) ? 'IP' : 'Domain'
 }
 
 /** 设备直播 */
@@ -418,6 +430,7 @@ const DeviceLiveVideo = memo(
                     {leftTop}
                   </section>
                   <section className="flex items-center gap-3">
+                    {rightTop}
                     {useDing && (
                       <VideoDing
                         productKey={productKey}
@@ -425,7 +438,6 @@ const DeviceLiveVideo = memo(
                         videoId={videoId}
                       />
                     )}
-                    {rightTop}
                   </section>
                 </div>
               </aside>
@@ -472,12 +484,40 @@ const DeviceLiveVideo = memo(
                       }}
                       className="order-20 text-[13px]"
                       onClick={async () => {
+                        deviceStreamListCache.current = null
                         await handleRefresh()
                         setJessibucaKey((v) => v + 1)
                       }}
                     >
                       <IconRefresh />
                     </IconButton>
+                    {isDomainOrIP() === 'Domain' ? (
+                      <IconButton
+                        toolTipProps={{
+                          title: '分享',
+                          overlay: (
+                            <ShareQRCode
+                              productKey={productKey}
+                              deviceId={deviceId}
+                              videoId={videoId}
+                            />
+                          ),
+                          getPopupContainer: () =>
+                            (document.fullscreenElement as HTMLElement) ??
+                            document.body,
+                        }}
+                        className="order-20 text-[13px]"
+                        onClick={async () => {
+                          await handleRefresh()
+                          setJessibucaKey((v) => v + 1)
+                        }}
+                      >
+                        <ShareAltOutlined />
+                      </IconButton>
+                    ) : (
+                      <></>
+                    )}
+
                     {globalConfig.enableElectricScale && (
                       <IconButton
                         className="scale-90"

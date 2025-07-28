@@ -86,7 +86,7 @@ const XForm: FC<PropsType> = memo(
             <TreeSelect
               placeholder={item.placeholder ?? t('common.form.pleaseSelect')}
               treeData={item.treeData}
-              treeExpandAction={'click'}
+              treeExpandAction={item.treeExpandAction ?? 'click'}
               treeNodeFilterProp={'label'}
               showSearch={true}
               suffixIcon={<CaretDownFilled style={{ pointerEvents: 'none' }} />}
@@ -110,7 +110,11 @@ const XForm: FC<PropsType> = memo(
           break
         case 'upload-minio':
           newItem.render = (
-            <AliyunOSSUpload otherProps={item.otherProps}>
+            <AliyunOSSUpload
+              otherProps={item.otherProps}
+              getPath={item.getPath}
+              filesFilter={item.filesFilter}
+            >
               <Button
                 icon={<UploadOutlined />}
                 style={{

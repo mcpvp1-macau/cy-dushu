@@ -84,6 +84,7 @@ declare namespace API_LAYER_OVERLAY {
     type GetOverlayListRes =
       API_COMMON.PageRes<API_LAYER_OVERLAY.domain.Overlay>
     type GetPOIListRes = API_LAYER_OVERLAY.domain.POIRecord[]
-    type GetSpaceListRes = API_COMMON.PageRes<API_LAYER_OVERLAY.domain.Space>
+    type GetSpaceListRes =
+      API_COMMON.PageRes<API_LAYER_OVERLAY.domain.SpaceItem>
   }
 }

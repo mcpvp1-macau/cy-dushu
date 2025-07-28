@@ -1,5 +1,5 @@
 import { StatusColorMap } from '@/enum/device'
-import { getAllDeviceList } from '@/service/modules/device'
+import { getAllDeviceList, getUavDocSnList } from '@/service/modules/device'
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -14,6 +14,9 @@ import usePageSearchParams from '@/hooks/useTableSearchParams'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import DeviceIcon from '@/components/device/DeviceIcon'
 import TextButton from '@/components/ui/button/TextButton'
+import UavDetail from './UavDetail'
+import Logs from './Logs'
+import UploadDetail from './UavDetail/UploadDetail'
 
 type PropsType = unknown
 
@@ -30,16 +33,18 @@ const SourceTable: FC<PropsType> = memo(() => {
   const page = Number(searchParams.get('page') ?? 1)
   const size = Number(searchParams.get('size') ?? 20)
   const kw = searchParams.get('kw')
+  const sn = searchParams.get('sn')
 
   const queryClient = useQueryClient()
 
   const { data, isLoading, isRefetching } = useQuery(
     {
-      queryKey: ['getAllDeviceList', type, page, size, kw],
+      queryKey: ['getAllDeviceList', type, page, size, kw, sn],
       queryFn: () =>
         getAllDeviceList({
           type: type!,
           deviceName: kw || undefined,
+          sn: sn || undefined,
           otaInfo: true,
           isPage: true,
           page,
@@ -61,6 +66,21 @@ const SourceTable: FC<PropsType> = memo(() => {
     },
     queryClient,
   )
+
+  const { data: uavDocSnList = [] } = useQuery(
+    {
+      queryKey: ['getUavDocSnList'],
+      queryFn: async () => {
+        const res = await getUavDocSnList()
+        return res.data || []
+      },
+    },
+    queryClient,
+  )
+
+  const uavDocSnSet = useMemo(() => {
+    return new Set(uavDocSnList)
+  }, [uavDocSnList])
 
   const columns = useMemo(() => {
     const columns = [
@@ -138,13 +158,25 @@ const SourceTable: FC<PropsType> = memo(() => {
                   )}
                 </>
               ) : null}
+              {(data.deviceType === 'UAV' ||
+                data.deviceType === 'UAV_AIRPORT') &&
+                // 如果配置了使用一机一档, 则显示一机一档详情, 否则不显示
+                uavDocSnSet.has(data.sn) &&
+                // 如果配置了使用一机一档, 则显示一机一档详情, 否则不显示
+                globalConfig.useUavAirportDoc && <UavDetail sn={data.sn} />}
+              {/* 日志 */}
+              {(data.deviceType === 'UAV' ||
+                data.deviceType === 'UAV_AIRPORT') &&
+                globalConfig.useUavLogs && (
+                  <Logs deviceId={data.deviceId} deviceName={data.deviceName} />
+                )}
             </div>
           )
         },
       }),
     ]
     return columns
-  }, [i18n.language, searchParams.get('type')])
+  }, [i18n.language, searchParams.get('type'), uavDocSnSet])
 
   const table = useReactTable({
     data: data?.rows ?? defaultData,
@@ -157,12 +189,21 @@ const SourceTable: FC<PropsType> = memo(() => {
 
   return (
     <div className="grow mt-3 overflow-y-hidden flex flex-col">
-      <div className="w-72">
+      <div className="flex gap-3 items-center">
         <Input.Search
           placeholder={t('resource.table.deviceName.title')}
           defaultValue={kw ?? undefined}
           onSearch={(e) => handleValueChange('kw', e)}
+          className="w-72"
         />
+        <Input.Search
+          placeholder={'设备序列号'}
+          defaultValue={sn ?? undefined}
+          onSearch={(e) => handleValueChange('sn', e)}
+          className="w-72"
+        />
+        {globalConfig.useUavAirportDocUpload &&
+          (type === 'UAV_AIRPORT' || type === 'UAV') && <UploadDetail />}
       </div>
       <div className="mt-3 w-full grow rounded overflow-hidden border border-solid border-[#23272D]">
         <ScrollArea className="h-full">

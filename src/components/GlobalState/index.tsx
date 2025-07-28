@@ -3,6 +3,7 @@ import GlobalWebSocket from './GlobalWebSocket'
 import MapDevices from './MapDevices'
 import GlobalMessage from './GlobalMessage'
 import ReconstructionMap from './ReconstructionMap'
+import FlightArea from './FlightArea'
 
 type PropsType = unknown
 
@@ -14,7 +15,12 @@ const GlobalState: FC<PropsType> = memo(() => {
       <MapDevices />
       <LayerAndOverlay />
       <GlobalMessage />
-      <ReconstructionMap />
+      {!globalConfig.useShanghaiBanRoutes && (
+        <>
+          <ReconstructionMap />
+          <FlightArea />
+        </>
+      )}
     </>
   )
 })

@@ -39,15 +39,11 @@ const useMapLayerAndOverlayStore = create<StateType & ActionsType>()(
 export default useMapLayerAndOverlayStore
 
 type ConfigStateType = {
-  hiddenLayerIds: Set<number>
   hiddenOverlayIds: Set<number>
   activeSpaceIds: Set<string>
 }
 
 type ConfigActionsType = {
-  updateHiddenLayerIds: (
-    hiddenLayerIds: ConfigStateType['hiddenLayerIds'],
-  ) => void
   updateHiddenOverlayIds: (
     hiddenOverlayIds: ConfigStateType['hiddenOverlayIds'],
   ) => void
@@ -62,12 +58,8 @@ const useMapLayerAndOverlayConfigStore = create<
   devtools(
     persist(
       (set) => ({
-        hiddenLayerIds: new Set(),
         hiddenOverlayIds: new Set(),
         activeSpaceIds: new Set(),
-        updateHiddenLayerIds: (hiddenLayerIds) => {
-          set({ hiddenLayerIds }, false, 'updateHiddenLayerIds')
-        },
         updateHiddenOverlayIds: (hiddenOverlayIds) => {
           set({ hiddenOverlayIds }, false, 'updateHiddenOverlayIds')
         },
@@ -79,21 +71,19 @@ const useMapLayerAndOverlayConfigStore = create<
         name: 'map-layer-overlay-config',
         storage: createJSONStorage(() => sessionStorage, {
           replacer: (key: string, value: any) => {
-            if (
-              key === 'hiddenLayerIds' ||
-              key === 'hiddenOverlayIds' ||
-              key === 'activeSpaceIds'
-            ) {
+            if (key === 'hiddenOverlayIds' || key === 'activeSpaceIds') {
               return Array.from(value)
+            }
+            if (key === 'layerList') {
+              return []
+            }
+            if (key === 'overlayList') {
+              return []
             }
             return value
           },
           reviver: (key: string, value: any) => {
-            if (
-              key === 'hiddenLayerIds' ||
-              key === 'hiddenOverlayIds' ||
-              key === 'activeSpaceIds'
-            ) {
+            if (key === 'hiddenOverlayIds' || key === 'activeSpaceIds') {
               return new Set(value)
             }
             return value

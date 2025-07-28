@@ -135,7 +135,9 @@ const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
           {t('action.detail.kcyp.process_status.title')}:
         </span>
         <span style={{ color: statusColorMap[data.processStatus!]?.color }}>
-          {statusColorMap[data.processStatus!]?.label[i18n.language] || '-'}
+          {data.processResult ||
+            statusColorMap[data.processStatus!]?.label[i18n.language] ||
+            '-'}
         </span>
       </p>
       <div className="kcform">

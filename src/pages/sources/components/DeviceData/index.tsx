@@ -7,7 +7,7 @@ type PropsType = {
 
 const DeviceData: FC<PropsType> = memo(({ deviceData }) => {
   const [open, setOpen] = useState(false)
-  const { deviceId } = deviceData
+  const { deviceId, deviceName } = deviceData
   const { t } = useTranslation()
 
   return (
@@ -17,6 +17,7 @@ const DeviceData: FC<PropsType> = memo(({ deviceData }) => {
         <DataModal
           open={open}
           deviceId={deviceId}
+          deviceName={deviceName}
           onClose={() => setOpen(false)}
         />
       )}

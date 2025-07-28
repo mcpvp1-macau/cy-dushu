@@ -7,8 +7,10 @@ import * as Cesium from 'cesium'
 import AddFormModal from './components/AddFormModal'
 import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
 import { createOverlay } from '@/service/modules/layer_overlay'
-import DrawingPolygon from './components/DrawingPolygon'
+import { createFlightArea } from '@/service/modules/flightArea'
+import OverlayPolygon from '@/map/CesiumMap/components/service/Overlaies/OverlayPolygon'
 import { round } from 'lodash'
+import AddFlightAreaModal from './components/AddFlightAreaModal'
 
 type PropsType = {
   onSuccess?: () => void
@@ -25,6 +27,17 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
   const [open, { setTrue, setFalse }] = useBoolean(false)
 
   const drawingColor = useMapDrawStore((s) => s.drawingColor)
+  const fillOpacity = useMapDrawStore((s) => s.fillOpacity)
+  const lineStyle = useMapDrawStore((s) => s.lineStyle)
+  const isFlightArea = useMapDrawStore((s) => s.isFlightArea)
+
+  const createFn = useMemo(() => {
+    if (isFlightArea) {
+      return createFlightArea
+    } else {
+      return createOverlay
+    }
+  }, [isFlightArea])
 
   useEffect(() => {
     if (!viewer) {
@@ -42,9 +55,6 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
       if (!ray) return
       const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
       if (!cartesian) return
-      // 地形上的点
-      // pivot.current = cartesian3ToDegrees(cartesian)
-      // endPoint.current = cartesian3ToDegrees(cartesian)
       setPivot(cartesian3ToDegrees(cartesian))
       setEndPoint(cartesian3ToDegrees(cartesian))
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
@@ -119,10 +129,13 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
           '-value': '2.0', //描边宽度
         },
         strokeStyle: {
-          '-value': 'solid', //描边样式(solid:实线;dashed:虚线;dotted:斑点线,outlined:轮廓线)
+          '-value': `${lineStyle}`, //描边样式(solid:实线;dashed:虚线;dotted:斑点线,outlined:轮廓线)
         },
         fillColor: {
           '-value': `${fillColorARGB}`, //填充色（argb）
+        },
+        fillOpacity: {
+          '-value': `${fillOpacity}`,
         },
         labels_on: {
           '-value': 'false', //是否显示标签
@@ -135,9 +148,10 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
         },
         remarks: '',
       }),
-      cotType: CotType.SHAPE_POLYGON,
+      overlayExtType: data.overlayExtType,
+      cotType: CotType.SHAPE_RECT,
     }
-    await createOverlay(commitData)
+    await createFn(commitData)
     onSuccess?.()
     setFalse()
   }
@@ -157,17 +171,40 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
 
   return (
     <>
-      <AddFormModal
-        open={open}
-        onClose={() => {
-          setFalse()
-          setPivot(null)
-          setEndPoint(null)
-        }}
-        onConfirm={handleConfirm}
-      />
-      {positions && (
-        <DrawingPolygon positions={positions} color={drawingColor} />
+      {isFlightArea ? (
+        <AddFlightAreaModal
+          open={open}
+          onClose={() => {
+            setFalse()
+            setPivot(null)
+            setEndPoint(null)
+          }}
+          onConfirm={handleConfirm}
+        />
+      ) : (
+        <AddFormModal
+          open={open}
+          onClose={() => {
+            setFalse()
+            setPivot(null)
+            setEndPoint(null)
+          }}
+          onConfirm={handleConfirm}
+        />
+      )}
+
+      {positions && viewer && (
+        <OverlayPolygon
+          data={''}
+          viewer={viewer}
+          path={positions}
+          asynchronous={false}
+          fill={drawingColor}
+          fillOpacity={fillOpacity}
+          stroke={drawingColor}
+          strokeStyle={lineStyle}
+          strokeWeight={2}
+        />
       )}
     </>
   )

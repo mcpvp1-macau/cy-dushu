@@ -8,27 +8,18 @@ import IconButton from '@/components/ui/button/IconButton'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconEdit from '@/assets/icons/jsx/IconEdit'
 import { Form, Input } from 'antd'
-import { LoadingOutlined } from '@ant-design/icons'
 import IconTick from '@/assets/icons/jsx/IconTick'
 import IconRebuild3d from '@/assets/icons/jsx/IconRebuild3d'
 import { useForm } from 'antd/es/form/Form'
-import { useAppMsg } from '@/hooks/useAppMsg'
-import {
-  getLayerList,
-  updateLayer,
-  deleteLayer,
-} from '@/service/modules/reconstruction'
+import { updateLayer, deleteLayer } from '@/service/modules/reconstruction'
+import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
 
 const ReconstructionDetail: FC = () => {
   const detailId = useRightMode((s) => s.detailId)
-  const [layerList, layerGroupList, updateLayerList] = useReconstructionMap(
-    (s) => [s.layerList, s.layerGroupList, s.updateLayerList],
-  )
+  const layerList = useReconstructionMap((s) => s.layerList)
   const { t } = useTranslation()
-  const msgApi = useAppMsg()
 
   const [isEdit, { toggle, setFalse }] = useBoolean(false)
-  const [isConfirmLoading, setConfirmLoading] = useState(false)
 
   const layer = useMemo(() => {
     return layerList.filter((layer) => layer.overlayId == Number(detailId))[0]
@@ -50,6 +41,8 @@ const ReconstructionDetail: FC = () => {
 
   const inputRef = useRef<ComponentRef<typeof Input>>(null)
 
+  const queryClient = useQueryClient()
+
   const handleSave = async () => {
     setFalse()
     const value = form.getFieldsValue()
@@ -58,20 +51,16 @@ const ReconstructionDetail: FC = () => {
       overlayName: value.overlayName || '',
       layerId: layer.layerId,
     })
-    updateLayers()
+    await queryClient.invalidateQueries({
+      queryKey: ['reconstruction-layerList'],
+    })
   }
 
   const handleDelete = async () => {
     await deleteLayer(layer.overlayId)
-    msgApi.success(t('api.success.msg'))
-    updateLayers()
-  }
-
-  const updateLayers = async () => {
-    const data = await getLayerList({
-      layerIds: layerGroupList.map((layerGroup) => layerGroup.id),
+    await queryClient.invalidateQueries({
+      queryKey: ['reconstruction-layerList'],
     })
-    updateLayerList(data.data)
   }
 
   return (
@@ -92,40 +81,32 @@ const ReconstructionDetail: FC = () => {
               </Form.Item>
             </div>
             <div className="flex gap-2">
-              {isConfirmLoading ? (
-                <LoadingOutlined />
+              {isEdit ? (
+                <IconAsyncButton
+                  toolTipProps={{ title: t('common.save') }}
+                  onClick={handleSave}
+                >
+                  <IconTick className="scale-90" />
+                </IconAsyncButton>
               ) : (
-                <>
-                  {isEdit ? (
-                    <>
-                      <IconButton
-                        toolTipProps={{ title: t('common.save') }}
-                        onClick={handleSave}
-                      >
-                        <IconTick className="scale-90" />
-                      </IconButton>
-                    </>
-                  ) : (
-                    <IconButton
-                      toolTipProps={{ title: t('common.edit') }}
-                      onClick={() => {
-                        toggle()
-                        setTimeout(() => {
-                          inputRef.current?.focus()
-                        }, 333)
-                      }}
-                    >
-                      <IconEdit className="scale-90" />
-                    </IconButton>
-                  )}
-                  <IconButton
-                    toolTipProps={{ title: t('common.delete') }}
-                    onClick={handleDelete}
-                  >
-                    <IconDelete className="scale-90" />
-                  </IconButton>
-                </>
+                <IconButton
+                  toolTipProps={{ title: t('common.edit') }}
+                  onClick={() => {
+                    toggle()
+                    setTimeout(() => {
+                      inputRef.current?.focus()
+                    }, 333)
+                  }}
+                >
+                  <IconEdit className="scale-90" />
+                </IconButton>
               )}
+              <IconAsyncButton
+                toolTipProps={{ title: t('common.delete') }}
+                onClick={handleDelete}
+              >
+                <IconDelete className="scale-90" />
+              </IconAsyncButton>
             </div>
           </div>
         </CloseableHeader>

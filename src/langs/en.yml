@@ -331,7 +331,7 @@ action:
       continue:
         title: Continue
       people:
-        title: Staff
+        title: Pilot
       device:
         title: Device
       status:
@@ -536,6 +536,28 @@ common:
   week: Week
   day: Day
   every: Every
+  device: Device
+  date: Date
+  frequency: Frequency
+  pictureData: Pictures
+  mapPlotting: Plotting
+  all: All
+  2dMap: Two-dimensional Map
+  start: Star
+  stop: Stop
+  mode: Mode
+  single: Single
+  loop: Loop
+  content: Content
+  action: Action
+  voiceVolume: Volume
+  checkAll: Check All
+  batchDownload: Batch Download
+  downloadedPictureCount: '{{count}} pictures have been downloaded'
+  copySuccess: Copy Successfully
+  restart: Restart
+  show: Show
+  hide: Hide
 events:
   search:
     placeholder: Please search by event name or ID
@@ -702,13 +724,18 @@ wayline:
     coverage:
       title: Coverage Rate
       tooltip: >-
-        Overlap ratio of the shooting field of view between adjacent flight
-        lines, default nadir angle of the gimbal
+        The proportion of overlap between photos taken consecutively on the same
+        route.
     titleRebotDog: Wayline Config
     speedRebotDog:
       title: Speed
     height:
       tooltip: Wayline take-off height
+    lateralCoverage:
+      title: Lateral Coverage
+      tooltip: >-
+        The proportion of overlap between the fields of view captured by
+        adjacent routes, with the gimbal set to the default wide.
   waylinePoint:
     config: Waypoints
     waypointList:
@@ -762,6 +789,10 @@ wayline:
             msg: Please select a algorithm
       CLOSE_AI:
         title: Close Algorithm
+      CAMERA_MODE_SET:
+        title: Camera Mode
+      SPEAKER_PLAY:
+        title: Loudspeaker
     addBefore: Add after waypoint {{i}}
     addAfter: Add before waypoint {{i}}
     addLast: Add at the end
@@ -859,6 +890,8 @@ wayline:
     msg: The flight route hit the terrain
   nearTerrain:
     msg: The flight path is too close to the terrain height
+  roadNetwork:
+    title: Road Network Mode
 schedue:
   list:
     title: Schedule List
@@ -949,6 +982,13 @@ overlay:
           title: Layer Group
   drawing:
     title: Drawing
+    lineStyle:
+      title: Line Style
+      solid: Solid
+      dashed: Dashed
+      noFly: No Fly Zone
+    opacity:
+      title: Opacity
     circle:
       title: Circle
     rect:
@@ -969,6 +1009,43 @@ overlay:
       title: Circle
     angle:
       title: Angle
+flightArea:
+  title: Flight Area
+  create:
+    title: Create Flight Area
+    form:
+      name: Flight Area Name
+      layerName: Flight Area Group Name
+      effectiveGroups: Effective Groups
+      effective: Effective Range
+  group:
+    create:
+      tooltip: Create Flight Area Group
+    edit:
+      title: Edit Flight Area Group
+  type:
+    title: Area Type
+    normal:
+      title: Normal Area
+      info: Only for geographic marking or geographic differentiation
+    noFly:
+      title: No Fly Zone
+      info: Restricted area for entering
+    electronicFence:
+      title: Electronic Fence
+      info: The area where the aircraft can only work in this area
+    countZone:
+      title: AI Count Zone
+      info: >-
+        The area where the algorithm needs special processing, such as data
+        analysis area
+    noCountZone:
+      title: No Count Zone
+      info: The area where the algorithm ignores, such as the non-monitoring area.
+  relatedGroup:
+    title: Related Group
+    effective:
+      title: Effective Range
 tools:
   saveMapView:
     title: Save View
@@ -1032,6 +1109,13 @@ mapLayer:
       success: 3D reconstruction completed
       layer:
         title: Create a 3D layer
+      overlay:
+        title: Create Reconstruction Map
+        start: Start Reconstructing
+        failed: Reconstruction failed
+        form:
+          overlayName: Layer name
+          uploadLabel: Upload reconstruction source
       form:
         groupName: Name of the 3D layer group
         layerName: Name of the 3D layer
@@ -1043,13 +1127,22 @@ mapLayer:
         layerName: Name of the 3D layer
     task:
       completed: 3D reconstruction completed
+      restart: Restart 3D reconstruction
+    layer:
+      status:
+        PENDING: Pending
+        PROCESSING: Progressing
+        FINISHED: Completed
+        PAUSE: Failed
 message:
   success:
     saveMapView: Map view saved successfully
     save: Saved successfully
+    delete: Delete successfully
     savefile: Storage successful
   error:
     save: Save failed
+    delete: Delete failed
     savefile: Upload failed
   warnning:
     delete: Delete or not!
@@ -1142,6 +1235,8 @@ controlRoom:
           title: Photograph Mode
         record:
           title: Video Recording Mode
+        panorama:
+          title: Panorama
       videoRecord:
         title: Video Record
       hover:
@@ -1156,6 +1251,10 @@ controlRoom:
         title: Focus Mode
       exposureMode:
         title: Exposure Mode
+      panorama:
+        title: Panorama
+      gotoPosAtTarget:
+        title: Point-and-fly on video
     gamepad:
       title: Gamepad
     goHome:
@@ -1217,6 +1316,8 @@ controlRoom:
       title: Shutter Speed
     gimbalYaw:
       title: Gimbal Yaw
+    controlParams:
+      gimbalYawSpeed: Speed of Gimbal Yaw
   control:
     uavTurnLeft:
       title: UAV Turn Left
@@ -1326,3 +1427,17 @@ dayOfWeek:
   thursday: Thursday
   friday: Friday
   saturday: Saturday
+unit:
+  degreePerSecond: Degree / Second
+media:
+  photoSelectCountMsg: '{count} photos have been selected'
+  makingZipMsg: A compressed package is being generated
+timeRange:
+  today: Today
+  recent1Day: Last 1 Day
+  last1Day: Last 1 Day
+  last7Days: Last 7 Days
+  last30Days: Last 30 Days
+  last90Days: Last 90 Days
+  last365Days: Last 1 Year
+  last100Years: Last 100 Years

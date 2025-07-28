@@ -11,6 +11,40 @@ type PropsType = {
   useBottomSurface?: boolean
 }
 
+const gradientMaterial = new Cesium.Material({
+  fabric: {
+    type: 'VerticalGradient',
+    uniforms: {
+      colorTop: Cesium.Color.fromCssColorString('#3dcc91').withAlpha(0.4),
+      colorBottom: Cesium.Color.fromCssColorString('#3dcc91').withAlpha(0.02),
+    },
+    source: `
+      uniform vec4 colorTop;
+      uniform vec4 colorBottom;
+      
+      czm_material czm_getMaterial(czm_materialInput materialInput)
+      {
+        vec4 outColor = colorTop;
+        czm_material material = czm_getDefaultMaterial(materialInput);
+      
+        vec2 st = materialInput.st;
+        outColor = mix(colorBottom, colorTop, st.t);
+      
+        material.diffuse = outColor.rgb;
+        material.alpha = outColor.a;
+        return material;
+      }
+    `,
+  },
+})
+
+const dirs = [
+  ['leftBottom', 'rightBottom'],
+  ['rightBottom', 'rightTop'],
+  ['rightTop', 'leftTop'],
+  ['leftTop', 'leftBottom'],
+]
+
 const CameraGroundFrustum: FC<PropsType> = memo(
   ({ gimbalPick, position, useBottomSurface = true }) => {
     const { viewer } = useCesium()
@@ -18,8 +52,8 @@ const CameraGroundFrustum: FC<PropsType> = memo(
     const gimbalPickRef = useLatest(gimbalPick)
     const positionRef = useLatest(position)
 
-    const mkPath = useMemoizedFn(() => {
-      const g = gimbalPickRef.current
+    const groundPath = useMemo(() => {
+      const g = gimbalPick
       return Cesium.Cartesian3.fromDegreesArray([
         g.leftBottom[0],
         g.leftBottom[1],
@@ -32,105 +66,121 @@ const CameraGroundFrustum: FC<PropsType> = memo(
         g.leftBottom[0],
         g.leftBottom[1],
       ])
-    })
+    }, [gimbalPick])
 
     useEffect(() => {
       if (!viewer) {
         return
       }
 
-      const outlineEntity = viewer.entities.add({
-        polyline: {
-          positions: new Cesium.CallbackProperty(() => mkPath(), false),
-          material: Cesium.Color.fromCssColorString('#3dcc91'),
-          width: 1,
-          clampToGround: true,
-        },
+      const outlinePrimitve = new Cesium.GroundPolylinePrimitive({
+        geometryInstances: new Cesium.GeometryInstance({
+          geometry: new Cesium.GroundPolylineGeometry({
+            positions: groundPath,
+          }),
+        }),
+        appearance: new Cesium.PolylineMaterialAppearance({
+          material: Cesium.Material.fromType(Cesium.Material.ColorType, {
+            color: Cesium.Color.fromCssColorString('#3dcc91'),
+          }),
+        }),
+        asynchronous: false,
       })
 
-      const frustumEntities = [
-        ['leftBottom', 'rightBottom'],
-        ['rightBottom', 'rightTop'],
-        ['rightTop', 'leftTop'],
-        ['leftTop', 'leftBottom'],
-      ].map(([startPoint, endPoint]) => {
-        return viewer.entities.add({
-          polygon: {
-            hierarchy: new Cesium.CallbackProperty(() => {
-              const g = gimbalPickRef.current
-              const p3 = Cesium.Cartesian3.fromDegrees(
-                positionRef.current[0],
-                positionRef.current[1],
-                positionRef.current[2],
-              )
+      viewer.scene.primitives.add(outlinePrimitve)
 
-              const p1 = Cesium.Cartesian3.fromDegrees(
+      const frustumPrimitive = new Cesium.Primitive({
+        geometryInstances: dirs.map(([startPoint, endPoint]) => {
+          const g = gimbalPickRef.current
+          const p3 = Cesium.Cartesian3.fromDegrees(
+            positionRef.current[0],
+            positionRef.current[1],
+            positionRef.current[2],
+          )
+
+          const p1 = Cesium.Cartesian3.fromDegrees(
+            g[startPoint][0],
+            g[startPoint][1],
+            viewer.scene.globe.getHeight(
+              Cesium.Cartographic.fromDegrees(
                 g[startPoint][0],
                 g[startPoint][1],
-                viewer.scene.globe.getHeight(
-                  Cesium.Cartographic.fromDegrees(
-                    g[startPoint][0],
-                    g[startPoint][1],
-                  ),
-                ) ?? 0,
-              )
+              ),
+            ) ?? 0,
+          )
 
-              const p2 = Cesium.Cartesian3.fromDegrees(
-                g[endPoint][0],
-                g[endPoint][1],
-                viewer.scene.globe.getHeight(
-                  Cesium.Cartographic.fromDegrees(
-                    g[endPoint][0],
-                    g[endPoint][1],
-                  ),
-                ) ?? 0,
-              )
+          const p2 = Cesium.Cartesian3.fromDegrees(
+            g[endPoint][0],
+            g[endPoint][1],
+            viewer.scene.globe.getHeight(
+              Cesium.Cartographic.fromDegrees(g[endPoint][0], g[endPoint][1]),
+            ) ?? 0,
+          )
 
-              return new Cesium.PolygonHierarchy([p1, p2, p3])
-            }, false),
-            material: new Cesium.ImageMaterialProperty({
-              image: '/images/mask/ban-area-liner2.png',
-              color: Cesium.Color.fromCssColorString('#3dcc91').withAlpha(0.4),
+          return new Cesium.GeometryInstance({
+            geometry: new Cesium.PolygonGeometry({
+              polygonHierarchy: new Cesium.PolygonHierarchy([p3, p2, p1, p3]),
+              perPositionHeight: true,
+              textureCoordinates: new Cesium.PolygonHierarchy(
+                [
+                  [0, 1],
+                  [0, 0],
+                  [0, 0],
+                  [0, 1],
+                ].map((item) => Cesium.Cartesian3.fromArray(item)),
+              ),
             }),
-            stRotation: Cesium.Math.toRadians(0),
-            perPositionHeight: true,
-          },
-        })
+          })
+        }),
+        appearance: new Cesium.MaterialAppearance({
+          material: gradientMaterial,
+          translucent: true,
+          flat: true,
+        }),
+        asynchronous: false,
       })
+
+      viewer.scene.primitives.add(frustumPrimitive)
 
       return () => {
         attempt(() => {
-          viewer.entities.remove(outlineEntity)
-          frustumEntities.forEach((entity) => viewer.entities.remove(entity))
+          if (viewer.scene.primitives) {
+            viewer.scene.primitives.remove(outlinePrimitve)
+            viewer.scene.primitives.remove(frustumPrimitive)
+          }
         })
       }
-    }, [viewer])
+    }, [viewer, position, groundPath])
 
     useEffect(() => {
       if (!viewer || !useBottomSurface) {
         return
       }
 
-      const position = new Cesium.CallbackProperty(() => {
-        return {
-          positions: mkPath(),
-        }
-      }, false)
-
-      const entity = viewer.entities.add({
-        polygon: {
-          hierarchy: position,
-          material: Cesium.Color.fromCssColorString('#3dcc91').withAlpha(0.2),
-          heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
-        },
+      const primitve = new Cesium.GroundPrimitive({
+        geometryInstances: new Cesium.GeometryInstance({
+          geometry: new Cesium.PolygonGeometry({
+            polygonHierarchy: new Cesium.PolygonHierarchy(groundPath),
+          }),
+        }),
+        appearance: new Cesium.EllipsoidSurfaceAppearance({
+          material: Cesium.Material.fromType('Color', {
+            color: Cesium.Color.fromCssColorString('#3dcc91').withAlpha(0.2),
+          }),
+        }),
+        asynchronous: false,
       })
+
+      viewer.scene.primitives.add(primitve)
 
       return () => {
         attempt(() => {
-          viewer.entities.remove(entity)
+          if (viewer.scene.primitives) {
+            viewer.scene.primitives.remove(primitve)
+          }
         })
       }
-    }, [useBottomSurface])
+    }, [viewer, groundPath, useBottomSurface])
 
     return null
   },

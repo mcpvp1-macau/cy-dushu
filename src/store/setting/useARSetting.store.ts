@@ -48,13 +48,16 @@ type StateType = {
     point: boolean
     area: boolean
   }
-  shift: {
-    gimbalYaw: number
-    gimbalPitch: number
-    height: number
-    lng: number
-    lat: number
-  }
+  shift: Record<
+    string,
+    {
+      gimbalYaw: number
+      gimbalPitch: number
+      height: number
+      lng: number
+      lat: number
+    }
+  >
 }
 
 type ActionsType = {
@@ -94,13 +97,7 @@ const useARSettingStore = create<StateType & ActionsType>()(
           borderSize: 2,
           showBuilding: true,
         },
-        shift: {
-          gimbalYaw: 0,
-          gimbalPitch: 0,
-          height: 15,
-          lng: 0,
-          lat: 0,
-        },
+        shift: {},
         wayline: {
           enable: true,
           color: '#22c55e66',
@@ -120,7 +117,7 @@ const useARSettingStore = create<StateType & ActionsType>()(
         },
       }),
       {
-        name: 'ARSettingV2',
+        name: 'ARSettingV3',
         storage: createJSONStorage(() => localStorage),
       },
     ),

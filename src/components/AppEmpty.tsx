@@ -8,7 +8,9 @@ type PropsType = GetProps<typeof Empty>
 const AppEmpty: FC<PropsType> = ({ ...restProps }) => {
   const { t } = useTranslation()
   restProps.description ??= t('common.emptyContent')
-  restProps.imageStyle ??= { height: 32 }
+  if (!restProps.styles?.image) {
+    restProps.styles = { image: { height: 32 }, ...restProps.styles }
+  }
 
   return (
     <Empty

@@ -15,9 +15,9 @@ export async function getUserList(data?: Record<string, any>) {
   return server4A.post('/user/userList', data)
 }
 
-export async function getGroupTree() {
+export async function getGroupTree(groupId: string) {
   return server4A.post<API_USER.res.GetGroupTreeRes>('/group/groupTree', {
-    groupId: '90001',
+    groupId,
   })
 }
 

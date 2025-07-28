@@ -1,13 +1,34 @@
 import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import usePicutreSourceTypeOptions from '@/constant/options/pictureSourceTypeOptions'
 import { dft } from '@/constant/time-fmt'
 import { getPlatformCapture } from '@/service/modules/db-api'
-import { makeToolbarRender } from '@/utils/antd/image'
-import { Col, DatePicker, Image, Pagination, Row, Select } from 'antd'
+import { makePanormaToolbarRender, makeToolbarRender } from '@/utils/antd/image'
+import {
+  Button,
+  Checkbox,
+  Col,
+  Image,
+  Pagination,
+  Progress,
+  Row,
+  Select,
+} from 'antd'
 import { Dayjs } from 'dayjs'
-
-const { RangePicker } = DatePicker
+import { round } from 'lodash'
+import {
+  CloudDownloadOutlined,
+  CopyOutlined,
+  SyncOutlined,
+} from '@ant-design/icons'
+import useBatchDownloadWithZip from '@/hooks/useBatchDownloadWithZip'
+import { handleStorageURL } from '@/pages/events/components/EventDetail'
+import IconButton from '@/components/ui/button/IconButton'
+import { useAppMsg } from '@/hooks/useAppMsg'
+import IconClose from '@/assets/icons/jsx/IconClose'
+import PanoramaViewer from '@/components/ui/PanoramaViewer'
+import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
 
 type PropsType = {
   deviceList: API_DEVICE.domain.Device[]
@@ -15,6 +36,8 @@ type PropsType = {
 
 const PictureData: FC<PropsType> = memo(({ deviceList }) => {
   const { t } = useTranslation()
+  const msgApi = useAppMsg()
+
   const deviceOptions = useMemo(
     () =>
       deviceList.map((e) => ({
@@ -56,7 +79,7 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
           endTime: dateRange![1].format(dft),
           isPage: true,
           page,
-          pageSize: 12,
+          pageSize: 24,
         }),
       enabled: !!deviceId && !!dateRange,
       select: (d) => d.data,
@@ -68,10 +91,41 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
   const records = data?.[0] ?? 0
   const total = data?.[1]
 
+  const [checkedIds, setCheckedIds] = useState<number[]>([])
+
+  const { downloading, downloadedCnt, totalCnt, startDownload } =
+    useBatchDownloadWithZip()
+
+  const handleBatchDownload = async () => {
+    if (!Array.isArray(records)) {
+      return
+    }
+    const set = new Set(checkedIds)
+    await startDownload(
+      records.filter((e) => set.has(e.id)).map((e) => handleStorageURL(e.url)),
+      `一堆图片${dayjs().format('YYYYMMDDHHmm')}`,
+    )
+  }
+
+  const [usePanorama, setUsePanorama] = useState(false)
+  const handleCheckImage = async (url: string) => {
+    try {
+      // 获取图像数据
+      const response = await fetch(url)
+      if (!response.ok) throw new Error('Failed to fetch image')
+      const arrayBuffer = await response.arrayBuffer()
+      const data = new Uint8Array(arrayBuffer)
+
+      // 查找 XMP 数据块
+      const text = new TextDecoder().decode(data)
+      setUsePanorama(text.includes('GPano:UsePanoramaViewer="True"'))
+    } catch (e) {}
+  }
+
   return (
     <div>
       <div className="py-3 flex gap-3">
-        <RangePicker
+        <DateRangePicker
           value={dateRange}
           onChange={(s) => {
             if (!s) {
@@ -100,49 +154,159 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
         ) : !records || total?.[0].cnt === 0 || records.length === 0 ? (
           <AppEmpty className="my-10" />
         ) : (
-          <div>
-            <Image.PreviewGroup
-              preview={{ toolbarRender: makeToolbarRender(1, 50) }}
-            >
-              <Row gutter={[12, 12]}>
-                {records.map((e) => (
-                  <Col key={e.id} span={24} md={12} lg={8}>
-                    <div className="h-20 p-2 flex items-center gap-2 border border-solid border-ground-5 rounded-[3px]">
-                      <div className="h-full aspect-[4/3]">
-                        <Image
-                          src={`/storage/${e.url}`}
-                          className="h-full aspect-[4/3] object-cover"
-                        />
-                      </div>
-                      <div className="h-full flex flex-col justify-between text-xs">
-                        <p>{e.startTime}</p>
-                        <div className="flex">
-                          <p className="flex-1">
-                            <span>{t('common.longitude')}:</span>
-                            <span>{e.longitude || '-'}</span>
-                          </p>
-                          <p className="flex-1">
-                            <span>{t('common.latitude')}:</span>
-                            <span>{e.latitude || '-'}</span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </Col>
+          <>
+            <div className="mb-2 flex">
+              <Checkbox
+                indeterminate={
+                  checkedIds.length > 0 && checkedIds.length < records.length
+                }
+                checked={checkedIds.length === records.length}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setCheckedIds(records.map((r) => r.id))
+                  } else {
+                    setCheckedIds([])
+                  }
+                }}
+              >
+                {t('media.photoSelectCountMsg', {
+                  count: checkedIds.length,
+                })}
+              </Checkbox>
+              <Button
+                size="small"
+                type="primary"
+                disabled={!checkedIds.length}
+                loading={downloading}
+                icon={<CloudDownloadOutlined />}
+                onClick={handleBatchDownload}
+              >
+                {t('common.batchDownload')}
+              </Button>
+              {downloading &&
+                (downloadedCnt < totalCnt ? (
+                  <div className="px-3 flex-1 flex whitespace-nowrap">
+                    <Progress
+                      className="w-full"
+                      percent={Math.floor((downloadedCnt / totalCnt) * 100)}
+                    />
+                    <span className="ml-2">
+                      {t('common.downloadedPictureCount', {
+                        count: downloadedCnt,
+                      })}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex gap-2 ml-3">
+                    <SyncOutlined spin />
+                    {t('media.makingZipMsg')}
+                  </div>
                 ))}
-              </Row>
-            </Image.PreviewGroup>
+            </div>
+            <ScrollArea className="max-h-[70vh] -mx-3">
+              <div className="mx-3">
+                <Checkbox.Group
+                  className="w-full"
+                  value={checkedIds}
+                  onChange={setCheckedIds}
+                >
+                  <Image.PreviewGroup
+                    preview={{
+                      destroyOnClose: true,
+                      closeIcon: <IconClose className="scale-125" />,
+                      imageRender: (e, info) => {
+                        handleCheckImage(info.image.url)
+
+                        if (usePanorama) {
+                          return (
+                            <div className="absolute inset-0">
+                              <PanoramaViewer src={info.image.url} />
+                            </div>
+                          )
+                        }
+
+                        return e
+                      },
+                      toolbarRender: usePanorama
+                        ? makePanormaToolbarRender()
+                        : makeToolbarRender(1, 50),
+                    }}
+                  >
+                    <Row className="w-full" gutter={[12, 12]}>
+                      {records.map((e) => (
+                        <Col key={e.id} span={24} md={12} lg={8} xxl={6}>
+                          <div className="h-24 p-2 flex items-center gap-2 border border-solid border-ground-5 rounded-[3px]">
+                            <div className="h-full aspect-[4/3] relative">
+                              <Image
+                                src={`/storage/${e.url}`}
+                                className="h-full aspect-[4/3] object-cover"
+                              />
+                              <div>
+                                <Checkbox
+                                  className="absolute left-1 top-1"
+                                  value={e.id}
+                                />
+                              </div>
+                            </div>
+                            <div className="h-full flex flex-col justify-between text-xs">
+                              <p>
+                                <span>{t('common.time')}: </span>
+                                {e.startTime}
+                              </p>
+                              <p>
+                                <span>{t('common.type')}: </span>
+                                {e.type === 'PICTURE'
+                                  ? t('device.pictureFilter.photograph.title')
+                                  : t('device.pictureFilter.screenshot.title')}
+                              </p>
+                              <div className="flex whitespace-nowrap">
+                                <p className="flex-1">
+                                  <span>{t('common.position')}: </span>
+                                  <span>
+                                    {round(e.longitude ?? 0, 5) || '-'},{' '}
+                                  </span>
+                                  <span>
+                                    {round(e.latitude ?? 0, 5) || '-'}
+                                  </span>
+                                  <IconButton
+                                    className="ml-1"
+                                    onClick={async () => {
+                                      await navigator.clipboard.writeText(
+                                        `${round(e.longitude ?? 0, 6)}, ${round(
+                                          e.latitude ?? 0,
+                                          6,
+                                        )}`,
+                                      )
+                                      msgApi.success(t('common.copySuccess'))
+                                    }}
+                                  >
+                                    <CopyOutlined />
+                                  </IconButton>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </Col>
+                      ))}
+                    </Row>
+                  </Image.PreviewGroup>
+                </Checkbox.Group>
+              </div>
+            </ScrollArea>
             <div className="my-3 flex justify-end">
               <Pagination
                 size="small"
-                pageSize={10}
                 current={page}
+                pageSize={24}
                 total={total?.[0].cnt}
                 showSizeChanger={false}
-                onChange={setPage}
+                onChange={(page) => {
+                  setPage(page)
+                  setCheckedIds([]) // Reset selection on page change
+                }}
               />
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>

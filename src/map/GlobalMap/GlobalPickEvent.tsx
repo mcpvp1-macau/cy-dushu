@@ -327,7 +327,7 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
       const id = res?.id?.id ?? res?.id
       if (typeof id === 'string' && id.startsWith('overlay--')) {
         const [, overlayId] = id.split('--')
-        updateRightMode(RightModeEnum.POINT_DETAIL)
+        updateRightMode(RightModeEnum.OVERLYA_DETAIL)
         updateDetailId(overlayId)
       }
     }

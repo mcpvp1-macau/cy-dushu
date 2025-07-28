@@ -23,6 +23,10 @@ export type AirlineConfigType = {
   waypointHeadingMode: string
   gimbalPitchMode: string
   finishAction: string
+  roadNetworkMode?: boolean
+  roadNetworkTargetPosition?: number[]
+  actionTriggerType: 'reachPoint' | 'multipleTiming' | 'multipleDistance'
+  actionTriggerParam: number | null
   [key: string]: any
 }
 
@@ -98,9 +102,26 @@ export type ActionCloseAIType = {
   }
 }
 
+export type ActionCameraModeSetType = {
+  type: 'CAMERA_MODE_SET'
+  config: {
+    cameraMode: '0' | '1' // 0: wide, 1: ir
+  }
+}
+
 export type ActionUnknownType = {
   type: 'UNKNOWN'
   config: unknown
+}
+
+export type ActionSpeakerPlayType = {
+  type: 'SPEAKER_PLAY'
+  config: {
+    action: string // start 开始播放 stop 停止播放
+    mode: string // single 单次播放 loop 循环播放
+    volume: number // 音量
+    text: string
+  }
 }
 
 /** 航点动作配置 */
@@ -114,6 +135,8 @@ export type ActionType = (
   | ActionOpenAIType
   | ActionCloseAIType
   | ActionUnknownType
+  | ActionCameraModeSetType
+  | ActionSpeakerPlayType
 ) & {
   xid: string
 }

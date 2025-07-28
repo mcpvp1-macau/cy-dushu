@@ -1,8 +1,5 @@
 import { create } from 'zustand'
-import { devtools } from 'zustand/middleware'
-import mitt from 'mitt'
-
-export const drawingMitt = mitt()
+import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 
 export enum CotType {
   POINT = 'b-m-p-s-m', // 小圆点
@@ -13,6 +10,7 @@ export enum CotType {
   SHAPE_POLYGON = 'u-d-f', // 多边形正方形
   SHAPE_CIRCLE = 'u-d-c-c', // 圆形
   SHAPE_FAN = 'shan-xing', // 扇形
+  SHAPE_RECT = 'rectangle',
   LINE_LUJING = 'b-m-r',
   CHEAT_LIAOTIAN = 'b-t-f',
   NONE = '',
@@ -40,15 +38,33 @@ export type PointIconType =
   | 'COT_MAPPING_2525C/a-u/a-u-G'
   | ''
 
+export type LineStyle = 'solid' | 'dashed' | 'no-fly'
+
+// useRightMode保存处于详情编辑的覆盖物，此处的isEdit用于保存覆盖物是否处于编辑状态
+
 type StateType = {
   drawing: DrawType
   drawingColor: string
+  lineStyle: LineStyle
+  /**透明度 0-1 */
+  fillOpacity: number
+  /**编辑后的点位，不用于地图显示，用于上传 */
+  positions: [number, number][]
+  /**用于判断覆盖物是否处于编辑状态 */
+  isEdit: boolean
+  /**是否绘制的是飞行区域，飞行区域和普通绘制弹窗不一样 */
+  isFlightArea: boolean
 }
 
 type ActionsType = {
   updateDrawing: (drawing: DrawType) => void
   updateDrawingColor: (color: string) => void
   quitRecontructionArea: () => void
+  updateLineStyle: (lineStyle: LineStyle) => void
+  updateFillOpacity: (fillOpacity: number) => void
+  updatePositions: (positions: [number, number][]) => void
+  updateIsEdit: (isEdit: boolean) => void
+  updateIsFlightArea: (isFlightArea: boolean) => void
 }
 
 // 新增的三维重建也有绘制逻辑，并且其优先级应该最高，也就是无法从三维重建状态转为普通绘制和测量
@@ -56,30 +72,60 @@ type ActionsType = {
 // 所以三维重建状态无法通过updateDrawing进行关闭，只能通过quitRecontructionArea关闭
 const useMapDrawStore = create<StateType & ActionsType>()(
   devtools(
-    (set, get) => ({
-      drawing: DrawType.None,
-      drawingColor: '#0ea5e9',
-      updateDrawing: (drawing) => {
-        // 如果是三维重建转为其他绘制，那么不响应，并且发送事件，在三维重建中收到事件并提醒用户
-        const pre = get().drawing
-        if (pre === DrawType.ReconstructionArea) {
-          if (drawing === DrawType.None) {
-            // 三维测量无法在此关闭，所以不做处理
+    persist(
+      (set, get) => ({
+        drawing: DrawType.None,
+        drawingColor: '#4C90F0',
+        lineStyle: 'solid',
+        fillOpacity: 0.5,
+        positions: [],
+        isEdit: false,
+        isFlightArea: false,
+        updateDrawing: (drawing) => {
+          // 如果是三维重建转为其他绘制，那么不响应
+          const pre = get().drawing
+          if (pre === DrawType.ReconstructionArea) {
+            //  三维测量无法在此关闭且无法转为其他绘制，所以不做处理
           } else {
-            // 三维测量无法转为其他绘制
-            drawingMitt.emit('reconstruction-to-other')
+            set({ drawing }, false, 'updateDrawing')
           }
-        } else {
-          set({ drawing }, false, 'updateDrawing')
-        }
+        },
+        updateDrawingColor: (drawingColor) => {
+          set({ drawingColor }, false, 'updateDrawingColor')
+        },
+        quitRecontructionArea: () => {
+          set({ drawing: DrawType.None }, false, 'quitRecontructionArea')
+        },
+        updateLineStyle: (lineStyle: LineStyle) => {
+          set({ lineStyle }, false, 'updateLineStyle')
+        },
+        updateFillOpacity: (fillOpacity: number) => {
+          set({ fillOpacity }, false, 'updateFillOpacity')
+        },
+        updatePositions: (positions) => {
+          set({ positions }, false, 'updatePositions')
+        },
+        updateIsEdit: (isEdit) => {
+          set({ isEdit }, false, 'updateIsEdit')
+        },
+        updateIsFlightArea: (isFlightArea: boolean) => {
+          set({ isFlightArea }, false, 'updateIsFlightArea')
+        },
+      }),
+      // isFlightArea需要持久化以配合rightMode的持久化
+      {
+        name: 'map-draw-store',
+        storage: createJSONStorage(() => sessionStorage, {
+          replacer: (key: string, value: any) => {
+            return value
+          },
+          reviver: (key: string, value: any) => {
+            return value
+          },
+        }),
+        partialize: (state) => ({ isFlightArea: state.isFlightArea }),
       },
-      updateDrawingColor: (drawingColor) => {
-        set({ drawingColor }, false, 'updateDrawingColor')
-      },
-      quitRecontructionArea: () => {
-        set({ drawing: DrawType.None }, false, 'quitRecontructionArea')
-      },
-    }),
+    ),
     {
       name: 'map-draw-store',
       enabled: import.meta.env.DEV,

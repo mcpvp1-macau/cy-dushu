@@ -41,6 +41,10 @@ const initialLayout: DynamicLayoutType = {
                 {
                   key: 'flyParams',
                 },
+                {
+                  key: 'controlParamsSetting',
+                  keeyRenderOnHidden: false,
+                },
               ],
             },
             {
@@ -52,6 +56,7 @@ const initialLayout: DynamicLayoutType = {
                 },
                 {
                   key: 'flyParamsSetting',
+                  keeyRenderOnHidden: false,
                 },
               ],
             },
@@ -66,12 +71,15 @@ const initialLayout: DynamicLayoutType = {
       children: [
         {
           key: 'payload',
+          keeyRenderOnHidden: false,
         },
         {
           key: 'ai-list',
+          keeyRenderOnHidden: false,
         },
         {
           key: 'device-data',
+          keeyRenderOnHidden: false,
         },
         {
           key: 'tanqi',
@@ -122,7 +130,6 @@ export const useUavControlRoomLayoutStore = create<StateType & ActionsType>()(
             const overlayIndex = node.children.findIndex(
               (t) => t.key === tab.key,
             )
-            console.log('overlayIndex', overlayIndex)
             if (overlayIndex >= 0) {
               node.children = [
                 ...node.children.slice(0, overlayIndex),
@@ -156,7 +163,6 @@ export const useUavControlRoomLayoutStore = create<StateType & ActionsType>()(
         }
         updateLayoutNode(newLayout)
 
-        console.log('found', found)
         // 没找到就添加到指定的 key 后面
         if (!found) {
           updateLayoutNode = (node: DynamicLayoutType) => {
@@ -199,7 +205,7 @@ export const useUavControlRoomLayoutStore = create<StateType & ActionsType>()(
     }),
     {
       name: 'uavControlRoomLayout',
-      version: 2,
+      version: 3,
     },
   ),
 )

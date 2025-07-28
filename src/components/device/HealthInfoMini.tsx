@@ -9,7 +9,7 @@ type PropsType = {
 /** 健康信息 Icon */
 const HealthInfoMini: FC<PropsType> = memo(({ healthInfo }) => {
   return (
-    <Dropdown dropdownRender={() => <HealthInfoList data={healthInfo} />}>
+    <Dropdown popupRender={() => <HealthInfoList data={healthInfo} />}>
       <InfoCircleOutlined
         className={clsx({
           'text-red-600': healthInfo[0]?.startsWith?.('Error'),

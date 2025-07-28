@@ -53,6 +53,12 @@ export default mergeConfig(
             return path.replace(/^\/_ws_proxy\//, '')
           },
         },
+        '/upload': {
+          target: 'http://172.21.30.201:32000',
+          changeOrigin: true,
+          // pathRewrite: { '^/upload': '' },
+          rewrite: (path) => path.replace(/^\/upload/, ''),
+        },
       },
     },
     define: {

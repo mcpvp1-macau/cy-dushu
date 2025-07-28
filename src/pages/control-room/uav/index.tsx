@@ -46,6 +46,8 @@ import IconControl from '@/assets/icons/jsx/IconControl'
 import MenuIconEvents from '@/assets/icons/jsx/menus/MenuIconEvents'
 import ControlRoomEventDetail from './components/EventDetail'
 import DeferredRender from '@/components/DeferredRender'
+import ControlParamsSetting from './components/ControlParamsSetting'
+import { useListenRealProcessedResults } from '@/store/map/useReconstruction2DMap.store'
 
 type PropsType = unknown
 
@@ -81,6 +83,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       map: <IconMap className="text-blue-500" />,
       video: <IconCameraVideo className="text-blue-500" />,
       flyParams: <IconFlightOperation className="text-orange-500" />,
+      controlParamsSetting: <IconFlightParams className="text-emerald-500" />,
       flyButtons: <IconControl className="text-purple-500" />,
       flyParamsSetting: <IconFlightParams className="text-emerald-500" />,
       payload: <IconPayload className="text-emerald-500" />,
@@ -98,6 +101,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       map: t('common.map'),
       video: t('common.video'),
       flyParams: t('controlRoom.uav.flyParams.title'),
+      controlParamsSetting: t('common.params'),
       flyButtons: t('controlRoom.uav.flyButtons.title'),
       flyParamsSetting: t('common.params'),
       payload: t('controlRoom.uav.payload.title'),
@@ -133,6 +137,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
           <BottomButtons />
         </div>
       ),
+      controlParamsSetting: <ControlParamsSetting />,
       flyParamsSetting: (
         <div className="size-full overflow-hidden flex flex-col">
           <ScrollArea>
@@ -167,6 +172,8 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
   )
 
   const { pathname } = useLocation()
+
+  useListenRealProcessedResults((id) => id === deviceId)
 
   return (
     <DeviceDetailStoreContext.Provider key={deviceId} value={store}>

@@ -145,7 +145,7 @@ const SatelliteNumber = memo(() => {
       title={t('controlRoom.uav.header.satellite.title')}
       trigger={['click']}
       useDing
-      dropdownRender={() => (
+      popupRender={() => (
         <div className="p-2 text-xs">
           <ul className="flex flex-col gap-1">
             <li className="flex gap-2">
@@ -305,7 +305,7 @@ const DebugState = memo(() => {
             title: t('common.debug'),
           }}
           destroyPopupOnHide
-          dropdownRender={() => (
+          popupRender={() => (
             <ScrollArea className="max-h-[80vh] text-xs">
               <pre>
                 <code>{JSON.stringify(state, null, 2)}</code>

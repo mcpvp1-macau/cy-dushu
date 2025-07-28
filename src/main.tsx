@@ -7,6 +7,8 @@ import router from './router'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
+import ShareVideo from './pages/share-video/index.tsx'
+
 import queryClient from './global/query-client.ts'
 
 import '@/assets/style/index.less'
@@ -17,25 +19,44 @@ import '@/global/favicon-change.ts'
 import './langs/i18n.ts'
 
 import { queryTerrain } from './utils/map/queryTerrainElevation.js'
+import { createBrowserRouter } from 'react-router-dom'
 
 window.queryTerrain = queryTerrain
 
 // 设置 dayjs 语言
 dayjs.locale('zh-cn')
 
+const videoRouter = createBrowserRouter([
+  {
+    path: 'share/video/:productKey/:deviceId/:videoId/:token',
+    element: <ShareVideo />,
+  },
+])
+
 // 入口
 ;(async () => {
-  const suc = await initToken()
-  if (!suc) {
-    return
-  }
-  useUserStore.getState().fetchUserInfoAndMenus()
-  useUserStore.getState().fetchSystemInfo()
+  if (location.pathname.startsWith('/share/video')) {
+    ReactDOM.createRoot(document.getElementById('root')!).render(
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen buttonPosition="bottom-left" />
+        {/* <ShareVideo /> */}
+        <RouterProvider router={videoRouter} />
+      </QueryClientProvider>,
+    )
+  } else {
+    const suc = await initToken()
+    if (!suc) {
+      return
+    }
+    useUserStore.getState().fetchUserInfoAndMenus()
+    useUserStore.getState().fetchSystemInfo()
+    useUserStore.getState().initGroupDeviceTree()
 
-  ReactDOM.createRoot(document.getElementById('root')!).render(
-    <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen buttonPosition="bottom-left" />
-      <RouterProvider router={router} />
-    </QueryClientProvider>,
-  )
+    ReactDOM.createRoot(document.getElementById('root')!).render(
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools initialIsOpen buttonPosition="bottom-left" />
+        <RouterProvider router={router} />
+      </QueryClientProvider>,
+    )
+  }
 })()

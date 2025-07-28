@@ -47,10 +47,12 @@ const PageSituation: FC<PropsType> = memo(() => {
     {
       key: 'source',
       label: (
-        <SourceTypeSelect
-          value={sourceType}
-          onChange={handleSourceTypeChange}
-        />
+        <div onClick={(e) => e.preventDefault()}>
+          <SourceTypeSelect
+            value={sourceType}
+            onChange={handleSourceTypeChange}
+          />
+        </div>
       ),
     },
     {

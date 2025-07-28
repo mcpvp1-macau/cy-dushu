@@ -21,7 +21,8 @@ const TakePhoto: FC<PropsType> = memo(() => {
   const postService = usePostDeviceService(productKey, deviceId)
 
   const disabled =
-    !(hasCameraMode && videoSource === 'gimbal') || cameraMode !== '0'
+    !(hasCameraMode && videoSource === 'gimbal') ||
+    !['0', '3'].includes(cameraMode || '') // 0: photo, 3: panorama
 
   const handleClick = () => {
     if (disabled) {

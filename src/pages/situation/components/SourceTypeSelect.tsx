@@ -49,6 +49,8 @@ const SourceTypeSelect: FC<PropsType> = memo(({ value, onChange }) => {
     onChange?.(type)
   })
 
+  const [open, setOpen] = useState(false)
+
   return (
     <Select
       loading={isLoading}
@@ -60,9 +62,17 @@ const SourceTypeSelect: FC<PropsType> = memo(({ value, onChange }) => {
           {e.label}
         </div>
       )}
+      open={open}
       options={renderItems}
       value={value}
       onChange={handleSourceTypeChange}
+      onClick={() => setOpen((prev) => !prev)}
+      onBlur={(evt) => {
+        if (evt.relatedTarget?.className?.includes('ant-tabs-tab-btn')) {
+          return
+        }
+        setOpen(false)
+      }}
     />
   )
 })

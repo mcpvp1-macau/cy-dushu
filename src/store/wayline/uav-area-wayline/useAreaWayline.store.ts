@@ -15,12 +15,15 @@ type StateType = {
     mainK: number
     interval: number
     coverage: number
+    photoWaylineCoverage: number
   }
   isDrawHome: boolean
   cameraInfo: {
     focal: number
     sensorWidth: number
     sensorHeight: number
+    pixelWidth: number
+    pixelHeight: number
   }
   firstAirpoint: AirlinePoint | null
 }
@@ -41,6 +44,7 @@ const createInitialState = (): StateType => ({
   airlineConfig: {
     ...createInitAirlineConfig(),
     globalWaypointTurnMode: 'toPointAndPassWithContinuityCurvature',
+    height: 140.6,
   },
   templateConfig: {
     waylineTemplateId: 0,
@@ -55,12 +59,16 @@ const createInitialState = (): StateType => ({
     mainK: 0,
     interval: 0,
     coverage: 10,
+    wideGSD: 5,
+    photoWaylineCoverage: 0.7,
   },
   isDrawHome: false,
   cameraInfo: {
-    focal: 24,
-    sensorWidth: 40,
-    sensorHeight: 30,
+    focal: 4.5,
+    sensorWidth: 6.4,
+    sensorHeight: 4.8,
+    pixelWidth: 4000,
+    pixelHeight: 3000,
   },
   airpointsConfig: [],
   firstAirpoint: null,

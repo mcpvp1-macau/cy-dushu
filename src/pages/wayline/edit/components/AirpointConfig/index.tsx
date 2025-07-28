@@ -125,9 +125,7 @@ const AirpointConfig: FC<PropsType> = ({ info }) => {
               <Button
                 size="small"
                 icon={<IconRight />}
-                onClick={() => {
-                  nextAirPoint()
-                }}
+                onClick={nextAirPoint}
               />
             </div>
             <div className="flex gap-3 justify-between overflow-hidden">

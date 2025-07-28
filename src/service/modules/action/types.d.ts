@@ -8,6 +8,7 @@ declare namespace API_ACTION {
       status: string
       eventId: string
       startTime: string
+      type: string
       endTime: string
       gmtCreate: string
       gmtModified: string
@@ -20,7 +21,7 @@ declare namespace API_ACTION {
       name: string
       description: any
       eventId: any
-      type: 'normal' | 'kcyp_action' | 'xiaoshan_kcyp_action'
+      type: 'normal' | 'kcyp_action' | 'xiaoshan_kcyp_action' | 'ewjt_action'
       status: string
       isValid: any
       gmtCreate: string
@@ -71,6 +72,7 @@ declare namespace API_ACTION {
   namespace req {
     type ActionListReq = API_COMMON.PageParam & {
       name?: string
+      type?: string
       startTime?: string
       endTime?: string
       status?: string[]
@@ -82,7 +84,7 @@ declare namespace API_ACTION {
       rows: API_ACTION.domain.ActionRecord[]
       total: number
     }
-    type ActionDetailRes = ActionDetail
+    type ActionDetailRes = API_ACTION.domain.ActionDetail
     interface AIResultListRes {
       rows: API_ACTION.domain.AIResultRecord[]
       total: number

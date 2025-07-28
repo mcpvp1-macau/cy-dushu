@@ -325,11 +325,11 @@ action:
       continue:
         title: 继续
       people:
-        title: 执行人员
+        title: 飞手
       device:
-        title: 执行设备
+        title: 设备
       status:
-        title: 任务状态
+        title: 状态
         RUNNING:
           title: 任务中
         HANGUP:
@@ -530,6 +530,28 @@ common:
   week: 周
   day: 天
   every: 每
+  device: 设备
+  date: 日期
+  frequency: 频率
+  pictureData: 图片数据
+  mapPlotting: 标绘
+  all: 所有
+  2dMap: 二维图
+  start: 开始
+  stop: 停止
+  mode: 模式
+  single: 单次
+  loop: 循环
+  content: 内容
+  action: 动作
+  voiceVolume: 音量
+  checkAll: 全选
+  batchDownload: 批量下载
+  downloadedPictureCount: 已下载 {{count}} 张图片
+  copySuccess: 复制成功
+  restart: 重启
+  show: 显示
+  hide: 隐藏
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -693,12 +715,15 @@ wayline:
       tooltip: 预设飞行路径的主要延伸方向
     coverage:
       title: 航线重叠率
-      tooltip: 相邻两条航线的拍摄视野重叠部分的比例，云台默认正射角度
+      tooltip: 在同一条航线上，前后拍摄的照片重叠部分的比例。
     titleRebotDog: 巡线设置
     speedRebotDog:
       title: 行进速度
     height:
       tooltip: 航线起飞高度
+    lateralCoverage:
+      title: 旁向覆盖率
+      tooltip: 相邻两条航线的拍摄视野重叠部分的比例，云台默认正射角度
   waylinePoint:
     config: 航点设置
     waypointList:
@@ -752,6 +777,10 @@ wayline:
             msg: 请选择算法
       CLOSE_AI:
         title: 关闭算法
+      CAMERA_MODE_SET:
+        title: 镜头模式
+      SPEAKER_PLAY:
+        title: 喊话器
     addBefore: 在航点 {{i}} 后添加
     addAfter: 在航点 {{i}} 后添加
     addLast: 在最后添加
@@ -847,6 +876,8 @@ wayline:
     msg: 飞行路径撞到地形
   nearTerrain:
     msg: 飞行路径距离地形高度过近
+  roadNetwork:
+    title: 路网模式
 schedue:
   list:
     title: 计划库
@@ -935,6 +966,13 @@ overlay:
           required_msg: 请选择所属图层
   drawing:
     title: 画区
+    lineStyle:
+      title: 线型
+      solid: 实线
+      dashed: 虚线
+      noFly: 禁飞区
+    opacity:
+      title: 透明度
     circle:
       title: 圆形
     rect:
@@ -955,6 +993,42 @@ overlay:
       title: 测圆
     angle:
       title: 测角
+flightArea:
+  title: 飞行区域
+  create:
+    title: 创建飞行区域
+    form:
+      name: 飞行区域名称
+      layerName: 飞行区域分组名称
+      effectiveGroups: 生效组织
+      effective: 生效范围
+    group:
+      tooltip: 创建飞行区域分组
+  edit:
+    title: 编辑飞行区域
+    group:
+      tooltip: 编辑飞行区域分组
+  type:
+    title: 区域类型
+    normal:
+      title: 普通区域
+      info: 仅做地理标记或地理区分的展示
+    noFly:
+      title: 禁飞区
+      info: 限制飞行器进入的区域
+    electronicFence:
+      title: 电子围栏
+      info: 飞行器只能在此作业的特定区域
+    countZone:
+      title: AI计算区
+      info: 适用于算法需要特别处理的区域，如数据分析区域
+    noCountZone:
+      title: 非计算区
+      info: 适用于算法忽略的区域，如非监控区域
+  relatedGroup:
+    title: 关联分组
+    effective:
+      title: 生效范围
 tools:
   saveMapView:
     title: 保存地图视角
@@ -1018,6 +1092,13 @@ mapLayer:
       success: 三维重建完成
       layer:
         title: 创建三维图层
+      overlay:
+        title: 创建重建图层
+        start: 开始三维重建
+        failed: 三维重建失败
+        form:
+          overlayName: 图层名称
+          uploadLabel: 上传重建资源
       form:
         groupName: 三维图层组名称
         layerName: 三维图层名称
@@ -1029,13 +1110,22 @@ mapLayer:
         groupName: 三维图层组名称
     task:
       completed: 三维重建完成
+      restart: 重启三维重建
+    layer:
+      status:
+        PENDING: 未开始
+        PROCESSING: 进行中
+        FINISHED: 已完成
+        PAUSE: 失败
 message:
   success:
     saveMapView: 地图视角保存成功
     save: 保存成功
+    delete: 删除成功
     savefile: 入库成功
   error:
     save: 保存失败
+    delete: 删除失败
     savefile: 上传失败
   warnning:
     delete: 是否删除!
@@ -1126,6 +1216,8 @@ controlRoom:
           title: 拍照模式
         record:
           title: 录像模式
+        panorama:
+          title: 全景模式
       videoRecord:
         title: 录像
       hover:
@@ -1140,6 +1232,10 @@ controlRoom:
         title: 对焦模式
       exposureMode:
         title: 镜头曝光模式
+      panorama:
+        title: 全景
+      gotoPosAtTarget:
+        title: 视频指点飞行
     gamepad:
       title: 摇杆
     goHome:
@@ -1201,6 +1297,9 @@ controlRoom:
       title: 快门速度
     gimbalYaw:
       title: 云台偏航角
+    controlParams:
+      gimbalYawSpeed: 云台偏航速度
+      gimbalPitchSpeed: 云台俯仰速度
   control:
     uavTurnLeft:
       title: 无人机左转
@@ -1310,3 +1409,17 @@ dayOfWeek:
   thursday: 周四
   friday: 周五
   saturday: 周六
+unit:
+  degreePerSecond: 度/秒
+media:
+  photoSelectCountMsg: 已经选择 {{count}} 张图片
+  makingZipMsg: 正在生成压缩包
+timeRange:
+  today: 今日
+  recent1Day: 最近 1 天
+  last1Day: 最近 1 天
+  last7Days: 最近 7 天
+  last30Days: 最近 30 天
+  last90Days: 最近 90 天
+  last365Days: 最近 1 年
+  last100Years: 最近 100 年

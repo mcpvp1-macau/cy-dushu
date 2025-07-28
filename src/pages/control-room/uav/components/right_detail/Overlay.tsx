@@ -3,7 +3,7 @@ import AppEmpty from '@/components/AppEmpty'
 import { shouldJson } from '@/utils/json'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconEdit from '@/assets/icons/jsx/IconEdit'
-import { Button, ColorPicker, Form, Input } from 'antd'
+import { Button, Form, Input } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 import IconTick from '@/assets/icons/jsx/IconTick'
 import useOverlayDetail from '@/pages/right/right-tools/OverlayDetail/useOverlayDetail'
@@ -24,7 +24,6 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
     isConfirmLoading,
     form,
     overlay,
-    renderColor,
     styleConfig,
   } = useOverlayDetail(overlayDetailId, () => {
     updateRightMode(null)
@@ -69,24 +68,6 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                   ?.join(', ')}
               </span>
             </p>
-
-            <div className="flex gap-2 items-center">
-              {t('overlay.detail.color.title')}:
-              <Form.Item noStyle name="color">
-                {isEdit ? (
-                  <ColorPicker size="small" disabledAlpha />
-                ) : (
-                  <div className="text-white">
-                    <div
-                      className="w-3.5 h-3.5 rounded border border-solid border-white"
-                      style={{
-                        backgroundColor: renderColor,
-                      }}
-                    />
-                  </div>
-                )}
-              </Form.Item>
-            </div>
 
             <p className="flex gap-2">
               <span className="whitespace-nowrap">

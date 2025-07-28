@@ -1,21 +1,24 @@
 import MenuIconAction from '@/assets/icons/jsx/menus/MenuIconAction'
+import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
+import Select from '@/components/AntdOverride/Select'
 import TextButton from '@/components/ui/button/TextButton'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import XTable from '@/components/ui/XTable.tsx'
 import { emtpyArray } from '@/constant/data'
 import { dft } from '@/constant/time-fmt'
+import { DictEnum } from '@/enum/dict'
 import usePageSearchParams from '@/hooks/useTableSearchParams'
 import { getActionRecordList } from '@/service/modules/action'
 import serverJingqi from '@/service/servers/serverJingqi'
+import { useDictOptions } from '@/store/useDict.store'
 import useUserStore from '@/store/useUser.store'
 import { downloadAndRename } from '@/utils/download'
-import { itemsEqual } from '@dnd-kit/sortable/dist/utilities'
 import {
   createColumnHelper,
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { DatePicker, Input, Pagination } from 'antd'
+import { Input, Pagination } from 'antd'
 import { Dayjs } from 'dayjs'
 import { Link, useSearchParams } from 'react-router-dom'
 
@@ -25,9 +28,10 @@ const h = createColumnHelper<API_ACTION.domain.ActionRecord>()
 
 const PageActionRecord: FC<PropsType> = memo(() => {
   const [searchParams, setSearchParams] = useSearchParams()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   const kw = searchParams.get('kw') || undefined
+  const type = searchParams.get('type') || undefined
 
   const page = Number(searchParams.get('page') ?? 1)
   const size = Number(searchParams.get('size') ?? 30)
@@ -43,13 +47,14 @@ const PageActionRecord: FC<PropsType> = memo(() => {
 
   const { data, isLoading, isRefetching } = useQuery(
     {
-      queryKey: ['getActionRecordList', { page, size, kw }],
+      queryKey: ['getActionRecordList', { page, size, kw, type, rangeValue }],
       queryFn: () =>
         getActionRecordList({
           name: kw,
           isPage: true,
           page,
           size,
+          type,
           startTime: rangeValue?.[0].startOf('day').format(dft),
           endTime: rangeValue?.[1].endOf('day').format(dft),
         }),
@@ -59,6 +64,13 @@ const PageActionRecord: FC<PropsType> = memo(() => {
   )
 
   const { handleValueChange, handlePaginationChange } = usePageSearchParams()
+
+  const actionTypeOptions = useDictOptions(DictEnum.ACTION_TYPE)
+
+  const actionTypeMap = useMemo(
+    () => Object.fromEntries(actionTypeOptions.map((o) => [o.value, o.label])),
+    [actionTypeOptions],
+  )
 
   const columns = useMemo(
     () => [
@@ -74,15 +86,22 @@ const PageActionRecord: FC<PropsType> = memo(() => {
           </div>
         ),
       }),
+      h.accessor('type', {
+        header: t('action.add.form.type.label'),
+        cell: (r) => {
+          const value = r.getValue()
+          return actionTypeMap[value] ?? value
+        },
+      }),
       h.accessor('startTime', {
         header: t('common.startTime'),
         minSize: 200,
-        maxSize: 500,
+        maxSize: 200,
       }),
       h.accessor('endTime', {
         header: t('common.endTime'),
         minSize: 200,
-        maxSize: 500,
+        maxSize: 200,
       }),
       h.accessor('description', {
         header: t('common.description'),
@@ -121,14 +140,14 @@ const PageActionRecord: FC<PropsType> = memo(() => {
         },
       }),
     ],
-    [t],
+    [t, actionTypeMap],
   )
 
   const table = useReactTable<API_ACTION.domain.ActionRecord>({
-    columns: columns,
+    columns,
     data: data?.rows ?? emtpyArray,
     getCoreRowModel: getCoreRowModel(),
-    getRowId: (r) => String(r.actionId),
+    getRowId: (r) => String(r.id),
   })
 
   return (
@@ -141,7 +160,22 @@ const PageActionRecord: FC<PropsType> = memo(() => {
           className="w-56"
           onSearch={(e) => handleValueChange('kw', e)}
         />
-        <DatePicker.RangePicker
+        <Select
+          options={actionTypeOptions}
+          className="w-56"
+          placeholder={t('action.add.form.type.label')}
+          allowClear
+          onChange={(v) => {
+            setSearchParams(
+              {
+                ...Object.fromEntries(searchParams.entries()),
+                type: v ?? '',
+              },
+              { replace: true },
+            )
+          }}
+        />
+        <DateRangePicker
           defaultValue={rangeValue}
           onChange={(d) => {
             setSearchParams(
@@ -159,9 +193,9 @@ const PageActionRecord: FC<PropsType> = memo(() => {
         <div className="flex-1 border border-solid border-ground-1 rounded-[3px] overflow-hidden">
           <ScrollArea className="size-full x-table">
             <XTable
-              key={i18n.language}
               table={table}
               loading={isLoading || isRefetching}
+              render={columns}
             />
             <ScrollBar orientation="horizontal" />
           </ScrollArea>

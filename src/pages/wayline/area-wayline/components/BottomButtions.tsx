@@ -2,6 +2,8 @@ import { useAppMsg } from '@/hooks/useAppMsg'
 import useAreaWaylineStore from '@/store/wayline/uav-area-wayline/useAreaWayline.store'
 import { useSearchParams } from 'react-router-dom'
 import BO from '../../components/ButtonOperator'
+import { calcFovRadiation } from '@/utils/fov'
+import { round } from 'lodash'
 
 type PropsType = unknown
 
@@ -36,6 +38,8 @@ const BottomButtions: FC<PropsType> = memo(() => {
       mainK: templateConfig.mainK,
       polygon: templateConfig.polygon,
       waylineType: 'area_waypoint',
+      wideGSD: templateConfig.wideGSD ?? 5,
+      photoWaylineCoverage: templateConfig.photoWaylineCoverage ?? 0.7, // 航线拍照重叠度
     }
 
     const parameters = {
@@ -46,6 +50,28 @@ const BottomButtions: FC<PropsType> = memo(() => {
           positions: airpointsConfig,
         },
       ],
+    }
+
+    // 处理等距拍照/等时拍照
+    if (
+      ['multipleTiming', 'multipleDistance'].includes(
+        taskBasic.actionTriggerType,
+      )
+    ) {
+      const c = useAreaWaylineStore.getState().cameraInfo
+      const intervalDistance =
+        Math.tan(calcFovRadiation(c.focal, c.sensorHeight, 1) / 2) *
+        taskBasic.height *
+        2 *
+        (1 - useAreaWaylineStore.getState().templateConfig.photoWaylineCoverage)
+      if (taskBasic.actionTriggerType === 'multipleDistance') {
+        taskBasic.actionTriggerParam = round(intervalDistance, 2)
+      } else {
+        taskBasic.actionTriggerParam = round(
+          intervalDistance / taskBasic.globalTransitionalSpeed,
+          2,
+        )
+      }
     }
 
     const data: Record<string, any> = {

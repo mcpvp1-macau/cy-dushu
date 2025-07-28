@@ -31,7 +31,7 @@ const ActionTypeCheckout: FC<PropsType> = memo(({ data }) => {
   return (
     <>
       <IconButton
-        className="scale-125 mr-2"
+        className="scale-125 mr-3"
         toolTipProps={{ title: '修改行动类型' }}
         onClick={setTrue}
       >

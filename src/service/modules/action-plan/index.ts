@@ -47,3 +47,8 @@ export const getActionPlanRecordList = (
     data,
   )
 }
+
+/** 开始断点续飞 */
+export const startActionPlanBreakPoint = (data: { breakPointId: number }) => {
+  return serverJingqi.post('/action/plan/record/break/start', data)
+}

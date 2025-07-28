@@ -42,6 +42,9 @@ export type XFormItem = CommonProps &
       }
     | {
         type: 'upload-minio'
+        /** 获取文件地址 返回false可以阻止上传 */
+        getPath?: (files: FileList) => string | boolean
+        filesFilter: (files: FileList) => File[]
         otherProps?: UploadProps
       }
     | {
@@ -52,6 +55,7 @@ export type XFormItem = CommonProps &
         type: 'tree-select'
         treeData: TreeSelectProps<any>['treeData']
         otherProps?: TreeSelectProps<any>
+        treeExpandAction?: TreeSelectProps<any>['treeExpandAction']
       }
     | {
         type: 'input-number'

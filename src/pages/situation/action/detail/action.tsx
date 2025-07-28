@@ -10,6 +10,9 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import KCYPPanel from './components/kcyp/Panel'
 import { lazy } from 'react'
 import ActionEventDetail from './components/ActionEventDetail'
+import ActionMediaPicture from './components/ActionMediaPicture'
+import IconButton from '@/components/ui/button/IconButton'
+import IconMap from '@/assets/icons/jsx/IconMap'
 
 const ChildActions = lazy(
   () => import('./components/ChildActions/ChildActions'),
@@ -44,6 +47,8 @@ const PageActionDetailSub: FC<PropsType> = memo(
     const actionDetail = detail || d
 
     const { t } = useTranslation()
+
+    const [enablePictureOnMap, setEnablePictureOnMap] = useState(false)
 
     const items = useMemo(() => {
       if (!actionDetail?.type) {
@@ -84,6 +89,28 @@ const PageActionDetailSub: FC<PropsType> = memo(
           </AppViewSuspense>
         ),
       }
+
+      const pictures = {
+        label: t('common.pictureData'),
+        key: 'picture',
+        extra: (
+          <div onClick={(e) => e.stopPropagation()}>
+            <IconButton
+              active={enablePictureOnMap}
+              onClick={() => setEnablePictureOnMap(!enablePictureOnMap)}
+            >
+              <IconMap />
+            </IconButton>
+          </div>
+        ),
+        children: (
+          <ActionMediaPicture
+            actionId={actionId!}
+            enablePictureOnMap={enablePictureOnMap}
+          />
+        ),
+      }
+
       const aiResult = {
         label: t('action.detail.ai_result.title'),
         key: '3',
@@ -118,13 +145,13 @@ const PageActionDetailSub: FC<PropsType> = memo(
       }
 
       if (actionDetail.type === 'kcyp_action') {
-        return items.concat([kcyp, task, aiResult, log])
+        return items.concat([kcyp, task, pictures, aiResult, log])
       }
       if (actionDetail.type === 'xiaoshan_kcyp_action') {
-        return items.concat([kcyp, task, aiResult, log])
+        return items.concat([kcyp, task, pictures, aiResult, log])
       }
-      return items.concat([task, aiResult, log])
-    }, [actionDetail?.type])
+      return items.concat([task, pictures, aiResult, log])
+    }, [actionDetail?.type, enablePictureOnMap])
 
     return (
       <div className="pt-3 h-full flex flex-col overflow-y-hidden">

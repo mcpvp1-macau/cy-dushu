@@ -1,6 +1,6 @@
 import styles from './style.module.less'
 import { dft } from '@/constant/time-fmt'
-import { Button, DatePicker } from 'antd'
+import { Button } from 'antd'
 import IconPlay from '@/assets/icons/jsx/IconPlay'
 import IconSpeedFaster from '@/assets/icons/jsx/IconSpeedFaster'
 import IconSpeedSlower from '@/assets/icons/jsx/IconSpeedSlower'
@@ -10,6 +10,7 @@ import { UndoOutlined } from '@ant-design/icons'
 import IconPause from '@/assets/icons/jsx/IconPause'
 import useTimelineInstance from './hooks/useTimelineInstance'
 import { DayjsInstance, fmtCurrentTime } from './utils/fmt'
+import DateRangePicker from '../AntdOverride/DateRangePicker'
 
 type PropsType = {
   time?: DayjsInstance
@@ -107,11 +108,11 @@ const Timeline: FC<PropsType> = memo(
         timeline.setItems([
           {
             id: 'time-range2',
-          type: 'background',
-          start: timeRange[0].toDate(),
-          end: currentTime.toDate(),
-          className: 'time-range2',
-          content: '',
+            type: 'background',
+            start: timeRange[0].toDate(),
+            end: currentTime.toDate(),
+            className: 'time-range2',
+            content: '',
           },
         ])
       } catch (error) {
@@ -161,7 +162,7 @@ const Timeline: FC<PropsType> = memo(
         <div className="p-1 flex justify-between">
           {/* left */}
           <div className="flex-1">
-            <DatePicker.RangePicker
+            <DateRangePicker
               value={timeRange}
               size="small"
               className="border border-solid border-ground-5"
@@ -173,7 +174,7 @@ const Timeline: FC<PropsType> = memo(
                 if (!timeline) {
                   return
                 }
-            
+
                 try {
                   timeline.setWindow(
                     dates[0].toDate(),
@@ -205,7 +206,7 @@ const Timeline: FC<PropsType> = memo(
                 } catch (error) {
                   console.error('timeline set custom time error', error)
                 }
-               
+
                 setCurrentTime(dates[0])
               }}
             />

@@ -1,6 +1,7 @@
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import LayerOverlaies from '@/map/CesiumMap/components/service/Overlaies/Overlaies'
+import FlightAreas from '@/map/CesiumMap/components/service/FlightAreas/FlightAreas'
 import { useUavControlRoomLayoutStore } from '../../../hooks/useUavControlRoomLayout.store'
 
 type PropsType = unknown
@@ -34,10 +35,17 @@ const LayerOverlay: FC<PropsType> = () => {
         if (typeof e.id?.id === 'string' && e.id.id.startsWith('overlay--')) {
           return true
         }
+        if (
+          typeof e.primitive?.props === 'string' &&
+          e.primitive.props.startsWith('overlay--')
+        ) {
+          return true
+        }
         return false
       })
 
-      const id = res?.id?.id ?? res?.id
+      const id = res?.id?.id ?? res?.id ?? res?.primitive?.props
+
       if (typeof id === 'string' && id.startsWith('overlay--')) {
         const [, overlayId] = id.split('--')
         const overlayTab = {
@@ -45,6 +53,16 @@ const LayerOverlay: FC<PropsType> = () => {
           closeable: true,
         }
         activeOrAppendTabAfterTab(overlayTab)
+        updateOverlayDetailId(overlayId)
+      }
+
+      if (id?.startsWith('flightArea--')) {
+        const overlayId = id.slice('flightArea--'.length)
+        // const overlayTab = {
+        //   key: 'overlay',
+        //   closeable: true,
+        // }
+        // activeOrAppendTabAfterTab(overlayTab)
         updateOverlayDetailId(overlayId)
       }
     }
@@ -61,6 +79,7 @@ const LayerOverlay: FC<PropsType> = () => {
   return (
     <>
       <LayerOverlaies />
+      <FlightAreas />
     </>
   )
 }

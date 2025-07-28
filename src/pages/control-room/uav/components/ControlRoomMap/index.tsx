@@ -23,6 +23,16 @@ import PickEvent from './components/PickEvent'
 import PicutreOnMap from '@/map/CesiumMap/components/service/PictureOnMap'
 import CitySituation from './components/CitySituation/CitySituation'
 import AIPhotoPredict from './components/AIPhotoPredict/AIPhotoPredict'
+import DensityMap from '@/map/GlobalMap/DensityMap/DensityMap'
+import useDensityMapStore, {
+  useGetDensityStatistics,
+  useListenRealDensityMap,
+} from '@/store/map/useDensityMap.store'
+import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import Reconstruction2D from '@/map/CesiumMap/components/service/Reconstruction2D/Reconstruction2D'
+import useQueryHistoryReconstruction2DProcessedResult from '@/hooks/service/reconstruction/useQueryHistoryReconstruction2DProcessedResult'
+import Reconstruction2DResultList from '@/map/CesiumMap/components/service/Reconstruction2D/Reconstruction2DResultList'
+import useDelayState from '@/hooks/useDelay'
 
 type PropsType = unknown
 
@@ -36,6 +46,25 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
   const enableReconstruction = useUavControlRoomStore(
     (s) => s.enableReconstruction,
   )
+
+  // 热力图相关 --------------------------------------------------------------------
+  const deviceId = useDeviceDetailStore((s) => s.deviceId)
+  const densityMapExpiration = useDensityMapStore((s) => s.densityMapExpiration)
+  useGetDensityStatistics({
+    deviceId: deviceId,
+    expireTime: densityMapExpiration,
+  })
+
+  useListenRealDensityMap((id) => {
+    return id === deviceId
+  })
+
+  // 二维重建 ---------------------------------------------------------------------
+  useQueryHistoryReconstruction2DProcessedResult({
+    deviceId: deviceId,
+  })
+
+  const delayed = useDelayState(1000)
 
   return (
     <CesiumMap id="uav-control-room-map">
@@ -62,6 +91,9 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
       <PickEvent />
       <PicutreOnMap />
       <AIPhotoPredict />
+      <DensityMap />
+      <Reconstruction2D />
+      {delayed && <Reconstruction2DResultList />}
     </CesiumMap>
   )
 })

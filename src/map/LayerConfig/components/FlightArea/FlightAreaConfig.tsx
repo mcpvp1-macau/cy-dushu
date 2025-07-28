@@ -1,0 +1,80 @@
+import IconDelete from '@/assets/icons/jsx/IconDelete'
+import IconVisible from '@/assets/icons/jsx/IconVisible'
+import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
+import IconFlightArea from '@/assets/icons/jsx/IconFlightArea'
+import IconButton from '@/components/ui/button/IconButton'
+import { useAppMsg } from '@/hooks/useAppMsg'
+import { deleteFlightArea } from '@/service/modules/flightArea'
+import { LoadingOutlined } from '@ant-design/icons'
+import { Tooltip } from 'antd'
+import queryClient from '@/global/query-client'
+
+type PropsType = {
+  data: API_LAYER_OVERLAY.domain.Overlay
+}
+
+const FlightAreaItemConfig: FC<PropsType> = memo((props) => {
+  const data = props.data
+
+  const { t } = useTranslation()
+
+  const flightAreaTypeMap = {
+    ELECTRONIC_FENCE: t('flightArea.type.electronicFence.title'),
+    NO_FLY_ZONE: t('flightArea.type.noFly.title'),
+    AI_COUNT_ZONE: t('flightArea.type.countZone.title'),
+    NO_COUNT_ZONE: t('flightArea.type.noCountZone.title'),
+  }
+
+  const msgApi = useAppMsg()
+  const [loading, setLoading] = useState(false)
+
+  const handleDelte = async (overlayId: number) => {
+    setLoading(true)
+    try {
+      await deleteFlightArea([overlayId])
+      msgApi.success(t('message.success.delete'))
+      queryClient.invalidateQueries({
+        queryKey: ['getFlightAreaList'],
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <li>
+      <div className="flex justify-between">
+        <div className="flex gap-2">
+          <IconFlightArea className="text-primary" />
+          <p className="truncate w-[210px] overflow-hidden text-ellipsis  ">
+            <Tooltip title={data.overlayName}>{data.overlayName}</Tooltip>
+          </p>
+        </div>
+        <div className="flex gap-3" onClick={(e) => e.stopPropagation()}>
+          {loading ? (
+            <LoadingOutlined />
+          ) : (
+            <>
+              {/* <EditReconstructionLayer data={data} /> */}
+              <IconButton
+                className="scale-90"
+                onClick={() => handleDelte(data.overlayId)}
+              >
+                <IconDelete />
+              </IconButton>
+            </>
+          )}
+        </div>
+      </div>
+      <div className="mt-1 ml-5 ">
+        <div className="text-xs inline-flex items-center gap-1 h-[18px] p-1 px-2 rounded-md bg-gray-600">
+          {flightAreaTypeMap[data.overlayExtType]}
+        </div>
+      </div>
+    </li>
+  )
+})
+
+FlightAreaItemConfig.displayName = 'FlightAreaItemConfig'
+
+export default FlightAreaItemConfig

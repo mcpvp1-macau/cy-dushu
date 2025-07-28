@@ -6,6 +6,7 @@ import './styles.modle.less'
 type PropsType = GetProps<typeof Modal> & {
   title: ReactNode
   confirmLoading?: boolean
+  titleRight?: ReactNode
   children: ReactNode
   onConfirm?: () => void
   onClose?: () => void
@@ -19,6 +20,7 @@ const XModal: FC<PropsType> = ({
   children,
   footer = true,
   noPadding = false,
+  titleRight,
   onClose,
   onConfirm,
   ...restProps
@@ -96,9 +98,12 @@ const XModal: FC<PropsType> = ({
         <div className="liqun-modal">
           <div className="header" onMouseDown={handleHeaderMouseDown}>
             <div className="title">{title}</div>
-            <IconButton className="text-lg" onClick={onClose}>
-              <IconClose />
-            </IconButton>
+            <div className="flex gap-1 items-center">
+              {titleRight}
+              <IconButton className="text-xl" onClick={onClose}>
+                <IconClose />
+              </IconButton>
+            </div>
           </div>
           <div
             className={clsx(

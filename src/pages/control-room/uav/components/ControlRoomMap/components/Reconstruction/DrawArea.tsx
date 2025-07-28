@@ -1,8 +1,4 @@
-import useMapDrawStore, {
-  CotType,
-  DrawType,
-  drawingMitt,
-} from '@/store/map/useDraw.store'
+import useMapDrawStore, { CotType, DrawType } from '@/store/map/useDraw.store'
 import { useBoolean } from 'ahooks'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
@@ -79,16 +75,12 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
         setState('drawing')
       }
     }
-    drawingMitt.on('reconstruction-to-other', () => {
-      msgApi.error('请先完成或取消三维重建规划才能进行测量绘制操作')
-    })
 
     return () => {
       viewer?.scene.primitives.remove(areaPrimitiveRef.current)
       handlerRef.current &&
         (handlerRef.current.destroy(), (handlerRef.current = null))
       quitRecontructionArea()
-      drawingMitt.off('reconstruction-to-other')
       updateDrawing(DrawType.None)
     }
   }, [viewer])

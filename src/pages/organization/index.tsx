@@ -69,7 +69,7 @@ const PageOrganization: FC<PropsType> = memo(() => {
 
   const { data: groupTree } = useQuery({
     queryKey: ['getGroupTree'],
-    queryFn: () => getGroupTree(),
+    queryFn: () => getGroupTree('90001'),
     select: (d) => d.data.rows,
   })
 

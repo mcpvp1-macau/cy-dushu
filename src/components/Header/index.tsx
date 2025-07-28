@@ -9,6 +9,8 @@ import Fullscreen from './Fullscreen'
 import IconButton from '../ui/button/IconButton'
 import IconLanguageEnglish from '@/assets/icons/jsx/IconLanguageEnglish'
 import IconLanguageChinese from '@/assets/icons/jsx/IconLanguageChinese'
+import IconThirdPartyPlatform from '@/assets/icons/jsx/IconThirdPartyPlatform'
+import { Link } from 'react-router-dom'
 
 type PropsType = unknown
 
@@ -47,6 +49,16 @@ const Header: FC<PropsType> = memo(() => {
           )}
         </IconButton>
         <Fullscreen target={document.documentElement} />
+        {globalConfig.useShanghaiBanRoutes && (
+          <Link
+            to="http://15.38.12.10:8081/airservice-thirdapi/external-login?signature=yvclOAQoG2SP5ugISaxTnIIhMUETFzv5"
+            target="_blank"
+          >
+            <IconButton toolTipProps={{ title: '风筝线' }}>
+              <IconThirdPartyPlatform />
+            </IconButton>
+          </Link>
+        )}
         <HeaderSetting />
         <Popover
           className="hover:cursor-pointer"

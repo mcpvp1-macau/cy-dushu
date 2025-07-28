@@ -1,5 +1,4 @@
 import { getAirlineTemplateList } from '@/service/modules/airline'
-import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import { shouldJson } from '@/utils/json'
 import { useSearchParams } from 'react-router-dom'
 import { pick } from 'lodash'
@@ -26,30 +25,46 @@ const useAirlineInit = () => {
     const name = searchParams.get('name')
     if (name) {
       updateAirlineTemplateInfo({
-        ...useAirlineConfigStore.getState().airlineTemplateInfo,
+        ...useAreaWaylineStore.getState().templateConfig,
         taskName: name,
       })
     }
 
     const camera = shouldJson(searchParams.get('camera') ?? '')
     updateAirlineConfig({
-      ...useAirlineConfigStore.getState().airlineConfig,
+      ...useAreaWaylineStore.getState().airlineConfig,
       camera,
     })
-    const cameraParams = shouldJson(camera?.defaultParam)
+    const cameraParams = shouldJson(camera?.defaultParam) ?? {
+      focal: 4.5,
+      sensorWidth: 6.4,
+      sensorHeight: 4.8,
+      pixelWidth: 4000,
+      pixelHeight: 3000,
+    }
     if (cameraParams) {
       updateCameraInfo({
-        focal: cameraParams.focal ?? 24,
-        sensorWidth: cameraParams.sensorWidth ?? 40,
-        sensorHeight: cameraParams.sensorHeight ?? 30,
+        focal: cameraParams.focal ?? 4.5,
+        sensorWidth: cameraParams.sensorWidth ?? 6.4,
+        sensorHeight: cameraParams.sensorHeight ?? 4.8,
+        pixelWidth: cameraParams.pixelWidth ?? 4000,
+        pixelHeight: cameraParams.pixelHeight ?? 3000,
       })
     }
+
+    const height =
+      ((5 / 100) * (cameraParams.focal * cameraParams.pixelWidth)) /
+      cameraParams.sensorWidth
+    updateAirlineConfig({
+      ...useAreaWaylineStore.getState().airlineConfig,
+      height: height,
+    })
 
     const takeoffRefQ = searchParams.get('takeoffRef')
     if (takeoffRefQ) {
       const takeoffRef = shouldJson(takeoffRefQ)
       updateAirlineConfig({
-        ...useAirlineConfigStore.getState().airlineConfig,
+        ...useAreaWaylineStore.getState().airlineConfig,
         takeOffRefPoint: takeoffRef,
       })
     }
@@ -76,9 +91,11 @@ const useAirlineInit = () => {
           const cameraParams = shouldJson(camera?.defaultParam)
           if (cameraParams) {
             updateCameraInfo({
-              focal: cameraParams.focal ?? 24,
-              sensorWidth: cameraParams.sensorWidth ?? 40,
-              sensorHeight: cameraParams.sensorHeight ?? 30,
+              focal: cameraParams.focal ?? 4.5,
+              sensorWidth: cameraParams.sensorWidth ?? 6.4,
+              sensorHeight: cameraParams.sensorHeight ?? 4.8,
+              pixelWidth: cameraParams.pixelWidth ?? 4000,
+              pixelHeight: cameraParams.pixelHeight ?? 3000,
             })
           }
         }
@@ -123,22 +140,38 @@ const useAirlineInit = () => {
     })
     const waylineConfig = shouldJson(data.taskBasic)
     const { camera } = waylineConfig
-
+    const cameraParams = shouldJson(camera?.defaultParam) ?? {
+      focal: 4.5,
+      sensorWidth: 6.4,
+      sensorHeight: 4.8,
+      pixelWidth: 4000,
+      pixelHeight: 3000,
+    }
     if (waylineConfig) {
       updateAirlineConfig({ camera, ...resolveAirlineConifg(waylineConfig) })
     }
 
     updateCameraInfo({
-      focal: camera?.focal ?? 24,
-      sensorWidth: camera?.sensorWidth ?? 40,
-      sensorHeight: camera?.sensorHeight ?? 30,
+      focal: cameraParams.focal ?? 4.5,
+      sensorWidth: cameraParams.sensorWidth ?? 6.4,
+      sensorHeight: cameraParams.sensorHeight ?? 4.8,
+      pixelWidth: cameraParams.pixelWidth ?? 4000,
+      pixelHeight: cameraParams.pixelHeight ?? 3000,
     })
 
-    const o2 = pick(waylineConfig, ['coverage', 'mainK', 'polygon'])
+    const o2 = pick(waylineConfig, [
+      'coverage',
+      'mainK',
+      'polygon',
+      'wideGSD',
+      'photoWaylineCoverage',
+    ])
     updateAirlineTemplateInfo({
       polygon: o2.polygon,
       mainK: o2.mainK,
       coverage: o2.coverage,
+      wideGSD: o2.wideGSD ?? 5,
+      photoWaylineCoverage: o2.photoWaylineCoverage ?? 0.7,
     })
 
     if (Array.isArray(o2.polygon)) {

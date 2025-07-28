@@ -7,29 +7,35 @@ import RightRangingPanel from './right-tools/Ranging'
 
 const RightDeviceDetail = lazy(() => import('./DeviceDetail'))
 const RightAddPoint = lazy(() => import('./right-tools/AddPoint'))
-const RightAddGeometry = lazy(() => import('./right-tools/AddGeometry'))
+const RightAddGeometry = lazy(() => import('./right-tools/AddGeometry/index'))
 const RightEventDetail = lazy(() => import('./EventDetail'))
 const TargetDetail = lazy(() => import('./TargetDetail'))
 const ReconstructionDetail = lazy(
   () => import('./right-tools/ReconstructionDetail'),
+)
+const FlightAreaDetail = lazy(
+  () => import('./right-tools/FlightAreaDetail/FlightAreaDetail'),
 )
 
 const route = {
   [RightModeEnum.DEVICE]: RightDeviceDetail,
   [RightModeEnum.SET_POINT]: RightAddPoint,
   [RightModeEnum.DRAW_GEOMETRY]: RightAddGeometry,
-  [RightModeEnum.POINT_DETAIL]: OverlayDetail,
+  // 使用DRAW_GEOMETRY一样的组件，通过useMapDrawStore的isFlightArea来判断是绘制飞行区域还是普通绘制
+  [RightModeEnum.DRAW_FLIGHT_AREA]: RightAddGeometry,
+  [RightModeEnum.OVERLYA_DETAIL]: OverlayDetail,
   [RightModeEnum.RANGING]: RightRangingPanel,
   [RightModeEnum.EVENT_DETAIL]: RightEventDetail,
   [RightModeEnum.RADAR_TARGET]: TargetDetail,
   [RightModeEnum.RECONSTRUCTION_DETAIL]: ReconstructionDetail,
+  [RightModeEnum.FLIGHT_AREA_DETAIL]: FlightAreaDetail,
 }
 
 type PropsType = unknown
 
 const Right: FC<PropsType> = memo(() => {
   const rightMode = useRightMode((s) => s.rightMode)
-  if (!rightMode) {
+  if (!rightMode || rightMode === RightModeEnum.HIDE) {
     return null
   }
 

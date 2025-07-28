@@ -61,7 +61,7 @@ const useVisibleCheck = (
       // 处理 集群航线相关的
       const resolvedGroupIds = new Set<string>()
       if (
-        task.extra.actionItemGroupId &&
+        task.extra?.actionItemGroupId &&
         !resolvedGroupIds.has(task.extra.actionItemGroupId) // 已处理
       ) {
         resolvedGroupIds.add(task.extra.actionItemGroupId)

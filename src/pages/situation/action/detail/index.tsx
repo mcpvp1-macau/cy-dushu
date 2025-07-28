@@ -7,6 +7,8 @@ import { Outlet } from 'react-router'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import { Provider } from './context'
 import ActionTypeCheckout from './components/ActionTypeCheckout'
+import AppSpin from '@/components/AppSpin'
+import Reconstruction2DResolver from './components/ActionRecon2DResolver'
 
 type PropsType = unknown
 
@@ -83,11 +85,15 @@ const PageSituationActionDetail: FC<PropsType> = memo(() => {
     }
   }
 
+  if (!data) {
+    return <AppSpin />
+  }
+
   return (
     <div className="h-full flex flex-col overflow-y-hidden">
       <EditableNameHeader
         loading={isLoading || changeLoading}
-        value={data?.name}
+        value={data?.name ?? ''}
         className="px-3"
         right={<ActionTypeCheckout data={data} />}
         onBackClick={() => navigate('/', { replace: true })}
@@ -107,6 +113,9 @@ const PageSituationActionDetail: FC<PropsType> = memo(() => {
           </AppViewSuspense>
         </Provider>
       </div>
+      {data.type === 'ewjt_action' && (
+        <Reconstruction2DResolver actionId={data.id} />
+      )}
     </div>
   )
 })

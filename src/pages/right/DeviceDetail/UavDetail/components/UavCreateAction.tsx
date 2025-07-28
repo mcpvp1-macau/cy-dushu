@@ -1,9 +1,9 @@
-import IconSetting from '@/assets/icons/jsx/IconSetting'
 import IconButton from '@/components/ui/button/IconButton'
 import { LoadingOutlined } from '@ant-design/icons'
 import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import { getCameraByType } from '@/service/modules/airline'
+import IconAddAction from '@/assets/icons/jsx/IconAddAction'
 
 type PropsType = unknown
 
@@ -53,7 +53,7 @@ const UavCreateAction: FC<PropsType> = memo(() => {
       toolTipProps={{ title: t('action.add.title') }}
       onClick={createAction}
     >
-      {loading ? <LoadingOutlined /> : <IconSetting />}
+      {loading ? <LoadingOutlined /> : <IconAddAction />}
     </IconButton>
   )
 })

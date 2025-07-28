@@ -59,4 +59,14 @@ window.config = {
   // terrainUrl: '/ja-map/terrain/{z}/{x}/{y}.png',
   intelligentPhotographVersion: 3,
   intelligentPhotographV1Filter: ['M350 RTK', 'M300'],
+  // 是否使用一机一档
+  useUavAirportDoc: true,
+  // 是否使用一机一档上传
+  useUavAirportDocUpload: false,
+  // 是否使用无人机日志
+  useUavLogs: true,
+  // 访问密钥(必须在这里配置，4a上配置无效)
+  accessKeyId: 'qgckfetkfojcsgur',
+  // 访问密钥(必须在这里配置，4a上配置无效)
+  secretAccessKey: 'K2AqfD1wl+ZfeJnTBWgQ4g==',
 }

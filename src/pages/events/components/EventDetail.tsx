@@ -18,12 +18,20 @@ export const handleStorageURL = (url: string) => {
   if (url.includes('/storage')) {
     return '/storage' + url?.split('/storage')?.[1]
   }
-  return '/storage' + url
+  if (url.startsWith('http://')) {
+    return url
+  }
+  if (url.startsWith('/')) {
+    // 如果是以 / 开头的路径，直接加上 /storage 前缀
+    return '/storage' + url
+  }
+  return '/storage/' + url
 }
 
 type PropsType = {
   data: API_EVENTS.domain.Event
   useCol?: boolean
+  /** @deprecated 没用了 */
   useGo?: boolean
   swiper?: {
     swiperData: API_EVENTS.domain.Event[]
@@ -32,9 +40,7 @@ type PropsType = {
 }
 
 /** 事件详情 */
-const EventDetail: FC<PropsType> = memo(({ data, useCol, useGo, swiper }) => {
-  const { t } = useTranslation()
-
+const EventDetail: FC<PropsType> = memo(({ data, useCol, swiper }) => {
   const queryClient = useQueryClient()
   const { data: eventData, isLoading: isTypeLoading } = useQuery(
     {
@@ -80,7 +86,7 @@ const EventDetail: FC<PropsType> = memo(({ data, useCol, useGo, swiper }) => {
   return (
     <div className={clsx('flex gap-3 text-sm', { 'flex-col': useCol })}>
       {data.sourceImage && (
-        <div className="w-full aspect-video relative">
+        <div className="w-full relative">
           {swiper ? (
             // 如果有轮播数据
             <ImageContainBoxPreviewGroup
@@ -109,45 +115,50 @@ const EventDetail: FC<PropsType> = memo(({ data, useCol, useGo, swiper }) => {
           )}
         </div>
       )}
-      <div>
-        {isTypeLoading ? (
-          <AppSpin />
-        ) : (
-          <ul className="flex flex-col gap-1 whitespace-nowrap">
-            {properties?.length > 0 &&
-              properties.map((e) => (
-                <li key={e.label} className="flex gap-3">
-                  <label>{e.label}:</label>
-                  <span className="text-white">{e.value}</span>
-                </li>
-              ))}
-            {Object.keys(expand).map((e) => (
-              <li key={e} className="flex gap-3">
-                <label>{e}:</label>
-                <span className="text-white">{JSON.stringify(expand[e])}</span>
-              </li>
-            ))}
-            {useGo && (
-              <li>
-                <label>{t('common.position')}: </label>
-                <IconButton>
-                  <IconToLocation
-                    onClick={() => {
-                      if (!data.longitude || !data.latitude) {
-                        return
-                      }
-                      bigFlyEmitter.emit('bigFly', {
-                        lng: data.longitude,
-                        lat: data.latitude,
-                      })
-                    }}
-                  />
-                </IconButton>
-              </li>
+      {isTypeLoading ||
+        (properties?.length > 0 && (
+          <div>
+            {isTypeLoading ? (
+              <AppSpin />
+            ) : (
+              properties?.length > 0 && (
+                <ul className="flex flex-col gap-1 whitespace-nowrap">
+                  {properties.map((e) => (
+                    <li key={e.label} className="flex gap-3">
+                      <label>{e.label}:</label>
+                      <p className="text-white">
+                        <span>{e.value}</span>
+                        {e.label === '位置' && (
+                          <IconButton className="ml-1">
+                            <IconToLocation
+                              onClick={() => {
+                                if (!data.longitude || !data.latitude) {
+                                  return
+                                }
+                                bigFlyEmitter.emit('bigFly', {
+                                  lng: data.longitude,
+                                  lat: data.latitude,
+                                })
+                              }}
+                            />
+                          </IconButton>
+                        )}
+                      </p>
+                    </li>
+                  ))}
+                  {Object.keys(expand).map((e) => (
+                    <li key={e} className="flex gap-3">
+                      <label>{e}:</label>
+                      <span className="text-white">
+                        {JSON.stringify(expand[e])}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )
             )}
-          </ul>
-        )}
-      </div>
+          </div>
+        ))}
     </div>
   )
 })

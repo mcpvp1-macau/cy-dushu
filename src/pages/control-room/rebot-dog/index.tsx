@@ -25,6 +25,8 @@ import RebotDogParams from './components/Params'
 import IconControlParams from '@/assets/icons/jsx/IconControlParams'
 import IconControl from '@/assets/icons/jsx/IconControl'
 import ControlRoomRebotDogHeader from './components/Header'
+import IconPayload from '@/assets/icons/jsx/IconPayload'
+import RebotDogPayload from './components/Payload'
 
 const initialLayout: DynamicLayoutType = {
   type: 'row',
@@ -87,6 +89,9 @@ const initialLayout: DynamicLayoutType = {
       isCollapsed: true,
       children: [
         {
+          key: 'payload',
+        },
+        {
           key: 'device-data',
         },
       ],
@@ -110,7 +115,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
   )
 
   const [layout, setLayout] = useLocalStorageState<DynamicLayoutType>(
-    'rebotDogControlRoomLayout',
+    'rebotDogControlRoomLayoutV2',
     {
       defaultValue: initialLayout,
     },
@@ -124,6 +129,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
       buttons: <IconControl className="text-purple-500" />,
       'device-data': <IconDeviceData className="text-orange-500" />,
       params: <IconControlParams className="text-orange-500" />,
+      payload: <IconPayload className="text-emerald-500" />,
     }),
     [],
   )
@@ -136,6 +142,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
       buttons: t('controlRoom.uav.flyButtons.title'),
       ['device-data']: t('controlRoom.uav.deviceData.title'),
       params: t('common.params'),
+      payload: t('controlRoom.uav.payload.title'),
     }),
     [t],
   )
@@ -152,6 +159,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
       buttons: <RebotDogAsideButtons />,
       'device-data': <RebotDogDetailData />,
       params: <RebotDogParams />,
+      payload: <RebotDogPayload />,
     }),
     [],
   )

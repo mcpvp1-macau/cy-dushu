@@ -124,7 +124,7 @@ const IconButtonWithDropDownDialog: FC<PropsType> = memo(
             'x-dropdown' + dropId.current,
             props.overlayClassName,
           )}
-          dropdownRender={(originNode) => {
+          popupRender={(originNode) => {
             if (isDing) {
               return <></>
             }
@@ -146,7 +146,7 @@ const IconButtonWithDropDownDialog: FC<PropsType> = memo(
                     {closeBtn}
                   </div>
                 </div>
-                {props.dropdownRender?.(originNode)}
+                {props.popupRender?.(originNode)}
               </div>
             )
           }}
@@ -176,7 +176,7 @@ const IconButtonWithDropDownDialog: FC<PropsType> = memo(
                   <span className="text-white leading-8">{title}</span>
                   {closeBtn}
                 </div>
-                {props.dropdownRender?.(originalNodeRef.current)}
+                {props.popupRender?.(originalNodeRef.current)}
               </div>
             </div>,
             document.body,

@@ -50,7 +50,7 @@ const HistoryChats: FC<PropsType> = memo(({ data }) => {
       }}
       placement="topRight"
       trigger={['click']}
-      dropdownRender={() => {
+      popupRender={() => {
         return (
           <ScrollArea className="flex flex-col gap-3 bg-ground-1 p-2 rounded max-h-[60vh]">
             {historyChatGroup
