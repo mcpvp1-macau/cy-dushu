@@ -5,6 +5,7 @@ import AppSpin from '@/components/AppSpin'
 import PanoramaViewer from '@/components/ui/PanoramaViewer'
 import usePicutreSourceTypeOptions from '@/constant/options/pictureSourceTypeOptions'
 import { dft, timeOnly } from '@/constant/time-fmt'
+import { handleStorageURL } from '@/pages/events/components/EventDetail'
 import { getPlatformCapture } from '@/service/modules/db-api'
 import useMediaOnMapStore from '@/store/map/useMediaOnMap.store'
 import { makePanormaToolbarRender, makeToolbarRender } from '@/utils/antd/image'
@@ -189,7 +190,7 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
                           height="100%"
                           loading="lazy"
                           className="block size-full object-cover"
-                          src={`/storage/${e.url}`}
+                          src={handleStorageURL(e.url)}
                           alt={e.url.slice(e.url.lastIndexOf('/') + 1)}
                         />
                       </div>

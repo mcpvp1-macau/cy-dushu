@@ -30,6 +30,8 @@ import useDensityMapStore, {
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import Reconstruction2D from '@/map/CesiumMap/components/service/Reconstruction2D/Reconstruction2D'
 import useQueryHistoryReconstruction2DProcessedResult from '@/hooks/service/reconstruction/useQueryHistoryReconstruction2DProcessedResult'
+import Reconstruction2DResultList from '@/map/CesiumMap/components/service/Reconstruction2D/Reconstruction2DResultList'
+import useDelayState from '@/hooks/useDelay'
 
 type PropsType = unknown
 
@@ -61,6 +63,8 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
     deviceId: deviceId,
   })
 
+  const delayed = useDelayState(1000)
+
   return (
     <CesiumMap id="uav-control-room-map">
       <LeftTopTools />
@@ -87,6 +91,7 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
       <PicutreOnMap />
       <DensityMap />
       <Reconstruction2D />
+      {delayed && <Reconstruction2DResultList />}
     </CesiumMap>
   )
 })

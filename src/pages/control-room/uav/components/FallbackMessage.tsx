@@ -79,7 +79,7 @@ const FallbackMessage: FC<PropsType> = memo(() => {
         </p>
       )
     })
-  }, [healthInfo])
+  }, [healthInfo, isONLINE])
 
   const mode = useMemo(() => {
     if (wsReadyState !== WebSocket.OPEN) {
