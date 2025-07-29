@@ -22,6 +22,10 @@ export type PauseOrBufferEvent = {
   type: string
 }
 
+export type ErrorEvent = {
+  type: string
+}
+
 type PropsType = {
   src: string
   autostart?: boolean

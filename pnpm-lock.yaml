@@ -58,7 +58,7 @@ importers:
         version: 1.2.3(cesium@1.115.0)
       ahooks:
         specifier: ^3.8.0
-        version: 3.9.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 3.8.0(react@18.3.1)
       antd:
         specifier: ^5.26.4
         version: 5.26.6(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -234,6 +234,9 @@ importers:
       '@types/color':
         specifier: ^3.0.6
         version: 3.0.6
+      '@types/crypto-js':
+        specifier: ^4.2.2
+        version: 4.2.2
       '@types/lodash':
         specifier: ^4.17.7
         version: 4.17.20
@@ -2202,6 +2205,9 @@ packages:
   '@types/color@3.0.6':
     resolution: {integrity: sha512-NMiNcZFRUAiUUCCf7zkAelY8eV3aKqfbzyFQlXpPIEeoNDbsEHGpb854V3gzTsGKYj830I5zPuOwU/TP5/cW6A==, tarball: https://registry.npmmirror.com/@types/color/-/color-3.0.6.tgz}
 
+  '@types/crypto-js@4.2.2':
+    resolution: {integrity: sha512-sDOLlVbHhXpAUAL0YHDUUwDZf3iN4Bwi4W6a0W0b+QcAezUbRtH4FVb+9J4h+XFPW7l/gQ9F8qC7P+Ec4k8QVQ==, tarball: https://registry.npmmirror.com/@types/crypto-js/-/crypto-js-4.2.2.tgz}
+
   '@types/d3-voronoi@1.1.12':
     resolution: {integrity: sha512-DauBl25PKZZ0WVJr42a6CNvI6efsdzofl9sajqZr2Gf5Gu733WkDdUGiPkUHXiUvYGzNNlFQde2wdZdfQPG+yw==, tarball: https://registry.npmmirror.com/@types/d3-voronoi/-/d3-voronoi-1.1.12.tgz}
 
@@ -2363,12 +2369,11 @@ packages:
     resolution: {integrity: sha512-ynZ4w/nUUv5rrsR8UUGoe1VC9hZj6V5hU9Qw1HlMDJGEJw5S7TfTErWTjMys6M7vr0YWcPqs3qAr4ss0nDfP+A==, tarball: https://registry.npmmirror.com/adler-32/-/adler-32-1.3.1.tgz}
     engines: {node: '>=0.8'}
 
-  ahooks@3.9.0:
-    resolution: {integrity: sha512-r20/C38aFyU3Zqp3620gkdLnxmQhnmWORB3eGGTDlM4i/fOc0GUvM+f2oleMzEu7b3+pHXyzz+FB6ojxsUdYdw==, tarball: https://registry.npmmirror.com/ahooks/-/ahooks-3.9.0.tgz}
+  ahooks@3.8.0:
+    resolution: {integrity: sha512-M01m+mxLRNNeJ/PCT3Fom26UyreTj6oMqJBetUrJnK4VNI5j6eMA543Xxo53OBXn6XibA2FXKcCCgrT6YCTtKQ==, tarball: https://registry.npmmirror.com/ahooks/-/ahooks-3.8.0.tgz}
     engines: {node: '>=8.0.0'}
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
   ajv@6.12.6:
     resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==, tarball: https://registry.npmmirror.com/ajv/-/ajv-6.12.6.tgz}
@@ -3266,9 +3271,8 @@ packages:
   jpeg-js@0.4.4:
     resolution: {integrity: sha512-WZzeDOEtTOBK4Mdsar0IqEU5sMr3vSV2RqkAIzUEV2BHnUfKGyswWFPFwK5EeDo93K3FohSHbLAjj0s1Wzd+dg==, tarball: https://registry.npmmirror.com/jpeg-js/-/jpeg-js-0.4.4.tgz}
 
-  js-cookie@3.0.5:
-    resolution: {integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==, tarball: https://registry.npmmirror.com/js-cookie/-/js-cookie-3.0.5.tgz}
-    engines: {node: '>=14'}
+  js-cookie@2.2.1:
+    resolution: {integrity: sha512-HvdH2LzI/EAZcUwA8+0nKNtWHqS+ZmijLA30RwZA0bo7ToCckjK5MkGhjED9KoRcXO6BaGI3I9UIzSA1FKFPOQ==, tarball: https://registry.npmmirror.com/js-cookie/-/js-cookie-2.2.1.tgz}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==, tarball: https://registry.npmmirror.com/js-tokens/-/js-tokens-4.0.0.tgz}
@@ -7758,6 +7762,8 @@ snapshots:
     dependencies:
       '@types/color-convert': 2.0.4
 
+  '@types/crypto-js@4.2.2': {}
+
   '@types/d3-voronoi@1.1.12': {}
 
   '@types/estree@1.0.8': {}
@@ -7948,15 +7954,14 @@ snapshots:
 
   adler-32@1.3.1: {}
 
-  ahooks@3.9.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  ahooks@3.8.0(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.28.2
       dayjs: 1.11.13
       intersection-observer: 0.12.2
-      js-cookie: 3.0.5
+      js-cookie: 2.2.1
       lodash: 4.17.21
       react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
       react-fast-compare: 3.2.2
       resize-observer-polyfill: 1.5.1
       screenfull: 5.2.0
@@ -8936,7 +8941,7 @@ snapshots:
 
   jpeg-js@0.4.4: {}
 
-  js-cookie@3.0.5: {}
+  js-cookie@2.2.1: {}
 
   js-tokens@4.0.0: {}
 
