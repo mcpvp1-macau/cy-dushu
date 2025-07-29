@@ -106,7 +106,9 @@ const DrawBox: FC<PropsType> = memo(({ onDrawEnd }) => {
     isDrawing.current = false
     onDrawEnd?.(rect)
     setTimeout(() => {
-      setRect([0, 0, 0, 0])
+      if (isDrawing.current === false) {
+        setRect([0, 0, 0, 0])
+      }
     }, 300)
   }
 
