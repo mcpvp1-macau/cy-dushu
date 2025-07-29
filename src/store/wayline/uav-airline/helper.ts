@@ -16,7 +16,7 @@ export const createInitAirlineConfig = () =>
     waypointHeadingMode: 'followWayline', // 跟随航线
     gimbalPitchMode: 'manual',
     finishAction: 'NO_ACTION',
-    actionTriggerType: 'reachPoint',
+    actionTriggerType: 'multipleDistance',
     actionTriggerParam: null,
     // ... 其他默认字段
   } as AirlineConfigType)

@@ -15,6 +15,7 @@ import DeviceLabel from '@/components/map/device/DeviceLabel'
 import * as Cesium from 'cesium'
 import VideoProjection from '@/pages/control-room/uav/components/ControlRoomMap/components/VideoProjection'
 import useMapSettingStore from '@/store/setting/useMapSetting.store'
+import useDeviceTrackColorStore from '@/store/setting/useDeviceTrackColor.store'
 
 type PropsType = {
   deviceId: string
@@ -132,6 +133,13 @@ const UavDetailMarker: FC<PropsType> = memo(
       }
     }, [state, onPositionChange])
 
+    const color = useDeviceTrackColorStore(
+      (s) => s.colorMap[deviceId] || '#d42422',
+    )
+    const materialType = useDeviceTrackColorStore(
+      (s) => s.materialType[deviceId] || 'glow',
+    )
+
     if (!state) {
       return null
     }
@@ -160,9 +168,20 @@ const UavDetailMarker: FC<PropsType> = memo(
           useGimbal={!enableUavDetailFrustum || !gimbalPickExist}
         />
         {historyTrack.map((track, index) => (
-          <HistoryTrack key={index} value={track} />
+          <HistoryTrack
+            key={index}
+            value={track}
+            color={color}
+            materialType={materialType}
+          />
         ))}
-        {realTrack.length > 1 && <HistoryTrack value={realTrack} useCallback />}
+        {realTrack.length > 1 && (
+          <HistoryTrack
+            value={realTrack}
+            color={color}
+            materialType={materialType}
+          />
+        )}
         {gimbalPickExist && enableUavDetailFrustum && (
           <CameraGroundFrustum
             gimbalPick={gimbalPick as any}

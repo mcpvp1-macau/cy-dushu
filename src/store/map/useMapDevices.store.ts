@@ -35,6 +35,8 @@ type StateType = {
   }
   /** 无人机轨迹 */
   uavTracks: { [deviceId: string]: { path: Track[]; useCallback: boolean } }
+  /** 设备 (非活) 轨迹 */
+  deviceInActiveTracks: { [deviceId: string]: Track[][] }
   /** 扫描区域 */
   scanAreas: {
     [deviceId: string]: GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon>
@@ -63,7 +65,13 @@ type ActionsType = {
   updateAllDevices: (allDevices: StateType['allDevices']) => void
   updateAllDevicesMap: (allDevicesMap: StateType['allDevicesMap']) => void
   updateRobotDogDevices: (robotDogDevices: StateType['robotDogDevices']) => void
+  /** 更新无人机轨迹 */
   updateUavTracks: (uavTracks: StateType['uavTracks']) => void
+  /** 更新设备 (非活) 轨迹 */
+  updateDeviceInActiveTracks: (
+    deviceInActiveTracks: StateType['deviceInActiveTracks'],
+  ) => void
+  /** 更新无人机状态 */
   updateUavStates: (uavStates: StateType['uavStates']) => void
   updateScanAreas: (scanAreas: StateType['scanAreas']) => void
   updateFollowedVideos: (followedVideos: StateType['followedVideos']) => void
@@ -82,6 +90,7 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       allDevicesMap: {},
       robotDogDevices: [],
       uavTracks: {},
+      deviceInActiveTracks: {},
       uavStates: {},
       scanAreas: {},
       scanAreasEnable: {},
@@ -110,6 +119,9 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       },
       updateUavTracks: (uavTracks) => {
         set({ uavTracks }, false, 'updateUavTracks')
+      },
+      updateDeviceInActiveTracks: (deviceInActiveTracks) => {
+        set({ deviceInActiveTracks }, false, 'updateDeviceInActiveTracks')
       },
       updateUavStates: (uavStates) => {
         set({ uavStates }, false, 'updateUavStates')

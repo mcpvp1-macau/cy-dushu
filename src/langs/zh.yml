@@ -248,6 +248,14 @@ device:
       title: 可见光控制
   linkSwitch:
     title: 链路切换
+  trackColor: 轨迹颜色
+  trackMaterialType: 纹理类型
+  trackMaterial:
+    title: 纹理类型
+    options:
+      color: 纯色
+      outline: 描边
+      glow: 发光
 action:
   input:
     placeholder: 请根据行动名称搜索
@@ -552,6 +560,7 @@ common:
   restart: 重启
   show: 显示
   hide: 隐藏
+  deviceConfig: 设备配置
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索

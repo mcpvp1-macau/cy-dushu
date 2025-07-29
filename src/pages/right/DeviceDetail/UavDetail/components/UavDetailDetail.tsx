@@ -20,6 +20,7 @@ const UavDetailGimbalControl = lazy(
 const DeviceAlgorithmList = lazy(
   () => import('@/components/device/algorithm/DeviceAlgorithmList'),
 )
+const UavConfiguration = lazy(() => import('./UavConfiguration'))
 
 type PropsType = {
   /** 详情数据 */
@@ -86,7 +87,6 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
       </section>
       <AppCollapse
         className="mt-3 border-x-0 border-b-0"
-        defaultActiveKey={['gimbal', 'flight']}
         items={[
           {
             label: t('uav.gimbalControl.title'),
@@ -115,6 +115,14 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
                   deviceId={deviceId}
                   productKey={productKey!}
                 />
+              </AppViewSuspense>
+            ),
+          },
+          {
+            label: t('common.deviceConfig'),
+            children: (
+              <AppViewSuspense>
+                <UavConfiguration />
               </AppViewSuspense>
             ),
           },

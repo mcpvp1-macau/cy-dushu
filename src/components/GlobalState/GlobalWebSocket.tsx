@@ -16,6 +16,9 @@ import useReconstructionMapStore, {
 import { useAppNotification } from '@/hooks/useNotification'
 import { realDensityMapEmitter } from '@/store/map/useDensityMap.store'
 import { processEventImageDataEmitter } from '@/store/map/useReconstruction2DMap.store'
+import useDeviceInactiveStore from '@/store/setting/useDeviceInactiveSetting.store'
+import useMapDevicesStore from '@/store/map/useMapDevices.store'
+import { pathCompress3D } from '@/utils/path'
 
 type PropsType = unknown
 
@@ -136,11 +139,41 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
       case 'PROPERTIES':
         const pro: any = {}
         const os: Record<string, string> = {}
+
+        // 处理失活轨迹
+        const tracks = {
+          ...useMapDevicesStore.getState().deviceInActiveTracks,
+        }
+        const trackOpen = useDeviceInactiveStore.getState().trackOpen
         for (const item of data) {
           const { deviceId: id } = item
           pro[id] = item
           os[id] = item.deviceStatus
+          if (
+            trackOpen[id] &&
+            item.properties.longitude &&
+            item.properties.latitude
+          ) {
+            const currentTracks = tracks[id] ?? []
+            const point: (typeof currentTracks)[number][number] = {
+              lng: item.properties.longitude,
+              lat: item.properties.latitude,
+              alt: item.properties.altitude ?? 0,
+            }
+            if (currentTracks.length === 0) {
+              tracks[id] = [[point]]
+            } else {
+              let lastTrack = currentTracks.at(-1)!
+              if (lastTrack.length === 64) {
+                tracks[id] = [...currentTracks, [point]]
+              } else {
+                lastTrack = pathCompress3D([...lastTrack, point])
+                tracks[id] = [...currentTracks.slice(0, -1), lastTrack]
+              }
+            }
+          }
         }
+        useMapDevicesStore.getState().updateDeviceInActiveTracks(tracks)
         updateDeviceRealtimeProperties(pro)
         // 判断是否需要刷新设备列表
         if (!isEqual(useGlobalWsStore.getState().onlineStatus, os)) {

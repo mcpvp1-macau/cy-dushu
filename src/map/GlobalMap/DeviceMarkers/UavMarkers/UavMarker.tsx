@@ -1,7 +1,6 @@
 import useGlobalWsStore, {
   useRealOnlineStatus,
 } from '@/store/useGlobalWebSocket.store'
-import icon from '/images/marker/icon/uav3.svg'
 import { Billboard, useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
@@ -12,6 +11,10 @@ import HeightDashLine from '@/map/CesiumMap/components/service/common/HeightDash
 import { useShallow } from 'zustand/react/shallow'
 import { round } from 'lodash'
 import { useAsyncEffect } from 'ahooks'
+import GLBModel from '@/map/CesiumMap/components/service/common/GLBModel'
+import useMapDevicesStore from '@/store/map/useMapDevices.store'
+import HistoryTrack from '@/components/map/HistoryTrack'
+import useDeviceTrackColorStore from '@/store/setting/useDeviceTrackColor.store'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -79,6 +82,25 @@ const UavMarker: FC<PropsType> = memo(({ data, onPositionChange }) => {
     })
   }, [lng, lat, alt, onPositionChange])
 
+  const isSTRIKER = useMemo(
+    () =>
+      data.deviceTags.find(
+        (e) => e.tagName === 'BUSINESS_TYPE' && e.tagValue === 'STRIKER',
+      ),
+    [data.deviceTags],
+  )
+
+  const inActiveTracks = useMapDevicesStore(
+    (s) => s.deviceInActiveTracks[deviceId],
+  )
+
+  const color = useDeviceTrackColorStore(
+    (s) => s.colorMap[deviceId] || '#d42422',
+  )
+  const materialType = useDeviceTrackColorStore(
+    (s) => s.materialType[deviceId] || 'glow',
+  )
+
   if (
     isHidden || // 隐藏
     (isOnline && !deviceIsOnline) || // 在线状态不显示
@@ -96,16 +118,31 @@ const UavMarker: FC<PropsType> = memo(({ data, onPositionChange }) => {
 
   return (
     <>
-      <Billboard
-        id={`device--${data.deviceType}--${data.deviceName}--${data.deviceId}--${lng}--${lat}`}
-        position={position}
-        image={icon}
-        width={28}
-        height={28}
-        disableDepthTestDistance={16_000_000}
-        heightReference={Cesium.HeightReference.NONE}
-        rotation={Cesium.Math.toRadians(-realHeading || 0)}
-      />
+      {data.deviceName.includes('BZK') ? (
+        <GLBModel
+          id={`device--${data.deviceType}--${data.deviceName}--${data.deviceId}--${lng}--${lat}`}
+          modelUrl="/ja-map/models/CY5E1.glb"
+          position={position}
+          heading={Cesium.Math.toRadians((realHeading || 0) + 180)}
+          pitch={Cesium.Math.toRadians(90)}
+          scale={2}
+        />
+      ) : (
+        <Billboard
+          id={`device--${data.deviceType}--${data.deviceName}--${data.deviceId}--${lng}--${lat}`}
+          position={position}
+          image={
+            isSTRIKER
+              ? '/images/marker/icon/dajiUav.svg'
+              : '/images/marker/icon/uav3.svg'
+          }
+          width={28}
+          height={28}
+          disableDepthTestDistance={16_000_000}
+          heightReference={Cesium.HeightReference.NONE}
+          rotation={Cesium.Math.toRadians(-realHeading || 0)}
+        />
+      )}
       <DeviceLabel
         text={data.deviceName}
         id={deviceId}
@@ -115,6 +152,15 @@ const UavMarker: FC<PropsType> = memo(({ data, onPositionChange }) => {
       {deviceIsOnline && alt !== groundHeight && (
         <HeightDashLine position={[lng || 120, lat || 30, alt]} color="#fff" />
       )}
+      {inActiveTracks?.length > 0 &&
+        inActiveTracks.map((track, index) => (
+          <HistoryTrack
+            key={index}
+            value={track}
+            color={color}
+            materialType={materialType}
+          />
+        ))}
     </>
   )
 })

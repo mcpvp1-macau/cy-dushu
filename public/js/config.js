@@ -5,6 +5,7 @@ window.config = {
   loginUrl: 'http://test.4a.jing-an.com:32712/login',
   globalWs: 'ws', // 全局
   useShanghaiBanRoutes: false, // 使用上海禁飞航线
+  isBinzhou: true,
   defaultImageries: [
     {
       url: '/data/maptiler-satellite-lowres/{z}/{x}/{y}.jpg',

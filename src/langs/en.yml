@@ -254,6 +254,14 @@ device:
       title: visible light control
   linkSwitch:
     title: Link Switch
+  trackColor: Track Color
+  trackMaterialType: Material
+  trackMaterial:
+    title: Material
+    options:
+      color: Color
+      outline: Outline
+      glow: Glow
 action:
   input:
     placeholder: Please search by action name
@@ -558,6 +566,7 @@ common:
   restart: Restart
   show: Show
   hide: Hide
+  deviceConfig: Device Configuration
 events:
   search:
     placeholder: Please search by event name or ID

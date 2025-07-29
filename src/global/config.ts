@@ -68,6 +68,8 @@ class GlobalConfig {
   intelligentPhotographV1Filter?: string[]
   /** 是否 72 */
   is72?: boolean
+  /** 是否滨州演示 */
+  isBinzhou?: boolean
 
   /** minio */
   bucketName: undefined

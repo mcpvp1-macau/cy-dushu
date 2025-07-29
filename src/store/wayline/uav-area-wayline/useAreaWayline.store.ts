@@ -60,7 +60,7 @@ const createInitialState = (): StateType => ({
     interval: 0,
     coverage: 10,
     wideGSD: 5,
-    photoWaylineCoverage: 0.7,
+    photoWaylineCoverage: 0.9,
   },
   isDrawHome: false,
   cameraInfo: {

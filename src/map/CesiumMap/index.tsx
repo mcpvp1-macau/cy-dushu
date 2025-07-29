@@ -41,6 +41,8 @@ const ShanghaiWarZone = lazy(
   () => import('./components/custom/ShanghaiWarZone'),
 )
 
+const BinzhouDemo = lazy(() => import('./components/BinzhouDemo'))
+
 const GuizhouFarm = lazy(() => import('./components/custom/GuizhouFarm'))
 
 type PropsType = {
@@ -139,6 +141,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
         {globalConfig.useGuizhouFarm && <GuizhouFarm />}
         {globalConfig.useHangzhouBanAreas && <HangzhouBanAreas />}
         {globalConfig.useGuizhouProjects && <GuizhouProjects />}
+        {globalConfig.isBinzhou && <BinzhouDemo />}
       </Suspense>
       <BottomBar />
       <FuzhouJiefangBridge />

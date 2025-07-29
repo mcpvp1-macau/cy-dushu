@@ -26,7 +26,7 @@ const CameraModeConfig: FC<PropsType> = memo(() => {
             })
           }}
           options={[
-            { label: '到达航点时拍照', value: 'reachPoint' },
+            // { label: '到达航点时拍照', value: 'reachPoint' },
             {
               label: '等时触发',
               value: 'multipleTiming',

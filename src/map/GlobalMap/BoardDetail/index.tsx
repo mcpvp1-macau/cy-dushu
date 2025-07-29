@@ -3,7 +3,6 @@ import clsx from 'clsx'
 import dayjs from 'dayjs'
 import styles from './index.module.less'
 import React from 'react'
-import { useMemoizedFn } from 'ahooks'
 import { infoFieldFormatter } from '@/utils/other/utils'
 import useBoardObjStore from '@/store/map/useBoardObj.store'
 import IconClose from '@/assets/icons/jsx/IconClose'
@@ -69,7 +68,7 @@ const BoardDetail: React.FC<Props> = ({ data, onClose }) => {
                 {targetId}（
                 {infoFieldFormatter({
                   value: objectLabel,
-                  emptyString: t('common.unknown'),
+                  emptyString: '车辆',
                 })}
                 ）
               </div>
@@ -115,25 +114,30 @@ const BoardDetail: React.FC<Props> = ({ data, onClose }) => {
           <Flex justify="space-between" align="center">
             <div style={{ width: 340 }} className={styles.targetInfo}>
               <Flex className="flex-warp gap-x-12" wrap>
-                <Flex>
-                  <div className={styles.label}>{t('common.speed')}</div>
-                  <div className={styles.text}>
-                    {renderNumber(speed, 'm/s')}
-                  </div>
-                </Flex>
-                <Flex>
-                  <div className={styles.label}>{t('common.distance')}</div>
-                  <div className={styles.text}>
-                    {renderNumber(distance, 'm')}
-                  </div>
-                </Flex>
-                <Flex>
-                  <div className={styles.label}>{t('common.altitude')}</div>
-                  <div className={styles.text}>
-                    {renderNumber(altitude, 'm')}
-                  </div>
-                </Flex>
-
+                {!!speed && (
+                  <Flex>
+                    <div className={styles.label}>{t('common.speed')}</div>
+                    <div className={styles.text}>
+                      {renderNumber(speed, 'm/s')}
+                    </div>
+                  </Flex>
+                )}
+                {!!distance && (
+                  <Flex>
+                    <div className={styles.label}>{t('common.distance')}</div>
+                    <div className={styles.text}>
+                      {renderNumber(distance, 'm')}
+                    </div>
+                  </Flex>
+                )}
+                {!!altitude && (
+                  <Flex>
+                    <div className={styles.label}>{t('common.altitude')}</div>
+                    <div className={styles.text}>
+                      {renderNumber(altitude, 'm')}
+                    </div>
+                  </Flex>
+                )}
                 <Flex>
                   <div className={styles.label}>{t('action.item.time')}</div>
                   <div className={styles.text}>

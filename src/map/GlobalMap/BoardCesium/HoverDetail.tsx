@@ -265,6 +265,7 @@ const HoverDetail = ({ item, option, onClose }: Props) => {
             longitude: item.targetLongitude,
             latitude: item.targetLatitude,
             imageUrl: item.imagePath || item.imageUrl,
+            objectLabel: item.targetType,
           }}
           onClose={onClose}
         />

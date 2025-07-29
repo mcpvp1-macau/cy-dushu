@@ -45,7 +45,7 @@ export default mergeConfig(
         },
         // 瓦片地图
         '/ja-map': {
-          target: 'http://47.111.155.82:32712',
+          target: 'https://dushu.jing-an.com:32716',
           changeOrigin: true,
         },
         // 历史视频

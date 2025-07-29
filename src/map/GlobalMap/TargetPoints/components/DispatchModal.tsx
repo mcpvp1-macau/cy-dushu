@@ -90,12 +90,12 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
     setFlyModalOpen(true)
     ;(devices ?? checkedDevices).forEach((e, i) => {
       const { deviceId, productKey, deviceType } = deviceMap.get(e)!
-      form.setFieldValue([deviceId, 'height'], 120 + i * 10)
-      form.setFieldValue([deviceId, 'gohomeAltitude'], 120 + i * 10)
+      form.setFieldValue([deviceId, 'height'], 40 - i * 10)
+      form.setFieldValue([deviceId, 'gohomeAltitude'], 40 - i * 10)
       form.setFieldValue(
         [deviceId, 'speed'],
         deviceType === DeviceEnum.UAV || deviceType === DeviceEnum.UAV_AIRPORT
-          ? 10
+          ? 15
           : 3,
       )
       form.setFieldValue([deviceId, 'deviceId'], deviceId)
