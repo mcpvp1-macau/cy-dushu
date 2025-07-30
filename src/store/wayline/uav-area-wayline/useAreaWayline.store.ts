@@ -43,6 +43,8 @@ const createInitialState = (): StateType => ({
   open: false,
   airlineConfig: {
     ...createInitAirlineConfig(),
+    speed: 5,
+    actionTriggerType: 'multipleDistance',
     globalWaypointTurnMode: 'toPointAndPassWithContinuityCurvature',
     height: 140.6,
   },
