@@ -1,4 +1,7 @@
-import { getProductFieldsByIdentifier } from '@/service/modules/device'
+import {
+  getAllDeviceList,
+  getProductFieldsByIdentifier,
+} from '@/service/modules/device'
 import { heartbeat } from '@/constant/websocket'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import useUserStore from '@/store/useUser.store'
@@ -41,6 +44,28 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
     queryClient,
   )
 
+  const { data: allDeviceList = [] } = useQuery(
+    {
+      queryKey: ['getAllDeviceList'],
+      queryFn: () =>
+        getAllDeviceList({
+          isPage: false,
+        }),
+      select: (d) => d.data.rows || [],
+    },
+    queryClient,
+  )
+
+  // 设备列表，用于过滤掉非本组织可见的设备
+  const allDeviceListMap = useMemo(() => {
+    return allDeviceList.reduce((acc, item) => {
+      acc[item.deviceId] = true
+      return acc
+    }, {})
+  }, [allDeviceList])
+
+  const allDeviceListMapRef = useRef(allDeviceListMap)
+
   const labelMap = useMemo(() => {
     const map = {}
     data?.forEach((item) => {
@@ -69,6 +94,14 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
   const handleRadarTarget = useMemoizedFn((obj: any) => {
     const { parentId, deviceId, data } = obj
     // if ('RADAR' !== data?.data?.sourceType)
+
+    // 如果设备不存在，则不处理
+    if (
+      !allDeviceListMapRef.current[deviceId] ||
+      !allDeviceListMapRef.current[parentId]
+    ) {
+      return
+    }
 
     const target = useGlobalWsStore.getState().radarTarget || {}
     const parentDevice = target[parentId] || {}
@@ -138,8 +171,11 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         const os: Record<string, string> = {}
         for (const item of data) {
           const { deviceId: id } = item
-          pro[id] = item
-          os[id] = item.deviceStatus
+          // 设备存在，则更新设备状态
+          if (allDeviceListMapRef.current[id]) {
+            pro[id] = item
+            os[id] = item.deviceStatus
+          }
         }
         updateDeviceRealtimeProperties(pro)
         // 判断是否需要刷新设备列表
@@ -155,9 +191,12 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         let needRefresh = false
         for (const item of data) {
           const { deviceId: id } = item
-          if (newOS[id] !== item.deviceStatus) {
-            newOS[id] = item.deviceStatus
-            needRefresh = true
+          // 设备存在，则更新设备状态
+          if (allDeviceListMapRef.current[id]) {
+            if (newOS[id] !== item.deviceStatus) {
+              newOS[id] = item.deviceStatus
+              needRefresh = true
+            }
           }
         }
         if (needRefresh) {
@@ -171,19 +210,22 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         if (data.method === 'event.targetInfo.info') {
           handleRadarTarget(obj)
         } else if (data.method === 'event.densityMap.info') {
-          const data2 = data.data as {
-            densityMap: {
-              h3Code: string
-              averageDensity: number
-            }[]
-            statisticalInterval: number
-            resolution: number
-            timestamp: number
+          // 设备存在，则更新设备状态
+          if (allDeviceListMapRef.current[obj.deviceId]) {
+            const data2 = data.data as {
+              densityMap: {
+                h3Code: string
+                averageDensity: number
+              }[]
+              statisticalInterval: number
+              resolution: number
+              timestamp: number
+            }
+            realDensityMapEmitter.emit('densityMap', {
+              deviceId: obj.deviceId,
+              data: data2.densityMap,
+            })
           }
-          realDensityMapEmitter.emit('densityMap', {
-            deviceId: obj.deviceId,
-            data: data2.densityMap,
-          })
         }
         break
     }

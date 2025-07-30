@@ -6,6 +6,11 @@ import IconDetail from '@/assets/icons/jsx/IconDetail'
 import IconData from '@/assets/icons/jsx/IconData'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import { BaseDeviceDetailProps } from '../routes'
+import {
+  OthersControlRoomStoreContext,
+  useCreateOthersControlRoomStore,
+} from '@/store/context-store/useOthersControlRoom.store'
+import useServerEventMsg from '@/pages/control-room/uav/hooks/useServerEventMsg'
 
 type PropsType = BaseDeviceDetailProps
 
@@ -21,6 +26,15 @@ const CameraDetail: FC<PropsType> = memo(({ data, headerTools, onClose }) => {
       </div>
     ),
     [data.deviceName],
+  )
+  const productKey = data.productKey || data.deviceModel?.productKey
+  const deviceId = data.deviceId
+  const deviceType = data.deviceType
+
+  const store = useCreateOthersControlRoomStore(
+    productKey!,
+    deviceId,
+    useServerEventMsg(),
   )
 
   const [tab, setTab] = useState('详情')
@@ -38,24 +52,26 @@ const CameraDetail: FC<PropsType> = memo(({ data, headerTools, onClose }) => {
   ]).current
 
   return (
-    <div>
-      <CloseableHeader onClose={onClose} rightTools={headerTools}>
-        {header}
-      </CloseableHeader>
-      <div className="px-3 mt-1 mb-3">
-        <Segmented
-          block
-          value={tab}
-          options={segmentOptions}
-          onChange={setTab}
-        />
+    <OthersControlRoomStoreContext.Provider value={store}>
+      <div>
+        <CloseableHeader onClose={onClose} rightTools={headerTools}>
+          {header}
+        </CloseableHeader>
+        <div className="px-3 mt-1 mb-3">
+          <Segmented
+            block
+            value={tab}
+            options={segmentOptions}
+            onChange={setTab}
+          />
+        </div>
+        <div className="flex-1 overflow-y-auto">
+          <AppViewSuspense>
+            {tab === '详情' ? <CameraDetailDetail /> : <CameraDetailData />}
+          </AppViewSuspense>
+        </div>
       </div>
-      <div className="flex-1 overflow-y-auto">
-        <AppViewSuspense>
-          {tab === '详情' ? <CameraDetailDetail /> : <CameraDetailData />}
-        </AppViewSuspense>
-      </div>
-    </div>
+    </OthersControlRoomStoreContext.Provider>
   )
 })
 
