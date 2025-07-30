@@ -16,6 +16,7 @@ import * as Cesium from 'cesium'
 import VideoProjection from '@/pages/control-room/uav/components/ControlRoomMap/components/VideoProjection'
 import useMapSettingStore from '@/store/setting/useMapSetting.store'
 import useDeviceTrackColorStore from '@/store/setting/useDeviceTrackColor.store'
+import GLBModel from '@/map/CesiumMap/components/service/common/GLBModel'
 
 type PropsType = {
   deviceId: string
@@ -163,10 +164,21 @@ const UavDetailMarker: FC<PropsType> = memo(
           color="#fff"
         />
         <DeviceLabel id={deviceId} text={deviceName} position={position} />
-        <MapUavRealMarker
-          data={state}
-          useGimbal={!enableUavDetailFrustum || !gimbalPickExist}
-        />
+        {deviceName.includes('BZK') ? (
+          <GLBModel
+            id={`device--UAV--${deviceName}--${deviceId}--${state.longitude}--${state.latitude}`}
+            modelUrl="/ja-map/models/CY5E1.glb"
+            position={position}
+            heading={Cesium.Math.toRadians((state.gimbalYaw || 0) + 180)}
+            pitch={Cesium.Math.toRadians(90)}
+            scale={2}
+          />
+        ) : (
+          <MapUavRealMarker
+            data={state}
+            useGimbal={!enableUavDetailFrustum || !gimbalPickExist}
+          />
+        )}
         {historyTrack.map((track, index) => (
           <HistoryTrack
             key={index}
