@@ -8,12 +8,17 @@ import { verifyToken } from '@/utils/ak'
 import { shouldJson } from '@/utils/json'
 // import { calcStreamId } from '@/utils/video/stream'
 import {
-//   useFullscreen,
+  //   useFullscreen,
   useInterval,
   useLatest,
-//   useSize,
+  //   useSize,
   useThrottleFn,
 } from 'ahooks'
+// import VConsole from 'vconsole'
+import XGFlvVideo from './XGFlvVideo'
+import { formatTs } from '@/utils/format/time'
+
+// const vConsole = new VConsole()
 
 const ShareVideo: React.FC = () => {
   const params = useParams()
@@ -123,10 +128,10 @@ const ShareVideo: React.FC = () => {
     await refetch()
   }
   const wrapperRef = useRef<HTMLDivElement>(null)
-//   const [fullScreen, { toggleFullscreen }] = useFullscreen(wrapperRef)
+  //   const [fullScreen, { toggleFullscreen }] = useFullscreen(wrapperRef)
 
   const videoBoxRef = useRef<HTMLDivElement>(null)
-//   const size = useSize(videoBoxRef)
+  //   const size = useSize(videoBoxRef)
 
   useInterval(() => {
     if (
@@ -195,6 +200,19 @@ const ShareVideo: React.FC = () => {
     getExpireTime()
   }, [token])
 
+  function isWeChatBrowser() {
+    return /MicroMessenger/i.test(navigator.userAgent)
+  }
+
+  function isAndroid() {
+    return navigator.userAgent.match(/Android/i)
+  }
+
+  const isWeChatAndroid = useMemo(
+    () => isWeChatBrowser() && isAndroid(),
+    [isWeChatBrowser, isAndroid],
+  )
+
   if (isExpire) {
     return (
       <div className="bg-ground-1 text-fore w-full h-[100vh] flex items-center justify-center">
@@ -205,6 +223,13 @@ const ShareVideo: React.FC = () => {
 
   return (
     <div className="bg-ground-1 text-fore w-full h-[100vh]">
+      {finalUrl ? (
+        <div className="absolute top-0 left-0 w-full z-10 h-10 bg-black/50 flex items-center justify-center">
+          <div className="text-[#fff] text-xs">{formatTs(ts)}</div>
+        </div>
+      ) : (
+        <></>
+      )}
       <div
         className="size-full overflow-hidden relative bg-black text-sm"
         ref={wrapperRef}
@@ -232,7 +257,29 @@ const ShareVideo: React.FC = () => {
               <></>
             )}
 
-            {finalUrl && (
+            {finalUrl && isWeChatAndroid ? (
+              <XGFlvVideo
+                src={finalUrl.replace('ws', 'http')}
+                onVideoInfo={(v) => {
+                  const aspect = v.width / v.height
+                  if (Math.abs(aspect - aspectRatio) > 1e-5) {
+                    setAspectRatio(v.width / v.height)
+                  }
+                }}
+                onTimeUpdate={(ts) => {
+                  setTs(ts.position * 1000)
+                  console.log('ts', ts, Date.now())
+                }}
+                autostart
+                onError={() => {
+                  handleRefresh()
+                }}
+              />
+            ) : (
+              <></>
+            )}
+
+            {finalUrl && !isWeChatAndroid && (
               <Jessibuca
                 // key={jessibucaKey}
                 containerId={'1'}
