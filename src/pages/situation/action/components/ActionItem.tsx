@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 
 type PropsType = {
   data: API_ACTION.domain.ActionRecord
+  actionType: string
 }
 
 // const statusMap = {
@@ -11,7 +12,7 @@ type PropsType = {
 // }
 
 /** 行动列表项 */
-const ActionItem: FC<PropsType> = memo(({ data }) => {
+const ActionItem: FC<PropsType> = memo(({ data, actionType }) => {
   const { t, i18n } = useTranslation()
 
   const statusMap = useMemo(
@@ -53,6 +54,9 @@ const ActionItem: FC<PropsType> = memo(({ data }) => {
         </p>
         <p className="mt-1">
           {t('action.item.description')}: {data.description || '-'}
+        </p>
+        <p className="mt-1">
+          {'类型'}: {actionType}
         </p>
       </div>
     </Link>
