@@ -1,3 +1,4 @@
+import { emtpyArray } from '@/constant/data'
 import { getGimbalInfo } from '@/constant/uav/gimbalV2'
 import { getReconstruction2DList } from '@/service/modules/reconstruction'
 import type { ProcessedResultType } from '@/store/map/useReconstruction2DMap.store'
@@ -21,16 +22,30 @@ const useQueryHistoryReconstruction2DProcessedResult = (queryData: {
     },
     queryClient,
   )
-  useEffect(() => {
+
+  const hidden = useReconstruction2DMapStore((s) => s.hiddenReconstruction2DSet)
+
+  // 筛选出要渲染的结果
+  const processedResults = useMemo(() => {
     if (!data2dList?.length) {
-      return
+      return emtpyArray
     }
-    if (data2dList[0].process && data2dList[0].status === 'PROCESSING') {
-      const processedResults: ProcessedResultType[] = []
+
+    const processedResults: { id: number; results: ProcessedResultType[] }[] =
+      []
+    const usedUrl = new Set<string>()
+    for (const task of data2dList) {
+      if (task.status !== 'PROCESSING') {
+        continue
+      }
+      const results: ProcessedResultType[] = []
       for (const item of data2dList[0].process ?? []) {
+        if (usedUrl.has(item.imageUrl)) {
+          continue
+        }
         if (item.imageType === 'tiff') {
-          processedResults.length = 0
-          processedResults.push({
+          results.length = 0
+          results.push({
             imgUrl: item.imageUrl,
             lon: 0,
             lat: 0,
@@ -59,7 +74,7 @@ const useQueryHistoryReconstruction2DProcessedResult = (queryData: {
           continue
         }
         const g = getGimbalInfo(meta.productName)
-        processedResults.push({
+        results.push({
           imgUrl: item.imageUrl,
           lon: meta.gpsLongitude,
           lat: meta.gpsLatitude,
@@ -73,12 +88,31 @@ const useQueryHistoryReconstruction2DProcessedResult = (queryData: {
           zoomFactor: 1,
           imgType: 'jpeg',
         })
+        usedUrl.add(item.imageUrl)
       }
-      useReconstruction2DMapStore
-        .getState()
-        .updateProcessedResults(processedResults)
+      if (results.length > 0) {
+        processedResults.push({ id: task.id, results })
+      }
     }
+
+    return processedResults
   }, [data2dList])
+
+  //
+  const visiblueProcessResults = useMemo(
+    () =>
+      processedResults
+        .filter((e) => !hidden.has(e.id))
+        .map((e) => e.results)
+        .flat(),
+    [processedResults, hidden],
+  )
+
+  useEffect(() => {
+    useReconstruction2DMapStore
+      .getState()
+      .updateProcessedResults(visiblueProcessResults)
+  }, [visiblueProcessResults])
 }
 
 export default useQueryHistoryReconstruction2DProcessedResult
