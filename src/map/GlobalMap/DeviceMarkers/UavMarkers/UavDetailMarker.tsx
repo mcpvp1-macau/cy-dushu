@@ -164,7 +164,7 @@ const UavDetailMarker: FC<PropsType> = memo(
           color="#fff"
         />
         <DeviceLabel id={deviceId} text={deviceName} position={position} />
-        {deviceName.includes('BZK') ? (
+        {deviceName?.includes('BZK') ? (
           <GLBModel
             id={`device--UAV--${deviceName}--${deviceId}--${state.longitude}--${state.latitude}`}
             modelUrl="/ja-map/models/CY5E1.glb"

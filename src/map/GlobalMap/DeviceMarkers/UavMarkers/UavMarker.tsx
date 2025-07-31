@@ -118,7 +118,7 @@ const UavMarker: FC<PropsType> = memo(({ data, onPositionChange }) => {
 
   return (
     <>
-      {data.deviceName.includes('BZK') ? (
+      {data.deviceName?.includes('BZK') ? (
         <GLBModel
           id={`device--${data.deviceType}--${data.deviceName}--${data.deviceId}--${lng}--${lat}`}
           modelUrl="/ja-map/models/CY5E1.glb"
