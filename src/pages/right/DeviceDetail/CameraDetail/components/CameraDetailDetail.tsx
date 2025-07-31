@@ -32,12 +32,11 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
 
   const videoRef = useRef<ComponentRef<typeof DeviceLiveVideo>>(null)
 
-  console.log('deviceDetail', deviceDetail)
 
   const isHaveGimbal = !!services?.['moveGimbal']
-  console.log('isHaveGimbal', isHaveGimbal)
 
   const [downKey, setDownKey] = useState<Record<string, number> | null>(null)
+  const [zoom, setZoom] = useState<Record<string, number | string | undefined> | null>(null)
 
   const sendCommand = useOthersControlRoomStore((s) => s.sendCommand)
 
@@ -48,6 +47,12 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
     downKey ? 60 : undefined,
   )
 
+  useRafInterval(
+    () => {
+      sendCommand('service.liveZoomChange.post', zoom)
+    },
+    zoom ? 60 : undefined,
+  )
   return (
     <div>
       <section className="mx-3">
@@ -85,7 +90,7 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
                 <AppViewSuspense>
                   <div className="flex justify-center my-3 items-center gap-10">
                     <ControlBar speed={speed} setDownKey={setDownKey} />
-                    <ZoomControl item={deviceDetail} />
+                    <ZoomControl item={deviceDetail} setZoom={setZoom} />
                   </div>
                 </AppViewSuspense>
               ),
