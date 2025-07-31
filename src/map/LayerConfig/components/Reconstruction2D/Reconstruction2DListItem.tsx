@@ -121,6 +121,18 @@ const Recon2DListItem: FC<PropsType> = memo(
                       setIsLoading(true)
                       try {
                         await deleteReconstruction2D(data.id)
+
+                        // 移除过程中的结果
+                        const processedResults =
+                          useReconstruction2DMapStore.getState()
+                        const newList =
+                          processedResults.reconstruction2DList.filter(
+                            (item) => item.actionId !== data.actionId,
+                          )
+                        useReconstruction2DMapStore
+                          .getState()
+                          .updateReconstruction2DList(newList)
+
                         handleSuccess()
                       } finally {
                         setIsLoading(false)
