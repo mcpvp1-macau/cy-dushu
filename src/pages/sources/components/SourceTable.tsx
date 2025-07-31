@@ -3,9 +3,12 @@ import { getAllDeviceList, getUavDocSnList } from '@/service/modules/device'
 import {
   createColumnHelper,
   getCoreRowModel,
+  getFilteredRowModel,
+  type ColumnFiltersState,
   useReactTable,
+  VisibilityState,
 } from '@tanstack/react-table'
-import { Badge, Input, Pagination } from 'antd'
+import { Badge, Input, Pagination, Radio } from 'antd'
 import { Link, useSearchParams } from 'react-router-dom'
 import OTAUpdateColumn from './OTAUpdateColumn'
 import DeviceData from './DeviceData'
@@ -17,6 +20,8 @@ import TextButton from '@/components/ui/button/TextButton'
 import UavDetail from './UavDetail'
 import Logs from './Logs'
 import UploadDetail from './UavDetail/UploadDetail'
+import { useLocalStorageState } from 'ahooks'
+import Select from '@/components/AntdOverride/Select'
 
 type PropsType = unknown
 
@@ -35,11 +40,38 @@ const SourceTable: FC<PropsType> = memo(() => {
   const kw = searchParams.get('kw')
   const sn = searchParams.get('sn')
 
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] =
+    useLocalStorageState<VisibilityState>('source-columnVisibility', {
+      defaultValue: {
+        deviceName: true,
+        username: true,
+        deviceModel: true,
+        otaInfo: true,
+        sn: true,
+        deviceId: true,
+        status: true,
+        remainingPower: true,
+        actions: true,
+        otaUpgrade: true,
+      },
+    })
+
+  const parmas = useMemo(() => {
+    const params = {}
+    columnFilters.forEach((filter) => {
+      if (filter.value) {
+        params[filter.id] = filter.value
+      }
+    })
+    return params
+  }, [columnFilters])
+
   const queryClient = useQueryClient()
 
   const { data, isLoading, isRefetching } = useQuery(
     {
-      queryKey: ['getAllDeviceList', type, page, size, kw, sn],
+      queryKey: ['getAllDeviceList', type, page, size, kw, sn, parmas],
       queryFn: () =>
         getAllDeviceList({
           type: type!,
@@ -49,6 +81,7 @@ const SourceTable: FC<PropsType> = memo(() => {
           isPage: true,
           page,
           size,
+          ...parmas,
         }),
       select: (d) => d.data,
       enabled: !!type,
@@ -105,7 +138,7 @@ const SourceTable: FC<PropsType> = memo(() => {
       }),
       columnHelper.accessor('otaInfo.artifactName', {
         header: t('resource.table.otaInfo.title'),
-        cell: (cell) => cell?.getValue() || '-',
+        cell: (cell) => cell?.row.original.otaInfo?.artifactName || '-',
       }),
       columnHelper.accessor('otaInfo', {
         header: t('resource.table.otaUpgrade.title'),
@@ -134,12 +167,34 @@ const SourceTable: FC<PropsType> = memo(() => {
             />
           )
         },
+        filterFn: (row, columnId, filterValue) => {
+          return row.original.status === filterValue
+        },
+        // 等接口出来再开启筛选
+        enableColumnFilter: false,
+        meta: {
+          filterRender: (column) => {
+            return (
+              <Radio.Group
+                onChange={(e) => {
+                  column.setFilterValue(e.target.value)
+                }}
+
+              >
+                <Radio value={undefined}>全部</Radio>
+                <Radio value="ONLINE">在线</Radio>
+                <Radio value="OFFLINE">离线</Radio>
+              </Radio.Group>
+            )
+          },
+        },
       }),
       columnHelper.accessor('remainingPower', {
         header: t('common.electricity'),
         cell: (cell) => {
           return <span>{cell?.getValue()}%</span>
         },
+        enableColumnFilter: false,
       }),
       columnHelper.display({
         id: 'actions',
@@ -180,11 +235,33 @@ const SourceTable: FC<PropsType> = memo(() => {
 
   const table = useReactTable({
     data: data?.rows ?? defaultData,
-    columns,
+    columns: columns.map((column) => ({
+      ...column,
+      enableColumnFilter: column.enableColumnFilter ?? false,
+    })),
     getCoreRowModel: getCoreRowModel(),
     getRowId: (row) => row.deviceId,
+    manualFiltering: true,
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      columnFilters: [{ id: 'status', value: 'ONLINE' }],
+      columnVisibility,
+    },
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: (updaterOrValue) => {
+      if (typeof updaterOrValue === 'function') {
+        setColumnVisibility(
+          updaterOrValue as (
+            prev: VisibilityState | undefined,
+          ) => VisibilityState,
+        )
+      } else {
+        setColumnVisibility(updaterOrValue)
+      }
+    },
   })
 
+  console.log('columnFilters', columnFilters)
   const { handleValueChange, handlePaginationChange } = usePageSearchParams()
 
   return (
