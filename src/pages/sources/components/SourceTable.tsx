@@ -57,11 +57,14 @@ const SourceTable: FC<PropsType> = memo(() => {
       },
     })
 
+  const paramsMap = {
+    status: 'deviceStatus',
+  }
   const parmas = useMemo(() => {
     const params = {}
     columnFilters.forEach((filter) => {
       if (filter.value) {
-        params[filter.id] = filter.value
+        params[paramsMap[filter.id]] = filter.value
       }
     })
     return params
@@ -171,7 +174,7 @@ const SourceTable: FC<PropsType> = memo(() => {
           return row.original.status === filterValue
         },
         // 等接口出来再开启筛选
-        enableColumnFilter: false,
+        enableColumnFilter: true,
         meta: {
           filterRender: (column) => {
             return (
@@ -179,7 +182,6 @@ const SourceTable: FC<PropsType> = memo(() => {
                 onChange={(e) => {
                   column.setFilterValue(e.target.value)
                 }}
-
               >
                 <Radio value={undefined}>全部</Radio>
                 <Radio value="ONLINE">在线</Radio>
