@@ -6,7 +6,7 @@ import { heartbeat } from '@/constant/websocket'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import useUserStore from '@/store/useUser.store'
 import { shouldJson } from '@/utils/json'
-import { useInterval, useThrottleFn } from 'ahooks'
+import { useInterval, useLatest, useThrottleFn } from 'ahooks'
 import dayjs from 'dayjs'
 import { isEqual, isNil } from 'lodash'
 import { type FC } from 'react'
@@ -67,7 +67,7 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
     }, {})
   }, [allDeviceList])
 
-  const allDeviceListMapRef = useRef(allDeviceListMap)
+  const allDeviceListMapRef = useLatest(allDeviceListMap)
 
   const labelMap = useMemo(() => {
     const map = {}
