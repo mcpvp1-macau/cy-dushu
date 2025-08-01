@@ -165,6 +165,7 @@ const GimbalSwitch: FC<PropsType> = memo(() => {
         if (type === 'ir') {
           return (
             <Tooltip
+              key={type}
               placement="right"
               title={
                 <ul>
