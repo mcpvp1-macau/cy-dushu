@@ -353,6 +353,7 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
     })
   })
   interface ImageData {
+    id: number
     requestId: string
     actionId: number
     deviceId: string

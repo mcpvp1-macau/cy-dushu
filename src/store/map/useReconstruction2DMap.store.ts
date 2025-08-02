@@ -83,6 +83,7 @@ const useReconstruction2DMapStore = create<StateType & ActionsType>()(
 )
 
 export interface ProcessEventImageData {
+  id: number
   requestId: string
   actionId: number
   deviceId: string
@@ -118,6 +119,18 @@ export const useListenRealProcessedResults = (
   const queryClient = useQueryClient()
 
   const fn = (data: ProcessEventImageData) => {
+    if (data.taskDone) {
+      queryClient.invalidateQueries({
+        queryKey: ['reconstruction2dList'],
+      })
+    }
+
+    const hiddenSet =
+      useReconstruction2DMapStore.getState().hiddenReconstruction2DSet
+    if (hiddenSet.has(data.id)) {
+      return
+    }
+
     if (!filterFn(data.deviceId, data.actionId)) {
       return
     }
@@ -153,11 +166,6 @@ export const useListenRealProcessedResults = (
     } else if (data.imageType === 'tiff') {
       // tiff 说明前面的 jepg 都已经处理合成过了
       useReconstruction2DMapStore.getState().updateProcessedResults([newResult])
-      if (data.taskDone) {
-        queryClient.invalidateQueries({
-          queryKey: ['reconstruction2dList'],
-        })
-      }
     }
   }
 

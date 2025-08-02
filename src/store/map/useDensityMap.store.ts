@@ -191,7 +191,6 @@ export const useListenRealDensityMap = (
           value: item.averageDensity,
         })
       })
-      console.log('gengxin')
       useDensityMapStore.getState().updateRealDensityMap(realDensityMap)
     }
 
