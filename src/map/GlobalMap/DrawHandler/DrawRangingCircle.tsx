@@ -42,6 +42,7 @@ const DrawRangingCircle: FC<PropsType> = memo(() => {
         semiMajorAxis: axis, // 半径，单位为米
         semiMinorAxis: axis, // 半径，设置为相同值使其为圆
         material: Cesium.Color.fromCssColorString('#4c90f0').withAlpha(0.4), // 半透明的颜色
+        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, // 贴地
       },
     })
 
@@ -55,6 +56,7 @@ const DrawRangingCircle: FC<PropsType> = memo(() => {
         fill: false,
         outlineColor: Cesium.Color.fromCssColorString('#4c90f0'),
         outlineWidth: 3,
+        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, // 贴地
       },
     })
 

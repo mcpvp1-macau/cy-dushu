@@ -34,6 +34,7 @@ const DrawRangingLine: FC<PropsType> = memo(() => {
         }, false),
         width: 2,
         material: Cesium.Color.fromCssColorString('#4c90f0'),
+        clampToGround: true,
       },
     })
     return () => {

@@ -3,11 +3,14 @@ import IconEdit from '@/assets/icons/jsx/IconEdit'
 import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
 import IconReconstruction2D from '@/assets/icons/jsx/IconReconstruction2D'
 import IconRestart from '@/assets/icons/jsx/IconRestart'
+import IconToLocation from '@/assets/icons/jsx/IconToLocation'
 import IconVisible from '@/assets/icons/jsx/IconVisible'
 import IconButton from '@/components/ui/button/IconButton'
+import TextButton from '@/components/ui/button/TextButton'
 import TagItemV2 from '@/components/ui/TagItemV2'
 import FormModal from '@/components/XForm/Modal'
 import { useAppMsg } from '@/hooks/useAppMsg'
+import { bigFlyEmitter } from '@/map/GlobalMap/BigFlyListener'
 import {
   deleteReconstruction2D,
   restartReconstruction2D,
@@ -22,6 +25,7 @@ import {
   SyncOutlined,
 } from '@ant-design/icons'
 import { t } from 'i18next'
+import * as Cesium from 'cesium'
 
 type PropsType = {
   data: API_RECONSTRUCTION.Reconstruction2DListItem
@@ -63,7 +67,7 @@ const Recon2DListItem: FC<PropsType> = memo(
           <div className="flex justify-between text-sm">
             <div className="flex gap-2">
               <IconReconstruction2D className="text-primary" />
-              {data.name}
+              <TextButton>{data.name}</TextButton>
             </div>
             <div className="flex items-center gap-2">
               <IconButton
@@ -90,6 +94,26 @@ const Recon2DListItem: FC<PropsType> = memo(
                 <LoadingOutlined />
               ) : (
                 <>
+                  {data.bboxMaxX &&
+                    data.bboxMinX &&
+                    data.bboxMaxY &&
+                    data.bboxMinY && (
+                      <IconButton
+                        onClick={() => {
+                          bigFlyEmitter.emit('flyTo', {
+                            destination: Cesium.Rectangle.fromDegrees(
+                              Number(data.bboxMinX) - 0.001,
+                              Number(data.bboxMinY) - 0.001,
+                              Number(data.bboxMaxX) + 0.001,
+                              Number(data.bboxMaxY) + 0.001,
+                            ),
+                            duration: 1,
+                          })
+                        }}
+                      >
+                        <IconToLocation />
+                      </IconButton>
+                    )}
                   <IconButton
                     className="scale-90"
                     toolTipProps={{
