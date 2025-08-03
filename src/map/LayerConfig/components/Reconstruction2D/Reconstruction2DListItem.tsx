@@ -6,7 +6,6 @@ import IconRestart from '@/assets/icons/jsx/IconRestart'
 import IconToLocation from '@/assets/icons/jsx/IconToLocation'
 import IconVisible from '@/assets/icons/jsx/IconVisible'
 import IconButton from '@/components/ui/button/IconButton'
-import TextButton from '@/components/ui/button/TextButton'
 import TagItemV2 from '@/components/ui/TagItemV2'
 import FormModal from '@/components/XForm/Modal'
 import { useAppMsg } from '@/hooks/useAppMsg'
@@ -67,7 +66,7 @@ const Recon2DListItem: FC<PropsType> = memo(
           <div className="flex justify-between text-sm">
             <div className="flex gap-2">
               <IconReconstruction2D className="text-primary" />
-              <TextButton>{data.name}</TextButton>
+              {data.name}
             </div>
             <div className="flex items-center gap-2">
               <IconButton

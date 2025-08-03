@@ -33,6 +33,7 @@ import Reconstruction2D from '@/map/CesiumMap/components/service/Reconstruction2
 import useQueryHistoryReconstruction2DProcessedResult from '@/hooks/service/reconstruction/useQueryHistoryReconstruction2DProcessedResult'
 import Reconstruction2DResultList from '@/map/CesiumMap/components/service/Reconstruction2D/Reconstruction2DResultList'
 import useDelayState from '@/hooks/useDelay'
+import BigFlyListener from '@/map/GlobalMap/BigFlyListener'
 
 type PropsType = unknown
 
@@ -93,6 +94,7 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
       <AIPhotoPredict />
       <DensityMap />
       <Reconstruction2D />
+      <BigFlyListener />
       {delayed && <Reconstruction2DResultList />}
     </CesiumMap>
   )
