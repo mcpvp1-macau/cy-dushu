@@ -10,6 +10,10 @@ const FirstPoint: FC<PropsType> = memo(() => {
   const firstPoint = useAreaWaylineStore((s) => s.firstAirpoint)
   const { viewer } = useCesium()
 
+  const takeOffPoint = useAreaWaylineStore(
+    (s) => s.airlineConfig.takeOffRefPoint,
+  )
+
   useEffect(() => {
     if (!viewer || !firstPoint) {
       return
@@ -18,7 +22,7 @@ const FirstPoint: FC<PropsType> = memo(() => {
     const position = Cesium.Cartesian3.fromDegrees(
       firstPoint.pointX,
       firstPoint.pointY,
-      firstPoint.pointZ,
+      firstPoint.pointZ + (takeOffPoint?.[2] ?? 0),
     )
 
     const e = viewer.entities.add({

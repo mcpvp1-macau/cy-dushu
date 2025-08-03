@@ -23,13 +23,13 @@ const Airpoints: FC<PropsType> = memo(() => {
             positions={Cesium.Cartesian3.fromDegreesArrayHeights([
               takeOffPoint[0],
               takeOffPoint[1],
-              0,
+              takeOffPoint[2],
               takeOffPoint[0],
               takeOffPoint[1],
-              height,
+              height + takeOffPoint[2],
               airpoints[0].pointX,
               airpoints[0].pointY,
-              airpoints[0].pointZ,
+              airpoints[0].pointZ + takeOffPoint[2],
             ])}
             width={3}
             material={Cesium.Material.fromType('Color', {
@@ -38,7 +38,9 @@ const Airpoints: FC<PropsType> = memo(() => {
           />
           <Polyline
             positions={Cesium.Cartesian3.fromDegreesArrayHeights(
-              airpoints.map((e) => [e.pointX, e.pointY, e.pointZ]).flat(),
+              airpoints
+                .map((e) => [e.pointX, e.pointY, e.pointZ + takeOffPoint[2]])
+                .flat(),
             )}
             width={3}
             material={Cesium.Material.fromType('Color', {

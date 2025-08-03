@@ -1,9 +1,8 @@
 import { Fragment, memo, type FC } from 'react'
-import Polygon from './Polygon'
 import { PointPrimitive, PointPrimitiveCollection, useCesium } from 'resium'
-import { getMidPoint } from './DrawPolygon'
 import * as Cesium from 'cesium'
 import { cartesian3ToDegrees } from '@/utils/geoUtils'
+import GroundPolygon from '@/map/CesiumMap/components/service/common/GroundPolygon'
 
 type PropsType = {
   isEdit?: boolean
@@ -21,6 +20,18 @@ const EditablePolygon: FC<PropsType> = memo(
     const [polygon, setPolygon] = useState(propsPolygon)
 
     const { viewer } = useCesium()
+
+    /** 获取中间点 */
+    const getMidPoint = useMemoizedFn((p1: number[], p2: number[]) => [
+      (p1[0] + p2[0]) / 2,
+      (p1[1] + p2[1]) / 2,
+      viewer?.scene?.globe?.getHeight(
+        Cesium.Cartographic.fromDegrees(
+          (p1[0] + p2[0]) / 2,
+          (p1[1] + p2[1]) / 2,
+        ),
+      ) ?? 0,
+    ])
 
     const handleMouseMove = () => {
       if (viewer?.canvas) {
@@ -74,13 +85,13 @@ const EditablePolygon: FC<PropsType> = memo(
           if (isMid) {
             const newPolygon = [
               ...oldPolygon.slice(0, index + 1),
-              [geo[0], geo[1]],
+              [geo[0], geo[1], geo[2]],
               ...oldPolygon.slice(index + 1),
             ]
             setPolygon(newPolygon)
           } else {
             const newPolygon = [...oldPolygon]
-            newPolygon[index] = [geo[0], geo[1]]
+            newPolygon[index] = [geo[0], geo[1], geo[2]]
             setPolygon(newPolygon)
           }
         },
@@ -142,7 +153,11 @@ const EditablePolygon: FC<PropsType> = memo(
               return (
                 <Fragment key={index}>
                   <PointPrimitive
-                    position={Cesium.Cartesian3.fromDegrees(point[0], point[1])}
+                    position={Cesium.Cartesian3.fromDegrees(
+                      point[0],
+                      point[1],
+                      point[2],
+                    )}
                     color={Cesium.Color.WHITE}
                     pixelSize={11}
                     onMouseMove={handleMouseMove}
@@ -154,7 +169,11 @@ const EditablePolygon: FC<PropsType> = memo(
                     onMouseLeave={handleMouseLeave}
                   />
                   <PointPrimitive
-                    position={Cesium.Cartesian3.fromDegrees(mid[0], mid[1])}
+                    position={Cesium.Cartesian3.fromDegrees(
+                      mid[0],
+                      mid[1],
+                      mid[2],
+                    )}
                     color={Cesium.Color.WHITE}
                     pixelSize={9}
                     onMouseMove={handleMouseMove}
@@ -170,7 +189,7 @@ const EditablePolygon: FC<PropsType> = memo(
             })}
           </PointPrimitiveCollection>
         )}
-        <Polygon useCallback polygon={polygon} />
+        <GroundPolygon positions={polygon} />
       </>
     )
   },

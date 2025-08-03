@@ -84,7 +84,11 @@ const DrawTakeoffRef: FC<PropsType> = memo(() => {
 
         updateAirlineConfig({
           ...useAreaWaylineStore.getState().airlineConfig,
-          takeOffRefPoint: [geoDegrees.longitude, geoDegrees.latitude, 0],
+          takeOffRefPoint: [
+            geoDegrees.longitude,
+            geoDegrees.latitude,
+            geoDegrees.height,
+          ],
         })
         updateIsDrawHome(false)
       },

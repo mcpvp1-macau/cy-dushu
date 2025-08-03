@@ -50,6 +50,7 @@ const GroundPolygon: FC<PropsType> = memo(
             color: Cesium.Color.fromCssColorString(fillColor),
           }),
         }),
+        asynchronous: false, // 是否异步加载
       })
       const outlinePrimitive = new Cesium.GroundPolylinePrimitive({
         geometryInstances: [instance2],
@@ -58,6 +59,7 @@ const GroundPolygon: FC<PropsType> = memo(
             color: Cesium.Color.fromCssColorString(outlineColor),
           }),
         }),
+        asynchronous: false, // 是否异步加载
       })
       viewer.scene.primitives.add(primitive)
       viewer.scene.primitives.add(outlinePrimitive)
