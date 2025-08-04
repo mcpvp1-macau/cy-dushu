@@ -9,10 +9,16 @@ import { emtpyArray } from '@/constant/data'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import { deleteDeviceOverlay } from '@/service/modules/device-zone'
 import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
+import IconButton from '@/components/ui/button/IconButton'
+import IconEdit from '@/assets/icons/jsx/IconEdit'
+import useRightMode from '@/store/layout/useRightMode.store'
+import { RightModeEnum } from '@/enum/right-mode'
 
 type PropsType = unknown
 
 const DeviceOverlayFlightArea: FC<PropsType> = memo(() => {
+  const { t } = useTranslation()
+
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
 
   const cancelDraw = () => {
@@ -39,16 +45,29 @@ const DeviceOverlayFlightArea: FC<PropsType> = memo(() => {
           {deviceOverlays.map((e) => (
             <li key={e.spaceId} className="flex items-center justify-between">
               <div>{e.overlayName}</div>
-              <IconAsyncButton
-                onClick={async () => {
-                  await deleteDeviceOverlay([e.overlayId])
-                  await queryClient.invalidateQueries({
-                    queryKey: ['getDeviceOverlayList'],
-                  })
-                }}
-              >
-                <IconDelete />
-              </IconAsyncButton>
+              <div className="flex gap-2">
+                <IconButton
+                  toolTipProps={{ title: t('common.edit') }}
+                  onClick={() => {
+                    const sto = useRightMode.getState()
+                    sto.updateRightMode(RightModeEnum.DEVICE_OVERLAY_DETAIL)
+                    sto.updateDetailId(e.overlayId + '')
+                  }}
+                >
+                  <IconEdit />
+                </IconButton>
+                <IconAsyncButton
+                  toolTipProps={{ title: t('common.delete') }}
+                  onClick={async () => {
+                    await deleteDeviceOverlay([e.overlayId])
+                    await queryClient.invalidateQueries({
+                      queryKey: ['getDeviceOverlayList'],
+                    })
+                  }}
+                >
+                  <IconDelete />
+                </IconAsyncButton>
+              </div>
             </li>
           ))}
         </ul>

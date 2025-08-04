@@ -23,3 +23,8 @@ export const deleteDeviceOverlay = (overlayIds: number[]) => {
     overlayIds,
   })
 }
+
+/** 更新设备覆盖物 */
+export const updateDeviceOverlay = (data: any) => {
+  return serverJingqi.post('/zone/device/overlay/modify', data)
+}

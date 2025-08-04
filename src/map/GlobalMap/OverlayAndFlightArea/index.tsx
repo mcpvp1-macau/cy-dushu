@@ -34,10 +34,13 @@ const OverlayAndFlightArea: FC<PropsType> = () => {
           const overlayId = id.slice('reconstruction--'.length)
           updateRightMode(RightModeEnum.RECONSTRUCTION_DETAIL)
           updateDetailId(overlayId)
-        }
-        if (id?.startsWith('flightArea--')) {
+        } else if (id?.startsWith('flightArea--')) {
           const overlayId = id.slice('flightArea--'.length)
           updateRightMode(RightModeEnum.FLIGHT_AREA_DETAIL)
+          updateDetailId(overlayId)
+        } else if (id?.startsWith('deviceOverlay--')) {
+          const overlayId = id.slice('deviceOverlay--'.length)
+          updateRightMode(RightModeEnum.DEVICE_OVERLAY_DETAIL)
           updateDetailId(overlayId)
         }
       }

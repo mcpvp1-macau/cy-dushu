@@ -23,4 +23,5 @@ export enum RightModeEnum {
   DRAW_FLIGHT_AREA = 'drawFlightArea',
   RECONSTRUCTION_DETAIL = 'reconstructionDetail',
   FLIGHT_AREA_DETAIL = 'flightAreaDetail',
+  DEVICE_OVERLAY_DETAIL = 'deviceOverlayDetail',
 }
