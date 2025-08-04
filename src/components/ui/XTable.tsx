@@ -1,9 +1,9 @@
 import { flexRender, Table } from '@tanstack/react-table'
 import AppEmpty from '../AppEmpty.tsx'
-import { Checkbox, Spin, Switch } from 'antd'
+import { Popover, Spin, Switch } from 'antd'
 import IconButtonWithDropDownDialog from './button/IconButtonWithDropDownDialog.tsx'
 import IconSetting from '@/assets/icons/jsx/IconSetting.tsx'
-import IconFilter from '@/assets/icons/jsx/IconFilter.tsx'
+import { CaretDownOutlined } from '@ant-design/icons'
 
 type PropsType = {
   table: Table<any>
@@ -56,21 +56,32 @@ const XTable: FC<PropsType> = ({ table, loading }) => {
 
                   {header.column.columnDef.enableColumnFilter ? (
                     <div className="ml-3">
-                      <IconButtonWithDropDownDialog
-                        title={header.column.columnDef.header + '筛选'}
-                        tooltipProps={{ title: '筛选' }}
+                      <Popover
+                        // title={header.column.columnDef.header + '筛选'}
+                        placement="bottomRight"
                         trigger={['click']}
-                        popupRender={() => (
-                          <div className="p-2">
+                        styles={{
+                         
+                          body: {
+                            backgroundColor: '#16202b',
+                            padding: 0,
+                            
+                          },
+                          
+                        }}
+                        content={() => (
+                          <div className="p-2 bg-[#16202b]">
                             {/* @ts-ignore */}
                             {header.column.columnDef.meta?.filterRender?.(
                               header.column,
                             )}
                           </div>
                         )}
+                        rootClassName="[&_.ant-popover-arrow:before]:!bg-[#16202b]"
                       >
-                        <IconFilter />
-                      </IconButtonWithDropDownDialog>
+                        {/* <IconFilter /> */}
+                        <CaretDownOutlined />
+                      </Popover>
                     </div>
                   ) : null}
                   {isHaveVisible && header.id === 'actions' && (
@@ -80,7 +91,9 @@ const XTable: FC<PropsType> = ({ table, loading }) => {
                       trigger={['click']}
                       popupRender={() => (
                         <div className="p-2">
-                          <div className="text-xs text-white mb-2">字段名称</div>
+                          <div className="text-sm text-white mb-2">
+                            字段名称
+                          </div>
                           {table
                             .getAllColumns()
                             .filter((column) => column.id !== 'actions')
@@ -89,12 +102,7 @@ const XTable: FC<PropsType> = ({ table, loading }) => {
                                 key={column.id}
                                 className="flex items-center justify-between gap-2 mb-2 min-w-[160px]"
                               >
-                                {/* <Checkbox
-                                  checked={column.getIsVisible()}
-                                  disabled={!column.getCanHide()}
-                                  onChange={column.getToggleVisibilityHandler()}
-                                /> */}
-                                <span className="text-xs">
+                                <span className="text-sm">
                                   {column.columnDef.header?.toString() ?? ''}
                                 </span>
                                 <Switch

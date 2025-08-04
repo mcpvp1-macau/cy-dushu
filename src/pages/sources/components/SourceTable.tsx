@@ -131,6 +131,7 @@ const SourceTable: FC<PropsType> = memo(() => {
             {cell?.getValue()}
           </div>
         ),
+        enableHiding: false,
       }),
       columnHelper.accessor('username', {
         header: t('resource.table.username.title'),
@@ -182,6 +183,7 @@ const SourceTable: FC<PropsType> = memo(() => {
                 onChange={(e) => {
                   column.setFilterValue(e.target.value)
                 }}
+                className="flex flex-col gap-2"
               >
                 <Radio value={undefined}>全部</Radio>
                 <Radio value="ONLINE">在线</Radio>
