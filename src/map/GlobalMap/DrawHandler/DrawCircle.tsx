@@ -7,11 +7,11 @@ import { useBoolean } from 'ahooks'
 import { v4 } from 'uuid'
 import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
 import useMapDrawStore, { CotType } from '@/store/map/useDraw.store'
-import { createOverlay } from '@/service/modules/layer_overlay'
 import AddFormModal from './components/AddFormModal'
 import AddFlightAreaModal from './components/AddFlightAreaModal'
 import OverlayCircle from '@/map/CesiumMap/components/service/Overlaies/OverlayCircle'
-import { createFlightArea } from '@/service/modules/flightArea'
+import useCreateFn from './hooks/useCreateFn'
+import AddDeviceOverlayFormModal from './components/AddDeviceOverlayModal'
 
 type PropsType = {
   onSuccess?: () => void
@@ -22,6 +22,7 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
   const lineStyle = useMapDrawStore((s) => s.lineStyle)
   const fillOpacity = useMapDrawStore((s) => s.fillOpacity)
   const isFlightArea = useMapDrawStore((s) => s.isFlightArea)
+  const isDrawingDeviceArea = useMapDrawStore((s) => s.isDrawingDeviceArea)
 
   /**绘制的点 */
   const [drawingPositions, setDrawingPositions] = useState<[number, number][]>(
@@ -43,13 +44,7 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
 
   const { viewer } = useCesium()
 
-  const createFn = useMemo(() => {
-    if (isFlightArea) {
-      return createFlightArea
-    } else {
-      return createOverlay
-    }
-  }, [isFlightArea])
+  const createFn = useCreateFn()
 
   useEffect(() => {
     if (!viewer) {
@@ -183,6 +178,15 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
     <>
       {isFlightArea ? (
         <AddFlightAreaModal
+          open={open}
+          onClose={() => {
+            setFalse()
+            setDrawingPositions([])
+          }}
+          onConfirm={handleConfirm}
+        />
+      ) : isDrawingDeviceArea ? (
+        <AddDeviceOverlayFormModal
           open={open}
           onClose={() => {
             setFalse()

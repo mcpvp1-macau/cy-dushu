@@ -54,6 +54,10 @@ type StateType = {
   isEdit: boolean
   /**是否绘制的是飞行区域，飞行区域和普通绘制弹窗不一样 */
   isFlightArea: boolean
+  /** 是否在绘制设备绑定区域 */
+  isDrawingDeviceArea: boolean
+  /** 绑定设备ID */
+  bindingDeviceId: string
 }
 
 type ActionsType = {
@@ -65,6 +69,8 @@ type ActionsType = {
   updatePositions: (positions: [number, number][]) => void
   updateIsEdit: (isEdit: boolean) => void
   updateIsFlightArea: (isFlightArea: boolean) => void
+  updateIsDrawingDeviceArea: (isDrawingDeviceArea: boolean) => void
+  updateBindingDeviceId: (bindingDeviceId: string) => void
 }
 
 // 新增的三维重建也有绘制逻辑，并且其优先级应该最高，也就是无法从三维重建状态转为普通绘制和测量
@@ -81,6 +87,8 @@ const useMapDrawStore = create<StateType & ActionsType>()(
         positions: [],
         isEdit: false,
         isFlightArea: false,
+        isDrawingDeviceArea: false,
+        bindingDeviceId: '',
         updateDrawing: (drawing) => {
           // 如果是三维重建转为其他绘制，那么不响应
           const pre = get().drawing
@@ -110,6 +118,12 @@ const useMapDrawStore = create<StateType & ActionsType>()(
         },
         updateIsFlightArea: (isFlightArea: boolean) => {
           set({ isFlightArea }, false, 'updateIsFlightArea')
+        },
+        updateIsDrawingDeviceArea: (isDrawingDeviceArea: boolean) => {
+          set({ isDrawingDeviceArea }, false, 'updateIsDrawingDeviceArea')
+        },
+        updateBindingDeviceId: (bindingDeviceId: string) => {
+          set({ bindingDeviceId }, false, 'updateBindingDeviceId')
         },
       }),
       // isFlightArea需要持久化以配合rightMode的持久化

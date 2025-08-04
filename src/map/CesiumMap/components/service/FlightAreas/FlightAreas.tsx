@@ -1,6 +1,4 @@
 import { CotType } from '@/store/map/useDraw.store'
-import useMapLayerAndOverlayStore from '@/store/map/useLayerAndOverlay.store'
-import { LabelCollection, PointPrimitiveCollection } from 'resium'
 import useRightMode from '@/store/layout/useRightMode.store'
 import useMapDrawStore from '@/store/map/useDraw.store'
 import ShowCircle from '../Overlaies/ShowCircle'

@@ -17,6 +17,7 @@ import VideoProjection from '@/pages/control-room/uav/components/ControlRoomMap/
 import useMapSettingStore from '@/store/setting/useMapSetting.store'
 import useDeviceTrackColorStore from '@/store/setting/useDeviceTrackColor.store'
 import GLBModel from '@/map/CesiumMap/components/service/common/GLBModel'
+import DeviceOverlays from '../components/DeviceOverlays'
 
 type PropsType = {
   deviceId: string
@@ -207,6 +208,7 @@ const UavDetailMarker: FC<PropsType> = memo(
             videoElement={projectedVideo.videoElement}
           />
         )}
+        <DeviceOverlays deviceId={deviceId} />
       </>
     )
   },

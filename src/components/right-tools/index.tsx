@@ -64,7 +64,7 @@ const RightTools: FC<PropsType> = memo(() => {
             >
               <IconRangeFinder />
             </FloatIconButton>
-            {/* <FloatIconButton
+            <FloatIconButton
               toolTipProps={{
                 title: t('flightArea.create.title'),
                 placement: 'left',
@@ -78,7 +78,7 @@ const RightTools: FC<PropsType> = memo(() => {
               }}
             >
               <IconCreateFlightArea />
-            </FloatIconButton> */}
+            </FloatIconButton>
           </>
         </FloatIconButtonGroup>
         <WirelessSituationTool />

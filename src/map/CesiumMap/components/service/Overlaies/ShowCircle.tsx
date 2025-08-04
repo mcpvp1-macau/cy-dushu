@@ -4,7 +4,7 @@ import OverlayCircle from './OverlayCircle'
 import { argbToHex } from '@/utils/color'
 
 type PropsType = {
-  overlayExtType: 'overlay' | 'flightArea'
+  overlayExtType: 'overlay' | 'flightArea' | 'deviceOverlay'
   overlay: API_LAYER_OVERLAY.domain.Overlay
 }
 

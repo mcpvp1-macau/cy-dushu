@@ -262,6 +262,9 @@ device:
       color: Color
       outline: Outline
       glow: Glow
+  overlay:
+    flightArea:
+      title: Flight Area
 action:
   input:
     placeholder: Please search by action name

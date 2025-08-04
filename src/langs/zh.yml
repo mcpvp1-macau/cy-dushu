@@ -256,6 +256,9 @@ device:
       color: 纯色
       outline: 描边
       glow: 发光
+  overlay:
+    flightArea:
+      title: 飞行区域
 action:
   input:
     placeholder: 请根据行动名称搜索

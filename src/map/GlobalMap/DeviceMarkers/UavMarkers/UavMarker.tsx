@@ -15,6 +15,7 @@ import GLBModel from '@/map/CesiumMap/components/service/common/GLBModel'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import HistoryTrack from '@/components/map/HistoryTrack'
 import useDeviceTrackColorStore from '@/store/setting/useDeviceTrackColor.store'
+import DeviceOverlays from '../components/DeviceOverlays'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -161,6 +162,7 @@ const UavMarker: FC<PropsType> = memo(({ data, onPositionChange }) => {
             materialType={materialType}
           />
         ))}
+      <DeviceOverlays deviceId={deviceId} />
     </>
   )
 })
