@@ -641,6 +641,8 @@ uav:
     title: 降落
   return:
     title: 返程
+  infoBoard:
+    title: 无人机标牌
 actionRecord:
   title: 行动记录
   table:

@@ -18,6 +18,8 @@ import useDeviceTrackColorStore from '@/store/setting/useDeviceTrackColor.store'
 import DeviceOverlays from '../components/DeviceOverlays'
 import BoardMarker3D from '@/components/map/BoardCesium/BoardMarker3D'
 import DeviceIconUAV2 from '@/assets/icons/jsx/device/DeviceIconUAV2'
+import IconButton from '@/components/ui/button/IconButton'
+import IconClose from '@/assets/icons/jsx/IconClose'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -106,7 +108,9 @@ const UavMarker: FC<PropsType> = memo(({ data, onPositionChange }) => {
     (s) => s.materialType[deviceId] || 'glow',
   )
 
-  const enableUavInfoBoard = useMapDevicesStore((s) => s.enableUavInfoBoard)
+  const enableUavInfoBoard = useMapDevicesStore(
+    (s) => s.enableUavInfoBoard && !s.hiddenUavInfoBoard.has(deviceId),
+  )
 
   if (
     isHidden || // 隐藏
@@ -178,8 +182,24 @@ const UavMarker: FC<PropsType> = memo(({ data, onPositionChange }) => {
           height={alt ?? groundHeight}
         >
           <div className="text-sm bg-ground-1 p-1 px-2 rounded flex flex-col justify-start border border-ground-5">
-            <div className="flex whitespace-nowrap gap-2 mb-1">
-              <DeviceIconUAV2 className="text-primary" /> {data.deviceName}
+            <div className="flex whitespace-nowrap gap-3 mb-1 items-center">
+              <div className="flex gap-2">
+                <DeviceIconUAV2 className="text-primary" /> {data.deviceName}
+              </div>
+              <IconButton
+                className="text-lg leading-3"
+                onClick={() => {
+                  const next = new Set(
+                    useMapDevicesStore.getState().hiddenUavInfoBoard,
+                  )
+                  next.add(deviceId)
+                  useMapDevicesStore.setState({
+                    hiddenUavInfoBoard: next,
+                  })
+                }}
+              >
+                <IconClose />
+              </IconButton>
             </div>
             <div className="text-xs text-fore flex gap-2 whitespace-nowrap">
               <p>
@@ -192,7 +212,7 @@ const UavMarker: FC<PropsType> = memo(({ data, onPositionChange }) => {
             <div className="text-xs text-fore flex gap-2 whitespace-nowrap">
               <p>
                 {t('common.speed')}:{' '}
-                {round(data.properties?.horizontalSpeed ?? 0, 1)} m
+                {round(data.properties?.horizontalSpeed ?? 0, 1)} m/s
               </p>
             </div>
           </div>

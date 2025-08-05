@@ -647,6 +647,8 @@ uav:
     title: Land
   return:
     title: Go Home
+  infoBoard:
+    title: UAV Info Label
 actionRecord:
   title: Action Records
   table:
