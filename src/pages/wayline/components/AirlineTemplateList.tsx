@@ -9,12 +9,18 @@ import useReachBottom from '@/hooks/useReachBottom'
 import { useSearchParams } from 'react-router-dom'
 import AppEmpty from '@/components/AppEmpty'
 import { isNil } from 'lodash'
+import Select from '@/components/AntdOverride/Select'
+import IconWaylineAirpoint from '@/assets/icons/jsx/IconWaylineAirpoint'
+import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
+import IconSwarm from '@/assets/icons/jsx/IconSwarm'
+import IconRebotDogWayline from '@/assets/icons/jsx/IconRebotDogWayline'
 
 type PropsType = unknown
 
 const AirlineTemplateList: FC<PropsType> = memo(() => {
   const [searchParams, setSearchParams] = useSearchParams()
   const kw = searchParams.get('kw')
+  const waylineType = searchParams.get('waylineType')
 
   const { t } = useTranslation()
 
@@ -28,7 +34,7 @@ const AirlineTemplateList: FC<PropsType> = memo(() => {
     fetchNextPage,
   } = useInfiniteQuery(
     {
-      queryKey: ['airlineTemplates', kw],
+      queryKey: ['airlineTemplates', { kw, waylineType }],
       initialPageParam: 1,
       queryFn: async ({ pageParam }) => {
         const { data } = await getAirlineTemplateList({
@@ -36,6 +42,7 @@ const AirlineTemplateList: FC<PropsType> = memo(() => {
           isPage: true,
           size: 15,
           templateName: kw || undefined,
+          taskType: waylineType || undefined,
         })
         return data
       },
@@ -67,10 +74,76 @@ const AirlineTemplateList: FC<PropsType> = memo(() => {
   return (
     <div className="py-3 grow flex flex-col overflow-hidden">
       <div className="mx-3">
-        <Input.Search
+        <Input
+          allowClear
           placeholder={t('wayline.searcher.placeholder')}
           defaultValue={kw || undefined}
-          onSearch={handleSearch}
+          onPressEnter={(evt) => handleSearch(evt.currentTarget.value)}
+          onClear={() => handleSearch('')}
+          addonAfter={
+            <div className="px-2">
+              <Select
+                className="w-[120px]"
+                placeholder={t('common.all')}
+                allowClear
+                popupMatchSelectWidth={false}
+                options={[
+                  {
+                    value: 'waypoint',
+                    label: (
+                      <div className="flex gap-2">
+                        <IconWaylineAirpoint />
+                        {t(
+                          'wayline.create.form.waylineType.options.point.title',
+                        )}
+                      </div>
+                    ),
+                  },
+                  {
+                    value: 'area_waypoint',
+                    label: (
+                      <div className="flex gap-2">
+                        <MenuIconAirline />
+                        {t(
+                          'wayline.create.form.waylineType.options.area.title',
+                        )}
+                      </div>
+                    ),
+                  },
+                  {
+                    value: 'cluster_wayline',
+                    label: (
+                      <div className="flex gap-2">
+                        <IconSwarm />
+                        {t(
+                          'wayline.create.form.waylineType.options.swarm.title',
+                        )}
+                      </div>
+                    ),
+                  },
+                  {
+                    value: 'fixed_point_cruise',
+                    label: (
+                      <div className="flex gap-2">
+                        <IconRebotDogWayline />
+                        {t(
+                          'wayline.create.form.waylineType.options.rebotDog.title',
+                        )}
+                      </div>
+                    ),
+                  },
+                ]}
+                onChange={(v) => {
+                  if (v) {
+                    searchParams.set('waylineType', v)
+                  } else {
+                    searchParams.delete('waylineType')
+                  }
+                  setSearchParams(searchParams, { replace: true })
+                }}
+              />
+            </div>
+          }
         />
       </div>
       <ScrollArea className="mt-3 flex-1" onScroll={handleScroll}>

@@ -23,6 +23,8 @@ type PropsType = {
   data: API_ACTION_PLAN.domain.Plan
 }
 
+export const StatusList = ['PENDING', 'PROCESSING', 'TERMINATE'] as const
+
 const StatusColorMap = {
   PENDING: '#C7D1DC',
   PROCESSING: '#15B371',
