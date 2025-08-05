@@ -10,6 +10,7 @@ import useRightMode from '@/store/layout/useRightMode.store'
 import WirelessSituationTool from './components/WirelessSituationTool'
 import { mapViewSaveEmitter } from '@/map/GlobalMap/MapViewSave'
 import useMapDrawStore from '@/store/map/useDraw.store'
+import UavInfoBoardSwitchButton from './components/UavInfoBoardSwitchButton'
 
 type PropsType = unknown
 
@@ -82,6 +83,7 @@ const RightTools: FC<PropsType> = memo(() => {
           </>
         </FloatIconButtonGroup>
         <WirelessSituationTool />
+        <UavInfoBoardSwitchButton />
         <FloatIconButton
           toolTipProps={{
             title: t('tools.saveMapView.title'),
