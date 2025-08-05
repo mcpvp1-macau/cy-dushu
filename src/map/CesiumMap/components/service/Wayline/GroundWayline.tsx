@@ -23,7 +23,7 @@ const GroundWayline: FC<{
     entityRef.current = viewer.entities.add({
       position,
       billboard: {
-        image: '/images/airline/inverted-triangle2.svg',
+        image: '/images/airline/inverted-triangle-blue.svg',
         scale: 1.1,
         eyeOffset: new Cesium.Cartesian3(0, 0, -5),
         heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
@@ -72,7 +72,7 @@ export const PathLine: FC<{
         positions,
         width: 12,
         material: new Cesium.PolylineArrowMaterialProperty(
-          Cesium.Color.fromCssColorString('#03D68F'),
+          Cesium.Color.fromCssColorString('#688de3'),
         ),
       },
     })

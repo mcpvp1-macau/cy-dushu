@@ -14,6 +14,8 @@ import IconWaylineAirpoint from '@/assets/icons/jsx/IconWaylineAirpoint'
 import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
 import IconSwarm from '@/assets/icons/jsx/IconSwarm'
 import IconRebotDogWayline from '@/assets/icons/jsx/IconRebotDogWayline'
+import { useUnmount } from 'ahooks'
+import useWaylinesStore from '@/store/map/useWaylines.store'
 
 type PropsType = unknown
 
@@ -69,6 +71,10 @@ const AirlineTemplateList: FC<PropsType> = memo(() => {
       searchParams.delete('kw')
     }
     setSearchParams(searchParams, { replace: true })
+  })
+
+  useUnmount(() => {
+    useWaylinesStore.getState().setPreviewedWayline(null)
   })
 
   return (
