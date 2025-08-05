@@ -167,8 +167,8 @@ const ReconstructionMapListConfig: FC<PropsType> = memo((props) => {
       await startBuild({
         taskId: taskRes.data,
         bucket: 'ja-media-storage',
-        // 文件上传minio需要加input，但是任务不能给
-        minioPath: form.minioPath.replace('/input', ''),
+        // 原本前面固定有一个/storage，现在需要去掉
+        minioPath: form.minioPath.replace('/storage', ''),
       })
       msgApi.success(t('mapLayer.reconstructionMap.create.overlay.start'))
       setCreateOpen(false)
