@@ -83,3 +83,9 @@ export enum UpdateStatusEnum {
   SUCCESS = 'SUCCESS',
   FAILED = 'FAILED',
 }
+
+export enum DJIOtaStatusEnum {
+  NO_UPGRADE = 'NO_UPGRADE',
+  UPGRADE = 'UPGRADE',
+  UPGRADE_ING = 'UPGRADING',
+}

@@ -1,5 +1,9 @@
 import { StatusColorMap } from '@/enum/device'
-import { getAllDeviceList, getUavDocSnList } from '@/service/modules/device'
+import {
+  // getAllDeviceList,
+  getAllDeviceListOta,
+  getUavDocSnList,
+} from '@/service/modules/device'
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -8,7 +12,7 @@ import {
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table'
-import { Badge, Input, Pagination, Radio } from 'antd'
+import { Badge, Button, Input, Pagination, Radio } from 'antd'
 import { Link, useSearchParams } from 'react-router-dom'
 import OTAUpdateColumn from './OTAUpdateColumn'
 import DeviceData from './DeviceData'
@@ -21,11 +25,14 @@ import UavDetail from './UavDetail'
 import Logs from './Logs'
 import UploadDetail from './UavDetail/UploadDetail'
 import { useLocalStorageState } from 'ahooks'
-import Select from '@/components/AntdOverride/Select'
+import IconButtonWithDropDownDialog from '@/components/ui/button/IconButtonWithDropDownDialog'
+import IconEdit from '@/assets/icons/jsx/IconEdit'
+import TTPBOXSnEditor from './TTPBOXSnEditor'
+// import Select from '@/components/AntdOverride/Select'
 
 type PropsType = unknown
 
-const columnHelper = createColumnHelper<API_DEVICE.domain.DeviceListItem>()
+const columnHelper = createColumnHelper<API_DEVICE.domain.DeviceOTAItem>()
 
 const defaultData = []
 
@@ -59,6 +66,8 @@ const SourceTable: FC<PropsType> = memo(() => {
 
   const paramsMap = {
     status: 'deviceStatus',
+    djiOtaInfo: 'djiOtaStatus',
+    // otaInfo: 'otaStatus',
   }
   const parmas = useMemo(() => {
     const params = {}
@@ -72,11 +81,11 @@ const SourceTable: FC<PropsType> = memo(() => {
 
   const queryClient = useQueryClient()
 
-  const { data, isLoading, isRefetching } = useQuery(
+  const { data, isLoading, isRefetching, refetch } = useQuery(
     {
       queryKey: ['getAllDeviceList', type, page, size, kw, sn, parmas],
       queryFn: () =>
-        getAllDeviceList({
+        getAllDeviceListOta({
           type: type!,
           deviceName: kw || undefined,
           sn: sn || undefined,
@@ -133,21 +142,14 @@ const SourceTable: FC<PropsType> = memo(() => {
         ),
         enableHiding: false,
       }),
-      columnHelper.accessor('username', {
-        header: t('resource.table.username.title'),
-        cell: (cell) => cell?.getValue() || '-',
-      }),
+      // columnHelper.accessor('username', {
+      //   header: t('resource.table.username.title'),
+      //   cell: (cell) => cell?.getValue() || '-',
+      // }),
       columnHelper.accessor('deviceModel', {
         header: t('resource.table.deviceModel.title'),
       }),
-      columnHelper.accessor('otaInfo.artifactName', {
-        header: t('resource.table.otaInfo.title'),
-        cell: (cell) => cell?.row.original.otaInfo?.artifactName || '-',
-      }),
-      columnHelper.accessor('otaInfo', {
-        header: t('resource.table.otaUpgrade.title'),
-        cell: (cell) => <OTAUpdateColumn data={cell?.row.original} />,
-      }),
+
       columnHelper.accessor('sn', {
         header: t('resource.table.sn.title'),
       }),
@@ -171,10 +173,6 @@ const SourceTable: FC<PropsType> = memo(() => {
             />
           )
         },
-        filterFn: (row, columnId, filterValue) => {
-          return row.original.status === filterValue
-        },
-        // 等接口出来再开启筛选
         enableColumnFilter: true,
         meta: {
           filterRender: (column) => {
@@ -199,6 +197,59 @@ const SourceTable: FC<PropsType> = memo(() => {
           return <span>{cell?.getValue()}%</span>
         },
         enableColumnFilter: false,
+      }),
+      ...(type === 'UAV' || type === 'UAV_AIRPORT'
+        ? [
+            columnHelper.accessor('djiOtaInfo.firmwareVersion', {
+              header: t('resource.table.otaInfo.title'),
+              cell: (cell) =>
+                cell?.row.original.djiOtaInfo?.firmwareVersion || '-',
+            }),
+            columnHelper.accessor('djiOtaInfo', {
+              header: '固件升级',
+              cell: (cell) => (
+                <OTAUpdateColumn data={cell?.row.original} type="DJI" />
+              ),
+              enableColumnFilter: true,
+              meta: {
+                filterRender: (column) => {
+                  return (
+                    <Radio.Group
+                      onChange={(e) => {
+                        column.setFilterValue(e.target.value)
+                      }}
+                      className="flex flex-col gap-2"
+                    >
+                      <Radio value="ALL">全部</Radio>
+                      <Radio value="UPGRADE">需升级</Radio>
+                      <Radio value="NO_UPGRADE">无需升级</Radio>
+                    </Radio.Group>
+                  )
+                },
+              },
+            }),
+          ]
+        : []),
+      columnHelper.accessor('ttpBoxSn', {
+        header: '盒子序列号',
+        cell: (cell) => (
+          <TTPBOXSnEditor
+            cell={cell}
+            onRefresh={() => {
+              queryClient.invalidateQueries({ queryKey: ['getAllDeviceList'] })
+            }}
+          />
+        ),
+      }),
+      columnHelper.accessor('otaInfo.artifactName', {
+        header: '盒子固件版本',
+        cell: (cell) => cell?.row.original.otaInfo?.artifactName || '-',
+      }),
+      columnHelper.accessor('otaInfo', {
+        header: '盒子固件升级',
+        cell: (cell) => (
+          <OTAUpdateColumn data={cell?.row.original} type="BOX" />
+        ),
       }),
       columnHelper.display({
         id: 'actions',
@@ -264,6 +315,36 @@ const SourceTable: FC<PropsType> = memo(() => {
       }
     },
   })
+
+  // 切换类型时, 清空过滤条件
+  useEffect(() => {
+    setColumnFilters([])
+  }, [type])
+
+  const upgradeStatus = ['PENDING', 'DOWNLOADING', 'INSTALLING', 'REBOOTING']
+
+  const refetchTimer = useRef<NodeJS.Timeout | null>(null)
+
+  // 如果存在正在升级的设备, 则定时刷新
+  useEffect(() => {
+    const isNeedRefetch = data?.rows.some((row) => {
+      return (
+        row.djiOtaInfo?.djiOtaStatus === 'UPGRADING' ||
+        upgradeStatus.includes(row.otaInfo?.status || '-')
+      )
+    })
+    console.log('isNeedRefetch', isNeedRefetch)
+    if (isNeedRefetch) {
+      if (refetchTimer.current) {
+        clearTimeout(refetchTimer.current)
+        refetchTimer.current = null
+      }
+      refetchTimer.current = setTimeout(() => {
+        refetch()
+      }, 3000)
+      // refetch()
+    }
+  }, [data?.rows])
 
   console.log('columnFilters', columnFilters)
   const { handleValueChange, handlePaginationChange } = usePageSearchParams()

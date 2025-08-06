@@ -466,6 +466,20 @@ declare namespace API_DEVICE {
       visibleDistance?: string
       [property: string]: any
     }
+
+    type DjiOtaInfo = {
+      deviceSn: string
+      deviceName: string
+      deviceId: string
+      firmwareVersion: string
+      firmwareVersionName: string
+      latestFirmwareVersion: string
+      djiOtaStatus: 'NO_UPGRADE' | 'UPGRADE' | 'UPGRADING' | 'ALL'
+    }
+    type DeviceOTAItem = DeviceListItem & {
+      djiOtaInfo: DjiOtaInfo
+      ttpBoxSn: string
+    }
   }
   // ------------------ req ------------------
   namespace req {
@@ -496,5 +510,7 @@ declare namespace API_DEVICE {
     }
     type GetDeviceLinkRes = { links: API_DEVICE.domain.DeviceLink[] }
     type GetUavDocDetailRes = API_DEVICE.domain.UavDocDetail
+    type AllDeviceListV3OTARes =
+      API_COMMON.PageRes<API_DEVICE.domain.DeviceOTAItem>
   }
 }
