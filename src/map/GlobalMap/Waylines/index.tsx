@@ -4,6 +4,7 @@ import UavAreaWayline from '@/map/CesiumMap/components/service/Wayline/UavAreaWa
 import useWaylinesStore from '@/store/map/useWaylines.store'
 import GroundPolygon from '@/map/CesiumMap/components/service/common/GroundPolygon'
 import GroundWayline from '@/map/CesiumMap/components/service/Wayline/GroundWayline'
+import PreviewedWayline from './PreviewedWayline'
 
 type PropsType = unknown
 
@@ -48,6 +49,7 @@ const Waylines: FC<PropsType> = memo(() => {
           />
         )
       })}
+      <PreviewedWayline />
     </>
   )
 })

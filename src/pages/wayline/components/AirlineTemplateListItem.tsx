@@ -1,12 +1,15 @@
 import IconEdit2 from '@/assets/icons/jsx/IconEdit2'
 import IconMore from '@/assets/icons/jsx/IconMore'
+import IconPreview from '@/assets/icons/jsx/IconPreview'
 import IconRebotDogWayline from '@/assets/icons/jsx/IconRebotDogWayline'
 import IconSwarm from '@/assets/icons/jsx/IconSwarm'
 import IconWaylineAirpoint from '@/assets/icons/jsx/IconWaylineAirpoint'
 import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
 import IconButton from '@/components/ui/button/IconButton'
 import { delAirlineTempalte } from '@/service/modules/airline'
+import useWaylinesStore from '@/store/map/useWaylines.store'
 import { downloadAndRename } from '@/utils/download'
+import { shouldJson } from '@/utils/json'
 import { QuestionCircleFilled } from '@ant-design/icons'
 import { Dropdown, Popconfirm } from 'antd'
 import { ReactNode } from 'react'
@@ -32,10 +35,32 @@ const AirlineTemplateListItem: FC<PropsType> = memo(({ data }) => {
         <div className="grow">
           <p className="max-w-60 truncate text-white">{data.taskName}</p>
         </div>
+        <IconButton
+          toolTipProps={{ title: t('common.preview') }}
+          disabled={data.taskType === 'cluster_wayline'}
+          onClick={() => {
+            const positions = shouldJson(data.parameters)?.spaces?.[0]
+              ?.positions
+            if (!positions) {
+              return
+            }
+            useWaylinesStore.getState().setPreviewedWayline({
+              id: data.templateId,
+              type: data.taskType,
+              points: positions,
+              taskBasic: shouldJson(data.taskBasic) ?? {},
+            })
+          }}
+        >
+          <IconPreview />
+        </IconButton>
         <Link
           to={`${getWaylineEditURL(data.taskType)}/${data.waylineTemplateId}`}
         >
-          <IconButton className="text-xs">
+          <IconButton
+            className="text-xs"
+            toolTipProps={{ title: t('common.edit') }}
+          >
             <IconEdit2 />
           </IconButton>
         </Link>

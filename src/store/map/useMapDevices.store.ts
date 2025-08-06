@@ -55,6 +55,10 @@ type StateType = {
       videoElement: HTMLVideoElement | null
     }
   }
+  /** 是否启用无人机信息面板 */
+  enableUavInfoBoard: boolean
+  /** 隐藏的无人机信息面板 */
+  hiddenUavInfoBoard: Set<string>
 }
 
 type ActionsType = {
@@ -77,6 +81,12 @@ type ActionsType = {
   updateFollowedVideos: (followedVideos: StateType['followedVideos']) => void
   updateProjectedVideos: (projectedVideos: StateType['projectedVideos']) => void
   updateScanAreasEnable: (scanAreasEnable: StateType['scanAreasEnable']) => void
+  updateEnableUavInfoBoard: (
+    enableUavInfoBoard: StateType['enableUavInfoBoard'],
+  ) => void
+  updateHiddenUavInfoBoard: (
+    hiddenUavInfoBoard: StateType['hiddenUavInfoBoard'],
+  ) => void
 }
 
 const useMapDevicesStore = create<StateType & ActionsType>()(
@@ -96,6 +106,8 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       scanAreasEnable: {},
       followedVideos: {},
       projectedVideos: {},
+      enableUavInfoBoard: false,
+      hiddenUavInfoBoard: new Set(),
       updateUavDevices: (uavDevices) => {
         set({ uavDevices }, false, 'updateUavDevices')
       },
@@ -137,6 +149,12 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       },
       updateScanAreasEnable: (scanAreasEnable) => {
         set({ scanAreasEnable }, false, 'updateScanAreasEnable')
+      },
+      updateEnableUavInfoBoard: (enableUavInfoBoard) => {
+        set({ enableUavInfoBoard }, false, 'updateEnableUavInfoBoard')
+      },
+      updateHiddenUavInfoBoard: (hiddenUavInfoBoard) => {
+        set({ hiddenUavInfoBoard }, false, 'updateHiddenUavInfoBoard')
       },
     }),
     {
