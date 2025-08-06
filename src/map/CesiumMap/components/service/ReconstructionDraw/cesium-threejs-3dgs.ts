@@ -81,12 +81,12 @@ class CesiumThreeJS3DGS {
       threeContainer.style.position = 'absolute'
       threeContainer.style.pointerEvents = 'none'
 
-      var fov = 45
-      var width = window.innerWidth
-      var height = window.innerHeight
-      var aspect = width / height
-      var near = 0.1 // * SCALE_BASE;
-      var far = 50000 //* SCALE_BASE;  // TODO
+      const fov = 45
+      const width = window.innerWidth
+      const height = window.innerHeight
+      const aspect = width / height
+      const near = 0.1 // * SCALE_BASE;
+      const far = 50000 //* SCALE_BASE;  // TODO
 
       this.three.scene = new THREE.Scene()
       this.three.camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
@@ -102,8 +102,10 @@ class CesiumThreeJS3DGS {
 
   private updateCanvasSize() {
     if (
-      this.threeContainer.clientWidth === this.three.renderer.domElement &&
-      this.threeContainer.clientHeight === this.three.renderer.domElement
+      this.threeContainer.clientWidth ===
+        this.three.renderer!.domElement.clientWidth &&
+      this.threeContainer.clientHeight ===
+        this.three.renderer!.domElement.clientHeight
     ) {
       return
     }
@@ -241,22 +243,22 @@ class CesiumThreeJS3DGS {
       scale = { x: scale, y: scale, z: scale }
     }
 
-    var position = CesiumCartesian3.fromDegrees(lon, lat, height)
+    const position = CesiumCartesian3.fromDegrees(lon, lat, height)
 
-    var p = CesiumCartesian3.multiplyByScalar(
+    const p = CesiumCartesian3.multiplyByScalar(
       position,
       SCALE_BASE,
       new CesiumCartesian3(),
     )
 
     // 获取ENU帧的转换矩阵
-    var enuTransform = CesiumTransforms.eastNorthUpToFixedFrame(position)
+    const enuTransform = CesiumTransforms.eastNorthUpToFixedFrame(position)
     // 从逆矩阵中提取3x3的旋转矩阵部分
-    var rotationMatrix = CesiumMatrix4.getRotation(
+    const rotationMatrix = CesiumMatrix4.getRotation(
       enuTransform,
       new CesiumMatrix3(),
     )
-    var quaternion = CesiumQuaternion.fromRotationMatrix(rotationMatrix)
+    const quaternion = CesiumQuaternion.fromRotationMatrix(rotationMatrix)
 
     const q5 = CesiumQuaternion.fromHeadingPitchRoll(
       new CesiumHeadingPitchRoll(
@@ -268,7 +270,7 @@ class CesiumThreeJS3DGS {
     let q = CesiumQuaternion.multiply(quaternion, q5, new CesiumQuaternion())
 
     // Cesium的坐标系Z轴朝上，因此为了与THREE匹配，以X轴为中心旋转90度
-    let q6 = CesiumQuaternion.fromAxisAngle(
+    const q6 = CesiumQuaternion.fromAxisAngle(
       new CesiumCartesian3(1, 0, 0),
       CesiumMath.toRadians(90),
     )
@@ -292,19 +294,20 @@ class CesiumThreeJS3DGS {
     if (this.readySplatViewer === 0) return
 
     if (this.three.splatViewers.length === 0) return
+    if (!this.three.renderer || !this.three.camera) return
 
     this.updateCanvasSize()
     this.three.renderer.clear()
 
-    var civm = this.cesiumViewer.camera.inverseViewMatrix
+    const civm = this.cesiumViewer.camera.inverseViewMatrix
 
     // 3. 创建缩放矩阵
-    var scaleMatrix = CesiumMatrix4.fromScale(
+    const scaleMatrix = CesiumMatrix4.fromScale(
       new CesiumCartesian3(SCALE_BASE, SCALE_BASE, SCALE_BASE),
     )
 
     // 4. 将视图和缩放矩阵相乘以创建新视图矩阵
-    var scaledViewMatrix = CesiumMatrix4.multiply(
+    const scaledViewMatrix = CesiumMatrix4.multiply(
       scaleMatrix,
       civm,
       new CesiumMatrix4(),
