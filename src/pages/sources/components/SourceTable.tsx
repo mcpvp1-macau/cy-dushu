@@ -1,9 +1,5 @@
 import { StatusColorMap } from '@/enum/device'
-import {
-  // getAllDeviceList,
-  getAllDeviceListOta,
-  getUavDocSnList,
-} from '@/service/modules/device'
+import { getAllDeviceListOta, getUavDocSnList } from '@/service/modules/device'
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -12,7 +8,7 @@ import {
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table'
-import { Badge, Button, Input, Pagination, Radio } from 'antd'
+import { Badge, Input, Pagination, Radio } from 'antd'
 import { Link, useSearchParams } from 'react-router-dom'
 import OTAUpdateColumn from './OTAUpdateColumn'
 import DeviceData from './DeviceData'
@@ -25,10 +21,7 @@ import UavDetail from './UavDetail'
 import Logs from './Logs'
 import UploadDetail from './UavDetail/UploadDetail'
 import { useLocalStorageState } from 'ahooks'
-import IconButtonWithDropDownDialog from '@/components/ui/button/IconButtonWithDropDownDialog'
-import IconEdit from '@/assets/icons/jsx/IconEdit'
 import TTPBOXSnEditor from './TTPBOXSnEditor'
-// import Select from '@/components/AntdOverride/Select'
 
 type PropsType = unknown
 
@@ -46,6 +39,8 @@ const SourceTable: FC<PropsType> = memo(() => {
   const size = Number(searchParams.get('size') ?? 20)
   const kw = searchParams.get('kw')
   const sn = searchParams.get('sn')
+
+  const [refreshKey, setRefreshKey] = useState(0)
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] =
@@ -83,7 +78,16 @@ const SourceTable: FC<PropsType> = memo(() => {
 
   const { data, isLoading, isRefetching, refetch } = useQuery(
     {
-      queryKey: ['getAllDeviceList', type, page, size, kw, sn, parmas],
+      queryKey: [
+        'getAllDeviceListTable',
+        type,
+        page,
+        size,
+        kw,
+        sn,
+        parmas,
+        refreshKey,
+      ],
       queryFn: () =>
         getAllDeviceListOta({
           type: type!,
@@ -208,7 +212,16 @@ const SourceTable: FC<PropsType> = memo(() => {
             columnHelper.accessor('djiOtaInfo', {
               header: '固件升级',
               cell: (cell) => (
-                <OTAUpdateColumn data={cell?.row.original} type="DJI" />
+                <OTAUpdateColumn
+                  data={cell?.row.original}
+                  type="DJI"
+                  onRefresh={() => {
+                    // queryClient.invalidateQueries({
+                    //   queryKey: ['getAllDeviceListTable'],
+                    // })
+                    setRefreshKey((v) => v + 1)
+                  }}
+                />
               ),
               enableColumnFilter: true,
               meta: {
@@ -236,7 +249,10 @@ const SourceTable: FC<PropsType> = memo(() => {
           <TTPBOXSnEditor
             cell={cell}
             onRefresh={() => {
-              queryClient.invalidateQueries({ queryKey: ['getAllDeviceList'] })
+              // queryClient.invalidateQueries({
+              //   queryKey: ['getAllDeviceListTable'],
+              // })
+              setRefreshKey((v) => v + 1)
             }}
           />
         ),
@@ -248,7 +264,16 @@ const SourceTable: FC<PropsType> = memo(() => {
       columnHelper.accessor('otaInfo', {
         header: '盒子固件升级',
         cell: (cell) => (
-          <OTAUpdateColumn data={cell?.row.original} type="BOX" />
+          <OTAUpdateColumn
+            data={cell?.row.original}
+            type="BOX"
+            onRefresh={() => {
+              // queryClient.invalidateQueries({
+              //   queryKey: ['getAllDeviceListTable'],
+              // })
+              setRefreshKey((v) => v + 1)
+            }}
+          />
         ),
       }),
       columnHelper.display({
@@ -340,8 +365,9 @@ const SourceTable: FC<PropsType> = memo(() => {
         refetchTimer.current = null
       }
       refetchTimer.current = setTimeout(() => {
-        refetch()
-      }, 3000)
+        // refetch()
+        setRefreshKey((v) => v + 1)
+      }, 10000)
       // refetch()
     }
   }, [data?.rows])
@@ -369,7 +395,12 @@ const SourceTable: FC<PropsType> = memo(() => {
       </div>
       <div className="mt-3 w-full grow rounded overflow-hidden border border-solid border-[#23272D]">
         <ScrollArea className="h-full">
-          <XTable table={table} loading={isLoading || isRefetching} />
+          <XTable
+            key={refreshKey}
+            table={table}
+            loading={isLoading || isRefetching}
+            render={data?.rows}
+          />
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
       </div>

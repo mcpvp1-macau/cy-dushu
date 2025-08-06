@@ -10,6 +10,7 @@ import { Button } from 'antd'
 type PropsType = {
   data: API_DEVICE.domain.DeviceOTAItem
   type: 'DJI' | 'BOX'
+  onRefresh: () => void
 }
 
 const OTAUpdateRender: React.FC<{
@@ -22,7 +23,6 @@ const OTAUpdateRender: React.FC<{
   const [statusState, setStatusState] = useState(otaInfo?.status)
 
   const currentStatus = statusState || otaInfo?.status
-  console.log('currentStatus', currentStatus)
 
   const handleUpdateDevice = async () => {
     // await updateOtaDevice({ deviceId })
@@ -87,7 +87,7 @@ const OTAUpdateRender: React.FC<{
   return '-'
 }
 
-const OTAUpdateColumn: FC<PropsType> = memo(({ data, type }) => {
+const OTAUpdateColumn: FC<PropsType> = memo(({ data, type, onRefresh }) => {
   const { deviceId } = data
   const { otaInfo, djiOtaInfo } = data
 
@@ -101,7 +101,7 @@ const OTAUpdateColumn: FC<PropsType> = memo(({ data, type }) => {
     newVersionName: otaInfo?.newVersionName,
   }
 
-  const queryClient = useQueryClient()
+  // const queryClient = useQueryClient()
 
   const onUpdateDevice = async () => {
     if (type === 'DJI') {
@@ -114,7 +114,8 @@ const OTAUpdateColumn: FC<PropsType> = memo(({ data, type }) => {
     } else {
       await updateOtaDevice({ deviceId })
     }
-    queryClient.invalidateQueries({ queryKey: ['getAllDeviceList'] })
+    // queryClient.invalidateQueries({ queryKey: ['getAllDeviceList'] })
+    onRefresh()
   }
 
   return (
