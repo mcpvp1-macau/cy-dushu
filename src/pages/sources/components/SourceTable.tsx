@@ -42,6 +42,9 @@ const SourceTable: FC<PropsType> = memo(() => {
 
   const [refreshKey, setRefreshKey] = useState(0)
 
+  const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined)
+  const [djiOtaInfoFilter, setDjiOtaInfoFilter] = useState<string>('ALL')
+
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] =
     useLocalStorageState<VisibilityState>('source-columnVisibility', {
@@ -184,7 +187,10 @@ const SourceTable: FC<PropsType> = memo(() => {
               <Radio.Group
                 onChange={(e) => {
                   column.setFilterValue(e.target.value)
+                  setStatusFilter(e.target.value)
                 }}
+                // value={column.getFilterValue() ?? undefined}
+                value={statusFilter ?? undefined}
                 className="flex flex-col gap-2"
               >
                 <Radio value={undefined}>全部</Radio>
@@ -230,7 +236,9 @@ const SourceTable: FC<PropsType> = memo(() => {
                     <Radio.Group
                       onChange={(e) => {
                         column.setFilterValue(e.target.value)
+                        setDjiOtaInfoFilter(e.target.value)
                       }}
+                      value={djiOtaInfoFilter ?? 'ALL'}
                       className="flex flex-col gap-2"
                     >
                       <Radio value="ALL">全部</Radio>
@@ -311,7 +319,7 @@ const SourceTable: FC<PropsType> = memo(() => {
       }),
     ]
     return columns
-  }, [i18n.language, searchParams.get('type'), uavDocSnSet])
+  }, [i18n.language, searchParams.get('type'), uavDocSnSet, statusFilter, djiOtaInfoFilter])
 
   const table = useReactTable({
     data: data?.rows ?? defaultData,
@@ -344,6 +352,7 @@ const SourceTable: FC<PropsType> = memo(() => {
   // 切换类型时, 清空过滤条件
   useEffect(() => {
     setColumnFilters([])
+    setStatusFilter(undefined)
   }, [type])
 
   const upgradeStatus = ['PENDING', 'DOWNLOADING', 'INSTALLING', 'REBOOTING']
@@ -358,7 +367,6 @@ const SourceTable: FC<PropsType> = memo(() => {
         upgradeStatus.includes(row.otaInfo?.status || '-')
       )
     })
-    console.log('isNeedRefetch', isNeedRefetch)
     if (isNeedRefetch) {
       if (refetchTimer.current) {
         clearTimeout(refetchTimer.current)
@@ -372,7 +380,6 @@ const SourceTable: FC<PropsType> = memo(() => {
     }
   }, [data?.rows])
 
-  console.log('columnFilters', columnFilters)
   const { handleValueChange, handlePaginationChange } = usePageSearchParams()
 
   return (

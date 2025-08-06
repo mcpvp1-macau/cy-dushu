@@ -150,6 +150,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
   const componentMap = useMemo(
     () => ({
       map: <RebotDogMap />,
+      // map: <div>123</div>,
       video: <RebotDogVideo />,
       control: (
         <div className="absolute inset-0 flex justify-center scale-90">
