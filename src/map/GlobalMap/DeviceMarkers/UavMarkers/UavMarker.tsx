@@ -15,7 +15,6 @@ import GLBModel from '@/map/CesiumMap/components/service/common/GLBModel'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import HistoryTrack from '@/components/map/HistoryTrack'
 import useDeviceTrackColorStore from '@/store/setting/useDeviceTrackColor.store'
-import DeviceOverlays from '../components/DeviceOverlays'
 import BoardMarker3D from '@/components/map/BoardCesium/BoardMarker3D'
 import DeviceIconUAV2 from '@/assets/icons/jsx/device/DeviceIconUAV2'
 import IconButton from '@/components/ui/button/IconButton'
@@ -172,7 +171,6 @@ const UavMarker: FC<PropsType> = memo(({ data, onPositionChange }) => {
             materialType={materialType}
           />
         ))}
-      <DeviceOverlays deviceId={deviceId} />
       {enableUavInfoBoard && viewer && (
         <BoardMarker3D
           id={`uav-info-board-${data.deviceId}`}

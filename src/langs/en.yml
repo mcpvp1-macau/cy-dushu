@@ -221,6 +221,7 @@ device:
     vibrator:
       range: Vibrator range settings
     wanglou: Watchtower configuration
+    title: Device Setting
   battery:
     chargeState: charging status
     current: current

@@ -22,8 +22,6 @@ const DeviceAlgorithmList = lazy(
 )
 const UavConfiguration = lazy(() => import('./UavConfiguration'))
 
-const DeviceOverlayFlightArea = lazy(() => import('./DeviceOverlayFlightArea'))
-
 type PropsType = {
   /** 详情数据 */
   data: API_DEVICE.domain.Device
@@ -117,14 +115,6 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
                   deviceId={deviceId}
                   productKey={productKey!}
                 />
-              </AppViewSuspense>
-            ),
-          },
-          {
-            label: t('device.overlay.flightArea.title'),
-            children: (
-              <AppViewSuspense>
-                <DeviceOverlayFlightArea />
               </AppViewSuspense>
             ),
           },

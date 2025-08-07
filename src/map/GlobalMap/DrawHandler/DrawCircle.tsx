@@ -14,7 +14,7 @@ import useCreateFn from './hooks/useCreateFn'
 import AddDeviceOverlayFormModal from './components/AddDeviceOverlayModal'
 
 type PropsType = {
-  onSuccess?: () => void
+  onSuccess?: () => Promise<void>
 }
 
 const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
@@ -24,14 +24,16 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
   const isFlightArea = useMapDrawStore((s) => s.isFlightArea)
   const isDrawingDeviceArea = useMapDrawStore((s) => s.isDrawingDeviceArea)
 
+  // 设备点位 (用于绘制设备可飞行区域)
+  const devicePosition = useMapDrawStore((s) => s.devicePosition)
+
   /**绘制的点 */
-  const [drawingPositions, setDrawingPositions] = useState<[number, number][]>(
-    [],
-  )
-  const circleCenter = useMemo(
-    () => drawingPositions[0] || [0, 0],
-    [drawingPositions],
-  )
+  const [drawingPositions, setDrawingPositions] = useState<[number, number][]>([
+    devicePosition ?? [0, 0],
+  ])
+
+  const circleCenter = useMemo(() => drawingPositions[0], [drawingPositions])
+
   const radius = useMemo(() => {
     if (!drawingPositions[0] || !drawingPositions[1]) {
       return 0
@@ -70,19 +72,7 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
       setTrue()
     }
 
-    // 左键 选点
-    handler.setInputAction((e) => {
-      const ray = viewer.camera.getPickRay(e.position)
-      if (!ray) return
-      const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
-      if (!cartesian) return
-      // 地形上的点
-      const position = cartesian3ToDegrees(cartesian).slice(0, 2) as [
-        number,
-        number,
-      ]
-      setDrawingPositions([position, position])
-
+    const addSettedCenterActions = () => {
       // 移动
       handler.setInputAction(
         moveHandler,
@@ -90,12 +80,34 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
       )
       // 右键结束
       handler.setInputAction(upHandler, Cesium.ScreenSpaceEventType.RIGHT_CLICK)
-    }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
+    }
+
+    // 是否已经指定圆心
+    if (circleCenter?.length) {
+      // 如果已经指定了圆心
+      addSettedCenterActions()
+    } else {
+      // 左键 选点
+      handler.setInputAction((e) => {
+        const ray = viewer.camera.getPickRay(e.position)
+        if (!ray) return
+        const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
+        if (!cartesian) return
+        // 地形上的点
+        const position = cartesian3ToDegrees(cartesian).slice(0, 2) as [
+          number,
+          number,
+        ]
+        setDrawingPositions([position, position])
+
+        addSettedCenterActions()
+      }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
+    }
 
     return () => {
       handler.destroy()
     }
-  }, [viewer])
+  }, [viewer, circleCenter])
 
   const handleConfirm = async (data: any) => {
     if (radius < 1) return
@@ -171,7 +183,7 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
     }
 
     await createFn(commitData)
-    onSuccess?.()
+    await onSuccess?.()
   }
 
   return (
@@ -181,7 +193,7 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
           open={open}
           onClose={() => {
             setFalse()
-            setDrawingPositions([])
+            setDrawingPositions([devicePosition ?? [0, 0]])
           }}
           onConfirm={handleConfirm}
         />
@@ -190,7 +202,7 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
           open={open}
           onClose={() => {
             setFalse()
-            setDrawingPositions([])
+            setDrawingPositions([devicePosition ?? [0, 0]])
           }}
           onConfirm={handleConfirm}
         />
@@ -199,7 +211,7 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
           open={open}
           onClose={() => {
             setFalse()
-            setDrawingPositions([])
+            setDrawingPositions([devicePosition ?? [0, 0]])
           }}
           onConfirm={handleConfirm}
         />

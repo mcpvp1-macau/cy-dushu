@@ -38,7 +38,9 @@ const UavAirportWeatherSection: FC<PropsType> = memo(
           <Tooltip title={t('device.uavDock.cabinTemperature.title')}>
             <div className="flex gap-1">
               <IconTemperature2 />
-              <span className="ml-1">{temperature ?? '-'} °C</span>
+              <span className="ml-1 whitespace-nowrap">
+                {temperature ?? '-'} °C
+              </span>
             </div>
           </Tooltip>
         </li>

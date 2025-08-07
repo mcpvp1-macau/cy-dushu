@@ -3,7 +3,7 @@ import OverlayStyleEditor from '@/pages/right/right-tools/AddGeometry/OverlaySty
 import useMapDrawStore, { DrawType } from '@/store/map/useDraw.store'
 import { Button } from 'antd'
 import { createPortal } from 'react-dom'
-import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
+import { useDeviceDetailStore } from '../hooks/useDeviceDetail.store'
 import useDeviceOverlaiesStore from '@/store/map/useDeviceOverlays.store'
 import { emtpyArray } from '@/constant/data'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
@@ -13,10 +13,12 @@ import IconButton from '@/components/ui/button/IconButton'
 import IconEdit from '@/assets/icons/jsx/IconEdit'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { RightModeEnum } from '@/enum/right-mode'
+import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 
 type PropsType = unknown
 
-const DeviceOverlayFlightArea: FC<PropsType> = memo(() => {
+/** 设备标绘配置 */
+const DeviceOverlayConfig: FC<PropsType> = memo(() => {
   const { t } = useTranslation()
 
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
@@ -26,6 +28,7 @@ const DeviceOverlayFlightArea: FC<PropsType> = memo(() => {
     sto.updateIsDrawingDeviceArea(false)
     sto.updateBindingDeviceId('')
     sto.updateDrawing(DrawType.None)
+    sto.updateDevicePosition(null)
   }
 
   useEffect(() => () => cancelDraw(), [])
@@ -40,7 +43,7 @@ const DeviceOverlayFlightArea: FC<PropsType> = memo(() => {
 
   return (
     <>
-      <div className="p-3">
+      <div>
         <ul>
           {deviceOverlays.map((e) => (
             <li key={e.spaceId} className="flex items-center justify-between">
@@ -81,7 +84,13 @@ const DeviceOverlayFlightArea: FC<PropsType> = memo(() => {
               sto.updateIsDrawingDeviceArea(true)
               sto.updateIsFlightArea(false)
               sto.updateBindingDeviceId(deviceId)
-              useMapDrawStore.getState().updateDrawing(DrawType.Polygon)
+              sto.updateDrawing(DrawType.Polygon)
+              // 更新中心点 (主要用于圆形)
+              const properties =
+                useGlobalWsStore.getState().deviceRealtimeProperties[deviceId]
+                  ?.properties ?? {}
+              const { longitude, latitude } = properties
+              sto.updateDevicePosition([longitude, latitude])
             }}
           >
             创建可飞行区域
@@ -101,6 +110,6 @@ const DeviceOverlayFlightArea: FC<PropsType> = memo(() => {
   )
 })
 
-DeviceOverlayFlightArea.displayName = 'DeviceOverlayFlightArea'
+DeviceOverlayConfig.displayName = 'DeviceOverlayConfig'
 
-export default DeviceOverlayFlightArea
+export default DeviceOverlayConfig

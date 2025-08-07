@@ -2,9 +2,11 @@ import Select from '@/components/AntdOverride/Select'
 import useMapDrawStore, { DrawType } from '@/store/map/useDraw.store'
 import { useTranslation } from 'react-i18next'
 
-type PropsType = {}
+type PropsType = {
+  onChange?: (type: DrawType) => void
+}
 
-const DrawingTypeSelectorCreating: FC<PropsType> = () => {
+const DrawingTypeSelectorCreating: FC<PropsType> = ({ onChange }) => {
   const { t } = useTranslation()
 
   const opts = [
@@ -13,16 +15,8 @@ const DrawingTypeSelectorCreating: FC<PropsType> = () => {
       value: DrawType.Circle,
     },
     {
-      label: t('overlay.drawing.rect.title'),
-      value: DrawType.Rect,
-    },
-    {
       label: t('overlay.drawing.polygon.title'),
       value: DrawType.Polygon,
-    },
-    {
-      label: t('overlay.drawing.sector.title'),
-      value: DrawType.Fan,
     },
   ]
 
@@ -35,6 +29,7 @@ const DrawingTypeSelectorCreating: FC<PropsType> = () => {
       className="w-20"
       size="small"
       onChange={(v) => {
+        onChange?.(v)
         useMapDrawStore.getState().updateDrawing(v)
       }}
     />

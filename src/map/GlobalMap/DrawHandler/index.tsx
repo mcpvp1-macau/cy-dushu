@@ -25,9 +25,8 @@ const DrawHandler: FC<PropsType> = memo(() => {
 
   const msgApi = useAppMsg()
   const queryClient = useQueryClient()
+
   const handleSuccess = useMemoizedFn(async () => {
-    useMapDrawStore.getState().updateDrawing(DrawType.None)
-    msgApi.success(t('common.success'))
     if (isFlightArea) {
       await queryClient.invalidateQueries({
         queryKey: ['getFlightAreaList'],
@@ -46,6 +45,8 @@ const DrawHandler: FC<PropsType> = memo(() => {
         exact: false,
       })
     }
+    msgApi.success(t('common.success'))
+    useMapDrawStore.getState().updateDrawing(DrawType.None)
   })
 
   if (drawingType === DrawType.Point) {
