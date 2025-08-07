@@ -16,7 +16,6 @@ const RebotDogMap: FC<unknown> = memo(() => {
     setText((text) => (text === '哈哈哈哈' ? '发发地方' : '哈哈哈哈'))
   }, 1000)
 
-  console.log('text1', text)
   return (
     <PointCloudMap>
       {/* <PointCloudLayer url="/pcd_data/lab_avia.pcd" /> */}

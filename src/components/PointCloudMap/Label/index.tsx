@@ -38,7 +38,7 @@ const Label: FC<PropsType> = ({ position, text, color, size = 0.7, offset = { x:
       depthTest: false,
     })
     const sprite = new THREE.Sprite(spriteMaterial)
-    sprite.scale.set(0.3 * size, 0.2 * size, 0.2 * size)
+    sprite.scale.set(0.2 * size, 0.2 * size, 0.2 * size)
     // sprite.position.set(position.x, position.y, position.z)
 
     // 添加精灵对象到场景中
@@ -56,12 +56,11 @@ const Label: FC<PropsType> = ({ position, text, color, size = 0.7, offset = { x:
 
   useEffect(() => {
     if (!labelRef.current) return
-    labelRef.current.scale.set(0.3 * size, 0.2 * size, 0.2 * size)
+    labelRef.current.scale.set(0.2 * size, 0.2 * size, 0.2 * size)
   }, [size])
 
   useEffect(() => {
     if (!labelRef.current) return
-    console.log('text2', text)
     const canvas = document.createElement('canvas')
     canvas.width = 200
     canvas.height = 200

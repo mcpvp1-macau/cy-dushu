@@ -17,6 +17,5 @@ export const ThreeContext = createContext<ThreeState | null>(initialState)
 
 export const useThree = <T>(select: (state: any) => T) => {
   const store = useContext(ThreeContext)!
-  console.log('store', store)
   return select(store)
 }

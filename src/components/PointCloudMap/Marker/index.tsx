@@ -2,17 +2,16 @@ import { FC, useEffect, useRef } from 'react'
 import { useThree } from '../hooks/useThree'
 import * as THREE from 'three'
 import { useLatest } from 'ahooks'
-import { FontLoader } from 'three/addons/loaders/FontLoader.js'
-import { TextGeometry } from 'three/addons/geometries/TextGeometry.js'
 
 type PropsType = {
   position: { x: number; y: number; z: number }
   image: string
+  size?: number
   onClick: (point: THREE.Vector3) => void
 }
 
 /** 图标标记 */
-const Marker: FC<PropsType> = ({ position, image, onClick }) => {
+const Marker: FC<PropsType> = ({ position, image, size = 1, onClick }) => {
   const { scene, renderer, camera } = useThree((s) => s)
   const markerRef = useRef<THREE.Sprite | null>(null)
   const clickRef = useLatest(onClick)
@@ -77,7 +76,7 @@ const Marker: FC<PropsType> = ({ position, image, onClick }) => {
     const textureLoader = new THREE.TextureLoader()
     const texture = textureLoader.load(image)
     markerRef.current.material.map = texture
-    markerRef.current.scale.set(0.05, 0.05, 0.05)
+    markerRef.current.scale.set(0.05 * size, 0.05 * size, 1 * size)
   }, [image])
 
   useEffect(() => {

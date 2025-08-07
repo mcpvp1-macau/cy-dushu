@@ -44,13 +44,13 @@ const PointCloudMap: FC<{ children: React.ReactNode }> = ({ children }) => {
       camera.position.set(0, 0, 10)
       camera.lookAt(0, 0, 0)
 
-    //   const geometry = new THREE.BoxGeometry(1, 1, 1)
-    //   // 创建材质
-    //   const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-    //   // 创建网络
-    //   const cube = new THREE.Mesh(geometry, material)
-    //   // 网络添加到场景
-    //   scene.add(cube)
+      //   const geometry = new THREE.BoxGeometry(1, 1, 1)
+      //   // 创建材质
+      //   const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+      //   // 创建网络
+      //   const cube = new THREE.Mesh(geometry, material)
+      //   // 网络添加到场景
+      //   scene.add(cube)
 
       const controls = new OrbitControls(camera, renderer.domElement)
       setControls(controls)
@@ -75,7 +75,12 @@ const PointCloudMap: FC<{ children: React.ReactNode }> = ({ children }) => {
   }, [])
   useEffect(() => {
     if (size?.width && size?.height && ref.current && camera && renderer) {
-      renderer.setSize(size.width, size.height)
+      renderer.setSize(size.width, size.height, true)
+      renderer.setPixelRatio(window.devicePixelRatio)
+      // @ts-ignore
+      camera.aspect = size.width / size.height
+      // @ts-ignore
+      camera.updateProjectionMatrix()
     }
   }, [size])
   return (
