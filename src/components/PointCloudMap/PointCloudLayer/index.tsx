@@ -1,48 +1,133 @@
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useRef } from 'react'
 import { useThree } from '../hooks/useThree'
 import { PCDLoader } from 'three/addons/loaders/PCDLoader.js'
 import * as THREE from 'three'
+import { useLatest } from 'ahooks'
 
 type PointCloudLayerProps = {
   url: string
+  onClick: (point: THREE.Vector3) => void
 }
-const PointCloudLayer: FC<PointCloudLayerProps> = ({ url }) => {
+/** 点云图层 */
+const PointCloudLayer: FC<PointCloudLayerProps> = ({ url, onClick }) => {
   const { scene, camera, renderer, controls } = useThree((state) => state)
 
-  const [plane, setPlane] = useState<THREE.Mesh | null>(null)
+  // const [plane, setPlane] = useState<THREE.Mesh | null>(null)
+  const planeRef = useRef<THREE.Mesh | null>(null)
+  const clickRef = useLatest(onClick)
 
-  const mouseRef = useRef<THREE.Vector2>(new THREE.Vector2())
-
-  const onClick = (event: MouseEvent) => {
-    console.log('window click', event)
-    mouseRef.current.set(event.clientX, event.clientY)
+  const handleClick = (event: MouseEvent) => {
+    const raycaster = new THREE.Raycaster()
+    // 鼠标控制对象
+    const mouse = new THREE.Vector2()
+    // 得到鼠标相对于容器的坐标
+    mouse.x = (event.offsetX / renderer!.domElement.clientWidth) * 2 - 1
+    mouse.y = -(event.offsetY / renderer!.domElement.clientHeight) * 2 + 1
+    // 执行射线检测
+    raycaster.setFromCamera(mouse, camera)
+    if (planeRef.current) {
+      // 判断指定的对象中哪些被该光线照射到了，在arrGroup中筛选
+      const intersects = raycaster.intersectObjects([planeRef.current])
+      // const intersects = raycaster.intersectObjects(scene.children)
+      // 射线涉及到的物体集合
+      if (intersects.length > 0) {
+        const point = intersects[0].point
+        clickRef.current(point)
+      }
+    }
   }
 
   useEffect(() => {
     const loader = new PCDLoader()
     let pointsO: THREE.Points | null = null
     let plane: THREE.Mesh | null = null
-    if (url) {
+    if (url && scene && camera && renderer) {
       loader.load(url, (points) => {
-        pointsO = points
-        scene?.add(points)
+        // 根据z值设置点云颜色
+        const positions = points.geometry.attributes.position
+        const colors = new Float32Array(positions.count * 3)
+        // 创建一个新的几何体来存储过滤后的点
+        const geometry = new THREE.BufferGeometry()
+        const vertices: number[] = []
+        // 获取z值的范围
+        let minZ = Infinity
+        let maxZ = -Infinity
+        for (let i = 0; i < positions.count; i++) {
+          const z = positions.getZ(i)
+          minZ = Math.min(minZ, z)
+          maxZ = Math.max(maxZ, z)
+        }
+
+        // 根据z值设置颜色
+        for (let i = 0; i < positions.count; i++) {
+          const z = positions.getZ(i)
+
+          // 过滤掉z值小于0.02的点
+          if (z > 0.02) {
+            const normalizedZ = Math.min(z / 1, 1) // 归一化到0-1
+
+            // 使用颜色映射：z=0绿色，z=0.5黄色，z=1红色
+            let r, g, b
+
+            if (normalizedZ <= 0.5) {
+              // 0到0.5：绿色到黄色
+              const t = normalizedZ * 2 // 0到1
+              r = 255 * t
+              g = 255
+              b = 0
+            } else {
+              // 0.5到1：黄色到红色
+              const t = (normalizedZ - 0.5) * 2 // 0到1
+              r = 255
+              g = 255 * (1 - t)
+              b = 0
+            }
+
+            colors[i * 3] = r / 255
+            colors[i * 3 + 1] = g / 255
+            colors[i * 3 + 2] = b / 255
+            vertices.push(positions.getX(i), positions.getY(i), z)
+          }
+        }
+        geometry.setAttribute(
+          'position',
+          new THREE.Float32BufferAttribute(vertices, 3),
+        )
+        // 设置颜色属性
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
+
+        const material = new THREE.PointsMaterial({
+          size: 0.01,
+          sizeAttenuation: true,
+          depthWrite: false,
+          blending: THREE.AdditiveBlending,
+          vertexColors: true,
+        })
+
+        // points.material = material
+        pointsO = new THREE.Points(geometry, material)
+
+        scene?.add(pointsO)
         // 计算包围盒
         const box = new THREE.Box3().setFromObject(points)
-        console.log('包围盒的角点:', box, box.min, box.max)
         const center = box.getCenter(new THREE.Vector3())
 
         // 计算平面
         const width = box.max.x - box.min.x
         const height = box.max.y - box.min.y
         const planeGeometry = new THREE.PlaneGeometry(width, height)
-        const planeMaterial = new THREE.MeshBasicMaterial({ color: 0x222222 })
+        const planeMaterial = new THREE.MeshBasicMaterial({
+          color: 0x222222,
+          transparent: true,
+          opacity: 0.3,
+        })
         plane = new THREE.Mesh(planeGeometry, planeMaterial)
-        plane.position.set(center.x, center.y, center.z)
+        plane.position.set(center.x, center.y, 0.0)
         scene?.add(plane)
-        setPlane(plane)
+        // setPlane(plane)
+        planeRef.current = plane
 
-
-        window.addEventListener('click', onClick, false)
+        renderer?.domElement.addEventListener('click', handleClick)
 
         // 计算相机位置 - 移动到点云中心的正上方
         const boxSize = box.getSize(new THREE.Vector3())
@@ -67,6 +152,7 @@ const PointCloudLayer: FC<PointCloudLayerProps> = ({ url }) => {
       })
     }
     return () => {
+      renderer?.domElement.removeEventListener('click', handleClick)
       if (pointsO) {
         scene?.remove(pointsO)
       }

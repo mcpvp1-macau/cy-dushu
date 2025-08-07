@@ -5,6 +5,7 @@ import { ThreeContext } from '../hooks/useThree'
 // @ts-ignore
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
+/** 点云地图 */
 const PointCloudMap: FC<{ children: React.ReactNode }> = ({ children }) => {
   const ref = useRef<HTMLDivElement>(null)
   const [scene, setScene] = useState<THREE.Scene | null>(null)
