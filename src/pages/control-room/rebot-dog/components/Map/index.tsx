@@ -7,7 +7,16 @@ import PointCloudLayer from '@/components/PointCloudMap/PointCloudLayer'
 import Marker from '@/components/PointCloudMap/Marker'
 import icon from '/images/marker/icon/rebot_dog.svg'
 import Polyline from '@/components/PointCloudMap/Polyline'
+import Label from '@/components/PointCloudMap/Label'
+import { useInterval } from 'ahooks'
 const RebotDogMap: FC<unknown> = memo(() => {
+
+  const [text, setText] = useState('哈哈哈哈')
+  useInterval(() => {
+    setText((text) => (text === '哈哈哈哈' ? '发发地方' : '哈哈哈哈'))
+  }, 1000)
+
+  console.log('text1', text)
   return (
     <PointCloudMap>
       {/* <PointCloudLayer url="/pcd_data/lab_avia.pcd" /> */}
@@ -31,6 +40,7 @@ const RebotDogMap: FC<unknown> = memo(() => {
         ]}
         color="#ff0000"
       />
+      <Label position={{ x: 0, y: 0, z: 0 }} text={text} offset={{ x: 0, y: 80, z: 0 }} />
     </PointCloudMap>
   )
   // return (

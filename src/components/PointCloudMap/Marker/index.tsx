@@ -2,6 +2,8 @@ import { FC, useEffect, useRef } from 'react'
 import { useThree } from '../hooks/useThree'
 import * as THREE from 'three'
 import { useLatest } from 'ahooks'
+import { FontLoader } from 'three/addons/loaders/FontLoader.js'
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js'
 
 type PropsType = {
   position: { x: number; y: number; z: number }
