@@ -30,7 +30,7 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
   const fillOpacity = useMapDrawStore((s) => s.fillOpacity)
   const lineStyle = useMapDrawStore((s) => s.lineStyle)
   const isFlightArea = useMapDrawStore((s) => s.isFlightArea)
-  const isDrawingDeviceArea = useMapDrawStore((s) => s.isDrawingDeviceArea)
+  const isDrawingDeviceArea = useMapDrawStore((s) => s.isDrawingDeviceOverlay)
 
   const createFn = useCreateFn()
 

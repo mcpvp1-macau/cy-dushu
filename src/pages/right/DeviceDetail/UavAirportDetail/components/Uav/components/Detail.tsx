@@ -10,6 +10,7 @@ type PropsType = {
   state: Record<string, any>
 }
 
+/** 机场详情中的无人机详情 */
 const UavAirportUavDetailDetail: FC<PropsType> = memo(({ state }) => {
   const data = useDeviceDetailStore((s) => s.deviceDetail)!
 

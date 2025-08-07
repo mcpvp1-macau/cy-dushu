@@ -22,7 +22,7 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
   const lineStyle = useMapDrawStore((s) => s.lineStyle)
   const fillOpacity = useMapDrawStore((s) => s.fillOpacity)
   const isFlightArea = useMapDrawStore((s) => s.isFlightArea)
-  const isDrawingDeviceArea = useMapDrawStore((s) => s.isDrawingDeviceArea)
+  const isDrawingDeviceArea = useMapDrawStore((s) => s.isDrawingDeviceOverlay)
 
   // 设备点位 (用于绘制设备可飞行区域)
   const devicePosition = useMapDrawStore((s) => s.devicePosition)

@@ -55,7 +55,7 @@ type StateType = {
   /**是否绘制的是飞行区域，飞行区域和普通绘制弹窗不一样 */
   isFlightArea: boolean
   /** 是否在绘制设备绑定区域 */
-  isDrawingDeviceArea: boolean
+  isDrawingDeviceOverlay: boolean
   /** 绑定设备ID */
   bindingDeviceId: string
   /** 初始绘制中心点 (用于可飞行区域标识设备中心位置) */
@@ -93,7 +93,7 @@ const useMapDrawStore = create<StateType & ActionsType>()(
         positions: [],
         isEdit: false,
         isFlightArea: false,
-        isDrawingDeviceArea: false,
+        isDrawingDeviceOverlay: false,
         bindingDeviceId: '',
         devicePosition: null,
         updateDrawing: (drawing) => {
@@ -127,7 +127,11 @@ const useMapDrawStore = create<StateType & ActionsType>()(
           set({ isFlightArea }, false, 'updateIsFlightArea')
         },
         updateIsDrawingDeviceArea: (isDrawingDeviceArea: boolean) => {
-          set({ isDrawingDeviceArea }, false, 'updateIsDrawingDeviceArea')
+          set(
+            { isDrawingDeviceOverlay: isDrawingDeviceArea },
+            false,
+            'updateIsDrawingDeviceArea',
+          )
         },
         updateBindingDeviceId: (bindingDeviceId: string) => {
           set({ bindingDeviceId }, false, 'updateBindingDeviceId')

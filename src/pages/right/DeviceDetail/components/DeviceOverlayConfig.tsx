@@ -39,7 +39,7 @@ const DeviceOverlayConfig: FC<PropsType> = memo(() => {
 
   const queryClient = useQueryClient()
 
-  const isCreating = useMapDrawStore((s) => s.isDrawingDeviceArea)
+  const isCreating = useMapDrawStore((s) => s.isDrawingDeviceOverlay)
 
   return (
     <>
