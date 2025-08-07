@@ -10,6 +10,7 @@ import DrawingTypeSelectorCreating from './DrawingTypeSelectorCreating'
 type PropsType = {
   overlay?: API_LAYER_OVERLAY.domain.Overlay
   isCreate?: boolean
+  onTypeChange?: (type: DrawType) => void
 }
 
 const getOverlayType = (overlay: API_LAYER_OVERLAY.domain.Overlay) => {
@@ -23,7 +24,11 @@ const getOverlayType = (overlay: API_LAYER_OVERLAY.domain.Overlay) => {
   return typeMap[overlay.cotType]
 }
 
-const OverlayStyleEditor: FC<PropsType> = ({ overlay, isCreate }) => {
+const OverlayStyleEditor: FC<PropsType> = ({
+  overlay,
+  isCreate,
+  onTypeChange,
+}) => {
   const overlayType = useMemo(() => {
     if (!overlay) return undefined
     return getOverlayType(overlay)
@@ -43,7 +48,7 @@ const OverlayStyleEditor: FC<PropsType> = ({ overlay, isCreate }) => {
       )}
     >
       {isCreate ? (
-        <DrawingTypeSelectorCreating />
+        <DrawingTypeSelectorCreating onChange={onTypeChange} />
       ) : (
         <DrawingTypeSelecter lockedType={overlayType} />
       )}

@@ -1,5 +1,6 @@
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
+import { attempt } from 'lodash'
 
 type PropsType = {
   layer: string
@@ -36,7 +37,9 @@ const TiffWMTSLoader4326: FC<PropsType> = memo((props) => {
     const imagery = viewer.imageryLayers.addImageryProvider(imageryProvider)
 
     return () => {
-      viewer.imageryLayers.remove(imagery)
+      attempt(() => {
+        viewer.imageryLayers.remove(imagery)
+      })
     }
   }, [viewer])
 

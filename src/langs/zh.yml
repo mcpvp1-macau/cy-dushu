@@ -214,6 +214,7 @@ device:
     radraRange: 雷达范围设置
     vibrator:
       range: 震动仪范围设置
+    title: 设备配置
   wanglou:
     status:
       title: 状态监测

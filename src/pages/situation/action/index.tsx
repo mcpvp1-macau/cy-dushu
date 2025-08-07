@@ -34,8 +34,6 @@ const PageSituationAction: FC<PropsType> = memo(() => {
     }, {} as Record<string, string>)
   }, [actionTypeOptions])
 
-  console.log('actionTypeOptions', actionTypeOptions)
-
   const queryClient = useQueryClient()
   const {
     data,

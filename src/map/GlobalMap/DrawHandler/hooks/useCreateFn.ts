@@ -5,7 +5,7 @@ import useMapDrawStore from '@/store/map/useDraw.store'
 
 const useCreateFn = () => {
   const isFlightArea = useMapDrawStore((s) => s.isFlightArea)
-  const isDrawingDeviceArea = useMapDrawStore((s) => s.isDrawingDeviceArea)
+  const isDrawingDeviceArea = useMapDrawStore((s) => s.isDrawingDeviceOverlay)
   const bindDeviceId = useMapDrawStore((s) => s.bindingDeviceId)
 
   const createFn = useMemo(() => {

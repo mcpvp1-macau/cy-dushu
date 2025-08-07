@@ -24,6 +24,8 @@ import useIsRightDetail from '../hooks/useIsRightDetail'
 import { createPortal } from 'react-dom'
 import IconButton from '@/components/ui/button/IconButton'
 import IconClose from '@/assets/icons/jsx/IconClose'
+import UavDockConfig from './components/UavDockConfig'
+import AppCollapse from '@/components/AppCollapse'
 
 type PropsType = BaseDeviceDetailProps
 
@@ -257,6 +259,16 @@ const UavAirportDetail: FC<PropsType> = memo(
                 deviceId={data?.childDevice?.[0]?.deviceId}
               />
             )}
+            <AppCollapse
+              className="mt-3"
+              items={[
+                {
+                  key: 'uavDockConfig',
+                  label: t('device.setting.title'),
+                  children: <UavDockConfig />,
+                },
+              ]}
+            />
           </ScrollArea>
         </div>
         {openDebug &&

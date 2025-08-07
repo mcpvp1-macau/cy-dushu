@@ -114,7 +114,7 @@ const useOverlayDetail = (detailId: string | null, onDelete?: () => void) => {
       setTimeout(() => {
         setFalse()
       }, 200)
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: ['getDeviceOverlayList'],
         exact: false,
       })
@@ -127,11 +127,11 @@ const useOverlayDetail = (detailId: string | null, onDelete?: () => void) => {
     try {
       setConfirmLoading(true)
       await deleteDeviceOverlay([overlay!.overlayId])
-      onDelete?.()
       await queryClient.invalidateQueries({
         queryKey: ['getDeviceOverlayList'],
         exact: false,
       })
+      onDelete?.()
     } finally {
       setConfirmLoading(false)
     }
