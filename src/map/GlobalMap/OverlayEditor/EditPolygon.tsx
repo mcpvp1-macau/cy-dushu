@@ -207,7 +207,7 @@ const EditPolygon: React.FC<Props> = (props) => {
   return (
     <OverlayPolygon
       data={`${overlay.overlayId}`}
-      viewer={viewer}
+      primitives={viewer.scene.primitives}
       path={drawingPositions}
       asynchronous={false}
       fill={drawingColor}

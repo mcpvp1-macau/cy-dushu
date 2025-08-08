@@ -204,7 +204,8 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
       {viewer && (
         <OverlayCircle
           data={''}
-          viewer={viewer}
+          primitives={viewer.scene.primitives}
+          isGround={true}
           center={circleCenter?.length ? [...circleCenter] : [0, 0]}
           radius={radius}
           asynchronous={false}

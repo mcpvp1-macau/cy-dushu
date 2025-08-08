@@ -166,7 +166,8 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
       {positions && viewer && (
         <OverlayPolygon
           data={''}
-          viewer={viewer}
+          primitives={viewer.scene.primitives}
+          isGround={true}
           path={positions}
           asynchronous={false}
           fill={drawingColor}

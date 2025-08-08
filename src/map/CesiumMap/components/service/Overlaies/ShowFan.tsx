@@ -2,15 +2,15 @@ import { shouldJson } from '@/utils/json'
 import { useCesium } from 'resium'
 import OverlayFan from './OverlayFan'
 import { argbToHex } from '@/utils/color'
+import * as Cesium from 'cesium'
 
 type PropsType = {
-  overlayExtType: 'overlay' | 'flightArea'
+  primitives: Cesium.PrimitiveCollection | undefined
   overlay: API_LAYER_OVERLAY.domain.Overlay
+  isGround?: boolean
 }
 
-const ShowFan: FC<PropsType> = ({ overlayExtType, overlay }) => {
-  const { viewer } = useCesium()
-
+const ShowFan: FC<PropsType> = ({ primitives, overlay, isGround = true }) => {
   const positions = shouldJson(overlay.overlayPositions) || []
   const style = shouldJson(overlay.overlayStyleConfig)
 
@@ -25,10 +25,13 @@ const ShowFan: FC<PropsType> = ({ overlayExtType, overlay }) => {
 
   return (
     <>
-      {viewer && (
+      {primitives && (
         <OverlayFan
-          data={`${overlayExtType}--${overlay.overlayId}`}
-          viewer={viewer}
+          data={`${overlay.overlayExtType ? 'flightArea' : 'overlay'}--${
+            overlay.overlayId
+          }`}
+          primitives={primitives}
+          isGround={isGround}
           asynchronous={false}
           positions={positions}
           label={label}

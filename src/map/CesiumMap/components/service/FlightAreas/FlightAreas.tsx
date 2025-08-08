@@ -1,6 +1,6 @@
 import { CotType } from '@/store/map/useDraw.store'
 import useMapLayerAndOverlayStore from '@/store/map/useLayerAndOverlay.store'
-import { LabelCollection, PointPrimitiveCollection } from 'resium'
+import { LabelCollection, PointPrimitiveCollection, useCesium } from 'resium'
 import useRightMode from '@/store/layout/useRightMode.store'
 import useMapDrawStore from '@/store/map/useDraw.store'
 import ShowCircle from '../Overlaies/ShowCircle'
@@ -37,6 +37,9 @@ const FlightAreas: FC<PropsType> = memo(() => {
     }
   }, [detailId, flightAreaList, isEdit])
 
+  const { viewer } = useCesium()
+  const primitives = useMemo(() => viewer?.scene.primitives, [viewer])
+
   return (
     <>
       {overlays.map((overlay) => {
@@ -44,7 +47,7 @@ const FlightAreas: FC<PropsType> = memo(() => {
           return (
             <ShowCircle
               key={overlay.overlayId}
-              overlayExtType={'flightArea'}
+              primitives={primitives}
               overlay={overlay}
             />
           )
@@ -56,7 +59,7 @@ const FlightAreas: FC<PropsType> = memo(() => {
           return (
             <ShowPolygon
               key={overlay.overlayId}
-              overlayExtType={'flightArea'}
+              primitives={primitives}
               overlay={overlay}
             />
           )
@@ -65,7 +68,7 @@ const FlightAreas: FC<PropsType> = memo(() => {
           return (
             <ShowFan
               key={overlay.overlayId}
-              overlayExtType={'flightArea'}
+              primitives={primitives}
               overlay={overlay}
             />
           )

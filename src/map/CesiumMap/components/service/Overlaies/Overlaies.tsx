@@ -1,6 +1,6 @@
 import { CotType } from '@/store/map/useDraw.store'
 import useMapLayerAndOverlayStore from '@/store/map/useLayerAndOverlay.store'
-import { LabelCollection, PointPrimitiveCollection } from 'resium'
+import { LabelCollection, PointPrimitiveCollection, useCesium } from 'resium'
 import OverlayPoint from './Point'
 import useRightMode from '@/store/layout/useRightMode.store'
 import useMapDrawStore from '@/store/map/useDraw.store'
@@ -51,6 +51,9 @@ const LayerOverlaies: FC<PropsType> = memo(() => {
     }
   }, [detailId, overlayList, isEdit, hiddenOverlayIds])
 
+  const { viewer } = useCesium()
+  const primitives = useMemo(() => viewer?.scene.primitives, [viewer])
+
   return (
     <>
       <PointPrimitiveCollection>
@@ -63,7 +66,7 @@ const LayerOverlaies: FC<PropsType> = memo(() => {
               return (
                 <ShowCircle
                   key={overlay.overlayId}
-                  overlayExtType={'overlay'}
+                  primitives={primitives}
                   overlay={overlay}
                 />
               )
@@ -75,7 +78,7 @@ const LayerOverlaies: FC<PropsType> = memo(() => {
               return (
                 <ShowPolygon
                   key={overlay.overlayId}
-                  overlayExtType={'overlay'}
+                  primitives={primitives}
                   overlay={overlay}
                 />
               )
@@ -84,7 +87,7 @@ const LayerOverlaies: FC<PropsType> = memo(() => {
               return (
                 <ShowFan
                   key={overlay.overlayId}
-                  overlayExtType={'overlay'}
+                  primitives={primitives}
                   overlay={overlay}
                 />
               )

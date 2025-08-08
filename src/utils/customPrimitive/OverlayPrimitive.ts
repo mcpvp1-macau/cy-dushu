@@ -3,6 +3,8 @@ import * as Cesium from 'cesium'
 import customDashedShader from './customDashed.glsl?raw'
 import noFlyPolylineShader from './noFlyPolyline.glsl?raw'
 
+type Coordinate = [number, number] | [number, number, number]
+
 export type StyleOptions = {
   /**填充颜色 */
   fill: string
@@ -15,7 +17,7 @@ export type StyleOptions = {
   /**描边类型 */
   strokeStyle: 'solid' | 'dashed' | 'no-fly'
   /**描边宽度, 如果为禁飞区，那么宽度无法设置为一个固定值 */
-  strokeWeight: number
+  strokeWeight: number | string
 }
 
 type Label = {
@@ -87,7 +89,8 @@ function createDragPoint(position: Cesium.Cartesian3): Point {
 async function createPolyline(
   positions: Cesium.Cartesian3[],
   styleOptions: StyleOptions,
-  asynchronous: boolean = true,
+  asynchronous: boolean,
+  isGround: boolean,
 ) {
   let u_polylineLength = 0
   for (let i = 1; i < positions.length; i++) {
@@ -135,16 +138,24 @@ async function createPolyline(
     })
   }
 
-  await Cesium.GroundPolylinePrimitive.initializeTerrainHeights()
+  const PrimitiveClass = isGround
+    ? Cesium.GroundPolylinePrimitive
+    : Cesium.Primitive
+  const GeometryClass = isGround
+    ? Cesium.GroundPolylineGeometry
+    : Cesium.PolylineGeometry
+  if (isGround) {
+    await Cesium.GroundPolylinePrimitive.initializeTerrainHeights()
+  }
 
-  return new Cesium.GroundPolylinePrimitive({
+  return new PrimitiveClass({
     geometryInstances: new Cesium.GeometryInstance({
-      geometry: new Cesium.GroundPolylineGeometry({
+      geometry: new GeometryClass({
         positions,
         width:
           styleOptions.strokeStyle === 'no-fly'
             ? 10
-            : styleOptions.strokeWeight,
+            : parseFloat(styleOptions.strokeWeight as string),
       }),
     }),
     appearance: new Cesium.PolylineMaterialAppearance({
@@ -157,18 +168,21 @@ async function createPolyline(
 async function createPolygon(
   positions: Cesium.Cartesian3[],
   styleOptions: StyleOptions,
-  asynchronous: boolean = true,
+  asynchronous: boolean,
+  isGround: boolean,
 ) {
-  await Cesium.GroundPrimitive.initializeTerrainHeights()
-
-  return new Cesium.GroundPrimitive({
+  const PrimitiveClass = isGround ? Cesium.GroundPrimitive : Cesium.Primitive
+  if (isGround) {
+    await Cesium.GroundPrimitive.initializeTerrainHeights()
+  }
+  return new PrimitiveClass({
     geometryInstances: new Cesium.GeometryInstance({
       geometry: new Cesium.PolygonGeometry({
         polygonHierarchy: new Cesium.PolygonHierarchy(positions),
-        vertexFormat: Cesium.VertexFormat.POSITION_ONLY,
+        perPositionHeight: isGround ? false : true,
       }),
     }),
-    appearance: new Cesium.PolylineMaterialAppearance({
+    appearance: new Cesium.MaterialAppearance({
       material: Cesium.Material.fromType('Color', {
         color: Cesium.Color.fromCssColorString(styleOptions.fill).withAlpha(
           styleOptions.fillOpacity,
@@ -181,10 +195,11 @@ async function createPolygon(
 
 const CIRCLE_POINT_NUMBER = 180
 function createCircle(
-  center: [number, number],
+  center: Coordinate,
   radius: number,
   styleOptions: StyleOptions,
-  asynchronous: boolean = true,
+  asynchronous: boolean,
+  isGround: boolean,
 ) {
   const circle = turf.circle(center, radius, {
     steps: CIRCLE_POINT_NUMBER,
@@ -192,17 +207,18 @@ function createCircle(
   })
 
   const positions = circle.geometry.coordinates[0].map((coord) =>
-    Cesium.Cartesian3.fromDegrees(coord[0], coord[1]),
+    Cesium.Cartesian3.fromDegrees(coord[0], coord[1], coord?.[2] ?? 0),
   )
 
-  return createPolygon(positions, styleOptions, asynchronous)
+  return createPolygon(positions, styleOptions, asynchronous, isGround)
 }
 
 function createCircleOutline(
-  center: [number, number],
+  center: Coordinate,
   radius: number,
   styleOptions: StyleOptions,
-  asynchronous: boolean = true,
+  asynchronous: boolean,
+  isGround: boolean,
 ) {
   const circle = turf.circle(center, radius, {
     steps: CIRCLE_POINT_NUMBER,
@@ -210,61 +226,108 @@ function createCircleOutline(
   })
 
   const positions = circle.geometry.coordinates[0].map((coord) =>
-    Cesium.Cartesian3.fromDegrees(coord[0], coord[1]),
+    Cesium.Cartesian3.fromDegrees(coord[0], coord[1], coord?.[2] ?? 0),
   )
 
-  return createPolyline(positions, styleOptions, asynchronous)
+  return createPolyline(positions, styleOptions, asynchronous, isGround)
 }
 
-function getCenter(points: number[][]) {
+function getCenter(points: Coordinate[]) {
   const features = turf.points(points)
   const center = turf.center(features)
-  return center.geometry.coordinates
+  const averageHeight =
+    points.reduce((pre, cur) => pre + (cur?.[2] ?? 0), 0) / points.length
+
+  return [
+    center.geometry.coordinates[0],
+    center.geometry.coordinates[1],
+    averageHeight,
+  ]
+}
+
+// 同一帧内像素大小不会变，所以将计算结果缓存起来
+let cachedPixelSizeInMeters: {
+  [key: string]: number
+} = {}
+function getPixelSizeInMeters(frameState: any) {
+  const contextId = frameState.context.id
+  const cacheKey = `${contextId}-frameNumber${frameState.frameNumber}`
+
+  const cacheResult = cachedPixelSizeInMeters[cacheKey]
+
+  if (cacheResult) {
+    return cacheResult
+  }
+
+  const camera = frameState.camera as Cesium.Camera
+  const canvas = frameState.context._canvas
+
+  const cneterPosition = camera.pickEllipsoid(
+    new Cesium.Cartesian2(canvas.width / 2, canvas.height / 2),
+  )
+  const pixelSizeInMeters = camera.getPixelSize(
+    new Cesium.BoundingSphere(cneterPosition, 0.1),
+    canvas.width,
+    canvas.height,
+  )
+
+  Object.keys(cachedPixelSizeInMeters).forEach((key) => {
+    if (key.startsWith(contextId)) {
+      delete cachedPixelSizeInMeters[key]
+    }
+  })
+  cachedPixelSizeInMeters[cacheKey] = pixelSizeInMeters
+  return pixelSizeInMeters
+}
+
+type OverlayPrimitiveProps = {
+  styleOptions: StyleOptions
+  asynchronous?: boolean
+  props?: any
+  isGround?: boolean
 }
 
 // 所有的几何图形如果想要更新需要改变position的地址，而不能通过push这些方法
 
 /**覆盖物多边形 */
 export class OverlayPolygonPrimitive {
-  private _positions: [number, number][] = []
-  private _polygon: Cesium.GroundPrimitive | null = null
-  private _polygonOutline: Cesium.GroundPolylinePrimitive | null = null
+  private _positions: Coordinate[] = []
+  private _polygon: Cesium.GroundPrimitive | Cesium.Primitive | null = null
+  private _polygonOutline:
+    | Cesium.GroundPolylinePrimitive
+    | Cesium.Primitive
+    | null = null
+  private _isGround: boolean = true
   private _label: Cesium.LabelCollection
   private _styleOptions: StyleOptions
   /**是否异步创建几何体 */
   asynchronous: boolean
-  positions: [number, number][] = []
+  positions: Coordinate[] = []
   show: boolean = true
+  isGround: boolean
   props: any
 
-  constructor(styleOptions: StyleOptions, asynchronous?: boolean, props?: any) {
-    this._styleOptions = styleOptions
+  constructor(overlayOptions: OverlayPrimitiveProps) {
+    this._styleOptions = overlayOptions.styleOptions
     this._label = new Cesium.LabelCollection()
-    this.props = props
-    this.asynchronous = asynchronous ?? true
+    this.props = overlayOptions.props
+    this.asynchronous = overlayOptions.asynchronous ?? true
+    this.isGround = overlayOptions.isGround ?? true
   }
 
   update(frameState: any) {
-    if (this.positions !== this._positions) {
+    if (
+      this.positions !== this._positions ||
+      this.isGround !== this._isGround
+    ) {
       this._positions = this.positions
-      this.updateGeometry()
+      this._isGround = this.isGround
+      this.updateGeometry(frameState)
     }
 
-    // 计算并更新每个像素的大小，为了自定义折线效果
-    const camera = frameState.camera as Cesium.Camera
-    const canvas = frameState.context._canvas
-
-    const cneterPosition = camera.pickEllipsoid(
-      new Cesium.Cartesian2(canvas.width / 2, canvas.height / 2),
-    )
-    const pixelSizeInMeters = camera.getPixelSize(
-      new Cesium.BoundingSphere(cneterPosition, 0.1),
-      canvas.width,
-      canvas.height,
-    )
     if (this._polygonOutline) {
       this._polygonOutline.appearance.material.uniforms.u_pixelSizeInMeters =
-        pixelSizeInMeters
+        getPixelSizeInMeters(frameState)
     }
 
     // @ts-ignore
@@ -275,7 +338,10 @@ export class OverlayPolygonPrimitive {
     this._label.update(frameState)
   }
 
-  private async updateGeometry() {
+  private async updateGeometry(frameState?: any) {
+    const oldPolygon = this._polygon
+    const oldPolygonOutline = this._polygonOutline
+
     if (this._positions.length <= 1) {
       this._polygonOutline = null
       this._polygon = null
@@ -284,6 +350,7 @@ export class OverlayPolygonPrimitive {
         this.cartesianPositions,
         this.styleOptions,
         this.asynchronous,
+        this._isGround,
       )
       this._polygon = null
     } else {
@@ -295,11 +362,13 @@ export class OverlayPolygonPrimitive {
         closedPositions,
         this.styleOptions,
         this.asynchronous,
+        this._isGround,
       )
       this._polygon = await createPolygon(
         this.cartesianPositions,
         this.styleOptions,
         this.asynchronous,
+        this._isGround,
       )
 
       if (this._polygon) {
@@ -315,15 +384,39 @@ export class OverlayPolygonPrimitive {
       this._label.removeAll()
       if (this.styleOptions.label) {
         const center = getCenter(this._positions)
-        this._label.add(
-          createLabel(
-            Cesium.Cartesian3.fromDegrees(center[0], center[1]),
-            this.styleOptions,
-          ),
+        let cneterCartesian = Cesium.Cartesian3.fromDegrees(
+          center[0],
+          center[1],
+          center?.[2] ?? 0,
         )
+        if (this._isGround && frameState) {
+          const scene = frameState.camera._scene as Cesium.Scene
+          const height = scene?.globe?.getHeight(
+            Cesium.Cartographic.fromDegrees(center[0], center[1]),
+          )
+          // 没有高度或者高度小于0可能是刚开始地形没加载好，1秒后再次尝试
+          if (!height || height < 0) {
+            setTimeout(() => {
+              this.updateGeometry(frameState)
+            }, 1000)
+          }
+          cneterCartesian = Cesium.Cartesian3.fromDegrees(
+            center[0],
+            center[1],
+            height,
+          )
+        }
+        this._label.add(createLabel(cneterCartesian, this.styleOptions))
         // @ts-ignore
         this._label.get(0)!.props = this.props
       }
+    }
+
+    if (oldPolygon && oldPolygon.isDestroyed() === false) {
+      oldPolygon.destroy()
+    }
+    if (oldPolygonOutline && oldPolygonOutline.isDestroyed() === false) {
+      oldPolygonOutline.destroy()
     }
   }
 
@@ -333,8 +426,12 @@ export class OverlayPolygonPrimitive {
 
   destroy() {
     this._positions = []
-    this._polygon?.destroy()
-    this._polygonOutline?.destroy()
+    if (this._polygon && this._polygon.isDestroyed() === false) {
+      this._polygon.destroy()
+    }
+    if (this._polygonOutline && this._polygonOutline.isDestroyed() === false) {
+      this._polygonOutline.destroy()
+    }
     this._label.destroy()
   }
 
@@ -350,7 +447,7 @@ export class OverlayPolygonPrimitive {
 
   get cartesianPositions() {
     return this._positions.map((coord) =>
-      Cesium.Cartesian3.fromDegrees(coord[0], coord[1]),
+      Cesium.Cartesian3.fromDegrees(coord[0], coord[1], coord?.[2] ?? 0),
     )
   }
 
@@ -363,47 +460,46 @@ export class OverlayPolygonPrimitive {
 /**覆盖物圆形 */
 export class OverlayCirclePrimitive {
   private _styleOptions: StyleOptions
-  private _center: [number, number] = [0, 0]
+  private _center: Coordinate = [0, 0, 0]
   private _radius: number = 0
-  private _circle: Cesium.GroundPrimitive | null = null
-  private _circleOutline: Cesium.GroundPolylinePrimitive | null = null
+  private _circle: Cesium.GroundPrimitive | Cesium.Primitive | null = null
+  private _circleOutline:
+    | Cesium.GroundPolylinePrimitive
+    | Cesium.Primitive
+    | null = null
   private _label: Cesium.LabelCollection
+  private _isGround: boolean = true
   /**是否异步创建几何体 */
   asynchronous: boolean
   show: boolean = true
-  center: [number, number] = [0, 0]
+  center: Coordinate = [0, 0]
   radius: number = 0
   props: any
+  isGround: boolean = true
 
-  constructor(styleOptions: StyleOptions, asynchronous: boolean, props: any) {
-    this._styleOptions = styleOptions
-    this.props = props
-    this.asynchronous = asynchronous ?? true
+  constructor(overlayOptions: OverlayPrimitiveProps) {
+    this._styleOptions = overlayOptions.styleOptions
+    this.props = overlayOptions.props
+    this.asynchronous = overlayOptions.asynchronous ?? true
+    this.isGround = overlayOptions.isGround ?? true
     this._label = new Cesium.LabelCollection()
   }
 
   update(frameState: any) {
-    if (this._center !== this.center || this._radius !== this.radius) {
+    if (
+      this._center !== this.center ||
+      this._radius !== this.radius ||
+      this._isGround !== this.isGround
+    ) {
       this._center = this.center
       this._radius = this.radius
-      this.updateGeometry()
+      this._isGround = this.isGround
+      this.updateGeometry(frameState)
     }
 
-    // 计算并更新每个像素的大小，为了自定义折线效果
-    const camera = frameState.camera as Cesium.Camera
-    const canvas = frameState.context._canvas
-
-    const cneterPosition = camera.pickEllipsoid(
-      new Cesium.Cartesian2(canvas.width / 2, canvas.height / 2),
-    )
-    const pixelSizeInMeters = camera.getPixelSize(
-      new Cesium.BoundingSphere(cneterPosition, 0.1),
-      canvas.width,
-      canvas.height,
-    )
     if (this._circleOutline) {
       this._circleOutline.appearance.material.uniforms.u_pixelSizeInMeters =
-        pixelSizeInMeters
+        getPixelSizeInMeters(frameState)
     }
 
     // @ts-ignore
@@ -416,7 +512,10 @@ export class OverlayCirclePrimitive {
     }
   }
 
-  private async updateGeometry() {
+  private async updateGeometry(frameState?: any) {
+    const oldCircle = this._circle
+    const oldCircleOutline = this._circleOutline
+
     if (this._radius <= 0) {
       this._circle = null
       this._circleOutline = null
@@ -428,12 +527,14 @@ export class OverlayCirclePrimitive {
       this._radius || 100000,
       this._styleOptions,
       this.asynchronous,
+      this._isGround,
     )
     this._circleOutline = await createCircleOutline(
       this._center,
       this._radius || 100000,
       this._styleOptions,
       this.asynchronous,
+      this._isGround,
     )
 
     if (this._circle) {
@@ -447,9 +548,35 @@ export class OverlayCirclePrimitive {
 
     this._label.removeAll()
     if (this.styleOptions.label) {
-      this._label.add(createLabel(this.cartesianCenter, this.styleOptions))
+      let cneterCartesian = this.cartesianCenter
+      if (this._isGround && frameState) {
+        const scene = frameState.camera._scene as Cesium.Scene
+        const cartographic = Cesium.Cartographic.fromCartesian(
+          this.cartesianCenter,
+        )
+        const height = scene?.globe?.getHeight(cartographic)
+        // 没有高度或者高度小于0可能是刚开始地形没加载好，1秒后再次尝试
+        if (!height || height < 0) {
+          setTimeout(() => {
+            this.updateGeometry(frameState)
+          }, 1000)
+        }
+        cneterCartesian = Cesium.Cartesian3.fromRadians(
+          cartographic.longitude,
+          cartographic.latitude,
+          height,
+        )
+      }
+      this._label.add(createLabel(cneterCartesian, this.styleOptions))
       // @ts-ignore
       this._label.get(0)!.props = this.props
+    }
+
+    if (oldCircle && oldCircle.isDestroyed() === false) {
+      oldCircle.destroy()
+    }
+    if (oldCircleOutline && oldCircleOutline.isDestroyed() === false) {
+      oldCircleOutline.destroy()
     }
   }
 
@@ -475,7 +602,11 @@ export class OverlayCirclePrimitive {
   }
 
   get cartesianCenter() {
-    return Cesium.Cartesian3.fromDegrees(this._center[0], this._center[1])
+    return Cesium.Cartesian3.fromDegrees(
+      this._center[0],
+      this._center[1],
+      this._center?.[2] ?? 0,
+    )
   }
 
   setProps(data: any) {
@@ -486,46 +617,44 @@ export class OverlayCirclePrimitive {
 
 /**覆盖物扇形 */
 export class OverlayFanPrimitive {
-  private _positions: [number, number][] = []
-  private _fan: Cesium.GroundPrimitive | null = null
-  private _fanOutline: Cesium.GroundPolylinePrimitive | null = null
+  private _positions: Coordinate[] = []
+  private _fan: Cesium.GroundPrimitive | Cesium.Primitive | null = null
+  private _fanOutline:
+    | Cesium.GroundPolylinePrimitive
+    | Cesium.Primitive
+    | null = null
   private _label: Cesium.LabelCollection
+  private _isGround: boolean = true
   private _styleOptions: StyleOptions
   /**是否异步创建几何体 */
   asynchronous: boolean
   /**[pivot, startPoint, endPoint]，[支点，起点、终点] */
-  positions: [number, number][] = []
+  positions: Coordinate[] = []
   show: boolean = true
+  isGround: boolean = true
   props: any
 
-  constructor(styleOptions: StyleOptions, asynchronous?: boolean, props?: any) {
-    this._styleOptions = styleOptions
+  constructor(overlayOptions: OverlayPrimitiveProps) {
+    this._styleOptions = overlayOptions.styleOptions
     this._label = new Cesium.LabelCollection()
-    this.props = props
-    this.asynchronous = asynchronous ?? true
+    this.props = overlayOptions.props
+    this.asynchronous = overlayOptions.asynchronous ?? true
+    this.isGround = overlayOptions.isGround ?? true
   }
 
   update(frameState: any) {
-    if (this.positions !== this._positions) {
+    if (
+      this.positions !== this._positions ||
+      this._isGround !== this.isGround
+    ) {
       this._positions = this.positions
-      this.updateGeometry()
+      this._isGround = this.isGround
+      this.updateGeometry(frameState)
     }
 
-    // 计算并更新每个像素的大小，为了自定义折线效果
-    const camera = frameState.camera as Cesium.Camera
-    const canvas = frameState.context._canvas
-
-    const cneterPosition = camera.pickEllipsoid(
-      new Cesium.Cartesian2(canvas.width / 2, canvas.height / 2),
-    )
-    const pixelSizeInMeters = camera.getPixelSize(
-      new Cesium.BoundingSphere(cneterPosition, 0.1),
-      canvas.width,
-      canvas.height,
-    )
     if (this._fanOutline) {
       this._fanOutline.appearance.material.uniforms.u_pixelSizeInMeters =
-        pixelSizeInMeters
+        getPixelSizeInMeters(frameState)
     }
 
     // @ts-ignore
@@ -536,7 +665,10 @@ export class OverlayFanPrimitive {
     this._label.update(frameState)
   }
 
-  private async updateGeometry() {
+  private async updateGeometry(frameState?: any) {
+    const oldFan = this._fan
+    const oldFanOutline = this._fanOutline
+
     if (this._positions.length <= 1) {
       this._fanOutline = null
       this._fan = null
@@ -545,21 +677,24 @@ export class OverlayFanPrimitive {
         this.cartesianPositions,
         this.styleOptions,
         this.asynchronous,
+        this._isGround,
       )
       this._fan = null
     } else {
       const fanPositions = this.fanCoordnates.map((point) =>
-        Cesium.Cartesian3.fromDegrees(point[0], point[1]),
+        Cesium.Cartesian3.fromDegrees(point[0], point[1], point?.[2] ?? 0),
       )
       this._fanOutline = await createPolyline(
         [...fanPositions, fanPositions[0]],
         this.styleOptions,
         this.asynchronous,
+        this._isGround,
       )
       this._fan = await createPolygon(
         fanPositions,
         this.styleOptions,
         this.asynchronous,
+        this._isGround,
       )
 
       if (this._fan) {
@@ -575,15 +710,39 @@ export class OverlayFanPrimitive {
       this._label.removeAll()
       if (this.styleOptions.label) {
         const center = getCenter(this.fanCoordnates)
-        this._label.add(
-          createLabel(
-            Cesium.Cartesian3.fromDegrees(center[0], center[1]),
-            this.styleOptions,
-          ),
+        let cneterCartesian = Cesium.Cartesian3.fromDegrees(
+          center[0],
+          center[1],
+          center?.[2] ?? 0,
         )
+        if (this._isGround && frameState) {
+          const scene = frameState.camera._scene as Cesium.Scene
+          const height = scene?.globe?.getHeight(
+            Cesium.Cartographic.fromDegrees(center[0], center[1]),
+          )
+          // 没有高度或者高度小于0可能是刚开始地形没加载好，1秒后再次尝试
+          if (!height || height < 0) {
+            setTimeout(() => {
+              this.updateGeometry(frameState)
+            }, 1000)
+          }
+          cneterCartesian = Cesium.Cartesian3.fromDegrees(
+            center[0],
+            center[1],
+            height,
+          )
+        }
+        this._label.add(createLabel(cneterCartesian, this.styleOptions))
         // @ts-ignore
         this._label.get(0)!.props = this.props
       }
+    }
+
+    if (oldFan && oldFan.isDestroyed() === false) {
+      oldFan.destroy()
+    }
+    if (oldFanOutline && oldFanOutline.isDestroyed() === false) {
+      oldFanOutline.destroy()
     }
   }
 
@@ -610,7 +769,7 @@ export class OverlayFanPrimitive {
 
   get cartesianPositions() {
     return this._positions.map((coord) =>
-      Cesium.Cartesian3.fromDegrees(coord[0], coord[1]),
+      Cesium.Cartesian3.fromDegrees(coord[0], coord[1], coord?.[2] ?? 0),
     )
   }
 
@@ -640,12 +799,13 @@ export class OverlayFanPrimitive {
       res.push(newPoint.geometry.coordinates as [number, number])
     }
     res.push(
-      turf.destination(pp, distance, endBearing).geometry.coordinates as [
-        number,
-        number,
-      ],
+      turf.destination(pp, distance, endBearing).geometry
+        .coordinates as Coordinate,
     )
 
+    res.forEach((coord) => {
+      coord[2] = pivot[2] ?? 0
+    })
     return res
   }
 
@@ -654,8 +814,6 @@ export class OverlayFanPrimitive {
     this.updateGeometry()
   }
 }
-
-type Coordinate = [number, number] | [number, number, number]
 
 /**拖拽点集合，可以开启贴地 */
 export class DragPointCollection {

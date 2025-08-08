@@ -185,7 +185,8 @@ const DrawFan: FC<PropsType> = memo(({ onSuccess }) => {
         <OverlayFan
           data={''}
           positions={drawingPositions}
-          viewer={viewer}
+          primitives={viewer.scene.primitives}
+          isGround={true}
           asynchronous={false}
           fill={drawingColor}
           fillOpacity={fillOpacity}
