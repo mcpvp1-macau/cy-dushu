@@ -44,6 +44,7 @@ type StateType = {
     roll: number
   }>
   activeMouseBtn: Btn | null
+  activeMapUrl: string | null
 }
 
 type ActionsType = {
@@ -55,6 +56,7 @@ type ActionsType = {
   updateDogControlInfo: (dogControlInfo: StateType['dogControlInfo']) => void
   updateActiveMouseBtn: (activeMouseBtn: StateType['activeMouseBtn']) => void
   updateParams: (params: StateType['params']) => void
+  updateActiveMapUrl: (activeMapUrl: StateType['activeMapUrl']) => void
 }
 
 type WsSendersType = {
@@ -156,6 +158,9 @@ export const createRebotDogControlRoomStore = (senders: WsSendersType) => {
           set({ params }, false, 'updateParams')
           localStorage?.setItem('RebotDogSpeed', params.speed.toString())
           localStorage?.setItem('RebotDogAttitude', params.attitude.toString())
+        },
+        updateActiveMapUrl: (activeMapUrl: StateType['activeMapUrl']) => {
+          set({ activeMapUrl }, false, 'updateActiveMapUrl')
         },
       }),
       {

@@ -41,6 +41,7 @@ const PointCloudLayer: FC<PointCloudLayerProps> = ({ url, onClick }) => {
     const loader = new PCDLoader()
     let pointsO: THREE.Points | null = null
     let plane: THREE.Mesh | null = null
+    let helper: THREE.GridHelper | null = null
     if (url && scene && camera && renderer) {
       loader.load(url, (points) => {
         // 根据z值设置点云颜色
@@ -102,6 +103,7 @@ const PointCloudLayer: FC<PointCloudLayerProps> = ({ url, onClick }) => {
           depthWrite: false,
           blending: THREE.AdditiveBlending,
           vertexColors: true,
+          depthTest: false,
         })
 
         // points.material = material
@@ -116,16 +118,24 @@ const PointCloudLayer: FC<PointCloudLayerProps> = ({ url, onClick }) => {
         const width = box.max.x - box.min.x
         const height = box.max.y - box.min.y
         const planeGeometry = new THREE.PlaneGeometry(width, height)
-        const planeMaterial = new THREE.MeshBasicMaterial({
-          color: 0x222222,
-          transparent: true,
-          opacity: 0.3,
+        const planeMaterial = new THREE.ShadowMaterial({
+          color: 0x000000,
+          opacity: 0.2,
         })
+
         plane = new THREE.Mesh(planeGeometry, planeMaterial)
+        plane.receiveShadow = true
         plane.position.set(center.x, center.y, 0.0)
         scene?.add(plane)
         // setPlane(plane)
         planeRef.current = plane
+
+        helper = new THREE.GridHelper(width, height)
+        helper.position.set(center.x, center.y, 0.0)
+        helper.rotation.x = -Math.PI / 2
+        helper.material.opacity = 0.5
+        // helper.material.transparent = true
+        scene.add(helper)
 
         renderer?.domElement.addEventListener('click', handleClick)
 
@@ -158,6 +168,9 @@ const PointCloudLayer: FC<PointCloudLayerProps> = ({ url, onClick }) => {
       }
       if (plane) {
         scene?.remove(plane)
+      }
+      if (helper) {
+        scene?.remove(helper)
       }
     }
   }, [scene, camera, renderer, url])

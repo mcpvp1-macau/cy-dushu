@@ -27,6 +27,7 @@ import IconControl from '@/assets/icons/jsx/IconControl'
 import ControlRoomRebotDogHeader from './components/Header'
 import IconPayload from '@/assets/icons/jsx/IconPayload'
 import RebotDogPayload from './components/Payload'
+import PointCloudMapManager from './components/PointCloudMapManager'
 
 const initialLayout: DynamicLayoutType = {
   type: 'row',
@@ -94,6 +95,9 @@ const initialLayout: DynamicLayoutType = {
         {
           key: 'device-data',
         },
+        {
+          key: 'point-cloud-map-manager',
+        },
       ],
     },
   ],
@@ -130,6 +134,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
       'device-data': <IconDeviceData className="text-orange-500" />,
       params: <IconControlParams className="text-orange-500" />,
       payload: <IconPayload className="text-emerald-500" />,
+      'point-cloud-map-manager': <IconPayload className="text-emerald-500" />,
     }),
     [],
   )
@@ -143,6 +148,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
       ['device-data']: t('controlRoom.uav.deviceData.title'),
       params: t('common.params'),
       payload: t('controlRoom.uav.payload.title'),
+      'point-cloud-map-manager': '地图',
     }),
     [t],
   )
@@ -161,6 +167,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
       'device-data': <RebotDogDetailData />,
       params: <RebotDogParams />,
       payload: <RebotDogPayload />,
+      'point-cloud-map-manager': <PointCloudMapManager />,
     }),
     [],
   )

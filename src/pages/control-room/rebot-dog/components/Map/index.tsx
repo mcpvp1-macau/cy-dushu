@@ -9,7 +9,9 @@ import icon from '/images/marker/icon/rebot_dog.svg'
 import Polyline from '@/components/PointCloudMap/Polyline'
 import Label from '@/components/PointCloudMap/Label'
 import { useInterval } from 'ahooks'
+import { useRebotDogControlRoomStore } from '@/store/context-store/useRebotDogControlRoom.store'
 const RebotDogMap: FC<unknown> = memo(() => {
+  const activeMapUrl = useRebotDogControlRoomStore((s) => s.activeMapUrl)
 
   const [text, setText] = useState('哈哈哈哈')
   useInterval(() => {
@@ -20,14 +22,10 @@ const RebotDogMap: FC<unknown> = memo(() => {
     <PointCloudMap>
       {/* <PointCloudLayer url="/pcd_data/lab_avia.pcd" /> */}
       <PointCloudLayer
-        url="/pcd_data/output_ascii_deskewed.pcd"
+        url={activeMapUrl || '/pcd_data/output_ascii_deskewed.pcd'}
         onClick={() => {}}
       />
-      <Marker
-        position={{ x: 0, y: 0, z: 0 }}
-        image={icon}
-        onClick={() => {}}
-      />
+      <Marker position={{ x: 0, y: 0, z: 0 }} image={icon} onClick={() => {}} />
       <Polyline
         positions={[
           { x: 0, y: 0, z: 0 },
@@ -39,7 +37,11 @@ const RebotDogMap: FC<unknown> = memo(() => {
         ]}
         color="#ff0000"
       />
-      <Label position={{ x: 0, y: 0, z: 0 }} text={text} offset={{ x: 0, y: 80, z: 0 }} />
+      <Label
+        position={{ x: 0, y: 0, z: 0 }}
+        text={text}
+        offset={{ x: 0, y: 80, z: 0 }}
+      />
     </PointCloudMap>
   )
   // return (
