@@ -76,9 +76,9 @@ const AIResultItem: FC<{
   const handleCheckCarNo = async () => {
     const resp = await checkCarNo([
       {
-        carNo: data.plateNo,
-        carType: data.plateType,
-        carColor: data.plateColor,
+        carNo: form.getFieldValue('plateNo') || data.plateNo,
+        carType: form.getFieldValue('plateType') || data.plateType,
+        carColor: form.getFieldValue('plateColor') || data.plateColor,
       },
     ])
     if (resp.data.carNos?.length) {
