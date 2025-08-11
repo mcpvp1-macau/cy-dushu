@@ -54,7 +54,7 @@ const videoRouter = createBrowserRouter([
 
     ReactDOM.createRoot(document.getElementById('root')!).render(
       <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen buttonPosition="bottom-left" />
+        <ReactQueryDevtools initialIsOpen buttonPosition="top-left" />
         <RouterProvider router={router} />
       </QueryClientProvider>,
     )

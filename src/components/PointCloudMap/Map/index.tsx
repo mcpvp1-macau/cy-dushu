@@ -2,8 +2,7 @@ import { useSize } from 'ahooks'
 import { FC, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { ThreeContext } from '../hooks/useThree'
-// @ts-ignore
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 
 /** 点云地图 */
 const PointCloudMap: FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -36,18 +35,18 @@ const PointCloudMap: FC<{ children: React.ReactNode }> = ({ children }) => {
       scene.background = new THREE.Color(0x000000)
 
       // 灯光
-      scene.add( new THREE.AmbientLight( 0xf0f0f0, 3 ) );
-      const light = new THREE.SpotLight( 0xffffff, 4.5 );
-      light.position.set( 0, 1500, 200 );
-      light.angle = Math.PI * 0.2;
-      light.decay = 0;
-      light.castShadow = true;
-      light.shadow.camera.near = 200;
-      light.shadow.camera.far = 2000;
-      light.shadow.bias = - 0.000222;
-      light.shadow.mapSize.width = 1024;
-      light.shadow.mapSize.height = 1024;
-      scene.add( light );
+      scene.add(new THREE.AmbientLight(0xf0f0f0, 3))
+      const light = new THREE.SpotLight(0xffffff, 4.5)
+      light.position.set(0, 1500, 200)
+      light.angle = Math.PI * 0.2
+      light.decay = 0
+      light.castShadow = true
+      light.shadow.camera.near = 200
+      light.shadow.camera.far = 2000
+      light.shadow.bias = -0.000222
+      light.shadow.mapSize.width = 1024
+      light.shadow.mapSize.height = 1024
+      scene.add(light)
       // 相机
       camera.position.set(0, 0, 10)
       camera.lookAt(0, 0, 0)
@@ -93,7 +92,7 @@ const PointCloudMap: FC<{ children: React.ReactNode }> = ({ children }) => {
   }, [size])
   return (
     <ThreeContext.Provider value={{ scene, camera, renderer, controls }}>
-      <div className="h-full w-full" ref={ref}>
+      <div className="size-full" ref={ref}>
         {children}
       </div>
     </ThreeContext.Provider>

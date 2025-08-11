@@ -9,6 +9,7 @@ import useUserStore from '@/store/useUser.store'
 import MenuIconEvents from '@/assets/icons/jsx/menus/MenuIconEvents'
 import MenuIconDefence from '@/assets/icons/jsx/menus/MenuIconDefence'
 import { twMerge } from 'tailwind-merge'
+import { ReadOutlined } from '@ant-design/icons'
 
 type PropsType = unknown
 
@@ -77,7 +78,7 @@ const AppNavigator: FC<PropsType> = memo(() => {
   const usedKey = useMemo(() => new Set(matches.map((m) => m.id)), [matches])
 
   return (
-    <nav className="h-full w-[38px] bg-ground-1 z-20 shadow-[0_2px_4px_#00000080]">
+    <nav className="h-full w-[38px] bg-ground-1 z-20 shadow-[0_2px_4px_#00000080] flex flex-col justify-between">
       <ul className="flex flex-col items-center py-3 gap-3">
         {renderMenus.map((e) => (
           <li key={e.id}>
@@ -98,6 +99,25 @@ const AppNavigator: FC<PropsType> = memo(() => {
             </Link>
           </li>
         ))}
+      </ul>
+      <ul className="flex flex-col items-center pb-3 gap-3">
+        <li>
+          <Link
+            to="/documents"
+            className={twMerge(
+              clsx(
+                'w-[28px] h-[28px] bg-ground-3 border border-solid border-ground-5 rounded',
+                'flex justify-center items-center',
+                'hover:border-fore transition-all duration-500',
+                {
+                  'border-fore': usedKey.has('documents'),
+                },
+              ),
+            )}
+          >
+            <ReadOutlined />
+          </Link>
+        </li>
       </ul>
     </nav>
   )
