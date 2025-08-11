@@ -8,12 +8,14 @@ type PropsType = {
   primitives: Cesium.PrimitiveCollection | undefined
   overlay: API_LAYER_OVERLAY.domain.Overlay
   isGround?: boolean
+  showLabel?: boolean
 }
 
 const ShowPolygon: FC<PropsType> = ({
   primitives,
   overlay,
   isGround = true,
+  showLabel = true,
 }) => {
   const positions = shouldJson(overlay.overlayPositions)
   const style = shouldJson(overlay.overlayStyleConfig)
@@ -38,7 +40,7 @@ const ShowPolygon: FC<PropsType> = ({
           isGround={isGround}
           asynchronous={false}
           path={positions}
-          label={label}
+          label={showLabel ? label : undefined}
           fill={fillColor}
           fillOpacity={fillOpacity}
           stroke={strokeColor}

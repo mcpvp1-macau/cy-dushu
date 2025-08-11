@@ -7,12 +7,14 @@ import { argbToHex } from '@/utils/color'
 type PropsType = {
   primitives: Cesium.PrimitiveCollection | undefined
   overlay: API_LAYER_OVERLAY.domain.Overlay
+  showLabel?: boolean
   isGround?: boolean
 }
 
 const ShowCircle: FC<PropsType> = ({
   primitives,
   overlay,
+  showLabel = true,
   isGround = true,
 }) => {
   const position = shouldJson(overlay.overlayPositions)?.[0]
@@ -37,9 +39,9 @@ const ShowCircle: FC<PropsType> = ({
           primitives={primitives}
           asynchronous={false}
           isGround={isGround}
-          center={[position[0], position[1]]}
+          center={[position[0], position[1], position[2]]}
           radius={position[3]}
-          label={label}
+          label={showLabel ? label : undefined}
           fill={fillColor}
           fillOpacity={fillOpacity}
           stroke={strokeColor}

@@ -648,14 +648,6 @@ const ARSetting: FC<PropsType> = memo(({ deviceId }) => {
               />
             </Form.Item>
           </Col>
-          <Col span={12}>
-            <Form.Item label="展示名称">
-              <Switch
-                value={ar.poi.showName}
-                onChange={(e) => updatePoi({ showName: e })}
-              />
-            </Form.Item>
-          </Col>
         </Row>
 
         <div className="flex gap-1.5 items-center mb-1">

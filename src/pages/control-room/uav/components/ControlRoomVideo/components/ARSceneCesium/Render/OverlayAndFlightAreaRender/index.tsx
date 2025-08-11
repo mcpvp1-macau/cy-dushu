@@ -84,14 +84,8 @@ const OverlayAndFlightAreaRender: FC<PropsType> = ({ ocrc }) => {
 
   return (
     <>
-      <RenderOverlays
-        overlays={showingAreas}
-        primitives={ocrc.orderPrimitives[LayerEnum.overlay]}
-      />
-      <RenderFlightArea
-        overlays={showingFlightAreas}
-        primitives={ocrc.orderPrimitives[LayerEnum.flightArea]}
-      />
+      <RenderOverlays overlays={showingAreas} ocrc={ocrc} />
+      <RenderFlightArea overlays={showingFlightAreas} ocrc={ocrc} />
       <RenderPoints points={points} ocrc={ocrc} />
     </>
   )

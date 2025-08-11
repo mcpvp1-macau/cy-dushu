@@ -3,7 +3,7 @@ import useARSettingStore from '@/store/setting/useARSetting.store'
 import * as Cesium from 'cesium'
 import { Feature, Point, GeoJsonProperties } from 'geojson'
 import OrderCesiumRenderController from '@/utils/cesium/OrderCesiumRenderController'
-import { LabelLevelEnum, LayerEnum } from '../Enum'
+import { LabelLevelEnum, LayerEnum, LabelRelateEnum } from '../Enum'
 import CollisionCheckLabelCollection, {
   ExtendLabel,
 } from '@/utils/customPrimitive/CollisionCheckLabelCollection'
@@ -29,19 +29,11 @@ const GeodataRender: FC<PropsType> = ({ ocrc }) => {
     const baseAoiPrimitiveCollection = ocrc.orderPrimitives[LayerEnum.baseAoi]
     const buildingAoiPrimitiveCollection = ocrc.orderPrimitives[LayerEnum.build]
     const roadPrimitiveCollection = ocrc.orderPrimitives[LayerEnum.road]
-    const labelCollection: CollisionCheckLabelCollection =
-      ocrc.orderPrimitives[LayerEnum.label].get(0) ||
-      ocrc.orderPrimitives[LayerEnum.label].add(
-        new CollisionCheckLabelCollection(10),
-      )
-    const labelMarkerCollection: Cesium.BillboardCollection =
-      ocrc.orderPrimitives[LayerEnum.label].get(1) ||
-      ocrc.orderPrimitives[LayerEnum.label].add(
-        new Cesium.BillboardCollection(),
-      )
-    if (preCollisionCheckHandler.current) {
-      labelCollection.off('collisionCheck', preCollisionCheckHandler.current)
-    }
+    const labelCollection: CollisionCheckLabelCollection = ocrc.orderPrimitives[
+      LayerEnum.label
+    ].get(LabelRelateEnum.label)
+    const poiMarkerCollection: Cesium.BillboardCollection =
+      ocrc.orderPrimitives[LayerEnum.label].get(LabelRelateEnum.poiMarker)
     labelCollection.renderCount = 0
 
     const attachmentPois: Feature<Point, GeoJsonProperties>[] = []
@@ -251,33 +243,55 @@ const GeodataRender: FC<PropsType> = ({ ocrc }) => {
       roadPrimitiveCollection.add(mainRoadPrimitive)
     }
 
-    if (!arSetting.text.enable) {
-      return
-    }
+    if (arSetting.text.enable) {
+      const labelOptions = {
+        font: `${Math.max(arSetting.text.size, 2)}px sans-serif`,
+        verticalOrigin: Cesium.VerticalOrigin.CENTER,
+        horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
+        fillColor: Cesium.Color.fromCssColorString(arSetting.text.color),
+        outlineColor: Cesium.Color.fromCssColorString(
+          arSetting.text.borderColor,
+        ),
+        outlineWidth: Math.max(arSetting.text.borderSize, 0),
+        style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+        disableDepthTestDistance: Infinity,
+      }
 
-    const labelOptions = {
-      font: `${Math.max(arSetting.text.size, 2)}px sans-serif`,
-      verticalOrigin: Cesium.VerticalOrigin.CENTER,
-      horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-      fillColor: Cesium.Color.fromCssColorString(arSetting.text.color),
-      outlineColor: Cesium.Color.fromCssColorString(arSetting.text.borderColor),
-      outlineWidth: Math.max(arSetting.text.borderSize, 0),
-      style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-      disableDepthTestDistance: Infinity,
-    }
+      const addedLabels: ExtendLabel[] = []
+      if (arSetting.poi.enable && pois) {
+        const poiFilter = new Set(arSetting.poi.filter)
+        for (const feature of pois.features) {
+          if (poiFilter.size && !poiFilter.has(feature.properties?.bigType)) {
+            continue
+          }
 
-    const addedLabels: ExtendLabel[] = []
-    if (arSetting.poi.enable && pois) {
-      const poiFilter = new Set(arSetting.poi.filter)
-      for (const feature of pois.features) {
-        if (poiFilter.size && !poiFilter.has(feature.properties?.bigType)) {
-          continue
+          if (feature.properties?.showName === false) {
+            continue
+          }
+
+          const coordinate = feature.geometry.coordinates
+          const position = Cesium.Cartesian3.fromDegrees(
+            coordinate[0],
+            coordinate[1],
+            coordinate[2] ?? 0,
+          )
+          const label = feature.properties?.name
+          addedLabels.push(
+            labelCollection.add({
+              show: false,
+              data: feature.properties,
+              id: 'poi' + label,
+              position: position,
+              text: label,
+              level: LabelLevelEnum.poi,
+              pixelOffset: new Cesium.Cartesian2(0, 16),
+              extendBounds: new Cesium.Cartesian2(0, 20),
+              ...labelOptions,
+            }),
+          )
         }
-
-        if (feature.properties?.showName === false) {
-          continue
-        }
-
+      }
+      for (const feature of attachmentPois) {
         const coordinate = feature.geometry.coordinates
         const position = Cesium.Cartesian3.fromDegrees(
           coordinate[0],
@@ -285,73 +299,59 @@ const GeodataRender: FC<PropsType> = ({ ocrc }) => {
           coordinate[2] ?? 0,
         )
         const label = feature.properties?.name
+        const level = feature.properties?.level ?? 0
         addedLabels.push(
           labelCollection.add({
             show: false,
-            data: feature.properties,
-            id: 'poi' + label,
+            id: 'attachmentPois' + label,
             position: position,
             text: label,
-            level: LabelLevelEnum.poi,
-            pixelOffset: new Cesium.Cartesian2(0, 16),
-            extendBounds: new Cesium.Cartesian2(0, 20),
+            level: level,
             ...labelOptions,
           }),
         )
       }
-    }
-    for (const feature of attachmentPois) {
-      const coordinate = feature.geometry.coordinates
-      const position = Cesium.Cartesian3.fromDegrees(
-        coordinate[0],
-        coordinate[1],
-        coordinate[2] ?? 0,
-      )
-      const label = feature.properties?.name
-      const level = feature.properties?.level ?? 0
-      addedLabels.push(
-        labelCollection.add({
-          show: false,
-          id: 'attachmentPois' + label,
-          position: position,
-          text: label,
-          level: level,
-          ...labelOptions,
-        }),
-      )
-    }
 
-    const handler = (labels: ExtendLabel[]) => {
-      const showingLabels: ExtendLabel[] = labels.filter((label) => label.show)
-      const poiLabels: ExtendLabel[] = showingLabels.filter(
-        (label) => label.level === LabelLevelEnum.poi,
-      )
-      labelMarkerCollection.removeAll()
-      for (const label of poiLabels) {
-        const data = label.data
-        const icon = getPOIIcon([data?.midType, data?.bigType])
-        labelMarkerCollection.add({
-          image: icon,
-          position: label.position,
-          width: 16,
-          height: 16,
-        })
+      const handler = (labels: ExtendLabel[]) => {
+        const showingLabels: ExtendLabel[] = labels.filter(
+          (label) => label.show,
+        )
+        const poiLabels: ExtendLabel[] = showingLabels.filter(
+          (label) => label.level === LabelLevelEnum.poi,
+        )
+        poiMarkerCollection.removeAll()
+        for (const label of poiLabels) {
+          const data = label.data
+          const icon = getPOIIcon([data?.midType, data?.bigType])
+          poiMarkerCollection.add({
+            image: icon,
+            position: label.position,
+            width: 16,
+            height: 16,
+          })
+        }
       }
-    }
 
-    labelCollection.on('collisionCheck', handler)
-    preCollisionCheckHandler.current = handler
-    preLabelRef.current = addedLabels
+      labelCollection.on('collisionCheck', handler)
+      preCollisionCheckHandler.current = handler
+      preLabelRef.current = addedLabels
+    }
 
     return () => {
       attempt(() => {
+        if (preCollisionCheckHandler.current) {
+          labelCollection.off(
+            'collisionCheck',
+            preCollisionCheckHandler.current,
+          )
+        }
         baseAoiPrimitiveCollection.removeAll()
         buildingAoiPrimitiveCollection.removeAll()
         roadPrimitiveCollection.removeAll()
         for (let deleteLabel of preLabelRef.current) {
           labelCollection.remove(deleteLabel)
         }
-        labelMarkerCollection.removeAll()
+        poiMarkerCollection.removeAll()
       })
     }
   }, [

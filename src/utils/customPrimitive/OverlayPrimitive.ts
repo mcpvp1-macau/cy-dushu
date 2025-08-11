@@ -44,9 +44,9 @@ type Label = {
   distanceDisplayCondition?: Cesium.DistanceDisplayCondition
   disableDepthTestDistance?: number
 }
-function createLabel(
+export function createLabel(
   position: Cesium.Cartesian3,
-  styleOptions: StyleOptions,
+  styleOptions: Pick<StyleOptions, 'label'>,
 ): Label {
   return {
     position,
@@ -232,7 +232,7 @@ function createCircleOutline(
   return createPolyline(positions, styleOptions, asynchronous, isGround)
 }
 
-function getCenter(points: Coordinate[]) {
+export function getCenter(points: Coordinate[]) {
   const features = turf.points(points)
   const center = turf.center(features)
   const averageHeight =
@@ -394,8 +394,8 @@ export class OverlayPolygonPrimitive {
           const height = scene?.globe?.getHeight(
             Cesium.Cartographic.fromDegrees(center[0], center[1]),
           )
-          // 没有高度或者高度小于0可能是刚开始地形没加载好，1秒后再次尝试
-          if (!height || height < 0) {
+          // 没有高度或者高度小于-100可能是刚开始地形没加载好，1秒后再次尝试
+          if (!height || height < -100) {
             setTimeout(() => {
               this.updateGeometry(frameState)
             }, 1000)
@@ -555,8 +555,8 @@ export class OverlayCirclePrimitive {
           this.cartesianCenter,
         )
         const height = scene?.globe?.getHeight(cartographic)
-        // 没有高度或者高度小于0可能是刚开始地形没加载好，1秒后再次尝试
-        if (!height || height < 0) {
+        // 没有高度或者高度小于-100可能是刚开始地形没加载好，1秒后再次尝试
+        if (!height || height < -100) {
           setTimeout(() => {
             this.updateGeometry(frameState)
           }, 1000)
@@ -720,8 +720,8 @@ export class OverlayFanPrimitive {
           const height = scene?.globe?.getHeight(
             Cesium.Cartographic.fromDegrees(center[0], center[1]),
           )
-          // 没有高度或者高度小于0可能是刚开始地形没加载好，1秒后再次尝试
-          if (!height || height < 0) {
+          // 没有高度或者高度小于-100可能是刚开始地形没加载好，1秒后再次尝试
+          if (!height || height < -100) {
             setTimeout(() => {
               this.updateGeometry(frameState)
             }, 1000)

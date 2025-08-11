@@ -156,7 +156,7 @@ const getHeightsFromRGBTile = async (
   const canvas = document.createElement('canvas')
   canvas.width = TILE_SIZE
   canvas.height = TILE_SIZE
-  const ctx = canvas.getContext('2d')!
+  const ctx = canvas.getContext('2d', { willReadFrequently: true })!
   const heights = coordinates.map((coordinate, index) => {
     const tileKey = coordInTiles[index]
     const tile = tileMap[tileKey]

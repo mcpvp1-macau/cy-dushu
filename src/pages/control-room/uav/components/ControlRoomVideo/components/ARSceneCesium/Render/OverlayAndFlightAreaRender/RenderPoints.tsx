@@ -5,7 +5,7 @@ import CollisionCheckLabelCollection, {
   ExtendLabel,
 } from '@/utils/customPrimitive/CollisionCheckLabelCollection'
 import useARSettingStore from '@/store/setting/useARSetting.store'
-import { LabelLevelEnum, LayerEnum } from '../Enum'
+import { LabelLevelEnum, LayerEnum, LabelRelateEnum } from '../Enum'
 import { attempt } from 'lodash'
 import { shouldJson } from '@/utils/json'
 
@@ -14,21 +14,17 @@ type PropsType = {
   ocrc: OrderCesiumRenderController
 }
 
+/**渲染标绘中的点位 */
 const RenderPoints: FC<PropsType> = ({ points, ocrc }) => {
   const preHandler = useRef<(labels: ExtendLabel[]) => void>(() => {})
   const preAddedLabels = useRef<ExtendLabel[]>([])
 
   useEffect(() => {
-    const labelCollection: CollisionCheckLabelCollection =
-      ocrc.orderPrimitives[LayerEnum.label].get(0) ||
-      ocrc.orderPrimitives[LayerEnum.label].add(
-        new CollisionCheckLabelCollection(10),
-      )
+    const labelCollection: CollisionCheckLabelCollection = ocrc.orderPrimitives[
+      LayerEnum.label
+    ].get(LabelRelateEnum.label)
     const pointPrimitiveCollection: Cesium.PointPrimitiveCollection =
-      ocrc.orderPrimitives[LayerEnum.overlay].get(0) ||
-      ocrc.orderPrimitives[LayerEnum.overlay].add(
-        new Cesium.PointPrimitiveCollection(),
-      )
+      ocrc.orderPrimitives[LayerEnum.label].get(LabelRelateEnum.poiMarker)
     labelCollection.renderCount = 0
 
     const addedLabels: ExtendLabel[] = []
@@ -88,8 +84,8 @@ const RenderPoints: FC<PropsType> = ({ points, ocrc }) => {
         for (let deleteLabel of preAddedLabels.current) {
           labelCollection.remove(deleteLabel)
         }
-        labelCollection.off('collisionCheck', preHandler.current)
         pointPrimitiveCollection.removeAll()
+        labelCollection.off('collisionCheck', preHandler.current)
       })
     }
   }, [points])

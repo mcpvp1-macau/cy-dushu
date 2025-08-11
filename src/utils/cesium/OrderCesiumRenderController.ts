@@ -28,9 +28,12 @@ class OrderCesiumRenderController {
         return Reflect.get(target, p, receiver)
       },
       set: (target, p: any, newValue, receiver) => {
-        if (p === 'length') {
+        const preLength = target.length
+        const result = Reflect.set(target, p, newValue, receiver)
+        const newLength = target.length
+        if (preLength !== newLength) {
           this.clearFrameBuffer()
-          for (let i = 0; i < newValue - 1; i++) {
+          for (let i = 0; i < newLength - 1; i++) {
             // @ts-ignore
             const context = this._viewer.scene._context
             // @ts-ignore
@@ -52,11 +55,10 @@ class OrderCesiumRenderController {
           this.generatePostProcess()
         }
 
-        return Reflect.set(target, p, newValue, receiver)
+        return result
       },
     })
-    this._viewer.scene.preRender.addEventListener(this.preRenderHandler)
-    this._viewer.scene.postRender.addEventListener(this.postRenderHandler)
+    this.startRender()
   }
 
   private preRenderHandler = () => {

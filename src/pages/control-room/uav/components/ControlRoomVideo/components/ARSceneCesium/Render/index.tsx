@@ -4,7 +4,8 @@ import GeodataRender from './GeodataRender'
 import OverlayAndFlightAreaRender from './OverlayAndFlightAreaRender'
 import { useEffect, useState } from 'react'
 import OrderCesiumRenderController from '@/utils/cesium/OrderCesiumRenderController'
-import { LayerEnum } from './Enum'
+import { LayerEnum, LabelRelateEnum } from './Enum'
+import CollisionCheckLabelCollection from '@/utils/customPrimitive/CollisionCheckLabelCollection'
 
 /**只负责渲染 */
 const ARSceneCesiumRender: FC = () => {
@@ -18,10 +19,25 @@ const ARSceneCesiumRender: FC = () => {
       )
       // 为ocrc预先生成primitiveCollection
       for (let i = 0; i < LayerEnum.numberOfLayer; i++) {
-        const primitiveCollection = new Cesium.PrimitiveCollection()
-        orderCesiumRenderController.orderPrimitives.push(primitiveCollection)
+        if (i === LayerEnum.label) {
+          // 为 label层级预先生成好标注及其关联显示的图元
+          const labelLevelCollection = new Cesium.PrimitiveCollection()
+          orderCesiumRenderController.orderPrimitives[LayerEnum.label] =
+            labelLevelCollection
+          for (let j = 0; j < LabelRelateEnum.numberOfLabelRelate; j++) {
+            if (j === LabelRelateEnum.label) {
+              labelLevelCollection.add(new CollisionCheckLabelCollection(10))
+            } else if (j === LabelRelateEnum.poiMarker) {
+              labelLevelCollection.add(new Cesium.BillboardCollection())
+            } else if (j === LabelRelateEnum.overlayPoint) {
+              labelLevelCollection.add(new Cesium.PointPrimitiveCollection())
+            }
+          }
+        } else {
+          orderCesiumRenderController.orderPrimitives[i] =
+            new Cesium.PrimitiveCollection()
+        }
       }
-
       setOcrc(orderCesiumRenderController)
     }
 
