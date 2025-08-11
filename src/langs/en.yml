@@ -378,6 +378,7 @@ action:
 modal:
   cancel: Cancel
   confirm: Confirm
+  submit: Submit
 api:
   success:
     msg: Success

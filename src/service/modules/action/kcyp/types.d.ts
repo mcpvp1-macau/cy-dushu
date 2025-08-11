@@ -126,6 +126,8 @@ declare namespace API_KCYP {
        * 处理状态
        */
       processStatus?: ProcessStatus
+      /** 扩展 JSON 字段 */
+      extra?: string
       [property: string]: any
     }
     interface Picture {
@@ -194,5 +196,13 @@ declare namespace API_KCYP {
   namespace res {
     type GetKCYPOrderRes = API_KCYP.domain.OrderRecord
     type CommitKCYPRes = API_KCYP.domain.CommitResultRecord[]
+    type CheckNoRes = {
+      carNos?: {
+        carNo?: string
+        message?: string
+        success?: boolean
+        [property: string]: any
+      }[]
+    }
   }
 }

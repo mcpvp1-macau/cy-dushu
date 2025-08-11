@@ -62,6 +62,7 @@ export const updAIResult = (data: {
   plateNo?: string
   plateColor?: string
   resultType?: string
+  plateType?: string
 }) => {
   return serverJingqi.post('/result/update', data)
 }

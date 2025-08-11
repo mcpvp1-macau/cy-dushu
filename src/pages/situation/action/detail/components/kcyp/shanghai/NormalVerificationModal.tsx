@@ -2,12 +2,18 @@ import XModal from '@/components/XModal'
 import { DictEnum } from '@/enum/dict'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import useWatch from '@/hooks/useWatch'
-import { commitKYCPOrder } from '@/service/modules/action/kcyp'
+import { commitKYCPOrder, saveKCYPOrder } from '@/service/modules/action/kcyp'
 import { useDictOptions } from '@/store/useDict.store'
 import { idCardReg, phoneReg } from '@/constant/regExp'
-import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons'
+import {
+  CheckCircleFilled,
+  CloseCircleFilled,
+  SyncOutlined,
+} from '@ant-design/icons'
 import { Form, Image, Input, Select } from 'antd'
 import { uniqWith } from 'lodash'
+import { shouldJson } from '@/utils/json'
+import { useDebounceFn } from 'ahooks'
 
 const HeadLine: FC<{ title: string; suc?: boolean }> = memo(
   ({ title, suc }) => {
@@ -57,6 +63,7 @@ const typeMap = new Map<string, string>([
 ])
 
 type PropsType = {
+  actionId: string
   open: boolean
   orderData: API_KCYP.domain.OrderRecord
   aiResultData: API_ACTION.domain.AIResultRecord[]
@@ -66,7 +73,22 @@ type PropsType = {
 
 /** 快处易赔 校验信息 */
 const KCYPNormalVerificationModal: FC<PropsType> = memo(
-  ({ open, orderData, aiResultData, checkResultIds, onClose }) => {
+  ({ open, orderData, aiResultData, checkResultIds, actionId, onClose }) => {
+    const [form] = Form.useForm()
+
+    // 从暂存工单中获取已选择的图片的类型
+    useEffect(() => {
+      const pictures = shouldJson(orderData.extra)?.pictures
+      if (!pictures) {
+        return
+      }
+      pictures?.forEach((e, i) => {
+        if (e.id === checkResultIds[i]) {
+          form.setFieldValue(`img${i}`, e.imageType)
+        }
+      })
+    }, [orderData])
+
     // 图片校验结果 和 车牌号选项
     const [checkResults, plateNoOptions] = useMemo(() => {
       const resultMap = new Map(aiResultData.map((item) => [item.id, item]))
@@ -99,8 +121,6 @@ const KCYPNormalVerificationModal: FC<PropsType> = memo(
     const brokenPartOptions = useDictOptions(DictEnum.KCYP_BROKEN_PART_TYPE)
     const accidentTypeOptions = useDictOptions(DictEnum.KCYP_ACCIDENT_TYPE)
     const firstSceneOptions = useDictOptions(DictEnum.KCYP_FIRSTSCENE)
-
-    const [form] = Form.useForm()
 
     useWatch(
       orderData,
@@ -182,18 +202,74 @@ const KCYPNormalVerificationModal: FC<PropsType> = memo(
       }
     })
 
+    const [saveState, setSaveState] = useState(-1) // 0 未保存 1 保存中 2 保存成功
+    const saveMutation = useMutation({
+      mutationFn: saveKCYPOrder,
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['getKCYPOrder', actionId],
+        })
+        setSaveState(2)
+      },
+    })
+
+    const { run: save } = useDebounceFn(
+      async (values: any) => {
+        // await form.validateFields()
+        const { caseHapTime, brokenPart, otherBrokenPart } = values
+        const caseHapTimeFormat = dayjs(caseHapTime).valueOf()
+        setSaveState(1)
+        saveMutation.mutate({
+          ...orderData,
+          ...values,
+          brokenPart: brokenPart.join(','),
+          otherBrokenPart: otherBrokenPart.join(','),
+          caseHapTime: caseHapTimeFormat,
+          extra: JSON.stringify({
+            pictures: checkResults.map((e, i) => ({
+              id: e.id,
+              imageType: values[`img${i}`],
+            })),
+          }),
+        })
+      },
+      { wait: 3_000, trailing: true },
+    )
+
+    const handleValuesChange = async (_, values: any) => {
+      setSaveState(0)
+      save(values)
+    }
+
+    const { t } = useTranslation()
+
     return (
       <XModal
         open={open}
         title="校验信息"
         width={760}
         confirmLoading={confirmLoading}
+        confirmTitle={t('modal.submit')}
         onClose={onClose}
         onConfirm={handleConfirm}
       >
-        <p className="text-fore">校验以下信息后发送至大数据中心</p>
+        <div className="text-fore flex justify-between">
+          <p>校验以下信息后发送至大数据中心</p>
+          {saveState === 0 ? (
+            <p className="text-orange-600 items-center flex gap-1">
+              <SyncOutlined />
+              等待暂存
+            </p>
+          ) : saveState === 1 ? (
+            <p className="text-blue-600  items-center flex gap-1">
+              <SyncOutlined spin /> 暂存中
+            </p>
+          ) : saveState === 2 ? (
+            <p className="text-green-600">暂存成功</p>
+          ) : null}
+        </div>
         <div className="my-3 text-white max-h-[456px] overflow-y-auto">
-          <Form form={form}>
+          <Form form={form} onValuesChange={handleValuesChange}>
             <HeadLine
               title="一方当事人信息"
               suc={commitResMap.get('CARD_CHECK')?.success}

@@ -19,6 +19,14 @@ export const commitKYCPOrder = (data: {
   return serverJingqi.post<API_KCYP.res.CommitKCYPRes>('/kcyp/commit', data)
 }
 
+export const checkCarNo = (
+  data: { carNo: string; carType: string; carColor }[],
+) => {
+  return serverJingqi.post<API_KCYP.res.CheckNoRes>('/kcyp/checkCarNo', {
+    carNos: data,
+  })
+}
+
 /** 查询萧山工单暂存记录 */
 export const getXSKCYPOrder = (data: API_KCYP.req.GetKCYPOrderReq) => {
   return serverJingqi.post<API_KCYP.res.GetKCYPOrderRes>(
