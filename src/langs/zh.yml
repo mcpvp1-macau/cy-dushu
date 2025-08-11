@@ -368,6 +368,7 @@ action:
 modal:
   cancel: 取消
   confirm: 确定
+  submit: 提交
 api:
   success:
     msg: 操作成功

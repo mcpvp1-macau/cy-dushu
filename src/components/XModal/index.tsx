@@ -12,6 +12,7 @@ type PropsType = GetProps<typeof Modal> & {
   onClose?: () => void
   footer?: boolean
   noPadding?: boolean
+  confirmTitle?: string
 }
 
 const XModal: FC<PropsType> = ({
@@ -21,6 +22,7 @@ const XModal: FC<PropsType> = ({
   footer = true,
   noPadding = false,
   titleRight,
+  confirmTitle,
   onClose,
   onConfirm,
   ...restProps
@@ -135,7 +137,7 @@ const XModal: FC<PropsType> = ({
                   onConfirm?.()
                 }}
               >
-                {t('modal.confirm')}
+                {confirmTitle ?? t('modal.confirm')}
               </Button>
             </div>
           ) : null}
