@@ -98,7 +98,12 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
       return
     }
     if (pictures.length > 0) {
-      setCheckIds(pictures.map((e: { id: string }) => e.id))
+      const idSet = new Set(data?.map((e) => e.id) ?? [])
+      setCheckIds(
+        pictures
+          .filter((e: { id: string }) => idSet.has(e.id))
+          .map((e: { id: string }) => e.id),
+      )
     }
   }, [orderData])
 
