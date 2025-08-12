@@ -17,7 +17,14 @@ import Select from '@/components/AntdOverride/Select'
 const AIResultItem: FC<{
   data: API_ACTION.domain.AIResultRecord
   actionType: string
-}> = memo(({ data, actionType }) => {
+  carNoCheckMap: Record<
+    string,
+    {
+      success: boolean
+      message?: string
+    }
+  >
+}> = memo(({ data, actionType, carNoCheckMap }) => {
   const [form] = Form.useForm()
   const queryClient = useQueryClient()
 
@@ -69,9 +76,11 @@ const AIResultItem: FC<{
     queryClient,
   )
 
-  const [checkCarNoResult, setCheckCarNoResult] = useState<
+  const [_checkCarNoResult, setCheckCarNoResult] = useState<
     NonNullable<API_KCYP.res.CheckNoRes['carNos']>[number] | null
   >(null)
+
+  const checkCarNoResult = _checkCarNoResult ?? carNoCheckMap[data.plateNo]
 
   const handleCheckCarNo = async () => {
     const resp = await checkCarNo([
