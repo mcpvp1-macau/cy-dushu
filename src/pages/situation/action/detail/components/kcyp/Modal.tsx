@@ -3,7 +3,7 @@ import IconButton from '@/components/ui/button/IconButton'
 import XModal from '@/components/XModal'
 import useActionDetail from '../../context'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
-import { getAIResultList } from '@/service/modules/action'
+import { delAIResult, getAIResultList } from '@/service/modules/action'
 import AppSpin from '@/components/AppSpin'
 import AppEmpty from '@/components/AppEmpty'
 import { useSize, useUpdateEffect } from 'ahooks'
@@ -19,6 +19,7 @@ import { lazy, Suspense } from 'react'
 import { LoadingOutlined } from '@ant-design/icons'
 import AIResultItem from './AIResultItem'
 import { shouldJson } from '@/utils/json'
+import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
 
 type PropsType = {
   actionId: string
@@ -175,12 +176,17 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
                       )}
                     </Suspense>
 
-                    <IconButton
+                    <IconAsyncButton
                       toolTipProps={{ title: '删除' }}
                       disabled={checkIds.length === 0}
+                      onClick={async () => {
+                        await delAIResult(actionId, checkIds)
+                        await refetch()
+                        setCheckIds([])
+                      }}
                     >
                       <IconDelete />
-                    </IconButton>
+                    </IconAsyncButton>
                   </p>
                   <ConfigProvider
                     theme={{

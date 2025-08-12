@@ -1,7 +1,6 @@
 import XModal from '@/components/XModal'
 import { DictEnum } from '@/enum/dict'
 import { useAppMsg } from '@/hooks/useAppMsg'
-import useWatch from '@/hooks/useWatch'
 import { commitKYCPOrder, saveKCYPOrder } from '@/service/modules/action/kcyp'
 import { useDictOptions } from '@/store/useDict.store'
 import { idCardReg, phoneReg } from '@/constant/regExp'
@@ -122,23 +121,17 @@ const KCYPNormalVerificationModal: FC<PropsType> = memo(
     const accidentTypeOptions = useDictOptions(DictEnum.KCYP_ACCIDENT_TYPE)
     const firstSceneOptions = useDictOptions(DictEnum.KCYP_FIRSTSCENE)
 
-    useWatch(
-      orderData,
-      (newData) => {
-        queueMicrotask(() => {
-          if (!newData) {
-            return
-          }
-          form.setFieldsValue({
-            ...newData,
-            caseHapTime: dayjs(newData?.caseHapTime),
-            brokenPart: newData?.brokenPart?.split(','),
-            otherBrokenPart: newData?.otherBrokenPart?.split(','),
-          })
-        })
-      },
-      true,
-    )
+    useEffect(() => {
+      if (!orderData) {
+        return
+      }
+      form.setFieldsValue({
+        ...orderData,
+        caseHapTime: dayjs(orderData?.caseHapTime),
+        brokenPart: orderData?.brokenPart?.split(','),
+        otherBrokenPart: orderData?.otherBrokenPart?.split(','),
+      })
+    }, [orderData])
 
     const [commitResMap, setCommitResMap] = useState(
       new Map<
@@ -214,8 +207,9 @@ const KCYPNormalVerificationModal: FC<PropsType> = memo(
     })
 
     const { run: save } = useDebounceFn(
-      async (values: any) => {
+      async () => {
         // await form.validateFields()
+        const values = form.getFieldsValue()
         const { caseHapTime, brokenPart, otherBrokenPart } = values
         const caseHapTimeFormat = dayjs(caseHapTime).valueOf()
         setSaveState(1)
@@ -236,12 +230,29 @@ const KCYPNormalVerificationModal: FC<PropsType> = memo(
       { wait: 3_000, trailing: true },
     )
 
-    const handleValuesChange = async (_, values: any) => {
+    const handleValuesChange = async () => {
       setSaveState(0)
-      save(values)
+      save()
     }
 
     const { t } = useTranslation()
+
+    // const checkResultsRef = useLatest(checkResults)
+
+    const handleCarNoChange = (
+      carNo: string,
+      carTypeFiled: string,
+      carColorFiled: string,
+    ) => {
+      if (!carNo) {
+        return
+      }
+      const found = checkResults.find((e) => e.plateNo === carNo)
+      if (found) {
+        form.setFieldValue(carTypeFiled, found.plateType)
+        form.setFieldValue(carColorFiled, found.plateColor)
+      }
+    }
 
     return (
       <XModal
@@ -348,7 +359,13 @@ const KCYPNormalVerificationModal: FC<PropsType> = memo(
               items={[
                 '一方车牌号码',
                 <Form.Item name="carNo" noStyle>
-                  <Select className="w-full" options={plateNoOptions} />
+                  <Select
+                    className="w-full"
+                    options={plateNoOptions}
+                    onChange={(v) =>
+                      handleCarNoChange(v, 'carType', 'carColor')
+                    }
+                  />
                 </Form.Item>,
                 '一方车牌种类',
                 <Form.Item name="carType" noStyle>
@@ -375,7 +392,13 @@ const KCYPNormalVerificationModal: FC<PropsType> = memo(
               items={[
                 '另一方车牌号码',
                 <Form.Item name="otherCarNo" noStyle>
-                  <Select className="w-full" options={plateNoOptions} />
+                  <Select
+                    className="w-full"
+                    options={plateNoOptions}
+                    onChange={(v) =>
+                      handleCarNoChange(v, 'otherCarType', 'otherCarColor')
+                    }
+                  />
                 </Form.Item>,
                 '另一方车牌种类',
                 <Form.Item name="otherCarType" noStyle>
