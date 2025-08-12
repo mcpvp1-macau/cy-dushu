@@ -7,11 +7,12 @@ import { delAIResult, getAIResultList } from '@/service/modules/action'
 import AppSpin from '@/components/AppSpin'
 import AppEmpty from '@/components/AppEmpty'
 import { useDebounceFn, useSize, useUpdateEffect } from 'ahooks'
-import { Checkbox, ConfigProvider, Spin } from 'antd'
+import { Checkbox, ConfigProvider, message, Spin } from 'antd'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconKCCheck from '@/assets/icons/jsx/IconKCCheck'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
 import {
+  checkCarNo,
   getKCYPOrder,
   getXSKCYPOrder,
   saveKCYPOrder,
@@ -24,6 +25,7 @@ import { LoadingOutlined, SyncOutlined } from '@ant-design/icons'
 import AIResultItem from './AIResultItem'
 import { shouldJson } from '@/utils/json'
 import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
+import { uniqWith } from 'lodash'
 
 type PropsType = {
   actionId: string
@@ -62,6 +64,43 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
     },
     queryClient,
   )
+
+  const checkNeeds = useMemo(() => {
+    return uniqWith(
+      data?.filter((e) => !!e.plateNo && !!e.plateType && !!e.plateColor) ?? [],
+      (a, b) => a.plateNo === b.plateNo,
+    )
+  }, [data])
+
+  // 初始化校验车牌
+  const { data: carNoCheckResults } = useQuery(
+    {
+      queryKey: ['checkCarNo', actionId],
+      queryFn: () => {
+        return checkCarNo(
+          checkNeeds.map((e) => ({
+            carNo: e.plateNo,
+            carType: e.plateType,
+            carColor: e.plateColor,
+          })),
+        )
+      },
+      enabled: !!checkNeeds.length,
+      select: (d) => d.data,
+    },
+    queryClient,
+  )
+
+  const carNoCheckMap = useMemo(() => {
+    const result = {}
+    carNoCheckResults?.carNos?.forEach((e) => {
+      result[e.carNo!] = {
+        message: e.message,
+        success: e.success,
+      }
+    })
+    return result
+  }, [carNoCheckResults])
 
   useUpdateEffect(() => {
     refetch()
@@ -264,7 +303,11 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
                         <ul className="px-3 w-full pt-3 flex justify-between flex-wrap gap-y-3 max-h-[408px] overflow-y-auto overflow-x-hidden">
                           {data.map((e) => (
                             <li key={e.id} className="w-[430px]">
-                              <AIResultItem data={e} actionType={actionType} />
+                              <AIResultItem
+                                data={e}
+                                actionType={actionType}
+                                carNoCheckMap={carNoCheckMap}
+                              />
                             </li>
                           ))}
                         </ul>
