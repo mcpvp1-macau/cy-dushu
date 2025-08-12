@@ -6,17 +6,21 @@ import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import { delAIResult, getAIResultList } from '@/service/modules/action'
 import AppSpin from '@/components/AppSpin'
 import AppEmpty from '@/components/AppEmpty'
-import { useSize, useUpdateEffect } from 'ahooks'
+import { useDebounceFn, useSize, useUpdateEffect } from 'ahooks'
 import { Checkbox, ConfigProvider, Spin } from 'antd'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconKCCheck from '@/assets/icons/jsx/IconKCCheck'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
-import { getKCYPOrder, getXSKCYPOrder } from '@/service/modules/action/kcyp'
+import {
+  getKCYPOrder,
+  getXSKCYPOrder,
+  saveKCYPOrder,
+} from '@/service/modules/action/kcyp'
 import { ProcessStatusEnum } from '@/service/modules/action/kcyp/enum'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { ActionEnum } from '@/constant/action/action_type'
 import { lazy, Suspense } from 'react'
-import { LoadingOutlined } from '@ant-design/icons'
+import { LoadingOutlined, SyncOutlined } from '@ant-design/icons'
 import AIResultItem from './AIResultItem'
 import { shouldJson } from '@/utils/json'
 import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
@@ -66,7 +70,13 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
   const size = useSize(document.body)
   const isBigWindow = useMemo(() => (size?.width ?? 0) >= 980, [size?.width])
 
-  const [checkIds, setCheckIds] = useState<string[]>([])
+  const [checkIds, _setCheckIds] = useState<string[]>([])
+
+  const setCheckIds = useMemoizedFn((ids: string[]) => {
+    setSaveState(0)
+    _setCheckIds(ids)
+    save()
+  })
 
   const handleCheckAllChange = useMemoizedFn((e: CheckboxChangeEvent) => {
     setCheckIds(e.target.checked ? data?.map((e) => e.id) ?? [] : [])
@@ -93,19 +103,22 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
 
   // 选择暂存工单中已选择图片
   useEffect(() => {
+    if (!data) {
+      return
+    }
     const pictures = shouldJson(orderData?.extra)?.pictures
     if (!pictures) {
       return
     }
     if (pictures.length > 0) {
-      const idSet = new Set(data?.map((e) => e.id) ?? [])
-      setCheckIds(
+      const idSet = new Set(data.map((e) => e.id) ?? [])
+      _setCheckIds(
         pictures
           .filter((e: { id: string }) => idSet.has(e.id))
           .map((e: { id: string }) => e.id),
       )
     }
-  }, [orderData])
+  }, [orderData, data])
 
   const [shareOpen, setShareOpen] = useState(false)
   const handleVerificationClick = useMemoizedFn(() => {
@@ -119,6 +132,32 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
     }
     setShareOpen(true)
   })
+
+  const [saveState, setSaveState] = useState(-1) // 0 未保存 1 保存中 2 保存成功
+  const saveMutation = useMutation({
+    mutationFn: saveKCYPOrder,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [orderKey, actionId],
+      })
+      setSaveState(2)
+    },
+  })
+
+  const { run: save } = useDebounceFn(
+    async () => {
+      setSaveState(1)
+      saveMutation.mutate({
+        ...orderData,
+        extra: JSON.stringify({
+          pictures: checkIds.map((e) => ({
+            id: e,
+          })),
+        }),
+      })
+    },
+    { wait: 3_000, trailing: true },
+  )
 
   if (isLoading || !data || !actionDetail || !orderData || orderLoading) {
     return <AppSpin />
@@ -143,56 +182,71 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
             <Spin spinning={isRefetching}>
               <div className="p-3">
                 <div className="py-3 bg-ground-3 rounded">
-                  <p className="px-3 flex gap-3">
-                    <Checkbox
-                      indeterminate={
-                        checkIds.length > 0 && checkIds.length < data.length
-                      }
-                      checked={checkIds.length === data.length}
-                      onChange={handleCheckAllChange}
-                    >
-                      全选
-                    </Checkbox>
-
-                    <Suspense fallback={<LoadingOutlined />}>
-                      <IconButton
-                        toolTipProps={{ title: '校验' }}
-                        onClick={handleVerificationClick}
+                  <div className="flex justify-between px-3">
+                    <p className="flex gap-3">
+                      <Checkbox
+                        indeterminate={
+                          checkIds.length > 0 && checkIds.length < data.length
+                        }
+                        checked={checkIds.length === data.length}
+                        onChange={handleCheckAllChange}
                       >
-                        <IconKCCheck />
-                      </IconButton>
-                      {actionType === ActionEnum.KCYP ? (
-                        <NormalVerificationModal
-                          actionId={actionId}
-                          open={shareOpen}
-                          orderData={orderData}
-                          aiResultData={data}
-                          checkResultIds={checkIds}
-                          onClose={() => setShareOpen(false)}
-                        />
-                      ) : (
-                        <XSVerificationModal
-                          open={shareOpen}
-                          orderData={orderData}
-                          aiResultData={data}
-                          checkResultIds={checkIds}
-                          onClose={() => setShareOpen(false)}
-                        />
-                      )}
-                    </Suspense>
+                        全选
+                      </Checkbox>
 
-                    <IconAsyncButton
-                      toolTipProps={{ title: '删除' }}
-                      disabled={checkIds.length === 0}
-                      onClick={async () => {
-                        await delAIResult(actionId, checkIds)
-                        await refetch()
-                        setCheckIds([])
-                      }}
-                    >
-                      <IconDelete />
-                    </IconAsyncButton>
-                  </p>
+                      <Suspense fallback={<LoadingOutlined />}>
+                        <IconButton
+                          toolTipProps={{ title: '校验' }}
+                          onClick={handleVerificationClick}
+                        >
+                          <IconKCCheck />
+                        </IconButton>
+                        {shareOpen &&
+                          (actionType === ActionEnum.KCYP ? (
+                            <NormalVerificationModal
+                              actionId={actionId}
+                              open={shareOpen}
+                              orderData={orderData}
+                              aiResultData={data}
+                              checkResultIds={checkIds}
+                              onClose={() => setShareOpen(false)}
+                            />
+                          ) : (
+                            <XSVerificationModal
+                              open={shareOpen}
+                              orderData={orderData}
+                              aiResultData={data}
+                              checkResultIds={checkIds}
+                              onClose={() => setShareOpen(false)}
+                            />
+                          ))}
+                      </Suspense>
+
+                      <IconAsyncButton
+                        toolTipProps={{ title: '删除' }}
+                        disabled={checkIds.length === 0}
+                        onClick={async () => {
+                          await delAIResult(actionId, checkIds)
+                          await refetch()
+                          setCheckIds([])
+                        }}
+                      >
+                        <IconDelete />
+                      </IconAsyncButton>
+                    </p>
+                    {saveState === 0 ? (
+                      <p className="text-orange-600 items-center flex gap-1">
+                        <SyncOutlined />
+                        等待暂存
+                      </p>
+                    ) : saveState === 1 ? (
+                      <p className="text-blue-600  items-center flex gap-1">
+                        <SyncOutlined spin /> 暂存中
+                      </p>
+                    ) : saveState === 2 ? (
+                      <p className="text-green-600">暂存成功</p>
+                    ) : null}
+                  </div>
                   <ConfigProvider
                     theme={{
                       components: {

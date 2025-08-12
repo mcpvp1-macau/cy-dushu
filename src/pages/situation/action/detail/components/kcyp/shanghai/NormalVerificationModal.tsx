@@ -237,8 +237,6 @@ const KCYPNormalVerificationModal: FC<PropsType> = memo(
 
     const { t } = useTranslation()
 
-    // const checkResultsRef = useLatest(checkResults)
-
     const handleCarNoChange = (
       carNo: string,
       carTypeFiled: string,
