@@ -613,6 +613,21 @@ export class OverlayCirclePrimitive {
     this.props = data
     this.updateGeometry()
   }
+
+  static getCoordinates(center: Coordinate, radius: number) {
+    const circle = turf.circle(center, radius, {
+      steps: CIRCLE_POINT_NUMBER,
+      units: 'meters',
+    })
+
+    const coords = circle.geometry.coordinates[0].map((coord) => [
+      coord[0],
+      coord[1],
+      center?.[2] ?? 0,
+    ])
+
+    return coords
+  }
 }
 
 /**覆盖物扇形 */
@@ -812,6 +827,44 @@ export class OverlayFanPrimitive {
   setProps(data: any) {
     this.props = data
     this.updateGeometry()
+  }
+
+  static getCoordinates(
+    pivot: Coordinate,
+    startPoint: Coordinate,
+    endPoint: Coordinate,
+  ) {
+    const pp = turf.point(pivot)
+    const sp = turf.point(startPoint)
+    const ep = turf.point(endPoint)
+    const startBearing = (turf.rhumbBearing(pp, sp) + 360) % 360
+    let endBearing = (turf.rhumbBearing(pp, ep) + 360) % 360
+    if (endBearing < startBearing) {
+      endBearing += 360
+    }
+    const distance = turf.distance(pp, ep)
+    const res = [pivot]
+    for (let current = startBearing; current < endBearing; current += 2) {
+      let bearing = current
+      if (bearing >= 360) {
+        bearing -= 360
+      }
+      if (bearing > 180) {
+        bearing -= 360
+      }
+      const newPoint = turf.destination(pp, distance, bearing)
+      res.push(newPoint.geometry.coordinates as [number, number])
+    }
+    res.push(
+      turf.destination(pp, distance, endBearing).geometry
+        .coordinates as Coordinate,
+    )
+
+    res.forEach((coord) => {
+      coord[2] = pivot[2] ?? 0
+    })
+
+    return res
   }
 }
 

@@ -14,7 +14,9 @@ type PropsType = {
 const OverlayAndFlightAreaRender: FC<PropsType> = ({ ocrc }) => {
   const arSetting = useARSettingStore((s) => s)
   const overlaies = useMixARStore((s) => s.overlaies)
-
+  useEffect(() => {
+    console.log('change===', overlaies)
+  }, [overlaies])
   const [showingAreas, setShowingAreas] = useState<
     API_LAYER_OVERLAY.domain.Overlay[]
   >([])

@@ -588,7 +588,7 @@ const ARSetting: FC<PropsType> = memo(({ deviceId }) => {
         </div>
         <Row>
           <Col span={12}>
-            <Form.Item label="点位">
+            <Form.Item label="打点">
               <Switch
                 value={ar.overlay.point}
                 onChange={(e) =>

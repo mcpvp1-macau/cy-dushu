@@ -24,7 +24,7 @@ const RenderPoints: FC<PropsType> = ({ points, ocrc }) => {
       LayerEnum.label
     ].get(LabelRelateEnum.label)
     const pointPrimitiveCollection: Cesium.PointPrimitiveCollection =
-      ocrc.orderPrimitives[LayerEnum.label].get(LabelRelateEnum.poiMarker)
+      ocrc.orderPrimitives[LayerEnum.label].get(LabelRelateEnum.overlayPoint)
     labelCollection.renderCount = 0
 
     const addedLabels: ExtendLabel[] = []
@@ -47,7 +47,6 @@ const RenderPoints: FC<PropsType> = ({ points, ocrc }) => {
         verticalOrigin: Cesium.VerticalOrigin.CENTER,
         horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
         scale: 0.2,
-        disableDepthTestDistance: 50000,
         style: Cesium.LabelStyle.FILL_AND_OUTLINE,
         outlineColor: Cesium.Color.BLACK, //边框颜色
         outlineWidth: 5, //边框宽度

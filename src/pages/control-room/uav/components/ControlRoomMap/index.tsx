@@ -81,7 +81,7 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
       <HomeMarker />
       <UavRealTrack />
       <UAVControlRoomPOIResolver />
-      {/* <LayerOverlay /> */}
+      <LayerOverlay />
       <TargetPoints />
       <CitySituation />
       {enableReconstruction && <UavReconstruction />}

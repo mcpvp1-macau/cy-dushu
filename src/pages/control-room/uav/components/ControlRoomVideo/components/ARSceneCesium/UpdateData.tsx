@@ -247,7 +247,7 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
       })
       useMixARStore.getState().updateOverlaies(features)
     })
-  }, [overlayList, range])
+  }, [overlayList, flightAreaList, range])
 
   return null
 })

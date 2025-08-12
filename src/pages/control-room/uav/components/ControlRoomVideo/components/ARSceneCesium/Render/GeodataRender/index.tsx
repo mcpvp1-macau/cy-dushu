@@ -254,7 +254,6 @@ const GeodataRender: FC<PropsType> = ({ ocrc }) => {
         ),
         outlineWidth: Math.max(arSetting.text.borderSize, 0),
         style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-        disableDepthTestDistance: Infinity,
       }
 
       const addedLabels: ExtendLabel[] = []
