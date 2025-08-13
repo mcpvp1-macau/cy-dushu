@@ -37,8 +37,14 @@ class CollisionCheckLabelCollection extends EventEmitter<{
   private _checkIntervalLatest: number = Infinity
   /** 渲染了多少帧。第一次渲染会立刻进行检测，之后才按照checkInterval进行检测。重新设置此值可以理解为立刻检测一次 */
   renderCount: number = 0
+  /**当前viewer设置的resolution，用于调试时外界矩形正确的获取 */
+  resolutionScale: number
 
-  constructor(checkInterval: number = 1, debugShowRectangle: boolean = false) {
+  constructor(
+    checkInterval: number = 1,
+    debugShowRectangle: boolean = false,
+    resolutionScale: number = 1,
+  ) {
     super()
     this._labelCollection = new Cesium.LabelCollection()
     this._debugLabelRectangles = new Cesium.PrimitiveCollection()
@@ -47,6 +53,7 @@ class CollisionCheckLabelCollection extends EventEmitter<{
     this._rectangleCollisionCheck = new Cesium.RectangleCollisionChecker()
 
     this._checkInterval = checkInterval
+    this.resolutionScale = resolutionScale
   }
 
   update(frameState: any) {
@@ -90,16 +97,15 @@ class CollisionCheckLabelCollection extends EventEmitter<{
         Cesium.Label as any
       ).getScreenSpaceBoundingBox(label, windowCoord)
       const extendBounds = label.extendBounds || new Cesium.Cartesian2(0, 0)
-      boundingRectangle.x *= window.devicePixelRatio
+      boundingRectangle.x *= this.resolutionScale
       boundingRectangle.y =
         scene.drawingBufferHeight -
-        (boundingRectangle.y + boundingRectangle.height) *
-          window.devicePixelRatio
-      boundingRectangle.width *= window.devicePixelRatio
-      boundingRectangle.height *= window.devicePixelRatio
+        (boundingRectangle.y + boundingRectangle.height) * this.resolutionScale
+      boundingRectangle.width *= this.resolutionScale
+      boundingRectangle.height *= this.resolutionScale
 
-      boundingRectangle.width += extendBounds.x * window.devicePixelRatio
-      boundingRectangle.height += extendBounds.y * window.devicePixelRatio
+      boundingRectangle.width += extendBounds.x * this.resolutionScale
+      boundingRectangle.height += extendBounds.y * this.resolutionScale
 
       const { x, y, width, height } = boundingRectangle
       const west = x

@@ -3,10 +3,10 @@ export enum LayerEnum {
   baseAoi = 0,
   build = 1,
   road = 1,
-  wayline = 2,
   overlay = 2,
   flightArea = 2,
   label = 3,
+  wayline = 3, // 航线可以遮挡住标绘
 
   numberOfLayer = 4,
 }

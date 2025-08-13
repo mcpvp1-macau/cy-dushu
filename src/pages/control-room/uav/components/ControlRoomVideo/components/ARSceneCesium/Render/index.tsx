@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import OrderCesiumRenderController from '@/utils/cesium/OrderCesiumRenderController'
 import { LayerEnum, LabelRelateEnum } from './Enum'
 import CollisionCheckLabelCollection from '@/utils/customPrimitive/CollisionCheckLabelCollection'
+import WaylineRender from './WaylineRender'
 
 /**只负责渲染 */
 const ARSceneCesiumRender: FC = () => {
@@ -56,6 +57,7 @@ const ARSceneCesiumRender: FC = () => {
     <>
       <OverlayAndFlightAreaRender ocrc={ocrc} />
       <GeodataRender ocrc={ocrc} />
+      <WaylineRender ocrc={ocrc} />
     </>
   )
 }

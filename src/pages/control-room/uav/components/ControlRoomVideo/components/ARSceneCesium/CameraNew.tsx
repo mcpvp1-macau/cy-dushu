@@ -7,12 +7,28 @@ import * as Cesium from 'cesium'
 import useARSettingStore from '@/store/setting/useARSetting.store'
 import { limitNum } from '@/utils/math'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
+import { useShallow } from 'zustand/react/shallow'
 
 type PropsType = unknown
 
-/** 更新相机 */
+/** 更新相机，非正式环境非5g测试下使用 */
 const ARSceneCamera: FC<PropsType> = memo(() => {
-  const uav = useMixARStore((s) => s.uavProperties)
+  // const uav = useMixARStore((s) => s.uavProperties)
+  const uav = useUavControlRoomStore(
+    useShallow((s) => ({
+      longitude: s.state.longitude ?? 0,
+      latitude: s.state.latitude ?? 0,
+      altitude: s.state.altitude ?? 0,
+      gimbalYaw: s.state.gimbalHead ?? 0,
+      gimbalPitch: s.state.gimbalPitch ?? 0,
+      lensType: s.state.lensType ?? 'wide',
+      zoomFactor: s.state.zoomFactor ?? 1,
+      cameraType: s.state.gimbalType || s.state.cameraType,
+      uavYaw: s.state.uavYaw ?? 0,
+    })),
+  )
+
   const { viewer } = useCesium()
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
   const shiftSetting = useARSettingStore(
@@ -59,17 +75,18 @@ const ARSceneCamera: FC<PropsType> = memo(() => {
         roll: Cesium.Math.toRadians(0),
       },
     })
+
     camera.frustum = new Cesium.PerspectiveFrustum({
       fov: limitNum(
         calcFovRadiation(
           gimbalMap[uav.cameraType!]?.wide_focal ?? 4.5,
           gimbalMap[uav.cameraType!]?.wide_camera_w ?? 6.4,
-          uav.lensType === 2 ? uav.zoomFactor : 1,
+          uav.zoomFactor,
         ),
         0,
         Math.PI - 1e-6,
       ),
-      aspectRatio: (uav.width ?? 1) / (uav.height ?? 1),
+      aspectRatio: 16 / 9,
       near: 0.1,
       far: 10000,
     })
@@ -153,7 +170,7 @@ const ARSceneCamera: FC<PropsType> = memo(() => {
     }
 
     updateGimbalPick(gimbalPick)
-  }, [uav, viewer])
+  }, [uav, shiftSetting, viewer])
 
   return null
 })

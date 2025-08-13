@@ -49,7 +49,7 @@ const ShowNoFlyArea: FC<PropsType> = ({ overlay, ocrc }) => {
             overlayPositions.flat(),
           ),
           maximumHeights: overlayPositions.map(
-            (item: number[]) => item[2] + 300,
+            (item: number[]) => item[2] + 200,
           ),
           minimumHeights: overlayPositions.map((item: number[]) => item[2]),
         }),

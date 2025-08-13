@@ -104,7 +104,7 @@ const useARSettingStore = create<StateType & ActionsType>()(
         shift: {},
         wayline: {
           enable: true,
-          color: '#22c55e66',
+          color: '#5ab47899',
         },
         poi: {
           enable: true,
