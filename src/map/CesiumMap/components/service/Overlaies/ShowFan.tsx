@@ -13,6 +13,7 @@ type PropsType = {
 }
 
 const ShowFan: FC<PropsType> = ({
+  overlayExtType,
   primitives,
   overlay,
   isGround = true,
@@ -34,7 +35,7 @@ const ShowFan: FC<PropsType> = ({
     <>
       {primitives && (
         <OverlayFan
-          data={`${overlay.overlayExtType}--${overlay.overlayId}`}
+          data={`${overlayExtType}--${overlay.overlayId}`}
           primitives={primitives}
           isGround={isGround}
           asynchronous={false}

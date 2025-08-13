@@ -13,6 +13,7 @@ type PropsType = {
 }
 
 const ShowCircle: FC<PropsType> = ({
+  overlayExtType,
   primitives,
   overlay,
   showLabel = true,
@@ -34,7 +35,7 @@ const ShowCircle: FC<PropsType> = ({
     <>
       {primitives && (
         <OverlayCircle
-          data={`${overlay.overlayExtType}--${overlay.overlayId}`}
+          data={`${overlayExtType}--${overlay.overlayId}`}
           primitives={primitives}
           asynchronous={false}
           isGround={isGround}

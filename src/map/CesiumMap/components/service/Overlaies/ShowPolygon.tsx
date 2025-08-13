@@ -13,6 +13,7 @@ type PropsType = {
 }
 
 const ShowPolygon: FC<PropsType> = ({
+  overlayExtType,
   primitives,
   overlay,
   isGround = true,
@@ -34,7 +35,7 @@ const ShowPolygon: FC<PropsType> = ({
     <>
       {primitives && (
         <OverlayPolygon
-          data={`${overlay.overlayExtType}--${overlay.overlayId}`}
+          data={`${overlayExtType}--${overlay.overlayId}`}
           primitives={primitives}
           isGround={isGround}
           asynchronous={false}
