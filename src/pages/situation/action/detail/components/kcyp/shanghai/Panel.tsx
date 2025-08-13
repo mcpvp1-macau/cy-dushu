@@ -40,8 +40,8 @@ const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
         form.setFieldsValue({
           ...data,
           caseHapTime: dayjs(data?.caseHapTime),
-          brokenPart: data?.brokenPart?.split(','),
-          otherBrokenPart: data?.otherBrokenPart?.split(','),
+          brokenPart: data?.brokenPart?.split(',') || undefined,
+          otherBrokenPart: data?.otherBrokenPart?.split(',') || undefined,
         })
       })
     },

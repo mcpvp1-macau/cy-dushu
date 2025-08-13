@@ -156,8 +156,8 @@ const KCYPNormalVerificationModal: FC<PropsType> = memo(
             caseId: orderData.caseId,
             longitude,
             latitude,
-            brokenPart: values.brokenPart?.join(','),
-            otherBrokenPart: values.otherBrokenPart?.join(','),
+            brokenPart: values.brokenPart?.join(',') || undefined,
+            otherBrokenPart: values.otherBrokenPart?.join(',') || undefined,
             caseHapTime: dayjs(values.caseHapTime).valueOf(),
           },
           // 事故照片列表
