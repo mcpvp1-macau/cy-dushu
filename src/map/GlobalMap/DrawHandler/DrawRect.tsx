@@ -201,7 +201,7 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
       {positions && viewer && (
         <OverlayPolygon
           data={''}
-          viewer={viewer}
+          primitives={viewer.scene.primitives}
           path={positions}
           asynchronous={false}
           fill={drawingColor}

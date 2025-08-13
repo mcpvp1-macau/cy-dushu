@@ -48,6 +48,10 @@ type StateType = {
     point: boolean
     area: boolean
   }
+  flightArea: {
+    enable: boolean
+    filter: string[]
+  }
   shift: Record<
     string,
     {
@@ -87,7 +91,7 @@ const useARSettingStore = create<StateType & ActionsType>()(
           enable: true,
           color: '#ffffff',
           borderColor: '#000000',
-          size: 20,
+          size: 12,
           borderSize: 2,
         },
         aoi: {
@@ -100,7 +104,7 @@ const useARSettingStore = create<StateType & ActionsType>()(
         shift: {},
         wayline: {
           enable: true,
-          color: '#22c55e66',
+          color: '#5ab47899',
         },
         poi: {
           enable: true,
@@ -112,12 +116,16 @@ const useARSettingStore = create<StateType & ActionsType>()(
           point: true,
           area: true,
         },
+        flightArea: {
+          enable: true,
+          filter: [],
+        },
         updateAR: (data) => {
           set(data)
         },
       }),
       {
-        name: 'ARSettingV3',
+        name: 'ARSettingV4',
         storage: createJSONStorage(() => localStorage),
       },
     ),

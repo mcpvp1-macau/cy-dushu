@@ -5,10 +5,11 @@ import React, { FC, useEffect, useRef } from 'react'
 
 interface Props {
   data: any
-  viewer: Cesium.Viewer
-  center: [number, number]
+  primitives: Cesium.PrimitiveCollection
+  center: [number, number] | [number, number, number]
   radius: number
   asynchronous: boolean
+  isGround?: boolean
   label?: string
   hide?: 0 | 1
   fill?: string
@@ -22,10 +23,11 @@ interface Props {
 const OverlayCircle: FC<Props> = (props) => {
   let {
     data,
-    viewer,
+    primitives,
     center,
     radius,
     asynchronous,
+    isGround = true,
     hide = false,
     fill = '#4c90f0',
     stroke = '#4c90f0',
@@ -38,8 +40,8 @@ const OverlayCircle: FC<Props> = (props) => {
   radius = radius <= 1 ? 1 : radius
 
   const primitiveRef = useRef(
-    new OverlayCirclePrimitive(
-      {
+    new OverlayCirclePrimitive({
+      styleOptions: {
         stroke,
         strokeStyle,
         strokeWeight,
@@ -48,8 +50,9 @@ const OverlayCircle: FC<Props> = (props) => {
         label,
       },
       asynchronous,
-      data,
-    ),
+      props: data,
+      isGround,
+    }),
   )
 
   useEffect(() => {
@@ -57,18 +60,18 @@ const OverlayCircle: FC<Props> = (props) => {
   }, [data])
 
   useEffect(() => {
-    if (!viewer?.scene?.primitives) return
-    viewer.scene.primitives.add(primitiveRef.current)
+    if (!primitives) return
+    primitives.add(primitiveRef.current)
 
     return () => {
       attempt(() => {
-        const preVal = viewer.scene.primitives.destroyPrimitives
-        viewer.scene.primitives.destroyPrimitives = false
-        viewer.scene.primitives.remove(primitiveRef.current)
-        viewer.scene.primitives.destroyPrimitives = preVal
+        const preVal = primitives.destroyPrimitives
+        primitives.destroyPrimitives = false
+        primitives.remove(primitiveRef.current)
+        primitives.destroyPrimitives = preVal
       })
     }
-  }, [viewer])
+  }, [primitives])
 
   // 显示隐藏
   useEffect(() => {
