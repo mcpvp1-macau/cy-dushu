@@ -3,27 +3,29 @@ import IconButton from '@/components/ui/button/IconButton'
 import XModal from '@/components/XModal'
 import useActionDetail from '../../context'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
-import { getAIResultList, updAIResult } from '@/service/modules/action'
+import { delAIResult, getAIResultList } from '@/service/modules/action'
 import AppSpin from '@/components/AppSpin'
 import AppEmpty from '@/components/AppEmpty'
 import { useDebounceFn, useSize, useUpdateEffect } from 'ahooks'
-import { Checkbox, ConfigProvider, Form, Input, Select, Spin } from 'antd'
+import { Checkbox, ConfigProvider, message, Spin } from 'antd'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconKCCheck from '@/assets/icons/jsx/IconKCCheck'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
-import { useDictOptions } from '@/store/useDict.store'
-import { DictEnum } from '@/enum/dict'
 import {
+  checkCarNo,
   getKCYPOrder,
-  getSipCascadePicture,
   getXSKCYPOrder,
+  saveKCYPOrder,
 } from '@/service/modules/action/kcyp'
 import { ProcessStatusEnum } from '@/service/modules/action/kcyp/enum'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { ActionEnum } from '@/constant/action/action_type'
 import { lazy, Suspense } from 'react'
-import { LoadingOutlined, PictureFilled } from '@ant-design/icons'
-import ImageContainBoxPreview from '@/components/ui/ImageContainBoxPreview'
+import { LoadingOutlined, SyncOutlined } from '@ant-design/icons'
+import AIResultItem from './AIResultItem'
+import { shouldJson } from '@/utils/json'
+import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
+import { uniqWith } from 'lodash'
 
 type PropsType = {
   actionId: string
@@ -36,157 +38,6 @@ const NormalVerificationModal = lazy(
   () => import('./shanghai/NormalVerificationModal'),
 )
 const XSVerificationModal = lazy(() => import('./xiaoshan/VerificationModal'))
-
-/** AI 检测结果 */
-const ResultItem: FC<{
-  data: API_ACTION.domain.AIResultRecord
-  actionType: string
-}> = memo(({ data, actionType }) => {
-  const [form] = Form.useForm()
-  const queryClient = useQueryClient()
-  const { run } = useDebounceFn(
-    () => {
-      queryClient.invalidateQueries({
-        queryKey: ['action', String(data.actionId), 'aiResult'],
-      })
-    },
-    { wait: 2_000 },
-  )
-
-  const handleFormBlur = useMemoizedFn(async () => {
-    if (
-      form.getFieldValue('plateNo') === data.plateNo &&
-      form.getFieldValue('plateColor') === data.plateColor
-    ) {
-      return
-    }
-    await updAIResult({
-      id: data.id as unknown as number,
-      plateNo: form.getFieldValue('plateNo'),
-      plateColor: form.getFieldValue('plateColor'),
-    })
-    run()
-  })
-  const carColorOptions = useDictOptions(DictEnum.KCYP_CAR_COLOR_TYPE)
-
-  const msgApi = useAppMsg()
-  const { mutate: handleGetSipCascadePicture, isPending } = useMutation(
-    {
-      mutationFn: () =>
-        getSipCascadePicture({
-          actionId: data.actionId,
-          actionItemId: data.actionItemId,
-          actionItemRecordId: data.actionItemRecordId,
-          actionRecordId: data.actionRecordId,
-          plateNo: form.getFieldValue('plateNo'),
-          resultTime: data.resultTime,
-          deviceId: data.deviceId,
-        }),
-      onSuccess: () => {
-        msgApi.success('获取卡口照片成功')
-      },
-    },
-    queryClient,
-  )
-
-  return (
-    <div className="flex gap-2">
-      <div className="w-[212px] h-[120px] relative border border-solid border-ground-5 box-content bg-ground-1">
-        <ImageContainBoxPreview
-          src={`/storage${data.image || data.sourceImage}`}
-          sourceWidth={data.sourceFrameWidth}
-          sourceHeight={data.sourceFrameHeight}
-        >
-          {data.leftTopX && data.leftTopY && (
-            <div
-              className="absolute border border-solid border-red-400"
-              style={{
-                left: `${(data.leftTopX / data.sourceFrameWidth) * 100}%`,
-                top: `${(data.leftTopY / data.sourceFrameHeight) * 100}%`,
-                right: `${
-                  100 -
-                  ((data.leftTopX + data.bboxWidth) / data.sourceFrameWidth) *
-                    100
-                }%`,
-                bottom: `${
-                  100 -
-                  ((data.leftTopY + data.bboxHeight) / data.sourceFrameHeight) *
-                    100
-                }%`,
-              }}
-            />
-          )}
-        </ImageContainBoxPreview>
-        <div className="absolute left-2 top-2">
-          <Checkbox value={data.id} />
-        </div>
-      </div>
-      <div>
-        <Form
-          form={form}
-          initialValues={{
-            plateNo: data.plateNo,
-            plateColor: data.plateColor,
-          }}
-          onBlur={handleFormBlur}
-        >
-          <ul className="flex flex-col justify-between text-fore h-[120px]">
-            <li className="flex gap-1 whitespace-nowrap ">
-              <span className="text-white">车牌:</span>
-              <Form.Item name="plateNo" noStyle>
-                <Input
-                  size="small"
-                  className="w-full"
-                  addonAfter={
-                    actionType === ActionEnum.KCYPXS ? (
-                      <div className="px-2">
-                        {isPending ? (
-                          <LoadingOutlined />
-                        ) : (
-                          <IconButton
-                            toolTipProps={{ title: '获取卡口照片' }}
-                            className="text-xs"
-                            onClick={() => handleGetSipCascadePicture()}
-                          >
-                            <PictureFilled />
-                          </IconButton>
-                        )}
-                      </div>
-                    ) : null
-                  }
-                />
-              </Form.Item>
-            </li>
-            <li className="flex gap-1 whitespace-nowrap">
-              <span className="text-white">颜色:</span>
-              <Form.Item name="plateColor" noStyle>
-                <Select
-                  size="small"
-                  className="w-full"
-                  options={carColorOptions}
-                />
-              </Form.Item>
-            </li>
-            <li className="flex gap-1 whitespace-nowrap">
-              <span className="text-white">时间:</span>
-              <span>{dayjs(data.resultTime).format('MM/DD HH:mm:ss')}</span>
-            </li>
-            <li className="flex gap-1 whitespace-nowrap">
-              <span className="text-white">位置:</span>
-              <span>
-                {data.longitude.toFixed(5)}, {data.latitude.toFixed(5)}
-              </span>
-            </li>
-            <li className="flex gap-1">
-              <span className="text-white">来源:</span>
-              <span>{data.source}</span>
-            </li>
-          </ul>
-        </Form>
-      </div>
-    </div>
-  )
-})
 
 /** 快处易赔选择 对话框 */
 const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
@@ -214,6 +65,43 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
     queryClient,
   )
 
+  const checkNeeds = useMemo(() => {
+    return uniqWith(
+      data?.filter((e) => !!e.plateNo && !!e.plateType && !!e.plateColor) ?? [],
+      (a, b) => a.plateNo === b.plateNo,
+    )
+  }, [data])
+
+  // 初始化校验车牌
+  const { data: carNoCheckResults } = useQuery(
+    {
+      queryKey: ['checkCarNo', actionId],
+      queryFn: () => {
+        return checkCarNo(
+          checkNeeds.map((e) => ({
+            carNo: e.plateNo,
+            carType: e.plateType,
+            carColor: e.plateColor,
+          })),
+        )
+      },
+      enabled: !!checkNeeds.length,
+      select: (d) => d.data,
+    },
+    queryClient,
+  )
+
+  const carNoCheckMap = useMemo(() => {
+    const result = {}
+    carNoCheckResults?.carNos?.forEach((e) => {
+      result[e.carNo!] = {
+        message: e.message,
+        success: e.success,
+      }
+    })
+    return result
+  }, [carNoCheckResults])
+
   useUpdateEffect(() => {
     refetch()
   }, [refreshTemporary])
@@ -221,12 +109,19 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
   const size = useSize(document.body)
   const isBigWindow = useMemo(() => (size?.width ?? 0) >= 980, [size?.width])
 
-  const [checkIds, setCheckIds] = useState<string[]>([])
+  const [checkIds, _setCheckIds] = useState<string[]>([])
+
+  const setCheckIds = useMemoizedFn((ids: string[]) => {
+    setSaveState(0)
+    _setCheckIds(ids)
+    save()
+  })
 
   const handleCheckAllChange = useMemoizedFn((e: CheckboxChangeEvent) => {
     setCheckIds(e.target.checked ? data?.map((e) => e.id) ?? [] : [])
   })
 
+  // 获取工单信息
   const { data: orderData, isLoading: orderLoading } = useQuery(
     {
       queryKey: [orderKey, actionId],
@@ -245,6 +140,25 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
     queryClient,
   )
 
+  // 选择暂存工单中已选择图片
+  useEffect(() => {
+    if (!data) {
+      return
+    }
+    const pictures = shouldJson(orderData?.extra)?.pictures
+    if (!pictures) {
+      return
+    }
+    if (pictures.length > 0) {
+      const idSet = new Set(data.map((e) => e.id) ?? [])
+      _setCheckIds(
+        pictures
+          .filter((e: { id: string }) => idSet.has(e.id))
+          .map((e: { id: string }) => e.id),
+      )
+    }
+  }, [orderData, data])
+
   const [shareOpen, setShareOpen] = useState(false)
   const handleVerificationClick = useMemoizedFn(() => {
     if (orderData?.processStatus !== ProcessStatusEnum.INIT) {
@@ -257,6 +171,32 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
     }
     setShareOpen(true)
   })
+
+  const [saveState, setSaveState] = useState(-1) // 0 未保存 1 保存中 2 保存成功
+  const saveMutation = useMutation({
+    mutationFn: saveKCYPOrder,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [orderKey, actionId],
+      })
+      setSaveState(2)
+    },
+  })
+
+  const { run: save } = useDebounceFn(
+    async () => {
+      setSaveState(1)
+      saveMutation.mutate({
+        ...orderData,
+        extra: JSON.stringify({
+          pictures: checkIds.map((e) => ({
+            id: e,
+          })),
+        }),
+      })
+    },
+    { wait: 3_000, trailing: true },
+  )
 
   if (isLoading || !data || !actionDetail || !orderData || orderLoading) {
     return <AppSpin />
@@ -281,50 +221,71 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
             <Spin spinning={isRefetching}>
               <div className="p-3">
                 <div className="py-3 bg-ground-3 rounded">
-                  <p className="px-3 flex gap-3">
-                    <Checkbox
-                      indeterminate={
-                        checkIds.length > 0 && checkIds.length < data.length
-                      }
-                      checked={checkIds.length === data.length}
-                      onChange={handleCheckAllChange}
-                    >
-                      全选
-                    </Checkbox>
-
-                    <Suspense fallback={<LoadingOutlined />}>
-                      <IconButton
-                        toolTipProps={{ title: '校验' }}
-                        onClick={handleVerificationClick}
+                  <div className="flex justify-between px-3">
+                    <p className="flex gap-3">
+                      <Checkbox
+                        indeterminate={
+                          checkIds.length > 0 && checkIds.length < data.length
+                        }
+                        checked={checkIds.length === data.length}
+                        onChange={handleCheckAllChange}
                       >
-                        <IconKCCheck />
-                      </IconButton>
-                      {actionType === ActionEnum.KCYP ? (
-                        <NormalVerificationModal
-                          open={shareOpen}
-                          orderData={orderData}
-                          aiResultData={data}
-                          checkResultIds={checkIds}
-                          onClose={() => setShareOpen(false)}
-                        />
-                      ) : (
-                        <XSVerificationModal
-                          open={shareOpen}
-                          orderData={orderData}
-                          aiResultData={data}
-                          checkResultIds={checkIds}
-                          onClose={() => setShareOpen(false)}
-                        />
-                      )}
-                    </Suspense>
+                        全选
+                      </Checkbox>
 
-                    <IconButton
-                      toolTipProps={{ title: '删除' }}
-                      disabled={checkIds.length === 0}
-                    >
-                      <IconDelete />
-                    </IconButton>
-                  </p>
+                      <Suspense fallback={<LoadingOutlined />}>
+                        <IconButton
+                          toolTipProps={{ title: '校验' }}
+                          onClick={handleVerificationClick}
+                        >
+                          <IconKCCheck />
+                        </IconButton>
+                        {shareOpen &&
+                          (actionType === ActionEnum.KCYP ? (
+                            <NormalVerificationModal
+                              actionId={actionId}
+                              open={shareOpen}
+                              orderData={orderData}
+                              aiResultData={data}
+                              checkResultIds={checkIds}
+                              onClose={() => setShareOpen(false)}
+                            />
+                          ) : (
+                            <XSVerificationModal
+                              open={shareOpen}
+                              orderData={orderData}
+                              aiResultData={data}
+                              checkResultIds={checkIds}
+                              onClose={() => setShareOpen(false)}
+                            />
+                          ))}
+                      </Suspense>
+
+                      <IconAsyncButton
+                        toolTipProps={{ title: '删除' }}
+                        disabled={checkIds.length === 0}
+                        onClick={async () => {
+                          await delAIResult(actionId, checkIds)
+                          await refetch()
+                          setCheckIds([])
+                        }}
+                      >
+                        <IconDelete />
+                      </IconAsyncButton>
+                    </p>
+                    {saveState === 0 ? (
+                      <p className="text-orange-600 items-center flex gap-1">
+                        <SyncOutlined />
+                        等待暂存
+                      </p>
+                    ) : saveState === 1 ? (
+                      <p className="text-blue-600  items-center flex gap-1">
+                        <SyncOutlined spin /> 暂存中
+                      </p>
+                    ) : saveState === 2 ? (
+                      <p className="text-green-600">暂存成功</p>
+                    ) : null}
+                  </div>
                   <ConfigProvider
                     theme={{
                       components: {
@@ -342,7 +303,11 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
                         <ul className="px-3 w-full pt-3 flex justify-between flex-wrap gap-y-3 max-h-[408px] overflow-y-auto overflow-x-hidden">
                           {data.map((e) => (
                             <li key={e.id} className="w-[430px]">
-                              <ResultItem data={e} actionType={actionType} />
+                              <AIResultItem
+                                data={e}
+                                actionType={actionType}
+                                carNoCheckMap={carNoCheckMap}
+                              />
                             </li>
                           ))}
                         </ul>

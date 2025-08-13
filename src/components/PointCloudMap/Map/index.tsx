@@ -2,8 +2,7 @@ import { useSize } from 'ahooks'
 import { FC, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { ThreeContext } from '../hooks/useThree'
-// @ts-ignore
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 
 /** 点云地图 */
 const PointCloudMap: FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -101,7 +100,7 @@ const PointCloudMap: FC<{ children: React.ReactNode }> = ({ children }) => {
   }, [size])
   return (
     <ThreeContext.Provider value={{ scene, camera, renderer, controls }}>
-      <div className="h-full w-full" ref={ref}>
+      <div className="size-full" ref={ref}>
         {children}
       </div>
     </ThreeContext.Provider>

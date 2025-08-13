@@ -1,13 +1,18 @@
 import XModal from '@/components/XModal'
 import { DictEnum } from '@/enum/dict'
 import { useAppMsg } from '@/hooks/useAppMsg'
-import useWatch from '@/hooks/useWatch'
-import { commitKYCPOrder } from '@/service/modules/action/kcyp'
+import { commitKYCPOrder, saveKCYPOrder } from '@/service/modules/action/kcyp'
 import { useDictOptions } from '@/store/useDict.store'
 import { idCardReg, phoneReg } from '@/constant/regExp'
-import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons'
+import {
+  CheckCircleFilled,
+  CloseCircleFilled,
+  SyncOutlined,
+} from '@ant-design/icons'
 import { Form, Image, Input, Select } from 'antd'
 import { uniqWith } from 'lodash'
+import { shouldJson } from '@/utils/json'
+import { useDebounceFn } from 'ahooks'
 
 const HeadLine: FC<{ title: string; suc?: boolean }> = memo(
   ({ title, suc }) => {
@@ -57,6 +62,7 @@ const typeMap = new Map<string, string>([
 ])
 
 type PropsType = {
+  actionId: string
   open: boolean
   orderData: API_KCYP.domain.OrderRecord
   aiResultData: API_ACTION.domain.AIResultRecord[]
@@ -66,7 +72,22 @@ type PropsType = {
 
 /** 快处易赔 校验信息 */
 const KCYPNormalVerificationModal: FC<PropsType> = memo(
-  ({ open, orderData, aiResultData, checkResultIds, onClose }) => {
+  ({ open, orderData, aiResultData, checkResultIds, actionId, onClose }) => {
+    const [form] = Form.useForm()
+
+    // 从暂存工单中获取已选择的图片的类型
+    useEffect(() => {
+      const pictures = shouldJson(orderData.extra)?.pictures
+      if (!pictures) {
+        return
+      }
+      pictures?.forEach((e, i) => {
+        if (e.id === checkResultIds[i]) {
+          form.setFieldValue(`img${i}`, e.imageType)
+        }
+      })
+    }, [orderData])
+
     // 图片校验结果 和 车牌号选项
     const [checkResults, plateNoOptions] = useMemo(() => {
       const resultMap = new Map(aiResultData.map((item) => [item.id, item]))
@@ -100,25 +121,17 @@ const KCYPNormalVerificationModal: FC<PropsType> = memo(
     const accidentTypeOptions = useDictOptions(DictEnum.KCYP_ACCIDENT_TYPE)
     const firstSceneOptions = useDictOptions(DictEnum.KCYP_FIRSTSCENE)
 
-    const [form] = Form.useForm()
-
-    useWatch(
-      orderData,
-      (newData) => {
-        queueMicrotask(() => {
-          if (!newData) {
-            return
-          }
-          form.setFieldsValue({
-            ...newData,
-            caseHapTime: dayjs(newData?.caseHapTime),
-            brokenPart: newData?.brokenPart?.split(','),
-            otherBrokenPart: newData?.otherBrokenPart?.split(','),
-          })
-        })
-      },
-      true,
-    )
+    useEffect(() => {
+      if (!orderData) {
+        return
+      }
+      form.setFieldsValue({
+        ...orderData,
+        caseHapTime: dayjs(orderData?.caseHapTime),
+        brokenPart: orderData?.brokenPart?.split(','),
+        otherBrokenPart: orderData?.otherBrokenPart?.split(','),
+      })
+    }, [orderData])
 
     const [commitResMap, setCommitResMap] = useState(
       new Map<
@@ -182,18 +195,90 @@ const KCYPNormalVerificationModal: FC<PropsType> = memo(
       }
     })
 
+    const [saveState, setSaveState] = useState(-1) // 0 未保存 1 保存中 2 保存成功
+    const saveMutation = useMutation({
+      mutationFn: saveKCYPOrder,
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['getKCYPOrder', actionId],
+        })
+        setSaveState(2)
+      },
+    })
+
+    const { run: save } = useDebounceFn(
+      async () => {
+        // await form.validateFields()
+        const values = form.getFieldsValue()
+        const { caseHapTime, brokenPart, otherBrokenPart } = values
+        const caseHapTimeFormat = dayjs(caseHapTime).valueOf()
+        setSaveState(1)
+        saveMutation.mutate({
+          ...orderData,
+          ...values,
+          brokenPart: brokenPart.join(','),
+          otherBrokenPart: otherBrokenPart.join(','),
+          caseHapTime: caseHapTimeFormat,
+          extra: JSON.stringify({
+            pictures: checkResults.map((e, i) => ({
+              id: e.id,
+              imageType: values[`img${i}`],
+            })),
+          }),
+        })
+      },
+      { wait: 3_000, trailing: true },
+    )
+
+    const handleValuesChange = async () => {
+      setSaveState(0)
+      save()
+    }
+
+    const { t } = useTranslation()
+
+    const handleCarNoChange = (
+      carNo: string,
+      carTypeFiled: string,
+      carColorFiled: string,
+    ) => {
+      if (!carNo) {
+        return
+      }
+      const found = checkResults.find((e) => e.plateNo === carNo)
+      if (found) {
+        form.setFieldValue(carTypeFiled, found.plateType)
+        form.setFieldValue(carColorFiled, found.plateColor)
+      }
+    }
+
     return (
       <XModal
         open={open}
         title="校验信息"
         width={760}
         confirmLoading={confirmLoading}
+        confirmTitle={t('modal.submit')}
         onClose={onClose}
         onConfirm={handleConfirm}
       >
-        <p className="text-fore">校验以下信息后发送至大数据中心</p>
+        <div className="text-fore flex justify-between">
+          <p>校验以下信息后发送至大数据中心</p>
+          {saveState === 0 ? (
+            <p className="text-orange-600 items-center flex gap-1">
+              <SyncOutlined />
+              等待暂存
+            </p>
+          ) : saveState === 1 ? (
+            <p className="text-blue-600  items-center flex gap-1">
+              <SyncOutlined spin /> 暂存中
+            </p>
+          ) : saveState === 2 ? (
+            <p className="text-green-600">暂存成功</p>
+          ) : null}
+        </div>
         <div className="my-3 text-white max-h-[456px] overflow-y-auto">
-          <Form form={form}>
+          <Form form={form} onValuesChange={handleValuesChange}>
             <HeadLine
               title="一方当事人信息"
               suc={commitResMap.get('CARD_CHECK')?.success}
@@ -272,7 +357,13 @@ const KCYPNormalVerificationModal: FC<PropsType> = memo(
               items={[
                 '一方车牌号码',
                 <Form.Item name="carNo" noStyle>
-                  <Select className="w-full" options={plateNoOptions} />
+                  <Select
+                    className="w-full"
+                    options={plateNoOptions}
+                    onChange={(v) =>
+                      handleCarNoChange(v, 'carType', 'carColor')
+                    }
+                  />
                 </Form.Item>,
                 '一方车牌种类',
                 <Form.Item name="carType" noStyle>
@@ -299,7 +390,13 @@ const KCYPNormalVerificationModal: FC<PropsType> = memo(
               items={[
                 '另一方车牌号码',
                 <Form.Item name="otherCarNo" noStyle>
-                  <Select className="w-full" options={plateNoOptions} />
+                  <Select
+                    className="w-full"
+                    options={plateNoOptions}
+                    onChange={(v) =>
+                      handleCarNoChange(v, 'otherCarType', 'otherCarColor')
+                    }
+                  />
                 </Form.Item>,
                 '另一方车牌种类',
                 <Form.Item name="otherCarType" noStyle>

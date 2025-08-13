@@ -17,6 +17,10 @@ const Marker: FC<PropsType> = ({ position, image, size = 1, onClick }) => {
   const clickRef = useLatest(onClick)
 
   const handleClick = (event: MouseEvent) => {
+    if (!camera) {
+      return
+    }
+
     const raycaster = new THREE.Raycaster()
     // 鼠标控制对象
     const mouse = new THREE.Vector2()

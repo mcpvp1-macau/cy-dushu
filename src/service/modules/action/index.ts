@@ -62,6 +62,12 @@ export const updAIResult = (data: {
   plateNo?: string
   plateColor?: string
   resultType?: string
+  plateType?: string
 }) => {
   return serverJingqi.post('/result/update', data)
+}
+
+/** 事故照片检测结果删除 */
+export const delAIResult = (actionId: string, ids: string[]) => {
+  return serverJingqi.post('/result/delete', { actionId, ids })
 }

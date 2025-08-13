@@ -17,6 +17,10 @@ const PointCloudLayer: FC<PointCloudLayerProps> = ({ url, onClick }) => {
   const clickRef = useLatest(onClick)
 
   const handleClick = (event: MouseEvent) => {
+    if (!camera) {
+      return
+    }
+
     const raycaster = new THREE.Raycaster()
     // 鼠标控制对象
     const mouse = new THREE.Vector2()
@@ -149,7 +153,7 @@ const PointCloudLayer: FC<PointCloudLayerProps> = ({ url, onClick }) => {
         camera.lookAt(center)
 
         // 创建 OrbitControls 并设置点云中心为锚定点
-        if (renderer) {
+        if (renderer && controls) {
           //   const controls = new OrbitControls(camera, renderer.domElement)
           controls.target.copy(center) // 设置控制器的目标点为点云中心
           controls.enableDamping = true // 启用阻尼效果

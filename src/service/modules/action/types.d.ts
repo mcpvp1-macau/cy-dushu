@@ -39,6 +39,7 @@ declare namespace API_ACTION {
       actionItemRecordId: number
       plateNo: string
       plateColor: string
+      plateType: string
       source: string
       longitude: number
       latitude: number
