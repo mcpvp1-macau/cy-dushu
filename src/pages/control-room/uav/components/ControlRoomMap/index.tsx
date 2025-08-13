@@ -61,9 +61,9 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
   })
 
   // 二维重建 ---------------------------------------------------------------------
-  useQueryHistoryReconstruction2DProcessedResult({
-    deviceId: deviceId,
-  })
+  // useQueryHistoryReconstruction2DProcessedResult({
+  //   deviceId: deviceId,
+  // })
 
   const delayed = useDelayState(1000)
 
