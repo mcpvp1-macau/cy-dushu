@@ -5,7 +5,7 @@ import MapSpaceConfig from './MapSpaceConfig'
 import { useAsyncEffect } from 'ahooks'
 import AppEmpty from '@/components/AppEmpty'
 import { emtpyArray } from '@/constant/data'
-
+import { useMapLayerAndOverlayConfigStore } from '@/store/map/useLayerAndOverlay.store'
 type PropsType = {
   searchKw?: string
 }
@@ -30,6 +30,12 @@ const MapSpaceListConfig: FC<PropsType> = memo((props) => {
     }
   }, [data])
 
+  const activeSpaceIds = useMapLayerAndOverlayConfigStore(
+    (s) => s.activeSpaceIds,
+  )
+  const updateActiveSpaceIds = useMapLayerAndOverlayConfigStore(
+    (s) => s.updateActiveSpaceIds,
+  )
   const renderData = useMemo(() => {
     return (
       data?.filter((e) => e.spaceName.includes(props.searchKw ?? '')) ||
@@ -46,7 +52,19 @@ const MapSpaceListConfig: FC<PropsType> = memo((props) => {
       {renderData.length > 0 ? (
         <div className="flex flex-col gap-3">
           {renderData.map((e) => (
-            <MapSpaceConfig key={e.id} data={e} />
+            <MapSpaceConfig
+              key={e.id}
+              data={e}
+              checked={activeSpaceIds.has(e.spaceId)}
+              onChange={(checked) => {
+                if (checked) {
+                  updateActiveSpaceIds(new Set([...activeSpaceIds, e.spaceId]))
+                } else {
+                  activeSpaceIds.delete(e.spaceId)
+                  updateActiveSpaceIds(new Set(activeSpaceIds))
+                }
+              }}
+            />
           ))}
         </div>
       ) : (

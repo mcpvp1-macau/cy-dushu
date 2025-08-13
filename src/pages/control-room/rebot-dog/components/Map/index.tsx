@@ -22,18 +22,18 @@ const RebotDogMap: FC<unknown> = memo(() => {
     <PointCloudMap>
       {/* <PointCloudLayer url="/pcd_data/lab_avia.pcd" /> */}
       <PointCloudLayer
-        url={activeMapUrl || '/pcd_data/output_ascii_deskewed.pcd'}
+        url={activeMapUrl || '/pcd_data/test-2.pcd'}
         onClick={() => {}}
       />
       <Marker position={{ x: 0, y: 0, z: 0 }} image={icon} onClick={() => {}} />
       <Polyline
         positions={[
           { x: 0, y: 0, z: 0 },
-          { x: 1, y: 1, z: 0 },
-          { x: -2, y: 2, z: 0 },
-          { x: 2, y: 2, z: 0 },
-          { x: 2, y: -2, z: 0 },
-          { x: -2, y: -2, z: 0 },
+          { x: 5, y: 0, z: 0 },
+          // { x: -2, y: 2, z: 0 },
+          // { x: 2, y: 2, z: 0 },
+          // { x: 2, y: -2, z: 0 },
+          // { x: -2, y: -2, z: 0 },
         ]}
         color="#ff0000"
       />

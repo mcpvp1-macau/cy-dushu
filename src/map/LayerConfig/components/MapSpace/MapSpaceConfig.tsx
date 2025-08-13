@@ -4,7 +4,6 @@ import IconButton from '@/components/ui/button/IconButton'
 import FormModal from '@/components/XForm/Modal'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { delSpace, updSpace } from '@/service/modules/layer_overlay'
-import { useMapLayerAndOverlayConfigStore } from '@/store/map/useLayerAndOverlay.store'
 import { fileToBase64 } from '@/utils/base64'
 import { shouldJson } from '@/utils/json'
 import { LoadingOutlined } from '@ant-design/icons'
@@ -14,9 +13,12 @@ import useAddMapFormItems from '../../hooks/useAddMapFormItems'
 
 type PropsType = {
   data: API_LAYER_OVERLAY.domain.SpaceItem
+  checked?: boolean
+  onChange?: (checked: boolean) => void
+  onRefresh?: () => void
 }
 
-const MapSpaceConfig: FC<PropsType> = memo(({ data }) => {
+const MapSpaceConfig: FC<PropsType> = memo(({ data, checked, onChange, onRefresh }) => {
   const spaceConfig = useMemo(() => shouldJson(data.spaceConfig), [data])
   const queryClient = useQueryClient()
   const [loading, setLoading] = useState(false)
@@ -34,6 +36,7 @@ const MapSpaceConfig: FC<PropsType> = memo(({ data }) => {
       await queryClient.invalidateQueries({
         queryKey: ['getSpaceList'],
       })
+      onRefresh?.()
     } finally {
       setLoading(false)
     }
@@ -93,15 +96,9 @@ const MapSpaceConfig: FC<PropsType> = memo(({ data }) => {
     await queryClient.invalidateQueries({
       queryKey: ['getSpaceList'],
     })
+    onRefresh?.()
     setFalse()
   }
-
-  const activeSpaceIds = useMapLayerAndOverlayConfigStore(
-    (s) => s.activeSpaceIds,
-  )
-  const updateActiveSpaceIds = useMapLayerAndOverlayConfigStore(
-    (s) => s.updateActiveSpaceIds,
-  )
 
   return (
     <div
@@ -112,18 +109,12 @@ const MapSpaceConfig: FC<PropsType> = memo(({ data }) => {
         src={spaceConfig?.mapPerviewUrl?.[0].thumbUrl}
         className="h-full w-full object-cover select-none pointer-events-none"
       />
-
       <div className="absolute bottom-0 left-0 right-0 px-3 bg-ground-1 bg-opacity-70 backdrop-blur flex justify-between">
         <p>
           <Checkbox
-            checked={activeSpaceIds.has(data.spaceId)}
+            checked={checked}
             onChange={(e) => {
-              if (e.target.checked) {
-                updateActiveSpaceIds(new Set([...activeSpaceIds, data.spaceId]))
-              } else {
-                activeSpaceIds.delete(data.spaceId)
-                updateActiveSpaceIds(new Set(activeSpaceIds))
-              }
+              onChange?.(e.target.checked)
             }}
           >
             {data.spaceName}
