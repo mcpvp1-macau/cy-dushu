@@ -16,6 +16,7 @@ const ShowDefaultArea: FC<PropsType> = ({ overlay, ocrc }) => {
     return (
       <ShowCircle
         key={overlay.overlayId}
+        overlayExtType={'flightArea'}
         primitives={ocrc.orderPrimitives[LayerEnum.flightArea]}
         overlay={overlay}
         isGround={false}
@@ -30,6 +31,7 @@ const ShowDefaultArea: FC<PropsType> = ({ overlay, ocrc }) => {
     return (
       <ShowPolygon
         key={overlay.overlayId}
+        overlayExtType={'flightArea'}
         primitives={ocrc.orderPrimitives[LayerEnum.flightArea]}
         overlay={overlay}
         isGround={false}
@@ -41,6 +43,7 @@ const ShowDefaultArea: FC<PropsType> = ({ overlay, ocrc }) => {
     return (
       <ShowFan
         key={overlay.overlayId}
+        overlayExtType={'flightArea'}
         primitives={ocrc.orderPrimitives[LayerEnum.flightArea]}
         overlay={overlay}
         isGround={false}

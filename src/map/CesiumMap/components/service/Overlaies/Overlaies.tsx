@@ -66,6 +66,7 @@ const LayerOverlaies: FC<PropsType> = memo(() => {
               return (
                 <ShowCircle
                   key={overlay.overlayId}
+                  overlayExtType={'overlay'}
                   primitives={primitives}
                   overlay={overlay}
                 />
@@ -78,6 +79,7 @@ const LayerOverlaies: FC<PropsType> = memo(() => {
               return (
                 <ShowPolygon
                   key={overlay.overlayId}
+                  overlayExtType={'overlay'}
                   primitives={primitives}
                   overlay={overlay}
                 />
@@ -87,6 +89,7 @@ const LayerOverlaies: FC<PropsType> = memo(() => {
               return (
                 <ShowFan
                   key={overlay.overlayId}
+                  overlayExtType={'overlay'}
                   primitives={primitives}
                   overlay={overlay}
                 />

@@ -8,7 +8,7 @@ type PropsType = {
   primitives: Cesium.PrimitiveCollection
   positions: number[][] // [[111,111,111], [222,222,222]]
   asynchronous: boolean
-  isGround: boolean
+  isGround?: boolean
   hide?: 0 | 1
   fill?: string
   stroke?: string
@@ -25,7 +25,7 @@ const OverlayFan: FC<PropsType> = memo((props) => {
     primitives,
     positions,
     asynchronous,
-    isGround,
+    isGround = true,
     hide = false,
     fill = '#4c90f0',
     stroke = '#4c90f0',

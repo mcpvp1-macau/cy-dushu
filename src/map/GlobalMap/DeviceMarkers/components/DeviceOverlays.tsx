@@ -4,12 +4,16 @@ import { CotType } from '@/store/map/useDraw.store'
 import ShowCircle from '@/map/CesiumMap/components/service/Overlaies/ShowCircle'
 import ShowPolygon from '@/map/CesiumMap/components/service/Overlaies/ShowPolygon'
 import ShowFan from '@/map/CesiumMap/components/service/Overlaies/ShowFan'
+import { useCesium } from 'resium'
 
 type PropsType = {
   deviceId: string
 }
 
 const DeviceOverlays: FC<PropsType> = memo(({ deviceId }) => {
+  const { viewer } = useCesium()
+  const primitives = useMemo(() => viewer?.scene.primitives, [viewer])
+
   const deviceOverlays = useDeviceOverlaiesStore(
     (s) => s.deviceOverlays[deviceId] ?? emtpyArray,
   )
@@ -20,6 +24,7 @@ const DeviceOverlays: FC<PropsType> = memo(({ deviceId }) => {
         <ShowCircle
           key={overlay.overlayId}
           overlayExtType={'deviceOverlay'}
+          primitives={primitives}
           overlay={overlay}
         />
       )
@@ -32,6 +37,7 @@ const DeviceOverlays: FC<PropsType> = memo(({ deviceId }) => {
         <ShowPolygon
           key={overlay.overlayId}
           overlayExtType={'deviceOverlay'}
+          primitives={primitives}
           overlay={overlay}
         />
       )
@@ -41,6 +47,7 @@ const DeviceOverlays: FC<PropsType> = memo(({ deviceId }) => {
         <ShowFan
           key={overlay.overlayId}
           overlayExtType={'deviceOverlay'}
+          primitives={primitives}
           overlay={overlay}
         />
       )

@@ -20,6 +20,7 @@ const RenderOverlays: FC<PropsType> = ({ overlays, ocrc }) => {
           return (
             <ShowCircle
               key={overlay.overlayId}
+              overlayExtType={'overlay'}
               primitives={ocrc.orderPrimitives[LayerEnum.overlay]}
               overlay={overlay}
               isGround={false}
@@ -34,6 +35,7 @@ const RenderOverlays: FC<PropsType> = ({ overlays, ocrc }) => {
           return (
             <ShowPolygon
               key={overlay.overlayId}
+              overlayExtType={'overlay'}
               primitives={ocrc.orderPrimitives[LayerEnum.overlay]}
               overlay={overlay}
               isGround={false}
@@ -45,6 +47,7 @@ const RenderOverlays: FC<PropsType> = ({ overlays, ocrc }) => {
           return (
             <ShowFan
               key={overlay.overlayId}
+              overlayExtType={'overlay'}
               primitives={ocrc.orderPrimitives[LayerEnum.overlay]}
               overlay={overlay}
               isGround={false}
