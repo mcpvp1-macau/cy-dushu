@@ -1,14 +1,15 @@
-import { FC } from 'react'
+import { FC, useContext } from 'react'
 import ShowNoFlyArea from './ShowNoFlyArea'
 import ShowDefaultArea from './ShowDefaultArea'
-import OrderCesiumRenderController from '@/utils/cesium/OrderCesiumRenderController'
+import { ARSceneCesiumContext } from '../../context'
 
 type PropsType = {
   overlays: API_LAYER_OVERLAY.domain.Overlay[]
-  ocrc: OrderCesiumRenderController
 }
 
-const ShowFlightArea: FC<PropsType> = ({ overlays, ocrc }) => {
+const ShowFlightArea: FC<PropsType> = ({ overlays }) => {
+  const { ocrc } = useContext(ARSceneCesiumContext)
+
   return (
     <>
       {overlays.map((overlay) => {
@@ -17,7 +18,7 @@ const ShowFlightArea: FC<PropsType> = ({ overlays, ocrc }) => {
             <ShowNoFlyArea
               key={overlay.overlayId}
               overlay={overlay}
-              ocrc={ocrc}
+              ocrc={ocrc!}
             />
           )
         }
@@ -25,7 +26,7 @@ const ShowFlightArea: FC<PropsType> = ({ overlays, ocrc }) => {
           <ShowDefaultArea
             key={overlay.overlayId}
             overlay={overlay}
-            ocrc={ocrc}
+            ocrc={ocrc!}
           />
         )
       })}

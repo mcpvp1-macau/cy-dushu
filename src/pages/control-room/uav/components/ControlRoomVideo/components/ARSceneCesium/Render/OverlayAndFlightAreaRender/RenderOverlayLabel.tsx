@@ -1,6 +1,5 @@
-import { FC, memo, useEffect, useRef } from 'react'
+import { FC, memo, useContext, useEffect, useRef } from 'react'
 import * as Cesium from 'cesium'
-import OrderCesiumRenderController from '@/utils/cesium/OrderCesiumRenderController'
 import CollisionCheckLabelCollection, {
   ExtendLabel,
 } from '@/utils/customPrimitive/CollisionCheckLabelCollection'
@@ -8,20 +7,22 @@ import { getCenter } from '@/utils/customPrimitive/OverlayPrimitive'
 import { LabelLevelEnum, LayerEnum, LabelRelateEnum } from '../Enum'
 import { attempt } from 'lodash'
 import { shouldJson } from '@/utils/json'
+import { ARSceneCesiumContext } from '../context'
 
 type PropsType = {
   overlays: API_LAYER_OVERLAY.domain.Overlay[]
-  ocrc: OrderCesiumRenderController
 }
 
 /**渲染标绘中的名称 */
-const RenderOverlayLabel: FC<PropsType> = ({ overlays, ocrc }) => {
+const RenderOverlayLabel: FC<PropsType> = ({ overlays }) => {
+  const { ocrc } = useContext(ARSceneCesiumContext)
+
   const preAddedLabels = useRef<ExtendLabel[]>([])
 
   useEffect(() => {
     const labelCollection: CollisionCheckLabelCollection =
-      ocrc.orderPrimitives[LayerEnum.label].get(LabelRelateEnum.label) ||
-      ocrc.orderPrimitives[LayerEnum.label].add(
+      ocrc!.orderPrimitives[LayerEnum.label].get(LabelRelateEnum.label) ||
+      ocrc!.orderPrimitives[LayerEnum.label].add(
         new CollisionCheckLabelCollection(10),
       )
     labelCollection.renderCount = 0

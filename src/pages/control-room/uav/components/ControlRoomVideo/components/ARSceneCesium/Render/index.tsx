@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import OrderCesiumRenderController from '@/utils/cesium/OrderCesiumRenderController'
 import { LayerEnum, LabelRelateEnum } from './Enum'
 import CollisionCheckLabelCollection from '@/utils/customPrimitive/CollisionCheckLabelCollection'
+import { ARSceneCesiumContext } from './context'
 import WaylineRender from './WaylineRender'
 
 /**只负责渲染 */
@@ -27,7 +28,13 @@ const ARSceneCesiumRender: FC = () => {
             labelLevelCollection
           for (let j = 0; j < LabelRelateEnum.numberOfLabelRelate; j++) {
             if (j === LabelRelateEnum.label) {
-              labelLevelCollection.add(new CollisionCheckLabelCollection(10))
+              labelLevelCollection.add(
+                new CollisionCheckLabelCollection(
+                  10,
+                  false,
+                  window.devicePixelRatio,
+                ),
+              )
             } else if (j === LabelRelateEnum.poiMarker) {
               labelLevelCollection.add(new Cesium.BillboardCollection())
             } else if (j === LabelRelateEnum.overlayPoint) {
@@ -54,11 +61,11 @@ const ARSceneCesiumRender: FC = () => {
   }
 
   return (
-    <>
-      <OverlayAndFlightAreaRender ocrc={ocrc} />
-      <GeodataRender ocrc={ocrc} />
-      <WaylineRender ocrc={ocrc} />
-    </>
+    <ARSceneCesiumContext.Provider value={{ viewer, ocrc }}>
+      <OverlayAndFlightAreaRender />
+      <GeodataRender />
+      <WaylineRender />
+    </ARSceneCesiumContext.Provider>
   )
 }
 

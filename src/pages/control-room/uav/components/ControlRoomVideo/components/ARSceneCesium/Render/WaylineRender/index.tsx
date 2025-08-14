@@ -1,20 +1,19 @@
 import useMixARStore from '@/store/control-room/useMixAR.store'
 import useARSettingStore from '@/store/setting/useARSetting.store'
-import OrderCesiumRenderController from '@/utils/cesium/OrderCesiumRenderController'
 import WalylinePrimitive from '@/utils/customPrimitive/WaylinePrimitive'
 import { attempt } from 'lodash'
 import { LayerEnum } from '../Enum'
 import * as Cesium from 'cesium'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
+import { ARSceneCesiumContext } from '../context'
+import { useContext } from 'react'
 
-type PropsType = {
-  ocrc: OrderCesiumRenderController
-}
+const WaylineRender = () => {
+  const { ocrc } = useContext(ARSceneCesiumContext)
 
-const WaylineRender: FC<PropsType> = ({ ocrc }) => {
   const airpointPositions = useMixARStore((s) => s.airpointPositions)
   const positions = useMemo<[number, number, number][]>(
-    () => airpointPositions.map((e) => [e.pointX, e.pointY, e.pointZ - 15]),
+    () => airpointPositions.map((e) => [e.pointX, e.pointY, e.pointZ - 10]),
     [airpointPositions],
   )
 
@@ -32,13 +31,13 @@ const WaylineRender: FC<PropsType> = ({ ocrc }) => {
       indicatorSpace: 1200,
     })
 
-    ocrc.orderPrimitives[LayerEnum.wayline].add(walylinePrimitive)
+    ocrc!.orderPrimitives[LayerEnum.wayline].add(walylinePrimitive)
 
     setWaylinePrimitive(walylinePrimitive)
 
     return () => {
       attempt(() => {
-        ocrc.orderPrimitives[LayerEnum.wayline].remove(waylinePrimitive)
+        ocrc!.orderPrimitives[LayerEnum.wayline].remove(waylinePrimitive)
       })
       setWaylinePrimitive(null)
     }

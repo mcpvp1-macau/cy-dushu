@@ -1,6 +1,5 @@
-import { FC, memo, useEffect, useRef } from 'react'
+import { FC, memo, useContext, useEffect, useRef } from 'react'
 import * as Cesium from 'cesium'
-import OrderCesiumRenderController from '@/utils/cesium/OrderCesiumRenderController'
 import CollisionCheckLabelCollection, {
   ExtendLabel,
 } from '@/utils/customPrimitive/CollisionCheckLabelCollection'
@@ -8,23 +7,24 @@ import useARSettingStore from '@/store/setting/useARSetting.store'
 import { LabelLevelEnum, LayerEnum, LabelRelateEnum } from '../Enum'
 import { attempt } from 'lodash'
 import { shouldJson } from '@/utils/json'
+import { ARSceneCesiumContext } from '../context'
 
 type PropsType = {
   points: API_LAYER_OVERLAY.domain.Overlay[]
-  ocrc: OrderCesiumRenderController
 }
 
 /**渲染标绘中的点位 */
-const RenderPoints: FC<PropsType> = ({ points, ocrc }) => {
+const RenderPoints: FC<PropsType> = ({ points }) => {
+  const { ocrc } = useContext(ARSceneCesiumContext)
+
   const preHandler = useRef<(labels: ExtendLabel[]) => void>(() => {})
   const preAddedLabels = useRef<ExtendLabel[]>([])
 
   useEffect(() => {
-    const labelCollection: CollisionCheckLabelCollection = ocrc.orderPrimitives[
-      LayerEnum.label
-    ].get(LabelRelateEnum.label)
+    const labelCollection: CollisionCheckLabelCollection =
+      ocrc!.orderPrimitives[LayerEnum.label].get(LabelRelateEnum.label)
     const pointPrimitiveCollection: Cesium.PointPrimitiveCollection =
-      ocrc.orderPrimitives[LayerEnum.label].get(LabelRelateEnum.overlayPoint)
+      ocrc!.orderPrimitives[LayerEnum.label].get(LabelRelateEnum.overlayPoint)
     labelCollection.renderCount = 0
 
     const addedLabels: ExtendLabel[] = []

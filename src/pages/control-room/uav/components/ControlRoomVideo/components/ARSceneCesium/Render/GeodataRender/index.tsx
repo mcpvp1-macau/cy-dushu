@@ -2,19 +2,17 @@ import useMixARStore from '@/store/control-room/useMixAR.store'
 import useARSettingStore from '@/store/setting/useARSetting.store'
 import * as Cesium from 'cesium'
 import { Feature, Point, GeoJsonProperties } from 'geojson'
-import OrderCesiumRenderController from '@/utils/cesium/OrderCesiumRenderController'
 import { LabelLevelEnum, LayerEnum, LabelRelateEnum } from '../Enum'
 import CollisionCheckLabelCollection, {
   ExtendLabel,
 } from '@/utils/customPrimitive/CollisionCheckLabelCollection'
 import { getPOIIcon } from './icon-map'
 import { attempt } from 'lodash'
+import { ARSceneCesiumContext } from '../context'
 
-type PropsType = {
-  ocrc: OrderCesiumRenderController
-}
+const GeodataRender = () => {
+  const { ocrc } = useContext(ARSceneCesiumContext)
 
-const GeodataRender: FC<PropsType> = ({ ocrc }) => {
   const aois = useMixARStore((s) => s.aois)
   const roads = useMixARStore((s) => s.roads)
   const pois = useMixARStore((s) => s.pois)
@@ -26,14 +24,14 @@ const GeodataRender: FC<PropsType> = ({ ocrc }) => {
   const preLabelRef = useRef<ExtendLabel[]>([])
 
   useEffect(() => {
-    const baseAoiPrimitiveCollection = ocrc.orderPrimitives[LayerEnum.baseAoi]
-    const buildingAoiPrimitiveCollection = ocrc.orderPrimitives[LayerEnum.build]
-    const roadPrimitiveCollection = ocrc.orderPrimitives[LayerEnum.road]
-    const labelCollection: CollisionCheckLabelCollection = ocrc.orderPrimitives[
-      LayerEnum.label
-    ].get(LabelRelateEnum.label)
+    const baseAoiPrimitiveCollection = ocrc!.orderPrimitives[LayerEnum.baseAoi]
+    const buildingAoiPrimitiveCollection =
+      ocrc!.orderPrimitives[LayerEnum.build]
+    const roadPrimitiveCollection = ocrc!.orderPrimitives[LayerEnum.road]
+    const labelCollection: CollisionCheckLabelCollection =
+      ocrc!.orderPrimitives[LayerEnum.label].get(LabelRelateEnum.label)
     const poiMarkerCollection: Cesium.BillboardCollection =
-      ocrc.orderPrimitives[LayerEnum.label].get(LabelRelateEnum.poiMarker)
+      ocrc!.orderPrimitives[LayerEnum.label].get(LabelRelateEnum.poiMarker)
     labelCollection.renderCount = 0
 
     const attachmentPois: Feature<Point, GeoJsonProperties>[] = []

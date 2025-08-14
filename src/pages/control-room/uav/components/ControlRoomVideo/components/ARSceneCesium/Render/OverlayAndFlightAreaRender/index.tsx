@@ -1,17 +1,11 @@
 import useARSettingStore from '@/store/setting/useARSetting.store'
-import OrderCesiumRenderController from '@/utils/cesium/OrderCesiumRenderController'
-import { LayerEnum } from '../Enum'
 import { useEffect } from 'react'
 import RenderOverlays from './RenderOverlays'
 import RenderFlightArea from './RenderFlightArea'
 import RenderPoints from './RenderPoints'
 import useMixARStore from '@/store/control-room/useMixAR.store'
 
-type PropsType = {
-  ocrc: OrderCesiumRenderController
-}
-
-const OverlayAndFlightAreaRender: FC<PropsType> = ({ ocrc }) => {
+const OverlayAndFlightAreaRender = () => {
   const arSetting = useARSettingStore((s) => s)
   const overlaies = useMixARStore((s) => s.overlaies)
 
@@ -84,9 +78,9 @@ const OverlayAndFlightAreaRender: FC<PropsType> = ({ ocrc }) => {
 
   return (
     <>
-      <RenderOverlays overlays={showingAreas} ocrc={ocrc} />
-      <RenderFlightArea overlays={showingFlightAreas} ocrc={ocrc} />
-      <RenderPoints points={points} ocrc={ocrc} />
+      <RenderOverlays overlays={showingAreas} />
+      <RenderFlightArea overlays={showingFlightAreas} />
+      <RenderPoints points={points} />
     </>
   )
 }
