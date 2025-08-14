@@ -304,7 +304,7 @@ const DebugState = memo(() => {
           tooltipProps={{
             title: t('common.debug'),
           }}
-          destroyPopupOnHide
+          destroyOnHidden
           popupRender={() => (
             <ScrollArea className="max-h-[80vh] text-xs">
               <pre>

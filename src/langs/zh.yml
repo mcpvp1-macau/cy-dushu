@@ -711,10 +711,14 @@ wayline:
             title: 蜂群航线
           rebotDog:
             title: 巡逻路线
+          pointCloud3D:
+            title: 点云路线
       uavType:
         label: 飞行器型号
       gimbalType:
         label: 负载型号
+      cloud3D:
+        label: 地图选择
     title: 创建航线
   waylineConfig:
     title: 航线设置

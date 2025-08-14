@@ -719,10 +719,14 @@ wayline:
             title: Swarm Wayline
           rebotDog:
             title: RebotDog Wayline
+          pointCloud3D:
+            title: Cloud3D Wayline
       uavType:
         label: UAV Model
       gimbalType:
         label: Gimbal Model
+      cloud3D:
+        label: Map
     title: Create Wayline
   waylineConfig:
     title: Wayline

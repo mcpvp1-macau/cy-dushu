@@ -3,9 +3,10 @@ import { FC, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { ThreeContext } from '../hooks/useThree'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import { attempt } from 'lodash'
 
 /** 点云地图 */
-const PointCloudMap: FC<{ children: React.ReactNode }> = ({ children }) => {
+const PointCloudMap: FC<{ children?: React.ReactNode }> = ({ children }) => {
   const ref = useRef<HTMLDivElement>(null)
   const [scene, setScene] = useState<THREE.Scene | null>(null)
   const [camera, setCamera] = useState<THREE.Camera | null>(null)
@@ -25,8 +26,9 @@ const PointCloudMap: FC<{ children: React.ReactNode }> = ({ children }) => {
       const renderer = new THREE.WebGLRenderer()
       renderer.setPixelRatio(window.devicePixelRatio)
       renderer.setSize(window.innerWidth, window.innerHeight)
+
       ref.current.appendChild(renderer.domElement)
-      //   renderer.render(scene, camera)
+
       setScene(scene)
       setCamera(camera)
       setRenderer(renderer)
@@ -77,17 +79,20 @@ const PointCloudMap: FC<{ children: React.ReactNode }> = ({ children }) => {
         requestAnimationFrame(animate)
         renderer.render(scene, camera)
       }
+
       animate()
       return () => {
-        ref.current?.removeChild(renderer.domElement)
-        controls.dispose()
-        renderer.dispose()
-
-        // scene.dispose()
+        attempt(() => {
+          ref.current?.removeChild?.(renderer.domElement)
+          controls.dispose()
+          renderer.dispose()
+        })
+        console.log('second')
         // camera.dispose()
       }
     }
   }, [])
+
   useEffect(() => {
     if (size?.width && size?.height && ref.current && camera && renderer) {
       renderer.setSize(size.width, size.height, true)

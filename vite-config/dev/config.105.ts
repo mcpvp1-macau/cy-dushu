@@ -16,6 +16,11 @@ export default mergeConfig(
               '',
             ),
         },
+        '/ditingTanqiServer': {
+          target: 'http://172.21.30.114:8090',
+          rewrite: (path) => path.replace(/^\/ditingTanqiServer/, ''),
+          preserveHeaderKeyCase: true,
+        },
         // 4A 接口
         '/proxyApi': {
           target: 'http://172.21.30.105:31851/',

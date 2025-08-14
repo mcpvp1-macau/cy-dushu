@@ -41,13 +41,13 @@ import useControlRoomTargetInfoStore from '@/store/control-room/useTargetInfo.st
 import { useLocation } from 'react-router'
 import InitialPointFly from './components/InitialPointFly'
 import IconTanQi from '@/assets/icons/jsx/IconTanQi'
-import Tanqi from './components/Tanqi'
 import IconControl from '@/assets/icons/jsx/IconControl'
 import MenuIconEvents from '@/assets/icons/jsx/menus/MenuIconEvents'
 import ControlRoomEventDetail from './components/EventDetail'
 import DeferredRender from '@/components/DeferredRender'
 import ControlParamsSetting from './components/ControlParamsSetting'
 import { useListenRealProcessedResults } from '@/store/map/useReconstruction2DMap.store'
+import DitingTanqi from './components/DitingTanqi/DitingTanqi'
 
 type PropsType = unknown
 
@@ -165,7 +165,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
         </div>
       ),
       overlay: <RightOverlayDetail />,
-      tanqi: <Tanqi />,
+      tanqi: <DitingTanqi />,
       event: <ControlRoomEventDetail />,
     }),
     [productKey, deviceId],
