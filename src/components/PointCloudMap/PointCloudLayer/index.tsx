@@ -1,63 +1,36 @@
-import { FC, useEffect, useRef } from 'react'
-import { PCDLoader } from 'three/addons/loaders/PCDLoader.js'
+import React, { useEffect, useState } from 'react'
+import { PCDLoader } from 'three/examples/jsm/loaders/PCDLoader.js'
 import * as THREE from 'three'
-import { useLatest } from 'ahooks'
-import { useThree } from '@react-three/fiber'
+import { useThree, ThreeElements } from '@react-three/fiber'
 import { shallowEquals } from 'resium'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { OrbitControls } from '@react-three/drei'
 
-type PointCloudLayerProps = {
+type PropsType = {
   url: string
-  onClick?: (point: THREE.Vector3) => void
-}
-/** 点云图层 */
-const PointCloudLayer: FC<PointCloudLayerProps> = ({ url, onClick }) => {
-  // const { scene, camera, renderer, controls } = useThree((state) => state)
-  const { scene, camera, renderer, controls } = useThree(
+} & Omit<ThreeElements['mesh'], 'position'>
+
+const PointCloudLayer: React.FC<PropsType> = ({ url, ...props }) => {
+  const { scene, camera } = useThree(
     (s) => ({
       scene: s.scene,
       camera: s.camera,
-      renderer: s.gl,
-      controls: s.controls,
     }),
     shallowEquals,
   )
 
-  // const [plane, setPlane] = useState<THREE.Mesh | null>(null)
-  const planeRef = useRef<THREE.Mesh | null>(null)
-  const clickRef = useLatest(onClick)
+  const [size, setSize] = useState<{ width: number; height: number }>({
+    width: 10,
+    height: 10,
+  })
 
-  const handleClick = (event: MouseEvent) => {
-    if (!camera) {
-      return
-    }
-
-    const raycaster = new THREE.Raycaster()
-    // 鼠标控制对象
-    const mouse = new THREE.Vector2()
-    // 得到鼠标相对于容器的坐标
-    mouse.x = (event.offsetX / renderer!.domElement.clientWidth) * 2 - 1
-    mouse.y = -(event.offsetY / renderer!.domElement.clientHeight) * 2 + 1
-    // 执行射线检测
-    raycaster.setFromCamera(mouse, camera)
-    if (planeRef.current) {
-      // 判断指定的对象中哪些被该光线照射到了，在arrGroup中筛选
-      const intersects = raycaster.intersectObjects([planeRef.current])
-      // const intersects = raycaster.intersectObjects(scene.children)
-      // 射线涉及到的物体集合
-      if (intersects.length > 0) {
-        const point = intersects[0].point
-        clickRef.current?.(point)
-      }
-    }
-  }
+  const [center, setCenter] = useState<THREE.Vector3>(
+    new THREE.Vector3(0, 0, 0),
+  )
 
   useEffect(() => {
     const loader = new PCDLoader()
     let pointsO: THREE.Points | null = null
-    let plane: THREE.Mesh | null = null
-    let helper: THREE.GridHelper | null = null
-    if (url && scene && camera && renderer) {
+    if (url && scene && camera) {
       loader.load(url, (points) => {
         // 根据z值设置点云颜色
         const positions = points.geometry.attributes.position
@@ -128,31 +101,11 @@ const PointCloudLayer: FC<PointCloudLayerProps> = ({ url, onClick }) => {
         // 计算包围盒
         const box = new THREE.Box3().setFromObject(points)
         const center = box.getCenter(new THREE.Vector3())
-
+        setCenter(center)
         // 计算平面
         const width = box.max.x - box.min.x
         const height = box.max.y - box.min.y
-        const planeGeometry = new THREE.PlaneGeometry(width, height)
-        const planeMaterial = new THREE.ShadowMaterial({
-          color: 0x000000,
-          opacity: 0.2,
-        })
-
-        plane = new THREE.Mesh(planeGeometry, planeMaterial)
-        plane.receiveShadow = true
-        plane.position.set(center.x, center.y, 0.0)
-        scene?.add(plane)
-        // setPlane(plane)
-        planeRef.current = plane
-
-        helper = new THREE.GridHelper(width, height)
-        helper.position.set(center.x, center.y, 0.0)
-        helper.rotation.x = -Math.PI / 2
-        helper.material.opacity = 0.5
-        // helper.material.transparent = true
-        scene.add(helper)
-
-        renderer?.domElement.addEventListener('click', handleClick)
+        setSize({ width, height })
 
         // 计算相机位置 - 移动到点云中心的正上方
         const boxSize = box.getSize(new THREE.Vector3())
@@ -162,34 +115,36 @@ const PointCloudLayer: FC<PointCloudLayerProps> = ({ url, onClick }) => {
         // 设置相机位置在点云中心的正上方
         camera.position.set(center.x, center.y, center.z + distance)
         camera.lookAt(center)
-
-        // 创建 OrbitControls 并设置点云中心为锚定点
-        if (renderer && controls && controls instanceof OrbitControls) {
-          //   const controls = new OrbitControls(camera, renderer.domElement)
-          controls.target.copy(center) // 设置控制器的目标点为点云中心
-          controls.enableDamping = true // 启用阻尼效果
-          controls.dampingFactor = 0.05
-          controls.enableZoom = true
-          controls.enablePan = true
-          controls.enableRotate = true
-          controls.update() // 更新控制器
-        }
       })
     }
     return () => {
-      renderer?.domElement.removeEventListener('click', handleClick)
       if (pointsO) {
         scene?.remove(pointsO)
       }
-      if (plane) {
-        scene?.remove(plane)
-      }
-      if (helper) {
-        scene?.remove(helper)
-      }
     }
-  }, [scene, camera, renderer, url])
-  return null
+  }, [scene, camera, url])
+
+  return (
+    <>
+      <mesh {...props} position={[center.x, center.y, 0]}>
+        <planeGeometry args={[size.width, size.height]} />
+        <meshBasicMaterial color={0x000000} transparent opacity={0.2} />
+      </mesh>
+      <gridHelper
+        args={[size.width, size.height]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[center.x, center.y, 0]}
+      />
+      <OrbitControls
+        target={center}
+        mouseButtons={{
+          LEFT: THREE.MOUSE.RIGHT,
+          MIDDLE: THREE.MOUSE.MIDDLE,
+          RIGHT: THREE.MOUSE.LEFT,
+        }}
+      />
+    </>
+  )
 }
 
 export default PointCloudLayer

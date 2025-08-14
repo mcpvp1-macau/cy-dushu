@@ -49,7 +49,7 @@ const MapSpaceConfig: FC<PropsType> = memo(({ data, checked, onChange, onRefresh
     form.setFieldsValue({
       ...data,
     })
-    if (spaceConfig?.mapPerviewUrl?.[0].thumbUrl) {
+    if (spaceConfig?.mapPerviewUrl?.[0]?.thumbUrl) {
       form.setFieldsValue({
         mapPreviewUrl: [
           {
@@ -106,7 +106,7 @@ const MapSpaceConfig: FC<PropsType> = memo(({ data, checked, onChange, onRefresh
       className="h-28 w-full relative rounded-[3px] overflow-hidden"
     >
       <img
-        src={spaceConfig?.mapPerviewUrl?.[0].thumbUrl}
+        src={spaceConfig?.mapPerviewUrl?.[0]?.thumbUrl}
         className="h-full w-full object-cover select-none pointer-events-none"
       />
       <div className="absolute bottom-0 left-0 right-0 px-3 bg-ground-1 bg-opacity-70 backdrop-blur flex justify-between">

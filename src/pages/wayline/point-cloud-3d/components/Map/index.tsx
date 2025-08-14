@@ -1,17 +1,12 @@
-import {
-  Marker,
-  PointCloudLayer,
-  PointCloudMap,
-} from '@/components/PointCloudMap'
 import usePointCloud3DWaylineStore from '@/store/wayline/point-cloud-3d-wayline/usePointCloud3D.store'
 import { handleStorageURL } from '@/pages/events/components/EventDetail'
 import DrawPointListener from './DrawPointListener'
 import { Fragment } from 'react/jsx-runtime'
-import Label from '@/components/PointCloudMap/Label'
 import { Canvas } from '@react-three/fiber'
-import { Billboard, Html, Text, TrackballControls } from '@react-three/drei'
+import { Html, TrackballControls } from '@react-three/drei'
 import { Vector3 } from 'three'
 import * as THREE from 'three'
+import { PointCloudLayer } from '@/components/PointCloudMap'
 
 type PropsType = unknown
 
