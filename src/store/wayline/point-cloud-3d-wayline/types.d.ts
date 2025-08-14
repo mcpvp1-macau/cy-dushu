@@ -18,7 +18,7 @@ export type PointCloud3DWaylineConfigType = {
 export type PointCloud3DWaypointConfigType = {
   positionIndex: number
   positionName: string
-  actions: []
+  actions: any[]
   x: number
   y: number
   z: number

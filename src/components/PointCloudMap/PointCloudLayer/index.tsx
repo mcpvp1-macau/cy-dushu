@@ -1,8 +1,10 @@
 import { FC, useEffect, useRef } from 'react'
-import { useThree } from '../hooks/useThree'
 import { PCDLoader } from 'three/addons/loaders/PCDLoader.js'
 import * as THREE from 'three'
 import { useLatest } from 'ahooks'
+import { useThree } from '@react-three/fiber'
+import { shallowEquals } from 'resium'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 type PointCloudLayerProps = {
   url: string
@@ -10,7 +12,16 @@ type PointCloudLayerProps = {
 }
 /** 点云图层 */
 const PointCloudLayer: FC<PointCloudLayerProps> = ({ url, onClick }) => {
-  const { scene, camera, renderer, controls } = useThree((state) => state)
+  // const { scene, camera, renderer, controls } = useThree((state) => state)
+  const { scene, camera, renderer, controls } = useThree(
+    (s) => ({
+      scene: s.scene,
+      camera: s.camera,
+      renderer: s.gl,
+      controls: s.controls,
+    }),
+    shallowEquals,
+  )
 
   // const [plane, setPlane] = useState<THREE.Mesh | null>(null)
   const planeRef = useRef<THREE.Mesh | null>(null)
@@ -153,7 +164,7 @@ const PointCloudLayer: FC<PointCloudLayerProps> = ({ url, onClick }) => {
         camera.lookAt(center)
 
         // 创建 OrbitControls 并设置点云中心为锚定点
-        if (renderer && controls) {
+        if (renderer && controls && controls instanceof OrbitControls) {
           //   const controls = new OrbitControls(camera, renderer.domElement)
           controls.target.copy(center) // 设置控制器的目标点为点云中心
           controls.enableDamping = true // 启用阻尼效果

@@ -1,5 +1,6 @@
 import IconEdit2 from '@/assets/icons/jsx/IconEdit2'
 import IconMore from '@/assets/icons/jsx/IconMore'
+import IconPointClout3DWayline from '@/assets/icons/jsx/IconPointCloud3DWayline'
 import IconPreview from '@/assets/icons/jsx/IconPreview'
 import IconRebotDogWayline from '@/assets/icons/jsx/IconRebotDogWayline'
 import IconSwarm from '@/assets/icons/jsx/IconSwarm'
@@ -120,6 +121,7 @@ export const WaylineIcon: FC<{ type: string }> = ({ type }) => {
         cluster_wayline: <IconSwarm />,
         mapping2d: <IconWaylineAirpoint />,
         mapping3d: <IconWaylineAirpoint />,
+        point_cloud_3d: <IconPointClout3DWayline />,
       } as Record<string, ReactNode>
     )[type] || <QuestionCircleFilled />
   )

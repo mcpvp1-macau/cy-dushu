@@ -1,4 +1,5 @@
 import IconPlus from '@/assets/icons/jsx/IconPlus'
+import IconPointClout3DWayline from '@/assets/icons/jsx/IconPointCloud3DWayline'
 import IconRebotDogWayline from '@/assets/icons/jsx/IconRebotDogWayline'
 import IconSwarm from '@/assets/icons/jsx/IconSwarm'
 import IconWaylineAirpoint from '@/assets/icons/jsx/IconWaylineAirpoint'
@@ -142,7 +143,7 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
           {
             label: (
               <div className="flex gap-2 items-center">
-                <IconWaylineAirpoint />
+                <IconPointClout3DWayline />
                 {t(
                   'wayline.create.form.waylineType.options.pointCloud3D.title',
                 )}
