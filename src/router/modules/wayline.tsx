@@ -8,6 +8,9 @@ const PageSwarmWaylineEdit = lazy(() => import('@/pages/wayline/swarm-wayline'))
 const RebotDogWaylineEdit = lazy(
   () => import('@/pages/wayline/rebot-dog-wayline'),
 )
+const PointCloud3DWaylineEdit = lazy(
+  () => import('@/pages/wayline/point-cloud-3d'),
+)
 
 export default {
   id: 'wayline',
@@ -71,6 +74,20 @@ export default {
         {
           path: '',
           element: <RebotDogWaylineEdit />,
+        },
+      ],
+    },
+    {
+      id: 'point-cloud-3d-edit',
+      path: 'point-cloud-3d-edit',
+      children: [
+        {
+          path: ':waylineTemplateId',
+          element: <PointCloud3DWaylineEdit />,
+        },
+        {
+          path: '',
+          element: <PointCloud3DWaylineEdit />,
         },
       ],
     },

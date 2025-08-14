@@ -6,7 +6,7 @@ import { useLatest } from 'ahooks'
 
 type PointCloudLayerProps = {
   url: string
-  onClick: (point: THREE.Vector3) => void
+  onClick?: (point: THREE.Vector3) => void
 }
 /** 点云图层 */
 const PointCloudLayer: FC<PointCloudLayerProps> = ({ url, onClick }) => {
@@ -36,7 +36,7 @@ const PointCloudLayer: FC<PointCloudLayerProps> = ({ url, onClick }) => {
       // 射线涉及到的物体集合
       if (intersects.length > 0) {
         const point = intersects[0].point
-        clickRef.current(point)
+        clickRef.current?.(point)
       }
     }
   }
