@@ -50,6 +50,7 @@ type StateType = {
     open: boolean
     /** 目标xyz */
     targetPosition?: [number, number, number]
+    confirm?: boolean
   }
 }
 
@@ -98,6 +99,7 @@ const createInitialState = () =>
     },
     pointAction: {
       open: false,
+      confirm: false,
     },
   } as StateType)
 

@@ -30,6 +30,7 @@ const RebotDogMap: FC<unknown> = memo(() => {
       updatePointAction({
         open: true,
         targetPosition: [event.point.x, event.point.y, event.point.z],
+        confirm: true,
       })
     }
   }
@@ -38,7 +39,7 @@ const RebotDogMap: FC<unknown> = memo(() => {
     <Canvas>
       <OrthographicCamera up={[0, 0, 1]} />
       <PointCloudLayer
-        url={activeMapUrl || '/pcd_data/test-2.pcd'}
+        url={activeMapUrl || '/pcd_data/test (1).pcd'}
         onClick={onClick}
       />
       <Fragment>
@@ -46,14 +47,14 @@ const RebotDogMap: FC<unknown> = memo(() => {
           <spriteMaterial
             sizeAttenuation={false}
             map={new THREE.TextureLoader().load(
-              '/images/airline/inverted-triangle-blue.svg',
+              '/images/marker/icon/rebot_dog.svg',
             )}
             depthTest={false}
           ></spriteMaterial>
         </sprite>
 
         <Html position={new Vector3(x, y, z)} center>
-          <div className="select-none font-bold mb-1 shadow-lg text-nowrap mt-5 text-xs">
+          <div className="select-none font-bold mb-1 shadow-lg text-nowrap mt-10 text-xs">
             {deviceName}
           </div>
         </Html>
