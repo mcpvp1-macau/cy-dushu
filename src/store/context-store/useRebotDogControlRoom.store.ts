@@ -45,6 +45,12 @@ type StateType = {
   }>
   activeMouseBtn: Btn | null
   activeMapUrl: string | null
+  pointAction: {
+    /** 是否开启指点前进 */
+    open: boolean
+    /** 目标xyz */
+    targetPosition?: [number, number, number]
+  }
 }
 
 type ActionsType = {
@@ -57,6 +63,7 @@ type ActionsType = {
   updateActiveMouseBtn: (activeMouseBtn: StateType['activeMouseBtn']) => void
   updateParams: (params: StateType['params']) => void
   updateActiveMapUrl: (activeMapUrl: StateType['activeMapUrl']) => void
+  updatePointAction: (pointAction: StateType['pointAction']) => void
 }
 
 type WsSendersType = {
@@ -88,6 +95,9 @@ const createInitialState = () =>
     params: {
       speed: Number(localStorage?.getItem('RebotDogSpeed') || 0.5),
       attitude: Number(localStorage?.getItem('RebotDogAttitude') || 0.5),
+    },
+    pointAction: {
+      open: false,
     },
   } as StateType)
 
@@ -161,6 +171,9 @@ export const createRebotDogControlRoomStore = (senders: WsSendersType) => {
         },
         updateActiveMapUrl: (activeMapUrl: StateType['activeMapUrl']) => {
           set({ activeMapUrl }, false, 'updateActiveMapUrl')
+        },
+        updatePointAction: (pointAction: StateType['pointAction']) => {
+          set({ pointAction: { ...get().pointAction, ...pointAction } }, false, 'updatePointAction')
         },
       }),
       {

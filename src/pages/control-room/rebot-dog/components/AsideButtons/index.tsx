@@ -4,6 +4,7 @@ import IconTakePhoto from '@/assets/icons/jsx/uav/IconTakePhoto'
 import { Button } from 'antd'
 import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 import { useRebotDogControlRoomStore } from '@/store/context-store/useRebotDogControlRoom.store'
+import PointAction from './PointAction'
 
 /** 侧边按钮们 */
 const RebotDogAsideButtons: FC<unknown> = memo(() => {
@@ -26,6 +27,7 @@ const RebotDogAsideButtons: FC<unknown> = memo(() => {
           </div>
           <ControlPower />
           <div className="flex gap-2">
+            <PointAction />
             <Button
               className="flex-1"
               type={dogMode === 3 ? 'primary' : 'default'}
