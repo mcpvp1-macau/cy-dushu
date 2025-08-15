@@ -3,7 +3,7 @@ import { PCDLoader } from 'three/examples/jsm/loaders/PCDLoader.js'
 import * as THREE from 'three'
 import { useThree, ThreeElements } from '@react-three/fiber'
 import { shallowEquals } from 'resium'
-import { OrbitControls } from '@react-three/drei'
+import { OrbitControls, GizmoHelper, GizmoViewport } from '@react-three/drei'
 
 type PropsType = {
   url: string
@@ -113,6 +113,7 @@ const PointCloudLayer: React.FC<PropsType> = ({ url, ...props }) => {
         const distance = maxDimension * 1.5 // 相机距离为最大边长的1.5倍
 
         // 设置相机位置在点云中心的正上方
+        camera.up.set(0, 0, 1)
         camera.position.set(center.x, center.y, center.z + distance)
         camera.lookAt(center)
       })
@@ -142,7 +143,11 @@ const PointCloudLayer: React.FC<PropsType> = ({ url, ...props }) => {
           MIDDLE: THREE.MOUSE.MIDDLE,
           RIGHT: THREE.MOUSE.LEFT,
         }}
+        enableDamping={false}
       />
+      <GizmoHelper alignment="bottom-right" margin={[100, 100]} >
+        <GizmoViewport labelColor="white" axisHeadScale={1} />
+      </GizmoHelper>
     </>
   )
 }
