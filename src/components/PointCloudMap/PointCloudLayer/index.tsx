@@ -110,10 +110,10 @@ const PointCloudLayer: React.FC<PropsType> = ({ url, ...props }) => {
         // 计算相机位置 - 移动到点云中心的正上方
         const boxSize = box.getSize(new THREE.Vector3())
         const maxDimension = Math.max(boxSize.x, boxSize.y, boxSize.z)
-        const distance = maxDimension * 1.5 // 相机距离为最大边长的1.5倍
+        const distance = maxDimension * 0.8 // 相机距离为最大边长的1.5倍
 
         // 设置相机位置在点云中心的正上方
-        camera.up.set(0, 0, 1)
+        // camera.up.set(0, 0, 1)
         camera.position.set(center.x, center.y, center.z + distance)
         camera.lookAt(center)
       })

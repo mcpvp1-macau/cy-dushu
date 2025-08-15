@@ -2,16 +2,10 @@
 // import RebotDogRealMarker from './components/RealMarker'
 // import RebotDogRealTrack from './components/RealTrack'
 // import TargetPoints from '@/map/GlobalMap/TargetPoints'
-import PointCloudMap from '@/components/PointCloudMap/Map'
 import PointCloudLayer from '@/components/PointCloudMap/PointCloudLayer'
-import Marker from '@/components/PointCloudMap/Marker'
-import icon from '/images/marker/icon/rebot_dog.svg'
-import Polyline from '@/components/PointCloudMap/Polyline'
-import Label from '@/components/PointCloudMap/Label'
-import { useInterval } from 'ahooks'
 import { useRebotDogControlRoomStore } from '@/store/context-store/useRebotDogControlRoom.store'
 import { Canvas, ThreeEvent } from '@react-three/fiber'
-import { Html } from '@react-three/drei'
+import { Html, OrthographicCamera } from '@react-three/drei'
 import { Fragment } from 'react'
 import * as THREE from 'three'
 import { Vector3 } from 'three'
@@ -30,11 +24,6 @@ const RebotDogMap: FC<unknown> = memo(() => {
     (s) => s.updatePointAction,
   )
 
-  const [text, setText] = useState('哈哈哈哈')
-  useInterval(() => {
-    setText((text) => (text === '哈哈哈哈' ? '发发地方' : '哈哈哈哈'))
-  }, 1000)
-
   const onClick = (event: ThreeEvent<MouseEvent>) => {
     console.log(event.point)
     if (pointAction.open) {
@@ -47,15 +36,13 @@ const RebotDogMap: FC<unknown> = memo(() => {
 
   return (
     <Canvas>
+      <OrthographicCamera up={[0, 0, 1]} />
       <PointCloudLayer
         url={activeMapUrl || '/pcd_data/test-2.pcd'}
         onClick={onClick}
       />
       <Fragment>
-        <sprite
-          scale={0.05}
-          position={new Vector3(x, y, z)}
-        >
+        <sprite scale={0.05} position={new Vector3(x, y, z)}>
           <spriteMaterial
             sizeAttenuation={false}
             map={new THREE.TextureLoader().load(
@@ -64,8 +51,9 @@ const RebotDogMap: FC<unknown> = memo(() => {
             depthTest={false}
           ></spriteMaterial>
         </sprite>
+
         <Html position={new Vector3(x, y, z)} center>
-          <div className="select-none font-bold mb-1 text-sm shadow-lg">
+          <div className="select-none font-bold mb-1 shadow-lg text-nowrap mt-5 text-xs">
             {deviceName}
           </div>
         </Html>
@@ -74,32 +62,7 @@ const RebotDogMap: FC<unknown> = memo(() => {
       <PointActionMap />
     </Canvas>
   )
-  return (
-    <PointCloudMap>
-      {/* <PointCloudLayer url="/pcd_data/lab_avia.pcd" /> */}
-      <PointCloudLayer
-        url={activeMapUrl || '/pcd_data/test-2.pcd'}
-        onClick={() => {}}
-      />
-      <Marker position={{ x: 0, y: 0, z: 0 }} image={icon} onClick={() => {}} />
-      <Polyline
-        positions={[
-          { x: 0, y: 0, z: 0 },
-          { x: 5, y: 0, z: 0 },
-          // { x: -2, y: 2, z: 0 },
-          // { x: 2, y: 2, z: 0 },
-          // { x: 2, y: -2, z: 0 },
-          // { x: -2, y: -2, z: 0 },
-        ]}
-        color="#ff0000"
-      />
-      <Label
-        position={{ x: 0, y: 0, z: 0 }}
-        text={text}
-        offset={{ x: 0, y: 80, z: 0 }}
-      />
-    </PointCloudMap>
-  )
+
   // return (
   //   <CesiumMap id="rebot-dog-control-room-map">
   //     <RebotDogRealMarker />
