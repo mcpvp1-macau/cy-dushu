@@ -9,6 +9,7 @@ import { v4 } from 'uuid'
 
 type StateType = {
   isDrawPoint: boolean
+  isMovePoint: boolean
   spaceMapUrl: string
   waylineTemplateInfo: PointCloud3dTemplateType
   waylineConfig: PointCloud3DWaylineConfigType
@@ -24,6 +25,8 @@ type ActionsType = {
   updateSpaceMapUrl: (spaceMapUrl: StateType['spaceMapUrl']) => void
   /** 设置是否在绘制航点 */
   updateIsDrawPoint: (isDrawPoint: StateType['isDrawPoint']) => void
+  /** 设置是否在移动航点 */
+  updateIsMovePoint: (isMovePoint: StateType['isMovePoint']) => void
   /** 更新航线模板信息 */
   updateWaylineTemplateInfo: (
     waylineTemplateInfo: StateType['waylineTemplateInfo'],
@@ -62,6 +65,7 @@ const initialState = () =>
     open: false,
     isDrawHome: false,
     isDrawPoint: false,
+    isMovePoint: false,
     spaceMapUrl: '',
     waylineTemplateInfo: {},
     waylineConfig: {
@@ -84,6 +88,9 @@ const usePointCloud3DWaylineStore = create<StateType & ActionsType>()(
     },
     updateIsDrawPoint: (isDrawPoint) => {
       set({ isDrawPoint })
+    },
+    updateIsMovePoint: (isMovePoint) => {
+      set({ isMovePoint })
     },
     updateWaylineTemplateInfo: (waylineTemplateInfo) => {
       set({ waylineTemplateInfo })

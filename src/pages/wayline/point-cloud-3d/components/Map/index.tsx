@@ -1,12 +1,11 @@
+import { PointCloudLayer } from '@/components/PointCloudMap'
 import usePointCloud3DWaylineStore from '@/store/wayline/point-cloud-3d-wayline/usePointCloud3D.store'
 import { handleStorageURL } from '@/pages/events/components/EventDetail'
 import DrawPointListener from './DrawPointListener'
-import { Fragment } from 'react/jsx-runtime'
 import { Canvas } from '@react-three/fiber'
-import { Html, TrackballControls } from '@react-three/drei'
+import { Line } from '@react-three/drei'
 import { Vector3 } from 'three'
-import * as THREE from 'three'
-import { PointCloudLayer } from '@/components/PointCloudMap'
+import Waypoint from './Wayponit'
 
 type PropsType = unknown
 
@@ -15,11 +14,15 @@ const PointCloud3DWaylineMap: FC<PropsType> = memo(() => {
   const isDrawPoint = usePointCloud3DWaylineStore((s) => s.isDrawPoint)
   const waypoints = usePointCloud3DWaylineStore((s) => s.waypointsConfig)
 
-  console.log('waypoints', waypoints)
+  const handleLeave = () => {
+    const sto = usePointCloud3DWaylineStore.getState()
+    if (sto.isMovePoint) {
+      sto.updateIsMovePoint(false)
+    }
+  }
 
   return (
-    <Canvas>
-      <TrackballControls />
+    <Canvas onPointerUp={handleLeave} onPointerLeave={handleLeave}>
       {spaceMapUrl && (
         <PointCloudLayer
           url={handleStorageURL(spaceMapUrl)}
@@ -44,23 +47,15 @@ const PointCloud3DWaylineMap: FC<PropsType> = memo(() => {
       )}
       <DrawPointListener />
       {waypoints.map((e) => (
-        <Fragment key={e.xid}>
-          <sprite scale={0.05} position={new Vector3(e.x, e.y, e.z)}>
-            <spriteMaterial
-              sizeAttenuation={false}
-              map={new THREE.TextureLoader().load(
-                '/images/airline/inverted-triangle-blue.svg',
-              )}
-              depthTest={false}
-            ></spriteMaterial>
-          </sprite>
-          <Html position={new Vector3(e.x, e.y, e.z)} center>
-            <div className="select-none font-bold mb-1 text-sm shadow-lg">
-              {e.positionIndex}
-            </div>
-          </Html>
-        </Fragment>
+        <Waypoint key={e.positionIndex} data={e} />
       ))}
+      {waypoints.length >= 2 && (
+        <Line
+          points={waypoints.map((e) => new Vector3(e.x, e.y, e.z))}
+          color="#4e85e1"
+          lineWidth={3} // 折线宽度
+        />
+      )}
     </Canvas>
   )
 })
