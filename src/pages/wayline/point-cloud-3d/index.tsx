@@ -5,6 +5,8 @@ import Navbar from '../rebot-dog-wayline/components/Navibar'
 import WaylineConfig from './components/WaylineConfig'
 import WaypointConfig from './components/WaypointConfig'
 import PointCloud3DWaylineMap from './components/Map'
+import BottomOperator from './components/ButtonOperator'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 type PropsType = unknown
 
@@ -21,7 +23,7 @@ const PointCloud3DWaylineEdit: FC<PropsType> = memo(() => {
 
   return (
     <div className="page-full bg-ground-2 overflow-hidden flex">
-      <div className="w-[350px] min-w-[350px] h-full">
+      <div className="w-[350px] min-w-[350px] h-full flex flex-col">
         <EditableNameHeader
           className="px-3"
           value={taskName || t('wayline.defaultTaskName.title')}
@@ -35,18 +37,18 @@ const PointCloud3DWaylineEdit: FC<PropsType> = memo(() => {
           onBackClick={() => navigate(-1)}
         />
         <Navbar activeNav={activeNav} onActiveNavChange={setActiveNav} />
-        <div className="px-3">
+        <ScrollArea className="px-3 flex-1">
           {
             {
               0: <WaylineConfig />,
               1: <WaypointConfig />,
             }[activeNav]
           }
-        </div>
+        </ScrollArea>
+        <BottomOperator />
       </div>
-      <div className="grow h-full overflow-hidden">
+      <div className="grow h-full overflow-hidden bg-slate-950">
         <PointCloud3DWaylineMap />
-        {/* <Canvas /> */}
       </div>
     </div>
   )

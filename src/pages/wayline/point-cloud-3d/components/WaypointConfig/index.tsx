@@ -8,6 +8,7 @@ import IconLeft from '@/assets/icons/jsx/IconLeft'
 import IconRight from '@/assets/icons/jsx/IconRight'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import usePointCloud3DWaylineStore from '@/store/wayline/point-cloud-3d-wayline/usePointCloud3D.store'
+import WaypointParamsConfig from './WaypointParamsConfig'
 
 type PropsType = unknown
 
@@ -100,6 +101,7 @@ const AirpointConfig: FC<PropsType> = () => {
               </ScrollArea>
             </div>
             <div className="h-[1px] bg-ground-5 rounded" />
+            <WaypointParamsConfig />
           </>
         )}
       </XCard>

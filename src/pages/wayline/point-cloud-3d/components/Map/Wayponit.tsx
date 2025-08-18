@@ -1,8 +1,6 @@
 import { PointCloud3DWaypointConfigType } from '@/store/wayline/point-cloud-3d-wayline/types'
 import { Html } from '@react-three/drei'
-import { memo, type FC } from 'react'
 import { TextureLoader, Vector3 } from 'three'
-import { mouseEnterEmitter } from './DrawPointListener'
 import usePointCloud3DWaylineStore from '@/store/wayline/point-cloud-3d-wayline/usePointCloud3D.store'
 
 type PropsType = {
@@ -30,8 +28,6 @@ const Waypoint: FC<PropsType> = memo(({ data }) => {
       <Html position={new Vector3(data.x, data.y, data.z)} center>
         <div
           className="font-bold mb-1 text-sm text-shadow-sm text-white cursor-move px-1 leading-4"
-          onPointerEnter={() => mouseEnterEmitter.emit('enter-waypoint')}
-          onPointerLeave={() => mouseEnterEmitter.emit('leave-waypoint')}
           onPointerDown={handlePointDown}
         >
           {data.positionIndex}

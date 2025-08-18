@@ -12,6 +12,7 @@ type PropsType = unknown
 const PointCloud3DWaylineMap: FC<PropsType> = memo(() => {
   const spaceMapUrl = usePointCloud3DWaylineStore((s) => s.spaceMapUrl)
   const isDrawPoint = usePointCloud3DWaylineStore((s) => s.isDrawPoint)
+  const isMovePoint = usePointCloud3DWaylineStore((s) => s.isMovePoint)
   const waypoints = usePointCloud3DWaylineStore((s) => s.waypointsConfig)
 
   const handleLeave = () => {
@@ -22,27 +23,49 @@ const PointCloud3DWaylineMap: FC<PropsType> = memo(() => {
   }
 
   return (
-    <Canvas onPointerUp={handleLeave} onPointerLeave={handleLeave}>
+    <Canvas
+      onPointerUp={handleLeave}
+      onContextMenu={() => {
+        const sto = usePointCloud3DWaylineStore.getState()
+        if (sto.isDrawPoint) {
+          sto.updateIsDrawPoint(false)
+          return
+        }
+        if (sto.isMovePoint) {
+          sto.updateIsMovePoint(false)
+          return
+        }
+      }}
+    >
+      {/* <Ground /> */}
       {spaceMapUrl && (
         <PointCloudLayer
           url={handleStorageURL(spaceMapUrl)}
-          onClick={(position) => {
-            if (!isDrawPoint) {
-              return
-            }
-            console.log('position', position)
-            const sto = usePointCloud3DWaylineStore.getState()
-
-            sto.addWaypoint({
-              x: position.x,
-              y: position.y,
-              z: 0,
-              q_x: 0,
-              q_y: 0,
-              q_z: 0,
-              q_w: 1,
-            })
+          meshProps={{
+            onClick: (evt) => {
+              if (!isDrawPoint) {
+                return
+              }
+              const sto = usePointCloud3DWaylineStore.getState()
+              sto.addWaypoint({
+                x: evt.point.x,
+                y: evt.point.y,
+                z: 0,
+              })
+            },
+            onPointerMove: (evt) => {
+              if (!isMovePoint) {
+                return
+              }
+              const sto = usePointCloud3DWaylineStore.getState()
+              sto.updateCurrentWaypoint({
+                x: evt.point.x,
+                y: -evt.point.z,
+                z: 0,
+              })
+            },
           }}
+          cameraEnabled={!isMovePoint}
         />
       )}
       <DrawPointListener />

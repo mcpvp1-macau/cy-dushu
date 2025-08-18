@@ -127,12 +127,13 @@ const usePointCloud3DWaylineStore = create<StateType & ActionsType>()(
         actions: [],
         x: 0,
         y: 0,
-        z: waylineConfig.speed || 0,
+        z: 0,
         q_x: 0,
         q_y: 0,
         q_z: 0,
         q_w: 1,
         xid: v4(),
+        speed: waylineConfig.speed || 0,
         ...data,
       }
       set({
@@ -157,7 +158,8 @@ const usePointCloud3DWaylineStore = create<StateType & ActionsType>()(
         q_x: 0,
         q_y: 0,
         q_z: 0,
-        q_w: 1,
+        q_w: 0,
+        speed: waylineConfig.speed || 0,
         xid: v4(),
         ...data,
       }
