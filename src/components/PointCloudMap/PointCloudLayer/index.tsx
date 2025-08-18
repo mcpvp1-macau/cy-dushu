@@ -7,7 +7,9 @@ import { OrbitControls, GizmoHelper, GizmoViewport } from '@react-three/drei'
 
 type PropsType = {
   url: string
-} & Omit<ThreeElements['mesh'], 'position'>
+  meshProps: Omit<ThreeElements['mesh'], 'position'>
+  cameraEnabled?: boolean
+}
 
 const PointCloudLayer: React.FC<PropsType> = ({ url, ...props }) => {
   const { scene, camera } = useThree(
@@ -127,7 +129,7 @@ const PointCloudLayer: React.FC<PropsType> = ({ url, ...props }) => {
 
   return (
     <>
-      <mesh {...props} position={[center.x, center.y, 0]}>
+      <mesh {...props.meshProps} position={[center.x, center.y, 0]}>
         <planeGeometry args={[size.width, size.height]} />
         <meshBasicMaterial color={0x000000} transparent opacity={0.2} />
       </mesh>
@@ -146,6 +148,7 @@ const PointCloudLayer: React.FC<PropsType> = ({ url, ...props }) => {
           RIGHT: THREE.MOUSE.LEFT,
         }}
         enableDamping={false}
+        enabled={props.cameraEnabled}
       />
       <GizmoHelper alignment="bottom-right" margin={[100, 100]}>
         <GizmoViewport labelColor="white" axisHeadScale={1} />

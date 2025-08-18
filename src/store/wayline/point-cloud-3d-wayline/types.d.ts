@@ -26,5 +26,6 @@ export type PointCloud3DWaypointConfigType = {
   q_y: number
   q_z: number
   q_w: number
+  speed: number
   xid: string
 }
