@@ -43,7 +43,7 @@ const RebotDogMap: FC<unknown> = memo(() => {
         onClick={onClick}
       />
       <Fragment>
-        <sprite scale={0.05} position={new Vector3(x, y, z)}>
+        {/* <sprite scale={0.05} position={new Vector3(x, y, z)}>
           <spriteMaterial
             sizeAttenuation={false}
             map={new THREE.TextureLoader().load(
@@ -51,8 +51,12 @@ const RebotDogMap: FC<unknown> = memo(() => {
             )}
             depthTest={false}
           ></spriteMaterial>
-        </sprite>
-
+        </sprite> */}
+        <Html position={new Vector3(x, y, z)} center>
+          <div className="" style={{ width: '20px', height: '20px' }}>
+            <img src="/images/marker/icon/rebot_dog.svg" alt="" />
+          </div>
+        </Html>
         <Html position={new Vector3(x, y, z)} center>
           <div className="select-none font-bold mb-1 shadow-lg text-nowrap mt-10 text-xs">
             {deviceName}

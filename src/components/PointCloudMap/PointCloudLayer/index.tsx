@@ -132,10 +132,12 @@ const PointCloudLayer: React.FC<PropsType> = ({ url, ...props }) => {
         <meshBasicMaterial color={0x000000} transparent opacity={0.2} />
       </mesh>
       <gridHelper
-        args={[size.width, size.height]}
+        args={[size.width, 40]}
         rotation={[-Math.PI / 2, 0, 0]}
         position={[center.x, center.y, 0]}
+        scale={1}
       />
+
       <OrbitControls
         target={center}
         mouseButtons={{
@@ -145,7 +147,7 @@ const PointCloudLayer: React.FC<PropsType> = ({ url, ...props }) => {
         }}
         enableDamping={false}
       />
-      <GizmoHelper alignment="bottom-right" margin={[100, 100]} >
+      <GizmoHelper alignment="bottom-right" margin={[100, 100]}>
         <GizmoViewport labelColor="white" axisHeadScale={1} />
       </GizmoHelper>
     </>

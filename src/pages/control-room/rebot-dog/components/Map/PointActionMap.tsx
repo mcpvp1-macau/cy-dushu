@@ -18,6 +18,8 @@ const PointActionMap: FC = () => {
     (s) => s.deviceDetail?.deviceModel?.productKey,
   )
 
+  const displayMode = useRebotDogControlRoomStore((s) => s.state.displayMode)
+
   const postDeviceService = usePostDeviceService(productKey!, deviceId)
 
   const distance = useMemo(() => {
@@ -34,6 +36,21 @@ const PointActionMap: FC = () => {
     (s) => s.updatePointAction,
   )
 
+  const modeRef = useRef<string | undefined>(undefined)
+
+  useEffect(() => {
+    console.log('displayMode', displayMode)
+    // 从 指点前进 模式 切换到 其他模式 时，关闭指点前进
+    if (!displayMode?.includes('指点') && !modeRef.current?.includes('指点')) {
+      updatePointAction({
+        open: false,
+        targetPosition: undefined,
+        confirm: false,
+      })
+    }
+    modeRef.current = displayMode
+  }, [displayMode])
+
   if (!pointAction.open && !pointAction.targetPosition) return null
 
   const targetPosition = new THREE.Vector3(
@@ -46,6 +63,7 @@ const PointActionMap: FC = () => {
 
   return (
     <>
+    {pointAction.targetPosition ? (
       <sprite
         scale={0.05}
         center={new THREE.Vector2(0.5, 0)}
@@ -53,10 +71,11 @@ const PointActionMap: FC = () => {
       >
         <spriteMaterial
           sizeAttenuation={false}
-          map={new THREE.TextureLoader().load('/images/marker/map-marker1.png')}
+          map={new THREE.TextureLoader().load('/images/marker/icon/targetPoint.svg')}
           depthTest={false}
         ></spriteMaterial>
       </sprite>
+    ) : null}
       <Line
         points={[
           new THREE.Vector3(x, y, z),
