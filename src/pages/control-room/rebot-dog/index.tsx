@@ -28,6 +28,7 @@ import ControlRoomRebotDogHeader from './components/Header'
 import IconPayload from '@/assets/icons/jsx/IconPayload'
 import RebotDogPayload from './components/Payload'
 import PointCloudMapManager from './components/PointCloudMapManager'
+import useServerEventMsg from '../uav/hooks/useServerEventMsg'
 
 const initialLayout: DynamicLayoutType = {
   type: 'row',
@@ -116,6 +117,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
   const controlRoomStore = useCreateRebotDogControlRoomStore(
     productKey,
     deviceId,
+    useServerEventMsg(),
   )
 
   const [layout, setLayout] = useLocalStorageState<DynamicLayoutType>(
