@@ -566,6 +566,8 @@ common:
   show: 显示
   hide: 隐藏
   deviceConfig: 设备配置
+  center: 中心
+  region: 边缘
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索

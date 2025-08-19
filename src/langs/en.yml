@@ -572,6 +572,8 @@ common:
   show: Show
   hide: Hide
   deviceConfig: Device Configuration
+  center: Center
+  region: Region
 events:
   search:
     placeholder: Please search by event name or ID
