@@ -40,7 +40,7 @@ const RebotDogMap: FC<unknown> = memo(() => {
       <OrthographicCamera up={[0, 0, 1]} />
       <PointCloudLayer
         url={activeMapUrl || '/pcd_data/test (1).pcd'}
-        onClick={onClick}
+        meshProps={{ onClick }}
       />
       <Fragment>
         {/* <sprite scale={0.05} position={new Vector3(x, y, z)}>

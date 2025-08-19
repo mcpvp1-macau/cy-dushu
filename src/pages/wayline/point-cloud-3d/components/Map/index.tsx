@@ -60,7 +60,7 @@ const PointCloud3DWaylineMap: FC<PropsType> = memo(() => {
               const sto = usePointCloud3DWaylineStore.getState()
               sto.updateCurrentWaypoint({
                 x: evt.point.x,
-                y: -evt.point.z,
+                y: evt.point.y,
                 z: 0,
               })
             },

@@ -7,6 +7,7 @@ import IconSwarm from '@/assets/icons/jsx/IconSwarm'
 import IconWaylineAirpoint from '@/assets/icons/jsx/IconWaylineAirpoint'
 import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
 import IconButton from '@/components/ui/button/IconButton'
+import { WaylineEnum } from '@/constant/uav/wayline'
 import { delAirlineTempalte } from '@/service/modules/airline'
 import useWaylinesStore from '@/store/map/useWaylines.store'
 import { downloadAndRename } from '@/utils/download'
@@ -38,7 +39,10 @@ const AirlineTemplateListItem: FC<PropsType> = memo(({ data }) => {
         </div>
         <IconButton
           toolTipProps={{ title: t('common.preview') }}
-          disabled={data.taskType === 'cluster_wayline'}
+          disabled={
+            data.taskType === WaylineEnum.SwarmWayline ||
+            data.taskType === WaylineEnum.PointCloud3DWayline
+          }
           onClick={() => {
             const positions = shouldJson(data.parameters)?.spaces?.[0]
               ?.positions
@@ -136,6 +140,7 @@ export const getWaylineEditURL = (type: string) => {
       cluster_wayline: '/wayline/swarm-wayline-edit',
       mapping2d: '/wayline/edit',
       mapping3d: '/wayline/edit',
+      point_cloud_3d: '/wayline/point-cloud-3d-edit',
     }[type] || '/404'
   )
 }

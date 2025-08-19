@@ -42,7 +42,7 @@ export const deleteOverlaies = (overlayIds: number[]) => {
 
 /** 自定义地图 (瓦片) 列表 */
 export const getSpaceList = (data?: {
-  spaceType: string
+  spaceType?: string
   isPage?: boolean
 }) => {
   return serverJingqi.post<API_LAYER_OVERLAY.res.GetSpaceListRes>(

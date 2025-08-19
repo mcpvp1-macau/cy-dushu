@@ -2,6 +2,7 @@ import { useAppMsg } from '@/hooks/useAppMsg'
 import { useSearchParams } from 'react-router-dom'
 import BO from '../../components/ButtonOperator'
 import usePointCloud3DWaylineStore from '@/store/wayline/point-cloud-3d-wayline/usePointCloud3D.store'
+import { DeviceEnum } from '@/enum/device'
 
 type PropsType = {
   disabled?: boolean
@@ -66,6 +67,7 @@ const BottomOperator: FC<PropsType> = memo(({ disabled }) => {
       disabled={disabled}
       generateTaskData={generateTaskData}
       invalidate={invalidate}
+      deviceType={DeviceEnum.ROBOT_DOG}
     />
   )
 })

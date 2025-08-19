@@ -31,7 +31,7 @@ const usePointCloud3DWaylineInit = () => {
     const name = searchParams.get('name')
     if (name) {
       store.updateWaylineTemplateInfo({
-        ...store.waylineTemplateInfo,
+        ...usePointCloud3DWaylineStore.getState().waylineTemplateInfo,
         taskName: name,
       })
     }
@@ -39,9 +39,24 @@ const usePointCloud3DWaylineInit = () => {
     if (spaceId) {
       setSpaceId(+spaceId)
       store.updateWaylineTemplateInfo({
-        ...store.waylineTemplateInfo,
+        ...usePointCloud3DWaylineStore.getState().waylineTemplateInfo,
         spaceId: +spaceId,
       })
+    }
+
+    const taskBasic = searchParams.get('taskBasic')
+    if (taskBasic) {
+      const t = shouldJson(taskBasic)
+      if (t) {
+        store.updateWaylineConfig(t)
+        setSpaceId(t.spaceId ?? 0)
+      }
+    }
+
+    const parameters = searchParams.get('parameters')
+    if (parameters) {
+      const airpoints = shouldJson(parameters)?.spaces?.[0]?.positions
+      store.updateWaypointsConfig(resolvePositions(airpoints))
     }
   }, [])
 
@@ -78,7 +93,7 @@ const usePointCloud3DWaylineInit = () => {
         speed: waylineConfig.speed,
       })
       sto.updateWaylineTemplateInfo({
-        ...sto.waylineTemplateInfo,
+        ...usePointCloud3DWaylineStore.getState().waylineTemplateInfo,
         spaceId: waylineConfig.spaceId,
       })
     }

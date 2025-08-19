@@ -1,3 +1,4 @@
+import { WaylineEnum } from '@/constant/uav/wayline'
 import useWaylinesStore, {
   SwarmPolygon,
   Wayline,
@@ -39,7 +40,16 @@ const useVisibleCheck = (
       if (!info || !task.taskTplId || !visibleSet.current.has(task.id)) {
         continue
       }
-      const waylineType = info.waylineType ?? 'waypoint'
+
+      const taskBasic = shouldJson(info.taskBasic) ?? {}
+      const waylineType =
+        info.waylineType ?? taskBasic.waylineType ?? 'waypoint'
+
+      // 跳过 3D 点云航线
+      if (waylineType === WaylineEnum.PointCloud3DWayline) {
+        continue
+      }
+
       const found = oldWaylineMap.get(task.taskTplId)
       if (found) {
         // 复用之前，有利于 React Equal

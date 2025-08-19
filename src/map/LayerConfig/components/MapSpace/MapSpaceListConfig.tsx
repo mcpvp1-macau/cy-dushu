@@ -15,8 +15,8 @@ const MapSpaceListConfig: FC<PropsType> = memo((props) => {
   const { data, isLoading } = useQuery(
     {
       queryKey: ['getSpaceList'],
-      queryFn: getSpaceList,
-      select: (d) => d.data.rows,
+      queryFn: () => getSpaceList(),
+      select: (d) => d?.data?.rows,
     },
     queryClient,
   )

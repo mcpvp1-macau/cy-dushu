@@ -2,6 +2,7 @@ import IconDetail from '@/assets/icons/jsx/IconDetail'
 import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
 import IconVisible from '@/assets/icons/jsx/IconVisible'
 import IconButton from '@/components/ui/button/IconButton'
+import { WaylineEnum } from '@/constant/uav/wayline'
 import { RightModeEnum } from '@/enum/right-mode'
 import useStartActionItem from '@/hooks/service/action/useStartActionItem'
 import { useAppMsg } from '@/hooks/useAppMsg'
@@ -168,12 +169,21 @@ const ChildAction: FC<PropsType> = memo(
       useRightMode.getState().updateDetailId(data.deviceId!)
     }
 
+    const waylineType = useMemo(
+      () =>
+        shouldJson(shouldJson(data.taskTemplateInfo)?.taskBasic)?.waylineType,
+      [data.taskTemplateInfo],
+    )
+
     return (
       <>
         <div className="flex items-center justify-between mb-0.5">
           <div className="flex gap-2 items-start">
             <IconButton
-              disabled={!data.taskTplId}
+              disabled={
+                !data.taskTplId ||
+                waylineType === WaylineEnum.PointCloud3DWayline
+              }
               onClick={() => onVisibleChange?.(!visible)}
             >
               {visible ? <IconVisible /> : <IconNotVisible />}
