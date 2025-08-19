@@ -61,8 +61,7 @@ const useSendMessage = (options?: {
           if (event.trim() === '') continue
           const eventData = parseEvent(event)
           const data = shouldJson(eventData.data)
-          const content: string | undefined =
-            data?.choices?.[0]?.message?.content
+          const content: string | undefined = data?.choices?.[0]?.delta?.content
           if (content) {
             setContent((prev) => prev + content)
           }
