@@ -165,7 +165,7 @@ const PointActionMap: FC = () => {
                         targetPose: {
                           x: pointAction.targetPosition?.[0],
                           y: pointAction.targetPosition?.[1],
-                          z: 0,
+                          z: 0.14,
                           q_x: 0,
                           q_y: 0,
                           q_z: 0,
