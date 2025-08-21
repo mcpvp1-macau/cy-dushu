@@ -7,6 +7,14 @@ export default mergeConfig(
     server: {
       host: '0.0.0.0',
       proxy: {
+        '/ditingMCPServer': {
+          target: 'http://172.21.30.114:8052',
+          rewrite: (path) => path.replace(/^\/ditingMCPServer/, ''),
+        },
+        '/ditingTanqiServer': {
+          target: 'http://172.21.30.114:8090',
+          rewrite: (path) => path.replace(/^\/ditingTanqiServer/, ''),
+        },
         // 4A 接口
         '/proxyApi': {
           target: 'http://172.27.95.212:31851',

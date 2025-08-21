@@ -13,6 +13,14 @@ import useGroupName from './hooks/useGroupName'
 import TanqiSender from './components/TanqiSender'
 import IconButton from '@/components/ui/button/IconButton'
 import IconPlus from '@/assets/icons/jsx/IconPlus'
+import { shouldJson } from '@/utils/json'
+import { getUavInfo } from '@/service/modules/diting-mcp'
+import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import { useAppMsg } from '@/hooks/useAppMsg'
+import { Button } from 'antd'
+import IconIntelligence from '@/assets/icons/jsx/IconIntelligence'
+import useTaskUnderstanding from './hooks/useTaskUnderstanding'
+import IconCommand from '@/assets/icons/jsx/IconCommand'
 
 type PropsType = unknown
 
@@ -27,10 +35,16 @@ const DitingTanqi: FC<PropsType> = memo(() => {
   const groupName = useGroupName()
 
   const { t } = useTranslation()
+  const sn = useDeviceDetailStore((s) => s.deviceDetail?.sn)
 
   const [searchParams, setSearchParams] = useSearchParams()
   const chatIdStr = searchParams.get('chat')
   const chatId = chatIdStr ? Number(chatIdStr) : undefined
+
+  // 任务理解开关
+  const [openUnderstand, setOpenUnderstand] = useState(false)
+  // 指令控制开关
+  const [openCommand, setOpenCommand] = useState(false)
 
   // 0 空闲 1 思考中 2 回答中
   const [aiState, setAiState] = useState<APState>(APState.Idle)
@@ -39,14 +53,28 @@ const DitingTanqi: FC<PropsType> = memo(() => {
   // 是否正在发送消息
   const [sending, setSending] = useState(false)
 
+  const msgApi = useAppMsg()
+
   const queryClient = useQueryClient()
   // 创建对话
   const newConversation = async () => {
+    if (!sn) {
+      msgApi.error('无法获取设备SN, 请稍后再试')
+      return
+    }
+    const resp = await getUavInfo(sn)
+    const uav_mcp_name = resp.data.uav_mcp_name
+    if (!uav_mcp_name) {
+      msgApi.error('当前无人机未绑定到MCP, 无法使用谛听檀棋')
+      return
+    }
+
     setCreating(true)
     try {
       const resp = await createConversation({
         group_name: groupName,
-        system_message: '',
+        system_message:
+          '当前操作的为无人机为: ' + JSON.stringify({ uav_name: uav_mcp_name }),
       })
       if (resp.data.id) {
         const nextSearchParams = new URLSearchParams(searchParams)
@@ -71,6 +99,8 @@ const DitingTanqi: FC<PropsType> = memo(() => {
   }, [chatId])
 
   const { replyingContent, sendMessage } = useSendMessage({
+    openUnderstand,
+    openCommandControl: openCommand,
     // 开始时
     onStartReply: () => {
       setAiState(APState.Replying)
@@ -136,13 +166,50 @@ const DitingTanqi: FC<PropsType> = memo(() => {
     queryFn: async () => {
       const res = await getChats(chatId!)
       return res.data
+        ?.map((e) => ({
+          ...e,
+          content: shouldJson(e.content) ?? e.content,
+        }))
+        .filter((e) => {
+          if (typeof e.content === 'object') {
+            if (e.content.images) {
+              return true
+            }
+            return false
+          }
+          return !!e.content
+        })
     },
     enabled: !!chatId,
   })
 
+  const { replyingContent: taskUnderstandingReplyingContent } =
+    useTaskUnderstanding(openUnderstand, chatId ?? 0, {
+      onStopMessage: (content) => {
+        setApendedRows((prev) => [
+          ...prev,
+          {
+            role: 'assistant',
+            content,
+            created_at: dayjs().format(),
+          },
+        ])
+        setAiState(APState.Idle)
+      },
+    })
+
   // 显示的内容
   const conversationDetailData = useMemo(() => {
     const data = [...(chatDetail ?? []), ...appendedRows]
+    // 任务理解内容
+    if (taskUnderstandingReplyingContent) {
+      data.push({
+        role: 'assistant',
+        content: taskUnderstandingReplyingContent,
+        created_at: dayjs().format(),
+      })
+    }
+    // 回复内容
     if (replyingContent) {
       data.push({
         role: 'assistant',
@@ -151,43 +218,78 @@ const DitingTanqi: FC<PropsType> = memo(() => {
       })
     }
     return data
-  }, [chatDetail, appendedRows, replyingContent])
+  }, [
+    chatDetail,
+    appendedRows,
+    replyingContent,
+    taskUnderstandingReplyingContent,
+  ])
 
   return (
     <div className="tanqi size-full overflow-hidden flex flex-col">
       <div className="grow flex flex-col overflow-hidden">
-        {creating || isLoading ? (
-          <div className="size-full flex items-center justify-center">
-            <AppSpin />
-          </div>
-        ) : !chatId || (!chatDetail?.length && !appendedRows.length) ? (
-          <TanqiWelCome />
-        ) : (
-          <ConversationDetail aiState={aiState} data={conversationDetailData} />
-        )}
-        {/* 工具栏 */}
-        <div className="mx-2 flex justify-between">
-          <div></div>
-          <div className="flex gap-2 items-center">
-            <IconButton
-              className="text-sm"
-              toolTipProps={{ title: t('tanqi.createChat.title') }}
-              onClick={() => {
-                const nextSearchParams = new URLSearchParams(searchParams)
-                nextSearchParams.delete('chat')
-                setSearchParams(nextSearchParams)
-              }}
-            >
-              <IconPlus />
-            </IconButton>
-            <Conversations />
+        <div className="grow overflow-hidden flex flex-col relative">
+          {creating || isLoading ? (
+            <div className="size-full flex items-center justify-center">
+              <AppSpin />
+            </div>
+          ) : !chatId || (!chatDetail?.length && !appendedRows.length) ? (
+            <TanqiWelCome />
+          ) : (
+            <ConversationDetail
+              aiState={aiState}
+              data={conversationDetailData}
+            />
+          )}
+          {/* 工具栏 */}
+          <div className="right-4 left-2 pb-2 flex justify-between items-end absolute bottom-0 h-16 bg-gradient-to-b from-transparent to-ground-2 ">
+            <div></div>
+            <div className="flex gap-2 items-center">
+              <IconButton
+                className="text-sm"
+                toolTipProps={{ title: t('tanqi.createChat.title') }}
+                onClick={() => {
+                  const nextSearchParams = new URLSearchParams(searchParams)
+                  nextSearchParams.delete('chat')
+                  setSearchParams(nextSearchParams, { replace: true })
+                }}
+              >
+                <IconPlus />
+              </IconButton>
+              <Conversations />
+            </div>
           </div>
         </div>
-        <div className="m-2">
+
+        <div
+          className="mb-2 mx-2"
+          onKeyDown={(e) => e.stopPropagation()}
+          onKeyUp={(e) => e.stopPropagation()}
+        >
           <TanqiSender
             loading={creating || sending}
             onSubmit={handleSubmit}
             onCancel={handleStop}
+            foolter={
+              <div className="flex gap-2">
+                <Button
+                  size="small"
+                  icon={<IconIntelligence />}
+                  type={openUnderstand ? 'primary' : 'default'}
+                  onClick={() => setOpenUnderstand(!openUnderstand)}
+                >
+                  {t('tanqi.taskUnderstanding.title')}
+                </Button>
+                <Button
+                  size="small"
+                  icon={<IconCommand />}
+                  type={openCommand ? 'primary' : 'default'}
+                  onClick={() => setOpenCommand(!openCommand)}
+                >
+                  {t('tanqi.commandControl.title')}
+                </Button>
+              </div>
+            }
           />
         </div>
       </div>

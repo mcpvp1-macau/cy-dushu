@@ -1,9 +1,11 @@
 import { shouldShowError, withInternational } from './interceptors'
 import LiqunAxios from './liqunAxios'
 
+export const baseURL = '/ditingTanqiServer'
+
 const serverDitingTanqi = new LiqunAxios<'ditingTanqi'>({
-  baseURL: `/ditingTanqiServer/tanqi-diting`,
-  timeout: 60_000,
+  baseURL: `${baseURL}/tanqi-diting`,
+  timeout: 180_000,
 })
 
 serverDitingTanqi.interceptors.request.use((config) => {

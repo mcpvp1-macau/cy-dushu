@@ -1,10 +1,12 @@
 import { Sender } from '@ant-design/x'
 import useASR from '../../Tanqi/utils/asr'
+import { t } from 'i18next'
 
 type PropsType = {
   loading?: boolean
   onSubmit: (message: string) => void
   onCancel: () => void
+  foolter?: React.ReactNode
 }
 
 /** 檀棋会话发送器 */
@@ -23,6 +25,7 @@ const TanqiSender: FC<PropsType> = memo((props) => {
 
   return (
     <Sender
+      placeholder={t('tanqi.sender.placeholder')}
       value={sendValue + offlineMsg + onlineMsg}
       loading={props.loading}
       allowSpeech={{
@@ -49,6 +52,23 @@ const TanqiSender: FC<PropsType> = memo((props) => {
         setSendValue('')
       }}
       onCancel={props.onCancel}
+      actions={false}
+      footer={({ components }) => {
+        const { SendButton, LoadingButton, SpeechButton } = components
+        return (
+          <div className="flex justify-between items-end px-3 pb-3">
+            <div>{props.foolter}</div>
+            <div className="flex gap-1">
+              <SpeechButton />
+              {props.loading ? (
+                <LoadingButton type="default" />
+              ) : (
+                <SendButton type="primary" />
+              )}
+            </div>
+          </div>
+        )
+      }}
     />
   )
 })
