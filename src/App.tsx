@@ -8,7 +8,6 @@ import { AppMsgContext, msgMitt } from './hooks/useAppMsg'
 import { NotificationContext } from './hooks/useNotification.ts'
 import GlobalState from './components/GlobalState'
 import Right from './pages/right'
-import AppViewSuspense from './components/AppViewSuspense'
 import RightTools from './components/right-tools'
 import { themeConfig } from './config/theme-config'
 import AppEmpty from './components/AppEmpty.tsx'
@@ -24,6 +23,8 @@ import backtracking from './router/modules/backtracking'
 import share from './router/modules/share.tsx'
 import { XProvider } from '@ant-design/x'
 import Update from './components/Update'
+import { Suspense } from 'react'
+import AppSpin from './components/AppSpin.tsx'
 const hidenSet = new Set([
   controlRoom.id,
   sources.id,
@@ -95,9 +96,13 @@ const App = () => {
                 {!hideAppHeaderAndNavigator && <AppNavigator />}
                 <main className="flex-grow bg-ground-1 relative overflow-hidden z-10">
                   <div className="absolute h-full z-20 overflow-hidden">
-                    <AppViewSuspense>
+                    <Suspense
+                      fallback={
+                        <AppSpin className="abs-center fixed" size="large" />
+                      }
+                    >
                       <Outlet />
-                    </AppViewSuspense>
+                    </Suspense>
                   </div>
                   {hide && (
                     <>

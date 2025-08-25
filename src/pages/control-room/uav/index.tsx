@@ -8,46 +8,57 @@ import {
   useCreateUavControlRoomStore,
 } from '@/store/context-store/useUavControlRoom.store'
 import { useStore } from 'zustand'
-import ControlRoomVideo from './components/ControlRoomVideo'
 import AsideToolBar from './components/AsideToolBar'
 import ControlRoomUavCameraSwitch from './components/CameraSwitch'
 import FallbackMessage from './components/FallbackMessage'
-import AsideButtons from './components/AsideButtons'
-import BottomButtons from './components/BottomButtons'
 import ControlCMDSender from './components/ControlCMDSender'
 import Zoom from './components/Zoom'
-import FlyParamsSetting from './components/FlyParamsSetting'
-import ControlRoomUavMap from './components/ControlRoomMap'
 import useServerEventMsg from './hooks/useServerEventMsg'
 import IconCameraVideo from '@/assets/icons/jsx/IconCameraVideo'
 import IconMap from '@/assets/icons/jsx/IconMap'
 import IconAISwitch from '@/assets/icons/jsx/IconAISwitch'
-import DeviceAlgorithmList from '@/components/device/algorithm/DeviceAlgorithmList'
 import { DeviceEnum } from '@/enum/device'
-import UavDetailData from '@/pages/right/DeviceDetail/UavDetail/components/UavDetailData'
 import StateResolver from './components/StateResolver'
 import DynamicLayoutRoot from '@/components/DynamicLayout'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import GimbalLeft from './components/GimbalLeft'
 import IconPayload from '@/assets/icons/jsx/IconPayload'
-import UavPayload from './components/Payload'
 import IconFlightParams from '@/assets/icons/jsx/uav/IconFlightParams'
 import IconDeviceData from '@/assets/icons/jsx/IconDeviceData'
 import IconFlightOperation from '@/assets/icons/jsx/uav/IconFlightOperation'
 import { useUavControlRoomLayoutStore } from './hooks/useUavControlRoomLayout.store'
 import IconDrawArea from '@/assets/icons/jsx/right-tools/IconDrawArea'
-import RightOverlayDetail from './components/right_detail/Overlay'
 import useControlRoomTargetInfoStore from '@/store/control-room/useTargetInfo.store'
 import { useLocation } from 'react-router'
 import InitialPointFly from './components/InitialPointFly'
 import IconTanQi from '@/assets/icons/jsx/IconTanQi'
 import IconControl from '@/assets/icons/jsx/IconControl'
 import MenuIconEvents from '@/assets/icons/jsx/menus/MenuIconEvents'
-import ControlRoomEventDetail from './components/EventDetail'
 import DeferredRender from '@/components/DeferredRender'
-import ControlParamsSetting from './components/ControlParamsSetting'
 import { useListenRealProcessedResults } from '@/store/map/useReconstruction2DMap.store'
-import DitingTanqi from './components/DitingTanqi/DitingTanqi'
+import { lazy } from 'react'
+import ParentVideoAlert from './components/ParentVideoAlert'
+
+const ControlRoomUavMap = lazy(() => import('./components/ControlRoomMap'))
+const DitingTanqi = lazy(() => import('./components/DitingTanqi/DitingTanqi'))
+const ControlRoomVideo = lazy(() => import('./components/ControlRoomVideo'))
+const RightOverlayDetail = lazy(
+  () => import('./components/right_detail/Overlay'),
+)
+const DeviceAlgorithmList = lazy(
+  () => import('@/components/device/algorithm/DeviceAlgorithmList'),
+)
+const UavDetailData = lazy(
+  () => import('@/pages/right/DeviceDetail/UavDetail/components/UavDetailData'),
+)
+const AsideButtons = lazy(() => import('./components/AsideButtons'))
+const BottomButtons = lazy(() => import('./components/BottomButtons'))
+const UavPayload = lazy(() => import('./components/Payload'))
+const ControlRoomEventDetail = lazy(() => import('./components/EventDetail'))
+const FlyParamsSetting = lazy(() => import('./components/FlyParamsSetting'))
+const ControlParamsSetting = lazy(
+  () => import('./components/ControlParamsSetting'),
+)
 
 type PropsType = unknown
 
@@ -198,6 +209,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
           </main>
         </div>
         <ControlCMDSender />
+        <ParentVideoAlert />
       </UavControlRoomStoreContext.Provider>
     </DeviceDetailStoreContext.Provider>
   )

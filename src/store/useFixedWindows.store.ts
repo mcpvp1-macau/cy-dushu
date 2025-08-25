@@ -37,7 +37,7 @@ type ActionsType = {
     window: Omit<WindowType, 'id' | 'zIndex' | 'layout'> & {
       layout?: Partial<WindowType['layout']>
     },
-  ) => void
+  ) => string
   removeWindow: (id: string) => void
   updateWindow: (id: string, window: Partial<WindowType>) => void
   updateActiveWindow: (id: string) => void
@@ -49,6 +49,7 @@ const useFixedWindowsStore = create<StateType & ActionsType>()((set, get) => ({
   maxZIndex: 0,
   activeWindowId: null,
   addWindow: (e) => {
+    const id = v4()
     const newItem = {
       ...e,
       id: v4(),
@@ -64,6 +65,7 @@ const useFixedWindowsStore = create<StateType & ActionsType>()((set, get) => ({
     set((state) => ({
       windows: [...state.windows, newItem],
     }))
+    return id
   },
   updateWindow: (id, window) => {
     set((state) => ({

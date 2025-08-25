@@ -1,4 +1,4 @@
-import { useSize, useThrottleFn } from 'ahooks'
+import { useThrottleFn, useUpdateEffect } from 'ahooks'
 import { DynamicLayout, DynamicLayoutType } from '..'
 import SplitBar from './SplitBar'
 import { Fragment } from 'react'
@@ -7,39 +7,25 @@ type PropsType = {
   layout: DynamicLayoutType & {
     type: 'row' | 'col'
   }
+  // 原先需要内部获取, 因为 useEffect 有延迟性, 而且可以通过外部计算直接出来, 所以改为传入
+  /** 容器大小 (宽度或高度) */
+  containerSize: number
   onLayoutChange: (layout: DynamicLayoutType) => void
 }
 
 export const MIN_SIZE = 32
 
 const DynamicLayoutSplitter: FC<PropsType> = memo(
-  ({ layout, onLayoutChange }) => {
-    const containerRef = useRef<HTMLDivElement | null>(null)
-    const size = useSize(containerRef)
-
-    // const [sizes, setSizes] = useState<number[]>([])
-    const sz = layout.type === 'row' ? size?.width : size?.height
-    const [startPos, setStartPos] = useState(0)
-    const [operateIndex, setOperateIndex] = useState(-1)
-
-    const [sizes, setSizes] = useState(() => layout?.children?.map((e) => e.size))
-    const startSizes = useRef(sizes)
-
-    // 当容器大小变化时，重新计算子元素的大小
-    useEffect(() => {
-      if (!sz) {
-        return
-      }
-
+  ({ layout, containerSize: sz, onLayoutChange }) => {
+    // 获取大小 (用于更新和初始化)
+    const getSizes = useMemoizedFn(() => {
       const gapSize = (layout.children.length - 1) * 8
       const totalSize = sz - gapSize
-
       // 决定是否使用默认大小
       const useSizes = layout.children.map((e) => e.size)
       const totalWeight = useSizes.reduce((acc, e) => acc + e, 0)
       let totWeight2 = 0
       const newSizes = new Array(layout.children.length).fill(0)
-
       let minCnt = 0
       // 先处理小于最小值的情况
       for (let i = 0; i < useSizes.length; i++) {
@@ -63,8 +49,19 @@ const DynamicLayoutSplitter: FC<PropsType> = memo(
         }
       }
 
-      setSizes(newSizes)
+      return newSizes
+    })
+
+    const [sizes, setSizes] = useState<number[]>(() => getSizes())
+    const [startPos, setStartPos] = useState(0)
+    const [operateIndex, setOperateIndex] = useState(-1)
+
+    // 当容器大小变化时，重新计算子元素的大小
+    useUpdateEffect(() => {
+      setSizes(getSizes())
     }, [sz, layout.children])
+
+    const startSizes = useRef(sizes)
 
     // 处理拖拽事件
     const { run: handleResize } = useThrottleFn(
@@ -115,7 +112,6 @@ const DynamicLayoutSplitter: FC<PropsType> = memo(
 
     return (
       <div
-        ref={containerRef}
         className={clsx('size-full flex', {
           'flex-col': layout.type === 'col',
         })}
@@ -153,6 +149,7 @@ const DynamicLayoutSplitter: FC<PropsType> = memo(
                     }),
                   })
                 }}
+                containerSize={sizes[i]}
               />
             </div>
           </Fragment>

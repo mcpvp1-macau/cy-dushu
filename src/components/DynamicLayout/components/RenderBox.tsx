@@ -1,14 +1,15 @@
-import { memo, ReactNode, type FC } from 'react'
+import { memo, ReactNode, Suspense, type FC } from 'react'
 import useDynamicLayoutStore from '../store/useDynamicLayout.store'
 import { DynamicLayoutType } from '..'
 import { cloneDeep, get, set } from 'lodash'
 import DynamicLayoutFullTabs from './DynamicLayoutFullTabs'
+import AppSpin from '@/components/AppSpin'
 
 type PropsType = {
   componentMap: Record<string, ReactNode>
   layout: DynamicLayoutType
   fullTabsPath?: string
-  onLayoutChange: (layout: DynamicLayoutType) => void
+  onLayoutChange?: (layout: DynamicLayoutType) => void
 }
 
 const RenderBox: FC<PropsType> = memo(
@@ -31,7 +32,7 @@ const RenderBox: FC<PropsType> = memo(
           }
           return
         } else {
-          for (const e of (layout?.children || [])) {
+          for (const e of layout?.children || []) {
             dfs(e)
           }
         }
@@ -69,7 +70,7 @@ const RenderBox: FC<PropsType> = memo(
               onLayoutChange={(l) => {
                 const cloned = cloneDeep(layout)
                 set(cloned, fullTabsPath, l)
-                onLayoutChange(cloned)
+                onLayoutChange?.(cloned)
               }}
             />
           </div>
@@ -112,7 +113,9 @@ const RenderBox: FC<PropsType> = memo(
               })}
               style={style}
             >
-              {component}
+              <Suspense fallback={<AppSpin className="abs-center" />}>
+                {component}
+              </Suspense>
             </div>
           )
         })}

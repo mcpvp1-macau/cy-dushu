@@ -6,7 +6,6 @@ import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import useMixARStore from '@/store/control-room/useMixAR.store'
 import Avoidance from './components/Avoidance'
-import ARScene from './components/ARScene'
 import ARSceneCesium from './components/ARSceneCesium'
 import { AiObject } from '@/components/Video/Jessibuca/sei-types/ai-data'
 import useSmarkTrack from '@/hooks/device/useSmarkTrack'

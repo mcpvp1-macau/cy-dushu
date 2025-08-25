@@ -9,6 +9,8 @@ import { DynamicLayoutType } from '..'
 import IconRight from '@/assets/icons/jsx/IconRight'
 import useDynamicLayoutStore from '../store/useDynamicLayout.store'
 import IconClose from '@/assets/icons/jsx/IconClose'
+import { useLayoutEffect } from 'react'
+import { isEqual } from 'lodash'
 
 export type DynamicLayoutTabsType = {
   key: string
@@ -50,10 +52,11 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
 
   // 更新该渲染组件的边界
   const updateMergeBounds = useDynamicLayoutStore((s) => s.updateMergeBounds)
-  useEffect(() => {
+  const lastRect = useRef<[number, number, number, number] | null>(null)
+  useLayoutEffect(() => {
     const bounds: Record<string, [number, number, number, number]> = {}
     const rect = containerRef.current?.getBoundingClientRect()
-    if (!rect) {
+    if (!rect || !size) {
       return
     }
     const r: [number, number, number, number] = [
@@ -62,9 +65,14 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
       rect.bottom,
       rect.left,
     ]
+    if (lastRect.current && isEqual(lastRect.current, r)) {
+      return
+    }
+    lastRect.current = r
     layout.children.forEach((e) => {
       bounds[e.key] = r
     })
+
     updateMergeBounds(bounds)
   }, [w, h])
 
