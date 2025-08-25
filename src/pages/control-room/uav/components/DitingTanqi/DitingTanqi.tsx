@@ -21,6 +21,9 @@ import { Button } from 'antd'
 import IconIntelligence from '@/assets/icons/jsx/IconIntelligence'
 import useTaskUnderstanding from './hooks/useTaskUnderstanding'
 import IconCommand from '@/assets/icons/jsx/IconCommand'
+import { useInViewport } from 'ahooks'
+import useAllMCP from './hooks/useAllMCP'
+import { LoadingOutlined } from '@ant-design/icons'
 
 type PropsType = unknown
 
@@ -45,6 +48,10 @@ const DitingTanqi: FC<PropsType> = memo(() => {
   const [openUnderstand, setOpenUnderstand] = useState(false)
   // 指令控制开关
   const [openCommand, setOpenCommand] = useState(false)
+
+  const toolsRef = useRef<HTMLDivElement>(null)
+  const [inViewport] = useInViewport(toolsRef)
+  const { mcps, isLoading: mcpLoading } = useAllMCP(!!inViewport)
 
   // 0 空闲 1 思考中 2 回答中
   const [aiState, setAiState] = useState<APState>(APState.Idle)
@@ -101,6 +108,7 @@ const DitingTanqi: FC<PropsType> = memo(() => {
   const { replyingContent, sendMessage } = useSendMessage({
     openUnderstand,
     openCommandControl: openCommand,
+    mcps,
     // 开始时
     onStartReply: () => {
       setAiState(APState.Replying)
@@ -242,9 +250,12 @@ const DitingTanqi: FC<PropsType> = memo(() => {
             />
           )}
           {/* 工具栏 */}
-          <div className="right-4 left-2 pb-2 flex justify-between items-end absolute bottom-0 h-16 bg-gradient-to-b from-transparent to-ground-2 ">
+          <div
+            className="right-4 left-2 pb-2 flex justify-between items-end absolute bottom-0 h-16 bg-gradient-to-b from-transparent to-ground-2 pointer-events-none"
+            ref={toolsRef}
+          >
             <div></div>
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-2 items-center pointer-events-auto">
               <IconButton
                 className="text-sm"
                 toolTipProps={{ title: t('tanqi.createChat.title') }}
@@ -272,22 +283,30 @@ const DitingTanqi: FC<PropsType> = memo(() => {
             onCancel={handleStop}
             foolter={
               <div className="flex gap-2">
-                <Button
-                  size="small"
-                  icon={<IconIntelligence />}
-                  type={openUnderstand ? 'primary' : 'default'}
-                  onClick={() => setOpenUnderstand(!openUnderstand)}
-                >
-                  {t('tanqi.taskUnderstanding.title')}
-                </Button>
-                <Button
-                  size="small"
-                  icon={<IconCommand />}
-                  type={openCommand ? 'primary' : 'default'}
-                  onClick={() => setOpenCommand(!openCommand)}
-                >
-                  {t('tanqi.commandControl.title')}
-                </Button>
+                {mcpLoading ? (
+                  <LoadingOutlined />
+                ) : (
+                  <>
+                    <Button
+                      size="small"
+                      icon={<IconIntelligence />}
+                      type={openUnderstand ? 'primary' : 'default'}
+                      disabled={!mcps['taskunderstand-114']}
+                      onClick={() => setOpenUnderstand(!openUnderstand)}
+                    >
+                      {t('tanqi.taskUnderstanding.title')}
+                    </Button>
+                    <Button
+                      size="small"
+                      icon={<IconCommand />}
+                      type={openCommand ? 'primary' : 'default'}
+                      disabled={!mcps['tanqi-mcp-dushu-flycontrol']}
+                      onClick={() => setOpenCommand(!openCommand)}
+                    >
+                      {t('tanqi.commandControl.title')}
+                    </Button>
+                  </>
+                )}
               </div>
             }
           />

@@ -10,10 +10,16 @@ export default mergeConfig(
         '/ditingMCPServer': {
           target: 'http://172.21.30.114:8052',
           rewrite: (path) => path.replace(/^\/ditingMCPServer/, ''),
+          headers: {
+            ['tq-authorization']: 'sk-CUV0SoZsDKYG9LQmQPtQQXSQFnpa60JL',
+          },
         },
         '/ditingTanqiServer': {
           target: 'http://172.21.30.114:8090',
           rewrite: (path) => path.replace(/^\/ditingTanqiServer/, ''),
+          headers: {
+            ['tq-authorization']: 'sk-CUV0SoZsDKYG9LQmQPtQQXSQFnpa60JL',
+          },
         },
         // 4A 接口
         '/proxyApi': {

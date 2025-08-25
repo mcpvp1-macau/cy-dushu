@@ -24,6 +24,27 @@ declare namespace API_DITING_TANQI {
       /* 角色 */
       role?: string
     }
+
+    /**
+     * McpServerInfo
+     */
+    interface McpServerInfo {
+      create_time?: string
+      enabled?: boolean
+      id: number
+      name: string
+      sse_endpoint?: string
+      status?: 'Online' | 'Offline'
+      sync_time?: Date
+      tags?: string[]
+      tools?: {
+        description?: string
+        name: string
+        [property: string]: any
+      }[]
+      url?: string
+      [property: string]: any
+    }
   }
   // ------------------ req ------------------
   namespace req {}

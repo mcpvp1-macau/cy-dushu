@@ -1,12 +1,10 @@
-import { shouldShowError, withInternational } from './interceptors'
+import { shouldShowError } from './interceptors'
 import LiqunAxios from './liqunAxios'
 
 const serverDitingMCP = new LiqunAxios<'ditingTanqi'>({
   baseURL: `/ditingMCPServer`,
   timeout: 60_000,
 })
-
-serverDitingMCP.interceptors.request.use(withInternational)
 
 serverDitingMCP.interceptors.response.use((resp) => {
   if (!resp.data?.success) {

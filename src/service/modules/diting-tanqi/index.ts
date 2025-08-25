@@ -61,3 +61,15 @@ export const stopChat = async (conversationId: number) => {
     `/user/conversations/${conversationId}/chats/stop`,
   )
 }
+
+/** 获取所有MCP服务器 */
+export const getMCPAll = async (tag?: string) => {
+  return serverDitingTanqi.get<API_DITING_TANQI.domain.McpServerInfo[]>(
+    '/pub/mcp_servers',
+    {
+      params: {
+        tag,
+      },
+    },
+  )
+}

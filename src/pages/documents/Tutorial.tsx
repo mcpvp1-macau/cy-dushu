@@ -5,8 +5,6 @@ type PropsType = unknown
 const PageDucomentTutorial: FC<PropsType> = memo(() => {
   const filename = useParams().name
 
-  console.log('filename', filename)
-
   return (
     <div className="flex-1">
       <iframe
