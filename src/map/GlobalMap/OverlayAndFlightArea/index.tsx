@@ -22,8 +22,9 @@ const OverlayAndFlightArea: FC<PropsType> = () => {
       const pickedObject = viewer.scene.pick(e.position)
       if (Cesium.defined(pickedObject)) {
         const primitive = pickedObject.primitive
-        const id =
-          primitive.id ?? primitive._instanceIds?.[0] ?? primitive.props
+        const id = (primitive.id ??
+          primitive._instanceIds?.[0] ??
+          primitive.props) as string
         // 在这里处理双击事件，例如打印信息或执行其他操作
         if (id?.startsWith('overlay--')) {
           const overlayId = id.slice('overlay--'.length)

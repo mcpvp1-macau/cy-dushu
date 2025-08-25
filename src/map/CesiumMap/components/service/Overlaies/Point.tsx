@@ -1,9 +1,8 @@
 import { argbToHex } from '@/utils/color'
 import { shouldJson } from '@/utils/json'
-import { Label, useCesium } from 'resium'
+import { Label, PointPrimitive, useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { useMapLayerAndOverlayConfigStore } from '@/store/map/useLayerAndOverlay.store'
-import { attempt } from 'lodash'
 
 type PropsType = {
   data: API_LAYER_OVERLAY.domain.Overlay
@@ -19,57 +18,6 @@ const OverlayPoint: FC<PropsType> = memo(({ data }) => {
 
   const { viewer } = useCesium()
 
-  useEffect(() => {
-    if (!viewer) {
-      return
-    }
-    if (hiddenOverlayIds.has(data.overlayId)) {
-      return
-    }
-
-    if (!postion) {
-      return
-    }
-
-    const styleConfig = shouldJson(data.overlayStyleConfig)
-
-    const isTransparent = styleConfig.color['-argb'] === '0'
-    const hex = isTransparent
-      ? '0'
-      : argbToHex(String(styleConfig.color['-argb']))[0]
-    const position = Cesium.Cartesian3.fromDegrees(
-      postion[0],
-      postion[1],
-      postion[2] ?? 0,
-    )
-
-    const entity = new Cesium.Entity({
-      id: `overlay--${data.overlayId}--${data.overlayType}`,
-      position,
-      point: {
-        color: Cesium.Color.fromCssColorString(hex),
-        pixelSize: 10,
-        outlineColor: Cesium.Color.fromCssColorString('#fff'),
-        outlineWidth: 1,
-        show: true,
-        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
-        distanceDisplayCondition: new Cesium.DistanceDisplayCondition(
-          0,
-          500_000,
-        ),
-        disableDepthTestDistance: Infinity,
-      },
-    })
-
-    viewer.entities.add(entity)
-
-    return () => {
-      attempt(() => {
-        viewer.entities.remove(entity)
-      })
-    }
-  }, [hiddenOverlayIds, data.overlayId, data.layerId, postion])
-
   if (hiddenOverlayIds.has(data.overlayId)) {
     return null
   }
@@ -81,13 +29,29 @@ const OverlayPoint: FC<PropsType> = memo(({ data }) => {
   const position = Cesium.Cartesian3.fromDegrees(
     postion[0],
     postion[1],
-    postion[2] ?? 0,
+    postion[2] ??
+      viewer?.scene.globe.getHeight(
+        Cesium.Cartographic.fromDegrees(postion[0], postion[1]),
+      ) ??
+      0,
   )
 
   return (
     <>
+      <PointPrimitive
+        id={`overlay--${data.overlayId}`}
+        position={position}
+        color={Cesium.Color.fromCssColorString(
+          argbToHex(
+            String(shouldJson(data.overlayStyleConfig).color['-argb']),
+          )[0],
+        )}
+        pixelSize={10}
+        outlineColor={Cesium.Color.fromCssColorString('#fff')}
+        outlineWidth={1}
+      />
       <Label
-        id={`overlay--${data.overlayId}--${data.overlayType}`}
+        id={`overlay--${data.overlayId}`}
         position={position}
         scale={0.2}
         verticalOrigin={Cesium.VerticalOrigin.BOTTOM}
@@ -102,7 +66,6 @@ const OverlayPoint: FC<PropsType> = memo(({ data }) => {
         backgroundPadding={new Cesium.Cartesian2(5, 5)}
         disableDepthTestDistance={Infinity}
         style={Cesium.LabelStyle.FILL_AND_OUTLINE}
-        heightReference={Cesium.HeightReference.CLAMP_TO_GROUND}
         distanceDisplayCondition={
           new Cesium.DistanceDisplayCondition(0, 200_000)
         }
