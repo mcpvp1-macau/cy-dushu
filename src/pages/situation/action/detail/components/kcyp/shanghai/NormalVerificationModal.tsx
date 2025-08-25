@@ -216,8 +216,8 @@ const KCYPNormalVerificationModal: FC<PropsType> = memo(
         saveMutation.mutate({
           ...orderData,
           ...values,
-          brokenPart: brokenPart.join(','),
-          otherBrokenPart: otherBrokenPart.join(','),
+          brokenPart: brokenPart?.join(','),
+          otherBrokenPart: otherBrokenPart?.join(','),
           caseHapTime: caseHapTimeFormat,
           extra: JSON.stringify({
             pictures: checkResults.map((e, i) => ({

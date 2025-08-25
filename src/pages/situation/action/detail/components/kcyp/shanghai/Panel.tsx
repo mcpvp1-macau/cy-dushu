@@ -90,8 +90,8 @@ const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
       saveMutation.mutate({
         ...data,
         ...values,
-        brokenPart: brokenPart.join(','),
-        otherBrokenPart: otherBrokenPart.join(','),
+        brokenPart: brokenPart?.join(','),
+        otherBrokenPart: otherBrokenPart?.join(','),
         caseHapTime: caseHapTimeFormat,
       })
     },
