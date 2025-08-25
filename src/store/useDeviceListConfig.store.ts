@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { devtools } from 'zustand/middleware'
+import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 
 type StateType = {
   /** 当前设备类型 */
@@ -30,26 +30,32 @@ type ActionType = {
 /** 设备列表配置 */
 const useDeviceListConfigStore = create<StateType & ActionType>()(
   devtools(
-    (set) => ({
-      activeDeviceType: 'all',
-      isOnline: false,
-      isTask: false,
-      isNotTask: false,
-      hiddenDeviceIds: {},
-      hiddenGroupIds: {},
-      setActiveDeviceType: (v) => {
-        set({ activeDeviceType: v }, false, 'setActiveDeviceType')
+    persist(
+      (set) => ({
+        activeDeviceType: 'all',
+        isOnline: false,
+        isTask: false,
+        isNotTask: false,
+        hiddenDeviceIds: {},
+        hiddenGroupIds: {},
+        setActiveDeviceType: (v) => {
+          set({ activeDeviceType: v }, false, 'setActiveDeviceType')
+        },
+        setDeviceStatus: (payload) => {
+          set(payload, false, 'setDeviceStatus')
+        },
+        updateHiddenDeviceIds: (ids) => {
+          set({ hiddenDeviceIds: ids }, false, 'updateHiddenDeviceIds')
+        },
+        updateHiddenGroupIds: (ids) => {
+          set({ hiddenGroupIds: ids }, false, 'updateHiddenGroupIds')
+        },
+      }),
+      {
+        name: 'device-list-config',
+        storage: createJSONStorage(() => localStorage),
       },
-      setDeviceStatus: (payload) => {
-        set(payload, false, 'setDeviceStatus')
-      },
-      updateHiddenDeviceIds: (ids) => {
-        set({ hiddenDeviceIds: ids }, false, 'updateHiddenDeviceIds')
-      },
-      updateHiddenGroupIds: (ids) => {
-        set({ hiddenGroupIds: ids }, false, 'updateHiddenGroupIds')
-      },
-    }),
+    ),
     {
       name: 'device-list-config',
       enabled: import.meta.env.DEV && false,
