@@ -15,6 +15,8 @@ globalConfig.loginUrl ??= `${globalConfig.loginHttps ? 'https' : 'http'}://${
 
 globalConfig.uavHeightLimit ??= 1000
 
+globalConfig.enableJessibucaMetrics ??= true
+
 class GlobalConfig {
   systemName = 'jingqi'
   title = '牍术·无人装备智能引擎'
@@ -87,6 +89,9 @@ class GlobalConfig {
   accessKeyId?: string
   /** 访问密钥 */
   secretAccessKey?: string
+
+  /** 是否启用 jessibuca 监控上报 */
+  enableJessibucaMetrics?: boolean
 
   constructor(def: ConfigType) {
     Object.keys(def).forEach((key) => {

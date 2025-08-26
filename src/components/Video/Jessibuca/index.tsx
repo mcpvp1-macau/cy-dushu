@@ -10,11 +10,8 @@ import { useInterval } from 'ahooks'
 import usePropertiesProtobuf from './hooks/usePropertiesProtobuf'
 import SeiEnum, { SEI_TYPE } from './sei-enum'
 import useProtobufSei from './hooks/useProtobufSei'
-import useWebSocket from 'react-use-websocket'
-import { heartbeat } from '@/constant/websocket'
-import useUserStore from '@/store/useUser.store'
-import useDeviceStats from './hooks/useDeviceStats'
-import './index.less';
+import './index.less'
+import Metrics from './Metrics'
 
 const SEND_PING_INTERVAL = 1000
 const WS_TIMEOUT = 3000
@@ -59,6 +56,8 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
   const videoElementRef = useRef<HTMLVideoElement | null>(null)
 
   const jessibucaRef = useRef<JessibucaPro | null>(null)
+  const [jessibucaInstance, setJessibucaInstance] =
+    useState<JessibucaPro | null>(null)
 
   const videoEncoderValue = useVideoEncoderStore((s) => s.videoEncoderValue)
 
@@ -177,45 +176,8 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
   })
 
   const openTime = useRef(Date.now())
-  const metricsURL = useMemo(() => {
-    const index = src.indexOf('/rtp')
-    const flvIndex = src.indexOf('.flv')
-
-    if (index === -1 || flvIndex === -1) {
-      return null
-    }
-
-    const metricsURL = `${src.slice(0, index)}/metrics?stream_id=${src.slice(
-      index + '/rtp/'.length,
-      flvIndex,
-    )}&client_id=${useUserStore.getState().user?.username ?? ''}_${dayjs(
-      openTime.current,
-    ).format('YYMMDD_HHmm_ssSSS')}`
-    return metricsURL
-  }, [src])
-
-  const deviceStatus = useDeviceStats()
 
   const [ping, setPing] = useState(0)
-
-  const { sendJsonMessage, sendMessage } = useWebSocket(
-    metricsURL,
-    {
-      heartbeat,
-      reconnectAttempts: 0x3f3f3f3f,
-      retryOnError: true,
-      reconnectInterval: 5_000,
-      shouldReconnect: () => true,
-      onOpen: () => {
-        sendMessage('ping')
-      },
-    },
-    true,
-  )
-
-  const handleStats = (stats) => {
-    sendJsonMessage(Object.assign(stats, deviceStatus))
-  }
 
   const lastMsgTime = useRef(0)
 
@@ -326,8 +288,6 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
       },
     )
 
-    jessibucaRef.current.on('stats' as JessibucaPro.EVENTS.stats, handleStats)
-
     jessibucaRef.current.on(
       'streamEnd' as JessibucaPro.EVENTS.streamEnd,
       () => {
@@ -353,9 +313,12 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
       lastMsgTime.current = now
     })
 
+    setJessibucaInstance(jessibucaRef.current)
+
     return () => {
       jessibucaRef.current?.destroy()
       jessibucaRef.current = null
+      setJessibucaInstance(null)
     }
   }, [videoEncoderValue])
 
@@ -386,7 +349,14 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
     jessibucaRef.current?.sendWebsocketMessage?.('ping')
   }, SEND_PING_INTERVAL)
 
-  return <div id={props.containerId} ref={ref} key={videoEncoderValue}></div>
+  return (
+    <>
+      <div id={props.containerId} ref={ref} key={videoEncoderValue}></div>
+      {globalConfig.enableJessibucaMetrics && jessibucaInstance && (
+        <Metrics jessibuca={jessibucaInstance} src={src} openTime={openTime} />
+      )}
+    </>
+  )
 })
 
 export default Jessibuca
