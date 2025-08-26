@@ -248,7 +248,11 @@ const KCYPNormalVerificationModal: FC<PropsType> = memo(
       const found = checkResults.find((e) => e.plateNo === carNo)
       if (found) {
         form.setFieldValue(carTypeFiled, found.plateType)
-        form.setFieldValue(carColorFiled, found.plateColor)
+        // 从颜色选项找找出对应的 value, 因为检测结果是算法检测出来的颜色, 值不一定是要求的枚举值
+        const carColorFound = carColorOptions.find(
+          (e) => e.label === found.plateColor || e.value === found.plateColor,
+        )
+        form.setFieldValue(carColorFiled, carColorFound?.value)
       }
     }
 
