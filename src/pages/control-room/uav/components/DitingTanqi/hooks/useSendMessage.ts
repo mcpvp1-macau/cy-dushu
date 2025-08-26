@@ -1,3 +1,4 @@
+import { ConfigType } from '@/global/config'
 import serverDitingTanqi from '@/service/servers/serverDitingTanqi'
 import { shouldJson } from '@/utils/json'
 import { useGetState } from 'ahooks'
@@ -22,7 +23,6 @@ const useSendMessage = (options?: {
   onStartReply?: () => void
   /** 结束回复时的回调 */
   onEndReply?: (content: string) => void
-  mcps: Record<string, API_DITING_TANQI.domain.McpServerInfo>
 }) => {
   // 回复内容
   const [replyingContent, setContent, getContent] = useGetState('')
@@ -33,17 +33,18 @@ const useSendMessage = (options?: {
       setContent('')
       setDone(false)
 
-      const mcp_servers: ReturnType<typeof mkMcpServer>[] = []
-      if (options?.openUnderstand && options?.mcps['taskunderstand-114']) {
-        mcp_servers.push(mkMcpServer(options.mcps['taskunderstand-114']))
+      const mcp_servers: NonNullable<ConfigType['mcps']>[string][] = []
+      if (
+        options?.openUnderstand &&
+        globalConfig.mcps?.['taskunderstand-114']
+      ) {
+        mcp_servers.push(globalConfig.mcps['taskunderstand-114'])
       }
       if (
         options?.openCommandControl &&
-        options?.mcps['tanqi-mcp-dushu-flycontrol']
+        globalConfig.mcps?.['tanqi-mcp-dushu-flycontrol']
       ) {
-        mcp_servers.push(
-          mkMcpServer(options.mcps['tanqi-mcp-dushu-flycontrol']),
-        )
+        mcp_servers.push(globalConfig.mcps['tanqi-mcp-dushu-flycontrol'])
       }
 
       try {
@@ -134,12 +135,13 @@ const useSendMessage = (options?: {
   }
 }
 
-const mkMcpServer = (payload: API_DITING_TANQI.domain.McpServerInfo) => {
-  return {
-    name: payload.name,
-    url: (payload.url || '') + (payload.sse_endpoint || ''),
-    tools: payload.tools?.map((t) => ({ name: t.name })) || [],
-  }
-}
+// /** @deprecated */
+// const mkMcpServer = (payload: API_DITING_TANQI.domain.McpServerInfo) => {
+//   return {
+//     name: payload.name,
+//     url: (payload.url || '') + (payload.sse_endpoint || ''),
+//     tools: payload.tools?.map((t) => ({ name: t.name })) || [],
+//   }
+// }
 
 export default useSendMessage

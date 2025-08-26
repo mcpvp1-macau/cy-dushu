@@ -21,9 +21,6 @@ import { Button } from 'antd'
 import IconIntelligence from '@/assets/icons/jsx/IconIntelligence'
 import useTaskUnderstanding from './hooks/useTaskUnderstanding'
 import IconCommand from '@/assets/icons/jsx/IconCommand'
-import { useInViewport } from 'ahooks'
-import useAllMCP from './hooks/useAllMCP'
-import { LoadingOutlined } from '@ant-design/icons'
 
 type PropsType = unknown
 
@@ -50,8 +47,8 @@ const DitingTanqi: FC<PropsType> = memo(() => {
   const [openCommand, setOpenCommand] = useState(false)
 
   const toolsRef = useRef<HTMLDivElement>(null)
-  const [inViewport] = useInViewport(toolsRef)
-  const { mcps, isLoading: mcpLoading } = useAllMCP(!!inViewport)
+  // const [inViewport] = useInViewport(toolsRef)
+  // const { mcps, isLoading: mcpLoading } = useAllMCP(!!inViewport)
 
   // 0 空闲 1 思考中 2 回答中
   const [aiState, setAiState] = useState<APState>(APState.Idle)
@@ -108,7 +105,6 @@ const DitingTanqi: FC<PropsType> = memo(() => {
   const { replyingContent, sendMessage } = useSendMessage({
     openUnderstand,
     openCommandControl: openCommand,
-    mcps,
     // 开始时
     onStartReply: () => {
       setAiState(APState.Replying)
@@ -283,30 +279,24 @@ const DitingTanqi: FC<PropsType> = memo(() => {
             onCancel={handleStop}
             foolter={
               <div className="flex gap-2">
-                {mcpLoading ? (
-                  <LoadingOutlined />
-                ) : (
-                  <>
-                    <Button
-                      size="small"
-                      icon={<IconIntelligence />}
-                      type={openUnderstand ? 'primary' : 'default'}
-                      disabled={!mcps['taskunderstand-114']}
-                      onClick={() => setOpenUnderstand(!openUnderstand)}
-                    >
-                      {t('tanqi.taskUnderstanding.title')}
-                    </Button>
-                    <Button
-                      size="small"
-                      icon={<IconCommand />}
-                      type={openCommand ? 'primary' : 'default'}
-                      disabled={!mcps['tanqi-mcp-dushu-flycontrol']}
-                      onClick={() => setOpenCommand(!openCommand)}
-                    >
-                      {t('tanqi.commandControl.title')}
-                    </Button>
-                  </>
-                )}
+                <Button
+                  size="small"
+                  icon={<IconIntelligence />}
+                  type={openUnderstand ? 'primary' : 'default'}
+                  disabled={!globalConfig.mcps?.['taskunderstand-114']}
+                  onClick={() => setOpenUnderstand(!openUnderstand)}
+                >
+                  {t('tanqi.taskUnderstanding.title')}
+                </Button>
+                <Button
+                  size="small"
+                  icon={<IconCommand />}
+                  type={openCommand ? 'primary' : 'default'}
+                  disabled={!globalConfig.mcps?.['tanqi-mcp-dushu-flycontrol']}
+                  onClick={() => setOpenCommand(!openCommand)}
+                >
+                  {t('tanqi.commandControl.title')}
+                </Button>
               </div>
             }
           />

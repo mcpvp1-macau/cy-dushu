@@ -15,6 +15,8 @@ globalConfig.loginUrl ??= `${globalConfig.loginHttps ? 'https' : 'http'}://${
 
 globalConfig.uavHeightLimit ??= 1000
 
+globalConfig.mcps ??= {}
+
 class GlobalConfig {
   systemName = 'jingqi'
   title = '牍术·无人装备智能引擎'
@@ -88,15 +90,13 @@ class GlobalConfig {
   /** 访问密钥 */
   secretAccessKey?: string
 
+  mcps?: Record<string, { url: string; tools: string[] }>
+
   constructor(def: ConfigType) {
-    Object.keys(def).forEach((key) => {
-      this[key] = def[key]
-    })
+    Object.assign(this, def)
   }
   merge(configs: ConfigType) {
-    Object.keys(configs).forEach((key) => {
-      this[key] = configs[key]
-    })
+    Object.assign(this, configs)
   }
 }
 
