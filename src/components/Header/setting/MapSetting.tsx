@@ -49,6 +49,10 @@ const MapSetting: FC<PropsType> = memo(() => {
       value: '5',
       label: t('setting.map.resolution.ultra'),
     },
+    {
+      value: '-1',
+      label: t('common.device'),
+    },
   ]
 
   const [size, setSize] = useState(-1)
