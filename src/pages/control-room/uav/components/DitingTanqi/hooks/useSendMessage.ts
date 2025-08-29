@@ -10,7 +10,7 @@ export const parseEvent = (eventText: string) => {
     }
   }
   return {
-    data: undefined,
+    data: shouldJson(eventText.trim()),
   }
 }
 
@@ -96,6 +96,7 @@ const useSendMessage = (options?: {
           for (const event of lines) {
             if (event.trim() === '') continue
             const eventData = parseEvent(event)
+
             const data = eventData.data
             const content: string | undefined =
               data?.choices?.[0]?.delta?.content
