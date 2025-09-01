@@ -8,17 +8,19 @@ export default mergeConfig(
       host: '0.0.0.0',
       proxy: {
         '/ditingMCPServer': {
-          target: 'http://172.21.30.114:8052',
+          target: 'http://api-mcp.jing-an.com:28080',
           rewrite: (path) => path.replace(/^\/ditingMCPServer/, ''),
+          changeOrigin: true,
           headers: {
-            ['tq-authorization']: 'sk-CUV0SoZsDKYG9LQmQPtQQXSQFnpa60JL',
+            ['tq-authorization']: 'sk-4e9betjXgdpdf23V3g2f5fef3gE52x3J11H4FFF',
           },
         },
         '/ditingTanqiServer': {
-          target: 'http://172.21.30.114:8090',
+          target: 'http://api-diting-dev.jing-an.com:28080',
           rewrite: (path) => path.replace(/^\/ditingTanqiServer/, ''),
+          changeOrigin: true,
           headers: {
-            ['tq-authorization']: 'sk-CUV0SoZsDKYG9LQmQPtQQXSQFnpa60JL',
+            ['tq-authorization']: 'sk-4e9betjXgdpdf23V3g2f5fef3gE52x3J11H4FFF',
           },
         },
         // 4A 接口
