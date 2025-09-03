@@ -7,10 +7,10 @@ import { useRebotDogControlRoomStore } from '@/store/context-store/useRebotDogCo
 import { Canvas, ThreeEvent } from '@react-three/fiber'
 import { Html, OrthographicCamera } from '@react-three/drei'
 import { Fragment } from 'react'
-import * as THREE from 'three'
 import { Vector3 } from 'three'
 import PointActionMap from './PointActionMap'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import RebotDogLatestTask from './components/LatestTask'
 
 const RebotDogMap: FC<unknown> = memo(() => {
   const x = useRebotDogControlRoomStore((s) => s.state.x || 0)
@@ -42,6 +42,7 @@ const RebotDogMap: FC<unknown> = memo(() => {
         url={activeMapUrl || '/pcd_data/test (1).pcd'}
         meshProps={{ onClick }}
       />
+      <RebotDogLatestTask />
       <Fragment>
         {/* <sprite scale={0.05} position={new Vector3(x, y, z)}>
           <spriteMaterial
@@ -52,8 +53,8 @@ const RebotDogMap: FC<unknown> = memo(() => {
             depthTest={false}
           ></spriteMaterial>
         </sprite> */}
-        <Html position={new Vector3(x, y, z)} center>
-          <div className="" style={{ width: '20px', height: '20px' }}>
+        <Html position={new Vector3(x, y, z)} center zIndexRange={[100, 0]}>
+          <div className="z-10" style={{ width: '20px', height: '20px' }}>
             <img src="/images/marker/icon/rebot_dog.svg" alt="" />
           </div>
         </Html>

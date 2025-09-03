@@ -13,7 +13,7 @@ import {
 import { Tooltip } from 'antd'
 import { isNil } from 'lodash'
 import { useShallow } from 'zustand/react/shallow'
-import LatestTask from './LatestTask'
+import LatestTask from '../../../../../components/device/LatestTask'
 import { useTitle } from 'ahooks'
 import { HTMLAttributes, lazy } from 'react'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'

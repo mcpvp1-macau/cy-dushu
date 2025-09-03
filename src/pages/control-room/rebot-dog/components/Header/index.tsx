@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom'
 import IconBattery from '@/assets/icons/jsx/IconBattery'
 import IconButton from '@/components/ui/button/IconButton'
 import IconBack from '@/assets/icons/jsx/IconBack'
+import LatestTask from '@/components/device/LatestTask'
 
 const useS = useRebotDogControlRoomStore
 
@@ -71,6 +72,7 @@ const HeaderLeft = memo(() => {
 
 const ControlRoomRebotDogHeader: FC = memo(() => {
   const appHeader = document.getElementById('app-header-center')
+  const deviceId = useDeviceDetailStore((s) => s.deviceId)
 
   const h = (
     <header className="h-7 flex justify-between gap-3 px-3 items-center text-sm">
@@ -79,6 +81,7 @@ const ControlRoomRebotDogHeader: FC = memo(() => {
         <ul className="flex justify-center gap-1 xl:gap-3 2xl:gap-5 whitespace-nowrap">
           <Battery />
           <Speed />
+          <LatestTask deviceId={deviceId} />
         </ul>
       </section>
       <section></section>
