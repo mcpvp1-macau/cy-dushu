@@ -1,11 +1,12 @@
-import WaylineAreaPathWorker from '@/worker/area_wayline_solution?worker'
-import { wrap } from 'comlink'
-import { WorkerAPI } from '@/worker/area_wayline_solution'
+// import WaylineAreaPathWorker from '@/worker/area_wayline_solution?worker'
+// import { wrap } from 'comlink'
+// import { WorkerAPI } from '@/worker/area_wayline_solution'
 import { useDebounceFn } from 'ahooks'
 import { toMercator, toWgs84 } from '@turf/turf'
 import useAreaWaylineStore from '@/store/wayline/uav-area-wayline/useAreaWayline.store'
 import { AirlinePoint } from '@/store/wayline/uav-airline/types'
 import { v4 } from 'uuid'
+import { get_polygon_area_wayline } from '@/wasm/area_wayline/area_wayline'
 
 type PropsType = unknown
 
@@ -19,10 +20,10 @@ const CalcAreaPath: FC<PropsType> = memo(() => {
   const polygon = useAreaWaylineStore((s) => s.templateConfig.polygon)
   const mainK = useAreaWaylineStore((s) => s.templateConfig.mainK)
 
-  const worker = useRef<ReturnType<typeof wrap<WorkerAPI>> | null>(null)
-  if (!worker.current) {
-    worker.current = wrap<WorkerAPI>(new WaylineAreaPathWorker())
-  }
+  // const worker = useRef<ReturnType<typeof wrap<WorkerAPI>> | null>(null)
+  // if (!worker.current) {
+  //   worker.current = wrap<WorkerAPI>(new WaylineAreaPathWorker())
+  // }
 
   const updateAirpointsConfig = useAreaWaylineStore(
     (s) => s.updateAirpointsConfig,
@@ -37,7 +38,7 @@ const CalcAreaPath: FC<PropsType> = memo(() => {
     async () => {
       if (
         !polygon ||
-        !worker.current ||
+        // !worker.current ||
         !takeOffRefPoint ||
         polygon.length < 3
       ) {
@@ -52,17 +53,27 @@ const CalcAreaPath: FC<PropsType> = memo(() => {
         },
       }).geometry.coordinates
       const takeOffPointRes = toMercator(takeOffRefPoint)
-      const res = await worker.current!.solve(
-        pg[0] as any,
+      const res = get_polygon_area_wayline(
+        pg[0].map((p) => ({ x: p[0], y: p[1] })),
         mainK,
         interval,
-        takeOffPointRes as any,
+        {
+          x: takeOffPointRes[0],
+          y: takeOffPointRes[1],
+        },
       )
+      // const res = await worker.current!.solve(
+      //   pg[0] as any,
+      //   mainK,
+      //   interval,
+      //   takeOffPointRes as any,
+      // )
+
       const wgs84Res = toWgs84({
         type: 'Feature',
         geometry: {
           type: 'Polygon',
-          coordinates: [res],
+          coordinates: [res.map((p) => [p.x, p.y])],
         },
       })
       const points = wgs84Res.geometry.coordinates[0].map<AirlinePoint>(
