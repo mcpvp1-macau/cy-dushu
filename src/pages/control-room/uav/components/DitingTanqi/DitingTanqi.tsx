@@ -247,7 +247,7 @@ const DitingTanqi: FC<PropsType> = memo(() => {
           )}
           {/* 工具栏 */}
           <div
-            className="right-4 left-2 pb-2 flex justify-between items-end absolute bottom-0 h-16 bg-gradient-to-b from-transparent to-ground-2 pointer-events-none"
+            className="right-4 left-2 pb-2 flex justify-between items-end absolute bottom-0 h-14 bg-gradient-to-b from-transparent to-ground-2 pointer-events-none"
             ref={toolsRef}
           >
             <div></div>

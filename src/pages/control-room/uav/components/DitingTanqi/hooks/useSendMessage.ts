@@ -1,5 +1,6 @@
 import { ConfigType } from '@/global/config'
 import serverDitingTanqi from '@/service/servers/serverDitingTanqi'
+import { chunkBuffer } from '@/utils/decode/http-chunk'
 import { shouldJson } from '@/utils/json'
 import { useGetState } from 'ahooks'
 
@@ -49,8 +50,7 @@ const useSendMessage = (options?: {
 
       try {
         const resp = await fetch(
-          serverDitingTanqi.baseURL +
-            `/user/conversations/${conversationId}/chats`,
+          `${serverDitingTanqi.baseURL}/user/conversations/${conversationId}/chats`,
           {
             method: 'POST',
             headers: {
@@ -67,7 +67,7 @@ const useSendMessage = (options?: {
         if (resp.status !== 200) {
           console.error('Error response:', resp)
           setDone(true)
-          options?.onEndReply?.('Unknown error')
+          options?.onEndReply?.('error: ' + resp.statusText)
           return
         }
 
@@ -78,53 +78,40 @@ const useSendMessage = (options?: {
         }
 
         const reader = resp.body?.getReader()
-        const decoder = new TextDecoder('utf-8')
+        if (!reader) {
+          throw new Error('No reader found')
+        }
         let replayStart = false
 
-        // eslint-disable-next-line no-constant-condition
-        while (true) {
-          // 读取数据
-          const { value, done: doneReading } = (await reader?.read()) || {}
-          if (doneReading) {
-            setDone(doneReading)
-            break
-          }
-
-          const buffer = decoder.decode(value, { stream: true })
-          const lines = buffer.split('\n\n')
-
-          for (const event of lines) {
-            if (event.trim() === '') continue
-            const eventData = parseEvent(event)
-
-            const data = eventData.data
-            const content: string | undefined =
-              data?.choices?.[0]?.delta?.content
-            if (content) {
-              if (!replayStart) {
-                options?.onStartReply?.()
-                replayStart = true
-              }
-              const c = shouldJson(content) ?? content
-              // console.log('c', c)
-              if (typeof c === 'object') {
-                const toolCalls = c.tool_calls || c.tool_call_id
-                if (toolCalls) {
-                  continue
-                }
-              }
-
-              setContent((prev) => prev + c)
+        for await (const chunk of chunkBuffer(reader)) {
+          const eventData = parseEvent(chunk)
+          const data = eventData.data
+          const content: string | undefined = data?.choices?.[0]?.delta?.content
+          if (content) {
+            if (!replayStart) {
+              options?.onStartReply?.()
+              replayStart = true
             }
+            const c = shouldJson(content) ?? content
+            if (typeof c === 'object') {
+              const toolCalls = c.tool_calls || c.tool_call_id
+              if (toolCalls) {
+                continue
+              }
+            }
+            setContent((prev) => prev + c)
           }
         }
-
         options?.onEndReply?.(getContent())
         setContent('')
       } catch (error) {
         console.error('Error sending message:', error)
         setDone(true)
-        options?.onEndReply?.('error')
+        if (error instanceof Error) {
+          options?.onEndReply?.(
+            `error${error.message ? `: ${error.message}` : ''}`,
+          )
+        }
       }
     },
   )
