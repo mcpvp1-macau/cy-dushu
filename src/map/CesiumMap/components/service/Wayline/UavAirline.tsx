@@ -3,6 +3,7 @@ import * as Cesium from 'cesium'
 import { attempt, round } from 'lodash'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import { emtpyObject } from '@/constant/data'
+import { getWaylinePointBillboardSvgURI } from '@/components/Icon/WaylinePoint'
 
 type PropsType = {
   data: { pointX: number; pointY: number; pointZ: number }[]
@@ -24,35 +25,6 @@ const Waypoint: FC<{
     if (!viewer?.scene) return
     const { pointX, pointY, pointZ } = data
 
-    // 航点
-    const position = Cesium.Cartesian3.fromDegrees(pointX, pointY, pointZ)
-    entityRef.current = viewer.entities.add({
-      position,
-      billboard: {
-        image: '/images/airline/inverted-triangle.svg',
-        scale: 1.1,
-        eyeOffset: new Cesium.Cartesian3(0, 0, -5),
-      },
-      label: {
-        text: index + '',
-        font: 'bold 16px sans-serif',
-        pixelOffset: new Cesium.Cartesian2(0, -3),
-        horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
-        eyeOffset: new Cesium.Cartesian3(0.0, 0.0, -10.0),
-      },
-    })
-
-    // 地形点
-    const bottomPosition = Cesium.Cartesian3.fromDegrees(pointX, pointY, 0)
-    bottomRef.current = viewer.entities.add({
-      position: bottomPosition,
-      billboard: {
-        image: '/images/airline/ground-point.svg',
-        scale: 0.8,
-        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
-      },
-    })
-
     // 航点与地形点之间的虚线
     lineRef.current = viewer.entities.add({
       polyline: {
@@ -69,6 +41,33 @@ const Waypoint: FC<{
           color: Cesium.Color.fromCssColorString('#fff'),
           dashLength: 8,
         }),
+      },
+    })
+
+    // 地形点
+    const bottomPosition = Cesium.Cartesian3.fromDegrees(pointX, pointY, 0)
+    bottomRef.current = viewer.entities.add({
+      position: bottomPosition,
+      billboard: {
+        image: '/images/airline/ground-point.svg',
+        scale: 0.8,
+        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+      },
+    })
+
+    const uri = getWaylinePointBillboardSvgURI({
+      text: index,
+      color: '#03D68F',
+    })
+
+    // 航点
+    const position = Cesium.Cartesian3.fromDegrees(pointX, pointY, pointZ)
+    entityRef.current = viewer.entities.add({
+      position,
+      billboard: {
+        image: uri,
+        scale: 1.1,
+        eyeOffset: new Cesium.Cartesian3(0, 0, -5),
       },
     })
 
@@ -158,9 +157,6 @@ const UavWayline: FC<PropsType> = memo(
 
     return (
       <>
-        {newData.map((item, index) => (
-          <Waypoint key={index} data={item} index={index + 1} />
-        ))}
         {/* 航点之间的连线 */}
         {newData.map((point, i) => {
           const nextPoint = newData[i + 1]
@@ -169,6 +165,9 @@ const UavWayline: FC<PropsType> = memo(
           }
           return <PathLine key={i} point1={point} point2={nextPoint} />
         })}
+        {newData.map((item, index) => (
+          <Waypoint key={index} data={item} index={index + 1} />
+        ))}
       </>
     )
   },

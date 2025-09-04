@@ -284,7 +284,12 @@ const DitingTanqi: FC<PropsType> = memo(() => {
                   icon={<IconIntelligence />}
                   type={openUnderstand ? 'primary' : 'default'}
                   disabled={!globalConfig.mcps?.['taskunderstand-114']}
-                  onClick={() => setOpenUnderstand(!openUnderstand)}
+                  onClick={() => {
+                    if (!openUnderstand) {
+                      handleSubmit('请关注画面内容, 进行任务理解')
+                    }
+                    setOpenUnderstand(!openUnderstand)
+                  }}
                 >
                   {t('tanqi.taskUnderstanding.title')}
                 </Button>

@@ -28,6 +28,7 @@ const Waypoint: FC<{
         image: '/images/airline/inverted-triangle.svg',
         scale: 1.1,
         eyeOffset: new Cesium.Cartesian3(0, 0, -5),
+        disableDepthTestDistance: Number.POSITIVE_INFINITY,
       },
       label: {
         text: index + '',
@@ -35,6 +36,7 @@ const Waypoint: FC<{
         pixelOffset: new Cesium.Cartesian2(0, -3),
         horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
         eyeOffset: new Cesium.Cartesian3(0.0, 0.0, -10.0),
+        disableDepthTestDistance: Number.POSITIVE_INFINITY,
       },
     })
 
@@ -110,9 +112,6 @@ const Polygon: FC<{ data: number[][] }> = memo(({ data }) => {
 const UavAreaWayline: FC<PropsType> = memo(({ data, taskBasic }) => {
   return (
     <>
-      {data.map((item, index) => (
-        <Waypoint key={index} data={item} index={index + 1} />
-      ))}
       {/* 航点之间的连线 */}
       {data.map((point, i) => {
         const nextPoint = data[i + 1]
@@ -124,6 +123,9 @@ const UavAreaWayline: FC<PropsType> = memo(({ data, taskBasic }) => {
       {Array.isArray(taskBasic.polygon) && taskBasic.polygon.length > 1 && (
         <Polygon data={taskBasic.polygon} />
       )}
+      {data.map((item, index) => (
+        <Waypoint key={index} data={item} index={index + 1} />
+      ))}
     </>
   )
 })
