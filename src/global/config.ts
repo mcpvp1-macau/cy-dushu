@@ -16,6 +16,7 @@ globalConfig.loginUrl ??= `${globalConfig.loginHttps ? 'https' : 'http'}://${
 globalConfig.uavHeightLimit ??= 1000
 
 globalConfig.mcps ??= {}
+globalConfig.enableJessibucaMetrics ??= true
 
 class GlobalConfig {
   systemName = 'jingqi'
@@ -91,6 +92,8 @@ class GlobalConfig {
   secretAccessKey?: string
 
   mcps?: Record<string, { url: string; tools: string[] }>
+  /** 是否启用 jessibuca 监控上报 */
+  enableJessibucaMetrics?: boolean
 
   constructor(def: ConfigType) {
     Object.assign(this, def)
