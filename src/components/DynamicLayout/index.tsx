@@ -38,9 +38,10 @@ export type DynamicLayoutType = {
 /** 灵动布局 */
 const DynamicLayout: FC<{
   layout: DynamicLayoutType
-  containerSize: number
+  containerWidth: number
+  containerHeight: number
   onLayoutChange?: (layout: DynamicLayoutType) => void
-}> = memo(({ layout, containerSize, onLayoutChange }) => {
+}> = memo(({ layout, containerWidth, containerHeight, onLayoutChange }) => {
   /** 处理改变 */
   const handleChane = useMemoizedFn((layout: DynamicLayoutType) => {
     if (layout.type === 'row' || layout.type === 'col') {
@@ -66,7 +67,8 @@ const DynamicLayout: FC<{
       ) : (
         <DynamicLayoutSplitter
           layout={layout}
-          containerSize={containerSize}
+          containerWidth={containerWidth}
+          containerHeight={containerHeight}
           onLayoutChange={handleChane}
         />
       )}
@@ -131,13 +133,6 @@ const DynamicLayoutRoot: FC<PropsType> = memo(
     const containerRef = useRef<HTMLDivElement | null>(null)
     const size = useSize(containerRef)
 
-    const sz =
-      layout.type === 'row'
-        ? size?.width
-        : layout.type === 'col'
-        ? size?.height
-        : 0 // Tabs 形式的不需要 size, 直接给 0 没问题, 即用的 size-full
-
     return (
       <DynamicLayoutStoreContext.Provider value={store.current}>
         <div className={clsx('relative size-full p-2')} ref={containerRef}>
@@ -145,7 +140,8 @@ const DynamicLayoutRoot: FC<PropsType> = memo(
             <>
               <DynamicLayout
                 layout={layout}
-                containerSize={sz ?? 0}
+                containerWidth={size.width}
+                containerHeight={size.height}
                 onLayoutChange={onLayoutChange}
               />
               {componentMap && (

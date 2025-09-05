@@ -9,14 +9,16 @@ type PropsType = {
   }
   // 原先需要内部获取, 因为 useEffect 有延迟性, 而且可以通过外部计算直接出来, 所以改为传入
   /** 容器大小 (宽度或高度) */
-  containerSize: number
+  containerWidth: number
+  containerHeight: number
   onLayoutChange: (layout: DynamicLayoutType) => void
 }
 
 export const MIN_SIZE = 32
 
 const DynamicLayoutSplitter: FC<PropsType> = memo(
-  ({ layout, containerSize: sz, onLayoutChange }) => {
+  ({ layout, containerWidth, containerHeight, onLayoutChange }) => {
+    const sz = layout.type === 'row' ? containerWidth : containerHeight
     // 获取大小 (用于更新和初始化)
     const getSizes = useMemoizedFn(() => {
       const gapSize = (layout.children.length - 1) * 8
@@ -149,7 +151,12 @@ const DynamicLayoutSplitter: FC<PropsType> = memo(
                     }),
                   })
                 }}
-                containerSize={sizes[i]}
+                containerWidth={
+                  layout.type === 'row' ? sizes[i] || 0 : containerWidth
+                }
+                containerHeight={
+                  layout.type === 'col' ? sizes[i] || 0 : containerHeight
+                }
               />
             </div>
           </Fragment>
