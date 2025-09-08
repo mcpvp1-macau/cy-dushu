@@ -1,3 +1,4 @@
+import './instrument.ts'
 import ReactDOM from 'react-dom/client'
 import initToken from './global/Initial/init-token.ts'
 import useUserStore from './store/useUser.store.ts'

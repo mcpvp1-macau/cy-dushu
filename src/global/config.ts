@@ -94,6 +94,10 @@ class GlobalConfig {
   mcps?: Record<string, { url: string; tools: string[] }>
   /** 是否启用 jessibuca 监控上报 */
   enableJessibucaMetrics?: boolean
+  /** Sentry dsn */
+  sentryDsn?: string
+  /** Sentry project id */
+  sentryProjectId?: string
 
   constructor(def: ConfigType) {
     Object.assign(this, def)
