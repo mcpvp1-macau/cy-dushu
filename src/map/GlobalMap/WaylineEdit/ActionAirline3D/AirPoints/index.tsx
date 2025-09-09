@@ -32,7 +32,6 @@ const AirPoints: FC<PropsType> = () => {
       ))}
       {/* 航点之间的连线 */}
       <Path data={airpointsConfig} deltaHeight={deltaHeight} />
-      <Path data={airpointsConfig} deltaHeight={deltaHeight} isVirtual />
       {
         // 起飞点与第一个航点之间的连线
         takeOffRefPoint && airpointsConfig[0] && (

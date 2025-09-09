@@ -73,7 +73,6 @@ const HomePathLine: FC<PropsType> = ({ homePoint, point1 }) => {
   return (
     <>
       <Path data={positions as any} deltaHeight={0} />
-      <Path data={positions as any} deltaHeight={0} isVirtual />
     </>
   )
 }

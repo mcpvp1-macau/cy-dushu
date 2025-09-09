@@ -5,10 +5,13 @@ import * as Cesium from 'cesium'
 type PropsType = {
   data: AirpointsConfigItem[]
   deltaHeight: number
-  isVirtual?: boolean
 }
 
-const Path: FC<PropsType> = memo(({ data, deltaHeight, isVirtual = false }) => {
+// const dashAppearance =
+
+// const solidAppearance =
+
+const Path: FC<PropsType> = memo(({ data, deltaHeight }) => {
   const { viewer } = useCesium()
 
   useEffect(() => {
@@ -31,30 +34,28 @@ const Path: FC<PropsType> = memo(({ data, deltaHeight, isVirtual = false }) => {
       }),
       // 虚线
       appearance: new Cesium.PolylineMaterialAppearance({
-        material: isVirtual
-          ? new Cesium.Material({
-              fabric: {
-                type: 'PolylineDash',
-                uniforms: {
-                  color: Cesium.Color.fromCssColorString('#03D68F'),
-                  gapColor: Cesium.Color.TRANSPARENT,
-                  dashLength: 20.0,
-                  // dashPattern: 255.0,
-                },
-              },
-            })
-          : new Cesium.Material({
-              fabric: {
-                type: 'Color',
-                uniforms: {
-                  color: Cesium.Color.fromCssColorString('#03D68F'),
-                },
-              },
-            }),
-        renderState: {
-          depthTest: {
-            enabled: !isVirtual,
+        material: new Cesium.Material({
+          fabric: {
+            type: 'Color',
+            uniforms: {
+              color: Cesium.Color.fromCssColorString('#03D68F'),
+            },
           },
+        }),
+      }),
+      depthFailAppearance: new Cesium.PolylineMaterialAppearance({
+        material: new Cesium.Material({
+          fabric: {
+            type: 'PolylineDash',
+            uniforms: {
+              color: Cesium.Color.fromCssColorString('#03D68F'),
+              dashLength: 20.0,
+              dashPattern: 255.0,
+            },
+          },
+        }),
+        renderState: {
+          depthTest: {},
         },
       }),
       asynchronous: false,
@@ -66,7 +67,7 @@ const Path: FC<PropsType> = memo(({ data, deltaHeight, isVirtual = false }) => {
         viewer.scene.primitives.remove(primitive)
       }
     }
-  }, [data, deltaHeight, isVirtual])
+  }, [data, deltaHeight])
 
   return null
 })
