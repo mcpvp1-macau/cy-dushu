@@ -52,7 +52,7 @@ const useFixedWindowsStore = create<StateType & ActionsType>()((set, get) => ({
     const id = v4()
     const newItem = {
       ...e,
-      id: v4(),
+      id,
       zIndex: get().maxZIndex + 1,
       layout: {
         x: 0,
@@ -75,6 +75,11 @@ const useFixedWindowsStore = create<StateType & ActionsType>()((set, get) => ({
     }))
   },
   removeWindow: (id) => {
+    console.log('remove', id)
+    console.log(
+      'first',
+      get().windows.filter((w) => w.id !== id),
+    )
     set((state) => ({ windows: state.windows.filter((w) => w.id !== id) }))
   },
   updateActiveWindow: (id) => set({ activeWindowId: id }),

@@ -12,10 +12,13 @@ const ParentVideoAlert: FC<PropsType> = memo(() => {
   const modeCode = useUavControlRoomStore((s) => s.state.modeCode)
   const videoWindowId = useRef<string | null>(null)
 
+  const alertBySelf = useRef(false)
+
   const addParentVideo = useMemoizedFn(async () => {
     if (!deviceDetail?.parentId) {
       return
     }
+    alertBySelf.current = false
     const { data } = await getDeviceDetail(deviceDetail.parentId)
     const productKey = data.productKey || data.deviceModel!.productKey
     const deviceId = data.deviceId
@@ -55,6 +58,7 @@ const ParentVideoAlert: FC<PropsType> = memo(() => {
       },
     })
     videoWindowId.current = id
+    alertBySelf.current = true
   })
 
   useEffect(() => {
@@ -67,6 +71,14 @@ const ParentVideoAlert: FC<PropsType> = memo(() => {
     }
     addParentVideo()
   }, [modeCode])
+
+  useEffect(() => {
+    return () => {
+      if (alertBySelf.current && videoWindowId.current) {
+        useFixedWindowsStore.getState().removeWindow(videoWindowId.current)
+      }
+    }
+  }, [])
 
   return null
 })
