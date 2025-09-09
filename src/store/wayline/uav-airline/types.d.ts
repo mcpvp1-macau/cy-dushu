@@ -124,6 +124,16 @@ export type ActionSpeakerPlayType = {
   }
 }
 
+export type ActionStartRecordType = {
+  type: 'START_RECORD'
+  config: { payloadLensIndex: string[]; useGlobalPayloadLensIndex: number }
+}
+
+export type ActionStopRecordType = {
+  type: 'STOP_RECORD'
+  config: { payloadLensIndex: string[]; useGlobalPayloadLensIndex: number }
+}
+
 /** 航点动作配置 */
 export type ActionType = (
   | ActionHoverType
@@ -137,6 +147,8 @@ export type ActionType = (
   | ActionUnknownType
   | ActionCameraModeSetType
   | ActionSpeakerPlayType
+  | ActionStartRecordType
+  | ActionStopRecordType
 ) & {
   xid: string
 }

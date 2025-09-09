@@ -14,6 +14,7 @@ import { useCurrentAirpoint } from '@/store/wayline/uav-airline/select'
 import AppEmpty from '@/components/AppEmpty'
 import CameraModeSet from './CameraModeSet'
 import Loudspeaker from './Loudspeaker'
+import StartRecord from './StartRecord'
 
 interface Props {
   activeOperator: string
@@ -151,6 +152,19 @@ const ActionConfig: React.FC<Props> = (props) => {
               mode: 'single',
               volumn: 100,
               text: '',
+            }
+          }
+          onChange={onChange}
+        />
+      )
+    }
+    if (action?.type === 'START_RECORD') {
+      return (
+        <StartRecord
+          config={
+            action?.config ?? {
+              payloadLensIndex: [],
+              useGlobalPayloadLensIndex: 1,
             }
           }
           onChange={onChange}
