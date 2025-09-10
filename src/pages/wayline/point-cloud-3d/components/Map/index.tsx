@@ -57,6 +57,9 @@ const PointCloud3DWaylineMap: FC<PropsType> = memo(() => {
               if (!isMovePoint) {
                 return
               }
+              if (!(evt.nativeEvent.target instanceof HTMLCanvasElement)) {
+                return
+              }
               const sto = usePointCloud3DWaylineStore.getState()
               sto.updateCurrentWaypoint({
                 x: evt.point.x,

@@ -27,7 +27,7 @@ const Waypoint: FC<PropsType> = memo(({ data }) => {
       </sprite>
       <Html position={new Vector3(data.x, data.y, data.z)} center>
         <div
-          className="font-bold mb-1 text-sm text-shadow-sm text-white cursor-move px-1 leading-4"
+          className="font-bold mb-1 text-sm text-shadow-sm text-white cursor-move px-1 leading-4 select-none"
           onPointerDown={handlePointDown}
         >
           {data.positionIndex}
