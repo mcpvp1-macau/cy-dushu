@@ -1,9 +1,4 @@
 import IconPlus from '@/assets/icons/jsx/IconPlus'
-import IconPointClout3DWayline from '@/assets/icons/jsx/IconPointCloud3DWayline'
-import IconRebotDogWayline from '@/assets/icons/jsx/IconRebotDogWayline'
-import IconSwarm from '@/assets/icons/jsx/IconSwarm'
-import IconWaylineAirpoint from '@/assets/icons/jsx/IconWaylineAirpoint'
-import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
 import IconButton from '@/components/ui/button/IconButton'
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
@@ -14,6 +9,7 @@ import { getSpaceList } from '@/service/modules/layer_overlay'
 import { Form } from 'antd'
 import { DefaultOptionType } from 'antd/es/cascader'
 import { isNil } from 'lodash'
+import { createWaylineTypeOptions } from './AirlineTemplateList'
 
 type PropsType = unknown
 
@@ -103,55 +99,7 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
         name: 'type',
         label: t('wayline.create.form.waylineType.label'),
         type: 'select',
-        options: [
-          {
-            label: (
-              <div className="flex gap-2 items-center">
-                <IconWaylineAirpoint />
-                {t('wayline.create.form.waylineType.options.point.title')}
-              </div>
-            ),
-            value: WaylineEnum.PointWayline,
-          },
-          {
-            label: (
-              <div className="flex gap-2 items-center">
-                <MenuIconAirline />
-                {t('wayline.create.form.waylineType.options.area.title')}
-              </div>
-            ),
-            value: WaylineEnum.AreaWayline,
-          },
-          {
-            label: (
-              <div className="flex gap-2 items-center">
-                <IconSwarm />
-                {t('wayline.create.form.waylineType.options.swarm.title')}
-              </div>
-            ),
-            value: WaylineEnum.SwarmWayline,
-          },
-          {
-            label: (
-              <div className="flex gap-2 items-center">
-                <IconRebotDogWayline />
-                {t('wayline.create.form.waylineType.options.rebotDog.title')}
-              </div>
-            ),
-            value: WaylineEnum.RebotDogWayline,
-          },
-          {
-            label: (
-              <div className="flex gap-2 items-center">
-                <IconPointClout3DWayline />
-                {t(
-                  'wayline.create.form.waylineType.options.pointCloud3D.title',
-                )}
-              </div>
-            ),
-            value: WaylineEnum.PointCloud3DWayline,
-          },
-        ],
+        options: createWaylineTypeOptions(t),
       },
       // 「航点航线」和「面状航线」需要选择无人机和相机
       ...([WaylineEnum.PointWayline, WaylineEnum.AreaWayline].includes(type)

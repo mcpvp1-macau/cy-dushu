@@ -16,8 +16,61 @@ import IconSwarm from '@/assets/icons/jsx/IconSwarm'
 import IconRebotDogWayline from '@/assets/icons/jsx/IconRebotDogWayline'
 import { useUnmount } from 'ahooks'
 import useWaylinesStore from '@/store/map/useWaylines.store'
+import IconPointClout3DWayline from '@/assets/icons/jsx/IconPointCloud3DWayline'
+import { WaylineEnum } from '@/constant/uav/wayline'
+import { type TFunction } from 'i18next'
 
 type PropsType = unknown
+
+export const createWaylineTypeOptions = (
+  t: TFunction<'translation', undefined>,
+) => [
+  {
+    label: (
+      <div className="flex gap-2 items-center">
+        <IconWaylineAirpoint />
+        {t('wayline.create.form.waylineType.options.point.title')}
+      </div>
+    ),
+    value: WaylineEnum.PointWayline,
+  },
+  {
+    label: (
+      <div className="flex gap-2 items-center">
+        <MenuIconAirline />
+        {t('wayline.create.form.waylineType.options.area.title')}
+      </div>
+    ),
+    value: WaylineEnum.AreaWayline,
+  },
+  {
+    label: (
+      <div className="flex gap-2 items-center">
+        <IconSwarm />
+        {t('wayline.create.form.waylineType.options.swarm.title')}
+      </div>
+    ),
+    value: WaylineEnum.SwarmWayline,
+  },
+  {
+    label: (
+      <div className="flex gap-2 items-center">
+        <IconRebotDogWayline />
+        {t('wayline.create.form.waylineType.options.rebotDog.title')}
+      </div>
+    ),
+    value: WaylineEnum.RebotDogWayline,
+  },
+  {
+    label: (
+      <div className="flex gap-2 items-center">
+        <IconPointClout3DWayline />
+        {t('wayline.create.form.waylineType.options.pointCloud3D.title')}
+      </div>
+    ),
+    value: WaylineEnum.PointCloud3DWayline,
+  },
+]
 
 const AirlineTemplateList: FC<PropsType> = memo(() => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -93,52 +146,7 @@ const AirlineTemplateList: FC<PropsType> = memo(() => {
                 placeholder={t('common.all')}
                 allowClear
                 popupMatchSelectWidth={false}
-                options={[
-                  {
-                    value: 'waypoint',
-                    label: (
-                      <div className="flex gap-2">
-                        <IconWaylineAirpoint />
-                        {t(
-                          'wayline.create.form.waylineType.options.point.title',
-                        )}
-                      </div>
-                    ),
-                  },
-                  {
-                    value: 'area_waypoint',
-                    label: (
-                      <div className="flex gap-2">
-                        <MenuIconAirline />
-                        {t(
-                          'wayline.create.form.waylineType.options.area.title',
-                        )}
-                      </div>
-                    ),
-                  },
-                  {
-                    value: 'cluster_wayline',
-                    label: (
-                      <div className="flex gap-2">
-                        <IconSwarm />
-                        {t(
-                          'wayline.create.form.waylineType.options.swarm.title',
-                        )}
-                      </div>
-                    ),
-                  },
-                  {
-                    value: 'fixed_point_cruise',
-                    label: (
-                      <div className="flex gap-2">
-                        <IconRebotDogWayline />
-                        {t(
-                          'wayline.create.form.waylineType.options.rebotDog.title',
-                        )}
-                      </div>
-                    ),
-                  },
-                ]}
+                options={createWaylineTypeOptions(t)}
                 onChange={(v) => {
                   if (v) {
                     searchParams.set('waylineType', v)
