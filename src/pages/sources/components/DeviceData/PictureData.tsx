@@ -59,6 +59,9 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
   const queryClient = useQueryClient()
 
   const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(24)
+
+  const [pictureType, setPictureType] = useState<string[]>([])
 
   const { data, isLoading } = useQuery(
     {
@@ -67,19 +70,22 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
         'PICTURE',
         deviceId,
         type,
+        pictureType?.join(',') || 'ALL',
         `${dateRange?.[0].unix()}-${dateRange?.[1].unix()}`,
         page,
+        pageSize,
       ],
       queryFn: () =>
         getPlatformCapture({
           deviceId,
           type: 'PICTURE',
           sourceId: type,
+          photoType: pictureType.length > 0 ? pictureType : undefined,
           startTime: dateRange![0].format(dft),
           endTime: dateRange![1].format(dft),
           isPage: true,
           page,
-          pageSize: 24,
+          pageSize,
         }),
       enabled: !!deviceId && !!dateRange,
       select: (d) => d.data,
@@ -122,6 +128,28 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
     } catch (e) {}
   }
 
+  const pictureTypeOptions = useMemo(
+    () => [
+      {
+        label: '可见光',
+        value: '可见光',
+      },
+      {
+        label: '广角',
+        value: '广角',
+      },
+      {
+        label: '变焦',
+        value: '变焦',
+      },
+      {
+        label: '红外',
+        value: '红外',
+      },
+    ],
+    [],
+  )
+
   return (
     <div>
       <div className="py-3 flex gap-3">
@@ -137,7 +165,7 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
         />
         <Select
           value={deviceId}
-          className="w-56"
+          className="w-40"
           options={deviceOptions}
           onChange={setDeviceId}
         />
@@ -146,6 +174,17 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
           value={type}
           options={pictureSourceTypeOptions}
           onChange={setType}
+        />
+        <Select
+          className="w-44"
+          mode="multiple"
+          placeholder={t('common.all')}
+          value={pictureType}
+          allowClear
+          maxTagCount="responsive"
+          style={{ minWidth: 120 }}
+          options={pictureTypeOptions}
+          onChange={setPictureType}
         />
       </div>
       <div>
@@ -297,11 +336,12 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
               <Pagination
                 size="small"
                 current={page}
-                pageSize={24}
+                pageSize={pageSize}
                 total={total?.[0].cnt}
-                showSizeChanger={false}
-                onChange={(page) => {
+                pageSizeOptions={[24, 48, 96]}
+                onChange={(page, pageSize) => {
                   setPage(page)
+                  setPageSize(pageSize)
                   setCheckedIds([]) // Reset selection on page change
                 }}
               />

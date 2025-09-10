@@ -270,6 +270,7 @@ declare namespace API_DBAPI {
       actionId?: string
       deviceId?: string
       type: 'PICTURE' | 'HISTORY_VIDEO'
+      photoType?: string[]
       sourceId?: string
       startTime?: string
       endTime?: string
