@@ -1,4 +1,3 @@
-import { ConfigType } from '@/global/config'
 import serverDitingTanqi from '@/service/servers/serverDitingTanqi'
 import { chunkBuffer } from '@/utils/decode/http-chunk'
 import { shouldJson } from '@/utils/json'
@@ -18,8 +17,10 @@ export const parseEvent = (eventText: string) => {
 const useSendMessage = (options?: {
   /** 是否开启任务理解 */
   openUnderstand?: boolean
+  understandTools?: string[]
   /** 是否开启指令控制 */
   openCommandControl?: boolean
+  commandControlTools?: string[]
   /** 开始回复时的回调 */
   onStartReply?: () => void
   /** 结束回复时的回调 */
@@ -34,20 +35,19 @@ const useSendMessage = (options?: {
       setContent('')
       setDone(false)
 
-      const mcp_servers: NonNullable<ConfigType['mcps']>[string][] = []
-      if (
-        options?.openUnderstand &&
-        globalConfig.mcps?.['taskunderstand-114']
-      ) {
-        mcp_servers.push(globalConfig.mcps['taskunderstand-114'])
+      const mcp_servers: { url: string; tools: string[] }[] = []
+      if (options?.openUnderstand) {
+        mcp_servers.push({
+          url: globalConfig.mcps?.['TaskUnderstand'] || '',
+          tools: options.understandTools || [],
+        })
       }
-      if (
-        options?.openCommandControl &&
-        globalConfig.mcps?.['tanqi-mcp-dushu-flycontrol']
-      ) {
-        mcp_servers.push(globalConfig.mcps['tanqi-mcp-dushu-flycontrol'])
+      if (options?.openCommandControl) {
+        mcp_servers.push({
+          url: globalConfig.mcps?.['FlyControl'] || '',
+          tools: options.commandControlTools || [],
+        })
       }
-
       try {
         const resp = await fetch(
           `${serverDitingTanqi.baseURL}/user/conversations/${conversationId}/chats`,

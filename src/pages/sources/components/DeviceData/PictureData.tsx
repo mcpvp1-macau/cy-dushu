@@ -338,7 +338,7 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
                 current={page}
                 pageSize={pageSize}
                 total={total?.[0].cnt}
-                pageSizeOptions={[24, 48, 96]}
+                pageSizeOptions={[24, 48, 96, 998]}
                 onChange={(page, pageSize) => {
                   setPage(page)
                   setPageSize(pageSize)

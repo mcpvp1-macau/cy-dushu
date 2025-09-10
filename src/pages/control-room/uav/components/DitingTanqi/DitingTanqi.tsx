@@ -21,6 +21,8 @@ import { Button } from 'antd'
 import IconIntelligence from '@/assets/icons/jsx/IconIntelligence'
 import useTaskUnderstanding from './hooks/useTaskUnderstanding'
 import IconCommand from '@/assets/icons/jsx/IconCommand'
+import useMCPTools from './hooks/useMCPTools'
+import { useInViewport } from 'ahooks'
 
 type PropsType = unknown
 
@@ -102,9 +104,15 @@ const DitingTanqi: FC<PropsType> = memo(() => {
     }
   }, [chatId])
 
+  const [inViewport] = useInViewport(toolsRef)
+  const flyControlMCPTools = useMCPTools('FlyControl', !!inViewport)
+  const taskUnderstandMCPTools = useMCPTools('TaskUnderstand', !!inViewport)
+
   const { replyingContent, sendMessage } = useSendMessage({
     openUnderstand,
+    understandTools: taskUnderstandMCPTools.mcps ?? [],
     openCommandControl: openCommand,
+    commandControlTools: flyControlMCPTools.mcps ?? [],
     // 开始时
     onStartReply: () => {
       setAiState(APState.Replying)
@@ -283,7 +291,8 @@ const DitingTanqi: FC<PropsType> = memo(() => {
                   size="small"
                   icon={<IconIntelligence />}
                   type={openUnderstand ? 'primary' : 'default'}
-                  disabled={!globalConfig.mcps?.['taskunderstand-114']}
+                  disabled={taskUnderstandMCPTools.mcps.length === 0}
+                  loading={taskUnderstandMCPTools.isLoading}
                   onClick={() => {
                     if (!openUnderstand) {
                       handleSubmit('请关注画面内容, 进行任务理解')
@@ -297,7 +306,8 @@ const DitingTanqi: FC<PropsType> = memo(() => {
                   size="small"
                   icon={<IconCommand />}
                   type={openCommand ? 'primary' : 'default'}
-                  disabled={!globalConfig.mcps?.['tanqi-mcp-dushu-flycontrol']}
+                  disabled={flyControlMCPTools.mcps.length === 0}
+                  loading={flyControlMCPTools.isLoading}
                   onClick={() => setOpenCommand(!openCommand)}
                 >
                   {t('tanqi.commandControl.title')}

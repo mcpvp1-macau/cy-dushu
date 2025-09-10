@@ -6,3 +6,8 @@ export const getUavInfo = (uavSn: string) => {
     `/api/dushu/uavs/${uavSn}`,
   )
 }
+
+/** 获取 MCP 可用工具 */
+export const getMCPTools = (mcpName: string) => {
+  return serverDitingMCP.get<string[]>(`/api/mcp/${mcpName}/tools`)
+}

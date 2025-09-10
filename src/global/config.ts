@@ -91,7 +91,7 @@ class GlobalConfig {
   /** 访问密钥 */
   secretAccessKey?: string
 
-  mcps?: Record<string, { url: string; tools: string[] }>
+  mcps?: Record<string, string>
   /** 是否启用 jessibuca 监控上报 */
   enableJessibucaMetrics?: boolean
   /** Sentry dsn */
