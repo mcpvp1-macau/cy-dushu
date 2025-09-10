@@ -12,6 +12,7 @@ import InfoCard from './InfoCard'
 import Control from './Control'
 import DeviceAlgorithmList from '@/components/device/algorithm/DeviceAlgorithmList'
 import deviceConfigsMap from './deviceConfigsMap'
+import RadarMap from './RadarMap/RadarMap'
 
 const OthersDetailDetail: React.FC = () => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
@@ -64,6 +65,8 @@ const OthersDetailDetail: React.FC = () => {
           )
         })
       })}
+
+      {deviceType === 'RADAR' && <div className="mx-3 mb-3 h-[184px]"><RadarMap deviceId={deviceId} /></div>}
       {deviceConfigs.isHaveControlRoom ? (
         <section className="mx-3 mr-[9px] my-3 flex gap-2">
           <Link className="grow" to={`/control-room/others/${deviceId}`}>
