@@ -11,6 +11,13 @@ import { Link } from 'react-router-dom'
 import { Button } from 'antd'
 import IconControlRoom from '@/assets/icons/jsx/IconControlRoom'
 import LaserWeaponInfoCard from './CameraDetailInfoCard'
+import { Tabs } from 'antd'
+import ArtilleryStatusInfo from '@/pages/control-room/laser-weapon/components/StatusInfo/artilleryStatusInfo'
+import SearchRadarStatusInfo from '@/pages/control-room/laser-weapon/components/StatusInfo/SearchRadarStatusInfo'
+import TrackingRadarStatusInfo from '@/pages/control-room/laser-weapon/components/StatusInfo/TrackingRadarStatusInfo'
+import ElectroOpticalStatusInfo from '@/pages/control-room/laser-weapon/components/StatusInfo/ElectroOpticalStatusInfo'
+import LaserStatusInfo from '@/pages/control-room/laser-weapon/components/StatusInfo/LaserStatusInfo'
+import InfoItem from '@/pages/control-room/laser-weapon/components/StatusInfo/InfoItem'
 
 type PropsType = unknown
 
@@ -83,8 +90,46 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
             key: 'mode',
             children: (
               <AppViewSuspense>
-                <div className="flex justify-center my-3 items-center gap-10">
-                  1`3`
+                <div className="w-full">
+                  <ul className="flex flex-wrap text-sm card-border p-3">
+                    <InfoItem name="workMode" label="工作模式" />
+                    <InfoItem
+                      name="laserDeviceWorkingStatus"
+                      label="工作状态"
+                    />
+                  </ul>
+                  <Tabs
+                    defaultActiveKey="3"
+                    tabPosition={'top'}
+                    className="[&_.ant-tabs-nav]:pl-4"
+                    items={[
+                      {
+                        label: '火炮',
+                        key: '3',
+                        children: <ArtilleryStatusInfo />,
+                      },
+                      {
+                        label: '搜索雷达',
+                        key: '4',
+                        children: <SearchRadarStatusInfo />,
+                      },
+                      {
+                        label: '跟踪雷达',
+                        key: '5',
+                        children: <TrackingRadarStatusInfo />,
+                      },
+                      {
+                        label: '光电',
+                        key: '6',
+                        children: <ElectroOpticalStatusInfo />,
+                      },
+                      {
+                        label: '激光',
+                        key: '7',
+                        children: <LaserStatusInfo />,
+                      },
+                    ]}
+                  />
                 </div>
               </AppViewSuspense>
             ),

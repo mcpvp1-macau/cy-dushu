@@ -54,7 +54,7 @@ const LaserWeaponDetail: FC<PropsType> = memo(({ data, headerTools, onClose }) =
 
   return (
     <OthersControlRoomStoreContext.Provider value={store}>
-      <div>
+      <div className="overflow-y-hidden flex flex-col">
         <CloseableHeader onClose={onClose} rightTools={headerTools}>
           {header}
         </CloseableHeader>
