@@ -59,9 +59,18 @@ const DeviceInfoCard: FC<PropsType> = memo(({ data, deviceId }) => {
         value = state?.[item.identifier] ?? properties?.[item.identifier]
       }
       if (type === 'bool') {
-        value = item.specs[value!]
+        try {
+          value = item.specs[value!]
+        } catch (error) {
+          value = item.dataType.specs[value!]
+        }
       } else if (type === 'enum') {
-        value = item.specs[value!]
+        console.info(item, value)
+        try {
+          value = item.specs[value!]
+        } catch (error) {
+          value = item.dataType.specs[value!]
+        }
       } else if (type === 'double' || type === 'float') {
         value = value === undefined ? '-' : Number(value)?.toFixed(5)
       }

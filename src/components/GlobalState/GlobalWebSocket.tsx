@@ -100,7 +100,7 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
 
     // 如果设备不存在，则不处理
     if (
-      !allDeviceListMapRef.current[deviceId] ||
+      !allDeviceListMapRef.current[deviceId] &&
       !allDeviceListMapRef.current[parentId]
     ) {
       return

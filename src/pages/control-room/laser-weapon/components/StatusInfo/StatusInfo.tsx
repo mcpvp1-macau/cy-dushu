@@ -40,7 +40,7 @@ const StatusInfo: FC<PropsType> = memo(() => {
 //   const workMode = state.workMode ?? properties.workMode
 //   const laserDeviceWorkingStatus = state.laserDeviceWorkingStatus ?? properties.laserDeviceWorkingStatus
 
-  console.log(deviceModel)
+  console.log('====',status)
 
   return (
     <ul className="flex flex-wrap text-sm card-border p-3">

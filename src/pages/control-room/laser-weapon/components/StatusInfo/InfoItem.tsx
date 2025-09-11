@@ -4,7 +4,7 @@ import { FC, ReactNode } from 'react'
 
 export const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
   return (
-    <li className="w-1/2 flex gap-1 text-sm items-center">
+    <li className="w-1/2 flex gap-1 text-sm items-center text-white">
       <div className="text-xs text-fore">{l}:</div>
       {v}
     </li>
@@ -49,7 +49,7 @@ const InfoItem: React.FC<PropsType> = ({
         if (dataType.specs.unitName) {
           return `${Number(newvalue)?.toFixed(5)} ${dataType.specs.unitName}`
         }
-        return Number(value)?.toFixed(5)
+        return Number(newvalue)?.toFixed(5)
       }
       if (type === 'int') {
         if (dataType.specs.unitName) {

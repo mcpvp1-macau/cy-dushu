@@ -16,14 +16,14 @@ const SurveillanceComp: React.FC<PropsType> = ({
   const keyAreasArray = useOthersControlRoomStore((s) => s.state.keyAreasList)
 
   // TODO MOCK数据
-  //   const rf = (rfArray ?? rfList)
-  const rf = [
-    { startFreq: 1, terminationFreq: 2 },
-    { startFreq: 3, terminationFreq: 4 },
-    { startFreq: 5, terminationFreq: 6 },
-  ]
-//   const keyAreas = (keyAreasArray ?? keyAreasList) 
-  const keyAreas = [{ name: '侦测区域1' }]
+    const rf = (rfArray ?? rfList)
+  // const rf = [
+  //   { startFreq: 1, terminationFreq: 2 },
+  //   { startFreq: 3, terminationFreq: 4 },
+  //   { startFreq: 5, terminationFreq: 6 },
+  // ]
+  const keyAreas = (keyAreasArray ?? keyAreasList) 
+  // const keyAreas = [{ name: '侦测区域1' }]
 
   return (
     <div className="p-3">

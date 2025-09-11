@@ -8,6 +8,7 @@ import IconButton from '@/components/ui/button/IconButton'
 import RadarFormModal from './RadarFormModal'
 import Radar from '@/components/RadarChart/Radar'
 import { useOthersControlRoomStore } from '@/store/context-store/useOthersControlRoom.store'
+import axios from 'axios'
 
 const scanRangeJson = {
   r: 1000,
@@ -882,42 +883,42 @@ const RadarMap: React.FC<PropsType> = ({ deviceId }) => {
   const [open, setOpen] = useState(false)
   const { StatusMap } = useConfig()
   // TODO: MOCK DATA
-  const radarScanRange = scanRangeJson
+  // const radarScanRange = scanRangeJson
   //   const radarScanRange = parseMapString(detail?.properties?.scanRangeJson)
 
-  const r = radarScanRange['r'] || 1000
-  const positions = radarScanRange['data'] || []
+  // const r = radarScanRange['r'] || 1000
+  // const positions = radarScanRange['data'] || []
 
   const scanRangeProfile = useOthersControlRoomStore(
     (s) => s.state?.scanRangeProfile,
   )
-  // const { data: positions = [] } = useQuery(
-  //   {
-  //     queryKey: [
-  //       'scanRangeProfile',
-  //       state[radar?.deviceId || '']?.scanRangeProfile,
-  //     ],
-  //     queryFn: () =>
-  //       axios(
-  //         `/storage/${
-  //           state[radar?.deviceId || '']?.scanRangeProfile
-  //         }?timestamp=${dayjs().valueOf()}`,
-  //       ),
-  //     select: (res) => res?.data?.data?.[0] || [],
-  //   },
-  //   queryClient,
-  // )
+  const queryClient = useQueryClient()
+  const { data, refetch } = useQuery(
+    {
+      queryKey: ['scanRangeProfile', scanRangeProfile],
+      queryFn: async () => {
+        const res = await axios(
+          `/storage/${scanRangeProfile}?timestamp=${dayjs().valueOf()}`,
+        )
+        return res.data
+      },
+      enabled: !!scanRangeProfile,
+    },
+    queryClient,
+  )
+
+
 
   return (
     <div className="w-full h-full flex gap-4">
       <div className="h-full">
-        <RadarChart id="radar-detail" width={180} height={180} max={r}>
+        <RadarChart id="radar-detail" width={180} height={180} max={data?.r || 1000}>
           <Radar
             center={{
               lng: detail?.properties?.longitude || 120,
               lat: detail?.properties?.latitude || 30,
             }} // 中心点
-            radarRangeData={positions.flat()} // 雷达范围
+            radarRangeData={data?.data?.[0] || []} // 雷达范围
             angle={90} // 雷达范围获取时不是从正北开始，这里写90
           />
         </RadarChart>
@@ -938,7 +939,7 @@ const RadarMap: React.FC<PropsType> = ({ deviceId }) => {
         <div>
           <div className="text-xs">范围</div>
           <div className="text-white text-sm">
-            {r}m{' '}
+            {data?.r || 1000}m{' '}
             <span>
               <IconButton
                 onClick={() => {
@@ -955,12 +956,13 @@ const RadarMap: React.FC<PropsType> = ({ deviceId }) => {
         <RadarFormModal
           open={open}
           setOpen={setOpen}
-          radarScanRange={radarScanRange}
+          radarScanRange={data || {}}
           productKey={detail?.deviceModel?.productKey}
           deviceId={detail?.deviceId}
           longitude={detail?.properties?.longitude}
           latitude={detail?.properties?.latitude}
           altitude={detail?.properties?.altitude}
+          refetch={refetch}
         />
       )}
     </div>

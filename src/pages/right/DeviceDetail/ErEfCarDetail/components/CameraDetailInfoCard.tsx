@@ -125,8 +125,8 @@ const CameraDetailInfoCard: FC<PropsType> = memo(
         <I l={'全频干扰'} v={renderItemValue('fullFrequencyIFStatus', fullFrequencyIFStatus)   ?? '-'} />
         <I l={'导航干扰'} v={renderItemValue('navigationIFState', navigationIFState) ?? '-'} />
         <I l={'导航诱骗'} v={renderItemValue('navigationDecoyState', navigationDecoyState) ?? '-'} />
-        <I l={'任务开始时间'} v={renderItemValue('openTime', openTime) ?? '-'} inline />
-        <I l={'任务结束时间'} v={endTime ?? '-'} inline />
+        <I l={'任务开始时间'} v={openTime ? dayjs(openTime * 1000).format('YYYY-MM-DD HH:mm:ss') : '-'} inline />
+        <I l={'任务结束时间'} v={endTime ? dayjs(endTime * 1000).format('YYYY-MM-DD HH:mm:ss') : '-'} inline />
       </ul>
     )
   },

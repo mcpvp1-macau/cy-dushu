@@ -56,6 +56,7 @@ const TargetPoints: React.FC = () => {
   const menuRef = useRef<ComponentRef<typeof PositionMenu>>(null)
   const [menuPosition, setMenuPosition] = useState<number[]>([0, 0])
   const [dispatchOpen, setDispatchOpen] = useState(false)
+  const [currentTarget, setCurrentTarget] = useState<any>(null)
 
   return (
     <>
@@ -94,14 +95,11 @@ const TargetPoints: React.FC = () => {
                       outlineColor={Cesium.Color.fromCssColorString('#fff')}
                       outlineWidth={last ? 1.5 : 0}
                       // onClick={() => onClick(`${parentId}=${deviceId}=${id}`)}
-                      onRightClick={
-                        globalConfig.is72
-                          ? () => {
-                              setMenuPosition([lng, lat, alt])
-                              menuRef.current?.open()
-                            }
-                          : undefined
-                      }
+                      onRightClick={() => {
+                        setCurrentTarget(item)
+                        setMenuPosition([lng, lat, alt])
+                        menuRef.current?.open()
+                      }}
                     />
                   </React.Fragment>
                 )
@@ -135,6 +133,13 @@ const TargetPoints: React.FC = () => {
               onClick: () => {
                 setDispatchOpen(true)
                 menuRef.current?.close()
+              },
+            },
+            {
+              key: 1,
+              label: '激光打击',
+              onClick: () => {
+                // TODO 激光打击
               },
             },
           ],

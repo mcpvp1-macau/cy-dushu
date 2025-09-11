@@ -27,6 +27,7 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
   const deviceId = deviceDetail.deviceId
   const productKey = (deviceDetail.productKey ||
     deviceDetail.deviceModel?.productKey)!
+  const videoList = deviceDetail?.properties.videoList || []
   const videoId = deviceDetail?.properties.videoList?.[0]?.videoId
 
   const services = deviceDetail.deviceModel?.services
@@ -41,21 +42,26 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
   console.info(deviceDetail)
   return (
     <div>
-      <section className="mx-3 my-3">
-        <DeviceLiveVideo
-          ref={videoRef}
-          deviceId={deviceId}
-          productKey={productKey!}
-          videoId={videoId ?? ''}
-          rightTop={
-            <VideoSnapshotBtn
-              productKey={productKey!}
+      {videoList.map((item) => {
+        return (
+          <section className="mx-3 my-3" key={item.videoId}>
+            <DeviceLiveVideo
+              // ref={videoRef}
               deviceId={deviceId}
-              videoLiveRef={videoRef}
+              productKey={productKey!}
+              videoId={item.videoId ?? ''}
+              leftTop={<>{item.name}</>}
+              // rightTop={
+              //   <VideoSnapshotBtn
+              //     productKey={productKey!}
+              //     deviceId={deviceId}
+              //     videoLiveRef={videoRef}
+              //   />
+              // }
             />
-          }
-        />
-      </section>
+          </section>
+        )
+      })}
       <section className="mx-3"></section>
       <section className="mx-3 mr-[9px] my-3 flex gap-2">
         <Link className="grow" to={`/control-room/laser-weapon/${deviceId}`}>

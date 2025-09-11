@@ -9,11 +9,12 @@ const InterferenceComp: React.FC<{
   )
 
   // mock
-  const requencyOfJammerListMock = [
-    { startFreq: 1, terminationFreq: 2, startAngle: 20, terminationAngle:25,power: 220 },
-    { startFreq: 3, terminationFreq: 4, startAngle: 40, terminationAngle:45, power: 220 },
-    { startFreq: 5, terminationFreq: 6, startAngle: 60, terminationAngle:65, power: 220 },
-  ]
+  // const requencyOfJammerListMock = [
+  //   { startFreq: 1, terminationFreq: 2, startAngle: 20, terminationAngle:25,power: 220 },
+  //   { startFreq: 3, terminationFreq: 4, startAngle: 40, terminationAngle:45, power: 220 },
+  //   { startFreq: 5, terminationFreq: 6, startAngle: 60, terminationAngle:65, power: 220 },
+  // ]
+  const requencyOfJammerListMock = (requencyOfJammerListArray ?? requencyOfJammerList)
   return (
     <div className=''>
       {/* <div className="text-sm text-white pl-[12px]">

@@ -15,6 +15,7 @@ type PropsType = {
   longitude?: number
   latitude?: number
   altitude?: number
+  refetch: () => void
 }
 
 const RadarFormModal: React.FC<PropsType> = ({
@@ -25,38 +26,49 @@ const RadarFormModal: React.FC<PropsType> = ({
   deviceId,
   longitude = 120,
   latitude = 30,
-  altitude = 100,
+  altitude = 10,
+  refetch,
 }) => {
+  console.info('aaaa', altitude)
   const [form] = Form.useForm()
   const r = radarScanRange['r'] || 1000
   const rSum = radarScanRange['rSum'] || 1000
   const angleSum = radarScanRange['angleSum'] || 360
   const angle1 = radarScanRange['angle1'] || 0
 
+  const [loading, setLoading] = useState(false)
+
   const { t } = useTranslation()
 
   const queryClient = useQueryClient()
 
   const save = async (values) => {
-    const { code } = await setWanglouConfig(productKey, deviceId, values)
+    const { code } = await setWanglouConfig(productKey, deviceId, values).catch(
+      () => {
+        return { code: 'ERROR' }
+      },
+    )
     if (code === 'SUCCESS') {
       msgMitt.emit('open', { type: 'success', content: '保存成功' })
       // 刷新地图设备
       queryClient.refetchQueries({
         queryKey: ['map-device-list'],
       })
+      refetch()
+      setOpen(false)
       // refreshData?.();
     } else {
       msgMitt.emit('open', { type: 'error', content: '保存失败' })
     }
     // setLoading(false)
-    setOpen(false)
   }
 
   const setRadarRangeProfile = async (data, values, mapString) => {
     const res = await setProperty(productKey, deviceId, {
       property: 'scanRangeProfile',
       data,
+    }).catch(() => {
+      return { code: 'ERROR', data: { value: '' } }
     })
     const { code } = res
     if (code === 'SUCCESS') {
@@ -64,21 +76,25 @@ const RadarFormModal: React.FC<PropsType> = ({
         type: 'success',
         content: `入库成功`,
       })
+      // await save({
+      //   ...values,
+      //   scanRangeJson: mapString,
+      //   scanRangeProfile: res.data.value,
+      // })
+      refetch()
+      setOpen(false)
     } else {
       msgMitt.emit('open', {
         type: 'error',
         content: `上传失败`,
       })
     }
-    await save({
-      ...values,
-      scanRangeJson: mapString,
-      scanRangeProfile: res.data.value,
-    })
-    // setLoading(false)
+
+    setLoading(false)
   }
 
   const start = async (values) => {
+    setLoading(true)
     const radarFormObject = {
       r,
       rSum,
@@ -151,7 +167,7 @@ const RadarFormModal: React.FC<PropsType> = ({
       onConfirm={onConfirm}
       width={300}
       // loading={loading}
-      //   confirmLoading={loading}
+      confirmLoading={loading}
     >
       <div>
         <Form
@@ -169,7 +185,7 @@ const RadarFormModal: React.FC<PropsType> = ({
             name="rSum"
             rules={[{ required: true }]}
           >
-            <InputNumber style={{ width: '100%' }} addonAfter="m" />
+            <InputNumber style={{ width: '100%' }} />
           </Form.Item>
 
           <Form.Item
