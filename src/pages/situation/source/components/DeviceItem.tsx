@@ -58,6 +58,10 @@ const BatteryStatusTag: FC<{ battery: number }> = ({ battery }) => {
 const ignoreBatteryDeviceTypes = new Set([
   DeviceEnum.UAV_AIRPORT,
   DeviceEnum.CAMERA,
+  DeviceEnum.LASER_WEAPON,
+  DeviceEnum.ER_EF_CAR,
+  DeviceEnum.RADAR,
+  DeviceEnum.THEODOLITE,
 ])
 
 /** 设备树中的设备项 */

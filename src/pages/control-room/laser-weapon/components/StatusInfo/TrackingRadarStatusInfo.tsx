@@ -6,7 +6,7 @@ type PropsType = {}
 
 const TrackingRadarStatusInfo: FC<PropsType> = memo(() => {
   return (
-    <ul className="flex flex-wrap text-sm card-border p-3">
+    <ul className="flex flex-wrap text-sm card-border px-1 p-1 bg-[#28323C] m-2">
       <InfoItem name="trackingRadarStatus" label="雷达状态" />
       <InfoItem name="trackingRadarEmissionStatus" label="雷达辐射" />
       <InfoItem name="trackingRadarWorkingMode" label="工作模式" />

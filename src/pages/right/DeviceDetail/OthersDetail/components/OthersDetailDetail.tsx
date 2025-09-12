@@ -40,7 +40,7 @@ const OthersDetailDetail: React.FC = () => {
       {/** 设备本身的视频 */}
       {videoList?.map((item) => {
         return (
-          <section className="mx-3 my-3">
+          <section className="mx-3 mb-3">
             <OthersVideo
               deviceId={deviceId}
               productKey={productKey!}
@@ -54,7 +54,7 @@ const OthersDetailDetail: React.FC = () => {
       {childDeviceVideos.map((item) => {
         return item.properties?.videoList?.map((video) => {
           return (
-            <section className="mx-3 my-3">
+            <section className="mx-3 mb-3">
               <OthersVideo
                 deviceId={item.deviceId}
                 productKey={item.deviceModel.productKey}

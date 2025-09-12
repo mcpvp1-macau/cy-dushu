@@ -21,7 +21,7 @@ const CameraDetailInfoCard: FC<PropsType> = memo(
   ({ modelNumber, onlineStatus, longitude, latitude, altitude }) => {
     const { t } = useTranslation()
     return (
-      <ul className="flex flex-wrap text-sm card-border p-3">
+      <ul className="flex flex-wrap text-sm card-border p-3 py-2">
         <I l={'设备型号'} v={modelNumber || '-'} />
         <I l={t('common.onlineStatus')} v={<DeviceOnlineStatus status={onlineStatus} />} />
         <I l={'设备经度'} v={longitude ?? '-'} />

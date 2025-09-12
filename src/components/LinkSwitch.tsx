@@ -18,8 +18,9 @@ const LinkSwitch: FC<PropsType> = memo(({ items, value = '', onChange }) => {
             size="small"
             className={clsx('p-0', {
               'text-white': value !== e.value,
+              'text-primary': value === e.value,
             })}
-            type="link"
+            type="text"
             onClick={(evt) => {
               evt.stopPropagation()
               onChange?.(e.value)

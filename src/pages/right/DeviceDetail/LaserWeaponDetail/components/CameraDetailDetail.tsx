@@ -12,12 +12,13 @@ import { Button } from 'antd'
 import IconControlRoom from '@/assets/icons/jsx/IconControlRoom'
 import LaserWeaponInfoCard from './CameraDetailInfoCard'
 import { Tabs } from 'antd'
-import ArtilleryStatusInfo from '@/pages/control-room/laser-weapon/components/StatusInfo/artilleryStatusInfo'
+import ArtilleryStatusInfo from '@/pages/control-room/laser-weapon/components/StatusInfo/ArtilleryStatusInfos'
 import SearchRadarStatusInfo from '@/pages/control-room/laser-weapon/components/StatusInfo/SearchRadarStatusInfo'
 import TrackingRadarStatusInfo from '@/pages/control-room/laser-weapon/components/StatusInfo/TrackingRadarStatusInfo'
 import ElectroOpticalStatusInfo from '@/pages/control-room/laser-weapon/components/StatusInfo/ElectroOpticalStatusInfo'
 import LaserStatusInfo from '@/pages/control-room/laser-weapon/components/StatusInfo/LaserStatusInfo'
 import InfoItem from '@/pages/control-room/laser-weapon/components/StatusInfo/InfoItem'
+import LinkSwitch from '@/components/LinkSwitch'
 
 type PropsType = unknown
 
@@ -39,29 +40,86 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
 
   const videoRef = useRef<ComponentRef<typeof DeviceLiveVideo>>(null)
 
+  const [videoSource1, setVideoSource1] = useState<string>(videoList[0].videoId)
+  const [videoSource2, setVideoSource2] = useState<string>(videoList[2].videoId)
+  const videoSourceOptions1 = [
+    {
+      label: videoList[0].name,
+      value: videoList[0].videoId,
+    },
+    {
+      label: videoList[1].name,
+      value: videoList[1].videoId,
+    },
+  ]
+
+  const videoSourceOptions2 = [
+    {
+      label: videoList[2].name,
+      value: videoList[2].videoId,
+    },
+    {
+      label: videoList[3].name,
+      value: videoList[3].videoId,
+    },
+  ]
+
   console.info(deviceDetail)
   return (
     <div>
-      {videoList.map((item) => {
+      <section className="mx-3 mb-3">
+        <DeviceLiveVideo
+          deviceId={deviceId}
+          productKey={productKey!}
+          videoId={videoList[0].videoId ?? ''}
+          leftTop={
+            <>
+              <LinkSwitch
+                items={videoSourceOptions1}
+                value={videoSource1}
+                onChange={setVideoSource1}
+              />
+            </>
+          }
+        />
+      </section>
+
+      <section className="mx-3 mb-3">
+        <DeviceLiveVideo
+          deviceId={deviceId}
+          productKey={productKey!}
+          videoId={videoList[2].videoId ?? ''}
+          leftTop={
+            <>
+              <LinkSwitch
+                items={videoSourceOptions2}
+                value={videoSource2}
+                onChange={setVideoSource2}
+              />
+            </>
+          }
+        />
+      </section>
+      {/* {videoList.map((item) => {
         return (
-          <section className="mx-3 my-3" key={item.videoId}>
+          <section className="mx-3 mb-3" key={item.videoId}>
             <DeviceLiveVideo
-              // ref={videoRef}
+              ref={videoRef}
               deviceId={deviceId}
               productKey={productKey!}
               videoId={item.videoId ?? ''}
               leftTop={<>{item.name}</>}
-              // rightTop={
-              //   <VideoSnapshotBtn
-              //     productKey={productKey!}
-              //     deviceId={deviceId}
-              //     videoLiveRef={videoRef}
-              //   />
-              // }
+              rightTop={
+                <VideoSnapshotBtn
+                  productKey={productKey!}
+                  deviceId={deviceId}
+                  videoLiveRef={videoRef}
+                />
+              }
             />
           </section>
         )
-      })}
+      })} */}
       <section className="mx-3"></section>
       <section className="mx-3 mr-[9px] my-3 flex gap-2">
         <Link className="grow" to={`/control-room/laser-weapon/${deviceId}`}>
@@ -97,7 +155,7 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
             children: (
               <AppViewSuspense>
                 <div className="w-full">
-                  <ul className="flex flex-wrap text-sm card-border p-3">
+                  <ul className="flex flex-wrap text-sm py-0 px-1 m-2">
                     <InfoItem name="workMode" label="工作模式" />
                     <InfoItem
                       name="laserDeviceWorkingStatus"
@@ -107,7 +165,7 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
                   <Tabs
                     defaultActiveKey="3"
                     tabPosition={'top'}
-                    className="[&_.ant-tabs-nav]:pl-4"
+                    className="[&_.ant-tabs-nav]:pl-3"
                     items={[
                       {
                         label: '火炮',

@@ -23,18 +23,26 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
       (item: { tagName: string }) => item.tagName === 'MODEL_NUMBER',
     )?.tagValue || '-'
 
-  console.info(deviceDetail)
+  // console.info(deviceDetail)
   return (
     <div>
-      <section className="mx-3">
-        <CameraDetailInfoCard
-          modelNumber={modelName}
-          deviceDetail={deviceDetail}
-        />
-      </section>
+      <section className="mx-3"></section>
       <AppCollapse
         className="mt-3 border-x-0 border-b-0"
+        defaultActiveKey={['status', 'surveillance', 'interference']}
         items={[
+          {
+            label: '设备状态',
+            key: 'status',
+            children: (
+              <AppViewSuspense>
+                <CameraDetailInfoCard
+                  modelNumber={modelName}
+                  deviceDetail={deviceDetail}
+                />
+              </AppViewSuspense>
+            ),
+          },
           {
             label: '侦察状态',
             key: 'surveillance',
@@ -52,7 +60,11 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
             key: 'interference',
             children: (
               <AppViewSuspense>
-                <InterferenceComp requencyOfJammerList={deviceDetail.properties.requencyOfJammerList} />
+                <InterferenceComp
+                  requencyOfJammerList={
+                    deviceDetail.properties.requencyOfJammerList
+                  }
+                />
               </AppViewSuspense>
             ),
           },

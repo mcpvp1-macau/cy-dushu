@@ -28,7 +28,7 @@ const StatusInfo: FC<PropsType> = memo(() => {
   const devicelist = artilleryDeviceList ?? properties['artilleryDeviceList']
 
   return (
-    <ul className="flex flex-wrap text-sm card-border p-3">
+    <ul className="flex flex-wrap text-sm card-border px-1 p-1 bg-[#28323C] m-2">
       <InfoItem name="artilleryRange" label="火炮射程" />
       <InfoItem name="xxxxx" label="导弹射程" defaultValue="未配备" />
       <InfoItem name="maximumControlledArtilleryCapability" label="最大火控" />

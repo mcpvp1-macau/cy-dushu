@@ -43,7 +43,7 @@ const StatusInfo: FC<PropsType> = memo(() => {
   console.log('====',status)
 
   return (
-    <ul className="flex flex-wrap text-sm card-border p-3">
+    <ul className="flex flex-wrap text-sm card-border px-1 p-1 bg-[#28323C] m-2">
       <I l={'设备型号'} v={modelName || '-'} />
       <I
         l={t('common.onlineStatus')}
