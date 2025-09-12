@@ -98,6 +98,8 @@ class GlobalConfig {
   sentryDsn?: string
   /** Sentry project id */
   sentryProjectId?: string
+  /** Tanqi */
+  useTanqi?: boolean
 
   constructor(def: ConfigType) {
     Object.assign(this, def)
