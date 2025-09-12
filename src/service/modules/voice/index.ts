@@ -14,3 +14,15 @@ export const textToSpeech = async (text: string) => {
     },
   )
 }
+
+/** 语音转文字 */
+export const transcribeAudio = async (file: File, signal?: AbortSignal) => {
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('model', 'omni-transcribe')
+  formData.append('language', 'zh')
+
+  return serverVoiceSpeech.post('/v1/audio/transcriptions', formData, {
+    signal,
+  })
+}

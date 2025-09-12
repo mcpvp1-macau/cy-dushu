@@ -1,6 +1,6 @@
 import { Sender } from '@ant-design/x'
-import useASR from '../../Tanqi/utils/asr'
 import { t } from 'i18next'
+import useTranscribeAudio from '../hooks/useTranscribeAudio'
 
 type PropsType = {
   loading?: boolean
@@ -16,40 +16,35 @@ const TanqiSender: FC<PropsType> = memo((props) => {
   // 是否在语音录制识别
   const [isRecording, setIsRecording] = useState(false)
 
-  const {
-    onlineMsg,
-    offlineMsg,
-    handleStart: handleRecordStart,
-    handleStop: handleRecordStop,
-  } = useASR(isRecording)
+  const { translating, voiceText, clearVoiceText } = useTranscribeAudio(
+    isRecording,
+    2000,
+  )
 
   return (
     <Sender
       placeholder={t('tanqi.sender.placeholder')}
-      value={sendValue + offlineMsg + onlineMsg}
+      value={sendValue + voiceText}
       loading={props.loading}
       allowSpeech={{
-        recording: isRecording,
+        recording: isRecording || translating,
         onRecordingChange: (recording) => {
           if (recording === isRecording) {
             return
           }
-          if (recording) {
-            handleRecordStart()
+          if (recording !== isRecording) {
             setIsRecording(recording)
-          } else {
-            setTimeout(() => {
-              handleRecordStop()
-              setIsRecording(recording)
-              setSendValue(sendValue + offlineMsg + onlineMsg)
-            }, 1000)
           }
         },
       }}
-      onChange={setSendValue}
+      onChange={(value) => {
+        setSendValue(value)
+        clearVoiceText()
+      }}
       onSubmit={(message) => {
         props.onSubmit(message)
         setSendValue('')
+        clearVoiceText()
       }}
       onCancel={props.onCancel}
       actions={false}

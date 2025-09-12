@@ -28,7 +28,7 @@ const useTaskUnderstanding = (
     abortControllerRef.current = controller
 
     const resp = await fetch(
-      `${serverDitingMCP.baseURL}/api/task/conversation_streams/${conversationId}`,
+      `${serverDitingMCP.baseURL}/api/conversations/${conversationId}/stream`,
       {
         method: 'GET',
         signal: controller.signal,
