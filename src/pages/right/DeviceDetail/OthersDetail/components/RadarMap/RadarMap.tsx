@@ -875,6 +875,8 @@ type PropsType = {
 
 const RadarMap: React.FC<PropsType> = ({ deviceId }) => {
   const detail = useDeviceDetailStore((s) => s.deviceDetail)
+
+  console.info('de=====', detail)
   const modelName =
     detail?.deviceTags?.find(
       (item: { tagName: string }) => item.tagName === 'MODEL_NUMBER',

@@ -16,13 +16,13 @@ const SurveillanceComp: React.FC<PropsType> = ({
   const keyAreasArray = useOthersControlRoomStore((s) => s.state.keyAreasList)
 
   // TODO MOCK数据
-    const rf = (rfArray ?? rfList)
+  const rf = rfArray ?? rfList
   // const rf = [
   //   { startFreq: 1, terminationFreq: 2 },
   //   { startFreq: 3, terminationFreq: 4 },
   //   { startFreq: 5, terminationFreq: 6 },
   // ]
-  const keyAreas = (keyAreasArray ?? keyAreasList) 
+  const keyAreas = keyAreasArray ?? keyAreasList
   // const keyAreas = [{ name: '侦测区域1' }]
 
   return (
@@ -59,20 +59,36 @@ const SurveillanceComp: React.FC<PropsType> = ({
               border: 'none',
             },
           },
-        //   {
-        //     key: '2',
-        //     label: '侦测区域 ' + keyAreas.length + '个',
-        //     children: (
-        //       <div>{keyAreas?.map((item) => item.name).join(',') || '-'} </div>
-        //     ),
-        //     style: {
-        //       border: 'none',
-        //     },
-        //   },
+          {
+            key: '2',
+            label: '侦测区域 ' + keyAreas.length + '个',
+            children: (
+              <div className="flex flex-col gap-2 text-xs bg-[#28323C] my-2 p-2">
+                {keyAreas?.map((item, i) => (
+                  <div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-[2px] h-[8px] bg-[#15B371]"></div>
+                      侦测区域 {i + 1}
+                    </div>
+                    <div className="flex text-xs text-fore pl-[6px]">
+                      <div className="w-1/2">起始方位：{item.startAngle}</div>
+                      <div className="w-1/2">
+                      结束方位：{item.terminationAngle}
+                      </div>
+                    </div>
+                  </div>
+                ))}{' '}
+              </div>
+            ),
+            style: {
+              border: 'none',
+            },
+          },
         ]}
-
       />
-      <div className='text-sm text-white pl-[12px]'>侦测区域 {keyAreas.length}个</div>
+      {/* <div className="text-sm text-white pl-[12px]">
+        侦测区域 {keyAreas.length}个
+      </div> */}
     </div>
   )
 }
