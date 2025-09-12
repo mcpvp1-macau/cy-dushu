@@ -71,4 +71,5 @@ window.config = {
   // 访问密钥(必须在这里配置，4a上配置无效)
   secretAccessKey: 'K2AqfD1wl+ZfeJnTBWgQ4g==',
   enableJessibucaMetrics: false,
+  useTanqi: true,
 }
