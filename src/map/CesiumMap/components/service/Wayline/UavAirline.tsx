@@ -31,7 +31,9 @@ const Waypoint: FC<{
         positions: Cesium.Cartesian3.fromDegreesArrayHeights([
           pointX,
           pointY,
-          0,
+          viewer.scene.globe.getHeight(
+            Cesium.Cartographic.fromDegrees(pointX, pointY),
+          ) ?? 0,
           pointX,
           pointY,
           pointZ,
