@@ -3,7 +3,6 @@ import VerticalIconButton from '@/components/ui/button/VerticalButton'
 import FormModal from '@/components/XForm/Modal'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import useIdleControlTag from '../../hooks/useIdleControlTag'
 import { usePostDeviceServiceHandler } from '@/hooks/device/usePostDeviceService'
 import { getDeviceDetail } from '@/service/modules/device'
 
@@ -15,8 +14,6 @@ type PropsType = {
 const Takeoff: FC<PropsType> = memo(({ postServiceFn }) => {
   const { t } = useTranslation()
   const isLimitedFly = useUavControlRoomStore((s) => s.isLimitedFly)
-  const hasControlPower = useUavControlRoomStore((s) => s.hasControlPower)
-  const idleControlTag = useIdleControlTag()
   const hasService = useDeviceDetailStore((s) => s.serviceHave['takeoff'])
 
   const parentId = useDeviceDetailStore((s) => s.deviceDetail?.parentId)
@@ -29,8 +26,7 @@ const Takeoff: FC<PropsType> = memo(({ postServiceFn }) => {
 
   const postServicehandler = usePostDeviceServiceHandler()
 
-  const canTakeoff =
-    !isLimitedFly && (idleControlTag || hasControlPower) && hasService
+  const canTakeoff = !isLimitedFly && hasService
 
   const handleClick = async (data) => {
     if (!parentId || currentLink?.toUpperCase?.() === '5G') {
