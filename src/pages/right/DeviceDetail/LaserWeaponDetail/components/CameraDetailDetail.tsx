@@ -64,14 +64,13 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
     },
   ]
 
-  console.info(deviceDetail)
   return (
     <div>
       <section className="mx-3 mb-3">
         <DeviceLiveVideo
           deviceId={deviceId}
           productKey={productKey!}
-          videoId={videoList[0].videoId ?? ''}
+          videoId={videoSource1 ?? ''}
           leftTop={
             <>
               <LinkSwitch
@@ -88,7 +87,7 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
         <DeviceLiveVideo
           deviceId={deviceId}
           productKey={productKey!}
-          videoId={videoList[2].videoId ?? ''}
+          videoId={videoSource2 ?? ''}
           leftTop={
             <>
               <LinkSwitch
