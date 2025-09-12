@@ -40,27 +40,27 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
 
   const videoRef = useRef<ComponentRef<typeof DeviceLiveVideo>>(null)
 
-  const [videoSource1, setVideoSource1] = useState<string>(videoList[0].videoId)
-  const [videoSource2, setVideoSource2] = useState<string>(videoList[2].videoId)
+  const [videoSource1, setVideoSource1] = useState<string>(videoList?.[0]?.videoId)
+  const [videoSource2, setVideoSource2] = useState<string>(videoList?.[2]?.videoId)
   const videoSourceOptions1 = [
     {
-      label: videoList[0].name,
-      value: videoList[0].videoId,
+      label: videoList?.[0]?.name,
+      value: videoList?.[0]?.videoId,
     },
     {
-      label: videoList[1].name,
-      value: videoList[1].videoId,
+      label: videoList?.[1]?.name,
+      value: videoList?.[1]?.videoId,
     },
   ]
 
   const videoSourceOptions2 = [
     {
-      label: videoList[2].name,
-      value: videoList[2].videoId,
+      label: videoList?.[2]?.name,
+      value: videoList?.[2]?.videoId,
     },
     {
-      label: videoList[3].name,
-      value: videoList[3].videoId,
+      label: videoList?.[3]?.name,
+      value: videoList?.[3]?.videoId,
     },
   ]
 
@@ -129,7 +129,7 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
       </section>
       <AppCollapse
         className="border-x-0 border-b-0"
-        defaultActiveKey={['status']}
+        defaultActiveKey={['status', 'mode']}
         items={[
           {
             label: '设备状态',

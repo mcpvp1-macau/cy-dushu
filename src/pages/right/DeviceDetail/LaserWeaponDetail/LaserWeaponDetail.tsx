@@ -68,7 +68,7 @@ const LaserWeaponDetail: FC<PropsType> = memo(({ data, headerTools, onClose }) =
         </div>
         <div className="flex-1 overflow-y-auto">
           <AppViewSuspense>
-            {tab === '详情' ? <CameraDetailDetail /> : <CameraDetailData />}
+            {tab === '详情' ? <CameraDetailDetail /> : <CameraDetailData deviceId={deviceId} deviceType={deviceType} />}
           </AppViewSuspense>
         </div>
       </div>

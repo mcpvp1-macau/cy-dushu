@@ -7,13 +7,13 @@ type PropsType = {}
 
 const StatusInfo: FC<PropsType> = memo(() => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
-  const { properties, deviceModel } = deviceDetail
+  const { properties, deviceModel } = deviceDetail || {}
   const artilleryDeviceList = useOthersControlRoomStore(
     (s) => s.state['artilleryDeviceList'],
   )
 
   const specsMap = useMemo(() => {
-    const list = deviceModel.properties.find(
+    const list = deviceModel?.properties?.find(
       (item) => item.identifier === 'artilleryDeviceList',
     )
     // @ts-ignore
@@ -25,7 +25,7 @@ const StatusInfo: FC<PropsType> = memo(() => {
 
   console.info(specsMap)
 
-  const devicelist = artilleryDeviceList ?? properties['artilleryDeviceList']
+  const devicelist = artilleryDeviceList ?? (properties?.['artilleryDeviceList'] || [])
 
   return (
     <ul className="flex flex-wrap text-sm card-border px-1 p-1 bg-[#28323C] m-2">

@@ -7,7 +7,7 @@ import { ReactNode } from 'react'
 
 const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
   return (
-    <li className="w-1/2 flex gap-1 leading-5  text-[12px]">
+    <li className="w-1/2 flex gap-1 leading-5  text-[#C7D1DC] text-[12px]">
       <Tooltip title={l}>
         <div className="truncate w-[60px]">{l}</div>
       </Tooltip>

@@ -8,7 +8,7 @@ import { Tooltip } from 'antd'
 
 const I: FC<{ l: ReactNode; v: ReactNode; inline?: boolean }> = ({ l, v, inline }) => {
   return (
-    <li className={cn("flex gap-1 leading-5  text-[12px]", inline ? 'w-full' : 'w-1/2')}>
+    <li className={cn("flex gap-1 leading-5 text-[#C7D1DC]  text-[12px]", inline ? 'w-full' : 'w-1/2')}>
       <Tooltip title={l}>
         <div className="truncate w-[60px]">{l}</div>
       </Tooltip>
@@ -28,7 +28,7 @@ type PropsType = {
 const CameraDetailInfoCard: FC<PropsType> = memo(
   ({ deviceDetail, modelNumber }) => {
     const { t } = useTranslation()
-    const { properties, deviceModel } = deviceDetail
+    const { properties, deviceModel } = deviceDetail || {}
     const status = useRealOnlineStatus(deviceDetail.deviceId)
     const propertiesList = deviceModel?.properties ?? []
     const propertiesMap = propertiesList.reduce((acc, item) => {

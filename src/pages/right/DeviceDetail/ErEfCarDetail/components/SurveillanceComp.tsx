@@ -32,11 +32,17 @@ const SurveillanceComp: React.FC<PropsType> = ({
         defaultActiveKey={['1']}
         expandIconPosition="end"
         expandIcon={CustomExpandIcon}
-        className="bg-[rgba(0,0,0,0)] [&_.ant-collapse-content-box]:!p-0"
+        className={`bg-[rgba(0,0,0,0)] [&_.ant-collapse-content-box]:!p-0 
+          [&_.ant-collapse-expand-icon]:!hidden 
+          [&_.ant-collapse-header:hover>div]:!flex`}
         items={[
           {
             key: '1',
-            label: '侦察频段 ' + rf.length + '个',
+            label: (
+              <div>
+                侦察频段 {rf.length}个
+              </div>
+            ),
             children: (
               <div className="flex flex-col gap-2 text-xs bg-[#28323C] my-2 p-2">
                 {rf?.map((item, i) => (
@@ -73,7 +79,7 @@ const SurveillanceComp: React.FC<PropsType> = ({
                     <div className="flex text-xs text-fore pl-[6px]">
                       <div className="w-1/2">起始方位：{item.startAngle}</div>
                       <div className="w-1/2">
-                      结束方位：{item.terminationAngle}
+                        结束方位：{item.terminationAngle}
                       </div>
                     </div>
                   </div>

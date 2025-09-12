@@ -21,16 +21,16 @@ type PropsType = {}
 
 const StatusInfo: FC<PropsType> = memo(() => {
   const { t } = useTranslation()
-  const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
-  const { properties, deviceModel } = deviceDetail
-  const status = useRealOnlineStatus(deviceDetail.deviceId)
+  const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)
+  // const { properties, deviceModel } = deviceDetail
+  const status = useRealOnlineStatus(deviceDetail?.deviceId || '')
 //   const state = useOthersControlRoomStore(
 //     useShallow((s) => {
 //       return pick(s.state, ['longitude', 'latitude', 'altitude', 'workMode', 'laserDeviceWorkingStatus'])
 //     }),
 //   )
   const modelName =
-    deviceDetail.deviceTags?.find(
+    deviceDetail?.deviceTags?.find(
       (item: { tagName: string }) => item.tagName === 'MODEL_NUMBER',
     )?.tagValue || '-'
 

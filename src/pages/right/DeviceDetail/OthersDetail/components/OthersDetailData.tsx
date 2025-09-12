@@ -5,11 +5,16 @@ import LinkSwitch from '@/components/LinkSwitch'
 import AiData from '@/components/AiData'
 import useHaveVIdeo from '../hooks/useHaveVIdeo'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import { DeviceEnum } from '@/enum/device'
 
 type PropsType = {
   deviceId: string
   deviceType: string
 }
+
+const ignoreDeviceTypes = new Set([
+  DeviceEnum.THEODOLITE,
+])
 
 const OthersDetailData: FC<PropsType> = memo(({ deviceId, deviceType }) => {
   const [mediaType, setMediaType] = useState<MediaType>('PICTURE')
@@ -20,11 +25,15 @@ const OthersDetailData: FC<PropsType> = memo(({ deviceId, deviceType }) => {
 
   return (
     <AppCollapse
-      defaultActiveKey={['PICTURE']}
+      defaultActiveKey={['PICTURE', 'AI_DATA']}
+      // activeKey={['PICTURE', 'AI_DATA']}
+      // bordered={false}
+      className='border-x-0 border-b-0'
       items={[
         ...(isHaveVideo
           ? [
               {
+                key: 'PICTURE',
                 label: (
                   <LinkSwitch
                     value={mediaType}
@@ -45,10 +54,11 @@ const OthersDetailData: FC<PropsType> = memo(({ deviceId, deviceType }) => {
               },
             ]
           : []),
-        {
+        ...(!ignoreDeviceTypes.has(deviceType as DeviceEnum) ? [{
+          key: 'AI_DATA',
           label: t('common.aiData'),
           children: <AiData deviceId={deviceId} deviceType={deviceType} />,
-        },
+        }] : []),
       ]}
     ></AppCollapse>
   )

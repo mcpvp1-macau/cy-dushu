@@ -66,7 +66,7 @@ const OthersDetailDetail: React.FC = () => {
         })
       })}
 
-      {deviceType === 'RADAR' && <div className="mx-3 mb-3 h-[184px]"><RadarMap deviceId={deviceId} /></div>}
+      {deviceType === 'RADAR' && <div className="mx-3 mb-3 pt-0 h-[154px] bg-[#1C2630]"><RadarMap deviceId={deviceId} /></div>}
       {deviceConfigs.isHaveControlRoom ? (
         <section className="mx-3 mr-[9px] my-3 flex gap-2">
           <Link className="grow" to={`/control-room/others/${deviceId}`}>

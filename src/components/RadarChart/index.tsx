@@ -130,9 +130,9 @@ const RadarChart: React.FC<Props> = (props) => {
       const text = new Text({
         fill: '#C7D1DC',
         text: item.label,
-        x: left + R - 7.5,
+        x: left + R - 10,
         y: top + R * (1 - item.value) - 4,
-        scale: 0.5,
+        scale: 0.7,
       })
       leaferRef.current?.add(text)
       markEntitys.push(text)

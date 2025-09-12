@@ -31,7 +31,7 @@ const StatusInfo: React.FC<PropsType> = () => {
     <AppCollapse
       className="border-x-0 border-b-0 overflow-y-auto h-full"
       //   accordion
-      defaultActiveKey={['1', ...items.map((item) => item.key)]}
+      defaultActiveKey={['1', '2', '3', '4', '5', '6', '7']}
       items={[
         {
           label: '状态监测',

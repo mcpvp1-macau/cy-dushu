@@ -1,10 +1,15 @@
 import AppCollapse from '@/components/AppCollapse'
 import DeviceDetailMediaData, { MediaType } from '../../components/MediaData'
 import LinkSwitch from '@/components/LinkSwitch'
+import AiData from '@/components/AiData'
 
-type PropsType = unknown
+type PropsType = {
+  deviceId: string
+  deviceType: string
+}
 
-const CameraDetailData: FC<PropsType> = memo(() => {
+const CameraDetailData: FC<PropsType> = memo(({ deviceId, deviceType }) => {
+  const { t } = useTranslation()
   const [mediaType, setMediaType] = useState<MediaType>('PICTURE')
 
   const items = useRef([
@@ -20,8 +25,12 @@ const CameraDetailData: FC<PropsType> = memo(() => {
 
   return (
     <AppCollapse
+      defaultActiveKey={['PICTURE', 'AI_DATA']}
+      // bordered={false}
+      className='border-x-0 border-b-0'
       items={[
         {
+          key: 'PICTURE',
           label: (
             <LinkSwitch
               value={mediaType}
@@ -30,6 +39,11 @@ const CameraDetailData: FC<PropsType> = memo(() => {
             />
           ),
           children: <DeviceDetailMediaData type={mediaType} />,
+        },
+        {
+          key: 'AI_DATA',
+          label: t('common.aiData'),
+          children: <AiData deviceId={deviceId} deviceType={deviceType} />,
         },
       ]}
     ></AppCollapse>

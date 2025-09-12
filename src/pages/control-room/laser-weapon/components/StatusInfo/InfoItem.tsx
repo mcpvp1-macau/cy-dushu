@@ -28,13 +28,13 @@ const InfoItem: React.FC<PropsType> = ({
   specs,
 }) => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
-  const { properties, deviceModel } = deviceDetail
+  const { properties, deviceModel } = deviceDetail || {}
   const currentValue = useOthersControlRoomStore((s) => s.state[name])
 
-  const newvalue = specs ? value : currentValue ?? properties[name]
+  const newvalue = specs ? value : currentValue ?? properties?.[name]
 
   const modelItem = useMemo(
-    () => deviceModel?.properties?.find((item) => item.identifier === name),
+    () => deviceModel?.properties?.find((item: any) => item.identifier === name),
     [deviceModel, name],
   )
 

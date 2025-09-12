@@ -30,6 +30,9 @@ const CameraDetailData: FC<PropsType> = memo(({ deviceId, deviceType }) => {
 
   return (
     <AppCollapse
+      defaultActiveKey={['AI_DATA']}
+      // bordered={false}
+      className='border-x-0 border-b-0'
       items={[
         // {
         //   label: (
@@ -42,6 +45,7 @@ const CameraDetailData: FC<PropsType> = memo(({ deviceId, deviceType }) => {
         //   children: <DeviceDetailMediaData type={mediaType} />,
         // },
         {
+          key: 'AI_DATA',
           label: t('common.aiData'),
           children: <AiData deviceId={deviceId} deviceType={deviceType} />,
         },
