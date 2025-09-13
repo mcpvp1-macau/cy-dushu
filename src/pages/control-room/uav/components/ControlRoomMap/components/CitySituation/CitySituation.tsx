@@ -15,10 +15,12 @@ const CitySituation: FC<PropsType> = memo(() => {
     searchParams.get('cityAllTargets')?.toLowerCase() === 'true'
   const rids = ridsStr ? ridsStr.split(',') : []
 
+  const is930 = searchParams.get('is930')?.toLowerCase() === 'true'
+
   return (
     <Suspense fallback={null}>
       {rids.length > 0 && <RIDTargets targetIds={rids} />}
-      {cityAllTargets && <AllTargets />}
+      {cityAllTargets && <AllTargets is930={is930} />}
     </Suspense>
   )
 })

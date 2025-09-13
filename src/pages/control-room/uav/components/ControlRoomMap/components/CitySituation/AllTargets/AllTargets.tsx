@@ -1,13 +1,18 @@
 import { dft } from '@/constant/time-fmt'
-import { getCitySituationAllTargets } from '@/service/modules/db-api/citySituation'
+import {
+  fetchTargetLayerGoalSub,
+  getCitySituationAllTargets,
+} from '@/service/modules/db-api/citySituation'
 import { BillboardCollection, LabelCollection } from 'resium'
 import UavTarget from './UavTarget'
 import { uniqBy } from 'lodash'
 import { useSearchParams } from 'react-router-dom'
 
-type PropsType = unknown
+type PropsType = {
+  is930: boolean
+}
 
-const AllTargets: FC<PropsType> = memo(() => {
+const AllTargets: FC<PropsType> = memo(({ is930 }) => {
   const [params] = useSearchParams()
   const expireTime = parseInt(params.get('expireTime') || '60')
 
@@ -16,11 +21,16 @@ const AllTargets: FC<PropsType> = memo(() => {
     {
       queryKey: ['cityAllTargets'],
       queryFn: () =>
-        getCitySituationAllTargets({
-          type: ['无人机'],
-          expireTime,
-          time: dayjs().format(dft),
-        }),
+        is930
+          ? fetchTargetLayerGoalSub({
+              time: dayjs().format(dft),
+              expireTime,
+            })
+          : getCitySituationAllTargets({
+              type: ['无人机'],
+              expireTime,
+              time: dayjs().format(dft),
+            }),
       select: (d) => d.data,
       refetchInterval: 1000,
     },

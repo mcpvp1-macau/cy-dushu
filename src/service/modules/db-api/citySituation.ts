@@ -45,3 +45,12 @@ export const getEntityPosition = (data: {
 }) => {
   return serverCityDBAPI.post('api/entityPosition', data)
 }
+
+
+// fetchTargetLayerGoalSub
+export const fetchTargetLayerGoalSub = (data: {
+  time: string
+  expireTime: number
+}) => {
+  return serverCityDBAPI.post('api/fetchTargetLayerGoalSub', data)
+}
