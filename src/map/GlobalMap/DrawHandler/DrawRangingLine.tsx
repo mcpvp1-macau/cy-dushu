@@ -3,7 +3,7 @@ import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { attempt, flatten } from 'lodash'
 import { cartesian3ToDegrees } from '@/utils/geoUtils'
-import PositionTooltip from '@/components/map/PostionTooltip'
+import PositionTooltip from '@/components/map/PositionTooltip'
 import { useLatest } from 'ahooks'
 import { getSpaceDistance } from '@/utils/geo-math'
 

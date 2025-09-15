@@ -1,6 +1,6 @@
 import { useCesium } from 'resium'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import PositionTooltip from '@/components/map/PostionTooltip'
+import PositionTooltip from '@/components/map/PositionTooltip'
 import { getSpaceDistance } from '@/utils/geo-math'
 import { isNil } from 'lodash'
 

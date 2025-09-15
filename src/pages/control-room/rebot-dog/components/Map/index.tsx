@@ -1,16 +1,13 @@
-// import CesiumMap from '@/map/CesiumMap'
-// import RebotDogRealMarker from './components/RealMarker'
-// import RebotDogRealTrack from './components/RealTrack'
-// import TargetPoints from '@/map/GlobalMap/TargetPoints'
 import PointCloudLayer from '@/components/PointCloudMap/PointCloudLayer'
 import { useRebotDogControlRoomStore } from '@/store/context-store/useRebotDogControlRoom.store'
-import { Canvas, ThreeEvent } from '@react-three/fiber'
+import { ThreeEvent } from '@react-three/fiber'
 import { Html, OrthographicCamera } from '@react-three/drei'
 import { Fragment } from 'react'
 import { Vector3 } from 'three'
 import PointActionMap from './PointActionMap'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import RebotDogLatestTask from './components/LatestTask'
+import ThreeCanvas from '@/components/three/ThreeCanvas'
 
 const RebotDogMap: FC<unknown> = memo(() => {
   const x = useRebotDogControlRoomStore((s) => s.state.x || 0)
@@ -25,7 +22,9 @@ const RebotDogMap: FC<unknown> = memo(() => {
   )
 
   const onClick = (event: ThreeEvent<MouseEvent>) => {
-    console.log(event.point)
+    if (!(event.nativeEvent.target instanceof HTMLCanvasElement)) {
+      return
+    }
     if (pointAction.open) {
       updatePointAction({
         open: true,
@@ -36,7 +35,7 @@ const RebotDogMap: FC<unknown> = memo(() => {
   }
 
   return (
-    <Canvas>
+    <ThreeCanvas>
       <OrthographicCamera up={[0, 0, 1]} />
       <PointCloudLayer
         url={activeMapUrl || '/pcd_data/test (1).pcd'}
@@ -44,38 +43,21 @@ const RebotDogMap: FC<unknown> = memo(() => {
       />
       <RebotDogLatestTask />
       <Fragment>
-        {/* <sprite scale={0.05} position={new Vector3(x, y, z)}>
-          <spriteMaterial
-            sizeAttenuation={false}
-            map={new THREE.TextureLoader().load(
-              '/images/marker/icon/rebot_dog.svg',
-            )}
-            depthTest={false}
-          ></spriteMaterial>
-        </sprite> */}
         <Html position={new Vector3(x, y, z)} center zIndexRange={[100, 0]}>
-          <div className="z-10" style={{ width: '20px', height: '20px' }}>
+          <div className="z-10" style={{ width: '24px', height: '24px' }}>
             <img src="/images/marker/icon/rebot_dog.svg" alt="" />
           </div>
         </Html>
         <Html position={new Vector3(x, y, z)} center>
-          <div className="select-none font-bold mb-1 shadow-lg text-nowrap mt-10 text-xs">
+          <div className="select-none font-bold mb-1 shadow-lg text-nowrap mt-14 text-xs">
             {deviceName}
           </div>
         </Html>
       </Fragment>
 
       <PointActionMap />
-    </Canvas>
+    </ThreeCanvas>
   )
-
-  // return (
-  //   <CesiumMap id="rebot-dog-control-room-map">
-  //     <RebotDogRealMarker />
-  //     <RebotDogRealTrack />
-  //     <TargetPoints />
-  //   </CesiumMap>
-  // )
 })
 
 RebotDogMap.displayName = 'RebotDogMap'

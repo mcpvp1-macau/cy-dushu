@@ -1,7 +1,8 @@
+import { getWaylinePointBillboardSvgURI } from '@/components/Icon/WaylinePoint'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { getLatestTask } from '@/service/modules/airline'
 import { shouldJson } from '@/utils/json'
-import { Html, Line } from '@react-three/drei'
+import { Line } from '@react-three/drei'
 import { Fragment } from 'react/jsx-runtime'
 import { TextureLoader, Vector3 } from 'three'
 
@@ -31,26 +32,20 @@ const RebotDogLatestTask: FC<PropsType> = memo(() => {
 
   return (
     <>
-      {waypoints.map((e) => (
+      {waypoints.map((e, i) => (
         <Fragment key={e.positionIndex}>
           <sprite scale={0.05} position={new Vector3(e.x, e.y, e.z)}>
             <spriteMaterial
               sizeAttenuation={false}
               map={new TextureLoader().load(
-                '/images/airline/inverted-triangle-blue.svg',
+                getWaylinePointBillboardSvgURI({
+                  color: '#4e85e1',
+                  text: i + 1,
+                }),
               )}
               depthTest={false}
             ></spriteMaterial>
           </sprite>
-          <Html
-            position={new Vector3(e.x, e.y, e.z)}
-            center
-            zIndexRange={[10, 0]}
-          >
-            <div className="font-bold mb-1 text-sm text-shadow-sm text-white cursor-move px-1 leading-4">
-              {e.positionIndex}
-            </div>
-          </Html>
         </Fragment>
       ))}
       {waypoints.length >= 2 && (

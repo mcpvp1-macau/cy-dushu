@@ -1,4 +1,4 @@
-import PositionTooltip from '@/components/map/PostionTooltip'
+import PositionTooltip from '@/components/map/PositionTooltip'
 import UavPointFlyTarget from './Target'
 import useCalcPointFlyInfo from './hooks/useCalcPointFlyInfo'
 import HeightDashLine from '@/map/CesiumMap/components/service/common/HeightDashLine'

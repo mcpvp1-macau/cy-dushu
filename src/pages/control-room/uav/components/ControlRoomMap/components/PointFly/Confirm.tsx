@@ -1,4 +1,4 @@
-import PositionTooltip from '@/components/map/PostionTooltip'
+import PositionTooltip from '@/components/map/PositionTooltip'
 import FormModal from '@/components/XForm/Modal'
 import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 import { usePostDeviceServiceHandler } from '@/hooks/device/usePostDeviceService'

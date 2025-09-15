@@ -5,7 +5,7 @@ import { memo, type FC } from 'react'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import * as turf from '@turf/turf'
-import PositionTooltip from '@/components/map/PostionTooltip'
+import PositionTooltip from '@/components/map/PositionTooltip'
 
 type PropsType = {
   onSuccess?: () => void

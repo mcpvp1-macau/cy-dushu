@@ -36,16 +36,7 @@ const DrawPointListener: FC<PropsType> = memo(() => {
     }
   }, [isDrawPoint, isMovePoint, renderer])
 
-  return (
-    <>
-      {/* <CameraControls
-        enabled={!isMovePoint}
-        // verticalDragToForward={false}
-        // dollyToCursor={false}
-        // infinityDolly={false}
-      /> */}
-    </>
-  )
+  return null
 })
 
 DrawPointListener.displayName = 'DrawPointListener'
