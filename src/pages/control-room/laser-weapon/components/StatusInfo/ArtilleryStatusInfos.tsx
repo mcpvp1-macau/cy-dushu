@@ -29,12 +29,12 @@ const StatusInfo: FC<PropsType> = memo(() => {
 
   return (
     <ul className="flex flex-wrap text-sm card-border px-1 p-1 bg-[#28323C] m-2">
-      <InfoItem name="artilleryRange" label="火炮射程" />
+      <InfoItem name="artilleryRange" label="火炮射程" unit="km" />
       <InfoItem name="xxxxx" label="导弹射程" defaultValue="未配备" />
-      <InfoItem name="maximumControlledArtilleryCapability" label="最大火控" />
-      <InfoItem name="maximumLauncher" label="最大发射架" />
-      <InfoItem name="numberOfControlledArtillery" label="当前火炮" />
-      <InfoItem name="numberOfControlledLaunchers" label="当前发射架" />
+      <InfoItem name="maximumControlledArtilleryCapability" label="最大火控" unit="个" />
+      <InfoItem name="maximumLauncher" label="最大发射架" unit="个" />
+      <InfoItem name="numberOfControlledArtillery" label="当前火炮" unit="个" />
+      <InfoItem name="numberOfControlledLaunchers" label="当前发射架" unit="个" />
       {/** TODO mock */}
       {(devicelist || [{}, {}])?.map((item, i) => {
         return (

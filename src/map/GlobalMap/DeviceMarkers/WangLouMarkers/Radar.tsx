@@ -26,7 +26,7 @@ const Radar: React.FC<PropsType> = React.memo(({ scanRangeProfile }) => {
 
   return (
     <>
-      <GroundPolygonPolyline positions={positions} />
+      <GroundPolygonPolyline positions={positions} color='#15B371'/>
     </>
   )
 })

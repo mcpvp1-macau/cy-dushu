@@ -18,6 +18,7 @@ type PropsType = {
   value?: any
   /** 使用specs */
   specs?: any
+  unit?: string
 }
 
 const InfoItem: React.FC<PropsType> = ({
@@ -26,6 +27,7 @@ const InfoItem: React.FC<PropsType> = ({
   defaultValue = '-',
   value,
   specs,
+  unit,
 }) => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
   const { properties, deviceModel } = deviceDetail || {}
@@ -46,14 +48,14 @@ const InfoItem: React.FC<PropsType> = ({
       const dataType = specs || modelItem?.dataType;
       const type = dataType.type
       if (type === 'double' || type === 'float') {
-        if (dataType.specs.unitName) {
-          return `${Number(newvalue)?.toFixed(5)} ${dataType.specs.unitName}`
+        if (dataType.specs.unitName || unit) {
+          return `${Number(newvalue)?.toFixed(5)} ${dataType.specs.unitName || unit}`
         }
         return Number(newvalue)?.toFixed(5)
       }
       if (type === 'int') {
-        if (dataType.specs.unitName) {
-          return `${Number(newvalue)} ${dataType.specs.unitName}`
+        if (dataType.specs.unitName || unit) {
+          return `${Number(newvalue)} ${dataType.specs.unitName || unit}`
         }
         return Number(newvalue)
       }
