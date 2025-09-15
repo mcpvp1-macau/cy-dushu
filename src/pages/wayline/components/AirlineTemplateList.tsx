@@ -13,7 +13,6 @@ import Select from '@/components/AntdOverride/Select'
 import IconWaylineAirpoint from '@/assets/icons/jsx/IconWaylineAirpoint'
 import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
 import IconSwarm from '@/assets/icons/jsx/IconSwarm'
-import IconRebotDogWayline from '@/assets/icons/jsx/IconRebotDogWayline'
 import { useUnmount } from 'ahooks'
 import useWaylinesStore from '@/store/map/useWaylines.store'
 import IconPointClout3DWayline from '@/assets/icons/jsx/IconPointCloud3DWayline'
@@ -52,15 +51,15 @@ export const createWaylineTypeOptions = (
     ),
     value: WaylineEnum.SwarmWayline,
   },
-  {
-    label: (
-      <div className="flex gap-2 items-center">
-        <IconRebotDogWayline />
-        {t('wayline.create.form.waylineType.options.rebotDog.title')}
-      </div>
-    ),
-    value: WaylineEnum.RebotDogWayline,
-  },
+  // {
+  //   label: (
+  //     <div className="flex gap-2 items-center">
+  //       <IconRebotDogWayline />
+  //       {t('wayline.create.form.waylineType.options.rebotDog.title')}
+  //     </div>
+  //   ),
+  //   value: WaylineEnum.RebotDogWayline,
+  // },
   {
     label: (
       <div className="flex gap-2 items-center">
