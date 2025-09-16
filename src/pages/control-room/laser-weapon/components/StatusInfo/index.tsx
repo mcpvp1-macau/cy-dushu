@@ -43,11 +43,11 @@ const StatusInfo: React.FC<PropsType> = () => {
           key: '2',
           children: <StatusInfoCard />,
         },
-        {
-          label: '火炮',
-          key: '3',
-          children: <ArtilleryStatusInfo />,
-        },
+        // {
+        //   label: '火炮',
+        //   key: '3',
+        //   children: <ArtilleryStatusInfo />,
+        // },
         {
           label: '搜索雷达',
           key: '4',

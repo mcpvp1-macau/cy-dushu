@@ -162,15 +162,15 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
                     />
                   </ul>
                   <Tabs
-                    defaultActiveKey="3"
+                    defaultActiveKey="4"
                     tabPosition={'top'}
                     className="[&_.ant-tabs-nav]:pl-3"
                     items={[
-                      {
-                        label: '火炮',
-                        key: '3',
-                        children: <ArtilleryStatusInfo />,
-                      },
+                      // {
+                      //   label: '火炮',
+                      //   key: '3',
+                      //   children: <ArtilleryStatusInfo />,
+                      // },
                       {
                         label: '搜索雷达',
                         key: '4',
