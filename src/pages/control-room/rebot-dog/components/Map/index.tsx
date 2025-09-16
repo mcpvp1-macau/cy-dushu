@@ -4,10 +4,11 @@ import { ThreeEvent } from '@react-three/fiber'
 import { Html, OrthographicCamera } from '@react-three/drei'
 import { Fragment } from 'react'
 import { Vector3 } from 'three'
-import PointActionMap from './PointActionMap'
+import PointActionMap from './components/PointActionMap'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import RebotDogLatestTask from './components/LatestTask'
 import ThreeCanvas from '@/components/three/ThreeCanvas'
+import PointActionDisplay from './components/PointActionDisplay'
 
 const RebotDogMap: FC<unknown> = memo(() => {
   const x = useRebotDogControlRoomStore((s) => s.state.x || 0)
@@ -56,6 +57,7 @@ const RebotDogMap: FC<unknown> = memo(() => {
       </Fragment>
 
       <PointActionMap />
+      <PointActionDisplay />
     </ThreeCanvas>
   )
 })

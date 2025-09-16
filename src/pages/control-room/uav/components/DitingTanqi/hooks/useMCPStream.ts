@@ -3,9 +3,10 @@ import serverDitingMCP from '@/service/servers/serverDitingMCP'
 import { parseEvent } from './useSendMessage'
 import { useGetState } from 'ahooks'
 import { shouldJson } from '@/utils/json'
+import { chunkBuffer } from '@/utils/decode/http-chunk'
 
-/** 任务理解 */
-const useTaskUnderstanding = (
+/** MCP 消息流 */
+const useMCPStream = (
   open: boolean,
   conversationId: number,
   options: {
@@ -22,8 +23,8 @@ const useTaskUnderstanding = (
   // 回复内容
   const [replyingContent, setContent, getContent] = useGetState('')
 
-  // 开始任务理解
-  const startTaskUnderstanding = useMemoizedFn(async () => {
+  // 开始MCP消息流
+  const start = useMemoizedFn(async () => {
     const controller = new AbortController()
     abortControllerRef.current = controller
 
@@ -40,46 +41,32 @@ const useTaskUnderstanding = (
       msgApi.error('任务理解开启失败，未获取到数据流')
       return
     }
-
-    const decoder = new TextDecoder('utf-8')
     readerRef.current = reader
 
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      const { done, value } = await reader.read()
-      if (done) {
-        break
-      }
-
-      const buffer = decoder.decode(value, { stream: true })
-
-      const lines = buffer.split('\n\n')
-
-      for (const event of lines) {
-        if (event.trim() === '') continue
-        const eventData = parseEvent(event)
-        const data = eventData.data
-        const choice0: Record<string, any> = data?.choices?.[0] ?? {}
-        const content =
-          shouldJson(choice0.delta?.content) ?? choice0.delta?.content
-
-        if (choice0.finish_reason === 'stop') {
-          if (typeof content === 'string') {
-            options.onStopMessage(getContent() + content)
-            setContent('')
-          } else {
-            options.onStopMessage(content)
-          }
+    for await (const chunk of chunkBuffer(reader)) {
+      if (chunk.trim() === '') continue
+      const eventData = parseEvent(chunk)
+      const data = eventData.data
+      const choice0: Record<string, any> = data?.choices?.[0] ?? {}
+      const content =
+        shouldJson(choice0.delta?.content) ?? choice0.delta?.content
+      if (choice0.finish_reason === 'stop') {
+        if (typeof content === 'string') {
+          options.onStopMessage(getContent() + content)
+          setContent('')
         } else {
-          setContent((prev) => prev + (content ?? ''))
+          options.onStopMessage(content)
         }
+      } else {
+        setContent((prev) => prev + (content ?? ''))
       }
     }
+
     readerRef.current = null
     abortControllerRef.current = null
   })
 
-  const cancelTaskUnderstanding = useMemoizedFn(() => {
+  const cancel = useMemoizedFn(() => {
     // 取消可读流
     if (readerRef.current) {
       readerRef.current.cancel()
@@ -97,9 +84,9 @@ const useTaskUnderstanding = (
       return
     }
 
-    startTaskUnderstanding()
+    start()
 
-    return cancelTaskUnderstanding
+    return cancel
   }, [open, conversationId])
 
   return {
@@ -107,4 +94,4 @@ const useTaskUnderstanding = (
   }
 }
 
-export default useTaskUnderstanding
+export default useMCPStream

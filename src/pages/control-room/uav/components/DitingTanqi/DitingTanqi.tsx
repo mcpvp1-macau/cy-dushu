@@ -19,7 +19,7 @@ import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDevice
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { Button } from 'antd'
 import IconIntelligence from '@/assets/icons/jsx/IconIntelligence'
-import useTaskUnderstanding from './hooks/useTaskUnderstanding'
+import useMCPStream from './hooks/useMCPStream'
 import IconCommand from '@/assets/icons/jsx/IconCommand'
 import useMCPTools from './hooks/useMCPTools'
 import { useInViewport } from 'ahooks'
@@ -195,8 +195,10 @@ const DitingTanqi: FC<PropsType> = memo(() => {
     enabled: !!chatId,
   })
 
-  const { replyingContent: taskUnderstandingReplyingContent } =
-    useTaskUnderstanding(openUnderstand, chatId ?? 0, {
+  const { replyingContent: taskUnderstandingReplyingContent } = useMCPStream(
+    !!chatId,
+    chatId ?? 0,
+    {
       onStopMessage: (content) => {
         setApendedRows((prev) => [
           ...prev,
@@ -208,7 +210,8 @@ const DitingTanqi: FC<PropsType> = memo(() => {
         ])
         setAiState(APState.Idle)
       },
-    })
+    },
+  )
 
   // 显示的内容
   const conversationDetailData = useMemo(() => {

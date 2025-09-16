@@ -142,8 +142,6 @@ const PointActionMap: FC = () => {
                       },
                     })
                     updatePointAction({
-                      //   open: false,
-                      //   targetPosition: undefined,
                       open: false,
                       confirm: false,
                     })
