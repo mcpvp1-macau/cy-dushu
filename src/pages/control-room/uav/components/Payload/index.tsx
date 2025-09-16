@@ -45,7 +45,7 @@ const labelMap: { [key in MountType]: string } = {
 /** 无人机负载 */
 const UavPayload: FC<PropsType> = memo(({ productKey }) => {
   // TODO mock 挂载
-  const mount: string[] = useUavControlRoomStore((s) => s.state.mounts) || ['H3DSpeaker']
+  const mount: string[] = useUavControlRoomStore((s) => s.state.mounts) || []
   // || [
   //   'PARACHUTE',
   //   'MMC_Gimbal_P3',

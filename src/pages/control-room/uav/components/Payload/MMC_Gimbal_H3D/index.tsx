@@ -27,13 +27,13 @@ const MMC_Gimbal_P3: React.FC = () => {
   )
 
   const [activeKey, setActiveKey] = useState('3')
-  const [volume, setVolume] = useState(systemVolume || 0)
+  const [volume, setVolume] = useState(systemVolume || 31)
 
   useWatch(systemVolume, setVolume)
 
   const { run } = useDebounceFn(
     (value) => {
-      postSerivce('volumeControl', {
+      postSerivce('czVolumeControl', {
         volume: value,
         type: 'system',
       })
@@ -57,9 +57,14 @@ const MMC_Gimbal_P3: React.FC = () => {
     })
   }
 
-  const handlePlay = (fileName: string, action: 'play' | 'pause') => {
-    postSerivce('recordAudioFileControl', {
-      fileName,
+  const handlePlay = (item: {id: number, name: string}, action: 'play' | 'pause') => {
+    // postSerivce('recordAudioFileControl', {
+    //   fileName,
+    //   action,
+    // })
+    postSerivce('audioFileControl', {
+      name: item.name,
+      audioId: item.id,
       action,
     })
   }
@@ -116,8 +121,8 @@ const MMC_Gimbal_P3: React.FC = () => {
             id="icon-volume-up"
             className="pt-[8px] text-[24px] text-[#C7D1DC]"
           />
-          <Slider value={volume} onChange={onChangeVolume} className="w-full" />
-          <span>{volume}%</span>
+          <Slider value={volume} onChange={onChangeVolume} className="w-full" max={31} min={0} />
+          <span>{volume}</span>
         </div>
       </div>
       <div>

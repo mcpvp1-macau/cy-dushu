@@ -7,16 +7,22 @@ import React, { useState } from 'react'
 
 type Props = {
   playing: boolean
-  onPlay: (fileName: string, action: 'play' | 'pause') => void
+  onPlay: (item: {id: number, name: string}, action: 'play' | 'pause') => void
 }
 
 const FileTo: React.FC<Props> = (props) => {
   const { playing, onPlay } = props
-  const recordAudioFiles =
-    useUavControlRoomStore((m) => m.state?.recordAudioFiles) || '5,7'
+  const recordAudioInfos = useUavControlRoomStore(
+    (m) => m.state?.recordAudioInfos,
+  ) || [
+    { id: '5', name: '5' },
+    { id: '7', name: '7' },
+  ]
 
   const currentSelectedRecordAudioFile =
     useUavControlRoomStore((m) => m.state?.currentSelectedRecordAudioFile) || ''
+
+    console.log('====', currentSelectedRecordAudioFile, recordAudioInfos)
 
   const detail = useDeviceDetailStore((s) => s.deviceDetail)
   const postSerivce = usePostDeviceService(
@@ -26,32 +32,32 @@ const FileTo: React.FC<Props> = (props) => {
 
   const [editIndex, setEditIndex] = useState(-1)
 
-  const Arr = recordAudioFiles.split(',').filter((item: string) => !!item)
 
-  const play = (item: string) => {
+  const play = (item: {id: number, name: string}) => {
     onPlay(item, 'play')
   }
-  const pause = (item: string) => {
+  const pause = (item: {id: number, name: string}) => {
     onPlay(item, 'pause')
   }
 
-  const handleSave = async (value: string) => {
+  const handleSave = async (value: string, id: number) => {
     await postSerivce('updateAudioName', {
-      fileName: value,
+      name: value,
+      id,
     })
     setEditIndex(-1)
   }
 
-  const render = (item: string, index: number) => {
+  const render = (item: {id: number, name: string}, index: number) => {
     return (
       <div className="flex justify-between mb-[8px] pl-[10px] pt-[10px] pr-[12px]">
         <div className="flex space-x-2 items-center">
           <span>{index + 1}</span>{' '}
           <span>
             {editIndex === index ? (
-              <Input id={`file-to-input-${index}`} defaultValue={item} />
+              <Input id={`file-to-input-${index}`} defaultValue={item.name} />
             ) : (
-              item
+              item.name
             )}
           </span>
         </div>
@@ -67,7 +73,7 @@ const FileTo: React.FC<Props> = (props) => {
                   ) as HTMLInputElement
                   console.log('====', value.value)
                   if (value) {
-                    handleSave(value.value)
+                    handleSave(value.value, item.id)
                   }
                 }}
               />
@@ -84,7 +90,7 @@ const FileTo: React.FC<Props> = (props) => {
             </Tooltip>
           )}
 
-          {playing && currentSelectedRecordAudioFile === item ? (
+          {currentSelectedRecordAudioFile === item.id ? (
             <Tooltip title={'停止播放'}>
               <Icon
                 id="icon-pause"
@@ -105,7 +111,7 @@ const FileTo: React.FC<Props> = (props) => {
       </div>
     )
   }
-  return <div>{Arr.map(render)}</div>
+  return <div>{recordAudioInfos.map(render)}</div>
 }
 
 export default React.memo(FileTo)
