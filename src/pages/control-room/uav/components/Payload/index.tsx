@@ -15,6 +15,7 @@ const MMC_Gimbal_LP12_2 = lazy(() => import('./MMC_Gimbal_LP12_2'))
 const MMC_Gimbal_Z30Pro = lazy(() => import('./MMC_Gimbal_Z30Pro'))
 const MMC_Gimbal_Z60R = lazy(() => import('./MMC_Gimbal_Z60R'))
 const PARACHUTE = lazy(() => import('./PARACHUTE'))
+const MMC_Gimbal_H3D = lazy(() => import('./MMC_Gimbal_H3D'))
 
 type PropsType = {
   productKey: string
@@ -28,6 +29,7 @@ type MountType =
   | 'MMC_Gimbal_LP12_1' // 喊话器
   | 'MMC_Gimbal_LP12_2' // 探照灯
   | 'MMC_Gimbal_D4'
+  | 'H3DSpeaker'
 
 const labelMap: { [key in MountType]: string } = {
   PARACHUTE: '降落伞',
@@ -37,6 +39,7 @@ const labelMap: { [key in MountType]: string } = {
   MMC_Gimbal_D4: '抛投器 D4',
   MMC_Gimbal_LP12_1: '喊话器',
   MMC_Gimbal_LP12_2: '探照灯',
+  H3DSpeaker: '喊话器 H3D',
 }
 
 /** 无人机负载 */
@@ -52,6 +55,9 @@ const UavPayload: FC<PropsType> = memo(({ productKey }) => {
   //   'MMC_Gimbal_LP12_2',
   //   'MMC_Gimbal_D4',
   // ]
+
+
+  console.log('====',mount)
 
   const mounts = useMemo(() => {
     const arr: MountType[] = []
@@ -76,6 +82,7 @@ const UavPayload: FC<PropsType> = memo(({ productKey }) => {
     MMC_Gimbal_D4: <MMC_Gimbal_D4 />,
     MMC_Gimbal_LP12_1: <MMC_Gimbal_LP12_1 />,
     MMC_Gimbal_LP12_2: <MMC_Gimbal_LP12_2 />,
+    H3DSpeaker: <MMC_Gimbal_H3D />,
   }
 
   const hasThrowAt = useDeviceDetailStore((s) => s.serviceHave['throwAt'])
