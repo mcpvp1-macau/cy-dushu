@@ -22,6 +22,7 @@ const useMCPStream = (
 
   // 回复内容
   const [replyingContent, setContent, getContent] = useGetState('')
+  const qc = useQueryClient()
 
   // 开始MCP消息流
   const start = useMemoizedFn(async () => {
@@ -48,6 +49,15 @@ const useMCPStream = (
       const eventData = parseEvent(chunk)
       const data = eventData.data
       const choice0: Record<string, any> = data?.choices?.[0] ?? {}
+
+      if (
+        choice0.delta.role === 'fly-plan-start' ||
+        choice0.delta.role === 'fly-plan-end'
+      ) {
+        qc.invalidateQueries({ queryKey: ['tanqiFlyPlan', conversationId] })
+        continue
+      }
+
       const content =
         shouldJson(choice0.delta?.content) ?? choice0.delta?.content
       if (choice0.finish_reason === 'stop') {

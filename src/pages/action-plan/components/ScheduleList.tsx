@@ -73,6 +73,7 @@ const ScheduleList: FC<PropsType> = memo(() => {
                 className="w-32"
                 placeholder={t('common.all')}
                 allowClear
+                value={status}
                 options={StatusList.map((e) => ({
                   value: e,
                   label: t(`schedule.status.${e}.title`),
