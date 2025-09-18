@@ -10,6 +10,8 @@ import DeviceIconER_EF_CAR from '@/assets/icons/jsx/device/DeviceIconER_EF_CAR'
 import DeviceIconRadar from '@/assets/icons/jsx/device/DeviceIconRadar'
 import DeviceIconTHEODOLITE from '@/assets/icons/jsx/device/DeviceIconTHEODOLITE'
 import DeviceIconLaser from '@/assets/icons/jsx/device/DeviceIconLaser'
+import DeviceIconSHELL from '@/assets/icons/jsx/device/DeviceIconSHELL'
+import DeviceIconMC from '@/assets/icons/jsx/device/DeviceIconMC'
 
 export enum DeviceEnum {
   UAV = 'UAV',
@@ -36,6 +38,10 @@ export enum DeviceEnum {
   THEODOLITE = 'THEODOLITE',
   /** 激光武器 */
   LASER_WEAPON = 'LASER_WEAPON',
+  /** 高炮 */
+  SHELL = 'SHELL',
+  /** 微波武器 */
+  MICROWAVE = 'MICROWAVE',
 }
 
 const deviceTypeWeight = new Map<string, number>([
@@ -68,6 +74,10 @@ export const deviceIconMap = {
   [DeviceEnum.THEODOLITE]: DeviceIconTHEODOLITE,
   // 激光武器
   [DeviceEnum.LASER_WEAPON]: DeviceIconLaser,
+  // 高炮
+  [DeviceEnum.SHELL]: DeviceIconSHELL,
+  // 微波武器
+  [DeviceEnum.MICROWAVE]: DeviceIconMC,
 }
 
 export enum DeviceStatusEnum {

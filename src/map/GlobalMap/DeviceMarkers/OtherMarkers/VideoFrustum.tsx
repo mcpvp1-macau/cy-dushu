@@ -53,7 +53,7 @@ const VideoFrustum: React.FC<PropsType> = ({ data }) => {
   return (
     <>
       <Frustum
-        position={[longitude, latitude, data.altitude || 100]}
+        position={[longitude, latitude, data.altitude || 0]}
         rotation={{
           x: +(pitch ?? 0),
           y: yaw ?? 0,

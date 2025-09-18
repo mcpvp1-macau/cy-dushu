@@ -40,7 +40,9 @@ export const deviceIconMap: any = {
 
   THEODOLITE: '/images/marker/icon/theodolite.svg',
   ES_EF_CAR: '/images/marker/icon/es_ef_car.svg',
-  LASER_WEAPON: '/images/marker/icon/laser_weapon.svg',
+  LASER_WEAPON: '/images/marker/icon/laser_weapon2.svg',
+  SHELL: '/images/marker/icon/shell.svg',
+  MC: '/images/marker/icon/mc.svg',
 }
 
 const OtherMarker: FC<PropsType> = memo(({ data }) => {
