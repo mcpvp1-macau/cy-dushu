@@ -209,7 +209,7 @@ export const useUavControlRoomLayoutStore = create<StateType & ActionsType>()(
     }),
     {
       name: 'uavControlRoomLayout',
-      version: ((globalConfig.useTanqi ? 1 : 0) << 10) | 3,
+      version: ((globalConfig.useTanqi ? 1 : 0) << 10) | 4,
     },
   ),
 )
