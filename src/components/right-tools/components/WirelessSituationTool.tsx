@@ -12,6 +12,8 @@ import IconButton from '@/components/ui/button/IconButton'
 import IconClose from '@/assets/icons/jsx/IconClose'
 import { getWirelessSituation } from '@/service/modules/db-api'
 import FloatIconButton from '@/components/ui/button/FloatIconButton'
+import SignalExample from './SampleExample'
+import BottomSafeAreaPortal from '@/components/map/BottomSafeAreaPortal'
 
 type PropsType = ButtonHTMLAttributes<HTMLButtonElement>
 
@@ -179,9 +181,9 @@ const WirelessSituationTool: FC<PropsType> = memo((props) => {
               />
             </div>
           </div>
-          {/* <BottomSafeAreaPortal>
+          <BottomSafeAreaPortal>
             <SignalExample />
-          </BottomSafeAreaPortal> */}
+          </BottomSafeAreaPortal>
         </>
       )}
     </>
