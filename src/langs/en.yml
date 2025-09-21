@@ -733,7 +733,7 @@ wayline:
   waylineConfig:
     title: Wayline
     atl:
-      title: Wayline ATL
+      title: Wayline Height
     returnHeight:
       title: Go Home Height
     speed:
@@ -758,6 +758,8 @@ wayline:
       tooltip: >-
         The proportion of overlap between the fields of view captured by
         adjacent routes, with the gimbal set to the default wide.
+    relativeHeight:
+      tooltip: Relative To Start Point
   waylinePoint:
     config: Waypoints
     waypointList:

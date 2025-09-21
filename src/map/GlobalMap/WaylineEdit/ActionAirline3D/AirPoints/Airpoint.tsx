@@ -13,9 +13,10 @@ import { wgs84ToDrawingBufferCoordinates } from '@/utils/cesium/sence-transform'
 
 type PropsType = {
   point: AirpointsConfigItem
+  deltaHeight: number
 }
 
-const Airpoint: FC<PropsType> = ({ point }) => {
+const Airpoint: FC<PropsType> = ({ point, deltaHeight }) => {
   const { viewer } = useCesium()
 
   const currentIndex = useAirlineConfigStore((s) => s.currentIndex)
@@ -27,9 +28,6 @@ const Airpoint: FC<PropsType> = ({ point }) => {
     (s) => s.calcUavByCurrentAirpoint,
   )
 
-  const deltaHeight = useAirlineConfigStore(
-    (s) => s.airlineConfig.takeOffRefPoint?.[2] ?? 0,
-  )
   const deltaHeightRef = useLatest(deltaHeight)
 
   const entityRef = useAirpointEntity(point, currentIndex, deltaHeight)

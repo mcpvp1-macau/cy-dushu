@@ -323,7 +323,10 @@ const useAirlineConfigStore = create<
           fovMultipiler,
         } = get()
         const takeOffRefPoint = airlineConfig.takeOffRefPoint
-        const deltaHeight = takeOffRefPoint?.[2] ?? 0
+        const deltaHeight =
+          airlineConfig.executeHeightMode === 'WGS84'
+            ? 0
+            : takeOffRefPoint?.[2] ?? 0
 
         const nextUav = {
           ...(currentAirPoint ?? { pointX: 0, pointY: 0, pointZ: 0 }),

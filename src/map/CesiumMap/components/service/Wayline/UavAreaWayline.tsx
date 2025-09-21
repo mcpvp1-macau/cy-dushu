@@ -110,7 +110,10 @@ const Polygon: FC<{ data: number[][] }> = memo(({ data }) => {
 })
 
 const UavAreaWayline: FC<PropsType> = memo(({ data, taskBasic }) => {
-  const refHeight = taskBasic?.takeOffRefPoint?.[2] ?? 0
+  const refHeight =
+    taskBasic.executeHeightMode === 'WGS84'
+      ? 0
+      : taskBasic?.takeOffRefPoint?.[2] ?? 0
 
   return (
     <>

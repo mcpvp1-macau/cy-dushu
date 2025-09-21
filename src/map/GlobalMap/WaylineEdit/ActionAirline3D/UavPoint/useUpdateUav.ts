@@ -45,4 +45,15 @@ export const useUpdateUav = () => {
       cpUav()
     })
   }
+
+  const heightMode = useAirlineConfigStore(
+    (s) => s.airlineConfig.executeHeightMode,
+  )
+  const heightModeRef = useRef(heightMode)
+  if (heightModeRef.current !== heightMode) {
+    heightModeRef.current = heightMode
+    queueMicrotask(() => {
+      cpUav()
+    })
+  }
 }

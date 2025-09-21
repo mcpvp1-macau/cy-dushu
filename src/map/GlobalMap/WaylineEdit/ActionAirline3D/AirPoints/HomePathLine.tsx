@@ -5,10 +5,11 @@ import Path from './Path'
 type PropsType = {
   homePoint: number[]
   point1: number[]
+  deltaHeight: number
 }
 
 /** 起飞点连接线 */
-const HomePathLine: FC<PropsType> = ({ homePoint, point1 }) => {
+const HomePathLine: FC<PropsType> = ({ homePoint, point1, deltaHeight }) => {
   const config = useAirlineConfigStore(
     useShallow((s) => ({
       flyToWaylineMode: s.airlineConfig.flyToWaylineMode,
@@ -28,7 +29,7 @@ const HomePathLine: FC<PropsType> = ({ homePoint, point1 }) => {
           pointX: homePoint[0],
           pointY: homePoint[1],
           pointZ: Math.max(
-            config.takeOffSecurityHeight + homePoint[2],
+            config.takeOffSecurityHeight + deltaHeight,
             point1[2],
           ),
         },
@@ -36,7 +37,7 @@ const HomePathLine: FC<PropsType> = ({ homePoint, point1 }) => {
           pointX: point1[0],
           pointY: point1[1],
           pointZ: Math.max(
-            config.takeOffSecurityHeight + homePoint[2],
+            config.takeOffSecurityHeight + deltaHeight,
             point1[2],
           ),
         },
@@ -57,7 +58,7 @@ const HomePathLine: FC<PropsType> = ({ homePoint, point1 }) => {
           pointX: homePoint[0],
           pointY: homePoint[1],
           pointZ: Math.min(
-            config.takeOffSecurityHeight + homePoint[2],
+            config.takeOffSecurityHeight + deltaHeight,
             point1[2],
           ),
         },

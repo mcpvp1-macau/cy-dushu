@@ -1,14 +1,17 @@
 import HNumber from '../../../HNumber'
 import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import XCard from '@/components/ui/XCard'
-import { Tooltip } from 'antd'
-import { InfoCircleOutlined } from '@ant-design/icons'
+import { Radio, Tooltip } from 'antd'
+import { InfoCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons'
 
 type PropsType = unknown
 
 /** 航线高度设置 */
 const AirlineHeightConfig: FC<PropsType> = () => {
   const height = useAirlineConfigStore((s) => s.airlineConfig.height)
+  const heightMode = useAirlineConfigStore(
+    (s) => s.airlineConfig.executeHeightMode ?? 'relativeToStartPoint',
+  )
   const setAirlineConfig = useAirlineConfigStore((s) => s.updateAirlineConfig)
   const { t } = useTranslation()
 
@@ -23,13 +26,38 @@ const AirlineHeightConfig: FC<PropsType> = () => {
         </div>
       }
     >
-      {/* <Radio.Group
-          style={{ width: '100%' }}
-          options={['绝对高度', '相对起飞点高度', '相对地面高度']}
-          optionType="button"
-          buttonStyle="solid"
-          defaultValue={'绝对高度'}
-        /> */}
+      <Radio.Group
+        style={{ width: '100%' }}
+        className="flex"
+        options={[
+          {
+            label: (
+              <div>
+                相对高度{' '}
+                <Tooltip
+                  title={t('wayline.waylineConfig.relativeHeight.tooltip')}
+                >
+                  <QuestionCircleOutlined />
+                </Tooltip>
+              </div>
+            ),
+            value: 'relativeToStartPoint',
+          },
+          {
+            label: '海拔高度',
+            value: 'WGS84',
+          },
+        ]}
+        value={heightMode}
+        optionType="button"
+        buttonStyle="solid"
+        onChange={(e) => {
+          setAirlineConfig({
+            ...useAirlineConfigStore.getState().airlineConfig,
+            executeHeightMode: e.target.value,
+          })
+        }}
+      />
       <div style={{ marginTop: '12px' }}>
         <HNumber
           negatives={[-100, -10]}

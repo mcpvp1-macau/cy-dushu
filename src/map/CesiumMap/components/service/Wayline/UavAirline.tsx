@@ -136,8 +136,11 @@ const UavWayline: FC<PropsType> = memo(
         emtpyObject,
     )
 
-    // 起飞点高度
-    const hHeight = useMemo(() => {
+    // 高度偏移
+    const deltaHeight = useMemo<number>(() => {
+      if (taskBasic?.executeHeightMode === 'WGS84') {
+        return 0
+      }
       if (p.altitude && p.height) {
         return round(p.altitude - p.height - 1, 1)
       }
@@ -151,11 +154,11 @@ const UavWayline: FC<PropsType> = memo(
         return {
           pointX,
           pointY,
-          pointZ: pointZ + hHeight,
+          pointZ: pointZ + deltaHeight,
         }
       })
       return newData
-    }, [data, hHeight])
+    }, [data, deltaHeight])
 
     return (
       <>

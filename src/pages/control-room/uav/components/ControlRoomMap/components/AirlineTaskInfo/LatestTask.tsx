@@ -41,15 +41,18 @@ const LastestTask: FC<PropsType> = memo(() => {
     if (!Array.isArray(positions)) {
       return []
     }
-    // 起飞点高度
-    const hHeight =
-      takeOffHeight ?? (taskBasic?.takeOffRefPoint?.[2] as number | undefined)
-    if (hHeight) {
-      positions = positions.map((e) => ({
-        ...e,
-        pointZ: e.pointZ + hHeight - 1,
-      }))
-    }
+    // 高度偏移
+    const deltaHeight =
+      taskBasic.executeHeightMode === 'WGS84'
+        ? 0
+        : takeOffHeight ??
+          (taskBasic?.takeOffRefPoint?.[2] as number | undefined)
+
+    positions = positions.map((e) => ({
+      ...e,
+      pointZ: e.pointZ + deltaHeight - 1,
+    }))
+
     updateAirpointPositions(positions)
     return positions
   }, [taskData?.id, takeOffHeight])
