@@ -28,6 +28,7 @@ const Waypoint: FC<{
         image: '/images/airline/inverted-triangle.svg',
         scale: 1.1,
         eyeOffset: new Cesium.Cartesian3(0, 0, -5),
+        disableDepthTestDistance: Number.POSITIVE_INFINITY,
       },
       label: {
         text: index + '',
@@ -35,6 +36,7 @@ const Waypoint: FC<{
         pixelOffset: new Cesium.Cartesian2(0, -3),
         horizontalOrigin: Cesium.HorizontalOrigin.CENTER,
         eyeOffset: new Cesium.Cartesian3(0.0, 0.0, -10.0),
+        disableDepthTestDistance: Number.POSITIVE_INFINITY,
       },
     })
 
@@ -58,7 +60,7 @@ const Polygon: FC<{ data: number[][] }> = memo(({ data }) => {
       return
     }
 
-    const positions = Cesium.Cartesian3.fromDegreesArray(data.flat())
+    const positions = Cesium.Cartesian3.fromDegreesArrayHeights(data.flat())
 
     // 创建多边形几何实例
     const instance1 = new Cesium.GeometryInstance({
@@ -108,22 +110,37 @@ const Polygon: FC<{ data: number[][] }> = memo(({ data }) => {
 })
 
 const UavAreaWayline: FC<PropsType> = memo(({ data, taskBasic }) => {
+  const refHeight =
+    taskBasic.executeHeightMode === 'WGS84'
+      ? 0
+      : taskBasic?.takeOffRefPoint?.[2] ?? 0
+
   return (
     <>
-      {data.map((item, index) => (
-        <Waypoint key={index} data={item} index={index + 1} />
-      ))}
       {/* 航点之间的连线 */}
       {data.map((point, i) => {
         const nextPoint = data[i + 1]
         if (!nextPoint) {
           return null
         }
-        return <PathLine key={i} point1={point} point2={nextPoint} />
+        return (
+          <PathLine
+            key={i}
+            point1={{ ...point, pointZ: refHeight + point.pointZ }}
+            point2={{ ...nextPoint, pointZ: refHeight + nextPoint.pointZ }}
+          />
+        )
       })}
       {Array.isArray(taskBasic.polygon) && taskBasic.polygon.length > 1 && (
         <Polygon data={taskBasic.polygon} />
       )}
+      {data.map((item, index) => (
+        <Waypoint
+          key={index}
+          data={{ ...item, pointZ: refHeight + item.pointZ }}
+          index={index + 1}
+        />
+      ))}
     </>
   )
 })

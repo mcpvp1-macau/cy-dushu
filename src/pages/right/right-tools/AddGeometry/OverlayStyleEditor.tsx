@@ -5,9 +5,12 @@ import OpacityInput from './OpacityInput'
 import useMapDrawStore, { DrawType } from '@/store/map/useDraw.store'
 import { CotType } from '@/store/map/useDraw.store'
 import useSituationLayoutStore from '@/store/layout/useSituationLayout.store'
+import DrawingTypeSelectorCreating from './DrawingTypeSelectorCreating'
 
 type PropsType = {
-  overlay: API_LAYER_OVERLAY.domain.Overlay
+  overlay?: API_LAYER_OVERLAY.domain.Overlay
+  isCreate?: boolean
+  onTypeChange?: (type: DrawType) => void
 }
 
 const getOverlayType = (overlay: API_LAYER_OVERLAY.domain.Overlay) => {
@@ -21,8 +24,13 @@ const getOverlayType = (overlay: API_LAYER_OVERLAY.domain.Overlay) => {
   return typeMap[overlay.cotType]
 }
 
-const OverlayStyleEditor: FC<PropsType> = ({ overlay }) => {
+const OverlayStyleEditor: FC<PropsType> = ({
+  overlay,
+  isCreate,
+  onTypeChange,
+}) => {
   const overlayType = useMemo(() => {
+    if (!overlay) return undefined
     return getOverlayType(overlay)
   }, [overlay])
 
@@ -39,7 +47,11 @@ const OverlayStyleEditor: FC<PropsType> = ({ overlay }) => {
         collapsedOpen ? 'left-[362px]' : 'left-3',
       )}
     >
-      <DrawingTypeSelecter lockedType={overlayType} />
+      {isCreate ? (
+        <DrawingTypeSelectorCreating onChange={onTypeChange} />
+      ) : (
+        <DrawingTypeSelecter lockedType={overlayType} />
+      )}
       <ColorSelecter />
       <LineStyleSelecter showNoFly={isFlightArea} />
       <OpacityInput />

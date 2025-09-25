@@ -5,11 +5,13 @@ import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import AddFormModal from './components/AddFormModal'
 import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
-import { createOverlay } from '@/service/modules/layer_overlay'
 import OverlayPolygon from '@/map/CesiumMap/components/service/Overlaies/OverlayPolygon'
 import { round } from 'lodash'
 import AddFlightAreaModal from './components/AddFlightAreaModal'
-import { createFlightArea } from '@/service/modules/flightArea'
+import useCreateFn from './hooks/useCreateFn'
+import AddDeviceOverlayFormModal from './components/AddDeviceOverlayModal'
+import { useAppMsg } from '@/hooks/useAppMsg'
+import * as turf from '@turf/turf'
 
 type PropsType = {
   onSuccess?: () => void
@@ -28,14 +30,9 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
   const fillOpacity = useMapDrawStore((s) => s.fillOpacity)
   const lineStyle = useMapDrawStore((s) => s.lineStyle)
   const isFlightArea = useMapDrawStore((s) => s.isFlightArea)
+  const isDrawingDeviceArea = useMapDrawStore((s) => s.isDrawingDeviceOverlay)
 
-  const createFn = useMemo(() => {
-    if (isFlightArea) {
-      return createFlightArea
-    } else {
-      return createOverlay
-    }
-  }, [isFlightArea])
+  const createFn = useCreateFn()
 
   useEffect(() => {
     if (!viewer) {
@@ -79,9 +76,31 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
     }
   }, [viewer])
 
+  const msgApi = useAppMsg()
+
   const handleConfirm = async (data: any) => {
-    if (paths.length < 2) {
+    if (paths.length < 2 || !endPoint) {
       return
+    }
+
+    const commitPath = [...paths, endPoint]
+
+    if (isDrawingDeviceArea) {
+      const devicePosition = useMapDrawStore.getState().devicePosition
+      if (
+        !devicePosition ||
+        !turf.booleanPointInPolygon(
+          [devicePosition[0], devicePosition[1]],
+          turf.polygon([
+            commitPath
+              .map((p) => [p[0], p[1]])
+              .concat([[commitPath[0][0], commitPath[0][1]]]),
+          ]),
+        )
+      ) {
+        msgApi.error('设备位置不在多边形内，请重新绘制！')
+        return
+      }
     }
 
     const strokeColorHex = getHexWithAlpha(drawingColor, 1)
@@ -93,7 +112,7 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
       layerId: data.layerId,
       overlayName: data.overlayName,
       overlayType: 'POLYGON',
-      overlayPositions: JSON.stringify([...paths, endPoint]),
+      overlayPositions: JSON.stringify(commitPath),
       overlayBindType: 'NORMAL',
       overlayStyleConfig: JSON.stringify({
         contact: {
@@ -129,7 +148,7 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
       cotType: CotType.SHAPE_POLYGON,
     }
     await createFn(commitData)
-    onSuccess?.()
+    await onSuccess?.()
     setFalse()
   }
 
@@ -152,6 +171,16 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
           }}
           onConfirm={handleConfirm}
         />
+      ) : isDrawingDeviceArea ? (
+        <AddDeviceOverlayFormModal
+          open={open}
+          onClose={() => {
+            setFalse()
+            setPaths([])
+            setEndPoint(null)
+          }}
+          onConfirm={handleConfirm}
+        />
       ) : (
         <AddFormModal
           open={open}
@@ -166,7 +195,8 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
       {positions && viewer && (
         <OverlayPolygon
           data={''}
-          viewer={viewer}
+          primitives={viewer.scene.primitives}
+          isGround={true}
           path={positions}
           asynchronous={false}
           fill={drawingColor}

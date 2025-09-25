@@ -5,6 +5,11 @@ export interface Responses<T> {
   ['any']: { [key: string]: any } // any类型
   ['T']: T // 直接覆盖方式
   ['common']: { code: string; message: string; data: T } // 常用响应类型
+  ['ditingTanqi']: {
+    success: boolean
+    message?: string
+    data: T
+  }
   ['dbApi']: { success: boolean; data: T | null; msg?: string } // DBAPI 接口数据类型
   // 其他自定义的响应类型加载后面 ...
 }

@@ -6,11 +6,11 @@ import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import AddFormModal from './components/AddFormModal'
 import { getHexWithAlpha, hexToARGB } from '@/utils/other/utils'
-import { createOverlay } from '@/service/modules/layer_overlay'
-import { createFlightArea } from '@/service/modules/flightArea'
 import OverlayPolygon from '@/map/CesiumMap/components/service/Overlaies/OverlayPolygon'
 import { round } from 'lodash'
 import AddFlightAreaModal from './components/AddFlightAreaModal'
+import useCreateFn from './hooks/useCreateFn'
+import AddDeviceOverlayFormModal from './components/AddDeviceOverlayModal'
 
 type PropsType = {
   onSuccess?: () => void
@@ -30,14 +30,9 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
   const fillOpacity = useMapDrawStore((s) => s.fillOpacity)
   const lineStyle = useMapDrawStore((s) => s.lineStyle)
   const isFlightArea = useMapDrawStore((s) => s.isFlightArea)
+  const isDrawingDeviceArea = useMapDrawStore((s) => s.isDrawingDeviceOverlay)
 
-  const createFn = useMemo(() => {
-    if (isFlightArea) {
-      return createFlightArea
-    } else {
-      return createOverlay
-    }
-  }, [isFlightArea])
+  const createFn = useCreateFn()
 
   useEffect(() => {
     if (!viewer) {
@@ -181,6 +176,16 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
           }}
           onConfirm={handleConfirm}
         />
+      ) : isDrawingDeviceArea ? (
+        <AddDeviceOverlayFormModal
+          open={open}
+          onClose={() => {
+            setFalse()
+            setPivot(null)
+            setEndPoint(null)
+          }}
+          onConfirm={handleConfirm}
+        />
       ) : (
         <AddFormModal
           open={open}
@@ -196,7 +201,7 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
       {positions && viewer && (
         <OverlayPolygon
           data={''}
-          viewer={viewer}
+          primitives={viewer.scene.primitives}
           path={positions}
           asynchronous={false}
           fill={drawingColor}

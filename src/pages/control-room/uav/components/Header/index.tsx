@@ -13,7 +13,7 @@ import {
 import { Tooltip } from 'antd'
 import { isNil } from 'lodash'
 import { useShallow } from 'zustand/react/shallow'
-import LatestTask from './LatestTask'
+import LatestTask from '../../../../../components/device/LatestTask'
 import { useTitle } from 'ahooks'
 import { HTMLAttributes, lazy } from 'react'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
@@ -304,7 +304,7 @@ const DebugState = memo(() => {
           tooltipProps={{
             title: t('common.debug'),
           }}
-          destroyPopupOnHide
+          destroyOnHidden
           popupRender={() => (
             <ScrollArea className="max-h-[80vh] text-xs">
               <pre>

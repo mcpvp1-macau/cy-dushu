@@ -41,10 +41,23 @@ export const deleteOverlaies = (overlayIds: number[]) => {
 }
 
 /** 自定义地图 (瓦片) 列表 */
-export const getSpaceList = () => {
+export const getSpaceList = (data?: {
+  spaceType?: string
+  isPage?: boolean
+}) => {
   return serverJingqi.post<API_LAYER_OVERLAY.res.GetSpaceListRes>(
     '/space/list',
-    {},
+    data ?? {},
+  )
+}
+
+/** 自定义地图 (瓦片) 详情 */
+export const getSpaceDetail = (id: number) => {
+  return serverJingqi.get<API_LAYER_OVERLAY.domain.SpaceItem>(
+    '/space/getById',
+    {
+      params: { id },
+    },
   )
 }
 

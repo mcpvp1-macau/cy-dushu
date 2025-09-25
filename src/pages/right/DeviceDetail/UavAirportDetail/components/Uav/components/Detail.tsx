@@ -1,27 +1,18 @@
-import { lazy } from 'react'
 import UavFlyInfoCard from './FlyInfoCard'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import UavAirportUavDetailInfoCard from './InfoCard'
 import UavDetailVideo from '@/pages/right/DeviceDetail/UavDetail/components/Video/UavDetailVideo'
 import { Button } from 'antd'
 import IconControlRoom from '@/assets/icons/jsx/IconControlRoom'
-import AppCollapse from '@/components/AppCollapse'
-import { DeviceEnum } from '@/enum/device'
-import AppViewSuspense from '@/components/AppViewSuspense'
 import { Link } from 'react-router-dom'
-
-const DeviceAlgorithmList = lazy(
-  () => import('@/components/device/algorithm/DeviceAlgorithmList'),
-)
 
 type PropsType = {
   state: Record<string, any>
 }
 
+/** 机场详情中的无人机详情 */
 const UavAirportUavDetailDetail: FC<PropsType> = memo(({ state }) => {
   const data = useDeviceDetailStore((s) => s.deviceDetail)!
-
-  const productKey = data?.productKey || data?.deviceModel!.productKey
 
   const { t } = useTranslation()
 
@@ -51,24 +42,6 @@ const UavAirportUavDetailDetail: FC<PropsType> = memo(({ state }) => {
             {t('device.enterControlRoom.title')}
           </Button>
         </Link>
-      </section>
-      <section className="mt-3">
-        <AppCollapse
-          items={[
-            {
-              label: t('device.aiList.title'),
-              children: (
-                <AppViewSuspense>
-                  <DeviceAlgorithmList
-                    deviceType={DeviceEnum.UAV}
-                    deviceId={data.deviceId}
-                    productKey={productKey}
-                  />
-                </AppViewSuspense>
-              ),
-            },
-          ]}
-        />
       </section>
     </div>
   )

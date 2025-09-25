@@ -9,6 +9,7 @@ import {
   DynamicLayoutStoreContext,
 } from './store/useDynamicLayout.store'
 import RenderBox from './components/RenderBox'
+import { useSize } from 'ahooks'
 
 export type DynamicLayoutType = {
   /** 占用大小 (推荐以 1920 * 1080 为基准 容器大小不足或多余时会按比例自适应) */
@@ -17,6 +18,10 @@ export type DynamicLayoutType = {
   isCollapsed?: boolean
   /** 是否全屏 */
   isFull?: boolean
+  /** 跳过保存 */
+  skipPersist?: boolean
+  /** 允许关闭 */
+  allowClose?: boolean
 } & (
   | {
       type: 'tabs'
@@ -33,8 +38,10 @@ export type DynamicLayoutType = {
 /** 灵动布局 */
 const DynamicLayout: FC<{
   layout: DynamicLayoutType
-  onLayoutChange: (layout: DynamicLayoutType) => void
-}> = memo(({ layout, onLayoutChange }) => {
+  containerWidth: number
+  containerHeight: number
+  onLayoutChange?: (layout: DynamicLayoutType) => void
+}> = memo(({ layout, containerWidth, containerHeight, onLayoutChange }) => {
   /** 处理改变 */
   const handleChane = useMemoizedFn((layout: DynamicLayoutType) => {
     if (layout.type === 'row' || layout.type === 'col') {
@@ -50,7 +57,7 @@ const DynamicLayout: FC<{
         layout.children[0].size = 350
       }
     }
-    onLayoutChange(layout)
+    onLayoutChange?.(layout)
   })
 
   return (
@@ -58,7 +65,12 @@ const DynamicLayout: FC<{
       {layout.type === 'tabs' ? (
         <DynamicLayoutTabs layout={layout} onLayoutChange={handleChane} />
       ) : (
-        <DynamicLayoutSplitter layout={layout} onLayoutChange={handleChane} />
+        <DynamicLayoutSplitter
+          layout={layout}
+          containerWidth={containerWidth}
+          containerHeight={containerHeight}
+          onLayoutChange={handleChane}
+        />
       )}
     </div>
   )
@@ -70,7 +82,7 @@ export { DynamicLayout }
 
 type PropsType = {
   layout: DynamicLayoutType
-  onLayoutChange: (layout: DynamicLayoutType) => void
+  onLayoutChange?: (layout: DynamicLayoutType) => void
   componentMap?: Record<string, ReactNode>
   iconMap?: Record<string, ReactNode>
   titleMap?: Record<string, ReactNode>
@@ -117,17 +129,30 @@ const DynamicLayoutRoot: FC<PropsType> = memo(
       return dfs(layout, '')
     }, [layout])
 
+    // 容器大小
+    const containerRef = useRef<HTMLDivElement | null>(null)
+    const size = useSize(containerRef)
+
     return (
       <DynamicLayoutStoreContext.Provider value={store.current}>
-        <div className={clsx('relative size-full p-2')}>
-          <DynamicLayout layout={layout} onLayoutChange={onLayoutChange} />
-          {componentMap && (
-            <RenderBox
-              componentMap={componentMap}
-              layout={layout}
-              fullTabsPath={fullTabsPath}
-              onLayoutChange={onLayoutChange}
-            />
+        <div className={clsx('relative size-full p-2')} ref={containerRef}>
+          {size && (
+            <>
+              <DynamicLayout
+                layout={layout}
+                containerWidth={size.width}
+                containerHeight={size.height}
+                onLayoutChange={onLayoutChange}
+              />
+              {componentMap && (
+                <RenderBox
+                  componentMap={componentMap}
+                  layout={layout}
+                  fullTabsPath={fullTabsPath}
+                  onLayoutChange={onLayoutChange}
+                />
+              )}
+            </>
           )}
         </div>
       </DynamicLayoutStoreContext.Provider>

@@ -15,6 +15,7 @@ globalConfig.loginUrl ??= `${globalConfig.loginHttps ? 'https' : 'http'}://${
 
 globalConfig.uavHeightLimit ??= 1000
 
+globalConfig.mcps ??= {}
 globalConfig.enableJessibucaMetrics ??= true
 
 class GlobalConfig {
@@ -90,18 +91,21 @@ class GlobalConfig {
   /** 访问密钥 */
   secretAccessKey?: string
 
+  mcps?: Record<string, string>
   /** 是否启用 jessibuca 监控上报 */
   enableJessibucaMetrics?: boolean
+  /** Sentry dsn */
+  sentryDsn?: string
+  /** Sentry project id */
+  sentryProjectId?: string
+  /** Tanqi */
+  useTanqi?: boolean
 
   constructor(def: ConfigType) {
-    Object.keys(def).forEach((key) => {
-      this[key] = def[key]
-    })
+    Object.assign(this, def)
   }
   merge(configs: ConfigType) {
-    Object.keys(configs).forEach((key) => {
-      this[key] = configs[key]
-    })
+    Object.assign(this, configs)
   }
 }
 

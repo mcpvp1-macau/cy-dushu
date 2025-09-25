@@ -5,7 +5,7 @@ import * as Cesium from 'cesium'
 import { getSpaceDistance } from '@/utils/geo-math'
 import { attempt } from 'lodash'
 import { useLatest } from 'ahooks'
-import PositionTooltip from '@/components/map/PostionTooltip'
+import PositionTooltip from '@/components/map/PositionTooltip'
 
 type PropsType = {}
 

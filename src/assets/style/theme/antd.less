@@ -38,9 +38,29 @@
   --ant-tabs-ink-bar-color: var(--primary-color-3);
 }
 
+.ant-bubble-list {
+  gap: 8px;
+}
+
+.ant-sender .ant-sender-footer {
+  padding-inline-start: 0px;
+  padding-inline-end: 0px;
+  padding-block-end: 0px;
+  padding-block-start: 0px;
+}
+
 .ant-bubble-content.ant-bubble-content-filled {
-  padding: 0px 8px;
-  min-height: 24px;
+  padding: 0px;
+  // min-height: 24px;
+  // background-color: auto;
+}
+
+.ant-bubble .ant-bubble-content {
+  min-height: unset;
+}
+
+.ant-bubble .ant-bubble-content-filled {
+  background-color: unset;
 }
 
 .dushu.ant-form-css-var {

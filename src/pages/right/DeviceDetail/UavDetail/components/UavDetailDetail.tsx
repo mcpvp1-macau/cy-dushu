@@ -127,6 +127,7 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
             ),
           },
         ]}
+        destroyOnHidden
       />
     </div>
   )

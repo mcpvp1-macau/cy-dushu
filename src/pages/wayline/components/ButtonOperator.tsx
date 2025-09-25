@@ -238,12 +238,12 @@ const BottomOperator: FC<PropsType> = memo(
             open={executeOpen}
             items={formItems}
             onClose={() => setExecuteOpen(false)}
-            onConfirm={(values) => {
+            onConfirm={async (values) => {
               let deviceId = values.deviceId
               if (Array.isArray(deviceId)) {
                 deviceId = deviceId.join(',')
               }
-              handleExecuteConfirm(deviceId, values.type)
+              await handleExecuteConfirm(deviceId, values.type)
             }}
           />
         )}

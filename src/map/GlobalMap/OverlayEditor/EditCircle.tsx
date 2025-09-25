@@ -189,7 +189,7 @@ const EditCircle: React.FC<Props> = (props) => {
     <>
       <OverlayCircle
         data={`${overlay.overlayId}`}
-        viewer={viewer}
+        primitives={viewer.scene.primitives}
         center={[lnglatHRadius[0], lnglatHRadius[1]]}
         radius={lnglatHRadius[3]}
         asynchronous={false}

@@ -6,6 +6,7 @@ import { deviceStatusFilter } from '@/pages/situation/source/utils'
 import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
 import useGroundHeight from '@/hooks/cesium/useGroundHeight'
+import DeviceOverlays from '../components/DeviceOverlays'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -54,6 +55,7 @@ const UavAirportMarker: FC<PropsType> = memo(({ data }) => {
         disableDepthTestDistance={16_000_000}
       />
       <DeviceLabel text={data.deviceName} id={deviceId} position={position} />
+      <DeviceOverlays deviceId={deviceId} />
     </>
   )
 })

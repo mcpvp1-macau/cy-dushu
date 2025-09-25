@@ -1,16 +1,23 @@
 import { shouldJson } from '@/utils/json'
-import { useCesium } from 'resium'
+import * as Cesium from 'cesium'
 import OverlayCircle from './OverlayCircle'
 import { argbToHex } from '@/utils/color'
 
 type PropsType = {
-  overlayExtType: 'overlay' | 'flightArea'
+  overlayExtType: 'overlay' | 'flightArea' | 'deviceOverlay'
+  primitives: Cesium.PrimitiveCollection | undefined
   overlay: API_LAYER_OVERLAY.domain.Overlay
+  showLabel?: boolean
+  isGround?: boolean
 }
 
-const ShowCircle: FC<PropsType> = ({ overlayExtType, overlay }) => {
-  const { viewer } = useCesium()
-
+const ShowCircle: FC<PropsType> = ({
+  overlayExtType,
+  primitives,
+  overlay,
+  showLabel = true,
+  isGround = true,
+}) => {
   const position = shouldJson(overlay.overlayPositions)?.[0]
   const style = shouldJson(overlay.overlayStyleConfig)
 
@@ -25,14 +32,15 @@ const ShowCircle: FC<PropsType> = ({ overlayExtType, overlay }) => {
 
   return (
     <>
-      {viewer && (
+      {primitives && (
         <OverlayCircle
           data={`${overlayExtType}--${overlay.overlayId}`}
-          viewer={viewer}
+          primitives={primitives}
           asynchronous={false}
-          center={[position[0], position[1]]}
+          isGround={isGround}
+          center={[position[0], position[1], position[2]]}
           radius={position[3]}
-          label={label}
+          label={showLabel ? label : undefined}
           fill={fillColor}
           fillOpacity={fillOpacity}
           stroke={strokeColor}

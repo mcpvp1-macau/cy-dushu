@@ -170,7 +170,7 @@ const EditCircle: React.FC<Props> = (props) => {
     <>
       <OverlayFan
         data={`${overlay.overlayId}`}
-        viewer={viewer}
+        primitives={viewer.scene.primitives}
         positions={drawingPositions}
         asynchronous={false}
         fill={drawingColor}

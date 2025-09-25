@@ -1,4 +1,4 @@
-import PositionTooltip from '@/components/map/PostionTooltip'
+import PositionTooltip from '@/components/map/PositionTooltip'
 import useMediaOnMapStore from '@/store/map/useMediaOnMap.store'
 import { makeToolbarRender } from '@/utils/antd/image'
 import { Image } from 'antd'

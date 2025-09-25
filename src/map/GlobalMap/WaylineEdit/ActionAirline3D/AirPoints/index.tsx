@@ -12,9 +12,12 @@ const AirPoints: FC<PropsType> = () => {
     (s) => s.airlineConfig.takeOffRefPoint,
   )
 
-  const deltaHeight = useAirlineConfigStore(
-    (s) => s.airlineConfig.takeOffRefPoint?.[2] ?? 0,
-  )
+  const deltaHeight = useAirlineConfigStore((s) => {
+    if (s.airlineConfig.executeHeightMode === 'WGS84') {
+      return 0
+    }
+    return s.airlineConfig.takeOffRefPoint?.[2] ?? 0
+  })
 
   const points = useMemo(() => {
     return airpointsConfig.map((point) => ({
@@ -28,11 +31,10 @@ const AirPoints: FC<PropsType> = () => {
     <>
       {/* 航点 */}
       {airpointsConfig.map((point: any) => (
-        <Airpoint key={point.xid} point={point} />
+        <Airpoint key={point.xid} point={point} deltaHeight={deltaHeight} />
       ))}
       {/* 航点之间的连线 */}
       <Path data={airpointsConfig} deltaHeight={deltaHeight} />
-      <Path data={airpointsConfig} deltaHeight={deltaHeight} isVirtual />
       {
         // 起飞点与第一个航点之间的连线
         takeOffRefPoint && airpointsConfig[0] && (
@@ -44,6 +46,7 @@ const AirPoints: FC<PropsType> = () => {
               airpointsConfig[0].pointY,
               airpointsConfig[0].pointZ + deltaHeight,
             ]}
+            deltaHeight={deltaHeight}
           />
         )
       }

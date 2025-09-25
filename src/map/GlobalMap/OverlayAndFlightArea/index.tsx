@@ -22,8 +22,9 @@ const OverlayAndFlightArea: FC<PropsType> = () => {
       const pickedObject = viewer.scene.pick(e.position)
       if (Cesium.defined(pickedObject)) {
         const primitive = pickedObject.primitive
-        const id =
-          primitive.id ?? primitive._instanceIds?.[0] ?? primitive.props
+        const id = (primitive.id ??
+          primitive._instanceIds?.[0] ??
+          primitive.props) as string
         // 在这里处理双击事件，例如打印信息或执行其他操作
         if (id?.startsWith('overlay--')) {
           const overlayId = id.slice('overlay--'.length)
@@ -34,10 +35,13 @@ const OverlayAndFlightArea: FC<PropsType> = () => {
           const overlayId = id.slice('reconstruction--'.length)
           updateRightMode(RightModeEnum.RECONSTRUCTION_DETAIL)
           updateDetailId(overlayId)
-        }
-        if (id?.startsWith('flightArea--')) {
+        } else if (id?.startsWith('flightArea--')) {
           const overlayId = id.slice('flightArea--'.length)
           updateRightMode(RightModeEnum.FLIGHT_AREA_DETAIL)
+          updateDetailId(overlayId)
+        } else if (id?.startsWith('deviceOverlay--')) {
+          const overlayId = id.slice('deviceOverlay--'.length)
+          updateRightMode(RightModeEnum.DEVICE_OVERLAY_DETAIL)
           updateDetailId(overlayId)
         }
       }

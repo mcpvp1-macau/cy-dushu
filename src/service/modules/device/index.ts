@@ -42,6 +42,13 @@ export const getAllDeviceListV3 = (data: any) => {
   )
 }
 
+export const getAllDeviceListOta = (data: any) => {
+  return serverControlCenter.post<API_DEVICE.res.AllDeviceListV3OTARes>(
+    '/device/list/v3/ota',
+    data,
+  )
+}
+
 export const getDeviceDetail = (deviceId: string) => {
   return serverControlCenter.post<API_DEVICE.res.DeviceDetailRes>(
     `/device/detail/v3`,
@@ -127,10 +134,26 @@ export const updateOtaDevice = async (data?: { deviceId: string }) => {
   })
 }
 
+export const updateOtaDeviceDJI = async (data?: {
+  deviceSn: string
+  deviceName: string
+  latestFirmwareVersion: string
+}) => {
+  return serverControlCenter.post('/device/upgrade', [data])
+}
+
 export const getProductFieldsByIdentifier = async (data: {
   functionIdentifier: string
 }) => {
   return serverControlCenter.post('/manage/product/field/list/search', data)
+}
+
+export const updateDevice = async (data: {
+  deviceId: string
+  productKey: string
+  ttpBoxSn: string
+}) => {
+  return serverControlCenter.post('/manage/device/update', data)
 }
 
 /** 获取历史视频 */

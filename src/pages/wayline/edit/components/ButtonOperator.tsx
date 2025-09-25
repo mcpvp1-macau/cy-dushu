@@ -2,6 +2,8 @@ import { useAppMsg } from '@/hooks/useAppMsg'
 import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import { useSearchParams } from 'react-router-dom'
 import BO from '../../components/ButtonOperator'
+import { ActionStartRecordType } from '@/store/wayline/uav-airline/types'
+import { clone } from 'lodash'
 
 type PropsType = {
   disabled?: boolean
@@ -44,6 +46,36 @@ const BottomOperator: FC<PropsType> = memo(({ disabled }) => {
         }
       }
     }
+
+    if (s !== 0) {
+      msgApi.error('请检查语音播报的起始和结束动作是否匹配')
+      return true
+    }
+
+    // 校验录像
+    s = 0
+    let last: ActionStartRecordType['config'] | null = null
+    for (const point of airpointsConfig) {
+      for (const action of point.actions) {
+        if (action.type === 'START_RECORD') {
+          s++
+          last = action.config
+        } else if (action.type === 'STOP_RECORD') {
+          s--
+          action.config = clone(last) as ActionStartRecordType['config']
+        }
+        if (s < 0 || s > 1) {
+          msgApi.error('请检查录像的起始和结束动作是否匹配')
+          return true
+        }
+      }
+    }
+
+    if (s !== 0) {
+      msgApi.error('请检查录像的起始和结束动作是否匹配')
+      return true
+    }
+
     return false
   }
 

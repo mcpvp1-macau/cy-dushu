@@ -141,10 +141,6 @@ const FlightAreaDetail: FC<PropsType> = memo(() => {
     return deleteGroupWithoutDevice(result)
   }, [groupDeviceTree])
 
-  useEffect(() => {
-    console.log(relatedGroup?.effectiveDevices?.split(',') || [])
-  }, [relatedGroup])
-
   return (
     <>
       <div className="w-[350px]">

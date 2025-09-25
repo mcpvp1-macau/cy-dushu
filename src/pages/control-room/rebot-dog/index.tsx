@@ -27,6 +27,8 @@ import IconControl from '@/assets/icons/jsx/IconControl'
 import ControlRoomRebotDogHeader from './components/Header'
 import IconPayload from '@/assets/icons/jsx/IconPayload'
 import RebotDogPayload from './components/Payload'
+import PointCloudMapManager from './components/PointCloudMapManager'
+import useServerEventMsg from '../uav/hooks/useServerEventMsg'
 
 const initialLayout: DynamicLayoutType = {
   type: 'row',
@@ -94,6 +96,9 @@ const initialLayout: DynamicLayoutType = {
         {
           key: 'device-data',
         },
+        {
+          key: 'point-cloud-map-manager',
+        },
       ],
     },
   ],
@@ -112,10 +117,11 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
   const controlRoomStore = useCreateRebotDogControlRoomStore(
     productKey,
     deviceId,
+    useServerEventMsg(),
   )
 
   const [layout, setLayout] = useLocalStorageState<DynamicLayoutType>(
-    'rebotDogControlRoomLayoutV2',
+    'rebotDogControlRoomLayoutV3',
     {
       defaultValue: initialLayout,
     },
@@ -130,6 +136,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
       'device-data': <IconDeviceData className="text-orange-500" />,
       params: <IconControlParams className="text-orange-500" />,
       payload: <IconPayload className="text-emerald-500" />,
+      'point-cloud-map-manager': <IconPayload className="text-emerald-500" />,
     }),
     [],
   )
@@ -143,6 +150,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
       ['device-data']: t('controlRoom.uav.deviceData.title'),
       params: t('common.params'),
       payload: t('controlRoom.uav.payload.title'),
+      'point-cloud-map-manager': '地图',
     }),
     [t],
   )
@@ -150,6 +158,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
   const componentMap = useMemo(
     () => ({
       map: <RebotDogMap />,
+      // map: <div>123</div>,
       video: <RebotDogVideo />,
       control: (
         <div className="absolute inset-0 flex justify-center scale-90">
@@ -160,6 +169,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
       'device-data': <RebotDogDetailData />,
       params: <RebotDogParams />,
       payload: <RebotDogPayload />,
+      'point-cloud-map-manager': <PointCloudMapManager />,
     }),
     [],
   )

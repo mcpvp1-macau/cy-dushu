@@ -9,12 +9,72 @@ import useReachBottom from '@/hooks/useReachBottom'
 import { useSearchParams } from 'react-router-dom'
 import AppEmpty from '@/components/AppEmpty'
 import { isNil } from 'lodash'
+import Select from '@/components/AntdOverride/Select'
+import IconWaylineAirpoint from '@/assets/icons/jsx/IconWaylineAirpoint'
+import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
+import IconSwarm from '@/assets/icons/jsx/IconSwarm'
+import { useUnmount } from 'ahooks'
+import useWaylinesStore from '@/store/map/useWaylines.store'
+import IconPointClout3DWayline from '@/assets/icons/jsx/IconPointCloud3DWayline'
+import { WaylineEnum } from '@/constant/uav/wayline'
+import { type TFunction } from 'i18next'
 
 type PropsType = unknown
+
+export const createWaylineTypeOptions = (
+  t: TFunction<'translation', undefined>,
+) => [
+  {
+    label: (
+      <div className="flex gap-2 items-center">
+        <IconWaylineAirpoint />
+        {t('wayline.create.form.waylineType.options.point.title')}
+      </div>
+    ),
+    value: WaylineEnum.PointWayline,
+  },
+  {
+    label: (
+      <div className="flex gap-2 items-center">
+        <MenuIconAirline />
+        {t('wayline.create.form.waylineType.options.area.title')}
+      </div>
+    ),
+    value: WaylineEnum.AreaWayline,
+  },
+  {
+    label: (
+      <div className="flex gap-2 items-center">
+        <IconSwarm />
+        {t('wayline.create.form.waylineType.options.swarm.title')}
+      </div>
+    ),
+    value: WaylineEnum.SwarmWayline,
+  },
+  // {
+  //   label: (
+  //     <div className="flex gap-2 items-center">
+  //       <IconRebotDogWayline />
+  //       {t('wayline.create.form.waylineType.options.rebotDog.title')}
+  //     </div>
+  //   ),
+  //   value: WaylineEnum.RebotDogWayline,
+  // },
+  {
+    label: (
+      <div className="flex gap-2 items-center">
+        <IconPointClout3DWayline />
+        {t('wayline.create.form.waylineType.options.pointCloud3D.title')}
+      </div>
+    ),
+    value: WaylineEnum.PointCloud3DWayline,
+  },
+]
 
 const AirlineTemplateList: FC<PropsType> = memo(() => {
   const [searchParams, setSearchParams] = useSearchParams()
   const kw = searchParams.get('kw')
+  const waylineType = searchParams.get('waylineType')
 
   const { t } = useTranslation()
 
@@ -28,7 +88,7 @@ const AirlineTemplateList: FC<PropsType> = memo(() => {
     fetchNextPage,
   } = useInfiniteQuery(
     {
-      queryKey: ['airlineTemplates', kw],
+      queryKey: ['airlineTemplates', { kw, waylineType }],
       initialPageParam: 1,
       queryFn: async ({ pageParam }) => {
         const { data } = await getAirlineTemplateList({
@@ -36,6 +96,7 @@ const AirlineTemplateList: FC<PropsType> = memo(() => {
           isPage: true,
           size: 15,
           templateName: kw || undefined,
+          taskType: waylineType || undefined,
         })
         return data
       },
@@ -64,13 +125,38 @@ const AirlineTemplateList: FC<PropsType> = memo(() => {
     setSearchParams(searchParams, { replace: true })
   })
 
+  useUnmount(() => {
+    useWaylinesStore.getState().setPreviewedWayline(null)
+  })
+
   return (
     <div className="py-3 grow flex flex-col overflow-hidden">
       <div className="mx-3">
-        <Input.Search
+        <Input
+          allowClear
           placeholder={t('wayline.searcher.placeholder')}
           defaultValue={kw || undefined}
-          onSearch={handleSearch}
+          onPressEnter={(evt) => handleSearch(evt.currentTarget.value)}
+          onClear={() => handleSearch('')}
+          addonAfter={
+            <div className="px-2">
+              <Select
+                className="w-[120px]"
+                placeholder={t('common.all')}
+                allowClear
+                popupMatchSelectWidth={false}
+                options={createWaylineTypeOptions(t)}
+                onChange={(v) => {
+                  if (v) {
+                    searchParams.set('waylineType', v)
+                  } else {
+                    searchParams.delete('waylineType')
+                  }
+                  setSearchParams(searchParams, { replace: true })
+                }}
+              />
+            </div>
+          }
         />
       </div>
       <ScrollArea className="mt-3 flex-1" onScroll={handleScroll}>

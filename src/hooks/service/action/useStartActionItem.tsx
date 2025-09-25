@@ -17,6 +17,7 @@ const useStartActionItem = () => {
   const msgApi = useAppMsg()
 
   const { t } = useTranslation()
+  const [confirmLoading, setConfirmLoading] = useState(false)
 
   async function startActionItem<T>(action: () => Promise<T>) {
     try {
@@ -43,9 +44,14 @@ const useStartActionItem = () => {
   // 停止任务
   const handleStopActionItem = async () => {
     if (runningActionPayload) {
-      await endActionItem(runningActionPayload.actionItem)
-      msgApi.success(t('wayline.executeTask.success.stopTask.msg'))
-      setRunningActionPayload(null)
+      setConfirmLoading(true)
+      try {
+        await endActionItem(runningActionPayload.actionItem)
+        msgApi.success(t('wayline.executeTask.success.stopTask.msg'))
+        setRunningActionPayload(null)
+      } finally {
+        setConfirmLoading(false)
+      }
     }
   }
 
@@ -56,6 +62,7 @@ const useStartActionItem = () => {
       centered
       open={!!runningActionPayload}
       noPadding
+      confirmLoading={confirmLoading}
       onClose={() => setRunningActionPayload(null)}
       onConfirm={handleStopActionItem}
     >

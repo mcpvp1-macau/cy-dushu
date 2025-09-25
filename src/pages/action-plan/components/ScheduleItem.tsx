@@ -10,7 +10,7 @@ import {
 import { useAppMsg } from '@/hooks/useAppMsg'
 import IconMore from '@/assets/icons/jsx/IconMore'
 import IconButtonWithDropDown from '@/components/ui/button/IconButtonWithDropDown'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import IconButton from '@/components/ui/button/IconButton'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import { dateOnly } from '@/constant/time-fmt'
@@ -22,6 +22,8 @@ import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
 type PropsType = {
   data: API_ACTION_PLAN.domain.Plan
 }
+
+export const StatusList = ['PENDING', 'PROCESSING', 'TERMINATE'] as const
 
 const StatusColorMap = {
   PENDING: '#C7D1DC',
@@ -117,6 +119,7 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
   }, [data, t])
 
   const [expand, { toggle: toggleExpand }] = useBoolean(false)
+  const [searchParams] = useSearchParams()
 
   return (
     <li
@@ -125,7 +128,14 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
         actionPlanId == data.id && 'border-primary',
       )}
     >
-      <Link to={`/schedule/${data.id!}`} className="hover:text-fore" replace>
+      <Link
+        to={{
+          pathname: `/schedule/${data.id!}`,
+          search: searchParams.toString(),
+        }}
+        replace
+        className="hover:text-fore"
+      >
         <div className="flex-1">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">

@@ -13,7 +13,7 @@ import IconButton from '@/components/ui/button/IconButton'
 import IconClear from '@/assets/icons/jsx/IconClear'
 import useEventStore, { useEventData } from '@/store/event/useEvent.store'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
-import { useDeepCompareEffect } from 'ahooks'
+import { useDeepCompareEffect, useThrottleFn } from 'ahooks'
 import IconButtonWithDropDownDialog from '@/components/ui/button/IconButtonWithDropDownDialog'
 
 type PropsType = unknown
@@ -118,8 +118,12 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
     })
   }
 
-  useDeepCompareEffect(() => {
+  const { run } = useThrottleFn(() => {
     refetchEvent()
+  }, { wait: 800 })
+
+  useDeepCompareEffect(() => {
+    run()
   }, [newEvent])
 
   const { t } = useTranslation()

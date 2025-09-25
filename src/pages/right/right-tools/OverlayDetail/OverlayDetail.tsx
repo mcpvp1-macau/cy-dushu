@@ -31,7 +31,6 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
     isConfirmLoading,
     form,
     overlay,
-    renderColor,
     styleConfig,
   } = useOverlayDetail(detailId!, () => {
     updateRightMode(null)

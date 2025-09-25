@@ -2,15 +2,23 @@ import { shouldJson } from '@/utils/json'
 import { useCesium } from 'resium'
 import OverlayPolygon from './OverlayPolygon'
 import { argbToHex } from '@/utils/color'
+import * as Cesium from 'cesium'
 
 type PropsType = {
-  overlayExtType: 'overlay' | 'flightArea'
+  overlayExtType: 'overlay' | 'flightArea' | 'deviceOverlay'
+  primitives: Cesium.PrimitiveCollection | undefined
   overlay: API_LAYER_OVERLAY.domain.Overlay
+  isGround?: boolean
+  showLabel?: boolean
 }
 
-const ShowPolygon: FC<PropsType> = ({ overlayExtType, overlay }) => {
-  const { viewer } = useCesium()
-
+const ShowPolygon: FC<PropsType> = ({
+  overlayExtType,
+  primitives,
+  overlay,
+  isGround = true,
+  showLabel = true,
+}) => {
   const positions = shouldJson(overlay.overlayPositions)
   const style = shouldJson(overlay.overlayStyleConfig)
 
@@ -25,13 +33,14 @@ const ShowPolygon: FC<PropsType> = ({ overlayExtType, overlay }) => {
 
   return (
     <>
-      {viewer && (
+      {primitives && (
         <OverlayPolygon
           data={`${overlayExtType}--${overlay.overlayId}`}
-          viewer={viewer}
+          primitives={primitives}
+          isGround={isGround}
           asynchronous={false}
           path={positions}
-          label={label}
+          label={showLabel ? label : undefined}
           fill={fillColor}
           fillOpacity={fillOpacity}
           stroke={strokeColor}

@@ -6,7 +6,7 @@ import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import useMixARStore from '@/store/control-room/useMixAR.store'
 import Avoidance from './components/Avoidance'
-import ARScene from './components/ARScene'
+import ARSceneCesium from './components/ARSceneCesium'
 import { AiObject } from '@/components/Video/Jessibuca/sei-types/ai-data'
 import useSmarkTrack from '@/hooks/device/useSmarkTrack'
 import ZoomFocus from './components/ZoomFocus'
@@ -57,6 +57,7 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
 
   // const enableMixAR = useControlRoomStore((s) => s.state.ar);
   const enableAR = useMixARStore((s) => s.enable)
+  const updateEnableAR = useMixARStore((s) => s.updateEnable)
   const updateUavProperties = useMixARStore((s) => s.updateUavProperties)
 
   const handlePropertiesSei = (data: any) => {
@@ -114,6 +115,12 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
     (s) => s.openTapToFlyOnVideo,
   )
 
+  useEffect(() => {
+    return () => {
+      updateEnableAR(false)
+    }
+  }, [])
+
   return (
     <div className="absolute inset-0  bg-black">
       <DeviceLiveVideo
@@ -157,7 +164,8 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
             {/* {enableAR && <MixARCanvas />} */}
             {enableAR && (
               <div className="asolute inset-0">
-                <ARScene />
+                {/* <ARScene /> */}
+                <ARSceneCesium />
               </div>
             )}
             {enableSmartTrack && <AITrackBoxSelect />}

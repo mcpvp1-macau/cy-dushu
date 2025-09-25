@@ -91,6 +91,8 @@ const CesiumDefaultConfig: FC<PropsType> = memo(() => {
       viewer.resolutionScale = 1.7
     } else if (resolution === '5') {
       viewer.resolutionScale = 2
+    } else {
+      viewer.resolutionScale = window.devicePixelRatio || 1
     }
   }, [resolution])
 

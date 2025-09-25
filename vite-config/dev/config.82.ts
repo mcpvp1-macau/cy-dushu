@@ -7,10 +7,27 @@ export default mergeConfig(
     server: {
       host: '0.0.0.0',
       proxy: {
+        '/ditingMCPServer': {
+          target: 'http://api-mcp.jing-an.com:28080',
+          rewrite: (path) => path.replace(/^\/ditingMCPServer/, ''),
+          changeOrigin: true,
+          headers: {
+            ['tq-authorization']: 'sk-4e9betjXgdpdf23V3g2f5fef3gE52x3J11H4FFF',
+          },
+        },
+        '/ditingTanqiServer': {
+          target: 'http://api-diting-dev.jing-an.com:28080',
+          rewrite: (path) => path.replace(/^\/ditingTanqiServer/, ''),
+          changeOrigin: true,
+          headers: {
+            ['tq-authorization']: 'sk-4e9betjXgdpdf23V3g2f5fef3gE52x3J11H4FFF',
+          },
+        },
         // 4A 接口
         '/proxyApi': {
-          target: 'http://172.27.95.212:31851/',
+          target: 'http://172.27.95.212:31851',
           // target: 'http://172.27.95.212:32711/',
+          // target: 'http://localhost:7001',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/proxyApi/, '/'),
         },

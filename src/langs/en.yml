@@ -221,6 +221,7 @@ device:
     vibrator:
       range: Vibrator range settings
     wanglou: Watchtower configuration
+    title: Device Setting
   battery:
     chargeState: charging status
     current: current
@@ -262,6 +263,9 @@ device:
       color: Color
       outline: Outline
       glow: Glow
+  overlay:
+    flightArea:
+      title: Flight Area
 action:
   input:
     placeholder: Please search by action name
@@ -568,6 +572,8 @@ common:
   show: Show
   hide: Hide
   deviceConfig: Device Configuration
+  center: Center
+  region: Region
 events:
   search:
     placeholder: Please search by event name or ID
@@ -645,6 +651,8 @@ uav:
     title: Land
   return:
     title: Go Home
+  infoBoard:
+    title: UAV Info Label
 actionRecord:
   title: Action Records
   table:
@@ -713,15 +721,19 @@ wayline:
             title: Swarm Wayline
           rebotDog:
             title: RebotDog Wayline
+          pointCloud3D:
+            title: Cloud3D Wayline
       uavType:
         label: UAV Model
       gimbalType:
         label: Gimbal Model
+      cloud3D:
+        label: Map
     title: Create Wayline
   waylineConfig:
     title: Wayline
     atl:
-      title: Wayline ATL
+      title: Wayline Height
     returnHeight:
       title: Go Home Height
     speed:
@@ -746,6 +758,8 @@ wayline:
       tooltip: >-
         The proportion of overlap between the fields of view captured by
         adjacent routes, with the gimbal set to the default wide.
+    relativeHeight:
+      tooltip: Relative To Start Point
   waylinePoint:
     config: Waypoints
     waypointList:
@@ -1428,7 +1442,9 @@ tanqi:
   taskUnderstanding:
     title: Task Understand
   commandControl:
-    title: Command Controll
+    title: Command Control
+  sender:
+    placeholder: How can Tanqi help you?
 dayOfWeek:
   sunday: Sunday
   monday: Monday

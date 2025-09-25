@@ -1,7 +1,7 @@
 {
   "name": "ja-dushu-front",
   "private": true,
-  "version": "v3.18.6",
+  "version": "v3.20.0",
   "type": "module",
   "scripts": {
     "ts": "tsc --noEmit",
@@ -21,6 +21,7 @@
     "dev:zhongshan": "vite --config ./vite-config/dev/config.zhongshan.ts",
     "dev:xiaoshan": "vite --config ./vite-config/dev/config.xiaoshan.ts",
     "dev:taixin": "vite --config ./vite-config/dev/config.taixin.ts",
+    "dev:changzhou": "vite --config ./vite-config/dev/config.changzhou.ts",
     "build": "tsc && vite build",
     "skip-check-build": "vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
@@ -45,6 +46,9 @@
     "@mapbox/tilebelt": "^2.0.2",
     "@mkkellogg/gaussian-splats-3d": "^0.4.6",
     "@radix-ui/react-scroll-area": "^1.1.0",
+    "@react-three/drei": "^10.6.1",
+    "@react-three/fiber": "8",
+    "@sentry/browser": "^10.10.0",
     "@tanstack/react-query": "^5.51.23",
     "@tanstack/react-query-devtools": "^5.51.23",
     "@tanstack/react-table": "^8.20.1",
@@ -122,6 +126,7 @@
     "@types/proj4": "^2.5.5",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
+    "@types/three": "^0.179.0",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
@@ -139,6 +144,8 @@
     "typescript": "^5.7.2",
     "unplugin-auto-import": "^0.17.6",
     "vite": "^6.2.2",
-    "vite-plugin-cesium": "^1.2.23"
+    "vite-plugin-cesium": "^1.2.23",
+    "vite-plugin-top-level-await": "^1.6.0",
+    "vite-plugin-wasm": "^3.5.0"
   }
 }

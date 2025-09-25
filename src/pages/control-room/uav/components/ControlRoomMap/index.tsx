@@ -34,6 +34,7 @@ import useQueryHistoryReconstruction2DProcessedResult from '@/hooks/service/reco
 import Reconstruction2DResultList from '@/map/CesiumMap/components/service/Reconstruction2D/Reconstruction2DResultList'
 import useDelayState from '@/hooks/useDelay'
 import BigFlyListener from '@/map/GlobalMap/BigFlyListener'
+import TanqiFlyPlan from './components/TanqiFlyPlan'
 
 type PropsType = unknown
 
@@ -61,9 +62,9 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
   })
 
   // 二维重建 ---------------------------------------------------------------------
-  // useQueryHistoryReconstruction2DProcessedResult({
-  //   deviceId: deviceId,
-  // })
+  useQueryHistoryReconstruction2DProcessedResult({
+    deviceId: deviceId,
+  })
 
   const delayed = useDelayState(1000)
 
@@ -96,6 +97,7 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
       <Reconstruction2D />
       <BigFlyListener />
       {delayed && <Reconstruction2DResultList />}
+      <TanqiFlyPlan />
     </CesiumMap>
   )
 })

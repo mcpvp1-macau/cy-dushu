@@ -101,7 +101,7 @@ export default class GaussianSplatLayer {
     }
   }
 
-  public setup(camera: THREE.Camera, renderer: THREE.Renderer) {
+  public setup(camera: THREE.Camera, renderer: THREE.WebGLRenderer) {
     const position = Cesium.Cartesian3.fromDegrees(
       this.location.lon,
       this.location.lat,

@@ -16,6 +16,9 @@ const ReconstructionDetail = lazy(
 const FlightAreaDetail = lazy(
   () => import('./right-tools/FlightAreaDetail/FlightAreaDetail'),
 )
+const RightDeviceOverlayDetail = lazy(
+  () => import('./right-tools/DeviceOverlayDetail/DeviceOverlayDetail'),
+)
 
 const route = {
   [RightModeEnum.DEVICE]: RightDeviceDetail,
@@ -29,6 +32,7 @@ const route = {
   [RightModeEnum.RADAR_TARGET]: TargetDetail,
   [RightModeEnum.RECONSTRUCTION_DETAIL]: ReconstructionDetail,
   [RightModeEnum.FLIGHT_AREA_DETAIL]: FlightAreaDetail,
+  [RightModeEnum.DEVICE_OVERLAY_DETAIL]: RightDeviceOverlayDetail,
 }
 
 type PropsType = unknown

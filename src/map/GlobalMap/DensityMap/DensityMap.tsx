@@ -211,11 +211,11 @@ const DensityMap: FC<PropsType> = memo(() => {
 
     return () => {
       entityRef.current = null
-      if (viewer?.scene.primitives) {
-        attempt(() => {
+      attempt(() => {
+        if (viewer?.scene.primitives) {
           viewer.scene.primitives.remove(primitive)
-        })
-      }
+        }
+      })
     }
   }, [resolvedData, currentCenterPos])
 

@@ -11,6 +11,8 @@ import IconFocus from '@/assets/icons/jsx/IconFocus'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import IconCameraMode from '@/assets/icons/jsx/IconCameraMode'
 import IconLoudspeaker from '@/assets/icons/jsx/IconLoudspeaker'
+import IconStartRecord from '@/assets/icons/jsx/IconStartRecord'
+import IconStopRecord from '@/assets/icons/jsx/IconStopRecord'
 
 export type ActionConfigType = {
   actionName: string
@@ -46,6 +48,10 @@ export enum ActionTypeEnum {
   CAMERA_MODE = 10,
   /** 喊话器 */
   SPEAKER_PLAY = 11,
+  /** 开始录制 */
+  START_RECORD = 12,
+  /** 停止录制 */
+  STOP_RECORD = 13,
 }
 
 export const actionMap = new Map<ActionTypeEnum, ActionConfigType>([
@@ -180,6 +186,30 @@ export const actionMap = new Map<ActionTypeEnum, ActionConfigType>([
       },
     },
   ],
+  [
+    ActionTypeEnum.START_RECORD,
+    {
+      key: 'START_RECORD',
+      type: 'START_RECORD',
+      actionName: '开始录制',
+      config: {
+        payloadLensIndex: [],
+        useGlobalPayloadLensIndex: 1, // 是否跟随全局设置
+      },
+    },
+  ],
+  [
+    ActionTypeEnum.STOP_RECORD,
+    {
+      key: 'STOP_RECORD',
+      type: 'STOP_RECORD',
+      actionName: '停止录制',
+      config: {
+        payloadLensIndex: [],
+        useGlobalPayloadLensIndex: 1, // 是否跟随全局设置
+      },
+    },
+  ],
 ])
 
 export const iconMap = new Map<ActionTypeEnum, React.ReactNode>([
@@ -212,6 +242,14 @@ export const iconMap = new Map<ActionTypeEnum, React.ReactNode>([
   [
     ActionTypeEnum.SPEAKER_PLAY,
     <IconLoudspeaker key={ActionTypeEnum.SPEAKER_PLAY} />,
+  ],
+  [
+    ActionTypeEnum.START_RECORD,
+    <IconStartRecord key={ActionTypeEnum.START_RECORD} />,
+  ],
+  [
+    ActionTypeEnum.STOP_RECORD,
+    <IconStopRecord key={ActionTypeEnum.STOP_RECORD} />,
   ],
 ])
 
@@ -254,6 +292,12 @@ export const getIcon = (action: any) => {
   }
   if (action?.type === 'SPEAKER_PLAY') {
     return <IconLoudspeaker />
+  }
+  if (action?.type === 'START_RECORD') {
+    return <IconStartRecord />
+  }
+  if (action?.type === 'STOP_RECORD') {
+    return <IconStopRecord />
   }
   return <QuestionCircleOutlined />
 }

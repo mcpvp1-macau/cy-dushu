@@ -42,8 +42,8 @@ export const themeConfig: ThemeConfig = {
       primaryShadow: 'none',
     },
     Radio: {
-      colorBgContainer: '#28323C',
-      colorBorder: 'rgba(255, 255, 255, 0)',
+      // colorBgContainer: '#28323C',
+      // colorBorder: 'rgba(255, 255, 255, 0)',
     },
     Collapse: {
       colorTextHeading: '#fff',

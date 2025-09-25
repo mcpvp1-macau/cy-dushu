@@ -15,6 +15,7 @@ import AppErrorBoundary from '@/components/AppError'
 // import Page404 from '@/pages/404'
 import share from './modules/share'
 import eventResolve from './modules/event-resolve'
+import documents from './modules/documents'
 
 export const rootRoute = {
   element: <App />,
@@ -31,6 +32,7 @@ export const rootRoute = {
     backtracking,
     defence,
     share,
+    documents,
     // 测试页面
     ...(import.meta.env.DEV ? [demo] : []),
     // {

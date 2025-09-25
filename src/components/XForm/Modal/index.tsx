@@ -40,7 +40,7 @@ const FormModal: FC<PropsType> = ({
     setLoading(true)
     try {
       const values = await form.validateFields()
-      onConfirm?.(values)
+      await onConfirm?.(values)
     } finally {
       setLoading(false)
     }

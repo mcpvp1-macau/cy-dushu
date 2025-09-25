@@ -1,8 +1,17 @@
 import Select from '@/components/AntdOverride/Select'
 import IconButton from '@/components/ui/button/IconButton'
 import useARSettingStore from '@/store/setting/useARSetting.store'
-import { UndoOutlined } from '@ant-design/icons'
-import { Col, ColorPicker, Form, InputNumber, Row, Slider, Switch } from 'antd'
+import { InfoCircleOutlined, UndoOutlined } from '@ant-design/icons'
+import {
+  Col,
+  ColorPicker,
+  Form,
+  InputNumber,
+  Row,
+  Slider,
+  Switch,
+  Tooltip,
+} from 'antd'
 import { isNil } from 'lodash'
 
 type PropsType = {
@@ -87,13 +96,38 @@ const ARSetting: FC<PropsType> = memo(({ deviceId }) => {
   const ar = useARSettingStore((s) => s)
   const updAR = useARSettingStore((s) => s.updateAR)
 
-  const { i18n } = useTranslation()
+  const { i18n, t } = useTranslation()
   const filterOptions = useMemo(() => {
     return bigTypes.map((type) => ({
       label: bigTypeMapping[i18n.language][type],
       value: type,
     }))
   }, [i18n.language])
+
+  const flightAreaFilterOptions = useMemo(() => {
+    return [
+      {
+        label: t('flightArea.type.electronicFence.title'),
+        value: 'ELECTRONIC_FENCE',
+        info: t('flightArea.type.electronicFence.info'),
+      },
+      {
+        label: t('flightArea.type.noFly.title'),
+        value: 'NO_FLY_ZONE',
+        info: t('flightArea.type.noFly.info'),
+      },
+      {
+        label: t('flightArea.type.countZone.title'),
+        value: 'AI_COUNT_ZONE',
+        info: t('flightArea.type.countZone.info'),
+      },
+      {
+        label: t('flightArea.type.noCountZone.title'),
+        value: 'NO_COUNT_ZONE',
+        info: t('flightArea.type.noCountZone.info'),
+      },
+    ]
+  }, [t])
 
   const updateMainRoad = (data: Partial<(typeof ar)['mainRoad']>) => {
     updAR({
@@ -150,6 +184,16 @@ const ARSetting: FC<PropsType> = memo(({ deviceId }) => {
       ...ar,
       overlay: {
         ...ar.overlay,
+        ...data,
+      },
+    })
+  }
+
+  const updateFlightArea = (data: Partial<(typeof ar)['flightArea']>) => {
+    updAR({
+      ...ar,
+      flightArea: {
+        ...ar.flightArea,
         ...data,
       },
     })
@@ -544,7 +588,7 @@ const ARSetting: FC<PropsType> = memo(({ deviceId }) => {
         </div>
         <Row>
           <Col span={12}>
-            <Form.Item label="点位">
+            <Form.Item label="打点">
               <Switch
                 value={ar.overlay.point}
                 onChange={(e) =>
@@ -564,6 +608,43 @@ const ARSetting: FC<PropsType> = memo(({ deviceId }) => {
                     area: e,
                   })
                 }
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <div className="flex gap-1.5 items-center mb-1">
+          <div className="h-[10px] w-[2px] rounded bg-green-500"></div>
+          飞行区域
+          <Form.Item noStyle>
+            <Switch
+              value={ar.flightArea.enable}
+              onChange={(e) => updateFlightArea({ enable: e })}
+            />
+          </Form.Item>
+        </div>
+
+        <Row>
+          <Col span={24}>
+            <Form.Item label="过滤条件">
+              <Select
+                options={flightAreaFilterOptions}
+                mode="multiple"
+                value={ar.flightArea.filter}
+                onChange={(e) => {
+                  updateFlightArea({ filter: e })
+                }}
+                optionRender={(option, { index }) => {
+                  return (
+                    <div className="flex items-center gap-3">
+                      <span>{option.label}</span>
+                      <Tooltip title={flightAreaFilterOptions[index].info}>
+                        <InfoCircleOutlined />
+                      </Tooltip>
+                    </div>
+                  )
+                }}
+                placeholder="ALL"
               />
             </Form.Item>
           </Col>

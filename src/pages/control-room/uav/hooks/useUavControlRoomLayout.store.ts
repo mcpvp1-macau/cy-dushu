@@ -81,9 +81,13 @@ const initialLayout: DynamicLayoutType = {
           key: 'device-data',
           keeyRenderOnHidden: false,
         },
-        {
-          key: 'tanqi',
-        },
+        ...(globalConfig.useTanqi
+          ? [
+              {
+                key: 'tanqi',
+              },
+            ]
+          : []),
       ],
     },
   ],
@@ -205,7 +209,7 @@ export const useUavControlRoomLayoutStore = create<StateType & ActionsType>()(
     }),
     {
       name: 'uavControlRoomLayout',
-      version: 3,
+      version: ((globalConfig.useTanqi ? 1 : 0) << 10) | 4,
     },
   ),
 )

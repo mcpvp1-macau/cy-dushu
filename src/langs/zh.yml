@@ -214,6 +214,7 @@ device:
     radraRange: 雷达范围设置
     vibrator:
       range: 震动仪范围设置
+    title: 设备配置
   wanglou:
     status:
       title: 状态监测
@@ -256,6 +257,9 @@ device:
       color: 纯色
       outline: 描边
       glow: 发光
+  overlay:
+    flightArea:
+      title: 飞行区域
 action:
   input:
     placeholder: 请根据行动名称搜索
@@ -562,6 +566,8 @@ common:
   show: 显示
   hide: 隐藏
   deviceConfig: 设备配置
+  center: 中心
+  region: 边缘
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -639,6 +645,8 @@ uav:
     title: 降落
   return:
     title: 返程
+  infoBoard:
+    title: 无人机标牌
 actionRecord:
   title: 行动记录
   table:
@@ -705,15 +713,19 @@ wayline:
             title: 蜂群航线
           rebotDog:
             title: 巡逻路线
+          pointCloud3D:
+            title: 点云路线
       uavType:
         label: 飞行器型号
       gimbalType:
         label: 负载型号
+      cloud3D:
+        label: 地图选择
     title: 创建航线
   waylineConfig:
     title: 航线设置
     atl:
-      title: 航线相对高度
+      title: 航线高度
     returnHeight:
       title: 返航高度
     speed:
@@ -734,6 +746,8 @@ wayline:
     lateralCoverage:
       title: 旁向覆盖率
       tooltip: 相邻两条航线的拍摄视野重叠部分的比例，云台默认正射角度
+    relativeHeight:
+      tooltip: 相对起飞点高度
   waylinePoint:
     config: 航点设置
     waypointList:
@@ -791,6 +805,10 @@ wayline:
         title: 镜头模式
       SPEAKER_PLAY:
         title: 喊话器
+      START_RECORD:
+        title: 开始录制
+      STOP_RECORD:
+        title: 停止录制
     addBefore: 在航点 {{i}} 后添加
     addAfter: 在航点 {{i}} 后添加
     addLast: 在最后添加
@@ -1411,6 +1429,8 @@ tanqi:
     title: 任务理解
   commandControl:
     title: 指令控制
+  sender:
+    placeholder: 檀棋可以帮助你什么?
 dayOfWeek:
   sunday: 周日
   monday: 周一

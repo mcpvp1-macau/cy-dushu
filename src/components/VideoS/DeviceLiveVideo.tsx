@@ -16,6 +16,7 @@ import {
   useThrottleFn,
 } from 'ahooks'
 import {
+  DisconnectOutlined,
   ExpandOutlined,
   FullscreenExitOutlined,
   ShareAltOutlined,
@@ -177,7 +178,7 @@ const DeviceLiveVideo = memo(
               if (res?.code === 'ERROR') {
                 if (res.message === 'device is offline') {
                   // 设备离线
-                  setErrMsg('该设备已离线')
+                  setErrMsg('设备已离线')
                 } else {
                   // 其他异常暂不提示
                 }
@@ -339,7 +340,10 @@ const DeviceLiveVideo = memo(
             >
               {errMsg ? (
                 <div className="absolute inset-0 flex justify-center items-center">
-                  <div className="text-red-800 text-xs">{errMsg}</div>
+                  <div className="text-red-800 select-none">
+                    <DisconnectOutlined className="mr-1" />
+                    {errMsg}
+                  </div>
                 </div>
               ) : (
                 <></>

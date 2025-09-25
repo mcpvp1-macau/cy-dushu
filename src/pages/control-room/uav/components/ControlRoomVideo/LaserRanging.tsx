@@ -14,7 +14,7 @@ const LaserRanging: FC<PropsType> = memo(() => {
   const openLarser = useUavControlRoomStore((s) => s.openLarser)
 
   return (
-    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-90 pointer-events-none">
+    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-90 pointer-events-none z-10">
       <Sight color={openLarser ? '#dc2626' : '#e5e5e5'} />
       {distance && (
         <div

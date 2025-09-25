@@ -1,12 +1,14 @@
 import { memo, type FC } from 'react'
 import * as Cesium from 'cesium'
 import { OverlayFanPrimitive } from '@/utils/customPrimitive/OverlayPrimitive'
+import { attempt } from 'lodash'
 
 type PropsType = {
   data: any
-  viewer: Cesium.Viewer
+  primitives: Cesium.PrimitiveCollection
   positions: number[][] // [[111,111,111], [222,222,222]]
   asynchronous: boolean
+  isGround?: boolean
   hide?: 0 | 1
   fill?: string
   stroke?: string
@@ -20,9 +22,10 @@ type PropsType = {
 const OverlayFan: FC<PropsType> = memo((props) => {
   const {
     data,
-    viewer,
+    primitives,
     positions,
     asynchronous,
+    isGround = true,
     hide = false,
     fill = '#4c90f0',
     stroke = '#4c90f0',
@@ -33,8 +36,8 @@ const OverlayFan: FC<PropsType> = memo((props) => {
   } = props
 
   const primitiveRef = useRef(
-    new OverlayFanPrimitive(
-      {
+    new OverlayFanPrimitive({
+      styleOptions: {
         stroke,
         strokeStyle,
         strokeWeight,
@@ -43,8 +46,9 @@ const OverlayFan: FC<PropsType> = memo((props) => {
         label,
       },
       asynchronous,
-      data,
-    ),
+      props: data,
+      isGround,
+    }),
   )
 
   useEffect(() => {
@@ -52,16 +56,16 @@ const OverlayFan: FC<PropsType> = memo((props) => {
   }, [data])
 
   useEffect(() => {
-    if (!viewer?.scene?.primitives) return
-    viewer.scene.primitives.add(primitiveRef.current)
+    if (!primitives) return
+    primitives.add(primitiveRef.current)
 
     return () => {
-      if (!viewer?.scene?.primitives) return
-
-      const preVal = viewer.scene.primitives.destroyPrimitives
-      viewer.scene.primitives.destroyPrimitives = false
-      viewer.scene.primitives.remove(primitiveRef.current)
-      viewer.scene.primitives.destroyPrimitives = preVal
+      attempt(() => {
+        const preVal = primitives.destroyPrimitives
+        primitives.destroyPrimitives = false
+        primitives.remove(primitiveRef.current)
+        primitives.destroyPrimitives = preVal
+      })
     }
   }, [])
 

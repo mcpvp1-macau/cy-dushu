@@ -1,12 +1,17 @@
 import IconEdit2 from '@/assets/icons/jsx/IconEdit2'
 import IconMore from '@/assets/icons/jsx/IconMore'
+import IconPointClout3DWayline from '@/assets/icons/jsx/IconPointCloud3DWayline'
+import IconPreview from '@/assets/icons/jsx/IconPreview'
 import IconRebotDogWayline from '@/assets/icons/jsx/IconRebotDogWayline'
 import IconSwarm from '@/assets/icons/jsx/IconSwarm'
 import IconWaylineAirpoint from '@/assets/icons/jsx/IconWaylineAirpoint'
 import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
 import IconButton from '@/components/ui/button/IconButton'
+import { WaylineEnum } from '@/constant/uav/wayline'
 import { delAirlineTempalte } from '@/service/modules/airline'
+import useWaylinesStore from '@/store/map/useWaylines.store'
 import { downloadAndRename } from '@/utils/download'
+import { shouldJson } from '@/utils/json'
 import { QuestionCircleFilled } from '@ant-design/icons'
 import { Dropdown, Popconfirm } from 'antd'
 import { ReactNode } from 'react'
@@ -32,10 +37,35 @@ const AirlineTemplateListItem: FC<PropsType> = memo(({ data }) => {
         <div className="grow">
           <p className="max-w-60 truncate text-white">{data.taskName}</p>
         </div>
+        <IconButton
+          toolTipProps={{ title: t('common.preview') }}
+          disabled={
+            data.taskType === WaylineEnum.SwarmWayline ||
+            data.taskType === WaylineEnum.PointCloud3DWayline
+          }
+          onClick={() => {
+            const positions = shouldJson(data.parameters)?.spaces?.[0]
+              ?.positions
+            if (!positions) {
+              return
+            }
+            useWaylinesStore.getState().setPreviewedWayline({
+              id: data.templateId,
+              type: data.taskType,
+              points: positions,
+              taskBasic: shouldJson(data.taskBasic) ?? {},
+            })
+          }}
+        >
+          <IconPreview />
+        </IconButton>
         <Link
           to={`${getWaylineEditURL(data.taskType)}/${data.waylineTemplateId}`}
         >
-          <IconButton className="text-xs">
+          <IconButton
+            className="text-xs"
+            toolTipProps={{ title: t('common.edit') }}
+          >
             <IconEdit2 />
           </IconButton>
         </Link>
@@ -95,6 +125,7 @@ export const WaylineIcon: FC<{ type: string }> = ({ type }) => {
         cluster_wayline: <IconSwarm />,
         mapping2d: <IconWaylineAirpoint />,
         mapping3d: <IconWaylineAirpoint />,
+        point_cloud_3d: <IconPointClout3DWayline />,
       } as Record<string, ReactNode>
     )[type] || <QuestionCircleFilled />
   )
@@ -109,6 +140,7 @@ export const getWaylineEditURL = (type: string) => {
       cluster_wayline: '/wayline/swarm-wayline-edit',
       mapping2d: '/wayline/edit',
       mapping3d: '/wayline/edit',
+      point_cloud_3d: '/wayline/point-cloud-3d-edit',
     }[type] || '/404'
   )
 }

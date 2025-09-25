@@ -2,14 +2,11 @@ import { Outlet, useMatches } from 'react-router-dom'
 import AppHeader from './components/Header'
 import AppNavigator from './components/Navigator'
 import { useTitle } from 'ahooks'
-import GlobalMap from './map/GlobalMap'
+
 import { message, notification } from 'antd'
 import { AppMsgContext, msgMitt } from './hooks/useAppMsg'
 import { NotificationContext } from './hooks/useNotification.ts'
 import GlobalState from './components/GlobalState'
-import Right from './pages/right'
-import AppViewSuspense from './components/AppViewSuspense'
-import RightTools from './components/right-tools'
 import { themeConfig } from './config/theme-config'
 import AppEmpty from './components/AppEmpty.tsx'
 import zh from 'antd/es/locale/zh_CN'
@@ -24,6 +21,9 @@ import backtracking from './router/modules/backtracking'
 import share from './router/modules/share.tsx'
 import { XProvider } from '@ant-design/x'
 import Update from './components/Update'
+import { lazy, Suspense } from 'react'
+import AppSpin from './components/AppSpin.tsx'
+
 const hidenSet = new Set([
   controlRoom.id,
   sources.id,
@@ -32,6 +32,10 @@ const hidenSet = new Set([
   backtracking.id,
   share.id,
 ])
+
+const GlobalMap = lazy(() => import('./map/GlobalMap'))
+const RightTools = lazy(() => import('./components/right-tools'))
+const Right = lazy(() => import('./pages/right'))
 
 const App = () => {
   useTitle(globalConfig.title ?? '牍术·无人装备智能引擎')
@@ -95,15 +99,25 @@ const App = () => {
                 {!hideAppHeaderAndNavigator && <AppNavigator />}
                 <main className="flex-grow bg-ground-1 relative overflow-hidden z-10">
                   <div className="absolute h-full z-20 overflow-hidden">
-                    <AppViewSuspense>
+                    <Suspense
+                      fallback={
+                        <AppSpin className="abs-center fixed" size="large" />
+                      }
+                    >
                       <Outlet />
-                    </AppViewSuspense>
+                    </Suspense>
                   </div>
                   {hide && (
                     <>
-                      <GlobalMap />
-                      <RightTools />
-                      <Right />
+                      <Suspense>
+                        <GlobalMap />
+                      </Suspense>
+                      <Suspense>
+                        <RightTools />
+                      </Suspense>
+                      <Suspense>
+                        <Right />
+                      </Suspense>
                     </>
                   )}
                 </main>

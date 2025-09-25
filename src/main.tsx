@@ -1,3 +1,4 @@
+import './instrument.ts'
 import ReactDOM from 'react-dom/client'
 import initToken from './global/Initial/init-token.ts'
 import useUserStore from './store/useUser.store.ts'
@@ -54,7 +55,7 @@ const videoRouter = createBrowserRouter([
 
     ReactDOM.createRoot(document.getElementById('root')!).render(
       <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen buttonPosition="bottom-left" />
+        <ReactQueryDevtools initialIsOpen buttonPosition="top-left" />
         <RouterProvider router={router} />
       </QueryClientProvider>,
     )

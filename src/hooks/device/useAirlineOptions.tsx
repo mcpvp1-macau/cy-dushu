@@ -34,14 +34,7 @@ const useAirlineOptions = () => {
             </div>
             <IconButton
               toolTipProps={{ title: t('common.preview') }}
-              onClick={(evt) => {
-                evt.stopPropagation()
-                handlePreview(e)
-              }}
-              onMouseDown={(e) => {
-                e.stopPropagation()
-                e.preventDefault()
-              }}
+              onClick={() => handlePreview(e)}
               className="hover:text-white scale-90"
             >
               <IconPreview />

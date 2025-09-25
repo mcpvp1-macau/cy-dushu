@@ -1,0 +1,47 @@
+.panel {
+  border-radius: 4px;
+  padding: 6px;
+  border: #37414d 1px solid;
+  background-color: rgba(#16202b, 0.8);
+
+  p {
+    color: #c7d1d7;
+    font-size: 12px;
+    margin: 0;
+
+    &.small {
+      font-size: 8px;
+    }
+  }
+
+  .title {
+    margin-bottom: 8px;
+  }
+
+  .bar {
+    border-radius: 50px;
+    overflow: hidden;
+    height: 6px;
+    width: 128px;
+    display: flex;
+    margin: 4px 0;
+
+    .barItem {
+      height: 100%;
+      width: 20%;
+    }
+  }
+
+  .bar2 {
+    display: flex;
+    width: 128px;
+  }
+
+  .bar,
+  .bar2 {
+    .barItem {
+      height: 100%;
+      width: 20%;
+    }
+  }
+}

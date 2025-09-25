@@ -308,33 +308,34 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
     //   Cesium.ScreenSpaceEventType.RIGHT_CLICK,
     // )
 
-    const handleDoubleClick = (evt) => {
-      const pickedObjs = viewer?.scene?.drillPick(evt.position)
-      if (!pickedObjs || !pickedObjs.length) {
-        return
-      }
+    // const handleDoubleClick = (evt) => {
+    //   const pickedObjs = viewer?.scene?.drillPick(evt.position)
+    //   if (!pickedObjs || !pickedObjs.length) {
+    //     return
+    //   }
 
-      const res = pickedObjs.find((e) => {
-        if (typeof e.id === 'string' && e.id.startsWith('overlay--')) {
-          return true
-        }
-        if (typeof e.id?.id === 'string' && e.id.id.startsWith('overlay--')) {
-          return true
-        }
-        return false
-      })
+    //   const res = pickedObjs.find((e) => {
+    //     if (typeof e.id === 'string' && e.id.startsWith('overlay--')) {
+    //       return true
+    //     }
+    //     if (typeof e.id?.id === 'string' && e.id.id.startsWith('overlay--')) {
+    //       return true
+    //     }
+    //     return false
+    //   })
 
-      const id = res?.id?.id ?? res?.id
-      if (typeof id === 'string' && id.startsWith('overlay--')) {
-        const [, overlayId] = id.split('--')
-        updateRightMode(RightModeEnum.OVERLYA_DETAIL)
-        updateDetailId(overlayId)
-      }
-    }
-    handler.setInputAction(
-      handleDoubleClick,
-      Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK,
-    )
+    //   const id = res?.id?.id ?? res?.id
+    //   if (typeof id === 'string' && id.startsWith('overlay--')) {
+    //     const [, overlayId] = id.split('--')
+    //     console.log('id', id, overlayId)
+    //     updateRightMode(RightModeEnum.OVERLYA_DETAIL)
+    //     updateDetailId(overlayId)
+    //   }
+    // }
+    // handler.setInputAction(
+    //   handleDoubleClick,
+    //   Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK,
+    // )
 
     return () => {
       handler.destroy()

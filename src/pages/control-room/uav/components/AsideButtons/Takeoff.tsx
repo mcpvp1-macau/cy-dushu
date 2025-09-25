@@ -3,7 +3,8 @@ import VerticalIconButton from '@/components/ui/button/VerticalButton'
 import FormModal from '@/components/XForm/Modal'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import useIdleControlTag from '../../hooks/useIdleControlTag'
+import { usePostDeviceServiceHandler } from '@/hooks/device/usePostDeviceService'
+import { getDeviceDetail } from '@/service/modules/device'
 
 type PropsType = {
   postServiceFn: (identifier: string, data?: any) => Promise<void>
@@ -13,15 +14,28 @@ type PropsType = {
 const Takeoff: FC<PropsType> = memo(({ postServiceFn }) => {
   const { t } = useTranslation()
   const isLimitedFly = useUavControlRoomStore((s) => s.isLimitedFly)
-  const hasControlPower = useUavControlRoomStore((s) => s.hasControlPower)
-  const idleControlTag = useIdleControlTag()
   const hasService = useDeviceDetailStore((s) => s.serviceHave['takeoff'])
 
-  const canTakeoff =
-    !isLimitedFly && (idleControlTag || hasControlPower) && hasService
+  const parentId = useDeviceDetailStore((s) => s.deviceDetail?.parentId)
+
+  const links = useUavControlRoomStore((s) => s.links)
+  const currentLink = useMemo(
+    () => links?.find((link) => link.active)?.name ?? 'auto',
+    [links],
+  )
+
+  const postServicehandler = usePostDeviceServiceHandler()
+
+  const canTakeoff = !isLimitedFly && hasService
 
   const handleClick = async (data) => {
-    await postServiceFn('takeoff', data)
+    if (!parentId || currentLink?.toUpperCase?.() === '5G') {
+      await postServiceFn('takeoff', data)
+    } else {
+      const resp = await getDeviceDetail(parentId)
+      const productKey = resp.data.deviceModel.productKey
+      await postServicehandler(productKey, parentId, 'takeoff', data)
+    }
     setFalse()
   }
 
@@ -48,7 +62,7 @@ const Takeoff: FC<PropsType> = memo(({ postServiceFn }) => {
               type: 'input-number',
               rules: [{ required: true, message: '请输入起飞高度' }],
               otherProps: {
-                addonAfter: 'm',
+                addonAfter: <div className="mx-1">m</div>,
                 min: 1,
                 max: globalConfig.uavHeightLimit,
               },
@@ -58,7 +72,7 @@ const Takeoff: FC<PropsType> = memo(({ postServiceFn }) => {
               name: 'gohomeAltitude',
               type: 'input-number',
               otherProps: {
-                addonAfter: 'm',
+                addonAfter: <div className="mx-1">m</div>,
                 min: 50,
                 max: globalConfig.uavHeightLimit,
               },
