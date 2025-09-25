@@ -7,6 +7,7 @@ type PropsType = unknown
 
 const OtherMarkers: FC<PropsType> = memo(() => {
   const otherDevices = useMapDevicesStore((s) => s.otherDevices)
+  console.info(otherDevices)
   return (
     <>
       <BillboardCollection>

@@ -6,6 +6,12 @@ import DeviceIconTracker from '@/assets/icons/jsx/device/DeviceIconTracker'
 import DeviceIconTTP_BOX from '@/assets/icons/jsx/device/DeviceIconTTP_BOX'
 import DeviceIconUAV2 from '@/assets/icons/jsx/device/DeviceIconUAV2'
 import DeviceIconWANGLOU from '@/assets/icons/jsx/device/DeviceIconWANGLOU'
+import DeviceIconER_EF_CAR from '@/assets/icons/jsx/device/DeviceIconER_EF_CAR'
+import DeviceIconRadar from '@/assets/icons/jsx/device/DeviceIconRadar'
+import DeviceIconTHEODOLITE from '@/assets/icons/jsx/device/DeviceIconTHEODOLITE'
+import DeviceIconLaser from '@/assets/icons/jsx/device/DeviceIconLaser'
+import DeviceIconSHELL from '@/assets/icons/jsx/device/DeviceIconSHELL'
+import DeviceIconMC from '@/assets/icons/jsx/device/DeviceIconMC'
 
 export enum DeviceEnum {
   UAV = 'UAV',
@@ -26,6 +32,16 @@ export enum DeviceEnum {
   INFRARED_CAMERA = 'INFRARED_CAMERA',
   /** 追踪器 */
   TRACKER = 'TRACKER',
+  /** 电子干扰侦查战车 */
+  ER_EF_CAR = 'ER_EF_CAR',
+  /** 光电经纬仪 */
+  THEODOLITE = 'THEODOLITE',
+  /** 激光武器 */
+  LASER_WEAPON = 'LASER_WEAPON',
+  /** 高炮 */
+  SHELL = 'SHELL',
+  /** 微波武器 */
+  MICROWAVE = 'MICROWAVE',
 }
 
 const deviceTypeWeight = new Map<string, number>([
@@ -50,6 +66,18 @@ export const deviceIconMap = {
   [DeviceEnum.SITE_ENFORCEMENT_RECORDER]: DeviceIconENFORCEMENT,
   [DeviceEnum.TRACKER]: DeviceIconTracker,
   [DeviceEnum.ROBOT_DOG]: DeviceIconRebotDog,
+  // 电子干扰侦查战车
+  [DeviceEnum.ER_EF_CAR]: DeviceIconER_EF_CAR,
+  // 
+  [DeviceEnum.RADAR]: DeviceIconRadar,
+  // 光电经纬仪
+  [DeviceEnum.THEODOLITE]: DeviceIconTHEODOLITE,
+  // 激光武器
+  [DeviceEnum.LASER_WEAPON]: DeviceIconLaser,
+  // 高炮
+  [DeviceEnum.SHELL]: DeviceIconSHELL,
+  // 微波武器
+  [DeviceEnum.MICROWAVE]: DeviceIconMC,
 }
 
 export enum DeviceStatusEnum {

@@ -102,7 +102,7 @@ const AiData: React.FC<PropsType> = ({ deviceId, timeRange, height = 500 }) => {
 
   return (
     <Flex vertical gap={12}>
-      <div>
+      <div className='pl-3'>
         <Filter
           onChange={onChange}
           items={[

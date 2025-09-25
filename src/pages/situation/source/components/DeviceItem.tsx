@@ -58,6 +58,18 @@ const BatteryStatusTag: FC<{ battery: number }> = ({ battery }) => {
 const ignoreBatteryDeviceTypes = new Set([
   DeviceEnum.UAV_AIRPORT,
   DeviceEnum.CAMERA,
+  DeviceEnum.LASER_WEAPON,
+  DeviceEnum.ER_EF_CAR,
+  DeviceEnum.RADAR,
+  DeviceEnum.THEODOLITE,
+])
+
+const ignoreTaskDeviceTypes = new Set([
+  DeviceEnum.CAMERA,
+  DeviceEnum.LASER_WEAPON,
+  DeviceEnum.ER_EF_CAR,
+  DeviceEnum.RADAR,
+  DeviceEnum.THEODOLITE,
 ])
 
 /** 设备树中的设备项 */
@@ -115,7 +127,9 @@ const DeviceItem: FC<PropsType> = memo(
         </div>
         <div className="flex justify-between">
           <div className="px-6 mb-2 flex items-center gap-2 text-fore">
-            <TaskStatusTag taskStatus={data.taskStatus} />
+            {!ignoreTaskDeviceTypes.has(data.deviceType as DeviceEnum) && (
+              <TaskStatusTag taskStatus={data.taskStatus} />
+            )}
             {/* 电量 */}
             {!ignoreBatteryDeviceTypes.has(data.deviceType as DeviceEnum) && (
               <BatteryStatusTag battery={data.remainingPower || 0} />

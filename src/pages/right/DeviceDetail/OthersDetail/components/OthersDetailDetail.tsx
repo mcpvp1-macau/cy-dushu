@@ -12,6 +12,7 @@ import InfoCard from './InfoCard'
 import Control from './Control'
 import DeviceAlgorithmList from '@/components/device/algorithm/DeviceAlgorithmList'
 import deviceConfigsMap from './deviceConfigsMap'
+import RadarMap from './RadarMap/RadarMap'
 
 const OthersDetailDetail: React.FC = () => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
@@ -39,7 +40,7 @@ const OthersDetailDetail: React.FC = () => {
       {/** 设备本身的视频 */}
       {videoList?.map((item) => {
         return (
-          <section className="mx-3 my-3">
+          <section className="mx-3 mb-3">
             <OthersVideo
               deviceId={deviceId}
               productKey={productKey!}
@@ -53,7 +54,7 @@ const OthersDetailDetail: React.FC = () => {
       {childDeviceVideos.map((item) => {
         return item.properties?.videoList?.map((video) => {
           return (
-            <section className="mx-3 my-3">
+            <section className="mx-3 mb-3">
               <OthersVideo
                 deviceId={item.deviceId}
                 productKey={item.deviceModel.productKey}
@@ -64,6 +65,8 @@ const OthersDetailDetail: React.FC = () => {
           )
         })
       })}
+
+      {deviceType === 'RADAR' && <div className="mx-3 mb-3 pt-0 h-[154px] bg-[#1C2630]"><RadarMap deviceId={deviceId} /></div>}
       {deviceConfigs.isHaveControlRoom ? (
         <section className="mx-3 mr-[9px] my-3 flex gap-2">
           <Link className="grow" to={`/control-room/others/${deviceId}`}>

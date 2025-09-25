@@ -62,7 +62,7 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
   // 设备列表，用于过滤掉非本组织可见的设备
   const allDeviceListMap = useMemo(() => {
     return allDeviceList.reduce((acc, item) => {
-      acc[item.deviceId] = true
+      acc[item.deviceId] = item
       return acc
     }, {})
   }, [allDeviceList])
@@ -100,7 +100,7 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
 
     // 如果设备不存在，则不处理
     if (
-      !allDeviceListMapRef.current[deviceId] ||
+      !allDeviceListMapRef.current[deviceId] &&
       !allDeviceListMapRef.current[parentId]
     ) {
       return
@@ -123,13 +123,15 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
 
       const targetData = {
         ...item,
-        productKey: data?.productKey,
+        productKey:
+          data?.productKey || allDeviceListMapRef.current[deviceId]?.productKey,
         acquireTimestampFormat: dayjs().format('YYYY-MM-DD HH:mm:ss'),
         source: data?.data?.deviceName,
         sourceType: data?.data?.sourceType || item.sourceType,
         deviceInfo: data?.data?.deviceInfo,
         objectLabel: item.objectLabel || getLabel(item),
         distance: item.distance ?? item.radialDistance,
+        deviceId: deviceId,
       }
 
       return {

@@ -13,7 +13,7 @@ interface Props {
   width: number
   height: number
   backgroundColor?: string
-  marks?: RMark[]
+  // marks?: RMark[]
   children?: any
   max: number
 }
@@ -24,31 +24,55 @@ const RadarChart: React.FC<Props> = (props) => {
     width,
     height,
     backgroundColor,
-    marks = [
-      {
-        label: '200m',
-        value: 0.2,
-      },
-      {
-        label: '400m',
-        value: 0.4,
-      },
-      {
-        label: '600m',
-        value: 0.6,
-      },
-      {
-        label: '800m',
-        value: 0.8,
-      },
-      {
-        label: '1000m',
-        value: 1,
-      },
-    ],
+    // marks = [
+    //   {
+    //     label: '200m',
+    //     value: 0.2,
+    //   },
+    //   {
+    //     label: '400m',
+    //     value: 0.4,
+    //   },
+    //   {
+    //     label: '600m',
+    //     value: 0.6,
+    //   },
+    //   {
+    //     label: '800m',
+    //     value: 0.8,
+    //   },
+    //   {
+    //     label: '1000m',
+    //     value: 1,
+    //   },
+    // ],
     max = 1000,
   } = props
 
+  const marks = useMemo(() => {
+    return [
+      {
+        label: `${max * 0.2}m`,
+        value: 0.2,
+      },
+      {
+        label: `${max * 0.4}m`,
+        value: 0.4,
+      },
+      {
+        label: `${max * 0.6}m`,
+        value: 0.6,
+      },
+      {
+        label: `${max * 0.8}m`,
+        value: 0.8,
+      },
+      {
+        label: `${max * 1}m`,
+        value: 1,
+      },
+    ]
+  }, [max])
   const leaferRef = useRef<Leafer | null>(null)
   const [leafer, setLeafer] = useState<Leafer | null>(null)
 
@@ -106,9 +130,9 @@ const RadarChart: React.FC<Props> = (props) => {
       const text = new Text({
         fill: '#C7D1DC',
         text: item.label,
-        x: left + R - 7.5,
+        x: left + R - 10,
         y: top + R * (1 - item.value) - 4,
-        scale: 0.5,
+        scale: 0.7,
       })
       leaferRef.current?.add(text)
       markEntitys.push(text)

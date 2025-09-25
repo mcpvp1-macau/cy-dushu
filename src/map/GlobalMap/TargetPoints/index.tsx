@@ -7,6 +7,9 @@ import * as Cesium from 'cesium'
 import useBoardObjStore from '@/store/map/useBoardObj.store'
 import PositionMenu from '@/components/map/PositionMenu'
 import DispatchModal from './components/DispatchModal'
+import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
+import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import { getAllDeviceList } from '@/service/modules/device'
 
 export const sourceTypeColorMap: Record<string, string> = {
   RADAR: '#14CCBD',
@@ -56,6 +59,44 @@ const TargetPoints: React.FC = () => {
   const menuRef = useRef<ComponentRef<typeof PositionMenu>>(null)
   const [menuPosition, setMenuPosition] = useState<number[]>([0, 0])
   const [dispatchOpen, setDispatchOpen] = useState(false)
+  const [currentTarget, setCurrentTarget] = useState<any>(null)
+
+  const queryClient = useQueryClient()
+  const { data: allDeviceList = [] } = useQuery(
+    {
+      queryKey: ['getAllDeviceList'],
+      queryFn: () =>
+        getAllDeviceList({
+          isPage: false,
+        }),
+      select: (d) => d.data.rows || [],
+    },
+    queryClient,
+  )
+
+  // 设备列表，用于过滤掉非本组织可见的设备
+  const allDeviceListMap = useMemo(() => {
+    return allDeviceList.reduce((acc, item) => {
+      acc[item.deviceId] = item
+      return acc
+    }, {})
+  }, [allDeviceList])
+
+
+  const { productKey, deviceId } = useMemo(() => {
+    // 先找激光设备
+    const laserDeviceList = allDeviceList.filter(
+      (item) => item.deviceType === 'LASER_WEAPON',
+    )
+    return {
+      productKey: laserDeviceList[0]?.productKey,
+      deviceId: laserDeviceList[0]?.deviceId,
+    }
+  }, [currentTarget, allDeviceListMap])
+
+  // const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)
+  // const productKey = deviceDetail?.deviceModel?.productKey
+  const postDeviceService = usePostDeviceService(productKey!, deviceId!)
 
   return (
     <>
@@ -94,14 +135,11 @@ const TargetPoints: React.FC = () => {
                       outlineColor={Cesium.Color.fromCssColorString('#fff')}
                       outlineWidth={last ? 1.5 : 0}
                       // onClick={() => onClick(`${parentId}=${deviceId}=${id}`)}
-                      onRightClick={
-                        globalConfig.is72
-                          ? () => {
-                              setMenuPosition([lng, lat, alt])
-                              menuRef.current?.open()
-                            }
-                          : undefined
-                      }
+                      onRightClick={() => {
+                        setCurrentTarget(item)
+                        setMenuPosition([lng, lat, alt])
+                        menuRef.current?.open()
+                      }}
                     />
                   </React.Fragment>
                 )
@@ -135,6 +173,18 @@ const TargetPoints: React.FC = () => {
               onClick: () => {
                 setDispatchOpen(true)
                 menuRef.current?.close()
+              },
+            },
+            {
+              key: 1,
+              label: '激光打击',
+              onClick: async () => {
+                // 激光打击
+                await postDeviceService('targetInterception', {
+                  targetId: Number(
+                    currentTarget?.targetId || currentTarget?.id,
+                  ),
+                } as any)
               },
             },
           ],

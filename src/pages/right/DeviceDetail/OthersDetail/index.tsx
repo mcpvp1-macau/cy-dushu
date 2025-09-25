@@ -1,4 +1,4 @@
-import DeviceIconCamera from '@/assets/icons/jsx/device/DeviceIconCamera'
+// import DeviceIconCamera from '@/assets/icons/jsx/device/DeviceIconCamera'
 import IconData from '@/assets/icons/jsx/IconData'
 import IconDetail from '@/assets/icons/jsx/IconDetail'
 import useServerEventMsg from '@/pages/control-room/uav/hooks/useServerEventMsg'
@@ -12,6 +12,7 @@ import { Segmented } from 'antd'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import { BaseDeviceDetailProps } from '../routes'
+import DeviceIcon from '@/components/device/DeviceIcon'
 
 const OthersDetailDetail = lazy(() => import('./components/OthersDetailDetail'))
 const OthersDetailData = lazy(() => import('./components/OthersDetailData'))
@@ -32,7 +33,8 @@ const OthersDetail: FC<PropsType> = memo(
     const header = useMemo(
       () => (
         <div className="flex gap-2 items-center">
-          <DeviceIconCamera className="device-detail-icon" />
+          {/* <DeviceIconCamera className="device-detail-icon" /> */}
+          <DeviceIcon type={deviceType} className="device-detail-icon" />
           <h6 className="text-white text-base">{data.deviceName}</h6>
         </div>
       ),

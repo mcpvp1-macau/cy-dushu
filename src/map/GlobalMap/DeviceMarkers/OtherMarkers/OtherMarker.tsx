@@ -20,6 +20,7 @@ import GroundPolygonCircle from '@/components/map/GroundPolygonCircle'
 import VideoFrustum from './VideoFrustum'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
 import useGroundHeight from '@/hooks/cesium/useGroundHeight'
+import Radar from '../WangLouMarkers/Radar'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -35,7 +36,13 @@ export const deviceIconMap: any = {
   PERSON: ren,
   WANGLOU: wanglou,
   CAR: car,
-  RADAR: radar,
+  RADAR: '/images/marker/icon/radar.svg',
+
+  THEODOLITE: '/images/marker/icon/theodolite.svg',
+  ES_EF_CAR: '/images/marker/icon/es_ef_car.svg',
+  LASER_WEAPON: '/images/marker/icon/laser_weapon2.svg',
+  SHELL: '/images/marker/icon/shell.svg',
+  MC: '/images/marker/icon/mc.svg',
 }
 
 const OtherMarker: FC<PropsType> = memo(({ data }) => {
@@ -48,8 +55,13 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
     (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.latitude,
   )
 
+  const realAltitude = useGlobalWsStore(
+    (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.altitude,
+  )
+
   const lng = realLon || data.longitude || 0
   const lat = realLat || data.latitude || 0
+  const altitude = realAltitude || data.altitude || 0
 
   const groundHeight = useGroundHeight(lng, lat)
 
@@ -64,7 +76,11 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
 
   if (isOnline && !isDeviceOnline) return null
 
-  const position = Cesium.Cartesian3.fromDegrees(lng, lat, groundHeight)
+  const position = Cesium.Cartesian3.fromDegrees(
+    lng,
+    lat,
+    altitude || groundHeight,
+  )
 
   return (
     <>
@@ -89,6 +105,12 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
           {isDeviceOnline && (
             <GroundPolygonCircle lng={lng} lat={lat} scope={properties.scope} />
           )}
+        </>
+      ) : null}
+
+      {deviceType === 'RADAR' && properties?.scanRangeProfile ? (
+        <>
+          <Radar scanRangeProfile={properties?.scanRangeProfile} />
         </>
       ) : null}
       {properties?.videoList?.length ? <VideoFrustum data={data} /> : null}
