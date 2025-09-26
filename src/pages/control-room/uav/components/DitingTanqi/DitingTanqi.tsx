@@ -23,6 +23,7 @@ import useMCPStream from './hooks/useMCPStream'
 import IconCommand from '@/assets/icons/jsx/IconCommand'
 import useMCPTools from './hooks/useMCPTools'
 import { useInViewport } from 'ahooks'
+import { getDeviceDetail } from '@/service/modules/device'
 
 type PropsType = unknown
 
@@ -37,7 +38,7 @@ const DitingTanqi: FC<PropsType> = memo(() => {
   const groupName = useGroupName()
 
   const { t } = useTranslation()
-  const sn = useDeviceDetailStore((s) => s.deviceDetail?.sn)
+  const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)
 
   const [searchParams, setSearchParams] = useSearchParams()
   const chatIdStr = searchParams.get('chat')
@@ -64,13 +65,22 @@ const DitingTanqi: FC<PropsType> = memo(() => {
   const queryClient = useQueryClient()
   // 创建对话
   const newConversation = async () => {
+    if (!deviceDetail) {
+      return
+    }
+    let sn = deviceDetail.sn
+    // 尝试获取父设备的sn
+    if (deviceDetail.parentId) {
+      const parentDetail = await getDeviceDetail(deviceDetail.parentId)
+      sn = parentDetail?.data?.sn || sn
+    }
     if (!sn) {
       msgApi.error('无法获取设备SN, 请稍后再试')
       return
     }
     const resp = await getUavInfo(sn)
-    const uav_mcp_name = resp.data.uav_mcp_name
-    if (!uav_mcp_name) {
+    const uav_name = resp.data.uav_name
+    if (!uav_name) {
       msgApi.error('当前无人机未绑定到MCP, 无法使用谛听檀棋')
       return
     }
@@ -80,7 +90,7 @@ const DitingTanqi: FC<PropsType> = memo(() => {
       const resp = await createConversation({
         group_name: groupName,
         system_message:
-          '当前操作的为无人机为: ' + JSON.stringify({ uav_name: uav_mcp_name }),
+          '当前操作的为无人机为: ' + JSON.stringify({ uav_name: uav_name }),
       })
       if (resp.data.id) {
         const nextSearchParams = new URLSearchParams(searchParams)

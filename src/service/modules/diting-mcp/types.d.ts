@@ -52,7 +52,7 @@ declare namespace API_DITING_MCP {
     export type FlyPlanType = 'Point' | 'Circle' | 'Rectangle' | 'Polygon'
     interface UavInfo {
       uav_sn: string
-      uav_mcp_name: string
+      uav_name: string
     }
   }
 }
