@@ -71,15 +71,19 @@ const createTaskConfig = (
         },
       ],
     },
-    {
-      label: t('action.detail.task.add.form.staff.label'),
-      name: 'feishou',
-      type: 'tree-select',
-      treeData: pilotTreeData,
-      otherProps: {
-        multiple: false,
-      },
-    },
+    ...(globalConfig.useShanghaiBanRoutes
+      ? [
+          {
+            label: t('action.detail.task.add.form.staff.label'),
+            name: 'feishou',
+            type: 'tree-select',
+            treeData: pilotTreeData,
+            otherProps: {
+              multiple: false,
+            },
+          },
+        ]
+      : []),
   ] as XFormItem[]
 
 /** 添加子任务 */
@@ -182,7 +186,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
     }
     const data = {
       ...pick(val, ['actionItemName', 'deviceIds']),
-      pilotCode: val.feishou,
+      pilotCode: val.shou,
       actionId,
       deviceType: 'UAV',
     }
@@ -211,6 +215,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
     queryKey: ['pilotTree'],
     queryFn: () => getPilotTree(),
     select: (d) => d.data?.rows ?? emtpyArray,
+    enabled: !!globalConfig.useShanghaiBanRoutes,
   })
 
   const { treeData } = usePilotTreeData(pilotData)

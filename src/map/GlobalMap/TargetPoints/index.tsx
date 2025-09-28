@@ -2,13 +2,10 @@ import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import React, { ComponentRef } from 'react'
 import { PointPrimitive, PointPrimitiveCollection } from 'resium'
 import * as Cesium from 'cesium'
-// import useRightMode from '@/store/layout/useRightMode.store'
-// import { RightModeEnum } from '@/enum/right-mode'
 import useBoardObjStore from '@/store/map/useBoardObj.store'
 import PositionMenu from '@/components/map/PositionMenu'
 import DispatchModal from './components/DispatchModal'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
-import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { getAllDeviceList } from '@/service/modules/device'
 
 export const sourceTypeColorMap: Record<string, string> = {
@@ -81,7 +78,6 @@ const TargetPoints: React.FC = () => {
       return acc
     }, {})
   }, [allDeviceList])
-
 
   const { productKey, deviceId } = useMemo(() => {
     // 先找激光设备
