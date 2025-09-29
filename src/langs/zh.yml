@@ -1000,7 +1000,7 @@ overlay:
       dashed: 虚线
       noFly: 禁飞区
     opacity:
-      title: 透明度
+      title: 不透明度
     circle:
       title: 圆形
     rect:

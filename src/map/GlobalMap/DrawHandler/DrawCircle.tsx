@@ -83,7 +83,7 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
     }
 
     // 是否已经指定圆心
-    if (circleCenter?.length) {
+    if (circleCenter?.[0]) {
       // 如果已经指定了圆心
       addSettedCenterActions()
     } else {
