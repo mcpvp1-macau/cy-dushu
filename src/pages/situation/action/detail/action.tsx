@@ -13,6 +13,9 @@ import ActionEventDetail from './components/ActionEventDetail'
 import ActionMediaPicture from './components/ActionMediaPicture'
 import IconButton from '@/components/ui/button/IconButton'
 import IconMap from '@/assets/icons/jsx/IconMap'
+import ZSKCYPModal from './components/kcyp/zhoushan/Modal'
+import ZSBIWUModal from './components/zhoushan_biwu/Modal'
+import { ActionEnum } from '@/constant/action/action_type'
 
 const ChildActions = lazy(
   () => import('./components/ChildActions/ChildActions'),
@@ -114,16 +117,33 @@ const PageActionDetailSub: FC<PropsType> = memo(
       const aiResult = {
         label: t('action.detail.ai_result.title'),
         key: '3',
-        extra: ['kcyp_action', 'xiaoshan_kcyp_action'].includes(
-          actionDetail.type,
-        ) &&
-          !isBacktracking && (
-            <KCYPModal
-              actionId={actionId!}
-              actionType={actionDetail.type}
-              detail={actionDetail}
-            />
-          ),
+        extra: [
+          'kcyp_action',
+          'xiaoshan_kcyp_action',
+          'zs_kcyp_action',
+          'biwu_action',
+        ].includes(actionDetail.type)
+          ? !isBacktracking &&
+            (actionDetail.type === 'zs_kcyp_action' ? (
+              <ZSKCYPModal
+                actionId={actionId!}
+                actionType={actionDetail.type}
+                detail={actionDetail}
+              />
+            ) : actionDetail.type === 'biwu_action' ? (
+              <ZSBIWUModal
+                actionId={actionId!}
+                actionType={actionDetail.type}
+                detail={actionDetail}
+              />
+            ) : (
+              <KCYPModal
+                actionId={actionId!}
+                actionType={actionDetail.type}
+                detail={actionDetail}
+              />
+            ))
+          : null,
         children: (
           <AppViewSuspense>
             <AIResult
@@ -143,11 +163,13 @@ const PageActionDetailSub: FC<PropsType> = memo(
           </AppViewSuspense>
         ),
       }
-
-      if (actionDetail.type === 'kcyp_action') {
+      if (actionDetail.type === ActionEnum.KCYP) {
         return items.concat([kcyp, task, pictures, aiResult, log])
       }
-      if (actionDetail.type === 'xiaoshan_kcyp_action') {
+      if (actionDetail.type === ActionEnum.KCYPXS) {
+        return items.concat([kcyp, task, pictures, aiResult, log])
+      }
+      if (actionDetail.type === ActionEnum.KCYPZS) {
         return items.concat([kcyp, task, pictures, aiResult, log])
       }
       return items.concat([task, pictures, aiResult, log])

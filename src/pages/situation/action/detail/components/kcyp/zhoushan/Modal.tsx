@@ -1,7 +1,6 @@
 import IconEdit from '@/assets/icons/jsx/IconEdit'
 import IconButton from '@/components/ui/button/IconButton'
 import XModal from '@/components/XModal'
-import useActionDetail from '../../context'
 import { delAIResult } from '@/service/modules/action'
 import AppEmpty from '@/components/AppEmpty'
 import { useSize } from 'ahooks'
@@ -9,23 +8,17 @@ import { Checkbox, Spin } from 'antd'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconKCCheck from '@/assets/icons/jsx/IconKCCheck'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
-import {
-  checkCarNo,
-  getKCYPOrder,
-  getXSKCYPOrder,
-  saveKCYPOrder,
-} from '@/service/modules/action/kcyp'
-import { ProcessStatusEnum } from '@/service/modules/action/kcyp/enum'
+import { getZSKCYPOrder, saveZSKCYPOrder } from '@/service/modules/action/kcyp'
 import { useAppMsg } from '@/hooks/useAppMsg'
-import { ActionEnum } from '@/constant/action/action_type'
-import { lazy, Suspense } from 'react'
+import { Suspense } from 'react'
 import { LoadingOutlined } from '@ant-design/icons'
-import AIResultItem from './AIResultItem'
 import { shouldJson } from '@/utils/json'
 import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
-import { uniqWith } from 'lodash'
-import useSaveOrderState from './common/useSaveOrderState'
-import { useAIResult } from '../AIResult'
+import AIResultItem from '../AIResultItem'
+import useSaveOrderState from '../common/useSaveOrderState'
+import useActionDetail from '../../../context'
+import { useAIResult } from '../../AIResult'
+import KCYPZSVerificationModal from './VerificationModal'
 
 type PropsType = {
   actionId: string
@@ -34,15 +27,8 @@ type PropsType = {
   isBacktracking?: boolean
 }
 
-const NormalVerificationModal = lazy(
-  () => import('./shanghai/NormalVerificationModal'),
-)
-const XSVerificationModal = lazy(() => import('./xiaoshan/VerificationModal'))
-
 /** 快处易赔选择 对话框 */
-const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
-  const orderKey =
-    actionType === ActionEnum.KCYP ? 'getKCYPOrder' : 'getXSKCYPOrder'
+const ZSKCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
   const [open, setOpen] = useState(false)
   const msgApi = useAppMsg()
 
@@ -54,43 +40,6 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
     actionDetail?.actionRecordId,
   )
 
-  const checkNeeds = useMemo(() => {
-    return uniqWith(
-      data?.filter((e) => !!e.plateNo && !!e.plateType && !!e.plateColor) ?? [],
-      (a, b) => a.plateNo === b.plateNo,
-    )
-  }, [data])
-
-  // 初始化校验车牌
-  const { data: carNoCheckResults } = useQuery(
-    {
-      queryKey: ['checkCarNo', actionId],
-      queryFn: () => {
-        return checkCarNo(
-          checkNeeds.map((e) => ({
-            carNo: e.plateNo,
-            carType: e.plateType,
-            carColor: e.plateColor,
-          })),
-        )
-      },
-      enabled: !!checkNeeds.length,
-      select: (d) => d.data,
-    },
-    queryClient,
-  )
-
-  const carNoCheckMap = useMemo(() => {
-    const result = {}
-    carNoCheckResults?.carNos?.forEach((e) => {
-      result[e.carNo!] = {
-        message: e.message,
-        success: e.success,
-      }
-    })
-    return result
-  }, [carNoCheckResults])
-
   const size = useSize(document.body)
   const isBigWindow = useMemo(() => (size?.width ?? 0) >= 980, [size?.width])
 
@@ -99,7 +48,7 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
   const setCheckIds = useMemoizedFn((ids: string[]) => {
     _setCheckIds(ids)
     save(async () => {
-      return saveKCYPOrder({
+      return saveZSKCYPOrder({
         ...orderData,
         extra: JSON.stringify({
           pictures: ids.map((e) => ({
@@ -117,15 +66,8 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
   // 获取工单信息
   const { data: orderData, isLoading: orderLoading } = useQuery(
     {
-      queryKey: [orderKey, actionId],
-      queryFn: () => {
-        if (actionType === ActionEnum.KCYP) {
-          return getKCYPOrder({ caseId: actionId })
-        } else if (actionType === ActionEnum.KCYPXS) {
-          return getXSKCYPOrder({ caseId: actionId })
-        }
-        return Promise.reject('Unknown action type')
-      },
+      queryKey: ['getZSKCYPOrder', actionId],
+      queryFn: () => getZSKCYPOrder({ caseId: actionId }),
       enabled: !!actionId,
       select: (d) => d.data,
       staleTime: 1000 * 60 * 2,
@@ -154,12 +96,8 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
 
   const [shareOpen, setShareOpen] = useState(false)
   const handleVerificationClick = useMemoizedFn(() => {
-    if (orderData?.processStatus !== ProcessStatusEnum.INIT) {
-      msgApi.info('当前结果已提交，请耐心等待结果！')
-      return
-    }
-    if (checkIds.length !== 3) {
-      msgApi.warning('必须选择 3 个结果')
+    if (checkIds.length !== 4) {
+      msgApi.warning('必须选择 4 个结果')
       return
     }
     setShareOpen(true)
@@ -167,7 +105,7 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
 
   const { save, stateLabel } = useSaveOrderState(() =>
     queryClient.invalidateQueries({
-      queryKey: [orderKey, actionId],
+      queryKey: ['getZSKCYPOrder', actionId],
     }),
   )
 
@@ -213,25 +151,15 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
                         >
                           <IconKCCheck />
                         </IconButton>
-                        {shareOpen &&
-                          (actionType === ActionEnum.KCYP ? (
-                            <NormalVerificationModal
-                              actionId={actionId}
-                              open={shareOpen}
-                              orderData={orderData}
-                              aiResultData={data}
-                              checkResultIds={checkIds}
-                              onClose={() => setShareOpen(false)}
-                            />
-                          ) : actionType === ActionEnum.KCYPXS ? (
-                            <XSVerificationModal
-                              open={shareOpen}
-                              orderData={orderData}
-                              aiResultData={data}
-                              checkResultIds={checkIds}
-                              onClose={() => setShareOpen(false)}
-                            />
-                          ) : null)}
+                        {shareOpen && (
+                          <KCYPZSVerificationModal
+                            open={shareOpen}
+                            orderData={orderData}
+                            aiResultData={data}
+                            checkResultIds={checkIds}
+                            onClose={() => setShareOpen(false)}
+                          />
+                        )}
                       </Suspense>
 
                       <IconAsyncButton
@@ -255,11 +183,7 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
                       <ul className="px-3 w-full pt-3 flex justify-between flex-wrap gap-y-3 max-h-[408px] overflow-y-auto overflow-x-hidden">
                         {data.map((e) => (
                           <li key={e.id} className="w-[430px]">
-                            <AIResultItem
-                              data={e}
-                              actionType={actionType}
-                              carNoCheckMap={carNoCheckMap}
-                            />
+                            <AIResultItem data={e} actionType={actionType} />
                           </li>
                         ))}
                       </ul>
@@ -275,6 +199,6 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
   )
 })
 
-KCYPModal.displayName = 'KCYPNormalModal'
+ZSKCYPModal.displayName = 'ZSKCYPModal'
 
-export default KCYPModal
+export default ZSKCYPModal

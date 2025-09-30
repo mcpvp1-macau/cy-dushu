@@ -90,5 +90,9 @@ export const themeConfig: ThemeConfig = {
     DatePicker: {
       activeShadow: 'none',
     },
+    Checkbox: {
+      colorBgContainer: '#27303b',
+      colorBorder: '#626b74',
+    },
   },
 }

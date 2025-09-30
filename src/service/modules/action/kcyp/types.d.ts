@@ -170,6 +170,54 @@ declare namespace API_KCYP {
       success: boolean
       message: string
     }
+
+    interface ZSOrderRecord {
+      processResult: number
+      caseId: string
+      policeInformationId: string
+      dept: string
+      longitude: number
+      latitude: number
+      caseHapTime: string // 时间格式 "YYYY-MM-DD HH:mm:ss"
+      caseHapAddress: string
+      accidentFrom: string
+      accidentType: string
+      accidCollision: string
+      carNo: string
+      phone: string
+      driverName: string
+      carType: string
+      cardNo: string
+      idType: string
+      processStatus: string
+      commitTime: string
+      gmtCreate: string
+      gmtModified: string
+      gmtCreateBy: string | null
+      gmtModifiedBy: string | null
+      ocarNo: string
+      oidType: string
+      ophone: string
+      ocardNo: string
+      odriverName: string
+      ocarType: string
+    }
+
+    interface ZSPicture {
+      id: number
+      pictureUrl: string
+      longitude: number
+      latitude: number
+      carNo: string
+      carColor: string
+      imageType: string
+    }
+
+    interface ZSCasePictures {
+      caseId: string
+      policeNumber: string
+      pictures: ZSPicture[]
+    }
   }
   // ------------------ req ------------------
   namespace req {

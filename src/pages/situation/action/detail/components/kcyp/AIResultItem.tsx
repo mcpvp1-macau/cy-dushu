@@ -17,7 +17,7 @@ import Select from '@/components/AntdOverride/Select'
 const AIResultItem: FC<{
   data: API_ACTION.domain.AIResultRecord
   actionType: string
-  carNoCheckMap: Record<
+  carNoCheckMap?: Record<
     string,
     {
       success: boolean
@@ -53,8 +53,7 @@ const AIResultItem: FC<{
     })
     run()
   })
-  const carColorOptions = useDictOptions(DictEnum.KCYP_CAR_COLOR_TYPE)
-  const carTypeOptions = useDictOptions(DictEnum.KCYP_CAR_TYPE)
+  const carTypeOptions = useDictOptions(DictEnum.ZHOUSHAN_KCYP_CAR_TYPE)
 
   const msgApi = useAppMsg()
   const { mutate: handleGetSipCascadePicture, isPending } = useMutation(
@@ -80,7 +79,7 @@ const AIResultItem: FC<{
     NonNullable<API_KCYP.res.CheckNoRes['carNos']>[number] | null
   >(null)
 
-  const checkCarNoResult = _checkCarNoResult ?? carNoCheckMap[data.plateNo]
+  const checkCarNoResult = _checkCarNoResult ?? carNoCheckMap?.[data.plateNo]
 
   const handleCheckCarNo = async () => {
     const resp = await checkCarNo([
@@ -178,16 +177,6 @@ const AIResultItem: FC<{
               </Form.Item>
             </li>
             <li className="flex gap-1 whitespace-nowrap">
-              <span className="text-white">颜色:</span>
-              <Form.Item name="plateColor" noStyle>
-                <Select
-                  size="small"
-                  className="w-full"
-                  options={carColorOptions}
-                />
-              </Form.Item>
-            </li>
-            <li className="flex gap-1 whitespace-nowrap">
               <span className="text-white">时间:</span>
               <span>{dayjs(data.resultTime).format('MM/DD HH:mm:ss')}</span>
             </li>
@@ -205,29 +194,31 @@ const AIResultItem: FC<{
         </Form>
       </div>
       <div>
-        <IconAsyncButton
-          disabled={!data.plateNo || !data.plateColor || !data.plateType}
-          toolTipProps={
-            checkCarNoResult?.message
-              ? {
-                  title: checkCarNoResult?.message,
-                }
-              : {
-                  title: '校验车牌是否存在交强险保单信息',
-                }
-          }
-          className={
-            checkCarNoResult
-              ? checkCarNoResult?.success
-                ? '!text-green-500'
-                : '!text-red-500'
-              : undefined
-          }
-          successMsg=""
-          onClick={handleCheckCarNo}
-        >
-          <IconKCCheck />
-        </IconAsyncButton>
+        {ActionEnum.KCYP === actionType && (
+          <IconAsyncButton
+            disabled={!data.plateNo || !data.plateColor || !data.plateType}
+            toolTipProps={
+              checkCarNoResult?.message
+                ? {
+                    title: checkCarNoResult?.message,
+                  }
+                : {
+                    title: '校验车牌是否存在交强险保单信息',
+                  }
+            }
+            className={
+              checkCarNoResult
+                ? checkCarNoResult?.success
+                  ? '!text-green-500'
+                  : '!text-red-500'
+                : undefined
+            }
+            successMsg=""
+            onClick={handleCheckCarNo}
+          >
+            <IconKCCheck />
+          </IconAsyncButton>
+        )}
       </div>
     </div>
   )

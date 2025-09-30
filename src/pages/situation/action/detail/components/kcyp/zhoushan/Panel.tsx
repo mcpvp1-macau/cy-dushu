@@ -1,26 +1,25 @@
 import AppSpin from '@/components/AppSpin'
-import { getKCYPOrder, saveKCYPOrder } from '@/service/modules/action/kcyp'
-import { createFormItems, statusColorMap } from './normal.constant'
+import { getZSKCYPOrder, saveZSKCYPOrder } from '@/service/modules/action/kcyp'
+import { createFormItems } from './constant'
 import XForm from '@/components/XForm'
 import { useDictOptions } from '@/store/useDict.store'
-import { ProcessStatusEnum } from '@/service/modules/action/kcyp/enum'
 import { Form } from 'antd'
 import { DictEnum } from '@/enum/dict'
-import useWatch from '@/hooks/useWatch'
 import dayjs from 'dayjs'
+import { statusColorMap } from '../shanghai/normal.constant'
 import useSaveOrderState from '../common/useSaveOrderState'
 
 type PropsType = { actionId: string }
 
-/** 快处易赔 基础面板 */
-const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
+/** 舟山 快处易赔 基础面板 */
+const KCYPZSPanel: FC<PropsType> = memo(({ actionId }) => {
   const queryClient = useQueryClient()
   const { t, i18n } = useTranslation()
 
   const { data, isLoading } = useQuery(
     {
-      queryKey: ['getKCYPOrder', actionId],
-      queryFn: () => getKCYPOrder({ caseId: actionId }),
+      queryKey: ['getZSKCYPOrder', actionId],
+      queryFn: () => getZSKCYPOrder({ caseId: actionId }),
       enabled: !!actionId,
       select: (d) => d.data,
       staleTime: 1000 * 60 * 2,
@@ -29,67 +28,46 @@ const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
   )
   const [form] = Form.useForm()
 
-  useWatch(
-    data,
-    (newData) => {
-      queueMicrotask(() => {
-        if (!newData) {
-          return
-        }
-        form.setFieldsValue({
-          ...data,
-          caseHapTime: dayjs(data?.caseHapTime),
-          brokenPart: data?.brokenPart?.split(',') || undefined,
-          otherBrokenPart: data?.otherBrokenPart?.split(',') || undefined,
-        })
-      })
-    },
-    true,
-  )
+  useEffect(() => {
+    if (!data) {
+      return
+    }
+    form.setFieldsValue({
+      ...data,
+      caseHapTime: dayjs(data?.caseHapTime),
+    })
+  }, [data])
 
-  const cardTypeOptions = useDictOptions(DictEnum.KCYP_CARD_TYPE)
-  const brokenPartTypeOptions = useDictOptions(DictEnum.KCYP_BROKEN_PART_TYPE)
-  const firstSceneOptions = useDictOptions(DictEnum.KCYP_FIRSTSCENE)
-  const accidentTypeOptions = useDictOptions(DictEnum.KCYP_ACCIDENT_TYPE)
+  const carTypeOptions = useDictOptions(DictEnum.ZHOUSHAN_KCYP_CAR_TYPE)
 
   const formItems = useMemo(
     () =>
       createFormItems({
         t,
-        cardTypeOptions,
-        brokenPartTypeOptions,
-        firstSceneOptions,
-        accidentTypeOptions,
+        carTypeOptions,
       }),
-    [
-      i18n.language,
-      cardTypeOptions,
-      brokenPartTypeOptions,
-      firstSceneOptions,
-      accidentTypeOptions,
-    ],
+    [i18n.language, carTypeOptions],
   )
 
   const { save, stateLabel } = useSaveOrderState(() =>
     queryClient.invalidateQueries({
-      queryKey: ['getKCYPOrder', actionId],
+      queryKey: ['getZSKCYPOrder', actionId],
     }),
   )
 
-  const handleValuesChange = async (_, values: any) => {
+  const handleValuesChange = useMemoizedFn((_, values: any) => {
     save(async () => {
       await form.validateFields()
-      const { caseHapTime, brokenPart, otherBrokenPart } = values
+      const { caseHapTime } = values
       const caseHapTimeFormat = dayjs(caseHapTime).valueOf()
-      await saveKCYPOrder({
+      await saveZSKCYPOrder({
         ...data,
         ...values,
-        brokenPart: brokenPart?.join(','),
-        otherBrokenPart: otherBrokenPart?.join(','),
+        caseId: values.caseId ?? actionId,
         caseHapTime: caseHapTimeFormat,
       })
     })
-  }
+  })
 
   if (isLoading || !data) {
     return <AppSpin />
@@ -119,10 +97,11 @@ const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
       <div className="kcform">
         <XForm
           form={form}
-          disabled={data.processStatus !== ProcessStatusEnum.INIT}
+          disabled={data.processResult !== 0}
           items={formItems}
           layout="vertical"
-          rowsProps={{ gutter: 8 }}
+          colsProps={{ span: 12 }}
+          rowsProps={{ gutter: 12 }}
           themeKey="dushu-kcyp"
           themeConfig={{
             verticalLabelPadding: 4,
@@ -136,6 +115,6 @@ const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
   )
 })
 
-KCYPNormalPanel.displayName = 'KCYPNormalPanel'
+KCYPZSPanel.displayName = 'KCYPXSPanel'
 
-export default KCYPNormalPanel
+export default KCYPZSPanel

@@ -21,7 +21,13 @@ declare namespace API_ACTION {
       name: string
       description: any
       eventId: any
-      type: 'normal' | 'kcyp_action' | 'xiaoshan_kcyp_action' | 'ewjt_action'
+      type:
+        | 'normal'
+        | 'kcyp_action'
+        | 'xiaoshan_kcyp_action'
+        | 'ewjt_action'
+        | 'zs_kcyp_action'
+        | 'biwu_action'
       status: string
       isValid: any
       gmtCreate: string
@@ -67,6 +73,7 @@ declare namespace API_ACTION {
       gmtModifiedBy: any
       deviceName: string
       objListJson: any
+      extra?: string | null
     }
   }
   // ------------------ req ------------------

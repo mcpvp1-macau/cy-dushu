@@ -16,31 +16,39 @@ type PropsType = {
   detail?: API_ACTION.domain.ActionDetail
 }
 
+export const useAIResult = (actionId: string, actionRecordId?: number) => {
+  const queryClient = useQueryClient()
+  const refreshTemporary = useGlobalWsStore((s) => s.refreshTemporary)
+  const { data, isLoading, isRefetching, refetch } = useQuery(
+    {
+      queryKey: ['action', actionId, 'aiResult'],
+      queryFn: () =>
+        getAIResultList({
+          actionId,
+          actionRecordId: actionRecordId,
+        }),
+      select: (data) => data?.data.rows,
+      staleTime: 1000 * 60 * 2,
+    },
+    queryClient,
+  )
+
+  useUpdateEffect(() => {
+    refetch()
+  }, [refreshTemporary])
+
+  return { data, isLoading, isRefetching, refetch }
+}
+
 const AIResult: FC<PropsType> = memo(
   ({ actionId, isBacktracking = false, detail }) => {
-    const queryClient = useQueryClient()
     const d = useActionDetail()
     const actionDetail = isBacktracking ? detail : d
 
-    const refreshTemporary = useGlobalWsStore((s) => s.refreshTemporary)
-
-    const { data, isLoading, isRefetching, refetch } = useQuery(
-      {
-        queryKey: ['action', actionId, 'aiResult'],
-        queryFn: () =>
-          getAIResultList({
-            actionId,
-            actionRecordId: actionDetail?.actionRecordId,
-          }),
-        select: (data) => data?.data.rows,
-        staleTime: 1000 * 60 * 2,
-      },
-      queryClient,
+    const { data, isLoading, isRefetching } = useAIResult(
+      actionId,
+      actionDetail?.actionRecordId,
     )
-
-    useUpdateEffect(() => {
-      refetch()
-    }, [refreshTemporary])
 
     const colorType = useDictOptions(DictEnum.KCYP_CAR_COLOR_TYPE)
     const colorTypeXS = useDictOptions(DictEnum.XIAOSHAN_KCYP_CAR_COLOR_TYPE)

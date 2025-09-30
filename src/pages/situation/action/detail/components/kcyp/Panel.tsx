@@ -4,6 +4,7 @@ import { lazy } from 'react'
 
 const KCYPNormalPanel = lazy(() => import('./shanghai/Panel'))
 const KCYPXSPanel = lazy(() => import('./xiaoshan/Panel'))
+const KCYPZSPanel = lazy(() => import('./zhoushan/Panel'))
 
 type PropsType = {
   actionId: string
@@ -17,6 +18,8 @@ const KCYPPanel: FC<PropsType> = memo(({ actionId, actionType }) => {
         <KCYPNormalPanel actionId={actionId} />
       ) : actionType === ActionEnum.KCYPXS ? (
         <KCYPXSPanel actionId={actionId} />
+      ) : actionType === ActionEnum.KCYPZS ? (
+        <KCYPZSPanel actionId={actionId} />
       ) : (
         'error'
       )}

@@ -27,4 +27,12 @@ export enum DictEnum {
   XIAOSHAN_KCYP_ACCID_COLLISION = 'xiaoshan_kcyp_accid_collision',
   XIAOSHAN_KCYP_DEPT = 'xiaoshan_kcyp_dept',
   XIAOSHAN_KCYP_CASE_PHOTO_TYPE = 'xiaoshan_kcyp_case_photo_type',
+
+  /** 舟山 快处易赔 */
+  ZHOUSHAN_KCYP_WEATHER_TYPE = 'zhoushan_kcyp_weather_type',
+  ZHOUSHAN_KCYP_ACCIDENT_FORM = 'zhoushan_kcyp_accident_from',
+  ZHOUSHAN_KCYP_ACCIDENT_TYPE = 'zhoushan_kcyp_accident_type',
+  ZHOUSHAN_KCYP_ACCIDENT_COLLISION = 'zhoushan_kcyp_accident_collision',
+  ZHOUSHAN_KCYP_CAR_TYPE = 'zhoushan_kcyp_car_type',
+  ZHOUSHAN_KCYP_DEPT_TYPE = 'zhoushan_kcyp_dept_type',
 }

@@ -54,3 +54,37 @@ export const getSipCascadePicture = (
     data,
   )
 }
+
+// 舟山快处易赔相关 ---------------------------------------------------------
+/** 获取警情状态信息 */
+export const getZSKCYPOrder = (data: { caseId: string }) => {
+  return serverJingqi.post(
+    '/zhouShan/quickPaymentEasy/getPoliceInformationPushStatus',
+    data,
+  )
+}
+
+/** 暂存工单 */
+export const saveZSKCYPOrder = (data: API_KCYP.domain.ZSOrderRecord) => {
+  return serverJingqi.post('/zhouShan/quickPaymentEasy/temporaryStorage', data)
+}
+
+/** 警情推送 */
+export const commitZSKCYPInfoOrder = (data: API_KCYP.domain.ZSOrderRecord) => {
+  return serverJingqi.post(
+    '/zhouShan/quickPaymentEasy/policeInformationPush',
+    data,
+  )
+}
+
+/** 警情图片推送 */
+export const commitZSKCYPPictures = (data: {
+  caseId: string
+  policeNumber: string
+  pictures: { pictureUrl: string; imageType }[]
+}) => {
+  return serverJingqi.post(
+    '/zhouShan/quickPaymentEasy/policeInformationPicturesPush',
+    data,
+  )
+}

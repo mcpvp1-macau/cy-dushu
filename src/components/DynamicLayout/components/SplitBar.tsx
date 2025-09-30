@@ -27,7 +27,7 @@ const SplitBar: FC<PropsType> = memo(
     useEffect(() => {
       if (!dragging) return
 
-      window.document.body.style.cursor = vertical ? 'ns-resize' : 'ew-resize'
+      window.document.body.style.cursor = vertical ? 'row-resize' : 'col-resize'
       window.document.body.style.userSelect = 'none'
 
       const moveHandler = (e: MouseEvent) => {
@@ -66,8 +66,8 @@ const SplitBar: FC<PropsType> = memo(
         className={clsx(
           'group bg-ground-1 relative flex-shrink-0 flex-grow-0',
           {
-            'h-full w-2 cursor-ew-resize': !vertical,
-            'w-full h-2 cursor-ns-resize': vertical,
+            'h-full w-2 cursor-col-resize': !vertical,
+            'w-full h-2 cursor-row-resize': vertical,
           },
         )}
         onMouseDown={handleDown}
