@@ -201,6 +201,9 @@ declare namespace API_KCYP {
       ocardNo: string
       odriverName: string
       ocarType: string
+      pictures: string | null
+      videoBeginTimestamp: number | null
+      videoEndTimestamp: number | null
     }
 
     interface ZSPicture {

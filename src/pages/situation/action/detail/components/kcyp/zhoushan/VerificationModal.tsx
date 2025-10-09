@@ -13,7 +13,13 @@ import Select from '@/components/AntdOverride/Select'
 import {
   commitZSKCYPInfoOrder,
   commitZSKCYPPictures,
+  commitZSKCYPVideo,
+  getZSKCYPVideoURL,
 } from '@/service/modules/action/kcyp'
+import { ZhoushanProcessResultEnum } from '@/service/modules/action/kcyp/enum'
+import { Dayjs } from 'dayjs'
+import { useAppMsg } from '@/hooks/useAppMsg'
+import { shouldJson } from '@/utils/json'
 
 const Line: FC<{ items: [ReactNode, ReactNode, ReactNode, ReactNode] }> = memo(
   ({ items }) => {
@@ -22,13 +28,13 @@ const Line: FC<{ items: [ReactNode, ReactNode, ReactNode, ReactNode] }> = memo(
         <li className="w-[160px] flex-shrink-0 px-3 py-0.5 flex items-center">
           {items[0]}
         </li>
-        <li className="flex-1 border-l px-3 py-0.5 border-solid border-ground-5">
+        <li className="flex-1 border-l px-2 py-1 border-solid border-ground-5">
           {items[1]}
         </li>
-        <li className="w-[160px] flex-shrink-0 px-3 py-0.5 flex items-center border-l border-solid border-ground-5">
+        <li className="w-[160px] flex-shrink-0 px-2 py-1 flex items-center border-l border-solid border-ground-5">
           {items[2]}
         </li>
-        <li className="flex-1 border-l px-3 py-0.5 border-solid border-ground-5">
+        <li className="flex-1 border-l px-2 py-1 border-solid border-ground-5">
           {items[3]}
         </li>
       </ul>
@@ -39,20 +45,14 @@ const Line: FC<{ items: [ReactNode, ReactNode, ReactNode, ReactNode] }> = memo(
 const HeadLine: FC<{ title: string; suc?: boolean; addon?: ReactNode }> = memo(
   ({ title, suc, addon }) => {
     return (
-      <ul className="bg-ground-3 flex text-white h-[34px]">
-        <li className="w-[160px] px-3 py-0.5 flex items-center gap-1">
+      <div className="bg-ground-3 flex text-white h-[34px] justify-between items-center px-2">
+        <div>
           {title}
           {suc === true && <CheckCircleFilled className="text-green-400" />}
           {suc === false && <CloseCircleFilled className="text-red-400" />}
-        </li>
-        <li className="flex-1 border-l border-solid border-ground-5"></li>
-        <li className="w-[160px] px-3 py-0.5 flex items-center border-l border-solid border-ground-5"></li>
-        <li className="flex-1 border-l border-solid border-ground-5 justify-end relative">
-          <div className="absolute right-3 top-1/2 -translate-y-1/2">
-            {addon}
-          </div>
-        </li>
-      </ul>
+        </div>
+        <div className="">{addon}</div>
+      </div>
     )
   },
 )
@@ -167,14 +167,25 @@ const KCYPZSVerificationModal: FC<PropsType> = memo(
       values.caseHapTime = dayjs(values.caseHapTime).format(
         'YYYY-MM-DD HH:mm:ss',
       )
-      values.dept = '330400000000'
+      // values.dept = '330400000000' MOCK 调试使用
       await commitZSKCYPInfoOrder(values)
-      queryClient.invalidateQueries({
-        queryKey: ['getZSKCYPZSOrder', orderData.caseId],
+      await queryClient.invalidateQueries({
+        queryKey: ['getZSKCYPOrder', orderData.caseId],
       })
     }
 
     const [pictureCommitForm] = Form.useForm()
+
+    useEffect(() => {
+      const pictures = shouldJson(orderData.pictures)
+
+      if (pictures) {
+        pictures.forEach((picture, i) => {
+          pictureCommitForm.setFieldValue(`pictureType-${i}`, picture.imageType)
+        })
+      }
+    }, [orderData.pictures])
+
     /** 提交图片 */
     const handleSubmitPictures = async () => {
       await pictureCommitForm.validateFields()
@@ -187,6 +198,52 @@ const KCYPZSVerificationModal: FC<PropsType> = memo(
           pictureUrl: e.image || e.sourceImage,
           imageType: values[`pictureType-${i}`],
         })),
+      })
+      await queryClient.invalidateQueries({
+        queryKey: ['getZSKCYPOrder', orderData.caseId],
+      })
+    }
+
+    const [timeRange, setTimeRange] = useState<
+      [Dayjs | null, Dayjs | null] | null
+    >(null)
+
+    const timeRangeTS = useMemo(() => {
+      if (!timeRange || timeRange[0] === null || timeRange[1] === null) {
+        return null
+      }
+      return [timeRange[0].valueOf(), timeRange[1].valueOf()] as [
+        number,
+        number,
+      ]
+    }, [timeRange])
+
+    const { data: videoUrlResp } = useQuery({
+      queryKey: ['getZSKCYPVideoURL', timeRangeTS],
+      enabled: !!timeRangeTS,
+      queryFn: () =>
+        getZSKCYPVideoURL({
+          deviceId: checkResults[0].deviceId,
+          begin: timeRangeTS![0],
+          end: timeRangeTS![1],
+        }),
+    })
+
+    const msgApi = useAppMsg()
+    const handleSubmitVideo = async () => {
+      if (!timeRange || timeRange[0] === null || timeRange[1] === null) {
+        msgApi.error('请选择视频时间范围')
+        return
+      }
+      await commitZSKCYPVideo({
+        caseId: orderData.caseId,
+        policeNumber: orderData.policeInformationId!,
+        deviceId: checkResults[0].deviceId,
+        begin: timeRange[0].valueOf(),
+        end: timeRange[1].valueOf(),
+      })
+      await queryClient.invalidateQueries({
+        queryKey: ['getZSKCYPOrder', orderData.caseId],
       })
     }
 
@@ -210,7 +267,7 @@ const KCYPZSVerificationModal: FC<PropsType> = memo(
                   disabled={orderData.processResult !== 0}
                   onClick={handleCommitInformation}
                 >
-                  提交
+                  {orderData.processResult !== 0 ? '已提交' : '提交'}
                 </AsyncButton>
               }
             />
@@ -364,12 +421,16 @@ const KCYPZSVerificationModal: FC<PropsType> = memo(
                 type="primary"
                 size="small"
                 disabled={
-                  orderData.processResult !== 1 &&
+                  orderData.processResult !==
+                    ZhoushanProcessResultEnum.PUSHED_CASE_ONLY ||
                   !orderData.policeInformationId
                 }
                 onClick={handleSubmitPictures}
               >
-                提交
+                {orderData.processResult <
+                ZhoushanProcessResultEnum.PUSHED_CASE_ONLY
+                  ? '提交'
+                  : '已提交'}
               </AsyncButton>
             }
           />
@@ -422,6 +483,39 @@ const KCYPZSVerificationModal: FC<PropsType> = memo(
               ))}
             </div>
           </Form>
+
+          <HeadLine
+            title="现场视频信息"
+            addon={
+              <div>
+                <DatePicker.RangePicker
+                  showTime
+                  size="small"
+                  className="mr-2"
+                  value={timeRange}
+                  onChange={setTimeRange}
+                />
+                <AsyncButton
+                  type="primary"
+                  size="small"
+                  disabled={
+                    orderData.processResult !==
+                      ZhoushanProcessResultEnum.PUSHED_CASE_AND_PHOTO ||
+                    !orderData.policeInformationId ||
+                    !timeRange ||
+                    timeRange[0] === null ||
+                    timeRange[1] === null
+                  }
+                  onClick={handleSubmitVideo}
+                >
+                  {orderData.processResult <
+                  ZhoushanProcessResultEnum.PUSHED_ALL
+                    ? '提交'
+                    : '已提交'}
+                </AsyncButton>
+              </div>
+            }
+          />
         </div>
       </XModal>
     )

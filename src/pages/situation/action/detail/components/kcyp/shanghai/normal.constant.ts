@@ -1,5 +1,8 @@
 import { XFormItem } from '@/components/XForm/types'
-import { ProcessStatusEnum } from '@/service/modules/action/kcyp/enum'
+import {
+  ProcessStatusEnum,
+  ZhoushanProcessResultEnum,
+} from '@/service/modules/action/kcyp/enum'
 import { idCardReg, phoneReg } from '@/constant/regExp'
 import { TFunction } from 'i18next'
 
@@ -40,6 +43,40 @@ export const statusColorMap: Record<
     label: {
       en: 'Error',
       zh: '处理错误',
+    },
+  },
+}
+
+export const zhoushanStatusColorMap: Record<
+  ZhoushanProcessResultEnum,
+  { color: string; label: Record<string, string> }
+> = {
+  [ZhoushanProcessResultEnum.NOT_PUSHED]: {
+    color: '#BFCCD6',
+    label: {
+      en: 'Not Submitted',
+      zh: '未提交',
+    },
+  },
+  [ZhoushanProcessResultEnum.PUSHED_CASE_ONLY]: {
+    color: '#4C90F0',
+    label: {
+      en: 'Case Only Submitted',
+      zh: '已推送事故单',
+    },
+  },
+  [ZhoushanProcessResultEnum.PUSHED_CASE_AND_PHOTO]: {
+    color: '#4C90F0',
+    label: {
+      en: 'Case and Photos Submitted',
+      zh: '已推送事故单及照片',
+    },
+  },
+  [ZhoushanProcessResultEnum.PUSHED_ALL]: {
+    color: '#15B371',
+    label: {
+      en: 'All Submitted',
+      zh: '已推送全部',
     },
   },
 }
