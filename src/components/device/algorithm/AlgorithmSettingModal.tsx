@@ -71,6 +71,22 @@ const AlgorithmSettingModal: FC<PropsType> = memo(
                 value: v.type,
               })),
             }
+          } else if (e.valueType === 'boolean') {
+            item = {
+              name: e.property,
+              label: e.propertyName,
+              type: 'radio',
+              options: [
+                {
+                  label: t('common.yes'),
+                  value: true,
+                },
+                {
+                  label: t('common.no'),
+                  value: false,
+                },
+              ],
+            }
           } else if (e.valueType === 'radio') {
             const enums = shouldJson<any[]>(e.valueEnums) ?? []
             item = {
