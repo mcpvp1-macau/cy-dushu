@@ -17,7 +17,11 @@ type ToolbarRenderProps = Exclude<
 >['toolbarRender']
 
 /** 普通照片工具栏 */
-export const makeToolbarRender = (min = 1, max = 50): ToolbarRenderProps => {
+export const makeToolbarRender = (
+  min = 1,
+  max = 50,
+  downloadName?: string,
+): ToolbarRenderProps => {
   return (
     _,
     {
@@ -40,7 +44,7 @@ export const makeToolbarRender = (min = 1, max = 50): ToolbarRenderProps => {
           onClick={() => {
             downloadAndRename(
               image.url,
-              image.url.slice(image.url.lastIndexOf('/') + 1),
+              downloadName ?? image.url.slice(image.url.lastIndexOf('/') + 1),
             )
           }}
         />

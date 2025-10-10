@@ -1,13 +1,14 @@
 import { makeToolbarRender } from '@/utils/antd/image'
-import { Image } from 'antd'
+import { GetProps, Image } from 'antd'
 import { ReactNode } from 'react'
 
-type PropsType = {
+type PropsType = GetProps<typeof Image> & {
   children: ReactNode
   src: string
   alt?: string
   sourceWidth: number
   sourceHeight: number
+  downloadName?: string
 }
 
 /** 大小由父元素决定 */
@@ -23,6 +24,7 @@ const ImageContainBoxPreview: FC<PropsType> = memo((props) => {
         {props.children}
       </div>
       <Image
+        {...props}
         className="size-full object-contain"
         rootClassName="size-full align-top"
         width="100%"
@@ -31,7 +33,7 @@ const ImageContainBoxPreview: FC<PropsType> = memo((props) => {
         alt={props.alt}
         preview={{
           minScale: 0.5,
-          toolbarRender: makeToolbarRender(1, 50),
+          toolbarRender: makeToolbarRender(1, 50, props.downloadName),
           imageRender: (originalNode, info) => {
             const t = info.transform
             const fx = t.flipX ? -1 : 1

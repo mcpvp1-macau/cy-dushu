@@ -1,16 +1,39 @@
 import { updAIResult } from '@/service/modules/action'
 import { useAsyncEffect, useDebounceFn } from 'ahooks'
-import { Checkbox, Form, Input } from 'antd'
+import { Checkbox, Form, Input, Spin } from 'antd'
 import { useDictOptions } from '@/store/useDict.store'
 import { DictEnum } from '@/enum/dict'
 import ImageContainBoxPreview from '@/components/ui/ImageContainBoxPreview'
 import Select from '@/components/AntdOverride/Select'
 import { shouldJson } from '@/utils/json'
+import useMapDevicesStore from '@/store/map/useMapDevices.store'
+import { forwardRef, useImperativeHandle } from 'react'
+import { downloadAndRename } from '@/utils/download'
+import md5 from 'crypto-js/md5'
+import { handleStorageURL } from '@/pages/events/components/EventDetail'
+import { wrap } from 'comlink'
+import { WorkerAPI } from '@/worker/watermark_image'
+import WatermarkWorker from '@/worker/watermark_image?worker'
+import IconLoading from '@/assets/icons/jsx/IconLoading'
+
+const illegalMap = {
+  '1116': '驾驶机动车违反禁令标志指示的',
+  '1117': '驾驶机动车违反禁止标线指示的',
+  '10391': '机动车不按规定临时停车影响其他车辆和行人通行的',
+  '10393': '机动车未按规定在限制、禁止的区域或者路段停靠的',
+  '10394': '机动车不按规定在人行道临时停车影响其他车辆和行人通行的',
+}
 
 /** AI 检测结果 */
-const AIResultItem: FC<{
-  data: API_ACTION.domain.AIResultRecord
-}> = memo(({ data }) => {
+const AIResultItem = forwardRef<
+  { downloadImage: Function },
+  { data: API_ACTION.domain.AIResultRecord }
+>(({ data }, ref) => {
+  const worker = useRef<ReturnType<typeof wrap<WorkerAPI>> | null>(null)
+  if (!worker.current) {
+    worker.current = wrap<WorkerAPI>(new WatermarkWorker())
+  }
+
   const [form] = Form.useForm()
   const queryClient = useQueryClient()
 
@@ -31,7 +54,8 @@ const AIResultItem: FC<{
     if (
       form.getFieldValue('plateNo') === data.plateNo &&
       form.getFieldValue('plateColor') === data.plateColor &&
-      form.getFieldValue('biwuType') === extra.biwuType
+      form.getFieldValue('illegalCode') === extra.illegalCode &&
+      form.getFieldValue('address') === extra.address
     ) {
       return
     }
@@ -41,7 +65,8 @@ const AIResultItem: FC<{
       plateColor: form.getFieldValue('plateColor'),
       extra: JSON.stringify({
         ...extra,
-        biwuType: form.getFieldValue('biwuType'),
+        illegalCode: form.getFieldValue('illegalCode'),
+        address: form.getFieldValue('address'),
       }),
     })
     run()
@@ -50,36 +75,80 @@ const AIResultItem: FC<{
 
   const [newImage, setNewImage] = useState<string | null>(null)
 
+  const sn = useMapDevicesStore(
+    (s) => s.deviceMap[data.deviceId]?.properties.sn,
+  )
+
+  const orignalImageUrl = handleStorageURL(data.image || data.sourceImage)
+
+  const antiCode = useMemo(() => {
+    return md5(
+      [
+        `车牌: ${data.plateNo || '未知'}`,
+        `类型: ${illegalMap[extra.illegalCode] || '未知'}`,
+        `代码: ${extra.illegalCode || '未知'}`,
+        `颜色: ${carColorOptions.find((e) => e.value === data.plateColor)?.label || data.plateColor || '未知'}`,
+        `时间: ${dayjs(data.resultTime).format('YYYY.MM.DD HH:mm:ss.SSS')}`,
+        `位置: ${data.longitude.toFixed(5)}, ${data.latitude.toFixed(5)}`,
+        `地点: ${extra.address || '未知'}`,
+        `来源: ${data.source}`,
+        `编码: ${sn}`,
+        `图片: ${orignalImageUrl}`,
+      ].join('\n'),
+    )
+      .toString()
+      .toUpperCase()
+  }, [data])
+
   useAsyncEffect(async () => {
+    if (!worker.current) {
+      return
+    }
     setNewImage(null)
     if (data.image || data.sourceImage) {
-      const url = `/storage${data.image || data.sourceImage}`
+      const url = handleStorageURL(data.image || data.sourceImage)
+      const texts = [
+        `车牌号码: ${data.plateNo || '未知'}`,
+        `车牌颜色: ${carColorOptions.find((e) => e.value === data.plateColor)?.label || data.plateColor || '未知'}`,
+        `违法类型: ${illegalMap[extra.illegalCode] || '未知'}`,
+        `违法代码: ${extra.illegalCode || '未知'}`,
+        `违法时间: ${dayjs(data.resultTime).format('YYYY.MM.DD HH:mm:ss')}`,
+        `违法位置: ${data.longitude.toFixed(5)}, ${data.latitude.toFixed(5)}`,
+        `违法地点: ${extra.address || '未知'}`,
+        `设备名称: ${data.source}`,
+        `设备编码: ${sn}`,
+        `防伪信息: ${antiCode}`,
+      ]
       try {
-        const [biwuTypeLabel, biwuTypeValue] =
-          extra.biwuType?.split?.(' ') ?? []
-        const newUrl = await addTextToImage(url, [
-          `车牌: ${data.plateNo || '未知'}`,
-          `类型: ${biwuTypeLabel || '未知'}`,
-          `代码: ${biwuTypeValue || '未知'}`,
-          `颜色: ${data.plateColor || '未知'}`,
-          `时间: ${dayjs(data.resultTime).format('YYYY.MM.DD HH:mm:ss.SSS')}`,
-          `地点: ${data.longitude.toFixed(5)}, ${data.latitude.toFixed(5)}`,
-          `来源: ${data.source}`,
-        ])
-        setNewImage(newUrl)
+        const resp = await fetch(url)
+        const blob = await resp.blob()
+        const bitmap = await createImageBitmap(blob)
+        const newBlob = await worker.current.addTextToLeftBottom(bitmap, texts)
+        const url2 = URL.createObjectURL(newBlob)
+        setNewImage(url2)
       } catch (error) {
         setNewImage(url)
       }
     }
-  }, [data])
+  }, [data, antiCode])
+
+  useImperativeHandle(ref, () => ({
+    downloadImage: () =>
+      downloadAndRename(
+        newImage || orignalImageUrl,
+        `${illegalMap[extra.illegalCode]}.${orignalImageUrl.slice(orignalImageUrl.lastIndexOf('.') + 1)}`,
+      ),
+  }))
 
   return (
     <div className="flex gap-2">
       <div className="w-[212px] h-[155px] relative border border-solid border-ground-5 box-content bg-ground-1">
         <ImageContainBoxPreview
-          src={newImage || `/storage${data.image || data.sourceImage}`}
+          src={newImage || orignalImageUrl}
           sourceWidth={data.sourceFrameWidth}
           sourceHeight={data.sourceFrameHeight}
+          downloadName={`${illegalMap[extra.illegalCode]}.${orignalImageUrl.slice(orignalImageUrl.lastIndexOf('.') + 1)}`}
+          loading="lazy"
         >
           {data.leftTopX && data.leftTopY && (
             <div
@@ -100,6 +169,12 @@ const AIResultItem: FC<{
               }}
             />
           )}
+          {!newImage && (
+            <div className="abs-center flex flex-col items-center gap-1">
+              <IconLoading className="text-3xl text-white shadow" />
+              <p className="text-sm whitespace-nowrap">正在生成水印...</p>
+            </div>
+          )}
         </ImageContainBoxPreview>
         <div className="absolute left-2 top-2">
           <Checkbox value={data.id} />
@@ -112,7 +187,8 @@ const AIResultItem: FC<{
             plateNo: data.plateNo,
             plateColor: data.plateColor,
             plateType: data.plateType,
-            biwuType: extra.biwuType || undefined,
+            illegalCode: extra.illegalCode,
+            address: extra.address || undefined,
           }}
           onBlur={handleFormBlur}
         >
@@ -124,25 +200,45 @@ const AIResultItem: FC<{
               </Form.Item>
             </li>
             <li className="flex gap-1 whitespace-nowrap">
-              <span className="text-white">类型:</span>
-              <Form.Item name="biwuType" noStyle>
-                <Select
-                  size="small"
-                  className="w-full"
-                  options={[
-                    { label: '违规变道1116', value: '车辆违停 1116' },
-                    { label: '车辆违停1117', value: '违规变道 1117' },
-                  ]}
-                />
-              </Form.Item>
-            </li>
-            <li className="flex gap-1 whitespace-nowrap">
               <span className="text-white">颜色:</span>
               <Form.Item name="plateColor" noStyle>
                 <Select
                   size="small"
                   className="w-full"
                   options={carColorOptions}
+                />
+              </Form.Item>
+            </li>
+            <li className="flex gap-1 whitespace-nowrap">
+              <span className="text-white">行为:</span>
+              <Form.Item name="illegalCode" noStyle>
+                <Select
+                  size="small"
+                  className="w-[210px]"
+                  options={[
+                    { label: illegalMap['1116'], value: '1116' },
+                    { label: illegalMap['1117'], value: '1117' },
+                    { label: illegalMap['10391'], value: '10391' },
+                    { label: illegalMap['10393'], value: '10393' },
+                    { label: illegalMap['10394'], value: '10394' },
+                  ]}
+                  popupMatchSelectWidth={false}
+                />
+              </Form.Item>
+            </li>
+            <li className="flex gap-1 whitespace-nowrap">
+              <span className="text-white">代码:</span>
+              <Form.Item name="illegalCode" noStyle>
+                <Select
+                  size="small"
+                  className="w-full"
+                  options={[
+                    { label: '1116', value: '1116' },
+                    { label: '1117', value: '1117' },
+                    { label: '10391', value: '10391' },
+                    { label: '10393', value: '10393' },
+                    { label: '10394', value: '10394' },
+                  ]}
                 />
               </Form.Item>
             </li>
@@ -158,9 +254,23 @@ const AIResultItem: FC<{
                 {data.longitude.toFixed(5)}, {data.latitude.toFixed(5)}
               </span>
             </li>
+            <li className="flex gap-1 whitespace-nowrap">
+              <span className="text-white">地点:</span>
+              <Form.Item name="address" noStyle>
+                <Input size="small" />
+              </Form.Item>
+            </li>
             <li className="flex gap-1">
-              <span className="text-white">来源:</span>
+              <span className="text-white">设备:</span>
               <span>{data.source}</span>
+            </li>
+            <li className="flex gap-1">
+              <span className="text-white">编码:</span>
+              <span>{sn}</span>
+            </li>
+            <li className="flex gap-1 whitespace-nowrap">
+              <span className="text-white">防伪:</span>
+              <span className="text-wrap max-w-48">{antiCode}</span>
             </li>
           </ul>
         </Form>
@@ -170,48 +280,3 @@ const AIResultItem: FC<{
 })
 
 export default AIResultItem
-
-function addTextToImage(url: string, text: string[]) {
-  return new Promise<string>((resolve, reject) => {
-    const img = new Image()
-    img.crossOrigin = 'anonymous' // 避免 CORS 污染
-    img.onload = () => {
-      const canvas = document.createElement('canvas')
-      canvas.width = img.width
-      canvas.height = img.height
-      const ctx = canvas.getContext('2d')!
-
-      // 绘制原图
-      ctx.drawImage(img, 0, 0)
-
-      // 文字样式
-      ctx.font = `${Math.max(36, (36 / 1920) * canvas.width)}px Arial`
-      ctx.fillStyle = '#e74341'
-      ctx.textBaseline = 'bottom'
-
-      // 设置描边
-      ctx.lineWidth = Math.max(4, (4 / 1920) * canvas.width) // 描边宽度
-      ctx.strokeStyle = 'rgba(50,50,50,0.8)'
-
-      for (let i = text.length - 1; i >= 0; i--) {
-        const line = text[i]
-        const x = 20
-        const y =
-          canvas.height -
-          20 -
-          (text.length - 1 - i) * Math.max(52, (52 / 1920) * canvas.width) // 每行文字间隔40px
-
-        // 描边文字
-        ctx.strokeText(line, x, y)
-        // 填充文字
-        ctx.fillText(line, x, y)
-      }
-
-      // 生成新的 URL
-      const newUrl = canvas.toDataURL('image/png')
-      resolve(newUrl)
-    }
-    img.onerror = () => reject(new Error('图片加载失败'))
-    img.src = url
-  })
-}

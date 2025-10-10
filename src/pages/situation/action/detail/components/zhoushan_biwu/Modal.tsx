@@ -7,11 +7,12 @@ import { useSize } from 'ahooks'
 import { Checkbox, Spin } from 'antd'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import { CheckboxChangeEvent } from 'antd/es/checkbox'
-import { LoadingOutlined } from '@ant-design/icons'
+import { DownloadOutlined, LoadingOutlined } from '@ant-design/icons'
 import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
 import { useAIResult } from '../AIResult'
 import useActionDetail from '../../context'
 import AIResultItem from './AIResultItem'
+import { ComponentRef } from 'react'
 
 type PropsType = {
   actionId: string
@@ -23,8 +24,6 @@ type PropsType = {
 /** 舟山比武 对话框 */
 const ZSBIWUModal: FC<PropsType> = memo(({ actionId }) => {
   const [open, setOpen] = useState(false)
-
-  console.log('biwu Modal')
 
   const actionDetail = useActionDetail()
 
@@ -43,8 +42,12 @@ const ZSBIWUModal: FC<PropsType> = memo(({ actionId }) => {
   })
 
   const handleCheckAllChange = useMemoizedFn((e: CheckboxChangeEvent) => {
-    setCheckIds(e.target.checked ? data?.map((e) => e.id) ?? [] : [])
+    setCheckIds(e.target.checked ? (data?.map((e) => e.id) ?? []) : [])
   })
+
+  const componentMap = useRef<{
+    [id: string]: ComponentRef<typeof AIResultItem>
+  }>({})
 
   if (isLoading || !data || !actionDetail) {
     return <LoadingOutlined />
@@ -58,7 +61,7 @@ const ZSBIWUModal: FC<PropsType> = memo(({ actionId }) => {
       {!isLoading && data && actionDetail && (
         <>
           <XModal
-            width={isBigWindow ? '924px' : '480px'}
+            width={isBigWindow ? '960px' : '480px'}
             title="检测结果"
             centered
             open={open}
@@ -81,6 +84,21 @@ const ZSBIWUModal: FC<PropsType> = memo(({ actionId }) => {
                         全选
                       </Checkbox>
 
+                      <IconButton
+                        disabled={checkIds.length === 0}
+                        toolTipProps={{ title: '下载全部' }}
+                        onClick={() => {
+                          for (const id of checkIds) {
+                            const component = componentMap.current[id]
+                            if (component) {
+                              component.downloadImage()
+                            }
+                          }
+                        }}
+                      >
+                        <DownloadOutlined />
+                      </IconButton>
+
                       <IconAsyncButton
                         toolTipProps={{ title: '删除' }}
                         disabled={checkIds.length === 0}
@@ -100,8 +118,13 @@ const ZSBIWUModal: FC<PropsType> = memo(({ actionId }) => {
                     <Checkbox.Group value={checkIds} onChange={setCheckIds}>
                       <ul className="px-3 w-full pt-3 flex justify-between flex-wrap gap-y-3 max-h-[408px] overflow-y-auto overflow-x-hidden">
                         {data.map((e) => (
-                          <li key={e.id} className="w-[430px]">
-                            <AIResultItem data={e} />
+                          <li key={e.id} className="w-[440px]">
+                            <AIResultItem
+                              data={e}
+                              ref={(ref) =>
+                                ref && (componentMap.current[e.id] = ref)
+                              }
+                            />
                           </li>
                         ))}
                       </ul>

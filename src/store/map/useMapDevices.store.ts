@@ -4,6 +4,8 @@ import { devtools } from 'zustand/middleware'
 type Track = { lng: number; lat: number; alt: number }
 
 type StateType = {
+  /** 设备映射 deivceId -> deviceDetail 如果要用实时的请用 GlobalWebsocket 的 */
+  deviceMap: { [deviceId: string]: API_DEVICE.domain.Device }
   /** 无人机 */
   uavDevices: API_DEVICE.domain.Device[]
   /** 无人机机库 */
@@ -62,6 +64,7 @@ type StateType = {
 }
 
 type ActionsType = {
+  updateDeviceMap: (deviceMap: StateType['deviceMap']) => void
   updateUavDevices: (uavDevices: StateType['uavDevices']) => void
   updateAirportDevices: (airportDevices: StateType['airportDevices']) => void
   updateWangloutDevices: (wangloutDevices: StateType['wangloutDevices']) => void
@@ -92,6 +95,7 @@ type ActionsType = {
 const useMapDevicesStore = create<StateType & ActionsType>()(
   devtools(
     (set) => ({
+      deviceMap: {},
       uavDevices: [],
       airportDevices: [],
       wangloutDevices: [],
@@ -108,6 +112,9 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       projectedVideos: {},
       enableUavInfoBoard: false,
       hiddenUavInfoBoard: new Set(),
+      updateDeviceMap: (deviceMap) => {
+        set({ deviceMap }, false, 'updateDeviceMap')
+      },
       updateUavDevices: (uavDevices) => {
         set({ uavDevices }, false, 'updateUavDevices')
       },
