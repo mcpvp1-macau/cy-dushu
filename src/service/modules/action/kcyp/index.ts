@@ -1,5 +1,6 @@
 import serverJingqi from '@/service/servers/serverJingqi'
 import serverUavXiaoshan from '@/service/servers/serverUavXiaoshan'
+import serverVideo from '@/service/servers/serverVideo'
 
 /** 查询工单暂存记录 */
 export const getKCYPOrder = (data: API_KCYP.req.GetKCYPOrderReq) => {
@@ -81,10 +82,36 @@ export const commitZSKCYPInfoOrder = (data: API_KCYP.domain.ZSOrderRecord) => {
 export const commitZSKCYPPictures = (data: {
   caseId: string
   policeNumber: string
-  pictures: { pictureUrl: string; imageType }[]
+  pictures: { pictureUrl: string; imageType: string }[]
 }) => {
   return serverJingqi.post(
     '/zhouShan/quickPaymentEasy/policeInformationPicturesPush',
+    data,
+  )
+}
+
+/** 获取视频播放地址 */
+export const getZSKCYPVideoURL = (data: {
+  deviceId: string
+  begin: number
+  end: number
+}) => {
+  return serverVideo.post<{ url: string; fileId: string; size: number }>(
+    '/stream/vod/hls2mp4',
+    data,
+  )
+}
+
+/** 警情视频推送 */
+export const commitZSKCYPVideo = (data: {
+  caseId: string
+  policeNumber: string
+  deviceId: string
+  begin: number
+  end: number
+}) => {
+  return serverJingqi.post(
+    '/zhouShan/quickPaymentEasy/policeInformationVideoPush',
     data,
   )
 }

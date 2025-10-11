@@ -20,23 +20,19 @@ const MapDevices: FC<PropsType> = memo(() => {
     queryClient,
   )
 
-  const updateUavDevices = useMapDevicesStore((s) => s.updateUavDevices)
-  const updateWangloutDevices = useMapDevicesStore(
-    (s) => s.updateWangloutDevices,
-  )
-  const updateAirportDevices = useMapDevicesStore((s) => s.updateAirportDevices)
-  const updateRobotDogDevices = useMapDevicesStore(
-    (s) => s.updateRobotDogDevices,
-  )
-  const updateOtherDevices = useMapDevicesStore((s) => s.updateOtherDevices)
-  const updateAllDevices = useMapDevicesStore((s) => s.updateAllDevices)
-  const updateAllDevicesMap = useMapDevicesStore((s) => s.updateAllDevicesMap)
   useEffect(() => {
     if (!data) {
       return
     }
+    const store = useMapDevicesStore.getState()
     // 更新所有设备
-    updateAllDevices(data)
+    store.updateAllDevices(data)
+    store.updateDeviceMap(
+      data.reduce((acc, cur) => {
+        acc[cur.deviceId] = cur
+        return acc
+      }, {}),
+    )
 
     // 过滤 + 分组
     const m = {
@@ -51,14 +47,14 @@ const MapDevices: FC<PropsType> = memo(() => {
       (e) => m[e.deviceType] || 'other',
     )
 
-    updateUavDevices(g[DeviceEnum.UAV] || [])
-    updateWangloutDevices(g[DeviceEnum.WANGLOU] || [])
-    updateAirportDevices(g[DeviceEnum.UAV_AIRPORT] || [])
-    updateRobotDogDevices(g[DeviceEnum.ROBOT_DOG] || [])
-    updateOtherDevices(g['other'] || [])
+    store.updateUavDevices(g[DeviceEnum.UAV] || [])
+    store.updateWangloutDevices(g[DeviceEnum.WANGLOU] || [])
+    store.updateAirportDevices(g[DeviceEnum.UAV_AIRPORT] || [])
+    store.updateRobotDogDevices(g[DeviceEnum.ROBOT_DOG] || [])
+    store.updateOtherDevices(g['other'] || [])
 
     const gm = groupBy(data, (e) => e.deviceId)
-    updateAllDevicesMap(gm)
+    store.updateAllDevicesMap(gm)
   }, [data])
 
   return null

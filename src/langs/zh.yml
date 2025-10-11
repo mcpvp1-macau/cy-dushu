@@ -1303,6 +1303,8 @@ controlRoom:
         title: 预估时间
       confirm:
         msg: 飞行路线仅供参考
+      crossNoFlyZones:
+        msg: 飞行路线经过禁飞区
       targetHeight:
         required_msg: 请输入目标高度
       flightSpeed:

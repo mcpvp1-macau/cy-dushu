@@ -6,8 +6,8 @@ import { useDictOptions } from '@/store/useDict.store'
 import { Form } from 'antd'
 import { DictEnum } from '@/enum/dict'
 import dayjs from 'dayjs'
-import { statusColorMap } from '../shanghai/normal.constant'
 import useSaveOrderState from '../common/useSaveOrderState'
+import { zhoushanStatusColorMap } from '../shanghai/normal.constant'
 
 type PropsType = { actionId: string }
 
@@ -88,9 +88,10 @@ const KCYPZSPanel: FC<PropsType> = memo(({ actionId }) => {
         <span className="text-white">
           {t('action.detail.kcyp.process_status.title')}:
         </span>
-        <span style={{ color: statusColorMap[data.processStatus!]?.color }}>
-          {data.processResult ||
-            statusColorMap[data.processStatus!]?.label[i18n.language] ||
+        <span
+          style={{ color: zhoushanStatusColorMap[data.processResult!]?.color }}
+        >
+          {zhoushanStatusColorMap[data.processResult]?.label[i18n.language] ||
             '-'}
         </span>
       </p>

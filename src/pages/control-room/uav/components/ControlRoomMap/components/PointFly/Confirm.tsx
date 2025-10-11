@@ -5,9 +5,12 @@ import { usePostDeviceServiceHandler } from '@/hooks/device/usePostDeviceService
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { getSpaceDistance } from '@/utils/geo-math'
-import { InfoCircleOutlined } from '@ant-design/icons'
+import { InfoCircleOutlined, WarningOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
-import useQueryDeviceDetail from '@/hooks/device/useQueryDeviceDetail'
+import useMapDevicesStore from '@/store/map/useMapDevices.store'
+import useFlightAreaStore from '@/store/map/useFlightArea.store'
+import * as turf from '@turf/turf'
+import { shouldJson } from '@/utils/json'
 
 type PropsType = {
   position: [number, number, number]
@@ -38,7 +41,47 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
 
   // 获取父设备的详情信息
   const parentId = useDeviceDetailStore((s) => s.deviceDetail?.parentId)
-  const { data: parentDeivceDetail } = useQueryDeviceDetail(parentId)
+  const parentDeivceDetail = useMapDevicesStore(
+    (s) => s.deviceMap[parentId ?? 'never'],
+  )
+
+  const flightAreaList = useFlightAreaStore((s) => s.flightAreaList)
+  console.log('flightAreaList', flightAreaList)
+  const noFlyZones = useMemo(
+    () =>
+      flightAreaList
+        .filter(
+          (e) =>
+            e.overlayExtType === 'NO_FLY_ZONE' &&
+            ['POLYGON', 'CIRCULAR'].includes(e.overlayType),
+        )
+        .map((e) => {
+          const positions = shouldJson(e.overlayPositions)
+          if (e.overlayType === 'POLYGON') {
+            const polygon = turf.polygon([
+              [...positions, positions[0]].map((p) => [p[0], p[1]]),
+            ])
+            return polygon
+          }
+          const circle = turf.circle(
+            [positions[0][0], positions[0][1]],
+            positions[0][3],
+            { units: 'meters', steps: 64 },
+          )
+          return circle
+        }),
+    [flightAreaList],
+  )
+  const crossNoFlyZones = useMemo(() => {
+    if (!uavLon || !uavLat) {
+      return false
+    }
+    const line = turf.lineString([
+      [uavLon, uavLat],
+      [position[0], position[1]],
+    ])
+    return noFlyZones.some((zone) => turf.booleanCrosses(line, zone))
+  }, [noFlyZones, position, uavLon, uavLat])
 
   const postServiceHandler = usePostDeviceServiceHandler()
 
@@ -104,6 +147,12 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
             <InfoCircleOutlined className="text-orange-400" />{' '}
             {t('controlRoom.uav.pointFlyForecast.confirm.msg')}
           </p>
+          {crossNoFlyZones && (
+            <p className="text-red-400">
+              <WarningOutlined />{' '}
+              {t('controlRoom.uav.pointFlyForecast.crossNoFlyZones.msg')}
+            </p>
+          )}
           <p className="flex justify-between">
             <Button
               size="small"
