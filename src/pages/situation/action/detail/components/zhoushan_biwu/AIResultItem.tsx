@@ -81,6 +81,29 @@ const AIResultItem = forwardRef<
 
   const orignalImageUrl = handleStorageURL(data.image || data.sourceImage)
 
+  const illegalTime = useMemo(() => {
+    const t = dayjs(data.resultTime)
+
+    let codeSum = 0
+    for (let i = 0; i < orignalImageUrl.length; i++) {
+      codeSum += orignalImageUrl.charCodeAt(i)
+    }
+
+    const hash = (
+      ((t.get('year') +
+        t.get('month') +
+        t.get('date') +
+        t.get('hour') +
+        t.get('minute') +
+        t.get('second') +
+        codeSum) %
+        100) +
+      ''
+    ).padEnd(2, '0')
+
+    return `${t.format('YYYY.MM.DD HH:mm:ss')}.${hash}`
+  }, [data.resultTime])
+
   const antiCode = useMemo(() => {
     return md5(
       [
@@ -88,7 +111,7 @@ const AIResultItem = forwardRef<
         `类型: ${illegalMap[extra.illegalCode] || '未知'}`,
         `代码: ${extra.illegalCode || '未知'}`,
         `颜色: ${carColorOptions.find((e) => e.value === data.plateColor)?.label || data.plateColor || '未知'}`,
-        `时间: ${dayjs(data.resultTime).format('YYYY.MM.DD HH:mm:ss.SSS')}`,
+        `时间: ${illegalTime}`,
         `位置: ${data.longitude.toFixed(5)}, ${data.latitude.toFixed(5)}`,
         `地点: ${extra.address || '未知'}`,
         `来源: ${data.source}`,
@@ -112,7 +135,7 @@ const AIResultItem = forwardRef<
         `车牌颜色: ${carColorOptions.find((e) => e.value === data.plateColor)?.label || data.plateColor || '未知'}`,
         `违法类型: ${illegalMap[extra.illegalCode] || '未知'}`,
         `违法代码: ${extra.illegalCode || '未知'}`,
-        `违法时间: ${dayjs(data.resultTime).format('YYYY.MM.DD HH:mm:ss')}`,
+        `违法时间: ${illegalTime}`,
         `违法位置: ${data.longitude.toFixed(5)}, ${data.latitude.toFixed(5)}`,
         `违法地点: ${extra.address || '未知'}`,
         `设备名称: ${data.source}`,
@@ -244,9 +267,7 @@ const AIResultItem = forwardRef<
             </li>
             <li className="flex gap-1 whitespace-nowrap">
               <span className="text-white">时间:</span>
-              <span>
-                {dayjs(data.resultTime).format('YYYY.MM.DD HH:mm:ss.SSS')}
-              </span>
+              <span>{illegalTime}</span>
             </li>
             <li className="flex gap-1 whitespace-nowrap">
               <span className="text-white">位置:</span>
