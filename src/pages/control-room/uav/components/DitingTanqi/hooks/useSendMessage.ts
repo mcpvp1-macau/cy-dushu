@@ -1,7 +1,6 @@
 import serverDitingTanqi from '@/service/servers/serverDitingTanqi'
 import { chunkBuffer } from '@/utils/decode/http-chunk'
 import { shouldJson } from '@/utils/json'
-import { useGetState } from 'ahooks'
 
 export const parseEvent = (eventText: string) => {
   if (eventText.startsWith('data:')) {
@@ -27,7 +26,7 @@ const useSendMessage = (options?: {
   onEndReply?: (content: string) => void
 }) => {
   // 回复内容
-  const [replyingContent, setContent, getContent] = useGetState('')
+  const [replyingContent, setContent] = useState('')
   const [done, setDone] = useState(false)
 
   const sendMessage = useMemoizedFn(
@@ -50,6 +49,7 @@ const useSendMessage = (options?: {
       }
       try {
         const resp = await fetch(
+          // `http://localhost:8080/demo1`,
           `${serverDitingTanqi.baseURL}/user/conversations/${conversationId}/chats`,
           {
             method: 'POST',
@@ -83,9 +83,11 @@ const useSendMessage = (options?: {
         }
         let replayStart = false
 
+        let content_acc = ''
         for await (const chunk of chunkBuffer(reader)) {
           const eventData = parseEvent(chunk)
           const data = eventData.data
+
           const content: string | undefined = data?.choices?.[0]?.delta?.content
           if (content) {
             if (!replayStart) {
@@ -99,10 +101,11 @@ const useSendMessage = (options?: {
                 continue
               }
             }
-            setContent((prev) => prev + c)
+            content_acc += c
+            setContent(content_acc)
           }
         }
-        options?.onEndReply?.(getContent())
+        options?.onEndReply?.(content_acc)
         setContent('')
       } catch (error) {
         console.error('Error sending message:', error)
@@ -122,14 +125,5 @@ const useSendMessage = (options?: {
     sendMessage,
   }
 }
-
-// /** @deprecated */
-// const mkMcpServer = (payload: API_DITING_TANQI.domain.McpServerInfo) => {
-//   return {
-//     name: payload.name,
-//     url: (payload.url || '') + (payload.sse_endpoint || ''),
-//     tools: payload.tools?.map((t) => ({ name: t.name })) || [],
-//   }
-// }
 
 export default useSendMessage
