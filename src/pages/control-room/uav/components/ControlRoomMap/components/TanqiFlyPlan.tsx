@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router-dom'
 import { PointPrimitive, useCesium } from 'resium'
 import GroundPolygon from '@/map/CesiumMap/components/service/common/GroundPolygon'
 import OverlayCircle from '@/map/CesiumMap/components/service/Overlaies/OverlayCircle'
+import { useAppMsg } from '@/hooks/useAppMsg'
 
 type PropsType = unknown
 
@@ -13,15 +14,25 @@ const TanqiFlyPlan: FC<PropsType> = memo(() => {
   const queryClient = useQueryClient()
   const sn = useDeviceDetailStore((s) => s.deviceDetail?.properties.sn)
 
-  const { data } = useQuery(
+  const { data: resp } = useQuery(
     {
       queryKey: ['tanqiFlyPlan', chatId],
       enabled: !!chatId && !!sn,
       queryFn: () => getUavFlyPlans(sn!),
-      select: (d) => d.data,
     },
     queryClient,
   )
+
+  const data = resp?.data
+  const msgApi = useAppMsg()
+  useEffect(() => {
+    if (!resp) {
+      return
+    }
+    if (!resp.success && resp.message !== '指定资源不存在' && resp.message) {
+      msgApi.error(resp.message)
+    }
+  }, [resp])
 
   const { viewer } = useCesium()
 

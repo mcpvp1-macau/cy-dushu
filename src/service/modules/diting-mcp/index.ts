@@ -18,6 +18,9 @@ export const getUavFlyPlans = (uavSn: string) => {
     '/api/plans/get_from_uav',
     {
       params: { uav_sn: uavSn },
+      xCustomConfig: {
+        autoShowMessageOnNotSuccess: false,
+      },
     },
   )
 }
