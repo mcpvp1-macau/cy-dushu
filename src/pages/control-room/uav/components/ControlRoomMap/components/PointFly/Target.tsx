@@ -1,9 +1,8 @@
-import { memo, type FC } from 'react'
-import { Billboard, BillboardCollection } from 'resium'
 import icon from '@/assets/marker/map-marker1.png'
-import * as Cesium from 'cesium'
-import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import HistoryTrack from '@/components/map/HistoryTrack'
+import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
+import * as Cesium from 'cesium'
+import { Billboard, BillboardCollection } from 'resium'
 
 type PropsType = {
   position: [number, number, number]
@@ -38,7 +37,6 @@ const UavPointFlyTarget: FC<PropsType> = memo(({ position, clampToGround }) => {
       </BillboardCollection>
       <HistoryTrack
         color="#3d87e9"
-        useCallback
         clampToGround={clampToGround}
         value={[
           { lng, lat, alt },
