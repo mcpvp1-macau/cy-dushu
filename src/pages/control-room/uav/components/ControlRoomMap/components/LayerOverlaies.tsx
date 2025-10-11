@@ -78,8 +78,8 @@ const LayerOverlay: FC<PropsType> = () => {
 
   return (
     <>
-      <LayerOverlaies />
-      <FlightAreas />
+      {/* <LayerOverlaies />
+      <FlightAreas /> */}
     </>
   )
 }

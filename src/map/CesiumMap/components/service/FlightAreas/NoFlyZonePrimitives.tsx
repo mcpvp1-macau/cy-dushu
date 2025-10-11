@@ -42,6 +42,9 @@ const NoFlyZonePrimitives: FC<Props> = (props) => {
   })
 
   const createZonePrimitive = useMemoizedFn(() => {
+    const collection = new Cesium.PrimitiveCollection()
+    if (!overlays.length) return collection
+
     const fillInstances: Cesium.GeometryInstance[] = []
     const outlineInstances: Cesium.GeometryInstance[] = []
 
@@ -95,7 +98,6 @@ const NoFlyZonePrimitives: FC<Props> = (props) => {
         }),
       }),
     })
-    const collection = new Cesium.PrimitiveCollection()
     collection.add(fillPrimitive)
     collection.add(outlinePrimitive)
 
