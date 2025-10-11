@@ -1,4 +1,7 @@
-import { OverlayCirclePrimitive } from '@/utils/customPrimitive/OverlayPrimitive'
+import {
+  OverlayCirclePrimitive,
+  PrimitiveType,
+} from '@/utils/customPrimitive/OverlayPrimitive'
 import * as Cesium from 'cesium'
 import { attempt } from 'lodash'
 import React, { FC, useEffect, useRef } from 'react'
@@ -10,6 +13,9 @@ interface Props {
   radius: number
   asynchronous: boolean
   isGround?: boolean
+  primitiveType?: PrimitiveType
+  /**飞行区域的高度 */
+  flightAreaHeight?: number
   label?: string
   hide?: 0 | 1
   fill?: string
@@ -28,6 +34,8 @@ const OverlayCircle: FC<Props> = (props) => {
     radius,
     asynchronous,
     isGround = true,
+    primitiveType = 'OVERLAY',
+    flightAreaHeight = 0,
     hide = false,
     fill = '#4c90f0',
     stroke = '#4c90f0',
@@ -52,6 +60,8 @@ const OverlayCircle: FC<Props> = (props) => {
       asynchronous,
       props: data,
       isGround,
+      primitiveType,
+      flightAreaHeight,
     }),
   )
 

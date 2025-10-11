@@ -192,7 +192,7 @@ export const runTest = async (tileLevel: number = 10) => {
     const diff = Math.abs(height - expectHeight)
     const diffPercent = (diff / expectHeight) * 100
     console.log(
-      `${data[index]} 实际高度: ${height}, 期望高度: ${expectHeight}, 误差: ${diffPercent}%`,
+      `${data[index]} rgb-tile获取高度: ${height}, cesium获取高度: ${expectHeight}, 误差: ${diffPercent}%`,
     )
   })
 }

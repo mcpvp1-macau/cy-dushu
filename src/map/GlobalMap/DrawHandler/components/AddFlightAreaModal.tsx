@@ -3,6 +3,7 @@ import { XFormItem } from '@/components/XForm/types'
 import useFlightAreaStore from '@/store/map/useFlightArea.store'
 import { GetProps, Tooltip } from 'antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
+import { max } from 'lodash'
 
 type FormModalProps = GetProps<typeof FormModal>
 
@@ -93,6 +94,22 @@ const AddFlightAreaModal: FC<PropsType> = memo((props) => {
                 </div>
               )
             },
+          },
+        },
+        {
+          label: t('common.height'),
+          placeholder: t('flightArea.create.form.height.required_msg'),
+          name: 'overlayHeight',
+          type: 'input-number',
+          rules: [
+            {
+              required: false,
+            },
+          ],
+          otherProps: {
+            min: 0,
+            max: 500,
+            suffix: 'm',
           },
         },
       ] as XFormItem[],

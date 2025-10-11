@@ -114,6 +114,7 @@ const useFlightAreaDetail = (
         overlayName: (value.overlayName || overlay?.overlayName) ?? '',
         overlayStyleConfig: JSON.stringify(overlayStyleConfig),
         overlayExtType: value.overlayExtType,
+        overlayHeight: String(value.overlayHeight),
       })
       // 预防抖动，更新完成后数据无法立刻请求到最新的，所以先保留编辑状态一下下
       setTimeout(() => {
@@ -146,6 +147,7 @@ const useFlightAreaDetail = (
     overlayName?: string
     remarks?: string
     overlayExtType?: string
+    overlayHeight?: string
   }>()
 
   useEffect(() => {
@@ -153,6 +155,7 @@ const useFlightAreaDetail = (
       overlayName: overlay?.overlayName,
       remarks: styleConfig?.remarks,
       overlayExtType: overlay?.overlayExtType,
+      overlayHeight: overlay?.overlayHeight,
     })
   }, [styleConfig])
 

@@ -5,7 +5,10 @@ declare namespace API_FLIGHT_AREA {
       effectiveDevices: string
     }
 
-    type FlightArea = API_LAYER_OVERLAY.domain.Overlay
+    type FlightArea = API_LAYER_OVERLAY.domain.Overlay & {
+      overlayExtType?: string
+      overlayHeight?: string
+    }
   }
 
   namespace res {
@@ -30,6 +33,7 @@ declare namespace API_FLIGHT_AREA {
 
     type UpdateOverlayReq = API_LAYER_OVERLAY.req.UpdateOverlayReq & {
       overlayExtType?: string
+      overlayHeight?: string
     }
   }
 }

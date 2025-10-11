@@ -1,5 +1,8 @@
 import * as Cesium from 'cesium'
-import { OverlayPolygonPrimitive } from '@/utils/customPrimitive/OverlayPrimitive'
+import {
+  OverlayPolygonPrimitive,
+  PrimitiveType,
+} from '@/utils/customPrimitive/OverlayPrimitive'
 import { attempt } from 'lodash'
 
 type PropsType = {
@@ -8,6 +11,9 @@ type PropsType = {
   path: number[][] // [[111,111,111], [222,222,222]]
   asynchronous: boolean
   isGround?: boolean
+  primitiveType?: PrimitiveType
+  /**飞行区域的高度 */
+  flightAreaHeight?: number
   hide?: 0 | 1
   fill?: string
   stroke?: string
@@ -26,6 +32,8 @@ const OverlayPolygon: FC<PropsType> = memo((props) => {
     asynchronous,
     isGround = true,
     hide = false,
+    primitiveType = 'OVERLAY',
+    flightAreaHeight = 0,
     fill = '#4c90f0',
     stroke = '#4c90f0',
     label = '',
@@ -47,6 +55,8 @@ const OverlayPolygon: FC<PropsType> = memo((props) => {
       asynchronous,
       props: data,
       isGround,
+      primitiveType,
+      flightAreaHeight,
     }),
   )
 

@@ -21,6 +21,10 @@ const ShowPolygon: FC<PropsType> = ({
 }) => {
   const positions = shouldJson(overlay.overlayPositions)
   const style = shouldJson(overlay.overlayStyleConfig)
+  const primitiveType = overlay.overlayExtType
+  const flightAreaHeight = (overlay as any).overlayHeight
+    ? Number((overlay as any).overlayHeight)
+    : 0
 
   const label = overlay.overlayName
   const fillColor =
@@ -41,6 +45,8 @@ const ShowPolygon: FC<PropsType> = ({
           asynchronous={false}
           path={positions}
           label={showLabel ? label : undefined}
+          primitiveType={primitiveType}
+          flightAreaHeight={flightAreaHeight}
           fill={fillColor}
           fillOpacity={fillOpacity}
           stroke={strokeColor}

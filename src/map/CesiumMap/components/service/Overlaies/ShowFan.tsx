@@ -21,6 +21,10 @@ const ShowFan: FC<PropsType> = ({
 }) => {
   const positions = shouldJson(overlay.overlayPositions) || []
   const style = shouldJson(overlay.overlayStyleConfig)
+  const primitiveType = overlay.overlayExtType
+  const flightAreaHeight = (overlay as any).overlayHeight
+    ? Number((overlay as any).overlayHeight)
+    : 0
 
   const label = overlay.overlayName
   const fillColor =
@@ -40,6 +44,8 @@ const ShowFan: FC<PropsType> = ({
           isGround={isGround}
           asynchronous={false}
           positions={positions}
+          primitiveType={primitiveType}
+          flightAreaHeight={flightAreaHeight}
           label={showLabel ? label : undefined}
           fill={fillColor}
           fillOpacity={fillOpacity}

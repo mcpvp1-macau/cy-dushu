@@ -8,7 +8,7 @@ import { shouldJson } from '@/utils/json'
 import IconButton from '@/components/ui/button/IconButton'
 import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconEdit from '@/assets/icons/jsx/IconEdit'
-import { Form, Input, Tooltip, TreeSelect } from 'antd'
+import { Form, Input, InputNumber, Tooltip, TreeSelect } from 'antd'
 import {
   CaretDownFilled,
   InfoCircleOutlined,
@@ -222,13 +222,13 @@ const FlightAreaDetail: FC<PropsType> = memo(() => {
               </p>
 
               <p className="flex gap-2 h-6">
-                {t('overlay.detail.createUser.title')}:
+                {t('flightArea.relatedGroup.title')}:
                 <span className="text-white flex-1">
                   {relatedGroup?.layerName}
                 </span>
               </p>
 
-              <p className="flex gap-2 items-center h-6">
+              <p className="flex gap-2 h-6">
                 <span className="whitespace-nowrap">
                   {t('flightArea.type.title')}:
                 </span>
@@ -262,13 +262,36 @@ const FlightAreaDetail: FC<PropsType> = memo(() => {
                 </Form.Item>
               </p>
 
-              <p className="flex gap-2">
+              <p className="flex gap-2 h-6">
+                <span className="whitespace-nowrap indent-[2em]">
+                  {t('common.height')}:
+                </span>
+                <Form.Item noStyle name="overlayHeight">
+                  {isEdit ? (
+                    <InputNumber
+                      min={0}
+                      max={500}
+                      size="small"
+                      className="h-6 w-full"
+                      suffix="m"
+                    />
+                  ) : (
+                    <span className="text-white">
+                      {overlay?.overlayHeight
+                        ? overlay?.overlayHeight + 'm'
+                        : '-'}
+                    </span>
+                  )}
+                </Form.Item>
+              </p>
+
+              <p className="flex gap-2 h-6">
                 <span className="whitespace-nowrap">
                   {t('overlay.detail.mark.title')}:
                 </span>
                 <Form.Item noStyle name="remarks">
                   {isEdit ? (
-                    <Input size="small" className="h-5" />
+                    <Input size="small" className="h-6" />
                   ) : (
                     <span className="text-white">
                       {styleConfig.remarks || '-'}
@@ -277,7 +300,7 @@ const FlightAreaDetail: FC<PropsType> = memo(() => {
                 </Form.Item>
               </p>
 
-              <p className="flex gap-2">
+              <p className="flex gap-2 h-6">
                 <span className="whitespace-nowrap">
                   {t('flightArea.relatedGroup.effective.title')}:
                 </span>
@@ -291,7 +314,7 @@ const FlightAreaDetail: FC<PropsType> = memo(() => {
                   treeCheckable
                   showCheckedStrategy={TreeSelect.SHOW_CHILD}
                   allowClear
-                  className="w-full"
+                  className="w-full h-6"
                   suffixIcon={<CaretDownFilled />}
                   maxTagCount="responsive"
                   popupMatchSelectWidth={false}

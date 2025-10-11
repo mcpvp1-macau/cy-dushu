@@ -145,6 +145,7 @@ const DrawRect: FC<PropsType> = memo(({ onSuccess }) => {
       }),
       overlayExtType: data.overlayExtType,
       cotType: CotType.SHAPE_RECT,
+      overlayHeight: String(data.overlayHeight),
     }
     await createFn(commitData)
     onSuccess?.()

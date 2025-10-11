@@ -146,6 +146,7 @@ const DrawPolygon: FC<PropsType> = memo(({ onSuccess }) => {
       }),
       overlayExtType: data.overlayExtType,
       cotType: CotType.SHAPE_POLYGON,
+      overlayHeight: String(data.overlayHeight),
     }
     await createFn(commitData)
     await onSuccess?.()

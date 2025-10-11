@@ -20,6 +20,10 @@ const ShowCircle: FC<PropsType> = ({
 }) => {
   const position = shouldJson(overlay.overlayPositions)?.[0]
   const style = shouldJson(overlay.overlayStyleConfig)
+  const primitiveType = overlay.overlayExtType
+  const flightAreaHeight = (overlay as any).overlayHeight
+    ? Number((overlay as any).overlayHeight)
+    : 0
 
   const label = overlay.overlayName
   const fillColor =
@@ -38,8 +42,10 @@ const ShowCircle: FC<PropsType> = ({
           primitives={primitives}
           asynchronous={false}
           isGround={isGround}
-          center={[position[0], position[1], position[2]]}
-          radius={position[3]}
+          center={[position?.[0], position?.[1], position?.[2]]}
+          radius={position?.[3]}
+          primitiveType={primitiveType}
+          flightAreaHeight={flightAreaHeight}
           label={showLabel ? label : undefined}
           fill={fillColor}
           fillOpacity={fillOpacity}

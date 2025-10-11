@@ -1030,6 +1030,8 @@ flightArea:
       layerName: 飞行区域分组名称
       effectiveGroups: 生效组织
       effective: 生效范围
+      height:
+        required_msg: 请输入高度
     group:
       tooltip: 创建飞行区域分组
   edit:

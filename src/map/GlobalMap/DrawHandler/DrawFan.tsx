@@ -148,6 +148,7 @@ const DrawFan: FC<PropsType> = memo(({ onSuccess }) => {
       }),
       overlayExtType: data.overlayExtType,
       cotType: CotType.SHAPE_FAN,
+      overlayHeight: String(data.overlayHeight),
     }
     await createFn(commitData)
     onSuccess?.()

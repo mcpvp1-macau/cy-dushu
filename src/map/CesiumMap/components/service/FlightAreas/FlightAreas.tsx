@@ -7,6 +7,7 @@ import ShowPolygon from '../Overlaies/ShowPolygon'
 import ShowFan from '../Overlaies/ShowFan'
 import useFlightAreaStore from '@/store/map/useFlightArea.store'
 import { RightModeEnum } from '@/enum/right-mode'
+import NoFlyZonePrimitives from './NoFlyZonePrimitives'
 
 type PropsType = unknown
 
@@ -20,14 +21,19 @@ const FlightAreas: FC<PropsType> = memo(() => {
   const rightMode = useRightMode((s) => s.rightMode)
   const detailId = useRightMode((s) => s.detailId)
 
-  const overlays = useMemo(() => {
-    if (rightMode !== RightModeEnum.FLIGHT_AREA_DETAIL) return flightAreaList
+  const customOverlays = useMemo(() => {
+    // 去掉大疆禁飞区
+    const customFlightArea = flightAreaList.filter(
+      (item) => item.layerId !== -1,
+    )
+
+    if (rightMode !== RightModeEnum.FLIGHT_AREA_DETAIL) return customFlightArea
 
     if (!detailId || !isEdit) {
-      return flightAreaList
+      return customFlightArea
     } else {
       const newOverlays: API_LAYER_OVERLAY.domain.Overlay[] = []
-      flightAreaList.forEach((item) => {
+      customFlightArea.forEach((item) => {
         if (String(item.overlayId) !== detailId) {
           newOverlays.push(item)
         }
@@ -36,12 +42,16 @@ const FlightAreas: FC<PropsType> = memo(() => {
     }
   }, [detailId, flightAreaList, isEdit])
 
+  const djOverlays = useMemo(() => {
+    return flightAreaList.filter((item) => item.layerId === -1)
+  }, [flightAreaList])
+
   const { viewer } = useCesium()
   const primitives = useMemo(() => viewer?.scene.primitives, [viewer])
 
   return (
     <>
-      {overlays.map((overlay) => {
+      {customOverlays.map((overlay) => {
         if (overlay.cotType === CotType.SHAPE_CIRCLE) {
           return (
             <ShowCircle
@@ -76,6 +86,11 @@ const FlightAreas: FC<PropsType> = memo(() => {
           )
         }
       })}
+      <NoFlyZonePrimitives
+        overlays={djOverlays}
+        primitives={primitives}
+        isGround={true}
+      />
     </>
   )
 })

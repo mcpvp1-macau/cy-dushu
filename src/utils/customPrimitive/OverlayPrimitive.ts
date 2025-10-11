@@ -86,12 +86,47 @@ function createDragPoint(position: Cesium.Cartesian3): Point {
   }
 }
 
-async function createPolyline(
-  positions: Cesium.Cartesian3[],
-  styleOptions: StyleOptions,
-  asynchronous: boolean,
-  isGround: boolean,
-) {
+type CreateOptions = {
+  positions: Cesium.Cartesian3[]
+  styleOptions: StyleOptions
+  asynchronous: boolean
+  isGround: boolean
+  primitiveType: PrimitiveType
+  flightAreaHeight: number
+}
+
+async function createPolyline(options: CreateOptions) {
+  const {
+    positions,
+    styleOptions,
+    asynchronous,
+    isGround,
+    primitiveType,
+    flightAreaHeight,
+  } = options
+  // // 禁飞区为拉伸的实心多边形，不显示描边
+  // if (primitiveType === 'NO_FLY_ZONE') return null
+
+  // 电子围栏为围墙，使用WallGeometry
+  if (primitiveType === 'ELECTRONIC_FENCE' && flightAreaHeight > 0) {
+    return new Cesium.Primitive({
+      geometryInstances: new Cesium.GeometryInstance({
+        geometry: new Cesium.WallGeometry({
+          positions,
+          maximumHeights: positions.map(() => flightAreaHeight),
+        }),
+      }),
+      appearance: new Cesium.MaterialAppearance({
+        material: Cesium.Material.fromType(Cesium.Material.ColorType, {
+          color: Cesium.Color.fromCssColorString(styleOptions.fill).withAlpha(
+            styleOptions.fillOpacity,
+          ),
+        }),
+      }),
+      asynchronous,
+    })
+  }
+
   let u_polylineLength = 0
   for (let i = 1; i < positions.length; i++) {
     u_polylineLength += Cesium.Cartesian3.distance(
@@ -165,13 +200,24 @@ async function createPolyline(
   })
 }
 
-async function createPolygon(
-  positions: Cesium.Cartesian3[],
-  styleOptions: StyleOptions,
-  asynchronous: boolean,
-  isGround: boolean,
-) {
-  const PrimitiveClass = isGround ? Cesium.GroundPrimitive : Cesium.Primitive
+async function createPolygon(options: CreateOptions) {
+  const {
+    positions,
+    styleOptions,
+    asynchronous,
+    isGround,
+    primitiveType,
+    flightAreaHeight,
+  } = options
+
+  // 电子围栏为墙，不显示填充
+  if (primitiveType === 'ELECTRONIC_FENCE' && flightAreaHeight > 0) return null
+
+  let PrimitiveClass = isGround ? Cesium.GroundPrimitive : Cesium.Primitive
+  // // 禁飞区为拉伸的多边形
+  // PrimitiveClass =
+  //   primitiveType === 'NO_FLY_ZONE' ? Cesium.Primitive : PrimitiveClass
+
   if (isGround) {
     await Cesium.GroundPrimitive.initializeTerrainHeights()
   }
@@ -180,6 +226,7 @@ async function createPolygon(
       geometry: new Cesium.PolygonGeometry({
         polygonHierarchy: new Cesium.PolygonHierarchy(positions),
         perPositionHeight: isGround ? false : true,
+        // extrudedHeight: flightAreaHeight,
       }),
     }),
     appearance: new Cesium.MaterialAppearance({
@@ -193,14 +240,26 @@ async function createPolygon(
   })
 }
 
-const CIRCLE_POINT_NUMBER = 180
-function createCircle(
-  center: Coordinate,
-  radius: number,
-  styleOptions: StyleOptions,
-  asynchronous: boolean,
-  isGround: boolean,
-) {
+export const CIRCLE_POINT_NUMBER = 180
+function createCircle(options: {
+  center: Coordinate
+  radius: number
+  styleOptions: StyleOptions
+  asynchronous: boolean
+  isGround: boolean
+  primitiveType: PrimitiveType
+  flightAreaHeight: number
+}) {
+  const {
+    center,
+    radius,
+    styleOptions,
+    asynchronous,
+    isGround,
+    primitiveType,
+    flightAreaHeight,
+  } = options
+
   const circle = turf.circle(center, radius, {
     steps: CIRCLE_POINT_NUMBER,
     units: 'meters',
@@ -210,16 +269,35 @@ function createCircle(
     Cesium.Cartesian3.fromDegrees(coord[0], coord[1], coord?.[2] ?? 0),
   )
 
-  return createPolygon(positions, styleOptions, asynchronous, isGround)
+  return createPolygon({
+    positions,
+    styleOptions,
+    asynchronous,
+    isGround,
+    primitiveType,
+    flightAreaHeight,
+  })
 }
 
-function createCircleOutline(
-  center: Coordinate,
-  radius: number,
-  styleOptions: StyleOptions,
-  asynchronous: boolean,
-  isGround: boolean,
-) {
+function createCircleOutline(options: {
+  center: Coordinate
+  radius: number
+  styleOptions: StyleOptions
+  asynchronous: boolean
+  isGround: boolean
+  primitiveType: PrimitiveType
+  flightAreaHeight: number
+}) {
+  const {
+    center,
+    radius,
+    styleOptions,
+    asynchronous,
+    isGround,
+    primitiveType,
+    flightAreaHeight,
+  } = options
+
   const circle = turf.circle(center, radius, {
     steps: CIRCLE_POINT_NUMBER,
     units: 'meters',
@@ -229,7 +307,14 @@ function createCircleOutline(
     Cesium.Cartesian3.fromDegrees(coord[0], coord[1], coord?.[2] ?? 0),
   )
 
-  return createPolyline(positions, styleOptions, asynchronous, isGround)
+  return createPolyline({
+    positions,
+    styleOptions,
+    asynchronous,
+    isGround,
+    primitiveType,
+    flightAreaHeight,
+  })
 }
 
 export function getCenter(points: Coordinate[]) {
@@ -280,11 +365,22 @@ function getPixelSizeInMeters(frameState: any) {
   return pixelSizeInMeters
 }
 
+export type PrimitiveType =
+  | 'OVERLAY'
+  | 'ELECTRONIC_FENCE'
+  | 'NO_FLY_ZONE'
+  | 'AI_COUNT_ZONE'
+  | 'NO_COUNT_ZONE'
+
 type OverlayPrimitiveProps = {
   styleOptions: StyleOptions
   asynchronous?: boolean
   props?: any
   isGround?: boolean
+  /**该图元的类型，默认是覆盖物 */
+  primitiveType?: PrimitiveType
+  /**飞行区域的高度 */
+  flightAreaHeight?: number
 }
 
 // 所有的几何图形如果想要更新需要改变position的地址，而不能通过push这些方法
@@ -306,6 +402,8 @@ export class OverlayPolygonPrimitive {
   show: boolean = true
   isGround: boolean
   props: any
+  primitiveType: PrimitiveType
+  flightAreaHeight: number
 
   constructor(overlayOptions: OverlayPrimitiveProps) {
     this._styleOptions = overlayOptions.styleOptions
@@ -313,6 +411,8 @@ export class OverlayPolygonPrimitive {
     this.props = overlayOptions.props
     this.asynchronous = overlayOptions.asynchronous ?? true
     this.isGround = overlayOptions.isGround ?? true
+    this.primitiveType = overlayOptions.primitiveType ?? 'OVERLAY'
+    this.flightAreaHeight = overlayOptions.flightAreaHeight ?? 0
   }
 
   update(frameState: any) {
@@ -346,12 +446,7 @@ export class OverlayPolygonPrimitive {
       this._polygonOutline = null
       this._polygon = null
     } else if (this._positions.length === 2) {
-      this._polygonOutline = await createPolyline(
-        this.cartesianPositions,
-        this.styleOptions,
-        this.asynchronous,
-        this._isGround,
-      )
+      this._polygonOutline = await createPolyline(this.getCreateOptions())
       this._polygon = null
     } else {
       const closedPositions = [
@@ -359,17 +454,9 @@ export class OverlayPolygonPrimitive {
         this.cartesianPositions[0],
       ]
       this._polygonOutline = await createPolyline(
-        closedPositions,
-        this.styleOptions,
-        this.asynchronous,
-        this._isGround,
+        this.getCreateOptions(closedPositions),
       )
-      this._polygon = await createPolygon(
-        this.cartesianPositions,
-        this.styleOptions,
-        this.asynchronous,
-        this._isGround,
-      )
+      this._polygon = await createPolygon(this.getCreateOptions())
 
       if (this._polygon) {
         // @ts-ignore
@@ -451,6 +538,19 @@ export class OverlayPolygonPrimitive {
     )
   }
 
+  getCreateOptions(
+    positions?: Cesium.Cartesian3[],
+  ): Parameters<typeof createPolygon>[0] {
+    return {
+      positions: positions ?? this.cartesianPositions,
+      styleOptions: this.styleOptions,
+      asynchronous: this.asynchronous,
+      isGround: this._isGround,
+      primitiveType: this.primitiveType,
+      flightAreaHeight: this.flightAreaHeight,
+    }
+  }
+
   setProps(data: any) {
     this.props = data
     this.updateGeometry()
@@ -476,6 +576,8 @@ export class OverlayCirclePrimitive {
   radius: number = 0
   props: any
   isGround: boolean = true
+  primitiveType: PrimitiveType
+  flightAreaHeight: number
 
   constructor(overlayOptions: OverlayPrimitiveProps) {
     this._styleOptions = overlayOptions.styleOptions
@@ -483,6 +585,8 @@ export class OverlayCirclePrimitive {
     this.asynchronous = overlayOptions.asynchronous ?? true
     this.isGround = overlayOptions.isGround ?? true
     this._label = new Cesium.LabelCollection()
+    this.primitiveType = overlayOptions.primitiveType ?? 'OVERLAY'
+    this.flightAreaHeight = overlayOptions.flightAreaHeight ?? 0
   }
 
   update(frameState: any) {
@@ -522,20 +626,8 @@ export class OverlayCirclePrimitive {
       return
     }
 
-    this._circle = await createCircle(
-      this._center,
-      this._radius || 100000,
-      this._styleOptions,
-      this.asynchronous,
-      this._isGround,
-    )
-    this._circleOutline = await createCircleOutline(
-      this._center,
-      this._radius || 100000,
-      this._styleOptions,
-      this.asynchronous,
-      this._isGround,
-    )
+    this._circle = await createCircle(this.getCreateOptions())
+    this._circleOutline = await createCircleOutline(this.getCreateOptions())
 
     if (this._circle) {
       // @ts-ignore
@@ -609,6 +701,18 @@ export class OverlayCirclePrimitive {
     )
   }
 
+  getCreateOptions(): Parameters<typeof createCircle>[0] {
+    return {
+      center: this.center,
+      radius: this._radius || 100000,
+      styleOptions: this._styleOptions,
+      asynchronous: this.asynchronous,
+      isGround: this._isGround,
+      primitiveType: this.primitiveType,
+      flightAreaHeight: this.flightAreaHeight,
+    }
+  }
+
   setProps(data: any) {
     this.props = data
     this.updateGeometry()
@@ -648,6 +752,8 @@ export class OverlayFanPrimitive {
   show: boolean = true
   isGround: boolean = true
   props: any
+  primitiveType: PrimitiveType
+  flightAreaHeight: number
 
   constructor(overlayOptions: OverlayPrimitiveProps) {
     this._styleOptions = overlayOptions.styleOptions
@@ -655,6 +761,8 @@ export class OverlayFanPrimitive {
     this.props = overlayOptions.props
     this.asynchronous = overlayOptions.asynchronous ?? true
     this.isGround = overlayOptions.isGround ?? true
+    this.primitiveType = overlayOptions.primitiveType ?? 'OVERLAY'
+    this.flightAreaHeight = overlayOptions.flightAreaHeight ?? 0
   }
 
   update(frameState: any) {
@@ -688,29 +796,16 @@ export class OverlayFanPrimitive {
       this._fanOutline = null
       this._fan = null
     } else if (this._positions.length === 2) {
-      this._fanOutline = await createPolyline(
-        this.cartesianPositions,
-        this.styleOptions,
-        this.asynchronous,
-        this._isGround,
-      )
+      this._fanOutline = await createPolyline(this.getCreateOptions())
       this._fan = null
     } else {
       const fanPositions = this.fanCoordnates.map((point) =>
         Cesium.Cartesian3.fromDegrees(point[0], point[1], point?.[2] ?? 0),
       )
       this._fanOutline = await createPolyline(
-        [...fanPositions, fanPositions[0]],
-        this.styleOptions,
-        this.asynchronous,
-        this._isGround,
+        this.getCreateOptions([...fanPositions, fanPositions[0]]),
       )
-      this._fan = await createPolygon(
-        fanPositions,
-        this.styleOptions,
-        this.asynchronous,
-        this._isGround,
-      )
+      this._fan = await createPolygon(this.getCreateOptions(fanPositions))
 
       if (this._fan) {
         // @ts-ignore
@@ -786,6 +881,19 @@ export class OverlayFanPrimitive {
     return this._positions.map((coord) =>
       Cesium.Cartesian3.fromDegrees(coord[0], coord[1], coord?.[2] ?? 0),
     )
+  }
+
+  getCreateOptions(
+    positions?: Cesium.Cartesian3[],
+  ): Parameters<typeof createPolygon>[0] {
+    return {
+      positions: positions || this.cartesianPositions,
+      styleOptions: this.styleOptions,
+      asynchronous: this.asynchronous,
+      isGround: this._isGround,
+      primitiveType: this.primitiveType,
+      flightAreaHeight: this.flightAreaHeight,
+    }
   }
 
   /**根据三个支点生成的类扇形多边形点 */

@@ -120,7 +120,8 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
     const fillColorARGB = hexToARGB(fillColorHex)
 
     const commitData = {
-      ...data,
+      layerId: data.layerId,
+      overlayName: data.overlayName,
       overlayType: 'CIRCULAR',
       // 圆的点位固定为四个
       overlayPositions: JSON.stringify([
@@ -180,6 +181,7 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
       }),
       overlayExtType: data.overlayExtType,
       cotType: CotType.SHAPE_CIRCLE,
+      overlayHeight: String(data.overlayHeight),
     }
 
     await createFn(commitData)

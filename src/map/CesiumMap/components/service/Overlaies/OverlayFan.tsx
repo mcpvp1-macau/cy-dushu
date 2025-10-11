@@ -1,6 +1,9 @@
 import { memo, type FC } from 'react'
 import * as Cesium from 'cesium'
-import { OverlayFanPrimitive } from '@/utils/customPrimitive/OverlayPrimitive'
+import {
+  OverlayFanPrimitive,
+  PrimitiveType,
+} from '@/utils/customPrimitive/OverlayPrimitive'
 import { attempt } from 'lodash'
 
 type PropsType = {
@@ -9,6 +12,9 @@ type PropsType = {
   positions: number[][] // [[111,111,111], [222,222,222]]
   asynchronous: boolean
   isGround?: boolean
+  primitiveType?: PrimitiveType
+  /**飞行区域的高度 */
+  flightAreaHeight?: number
   hide?: 0 | 1
   fill?: string
   stroke?: string
@@ -25,6 +31,8 @@ const OverlayFan: FC<PropsType> = memo((props) => {
     primitives,
     positions,
     asynchronous,
+    primitiveType = 'OVERLAY',
+    flightAreaHeight = 0,
     isGround = true,
     hide = false,
     fill = '#4c90f0',
@@ -48,6 +56,8 @@ const OverlayFan: FC<PropsType> = memo((props) => {
       asynchronous,
       props: data,
       isGround,
+      primitiveType,
+      flightAreaHeight,
     }),
   )
 
