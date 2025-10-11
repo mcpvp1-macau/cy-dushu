@@ -46,7 +46,7 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
   )
 
   const flightAreaList = useFlightAreaStore((s) => s.flightAreaList)
-  console.log('flightAreaList', flightAreaList)
+
   const noFlyZones = useMemo(
     () =>
       flightAreaList
@@ -80,7 +80,7 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
       [uavLon, uavLat],
       [position[0], position[1]],
     ])
-    return noFlyZones.some((zone) => turf.booleanCrosses(line, zone))
+    return noFlyZones.some((zone) => turf.booleanIntersects(zone, line))
   }, [noFlyZones, position, uavLon, uavLat])
 
   const postServiceHandler = usePostDeviceServiceHandler()
@@ -100,8 +100,8 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
       ) {
         // 调用父设备的 gotoPosition 服务
         await postServiceHandler(
-          parentDeivceDetail.deviceModel.productKey,
-          parentDeivceDetail.deviceModel.deviceId,
+          parentDeivceDetail.productKey,
+          parentDeivceDetail.deviceId,
           'gotoPosition',
           {
             longitude: position[0],
