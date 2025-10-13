@@ -60,4 +60,4 @@ const ShowFan: FC<PropsType> = ({
 
 ShowFan.displayName = 'ShowFan'
 
-export default ShowFan
+export default memo(ShowFan)

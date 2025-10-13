@@ -60,4 +60,4 @@ const ShowPolygon: FC<PropsType> = ({
 
 ShowPolygon.displayName = 'ShowPolygon'
 
-export default ShowPolygon
+export default memo(ShowPolygon)

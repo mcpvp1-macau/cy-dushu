@@ -6,7 +6,9 @@ import AppEmpty from '@/components/AppEmpty'
 import IconButton from '@/components/ui/button/IconButton'
 import { groupBy } from 'lodash'
 import { useAppMsg } from '@/hooks/useAppMsg'
-import useFlightAreaStore from '@/store/map/useFlightArea.store'
+import useFlightAreaStore, {
+  useFlightAreaConfigStore,
+} from '@/store/map/useFlightArea.store'
 import FlightAreaItemConfig from './FlightAreaConfig'
 import EditFlightAreaGroup from './AddFlightAreaGroup'
 import { deleteFlightAreaGroup } from '@/service/modules/flightArea'
@@ -42,6 +44,22 @@ const FlightAreaGroupConfig: FC<PropsType> = memo((props) => {
     return grouped
   }, [flightAreaList, props.searchKw, props.searchType])
 
+  const hiddenOverlayIds = useFlightAreaConfigStore((s) => s.hiddenOverlayIds)
+
+  const hiddenLayerIds = useMemo(() => {
+    const hiddenLayerIds = new Set<number>()
+    flightAreaList.forEach((e) => {
+      if (
+        flightListGroup[e.layerId]?.every((o) =>
+          hiddenOverlayIds.has(o.overlayId),
+        )
+      ) {
+        hiddenLayerIds.add(e.layerId)
+      }
+    })
+    return hiddenLayerIds
+  }, [flightAreaList, flightListGroup, hiddenOverlayIds])
+
   const msgApi = useAppMsg()
   const queryClient = useQueryClient()
   const handleDelGroup = async (id: number) => {
@@ -62,28 +80,29 @@ const FlightAreaGroupConfig: FC<PropsType> = memo((props) => {
           label: ` - ${layerGroup.layerName}`,
           extra: (
             <div className="flex gap-3" onClick={(e) => e.stopPropagation()}>
-              {/* <IconButton
+              <IconButton
                 onClick={() => {
-                  	// updateShow(layerGroup.id, !showGroupIds.has(layerGroup.id))
+                  const newHiddenOverlayIds = new Set(hiddenOverlayIds)
+                  if (hiddenLayerIds.has(layerGroup.layerId)) {
+                    flightListGroup[layerGroup.layerId]?.forEach((o) => {
+                      newHiddenOverlayIds.delete(o.overlayId)
+                    })
+                  } else {
+                    flightListGroup[layerGroup.layerId]?.forEach((o) => {
+                      newHiddenOverlayIds.add(o.overlayId)
+                    })
+                  }
+                  useFlightAreaConfigStore.setState({
+                    hiddenOverlayIds: newHiddenOverlayIds,
+                  })
                 }}
               >
-                {showGroupIds.has(layerGroup.id) ? (
-                  <IconVisible />
-                ) : (
+                {hiddenLayerIds.has(layerGroup.layerId) ? (
                   <IconNotVisible />
+                ) : (
+                  <IconVisible />
                 )}
-              </IconButton> */}
-
-              <EditFlightAreaGroup data={layerGroup} type="edit" />
-
-              {layerGroup.layerType !== 'DEFAULT' && (
-                <IconButton
-                  className="scale-90"
-                  onClick={() => handleDelGroup(layerGroup.layerId)}
-                >
-                  <IconDelete />
-                </IconButton>
-              )}
+              </IconButton>
             </div>
           ),
           children: (

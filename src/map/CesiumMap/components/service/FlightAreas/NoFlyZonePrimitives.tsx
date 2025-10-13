@@ -124,4 +124,4 @@ const NoFlyZonePrimitives: FC<Props> = (props) => {
 
 NoFlyZonePrimitives.displayName = 'NoFlyZonePrimitives'
 
-export default NoFlyZonePrimitives
+export default memo(NoFlyZonePrimitives)

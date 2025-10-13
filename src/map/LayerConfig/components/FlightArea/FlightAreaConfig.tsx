@@ -8,6 +8,7 @@ import { deleteFlightArea } from '@/service/modules/flightArea'
 import { LoadingOutlined } from '@ant-design/icons'
 import { Tooltip } from 'antd'
 import queryClient from '@/global/query-client'
+import { useFlightAreaConfigStore } from '@/store/map/useFlightArea.store'
 
 type PropsType = {
   data: API_LAYER_OVERLAY.domain.Overlay
@@ -41,6 +42,11 @@ const FlightAreaItemConfig: FC<PropsType> = memo((props) => {
     }
   }
 
+  const hiddenOverlayIds = useFlightAreaConfigStore((s) => s.hiddenOverlayIds)
+  const updateHiddenOverlayIds = useFlightAreaConfigStore(
+    (s) => s.updateHiddenOverlayIds,
+  )
+
   return (
     <li>
       <div className="flex justify-between">
@@ -55,13 +61,31 @@ const FlightAreaItemConfig: FC<PropsType> = memo((props) => {
             <LoadingOutlined />
           ) : (
             <>
-              {/* <EditReconstructionLayer data={data} /> */}
               <IconButton
-                className="scale-90"
-                onClick={() => handleDelte(data.overlayId)}
+                onClick={() => {
+                  if (hiddenOverlayIds.has(data.overlayId)) {
+                    hiddenOverlayIds.delete(data.overlayId)
+                  } else {
+                    hiddenOverlayIds.add(data.overlayId)
+                  }
+                  updateHiddenOverlayIds(new Set(hiddenOverlayIds))
+                }}
               >
-                <IconDelete />
+                {hiddenOverlayIds.has(data.overlayId) ? (
+                  <IconNotVisible />
+                ) : (
+                  <IconVisible />
+                )}
               </IconButton>
+
+              {data.layerId !== -1 && (
+                <IconButton
+                  className="scale-90"
+                  onClick={() => handleDelte(data.overlayId)}
+                >
+                  <IconDelete />
+                </IconButton>
+              )}
             </>
           )}
         </div>

@@ -60,4 +60,4 @@ const ShowCircle: FC<PropsType> = ({
 
 ShowCircle.displayName = 'ShowCircle'
 
-export default ShowCircle
+export default memo(ShowCircle)
