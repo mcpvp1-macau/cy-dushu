@@ -5,6 +5,7 @@ import { PointPrimitive, useCesium } from 'resium'
 import GroundPolygon from '@/map/CesiumMap/components/service/common/GroundPolygon'
 import OverlayCircle from '@/map/CesiumMap/components/service/Overlaies/OverlayCircle'
 import { useAppMsg } from '@/hooks/useAppMsg'
+import useMapDevicesStore from '@/store/map/useMapDevices.store'
 
 type PropsType = unknown
 
@@ -12,7 +13,12 @@ const TanqiFlyPlan: FC<PropsType> = memo(() => {
   const [searchParams] = useSearchParams()
   const chatId = Number(searchParams.get('chat') ?? '0')
   const queryClient = useQueryClient()
-  const sn = useDeviceDetailStore((s) => s.deviceDetail?.properties.sn)
+  const _sn = useDeviceDetailStore((s) => s.deviceDetail?.properties.sn)
+  const parentId = useDeviceDetailStore((s) => s.deviceDetail?.parentId)
+  const parentSn = useMapDevicesStore((s) => s.deviceMap[parentId || 'never'])
+    .properties.sn
+
+  const sn = parentSn || _sn
 
   const { data: resp } = useQuery(
     {

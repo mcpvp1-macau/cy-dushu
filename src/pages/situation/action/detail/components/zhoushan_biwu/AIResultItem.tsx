@@ -1,6 +1,6 @@
 import { updAIResult } from '@/service/modules/action'
 import { useAsyncEffect, useDebounceFn } from 'ahooks'
-import { Checkbox, Form, Input, Spin } from 'antd'
+import { Checkbox, Form, Input } from 'antd'
 import { useDictOptions } from '@/store/useDict.store'
 import { DictEnum } from '@/enum/dict'
 import ImageContainBoxPreview from '@/components/ui/ImageContainBoxPreview'

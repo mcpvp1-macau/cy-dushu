@@ -6,6 +6,7 @@ import { Bubble } from '@ant-design/x'
 import { GetProp, Image } from 'antd'
 
 import markdownit from 'markdown-it'
+import { ReactNode } from 'react'
 
 const md = markdownit()
 
@@ -37,26 +38,22 @@ const roles: GetProp<typeof Bubble.List, 'roles'> = {
 
 const ConversationDetail: FC<PropsType> = memo(({ data, aiState }) => {
   const items = useMemo<Item[]>(() => {
-    const items = data.map<Item>((e) => {
-      if (e.role === 'user') {
-        return {
-          role: 'user',
-          content: (
-            <div className="bg-ground-4 px-2 py-1 rounded">{e.content}</div>
-          ),
-        }
-      } else {
-        const c = shouldJson(e.content) ?? e.content
-        return {
-          role: 'ai',
-          avatar: {
-            icon: <IconTanQi />,
-            className: 'bg-ground-4',
-          },
-          content:
-            typeof c === 'string' ? (
-              <div dangerouslySetInnerHTML={{ __html: md.render(c) }} />
-            ) : c?.images?.length ? (
+    const items = data
+      .map<Item | null>((e) => {
+        if (e.role === 'user') {
+          return {
+            role: 'user',
+            content: (
+              <div className="bg-ground-4 px-2 py-1 rounded">{e.content}</div>
+            ),
+          }
+        } else {
+          const c = shouldJson(e.content) ?? e.content
+          let content: ReactNode | null = null
+          if (typeof c === 'string') {
+            content = <div dangerouslySetInnerHTML={{ __html: md.render(c) }} />
+          } else if (c?.images?.length) {
+            content = (
               <div>
                 <Image.PreviewGroup
                   items={c?.images?.map((img) => ({
@@ -70,14 +67,26 @@ const ConversationDetail: FC<PropsType> = memo(({ data, aiState }) => {
                   />
                 </Image.PreviewGroup>
               </div>
-            ) : (
-              <div>Unknown message</div>
-            ),
-          typing: true,
-          loading: false,
+            )
+          }
+
+          if (!content) {
+            return null
+          }
+
+          return {
+            role: 'ai',
+            avatar: {
+              icon: <IconTanQi />,
+              className: 'bg-ground-4',
+            },
+            content,
+            typing: true,
+            loading: false,
+          }
         }
-      }
-    })
+      })
+      .filter((e) => e !== null)
     if (aiState === 1) {
       return [
         ...items,
