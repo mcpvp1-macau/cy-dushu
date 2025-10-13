@@ -181,7 +181,7 @@ const DrawCircle: FC<PropsType> = memo(({ onSuccess }) => {
       }),
       overlayExtType: data.overlayExtType,
       cotType: CotType.SHAPE_CIRCLE,
-      overlayHeight: String(data.overlayHeight),
+      overlayHeight: String(data.overlayHeight || ''),
     }
 
     await createFn(commitData)

@@ -63,7 +63,9 @@ const OverlayFan: FC<PropsType> = memo((props) => {
 
   useEffect(() => {
     primitiveRef.current.setProps(data)
-  }, [data])
+    primitiveRef.current.primitiveType = primitiveType
+    primitiveRef.current.flightAreaHeight = flightAreaHeight
+  }, [data, primitiveType, flightAreaHeight])
 
   useEffect(() => {
     if (!primitives) return
