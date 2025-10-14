@@ -8,7 +8,7 @@ const WatermarkImage = {
     ctx.drawImage(image, 0, 0)
 
     // 文字样式
-    ctx.font = `${Math.max(14, (36 / 1920) * canvas.width)}px Arial`
+    ctx.font = `${Math.max(12, (28 / 1920) * canvas.width)}px Arial`
     ctx.fillStyle = '#e74341'
     ctx.textBaseline = 'bottom'
 
@@ -22,7 +22,7 @@ const WatermarkImage = {
       const y =
         canvas.height -
         20 -
-        (texts.length - 1 - i) * Math.max(24, (52 / 1920) * canvas.width) // 每行文字间隔40px
+        (texts.length - 1 - i) * Math.max(20, (40 / 1920) * canvas.width) // 每行文字间隔40px
 
       // 描边文字
       ctx.strokeText(line, x, y)
