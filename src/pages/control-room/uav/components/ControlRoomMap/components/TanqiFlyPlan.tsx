@@ -16,13 +16,13 @@ const TanqiFlyPlan: FC<PropsType> = memo(() => {
   const _sn = useDeviceDetailStore((s) => s.deviceDetail?.properties.sn)
   const parentId = useDeviceDetailStore((s) => s.deviceDetail?.parentId)
   const parentSn = useMapDevicesStore((s) => s.deviceMap[parentId || 'never'])
-    .properties.sn
+    ?.properties.sn
 
   const sn = parentSn || _sn
 
   const { data: resp } = useQuery(
     {
-      queryKey: ['tanqiFlyPlan', chatId],
+      queryKey: ['tanqiFlyPlan', sn, chatId],
       enabled: !!chatId && !!sn,
       queryFn: () => getUavFlyPlans(sn!),
     },
