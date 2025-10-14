@@ -44,6 +44,7 @@ const WaylineRender = () => {
   }, [])
 
   const waypointIndex = useUavControlRoomStore((s) => s.state.waypointIndex)
+  console.log('waypointIndex', waypointIndex)
   useEffect(() => {
     if (!waylinePrimitive) return
 

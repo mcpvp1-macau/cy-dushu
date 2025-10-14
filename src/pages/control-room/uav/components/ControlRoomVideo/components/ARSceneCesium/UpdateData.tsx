@@ -36,7 +36,7 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
   )
 
   // 筛选距离
-  const DISTANCE = 1_400 // 1 km
+  const DISTANCE = 2_000 // 2 km
 
   const lastCoordinates = useRef<[number, number] | undefined>(undefined)
   const [range, setRange] = useState<[number, number][] | undefined>()
@@ -137,7 +137,7 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
       const from = turf.point(lastCoordinates.current)
       const distance = turf.distance(from, to, { units: 'meters' })
 
-      if (distance < DISTANCE / 4) {
+      if (distance < DISTANCE / 8) {
         return
       }
     }

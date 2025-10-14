@@ -242,7 +242,7 @@ declare namespace API_DEVICE {
       laserLongitude: number
       latitude: number
       leftAvoidDistance: number
-      lensType: string
+      lensType: 'wide' | 'zoom' | 'ir'
       longitude: number
       lostAction: string
       mac: string

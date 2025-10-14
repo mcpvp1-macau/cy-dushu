@@ -7,12 +7,74 @@ import * as Cesium from 'cesium'
 import useARSettingStore from '@/store/setting/useARSetting.store'
 import { limitNum } from '@/utils/math'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
+import { useShallow } from 'zustand/react/shallow'
+import { getGimbalInfo, calcCameraParameters } from '@/constant/uav/gimbalV2'
+import { useLatest } from 'ahooks'
 
 type PropsType = unknown
 
 /** 更新相机 */
 const ARSceneCamera: FC<PropsType> = memo(() => {
   const uav = useMixARStore((s) => s.uavProperties)
+  const latestUavUpdateTime = useRef(Date.now())
+  const uav2 = useUavControlRoomStore(
+    useShallow((s) => ({
+      longitude: s.state.longitude ?? 0,
+      latitude: s.state.latitude ?? 0,
+      altitude: s.state.altitude ?? 0,
+      gimbalYaw: s.state.gimbalHead ?? 0,
+      gimbalPitch: s.state.gimbalPitch ?? 0,
+      lensType: s.state.lensType,
+      zoomFactor: s.state.zoomFactor ?? 1,
+      cameraType: s.state.gimbalType || s.state.cameraType,
+      uavYaw: s.state.uavYaw ?? 0,
+    })),
+  )
+
+  useEffect(() => {
+    latestUavUpdateTime.current = Date.now()
+  }, [uav])
+
+  // 0.5s内视频流都没更新，则使用DRC链路的数据
+  const uavProperty = useMemo(() => {
+    if (Date.now() - latestUavUpdateTime.current < 1000 * 0.5) {
+      return {
+        ...uav,
+        fov: limitNum(
+          calcFovRadiation(
+            gimbalMap[uav.cameraType!]?.wide_focal ?? 4.5,
+            gimbalMap[uav.cameraType!]?.wide_camera_w ?? 6.4,
+            uav.lensType === 2 ? uav.zoomFactor || 1 : 1,
+          ),
+          0,
+          Math.PI - 1e-6,
+        ),
+      }
+    }
+    console.log(uav2)
+    const gimbalInfo = getGimbalInfo(uav2.cameraType || '')
+    const cameraParams = calcCameraParameters(
+      gimbalInfo,
+      uav2.lensType,
+      uav2.lensType === 'zoom' ? uav2.zoomFactor || 1 : 1,
+    )
+    return {
+      ...uav2,
+      width: cameraParams.width,
+      height: cameraParams.height,
+      fov: limitNum(
+        calcFovRadiation(
+          gimbalInfo.wide.focal ?? 4.5,
+          gimbalInfo.wide.width ?? 6.4,
+          uav2.lensType === 'zoom' ? uav2.zoomFactor || 1 : 1,
+        ),
+        0,
+        Math.PI - 1e-6,
+      ),
+    }
+  }, [uav, uav2])
+
   const { viewer } = useCesium()
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
   const shiftSetting = useARSettingStore(
@@ -34,12 +96,12 @@ const ARSceneCamera: FC<PropsType> = memo(() => {
     }
 
     if (
-      !uav.longitude ||
-      !uav.latitude ||
-      !uav.altitude ||
-      isNil(uav.gimbalYaw) ||
-      isNil(uav.gimbalPitch) ||
-      isNil(uav.zoomFactor)
+      !uavProperty.longitude ||
+      !uavProperty.latitude ||
+      !uavProperty.altitude ||
+      isNil(uavProperty.gimbalYaw) ||
+      isNil(uavProperty.gimbalPitch) ||
+      isNil(uavProperty.zoomFactor)
     ) {
       return
     }
@@ -47,29 +109,23 @@ const ARSceneCamera: FC<PropsType> = memo(() => {
     const camera = viewer.camera
     camera.setView({
       destination: Cesium.Cartesian3.fromDegrees(
-        uav.longitude,
-        uav.latitude,
-        uav.altitude! + shiftSetting.height,
+        uavProperty.longitude,
+        uavProperty.latitude,
+        uavProperty.altitude! + shiftSetting.height,
       ),
       orientation: {
-        heading: Cesium.Math.toRadians(uav.gimbalYaw + shiftSetting.gimbalYaw),
+        heading: Cesium.Math.toRadians(
+          uavProperty.gimbalYaw + shiftSetting.gimbalYaw,
+        ),
         pitch: Cesium.Math.toRadians(
-          uav.gimbalPitch + shiftSetting.gimbalPitch,
+          uavProperty.gimbalPitch + shiftSetting.gimbalPitch,
         ),
         roll: Cesium.Math.toRadians(0),
       },
     })
     camera.frustum = new Cesium.PerspectiveFrustum({
-      fov: limitNum(
-        calcFovRadiation(
-          gimbalMap[uav.cameraType!]?.wide_focal ?? 4.5,
-          gimbalMap[uav.cameraType!]?.wide_camera_w ?? 6.4,
-          uav.lensType === 2 ? uav.zoomFactor : 1,
-        ),
-        0,
-        Math.PI - 1e-6,
-      ),
-      aspectRatio: (uav.width ?? 1) / (uav.height ?? 1),
+      fov: uavProperty.fov,
+      aspectRatio: (uavProperty.width ?? 1) / (uavProperty.height ?? 1),
       near: 0.1,
       far: 10000,
     })
@@ -153,7 +209,7 @@ const ARSceneCamera: FC<PropsType> = memo(() => {
     }
 
     updateGimbalPick(gimbalPick)
-  }, [uav, viewer])
+  }, [uavProperty, shiftSetting, viewer])
 
   return null
 })
