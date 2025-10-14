@@ -4,6 +4,15 @@ Sentry.init({
   dsn: `${location.protocol}//${globalConfig.sentryDsn}@${location.host}/${globalConfig.sentryProjectId}`,
   sendDefaultPii: true,
 
+  beforeSend: (event) => {
+    event.tags = {
+      ...event.tags,
+      username: localStorage.getItem('username'),
+      token: localStorage.getItem('token'),
+    }
+    return event
+  },
+
   integrations: [
     Sentry.browserTracingIntegration(),
     Sentry.replayIntegration(),

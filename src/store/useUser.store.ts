@@ -103,6 +103,9 @@ const useUserStore = create<StateType & ActionsType>()(
           getUserByToken(token!),
           getSystemRoleMenu({}),
         ])
+        // 缓存username
+        await local.setItem('username', resp1.data.username || '')
+
         const m = {}
         resp2.data.rows.forEach((e) => {
           m[e.url] = e
