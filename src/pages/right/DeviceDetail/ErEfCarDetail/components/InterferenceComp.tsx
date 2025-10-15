@@ -21,7 +21,7 @@ const InterferenceComp: React.FC<{
         干扰频点 {requencyOfJammerListMock.length}个
       </div> */}
       <div className="flex flex-col gap-2 text-xs bg-[#28323C] m-3 p-2">
-        {requencyOfJammerListMock.map((item, i) => (
+        {requencyOfJammerListMock?.map((item, i) => (
           <div key={i}>
             <div className="flex items-center gap-1">
               <div className="w-[2px] h-[8px] bg-[#15B371]"></div>
