@@ -77,6 +77,7 @@ const XForm: FC<PropsType> = memo(
               options={item.options}
               showSearch={true}
               optionFilterProp="label"
+              defaultActiveFirstOption={false}
               {...item.otherProps}
             />
           )
