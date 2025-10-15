@@ -41,6 +41,7 @@ const EventDetailModal: FC<PropsType> = memo(({ data, rows }) => {
           <div className="p-3">
             <EventDetail
               data={currentData}
+              useGo={false}
               swiper={
                 rows
                   ? { swiperData: rows, onIndexChange: handleIndexChange }

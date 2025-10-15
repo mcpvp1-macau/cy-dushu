@@ -7,7 +7,7 @@ import { emtpyObject } from '@/constant/data'
 import { bigFlyEmitter } from '@/map/GlobalMap/BigFlyListener'
 import { getEventTypeList } from '@/service/modules/events'
 import { shouldJson } from '@/utils/json'
-import { isNil } from 'lodash'
+import { isNil, round } from 'lodash'
 
 export const handleStorageURL = (url: string) => {
   if (!url) return ''
@@ -31,7 +31,6 @@ export const handleStorageURL = (url: string) => {
 type PropsType = {
   data: API_EVENTS.domain.Event
   useCol?: boolean
-  /** @deprecated 没用了 */
   useGo?: boolean
   swiper?: {
     swiperData: API_EVENTS.domain.Event[]
@@ -40,7 +39,7 @@ type PropsType = {
 }
 
 /** 事件详情 */
-const EventDetail: FC<PropsType> = memo(({ data, useCol, swiper }) => {
+const EventDetail: FC<PropsType> = memo(({ data, useCol, swiper, useGo }) => {
   const queryClient = useQueryClient()
   const { data: eventData, isLoading: isTypeLoading } = useQuery(
     {
@@ -128,21 +127,27 @@ const EventDetail: FC<PropsType> = memo(({ data, useCol, swiper }) => {
                       <label>{e.label}:</label>
                       <p className="text-white">
                         <span>{e.value}</span>
-                        {e.label === '位置' && (
-                          <IconButton className="ml-1">
-                            <IconToLocation
-                              onClick={() => {
-                                if (!data.longitude || !data.latitude) {
-                                  return
-                                }
-                                bigFlyEmitter.emit('bigFly', {
-                                  lng: data.longitude,
-                                  lat: data.latitude,
-                                })
-                              }}
-                            />
-                          </IconButton>
-                        )}
+                        {e.label === '位置' &&
+                          (useGo ? (
+                            <IconButton className="ml-1">
+                              <IconToLocation
+                                onClick={() => {
+                                  if (!data.longitude || !data.latitude) {
+                                    return
+                                  }
+                                  bigFlyEmitter.emit('bigFly', {
+                                    lng: data.longitude,
+                                    lat: data.latitude,
+                                  })
+                                }}
+                              />
+                            </IconButton>
+                          ) : (
+                            <span>
+                              {round(data.longitude ?? 0, 6)},
+                              {round(data.latitude ?? 0, 6)}
+                            </span>
+                          ))}
                       </p>
                     </li>
                   ))}
