@@ -31,9 +31,6 @@ const ShanghaiWarZoneConfig = lazy(
   () => import('./components/custom/ShanghaiWarZoneConfig'),
 )
 
-const ShanghaiBanAreas = lazy(
-  () => import('./components/custom/ShanghaiBanAreas'),
-)
 const ShanghaiBanRoutes = lazy(
   () => import('./components/custom/ShanghaiBanRoutes'),
 )
@@ -135,7 +132,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
           <>
             <ShanghaiWarZone />
             <ShanghaiBanRoutes />
-            <ShanghaiBanAreas />
+            {/* <ShanghaiBanAreas /> */}
           </>
         )}
         {globalConfig.useGuizhouFarm && <GuizhouFarm />}
