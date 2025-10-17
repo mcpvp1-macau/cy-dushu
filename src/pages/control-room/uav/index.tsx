@@ -38,6 +38,7 @@ import DeferredRender from '@/components/DeferredRender'
 import { useListenRealProcessedResults } from '@/store/map/useReconstruction2DMap.store'
 import { lazy } from 'react'
 import ParentVideoAlert from './components/ParentVideoAlert'
+import { useListenDeviceLatestTask } from '@/store/useDeviceLatestTask.store'
 
 const ControlRoomUavMap = lazy(() => import('./components/ControlRoomMap'))
 const DitingTanqi = lazy(() => import('./components/DitingTanqi/DitingTanqi'))
@@ -185,6 +186,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
   const { pathname } = useLocation()
 
   useListenRealProcessedResults((id) => id === deviceId)
+  useListenDeviceLatestTask(deviceId)
 
   return (
     <DeviceDetailStoreContext.Provider key={deviceId} value={store}>

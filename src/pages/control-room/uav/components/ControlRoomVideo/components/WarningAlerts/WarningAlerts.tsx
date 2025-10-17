@@ -9,6 +9,7 @@ import useWarningAudioBuffer from './useWarningAuidoBuffer'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import { getSpaceDistance } from '@/utils/geo-math'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import useDeviceLatestTaskStore from '@/store/useDeviceLatestTask.store'
 
 type PropsType = unknown
 
@@ -57,6 +58,9 @@ const WarningAlerts: FC<PropsType> = memo(() => {
   const [closeDeviceName, setCloseDeviceName] = useState<string | null>(null)
 
   const toggleWarning = useMemoizedFn((type: WarningAlertType, on: boolean) => {
+    if (warnings.has(type) === on) {
+      return
+    }
     setWarnings((prev) => {
       const newSet = new Set(prev)
       if (on) {
@@ -79,6 +83,7 @@ const WarningAlerts: FC<PropsType> = memo(() => {
     })
   })
 
+  // 判断无人机是否进入禁飞区/返航经过禁飞区 -----------------------------------------------
   useEffect(() => {
     if (!audioBuffers) {
       // 警报声还没预备好
@@ -115,11 +120,13 @@ const WarningAlerts: FC<PropsType> = memo(() => {
     toggleWarning(WarningAlertType.RTHInNoFlyZoneAlert, rthInNoFlyZone)
   }, [state, noFlyZones, audioBuffers])
 
+  // 判断无人机是否与其他设备距离过近 ------------------------------------------------------
   const deviceRealtimeProperties = useGlobalWsStore(
     (s) => s.deviceRealtimeProperties,
   )
   useEffect(() => {
-    if (!state.lon || !state.lat || !state.alt) {
+    if (!audioBuffers || !state.lon || !state.lat || !state.alt) {
+      toggleWarning(WarningAlertType.DistanceAlert, false)
       return
     }
     const devices = Object.values(deviceRealtimeProperties)
@@ -147,32 +154,69 @@ const WarningAlerts: FC<PropsType> = memo(() => {
       return isClose
     })
     toggleWarning(WarningAlertType.DistanceAlert, isClose)
-  }, [deviceId, state, deviceRealtimeProperties])
+  }, [deviceId, state, deviceRealtimeProperties, audioBuffers])
+
+  // 判断无人机是否在航线上 ---------------------------------------------------------------
+  const taskData = useDeviceLatestTaskStore((s) => s.latestTask[deviceId])
+  const taskPositions = useMemo(() => {
+    const parameters = shouldJson(taskData?.parameters)
+    if (!parameters?.spaces?.[0]?.positions) {
+      return null
+    }
+    return parameters.spaces[0].positions
+  }, [taskData])
+  const waypointIndex = useUavControlRoomStore((s) => s.state.waypointIndex)
+
+  useEffect(() => {
+    if (
+      !audioBuffers ||
+      taskData.status !== 'RUNNING' ||
+      !state.lon ||
+      !state.lat ||
+      !taskPositions ||
+      !waypointIndex ||
+      waypointIndex === -1 ||
+      waypointIndex >= taskPositions.length
+    ) {
+      toggleWarning(WarningAlertType.DeviationFromFlightPathAlert, false)
+      return
+    }
+
+    const point = turf.point([state.lon, state.lat])
+    const line = turf.lineString(
+      taskPositions.map((p: any) => [p.pointX, p.pointY]),
+    )
+    const isDeviate =
+      turf.pointToLineDistance(point, line, { units: 'meters' }) > 10
+    toggleWarning(WarningAlertType.DeviationFromFlightPathAlert, isDeviate)
+  }, [state, audioBuffers, taskPositions])
 
   if (warnings.size === 0) {
     return null
   }
 
   return (
-    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-[#16202bcc] p-2 rounded flex gap-2 backdrop-blur">
+    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-[#16202b99] p-2 rounded flex gap-2 backdrop-blur">
       <WarningOutlined className="text-yellow-500 animate-pulse" />
       <div>
-        <div className="text-sm text-fore">
+        <div className="text-sm text-fore flex flex-col gap-1">
           {Array.from(warnings).map((w) => {
             switch (w) {
               case WarningAlertType.DistanceAlert:
                 return (
-                  '与其他设备距离过近' +
-                  (closeDeviceName ? ` (${closeDeviceName})` : '')
+                  <p>
+                    {`与其他设备距离过近` +
+                      (closeDeviceName ? ` (${closeDeviceName})` : '')}
+                  </p>
                 )
               case WarningAlertType.InNoFlyZoneAlert:
-                return '进入禁飞区'
+                return <p>进入禁飞区</p>
               case WarningAlertType.RTHInNoFlyZoneAlert:
-                return '返航经过禁飞区'
+                return <p>返航路线经过禁飞区</p>
               case WarningAlertType.DeviationFromFlightPathAlert:
-                return '偏离航线'
+                return <p>偏离任务航线</p>
               case WarningAlertType.LowBatteryAlert:
-                return '低电量报警'
+                return <p>低电量报警</p>
               default:
                 return null
             }

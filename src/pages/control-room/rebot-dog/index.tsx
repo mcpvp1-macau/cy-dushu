@@ -29,6 +29,7 @@ import IconPayload from '@/assets/icons/jsx/IconPayload'
 import RebotDogPayload from './components/Payload'
 import PointCloudMapManager from './components/PointCloudMapManager'
 import useServerEventMsg from '../uav/hooks/useServerEventMsg'
+import { useListenDeviceLatestTask } from '@/store/useDeviceLatestTask.store'
 
 const initialLayout: DynamicLayoutType = {
   type: 'row',
@@ -173,6 +174,8 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
     }),
     [],
   )
+
+  useListenDeviceLatestTask(deviceId)
 
   return (
     <DeviceDetailStoreContext.Provider value={store}>

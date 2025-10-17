@@ -1,28 +1,19 @@
 import { resolvePositions } from '@/pages/wayline/edit/utils'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
-import { getLatestTask } from '@/service/modules/airline'
 import { shouldJson } from '@/utils/json'
 import AirPoint from './AirPoint'
 import PathLine from './PathLine'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import Forecast from './Forecast'
 import useMixARStore from '@/store/control-room/useMixAR.store'
+import useDeviceLatestTaskStore from '@/store/useDeviceLatestTask.store'
 
 type PropsType = unknown
 
 /** 最新任务 */
 const LastestTask: FC<PropsType> = memo(() => {
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
-  const queryClient = useQueryClient()
-  const { data: taskData } = useQuery(
-    {
-      queryKey: ['getLatestTask', deviceId],
-      queryFn: () => getLatestTask(deviceId!),
-      enabled: !!deviceId,
-      select: (d) => d.data,
-    },
-    queryClient,
-  )
+  const taskData = useDeviceLatestTaskStore((s) => s.latestTask[deviceId]) // 订阅最新任务数据变化
 
   const displayMode = useUavControlRoomStore((s) => s.state.displayMode)
 
