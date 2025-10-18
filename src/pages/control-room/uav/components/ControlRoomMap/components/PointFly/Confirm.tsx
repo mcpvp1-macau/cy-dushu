@@ -179,9 +179,9 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
       {paramsOpen && (
         <FormModal
           title={t('controlRoom.uav.service.tapToFly.title')}
-          initialValues={{
-            height: 200,
-            speed: 10,
+          initialValues={{ height: 100, speed: 10 }}
+          localInitialValues={{
+            key: 'uav_point_fly',
           }}
           items={[
             {
