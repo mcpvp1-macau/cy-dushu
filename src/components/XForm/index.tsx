@@ -19,6 +19,9 @@ import { CaretDownFilled, UploadOutlined } from '@ant-design/icons'
 import AliyunOSSUpload from './AliyunOSSUpload'
 import styles from './styles.module.less'
 import Select from '../AntdOverride/Select'
+import { useAsyncEffect } from 'ahooks'
+import { useForm } from 'antd/es/form/Form'
+import { omit, pick } from 'lodash'
 
 type PropsType = GetProps<typeof Form> & {
   items: XFormItem[]
@@ -26,6 +29,14 @@ type PropsType = GetProps<typeof Form> & {
   themeConfig?: NonNullable<ThemeConfig['components']>['Form']
   rowsProps?: GetProps<typeof Row>
   colsProps?: GetProps<typeof Col>
+  /** 本地初始化值保存 */
+  localInitialValues?: {
+    key: string
+    /** 包含的字段 */
+    includes?: string[]
+    /** 排除的字段 */
+    excludes?: string[]
+  }
 }
 
 /** 表单 */
@@ -36,6 +47,7 @@ const XForm: FC<PropsType> = memo(
     themeKey = 'dushu',
     themeConfig = {},
     colsProps,
+    localInitialValues,
     ...restProps
   }) => {
     const { t } = useTranslation()
@@ -151,6 +163,20 @@ const XForm: FC<PropsType> = memo(
 
     themeConfig.itemMarginBottom ??= 12
 
+    const [form] = useForm(restProps.form)
+
+    useAsyncEffect(async () => {
+      if (localInitialValues) {
+        const result = await local.getItem<object>(
+          `xform-${localInitialValues.key}`,
+        )
+        if (typeof result !== 'object' || result === null) {
+          return
+        }
+        form.setFieldsValue(result)
+      }
+    }, [])
+
     return (
       <ConfigProvider
         theme={{
@@ -165,7 +191,22 @@ const XForm: FC<PropsType> = memo(
       >
         <Form
           {...restProps}
+          form={form}
           className={clsx(styles['liqun-form'], restProps.className)}
+          onBlur={(x) => {
+            if (localInitialValues?.key) {
+              let result = form.getFieldsValue() as object
+              if (localInitialValues.includes) {
+                result = pick(result, localInitialValues.includes)
+              }
+              if (localInitialValues.excludes) {
+                result = omit(result, localInitialValues.excludes)
+              }
+              form.setFieldsValue(result)
+              local.setItem(`xform-${localInitialValues.key}`, result)
+            }
+            restProps.onBlur?.(x)
+          }}
         >
           <Row {...rowsProps}>
             {renderItems.map((item) => (

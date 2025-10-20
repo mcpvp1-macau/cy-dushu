@@ -5,10 +5,9 @@ import IconButton from '@/components/ui/button/IconButton'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { taskStatusMap } from '@/pages/situation/action/detail/components/ChildActions/ChildAction'
 import { endActionItem, pauseActionItem } from '@/service/modules/action-item'
-import { getLatestTask } from '@/service/modules/airline'
+import useDeviceLatestTaskStore from '@/store/useDeviceLatestTask.store'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import { LoadingOutlined } from '@ant-design/icons'
-import { useUpdateEffect } from 'ahooks'
 
 type PropsType = {
   deviceId: string
@@ -22,21 +21,8 @@ const LatestTask: FC<PropsType> = memo(({ deviceId }) => {
   const { t, i18n } = useTranslation()
 
   const queryClient = useQueryClient()
-  const { data: taskData } = useQuery(
-    {
-      queryKey: ['getLatestTask', deviceId],
-      queryFn: () => getLatestTask(deviceId),
-      enabled: !!deviceId,
-      select: (d) => d.data,
-    },
-    queryClient,
-  )
 
-  useUpdateEffect(() => {
-    queryClient.invalidateQueries({
-      queryKey: ['getLatestTask', deviceId],
-    })
-  }, [actionItem?.status])
+  const taskData = useDeviceLatestTaskStore((s) => s.latestTask[deviceId])
 
   const status = taskData?.status
 

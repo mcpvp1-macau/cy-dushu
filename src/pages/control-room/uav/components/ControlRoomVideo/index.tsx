@@ -18,6 +18,7 @@ import IrMetering from './components/IrMetering'
 import ExposureMode from '../AsideToolBar/ExposureMode'
 import PointOrBoxSelect from './components/PointOrBoxSelect/PointOrBoxSelect'
 import TapToFlyOnVideo from './components/TapToFlyOnVideo'
+import WarningAlerts from './components/WarningAlerts/WarningAlerts'
 
 const ExposureValue = lazy(() => import('./components/ExposureValue'))
 const ShutterValue = lazy(() => import('./components/ShutterValue'))
@@ -176,9 +177,14 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
               <PointOrBoxSelect deviceLiveVideoRef={deviceLiveVideoRef} />
             )}
             {openTapToFlyOnVideo && <TapToFlyOnVideo />}
+            <WarningAlerts />
           </>
         }
-        videoSafeAreaChildren={<Avoidance />}
+        videoSafeAreaChildren={
+          <>
+            <Avoidance />
+          </>
+        }
         onVideoElementChange={updateVideoElement}
       />
     </div>

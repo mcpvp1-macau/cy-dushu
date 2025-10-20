@@ -273,17 +273,19 @@ const DitingTanqi: FC<PropsType> = memo(() => {
           >
             <div></div>
             <div className="flex gap-2 items-center pointer-events-auto">
-              <IconButton
-                className="text-sm"
-                toolTipProps={{ title: t('tanqi.createChat.title') }}
-                onClick={() => {
-                  const nextSearchParams = new URLSearchParams(searchParams)
-                  nextSearchParams.delete('chat')
-                  setSearchParams(nextSearchParams, { replace: true })
-                }}
-              >
-                <IconPlus />
-              </IconButton>
+              {chatId && (
+                <IconButton
+                  className="text-sm"
+                  toolTipProps={{ title: t('tanqi.createChat.title') }}
+                  onClick={() => {
+                    const nextSearchParams = new URLSearchParams(searchParams)
+                    nextSearchParams.delete('chat')
+                    setSearchParams(nextSearchParams, { replace: true })
+                  }}
+                >
+                  <IconPlus />
+                </IconButton>
+              )}
               <Conversations />
             </div>
           </div>

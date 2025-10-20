@@ -54,7 +54,7 @@ const Takeoff: FC<PropsType> = memo(({ postServiceFn }) => {
       {open && (
         <FormModal
           title="一键起飞"
-          initialValues={{ height: 100 }}
+          localInitialValues={{ key: 'uav_takeoff' }}
           items={[
             {
               label: '起飞高度',

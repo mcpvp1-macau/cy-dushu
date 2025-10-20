@@ -179,9 +179,9 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
       {paramsOpen && (
         <FormModal
           title={t('controlRoom.uav.service.tapToFly.title')}
-          initialValues={{
-            height: 200,
-            speed: 10,
+          initialValues={{ height: 100, speed: 10 }}
+          localInitialValues={{
+            key: 'uav_point_fly',
           }}
           items={[
             {
@@ -197,7 +197,7 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
                 },
               ],
               otherProps: {
-                addonAfter: 'm',
+                addonAfter: <div className="px-1">m</div>,
                 min: 1,
                 max: globalConfig.uavHeightLimit,
               },
@@ -214,14 +214,18 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
                   ),
                 },
               ],
-              otherProps: { addonAfter: 'm/s', max: 15, min: 1 },
+              otherProps: {
+                addonAfter: <div className="px-1">m/s</div>,
+                max: 15,
+                min: 1,
+              },
             },
             {
               label: t('device.uav.takeoffForm.goHomeAltitude.title'),
               name: 'gohomeAltitude',
               type: 'input-number',
               otherProps: {
-                addonAfter: 'm',
+                addonAfter: <div className="px-1">m</div>,
                 min: 50,
                 max: globalConfig.uavHeightLimit,
               },

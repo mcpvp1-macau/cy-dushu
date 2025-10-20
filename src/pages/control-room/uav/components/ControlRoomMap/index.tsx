@@ -76,7 +76,7 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
       <DrawHandler />
       <MapSituation />
       <UavMapPointFly />
-      {/*<UavViewCombackResolver />*/}
+      <UavViewCombackResolver />
       <LastestTask />
       {isResetHome && <ResetHomePointListener />}
       <UavMapInitial />
