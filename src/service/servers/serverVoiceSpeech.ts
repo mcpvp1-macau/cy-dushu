@@ -1,5 +1,5 @@
 import config from '@/global/config'
-import { unAuthorized, withToken } from './interceptors'
+import { formatThrowError, unAuthorized, withToken } from './interceptors'
 import LiqunAxios from './liqunAxios/liqun-axios'
 import { msgMitt } from '@/hooks/useAppMsg'
 
@@ -19,7 +19,7 @@ serverVoiceSpeech.interceptors.response.use((resp) => {
       type: 'error',
       content: `${resp.data.error.message}`,
     })
-    return Promise.reject(resp.data)
+    return Promise.reject(formatThrowError(resp))
   }
   return resp.data
 })

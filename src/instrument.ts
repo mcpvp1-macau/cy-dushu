@@ -1,17 +1,33 @@
 import * as Sentry from '@sentry/browser'
 
+console.log('globalConfig.sentryDsn', globalConfig.sentryDsn)
+
 Sentry.init({
   dsn: `${location.protocol}//${globalConfig.sentryDsn}@${location.host}/${globalConfig.sentryProjectId}`,
   sendDefaultPii: true,
 
-  beforeSend: (event) => {
+  // 增加username和token到tags
+  beforeSend: (event, hint) => {
+    console.log('username', localStorage.getItem('username'))
+
+    try {
+      const message = JSON.parse((hint?.originalException as any)?.message)
+      event.message = message.message
+      if (message.code !== 'SUCCESS') {
+        // return null
+      }
+    } catch (error) {
+      console.log('beforeSend', (hint?.originalException as any)?.message)
+    }
     event.tags = {
       ...event.tags,
-      username: localStorage.getItem('username'),
-      token: localStorage.getItem('token'),
+      'user.name': localStorage.getItem('username') || '',
+      token: localStorage.getItem('token') || '',
     }
     return event
   },
+  // 忽略部分异常，用正则表达式
+  // ignoreErrors: ['NetworkError'],
 
   integrations: [
     Sentry.browserTracingIntegration(),

@@ -70,3 +70,10 @@ export const shouldShowError = (resp: any) => {
     })
   }
 }
+
+export const formatThrowError = (resp: AxiosResponse<any, any>) => {
+  return JSON.stringify({
+    code: resp.data?.code,
+    message: resp.data?.message,
+  })
+}

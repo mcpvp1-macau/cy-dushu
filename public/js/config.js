@@ -72,4 +72,6 @@ window.config = {
   secretAccessKey: 'K2AqfD1wl+ZfeJnTBWgQ4g==',
   enableJessibucaMetrics: false,
   useTanqi: true,
+  sentryDsn: '8a3f2951493342c6803439364cbd9dfa',
+  sentryProjectId: '2',
 }

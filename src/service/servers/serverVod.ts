@@ -1,5 +1,6 @@
 import config from '@/global/config'
 import {
+  formatThrowError,
   shouldShowError,
   unAuthorized,
   withInternational,
@@ -20,7 +21,7 @@ serverVod.interceptors.response.use(unAuthorized, unAuthorized)
 serverVod.interceptors.response.use((resp) => {
   if (resp.data?.code !== 'SUCCESS') {
     shouldShowError(resp)
-    return Promise.reject(resp.data)
+    return Promise.reject(formatThrowError(resp))
   }
   return resp.data
 })

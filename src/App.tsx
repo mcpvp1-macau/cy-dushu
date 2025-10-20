@@ -73,6 +73,15 @@ const App = () => {
 
   const { i18n } = useTranslation()
 
+  useEffect(() => {
+    setTimeout(() => {
+      throw new Error(JSON.stringify({
+        code: 'ERROR',
+        message: '创建失败，唯一标识重复',
+      }))
+    }, 3000)
+  }, [])
+
   return (
     <XProvider
       renderEmpty={() => <AppEmpty />}

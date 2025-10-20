@@ -69,6 +69,10 @@ export default mergeConfig(
           // pathRewrite: { '^/upload': '' },
           rewrite: (path) => path.replace(/^\/upload/, ''),
         },
+        '/api': {
+          target: 'http://47.111.155.82:32680',
+          changeOrigin: true,
+        },
       },
     },
     define: {

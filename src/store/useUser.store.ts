@@ -104,7 +104,7 @@ const useUserStore = create<StateType & ActionsType>()(
           getSystemRoleMenu({}),
         ])
         // 缓存username
-        await local.setItem('username', resp1.data.username || '')
+        await localStorage.setItem('username', resp1.data.username || '')
 
         const m = {}
         resp2.data.rows.forEach((e) => {

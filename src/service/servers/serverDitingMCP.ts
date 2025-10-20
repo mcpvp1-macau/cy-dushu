@@ -1,4 +1,4 @@
-import { shouldShowError } from './interceptors'
+import { formatThrowError, shouldShowError } from './interceptors'
 import LiqunAxios from './liqunAxios'
 
 const serverDitingMCP = new LiqunAxios<'ditingTanqi'>({
@@ -9,7 +9,7 @@ const serverDitingMCP = new LiqunAxios<'ditingTanqi'>({
 serverDitingMCP.interceptors.response.use((resp) => {
   if (!resp.data?.success) {
     shouldShowError(resp)
-    return Promise.reject(resp.data)
+    return Promise.reject(formatThrowError(resp))
   }
   return resp.data
 })

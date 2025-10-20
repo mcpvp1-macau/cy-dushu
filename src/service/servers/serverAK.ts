@@ -1,4 +1,5 @@
 import {
+  formatThrowError,
   shouldShowError,
   unAuthorized,
   withInternational,
@@ -33,7 +34,7 @@ serverAK.interceptors.response.use(unAuthorized, unAuthorized)
 serverAK.interceptors.response.use((resp) => {
   if (resp.data?.code !== 'SUCCESS') {
     shouldShowError(resp)
-    return Promise.reject(resp.data)
+    return Promise.reject(formatThrowError(resp))
   }
   return resp.data
 })
