@@ -21,7 +21,7 @@ type PropsType = {
 }
 
 /** 任务状态 */
-const TaskStatusTag: FC<{ taskStatus: string }> = ({ taskStatus }) => {
+export const TaskStatusTag: FC<{ taskStatus: string }> = ({ taskStatus }) => {
   const { t } = useTranslation()
   const label =
     taskStatus === 'RUNNING'
@@ -47,7 +47,7 @@ const TaskStatusTag: FC<{ taskStatus: string }> = ({ taskStatus }) => {
 }
 
 /** 电量状态 */
-const BatteryStatusTag: FC<{ battery: number }> = ({ battery }) => {
+export const BatteryStatusTag: FC<{ battery: number }> = ({ battery }) => {
   return (
     <TagItemV2
       icon={<IconBattery className="text-[10px]" type="success" />}

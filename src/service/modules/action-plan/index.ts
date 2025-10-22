@@ -1,3 +1,4 @@
+import { DeviceEnum } from '@/enum/device'
 import serverJingqi from '@/service/servers/serverJingqi'
 
 /** 分页获取计划列表 */
@@ -51,4 +52,23 @@ export const getActionPlanRecordList = (
 /** 开始断点续飞 */
 export const startActionPlanBreakPoint = (data: { breakPointId: number }) => {
   return serverJingqi.post('/action/plan/record/break/start', data)
+}
+
+/** 获取接力设备列表 */
+export const getRelayDeviceList = (data: {
+  breakPointId: number
+  type?: DeviceEnum
+}) => {
+  return serverJingqi.post<{ total: number; rows: API_DEVICE.domain.Device[] }>(
+    '/device/list/relay',
+    data,
+  )
+}
+
+/** 接力续飞 */
+export const relayActionPlanRecord = (data: {
+  breakPointId: number
+  deviceId: string
+}) => {
+  return serverJingqi.post('/action/plan/record/relay/start', data)
 }

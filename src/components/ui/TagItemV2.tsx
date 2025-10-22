@@ -8,6 +8,7 @@ type PropsType = {
   bgColor?: string
   /** 自定义图标 覆盖 type 默认图标 */
   icon?: React.ReactNode
+  className?: string
 }
 
 const defaultColorMap: Record<string, string> = {
@@ -25,7 +26,10 @@ const TagItemV2: FC<PropsType> = memo((props) => {
 
   return (
     <div
-      className="text-xs inline-flex items-center gap-1 h-[18px] p-1 px-2 rounded-[3px] whitespace-nowrap"
+      className={clsx(
+        'text-xs inline-flex items-center gap-1 h-[18px] p-1 px-2 rounded-[3px] whitespace-nowrap',
+        props.className,
+      )}
       style={{ color: foreColor, background: bgColor }}
     >
       {props.icon}
