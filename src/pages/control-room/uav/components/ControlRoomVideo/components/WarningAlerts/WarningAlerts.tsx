@@ -170,7 +170,7 @@ const WarningAlerts: FC<PropsType> = memo(() => {
   useEffect(() => {
     if (
       !audioBuffers ||
-      taskData.status !== 'RUNNING' ||
+      taskData?.status !== 'RUNNING' ||
       !state.lon ||
       !state.lat ||
       !taskPositions ||

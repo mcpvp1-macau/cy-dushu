@@ -5,13 +5,9 @@
  */
 export function split_concave(polygon: Polygon, k: number): MultiPolygon;
 /**
- * 获取多边形内的所有线段
- */
-export function get_polygon_segments(polygon: Polygon, k: number, d: number): Segment[][];
-/**
  * 获取多边形内的覆盖路径
  */
-export function get_polygon_area_wayline(polygon: Polygon, k: number, d: number, start_point: Point): Polyline;
+export function get_polygon_area_wayline(outer: Polygon, inner: MultiPolygon, d: number, start_point: Point): Polyline;
 export function main_js(): void;
 export interface Point {
     x: number;

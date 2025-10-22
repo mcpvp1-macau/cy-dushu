@@ -70,6 +70,10 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
     (item: any) => item.tagName === 'PLAY_TYPE' && item.tagValue === 'DT_RTC',
   )?.tagValue
 
+  const cropTargetUpload = !!useDeviceDetailStore(
+    (s) => s.serviceHave['cropTargetUpload'],
+  )
+
   const handleSeiClick = useMemoizedFn((e: AiObject) => {
     const { sourceFrameWidth: fw, sourceFrameHeight: fh, seq } = e
     if (!fw || !fh) return
@@ -82,18 +86,29 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
     const y2 = (y1 + h) / fh
     x1 = x1 / fw
     y1 = y1 / fh
-    handlePostSmartTrack({
-      x1,
-      y1,
-      x2,
-      y2,
-      enable: true,
-      frame_no: seq,
-      object_label: e.objectLabel,
-      label_value: e.objLabelList?.[0]?.labelValue,
-      object_id: e.objectId,
-      objectId: e.objectId,
-    })
+    if (enableSmartTrack) {
+      handlePostSmartTrack({
+        x1,
+        y1,
+        x2,
+        y2,
+        enable: true,
+        frame_no: seq,
+        object_label: e.objectLabel,
+        label_value: e.objLabelList?.[0]?.labelValue,
+        object_id: e.objectId,
+        objectId: e.objectId,
+      })
+    } else if (cropTargetUpload) {
+      postDeviceService('cropTargetUpload', {
+        seq: seq,
+        x1,
+        y1,
+        x2,
+        y2,
+        id: e.objectId,
+      })
+    }
   })
 
   const posizionZoomOpen = useUavControlRoomStore((s) => s.openPointZoom)

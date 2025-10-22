@@ -1,0 +1,17 @@
+{
+  "name": "area_wayline",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "area_wayline_bg.wasm",
+    "area_wayline.js",
+    "area_wayline_bg.js",
+    "area_wayline.d.ts"
+  ],
+  "main": "area_wayline.js",
+  "types": "area_wayline.d.ts",
+  "sideEffects": [
+    "./area_wayline.js",
+    "./snippets/*"
+  ]
+}

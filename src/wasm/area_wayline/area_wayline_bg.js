@@ -186,27 +186,15 @@ export function split_concave(polygon, k) {
 }
 
 /**
- * 获取多边形内的所有线段
- * @param {Polygon} polygon
- * @param {number} k
- * @param {number} d
- * @returns {Segment[][]}
- */
-export function get_polygon_segments(polygon, k, d) {
-    const ret = wasm.get_polygon_segments(polygon, k, d);
-    return ret;
-}
-
-/**
  * 获取多边形内的覆盖路径
- * @param {Polygon} polygon
- * @param {number} k
+ * @param {Polygon} outer
+ * @param {MultiPolygon} inner
  * @param {number} d
  * @param {Point} start_point
  * @returns {Polyline}
  */
-export function get_polygon_area_wayline(polygon, k, d, start_point) {
-    const ret = wasm.get_polygon_area_wayline(polygon, k, d, start_point);
+export function get_polygon_area_wayline(outer, inner, d, start_point) {
+    const ret = wasm.get_polygon_area_wayline(outer, inner, d, start_point);
     return ret;
 }
 
