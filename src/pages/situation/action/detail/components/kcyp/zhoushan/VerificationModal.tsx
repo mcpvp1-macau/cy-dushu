@@ -208,26 +208,26 @@ const KCYPZSVerificationModal: FC<PropsType> = memo(
       [Dayjs | null, Dayjs | null] | null
     >(null)
 
-    const timeRangeTS = useMemo(() => {
-      if (!timeRange || timeRange[0] === null || timeRange[1] === null) {
-        return null
-      }
-      return [timeRange[0].valueOf(), timeRange[1].valueOf()] as [
-        number,
-        number,
-      ]
-    }, [timeRange])
+    // const timeRangeTS = useMemo(() => {
+    //   if (!timeRange || timeRange[0] === null || timeRange[1] === null) {
+    //     return null
+    //   }
+    //   return [timeRange[0].valueOf(), timeRange[1].valueOf()] as [
+    //     number,
+    //     number,
+    //   ]
+    // }, [timeRange])
 
-    const { data: videoUrlResp } = useQuery({
-      queryKey: ['getZSKCYPVideoURL', timeRangeTS],
-      enabled: !!timeRangeTS,
-      queryFn: () =>
-        getZSKCYPVideoURL({
-          deviceId: checkResults[0].deviceId,
-          begin: timeRangeTS![0],
-          end: timeRangeTS![1],
-        }),
-    })
+    // const { data: videoUrlResp } = useQuery({
+    //   queryKey: ['getZSKCYPVideoURL', timeRangeTS],
+    //   enabled: !!timeRangeTS,
+    //   queryFn: () =>
+    //     getZSKCYPVideoURL({
+    //       deviceId: checkResults[0].deviceId,
+    //       begin: timeRangeTS![0],
+    //       end: timeRangeTS![1],
+    //     }),
+    // })
 
     const msgApi = useAppMsg()
     const handleSubmitVideo = async () => {
@@ -428,7 +428,7 @@ const KCYPZSVerificationModal: FC<PropsType> = memo(
                 onClick={handleSubmitPictures}
               >
                 {orderData.processResult <
-                ZhoushanProcessResultEnum.PUSHED_CASE_ONLY
+                ZhoushanProcessResultEnum.PUSHED_CASE_AND_PHOTO
                   ? '提交'
                   : '已提交'}
               </AsyncButton>
