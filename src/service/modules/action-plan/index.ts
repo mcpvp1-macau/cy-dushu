@@ -59,10 +59,10 @@ export const getRelayDeviceList = (data: {
   breakPointId: number
   type?: DeviceEnum
 }) => {
-  return serverJingqi.post<{ total: number; rows: API_DEVICE.domain.Device[] }>(
-    '/device/list/relay',
-    data,
-  )
+  return serverJingqi.post<{
+    total: number
+    rows: API_DEVICE.domain.RelayDevice[]
+  }>('/device/list/relay', data)
 }
 
 /** 接力续飞 */

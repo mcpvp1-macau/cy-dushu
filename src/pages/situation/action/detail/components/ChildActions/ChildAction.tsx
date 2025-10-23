@@ -2,6 +2,7 @@ import IconDetail from '@/assets/icons/jsx/IconDetail'
 import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
 import IconVisible from '@/assets/icons/jsx/IconVisible'
 import IconButton from '@/components/ui/button/IconButton'
+import RelayDeviceModal from '@/components/device/RelayDeviceModal'
 import { WaylineEnum } from '@/constant/uav/wayline'
 import { RightModeEnum } from '@/enum/right-mode'
 import useStartActionItem from '@/hooks/service/action/useStartActionItem'
@@ -20,6 +21,7 @@ import { shouldJson } from '@/utils/json'
 import { LoadingOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
 import { isNil } from 'lodash'
+import IconRelayWayline from '@/assets/icons/jsx/IconRelayWayline'
 
 type PropsType = {
   data: API_ACTION_ITEM.domain.ActionItem
@@ -154,6 +156,15 @@ const OperatorBtns: FC<PropsType> = ({ data, noEdit }) => {
 const ChildAction: FC<PropsType> = memo(
   ({ data, visible, noEdit, waylineNameMap, onVisibleChange }) => {
     const { t, i18n } = useTranslation()
+    const queryClient = useQueryClient()
+    const [relayModalOpen, setRelayModalOpen] = useState(false)
+    const breakPointId = data.breakPointId
+
+    const handleRelaySuccess = async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['action', String(data.actionId), 'items'],
+      })
+    }
 
     // 执行人员
     const pilotsStr = useMemo(() => {
@@ -225,16 +236,38 @@ const ChildAction: FC<PropsType> = memo(
               </span>
             </p>
           </div>
-          {data.taskTplId && (
-            <div>
-              <p>
-                <span className="mr-1 text-nowrap">
-                  {t('wayline.title')}:{' '}
-                  {waylineNameMap?.[data.templateId] || '-'}
-                </span>
-              </p>
-            </div>
-          )}
+          <div className="flex">
+            {data.taskTplId && (
+              <div>
+                <p>
+                  <span className="mr-1 text-nowrap">
+                    {t('wayline.title')}:{' '}
+                    {waylineNameMap?.[data.templateId] || '-'}
+                  </span>
+                </p>
+              </div>
+            )}
+            {breakPointId && (
+              <>
+                <IconButton
+                  toolTipProps={{ title: '接力飞行' }}
+                  onClick={() => {
+                    setRelayModalOpen(true)
+                  }}
+                >
+                  <IconRelayWayline />
+                </IconButton>
+                <RelayDeviceModal
+                  open={relayModalOpen}
+                  breakPointId={breakPointId}
+                  deviceName={data.deviceName}
+                  relayDeviceId={data.relayDeviceId}
+                  onSuccess={handleRelaySuccess}
+                  onClose={() => setRelayModalOpen(false)}
+                />
+              </>
+            )}
+          </div>
         </div>
       </>
     )

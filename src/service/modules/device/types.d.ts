@@ -200,6 +200,29 @@ declare namespace API_DEVICE {
       /** 望楼转台独有的 */
       yaw?: number
     }
+
+    interface RelayDevice {
+      productKey: string
+      deviceId: string
+      deviceModel: any
+      deviceName: string
+      deviceRegisterVersion: string
+      deviceType: string
+      latitude: number
+      longitude: number
+      height?: number
+      altitude?: number
+      remainingPower?: number
+      sn: string
+      spaceId: string
+      status: string
+      taskStatus: string
+      createTime: number
+      username: string
+      otaInfo: any
+      distance?: number
+    }
+
     type Properties = Partial<{
       HorizontalAvoidEnable: string
       altitude: number

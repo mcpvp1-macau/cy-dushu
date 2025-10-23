@@ -1,7 +1,7 @@
 import XModal from '@/components/XModal'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { endActionItem } from '@/service/modules/action-item'
-import { isLiqunCommonError } from '@/service/servers/liqunAxios'
+import { shouldJson } from '@/utils/json'
 
 /**
  * 开始任务
@@ -23,19 +23,18 @@ const useStartActionItem = () => {
     try {
       return await action()
     } catch (e) {
-      if (isLiqunCommonError(e)) {
-        // 该设备有正在执行的任务
-        if (
-          Array.isArray(e.data?.actionItemIdList) &&
-          e.data.actionItemIdList.length
-        ) {
-          setRunningActionPayload({
-            actionItem: e.data.actionItemIdList[0],
-            message: e.message,
-          })
-        } else {
-          msgApi.error(e.message)
-        }
+      const err = shouldJson(e)
+      console.log('err', err)
+      if (
+        Array.isArray(err.data?.actionItemIdList) &&
+        err.data.actionItemIdList.length
+      ) {
+        setRunningActionPayload({
+          actionItem: err.data.actionItemIdList[0],
+          message: err.message,
+        })
+      } else {
+        msgApi.error(err.message)
       }
       throw e
     }

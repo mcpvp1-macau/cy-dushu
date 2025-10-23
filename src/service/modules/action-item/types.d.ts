@@ -27,6 +27,14 @@ declare namespace API_ACTION_ITEM {
        */
       deviceType?: string
       /**
+       * 断点 ID
+       */
+      breakPointId?: number
+      /**
+       * 接力飞行设备的ID
+       */
+      relayDeviceId?: string
+      /**
        * 结束时间
        */
       endTime?: string
