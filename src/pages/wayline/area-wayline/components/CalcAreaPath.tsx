@@ -150,7 +150,7 @@ const CalcAreaPath: FC<PropsType> = memo(() => {
 
       const takeoffPoint = turf.transformRotate(
         turf.point([takeOffRefPoint[0], takeOffRefPoint[1]]),
-        -turnAngle,
+        turnAngle,
         {
           pivot: center,
         },
@@ -169,7 +169,7 @@ const CalcAreaPath: FC<PropsType> = memo(() => {
 
       const wgs84Res = turf.transformRotate(
         toWgs84(turf.lineString(res.map((e) => [e.x, e.y]))),
-        turnAngle,
+        -turnAngle,
         {
           pivot: center,
         },
