@@ -192,7 +192,6 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
               <PointOrBoxSelect deviceLiveVideoRef={deviceLiveVideoRef} />
             )}
             {openTapToFlyOnVideo && <TapToFlyOnVideo />}
-            <WarningAlerts />
           </>
         }
         videoSafeAreaChildren={
@@ -200,6 +199,7 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
             <Avoidance />
           </>
         }
+        wrapperChildren={<WarningAlerts />}
         onVideoElementChange={updateVideoElement}
       />
     </div>
