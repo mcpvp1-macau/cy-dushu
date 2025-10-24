@@ -8,8 +8,6 @@ Sentry.init({
 
   // 增加username和token到tags
   beforeSend: (event, hint) => {
-    console.log('username', localStorage.getItem('username'))
-
     try {
       const message = JSON.parse((hint?.originalException as any)?.message)
       event.message = message.message
