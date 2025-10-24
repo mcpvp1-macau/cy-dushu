@@ -21,6 +21,10 @@ export default defineConfig({
     AutoImport,
     topLevelAwait(),
   ],
+  worker: {
+    format: 'es',
+    plugins: () => [wasm(), topLevelAwait()],
+  },
   // root 默认是 process.cwd()，即执行 vite 命令的当前目录
   resolve: {
     alias: {

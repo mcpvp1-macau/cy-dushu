@@ -126,7 +126,7 @@ const XModal: FC<PropsType> = ({
                   onClose?.()
                 }}
               >
-                {t('modal.cancel')}
+                {restProps.cancelText ?? t('modal.cancel')}
               </Button>
               <Button
                 loading={confirmLoading}

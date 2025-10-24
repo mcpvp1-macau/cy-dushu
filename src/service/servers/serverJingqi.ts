@@ -23,6 +23,7 @@ serverJingqi.interceptors.response.use((resp) => {
     return Promise.reject(
       JSON.stringify({
         code: resp.data?.code,
+        data: resp.data?.data,
         message: resp.data?.message,
       }),
     )

@@ -22,6 +22,7 @@ import { processEventImageDataEmitter } from '@/store/map/useReconstruction2DMap
 import useDeviceInactiveStore from '@/store/setting/useDeviceInactiveSetting.store'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import { pathCompress3D } from '@/utils/path'
+import { deviceRelayEmitter } from './DeviceRelay'
 
 type PropsType = unknown
 
@@ -381,6 +382,12 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
     processEventImageDataEmitter.emit('processEventImageData', message)
   })
 
+  const handleRelayEvent = useMemoizedFn(
+    (message: { breakPointId: number; actionId: number; deviceId: string }) => {
+      deviceRelayEmitter.emit('notify', message)
+    },
+  )
+
   // websocket message
   const handleMessage = useMemoizedFn((event: WebSocketEventMap['message']) => {
     const { type, message } = shouldJson(event.data) ?? {}
@@ -420,6 +427,10 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         break
       case 'TWO_DIMENSION_RESULT':
         handle2DResult(message)
+        break
+      case 'ACTION_RELAY_EVENT':
+        // 断点续飞
+        handleRelayEvent(message)
         break
     }
   })

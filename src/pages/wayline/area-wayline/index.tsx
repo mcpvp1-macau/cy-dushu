@@ -16,6 +16,7 @@ import useAirlineInit from './hooks/useWaylineInit'
 import CameraModeConfig from './components/CameraModeConfig'
 import GSDConfig from './components/GSDConfig'
 import Coverage from './components/Coverage'
+import AdvancedConfig from './components/AdvancedConfig'
 
 type PropsType = unknown
 
@@ -86,6 +87,9 @@ const PageAreaWaylineEdit: FC<PropsType> = memo(() => {
             </div>
             <div className="m-3">
               <FinishActionConfig />
+            </div>
+            <div className="m-3">
+              <AdvancedConfig />
             </div>
             <div className="m-3 ">
               <BottomButtions />

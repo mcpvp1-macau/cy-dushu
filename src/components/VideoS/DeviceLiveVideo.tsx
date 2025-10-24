@@ -59,6 +59,7 @@ type PropsType = {
   videoChildren?: ReactNode
   /** 区别于 videoChildren, 内容不会被工具栏挡住, 例如视频画框等操作请不要在这, 百分比是不对的 */
   videoSafeAreaChildren?: ReactNode
+  wrapperChildren?: ReactNode
   useVideoQualityCheck?: {
     open?: boolean
     valueDRC?: number | string
@@ -102,6 +103,7 @@ const DeviceLiveVideo = memo(
         rightTop,
         videoChildren,
         videoSafeAreaChildren,
+        wrapperChildren,
         useVideoQualityCheck,
         useDing = true,
         renderVideo = true,
@@ -557,6 +559,7 @@ const DeviceLiveVideo = memo(
               </aside>
             )}
           </ConfigProvider>
+          {wrapperChildren}
         </div>
       )
     },
