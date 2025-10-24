@@ -37,6 +37,7 @@ type WalylinePrimitiveOptions = {
 type IndicatorStateType = {
   front: Cesium.Cartesian3
   rear: Cesium.Cartesian3
+  dis: number
   show: boolean
 }
 
@@ -44,23 +45,9 @@ type IndicatorStateType = {
 // 而其中的所有指示器的第一个在最右边，
 // 因为移动方向是从左向右的，所以在指示器内左边为尾部，右边为头部
 
-/** 航线图元
- * @example
- * const walylinePrimitive = new WalylinePrimitive({
- *		positions: coordinates,
- *	})
- *	walylinePrimitive.activeFragment = 1
- *	viewer.scene.primitives.add(walylinePrimitive)
- */
 class WalylinePrimitive {
   private _positions: [number, number, number][] = []
   private _radius: number = 0
-  private _waylineColor: Cesium.Color = new Cesium.Color(0.3, 0.8, 0.4, 1)
-  private _waylineMinMaxOpacity: Cesium.Cartesian2 = new Cesium.Cartesian2(
-    0.05,
-    0.6,
-  )
-  private shouldUpdateWayline: boolean = false
   /**上一次更新指示器的时间 */
   private _preUpdateTime: number = 0
   /**当前所有指示器的头部的位置 */
@@ -74,15 +61,15 @@ class WalylinePrimitive {
   indicatorLength: number
   indicatorSpeed: number
   indicatorSpace: number
-  show: boolean = true
+  _waylineLength: number = 0
 
   constructor(options?: Partial<WalylinePrimitiveOptions>) {
     const newOptions: WalylinePrimitiveOptions = {
       radius: 3,
       positions: [],
-      indicatorLength: 20,
-      indicatorSpeed: 200,
-      indicatorSpace: 400,
+      indicatorLength: 10,
+      indicatorSpeed: 100,
+      indicatorSpace: 300,
       ...options,
     }
     this.radius = newOptions.radius
@@ -93,16 +80,10 @@ class WalylinePrimitive {
   }
 
   private update(frameState: any) {
-    if (!this.show) return
-
-    if (
-      this._positions !== this.positions ||
-      this._radius !== this.radius ||
-      this.shouldUpdateWayline
-    ) {
+    if (this._positions !== this.positions || this._radius !== this.radius) {
       this._positions = this.positions
       this._radius = this.radius
-      this.shouldUpdateWayline = false
+      this._waylineLength = this.calcWaylineLength()
       this.updateWayline()
     }
     this.updateIndicator()
@@ -132,8 +113,8 @@ class WalylinePrimitive {
             fabric: {
               type: 'gradientVolume',
               uniforms: {
-                color: this._waylineColor,
-                minMaxOpacity: this._waylineMinMaxOpacity, // 透明变化，从中心向两边变化，x代表中心、y代表两侧的透明度
+                color: new Cesium.Color(0.3, 0.8, 0.4, 1),
+                minMaxOpacity: new Cesium.Cartesian2(0.05, 0.6), // 透明变化，从中心向两边变化，x代表中心、y代表两侧的透明度
               },
               source: `
 							uniform vec4 color;
@@ -168,7 +149,7 @@ class WalylinePrimitive {
   }
 
   private updateIndicator() {
-    const shouleUpdate = this.updateIndicatorPosition()
+    const shouleUpdate = this.updateIndicatorPosition2()
     const oldIndicator = this._indicatorPrimitive
 
     if (!shouleUpdate) {
@@ -198,10 +179,12 @@ class WalylinePrimitive {
             fabric: {
               type: 'indicator',
               uniforms: {
-                color: this._waylineColor,
+                color: this.waylineColor,
+                minMaxOpacity: this.waylineMinMaxOpacity,
               },
               source: `
 							uniform vec4 color;
+							uniform vec2 minMaxOpacity;
 
 							czm_material czm_getMaterial(czm_materialInput materialInput)
 							{
@@ -209,14 +192,14 @@ class WalylinePrimitive {
 								czm_material material = czm_getDefaultMaterial(materialInput);
 								vec2 st = materialInput.st;
 
-								float alpha = pow(abs(st.t - 0.5) * 2.0, 3.0);
+								float alpha = 1.0;
+								// float alpha = pow(abs(st.t - 0.5) * 2.0, 3.0);
 								alpha *= 1.0 - pow(abs(st.s - 0.5) * 2.0, 1.5);
 
-								if(st.t < 0.5){
-									alpha = 0.0;
-								}
-								
-								alpha = mix(0.0, 0.6, alpha);
+								// if(st.t < 0.5){
+								// 	alpha = 0.0;
+								// }
+								alpha = mix(0.0, 0.8, alpha);
 
 								material.diffuse = outColor.rgb;
 								material.alpha = alpha;
@@ -236,10 +219,8 @@ class WalylinePrimitive {
   }
 
   private updateIndicatorPosition(): boolean {
-    if (
-      this.activeFragment < 1 ||
-      this.activeFragment > this._indictorStates.length
-    ) {
+    if (this.activeFragment < 1) {
+      console.log('this.activeFragment < 1')
       this._indictorStates = []
       return false
     }
@@ -297,6 +278,7 @@ class WalylinePrimitive {
         this._indictorStates.push({
           front: indicatorFrontPosition,
           rear: indicatorRearPosition,
+          dis: 0,
           show: false,
         })
       }
@@ -400,26 +382,190 @@ class WalylinePrimitive {
     return true
   }
 
+  private updateIndicatorPosition2(indicatorNumber = 6) {
+    const positions = this._positions.map((item) =>
+      Cartesian3.fromDegrees(item[0], item[1], item[2]),
+    )
+    const disSpace = this._waylineLength / indicatorNumber
+
+    // 初始化
+    if (this._indictorStates.length === 0) {
+      for (let i = 0; i < indicatorNumber; i++) {
+        const subDis = disSpace * i
+
+        const fragmentNumber = this.getFragmentNumberByDistance(subDis)
+        const limitWaylineLength = this.calcWaylineLength(fragmentNumber)
+        const startPosition = positions[fragmentNumber - 1]
+        const endPosition = positions[fragmentNumber]
+        const startToEndVector = subtract(
+          endPosition,
+          startPosition,
+          new Cartesian3(),
+        )
+        normalize(startToEndVector, startToEndVector)
+        const indicatorLengthVector = multiply(
+          startToEndVector,
+          this.indicatorLength,
+          new Cartesian3(),
+        )
+
+        const disVector = multiply(
+          startToEndVector,
+          subDis - limitWaylineLength,
+          new Cesium.Cartesian3(),
+        )
+
+        const front = add(startPosition, disVector, new Cesium.Cartesian3())
+        this._indictorStates.push({
+          front: front,
+          rear: subtract(front, indicatorLengthVector, new Cesium.Cartesian3()),
+          dis: subDis,
+          show: true,
+        })
+      }
+
+      this._preUpdateTime = Date.now()
+
+      return true
+    }
+
+    const subTime = Date.now() - this._preUpdateTime
+    const moveDistance = (subTime / 1000) * this.indicatorSpeed
+    this._preUpdateTime = Date.now()
+
+    for (let i = 0; i < this._indictorStates.length; i++) {
+      const state = this._indictorStates[i]
+      state.dis += moveDistance
+      if (state.dis > this._waylineLength) {
+        state.dis = state.dis - this._waylineLength
+      }
+
+      const fragmentNumber = this.getFragmentNumberByDistance(state.dis)
+
+      const limitWaylineLength = this.calcWaylineLength(fragmentNumber)
+      const startPosition = positions[fragmentNumber - 1]
+      const endPosition = positions[fragmentNumber]
+      const startToEndVector = subtract(
+        endPosition,
+        startPosition,
+        new Cartesian3(),
+      )
+      normalize(startToEndVector, startToEndVector)
+      const indicatorLengthVector = multiply(
+        startToEndVector,
+        this.indicatorLength,
+        new Cartesian3(),
+      )
+
+      const disVector = multiply(
+        startToEndVector,
+        state.dis - limitWaylineLength,
+        new Cesium.Cartesian3(),
+      )
+
+      this._indictorStates[i].front = add(
+        startPosition,
+        disVector,
+        new Cesium.Cartesian3(),
+      )
+      this._indictorStates[i].rear = subtract(
+        this._indictorStates[i].front,
+        indicatorLengthVector,
+        new Cesium.Cartesian3(),
+      )
+
+      // 如果指示器完全在航线内则显示，否则隐藏
+      const frontToEndVector = subtract(
+        endPosition,
+        state.front,
+        new Cartesian3(),
+      )
+      const rearToStartVector = subtract(
+        startPosition,
+        state.rear,
+        new Cartesian3(),
+      )
+
+      if (
+        dot(rearToStartVector, startToEndVector) > 0 ||
+        dot(frontToEndVector, startToEndVector) < 0
+      ) {
+        state.show = false
+      } else {
+        state.show = true
+      }
+    }
+
+    return true
+  }
+
+  /**通过离第一个点的距离计算在第几个线段上 */
+  getFragmentNumberByDistance(dis: number) {
+    const positions = this._positions.map((item) =>
+      Cartesian3.fromDegrees(item[0], item[1], item[2]),
+    )
+
+    let totalLength = 0
+    for (let i = 1; i < positions.length; i++) {
+      const left = positions[i - 1]
+      const right = positions[i]
+      const length = distance(left, right)
+
+      const startLength = totalLength
+      totalLength += length
+      const endLength = totalLength
+
+      if (dis >= startLength && dis < endLength) {
+        return i
+      }
+    }
+
+    return positions.length - 1
+  }
+
+  /**计算索引为 [0-positionNumber) 的航点组成的航线的长度
+   * @param positionNumber 计算到第几个航点，也可以理解为有几个航点组成。
+   */
+  calcWaylineLength(positionNumber = Infinity) {
+    if (positionNumber < 2) {
+      return 0
+    }
+
+    const positions = this._positions
+      .slice(0, positionNumber)
+      .map((item) => Cartesian3.fromDegrees(item[0], item[1], item[2]))
+
+    let totalLength = 0
+    for (let i = 1; i < positions.length; i++) {
+      const left = positions[i - 1]
+      const right = positions[i]
+      const length = distance(left, right)
+      totalLength += length
+    }
+
+    return totalLength
+  }
+
   get waylineColor() {
-    return this._waylineColor
+    return this._waylineVolumePrimitive?.appearance.material.uniforms.color
   }
 
   set waylineColor(newVal: Cesium.Color) {
     if (!this._waylineVolumePrimitive) return
 
-    this._waylineColor = newVal
-    this.shouldUpdateWayline = true
+    this._waylineVolumePrimitive.appearance.material.uniforms.color = newVal
   }
 
   get waylineMinMaxOpacity() {
-    return this._waylineMinMaxOpacity
+    return this._waylineVolumePrimitive?.appearance.material.uniforms
+      .minMaxOpacity
   }
 
   set waylineMinMaxOpacity(newVal: Cesium.Cartesian2) {
     if (!this._waylineVolumePrimitive) return
 
-    this._waylineMinMaxOpacity = newVal
-    this.shouldUpdateWayline = true
+    this._waylineVolumePrimitive.appearance.material.uniforms.minMaxOpacity =
+      newVal
   }
 
   destroy() {
@@ -438,5 +584,3 @@ class WalylinePrimitive {
     return false
   }
 }
-
-export default WalylinePrimitive
