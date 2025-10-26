@@ -30,14 +30,25 @@ const DrawPoint: FC<PropsType> = memo(({ onSuccess }) => {
 
     const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas)
     handler.setInputAction((e) => {
-      const ray = viewer.camera.getPickRay(e.position)
-      if (!ray) return
-      const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
-      if (!cartesian) return
-      // 地形上的点
-      const geo = cartesian3ToDegrees(cartesian)
+      let is3dPick = false
+      const pickResult = viewer.scene.pick(e.position)
+      if (pickResult?.primitive instanceof Cesium.Cesium3DTileset) {
+        is3dPick = true
+      }
 
-      pointRef.current = [geo[0], geo[1], round(geo[2], 2)]
+      let position: Cesium.Cartesian3 | undefined
+      if (is3dPick) {
+        position = viewer.scene.pickPosition(e.position)
+      } else {
+        const ray = viewer.camera.getPickRay(e.position)
+        position = ray ? viewer.scene.globe.pick(ray, viewer.scene) : undefined
+      }
+      if (!position) {
+        return
+      }
+      const geo = cartesian3ToDegrees(position)
+
+      pointRef.current = [geo[0], geo[1], round(geo[2], 4) + 0.05]
       setTrue()
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
 

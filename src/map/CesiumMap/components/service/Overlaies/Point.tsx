@@ -49,6 +49,7 @@ const OverlayPoint: FC<PropsType> = memo(({ data }) => {
         pixelSize={10}
         outlineColor={Cesium.Color.fromCssColorString('#fff')}
         outlineWidth={1}
+        disableDepthTestDistance={16_000_000}
       />
       <Label
         id={`overlay--${data.overlayId}`}
