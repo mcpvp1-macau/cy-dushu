@@ -44,8 +44,8 @@ type IndicatorStateType = {
 // 航线在地图上从左向右，也就是从西向北，那么航线左边为startPosition，右边为endPosition
 // 而其中的所有指示器的第一个在最右边，
 // 因为移动方向是从左向右的，所以在指示器内左边为尾部，右边为头部
-
-class WalylinePrimitive {
+ 
+export default class WalylinePrimitive {
   private _positions: [number, number, number][] = []
   private _radius: number = 0
   /**上一次更新指示器的时间 */
@@ -299,8 +299,8 @@ class WalylinePrimitive {
       const fronPosition = state.front
       const rearPosition = state.rear
 
-      let nextFrontPosition = add(fronPosition, moveVector, new Cartesian3())
-      let nextRearPosition = add(rearPosition, moveVector, new Cartesian3())
+      const nextFrontPosition = add(fronPosition, moveVector, new Cartesian3())
+      const nextRearPosition = add(rearPosition, moveVector, new Cartesian3())
 
       const frontToEndVector = subtract(
         endPosition,
