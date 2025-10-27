@@ -175,17 +175,6 @@ function isLikeNone(x) {
     return x === undefined || x === null;
 }
 /**
- * 切割凹多边形为多个凸多边形
- * @param {Polygon} polygon
- * @param {number} k
- * @returns {MultiPolygon}
- */
-export function split_concave(polygon, k) {
-    const ret = wasm.split_concave(polygon, k);
-    return ret;
-}
-
-/**
  * 获取多边形内的覆盖路径
  * @param {Polygon} outer
  * @param {MultiPolygon} inner
@@ -284,10 +273,6 @@ export function __wbg_length_a446193dc22c12f8(arg0) {
 export function __wbg_length_e2d2a49132c1b256(arg0) {
     const ret = arg0.length;
     return ret;
-};
-
-export function __wbg_log_e028d9cf7a68f9d2(arg0, arg1) {
-    console.log(getStringFromWasm0(arg0, arg1));
 };
 
 export function __wbg_new_405e22f390576ce2() {

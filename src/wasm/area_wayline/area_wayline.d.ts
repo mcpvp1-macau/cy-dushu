@@ -1,10 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * 切割凹多边形为多个凸多边形
- */
-export function split_concave(polygon: Polygon, k: number): MultiPolygon;
-/**
  * 获取多边形内的覆盖路径
  */
 export function get_polygon_area_wayline(outer: Polygon, inner: MultiPolygon, d: number, start_point: Point): Polyline;

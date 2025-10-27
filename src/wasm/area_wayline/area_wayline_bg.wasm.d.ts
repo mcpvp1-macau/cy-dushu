@@ -1,7 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
-export const split_concave: (a: any, b: number) => any;
 export const get_polygon_area_wayline: (a: any, b: any, c: number, d: any) => any;
 export const main_js: () => void;
 export const __wbindgen_exn_store: (a: number) => void;
