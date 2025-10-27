@@ -36,13 +36,13 @@ const DrawPoint: FC<PropsType> = memo(({ onSuccess }) => {
         is3dPick = true
       }
 
-      let position: Cesium.Cartesian3 | undefined
-      if (is3dPick) {
-        position = viewer.scene.pickPosition(e.position)
-      } else {
-        const ray = viewer.camera.getPickRay(e.position)
-        position = ray ? viewer.scene.globe.pick(ray, viewer.scene) : undefined
-      }
+      // let position: Cesium.Cartesian3 | undefined
+      // if (is3dPick) {
+      const  position = viewer.scene.pickPosition(e.position)
+      // } else {
+      //   const ray = viewer.camera.getPickRay(e.position)
+      //   position = ray ? viewer.scene.globe.pick(ray, viewer.scene) : undefined
+      // }
       if (!position) {
         return
       }
