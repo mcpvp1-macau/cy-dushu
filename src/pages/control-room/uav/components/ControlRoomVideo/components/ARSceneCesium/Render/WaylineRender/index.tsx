@@ -66,6 +66,7 @@ const WaylineRender = () => {
       0.05,
       Cesium.Color.fromCssColorString(waylineColor).alpha,
     )
+    // @ts-ignore
     waylinePrimitive.show = waylineEnable
   }, [waylinePrimitive, positions, waylineColor, waylineEnable])
 
