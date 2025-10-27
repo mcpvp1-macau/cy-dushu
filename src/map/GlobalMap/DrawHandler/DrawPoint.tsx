@@ -30,26 +30,33 @@ const DrawPoint: FC<PropsType> = memo(({ onSuccess }) => {
 
     const handler = new Cesium.ScreenSpaceEventHandler(viewer.canvas)
     handler.setInputAction((e) => {
+      const pickResults = viewer.scene.drillPick(e.position)
+
       let is3dPick = false
-      const pickResult = viewer.scene.pick(e.position)
-      if (pickResult?.primitive instanceof Cesium.Cesium3DTileset) {
-        is3dPick = true
-      }
+      pickResults.forEach((item) => {
+        if (item.primitive instanceof Cesium.Cesium3DTileset) {
+          is3dPick = true
+        }
+      })
+      // 一定要下一帧才能获取到准确的位置，否则会出问题
+      setTimeout(() => {
+        let position: Cesium.Cartesian3 | undefined
+        if (is3dPick) {
+          position = viewer.scene.pickPosition(e.position)
+        } else {
+          const ray = viewer.camera.getPickRay(e.position)
+          position = ray
+            ? viewer.scene.globe.pick(ray, viewer.scene)
+            : undefined
+        }
+        if (!position) {
+          return
+        }
+        const geo = cartesian3ToDegrees(position)
 
-      let position: Cesium.Cartesian3 | undefined
-      if (is3dPick) {
-        position = viewer.scene.pickPosition(e.position)
-      } else {
-        const ray = viewer.camera.getPickRay(e.position)
-        position = ray ? viewer.scene.globe.pick(ray, viewer.scene) : undefined
-      }
-      if (!position) {
-        return
-      }
-      const geo = cartesian3ToDegrees(position)
-
-      pointRef.current = [geo[0], geo[1], round(geo[2], 4) + 0.05]
-      setTrue()
+        pointRef.current = [geo[0], geo[1], round(geo[2], 4) + 0.05]
+        setTrue()
+      }, 0)
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
     return () => {
