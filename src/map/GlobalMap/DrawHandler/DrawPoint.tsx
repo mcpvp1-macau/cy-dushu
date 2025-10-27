@@ -38,8 +38,8 @@ const DrawPoint: FC<PropsType> = memo(({ onSuccess }) => {
           is3dPick = true
         }
       })
-      // 一定要下一帧才能获取到准确的位置，否则会出问题
-      setTimeout(() => {
+
+      requestAnimationFrame(() => {
         let position: Cesium.Cartesian3 | undefined
         if (is3dPick) {
           position = viewer.scene.pickPosition(e.position)
@@ -53,10 +53,10 @@ const DrawPoint: FC<PropsType> = memo(({ onSuccess }) => {
           return
         }
         const geo = cartesian3ToDegrees(position)
-
+        console.log('geo', geo)
         pointRef.current = [geo[0], geo[1], round(geo[2], 4) + 0.05]
         setTrue()
-      }, 0)
+      })
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
     return () => {
