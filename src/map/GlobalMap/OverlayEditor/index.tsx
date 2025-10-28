@@ -6,6 +6,7 @@ import { CotType } from '@/store/map/useDraw.store'
 import EditPolygon from './EditPolygon'
 import EditCircle from './EditCircle'
 import EditFan from './EditFan'
+import EditPoint from './EditPoint'
 
 const OverlayEditor: FC = () => {
   const { viewer } = useCesium()
@@ -20,7 +21,9 @@ const OverlayEditor: FC = () => {
     const editOverlay = overlayList.find((e) => e.overlayId === d)
     if (!editOverlay) return null
 
-    if (editOverlay.cotType === CotType.SHAPE_POLYGON) {
+    if (editOverlay.cotType === CotType.POINT) {
+      return <EditPoint overlay={editOverlay} viewer={viewer} />
+    } else if (editOverlay.cotType === CotType.SHAPE_POLYGON) {
       return (
         <EditPolygon overlay={editOverlay} viewer={viewer} isRect={false} />
       )

@@ -53,7 +53,7 @@ const DrawPoint: FC<PropsType> = memo(({ onSuccess }) => {
           return
         }
         const geo = cartesian3ToDegrees(position)
-        console.log('geo', geo)
+
         pointRef.current = [geo[0], geo[1], round(geo[2], 4) + 0.05]
         setTrue()
       })

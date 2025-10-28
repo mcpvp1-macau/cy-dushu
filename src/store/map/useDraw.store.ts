@@ -49,7 +49,7 @@ type StateType = {
   /**透明度 0-1 */
   fillOpacity: number
   /**编辑后的点位，不用于地图显示，用于上传 */
-  positions: [number, number][]
+  positions: [number, number, number?][]
   /**用于判断覆盖物是否处于编辑状态 */
   isEdit: boolean
   /**是否绘制的是飞行区域，飞行区域和普通绘制弹窗不一样 */
@@ -68,7 +68,8 @@ type ActionsType = {
   quitRecontructionArea: () => void
   updateLineStyle: (lineStyle: LineStyle) => void
   updateFillOpacity: (fillOpacity: number) => void
-  updatePositions: (positions: [number, number][]) => void
+  /**更新编辑后的点位，该数据不用于地图显示，用于上传 */
+  updatePositions: (positions: [number, number, number?][]) => void
   updateIsEdit: (isEdit: boolean) => void
   updateIsFlightArea: (isFlightArea: boolean) => void
   /** 更新是否在绘制设备绑定区域 */

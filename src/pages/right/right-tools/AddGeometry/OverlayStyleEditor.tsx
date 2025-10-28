@@ -15,6 +15,7 @@ type PropsType = {
 
 const getOverlayType = (overlay: API_LAYER_OVERLAY.domain.Overlay) => {
   const typeMap = {
+    [CotType.POINT]: DrawType.Point,
     [CotType.SHAPE_POLYGON]: DrawType.Polygon,
     [CotType.SHAPE_CIRCLE]: DrawType.Circle,
     [CotType.SHAPE_FAN]: DrawType.Fan,
@@ -38,6 +39,7 @@ const OverlayStyleEditor: FC<PropsType> = ({
 
   const collapsedOpen = useSituationLayoutStore((s) => s.collapsedOpen)
 
+  const isPointEdit = overlay?.cotType === CotType.POINT
   return (
     <div
       className={clsx(
@@ -53,8 +55,12 @@ const OverlayStyleEditor: FC<PropsType> = ({
         <DrawingTypeSelecter lockedType={overlayType} />
       )}
       <ColorSelecter />
-      <LineStyleSelecter showNoFly={isFlightArea} />
-      <OpacityInput />
+      {!isPointEdit && (
+        <>
+          <LineStyleSelecter showNoFly={isFlightArea} />
+          <OpacityInput />
+        </>
+      )}
     </div>
   )
 }

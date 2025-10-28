@@ -44,11 +44,21 @@ const DrawingTypeSelecter: FC<PropsType> = ({ onChange, lockedType }) => {
     if (!lockedType) {
       return opts
     } else {
+      if (lockedType === DrawType.Point) {
+        setType(DrawType.Point)
+        return [
+          {
+            label: t('overlay.marker.point.title'),
+            value: DrawType.Point,
+          },
+        ]
+      }
+
       const newOpts = opts.filter((item) => item.value === lockedType)
       setType(lockedType)
       return newOpts
     }
-  }, [lockedType])
+  }, [lockedType, t])
 
   return (
     <Select

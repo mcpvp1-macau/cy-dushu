@@ -45,9 +45,14 @@ const useOverlayDetail = (detailId: string | null, onDelete?: () => void) => {
   useEffect(() => {
     const overlayPositions = shouldJson(overlay?.overlayPositions)
     const style = shouldJson(overlay?.overlayStyleConfig)
+    if (overlay?.cotType === CotType.POINT) {
+      updateDrawingColor(style?.color?.hex)
+      return
+    }
 
-    const fillColor =
-      argbToHex(String(style?.fillColor?.['-value']))?.[0] || '#4c90f0'
+    const fillColor = style?.fillColor?.['-value']
+      ? argbToHex(String(style?.fillColor?.['-value']))?.[0]
+      : '#4c90f0'
     const fillOpacity = parseFloat(style?.fillOpacity?.['-value']) || 0.5
     const strokeStyle = style?.strokeStyle?.['-value'] || 'solid'
 
