@@ -17,10 +17,12 @@ const AddFlightAreaModal: FC<PropsType> = memo((props) => {
   const flightAreaGroupList = useFlightAreaStore((s) => s.flightAreaGroupList)
   const layerOptions = useMemo(
     () =>
-      flightAreaGroupList.map((layer) => ({
-        label: layer.layerName,
-        value: layer.layerId,
-      })),
+      flightAreaGroupList
+        .filter((layer) => layer.layerId !== -1)
+        .map((layer) => ({
+          label: layer.layerName,
+          value: layer.layerId,
+        })),
     [flightAreaGroupList],
   )
 
