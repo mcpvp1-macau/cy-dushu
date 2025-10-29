@@ -24,6 +24,9 @@ const WaylineWarning: FC<PropsType> = () => {
               <p>{t('wayline.nearTerrain.msg')}</p>
             )
           )}
+          {warningSet.has(Warning.InNoFlyZone) && (
+            <p>{t('wayline.inNoFlyZone.msg')}</p>
+          )}
         </div>
       </SnackBar>
     </>

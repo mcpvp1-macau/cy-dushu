@@ -17,6 +17,8 @@ export enum Warning {
   CollisionTerrain,
   /** 距离地形高度过近 */
   NearTerrain,
+  /** 经过禁飞区 */
+  InNoFlyZone,
 }
 
 type StateType = {

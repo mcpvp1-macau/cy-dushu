@@ -7,6 +7,9 @@ import { useDebounceEffect } from 'ahooks'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { useShallow } from 'zustand/react/shallow'
+import useFlightAreaStore from '@/store/map/useFlightArea.store'
+import { shouldJson } from '@/utils/json'
+import * as turf from '@turf/turf'
 
 type P = {
   pointX: number
@@ -115,6 +118,67 @@ const SafetyCheck: FC<PropsType> = memo(({ airpoints, takeOffRefPoint }) => {
     {
       wait: 500,
     },
+  )
+
+  const flightAreaList = useFlightAreaStore((s) => s.flightAreaList)
+
+  const noFlyZones = useMemo(
+    () =>
+      flightAreaList
+        .filter(
+          (e) =>
+            e.overlayExtType === 'NO_FLY_ZONE' &&
+            ['POLYGON', 'CIRCULAR'].includes(e.overlayType),
+        )
+        .map((e) => {
+          const positions = shouldJson(e.overlayPositions)
+          if (e.overlayType === 'POLYGON') {
+            const polygon = turf.polygon([
+              [...positions, positions[0]].map((p) => [p[0], p[1]]),
+            ])
+            return polygon
+          }
+          const circle = turf.circle(
+            [positions[0][0], positions[0][1]],
+            positions[0][3],
+            { units: 'meters', steps: 64 },
+          )
+          return circle
+        }),
+    [flightAreaList],
+  )
+
+  // 判断飞行路径是否经过禁飞区
+  useDebounceEffect(
+    () => {
+      if (airpoints.length === 0) {
+        return
+      }
+      const polylineOrPoint =
+        airpoints.length > 1
+          ? turf.lineString(airpoints.map((p) => [p.pointX, p.pointY]))
+          : turf.point([airpoints[0].pointX, airpoints[0].pointY])
+
+      const inNoFlyZone = noFlyZones.some((zone) =>
+        turf.booleanIntersects(polylineOrPoint, zone),
+      )
+      const prev = useAirlineConfigStore.getState().warningSet
+      if (inNoFlyZone) {
+        if (!prev.has(Warning.InNoFlyZone)) {
+          const newSet = new Set(prev)
+          newSet.add(Warning.InNoFlyZone)
+          updateWarningSet(newSet)
+        }
+      } else {
+        if (prev.has(Warning.InNoFlyZone)) {
+          const newSet = new Set(prev)
+          newSet.delete(Warning.InNoFlyZone)
+          updateWarningSet(newSet)
+        }
+      }
+    },
+    [airpoints, noFlyZones],
+    { wait: 1000 },
   )
 
   return null

@@ -906,6 +906,8 @@ wayline:
     msg: 飞行路径距离地形高度过近
   roadNetwork:
     title: 路网模式
+  inNoFlyZone:
+    msg: 飞行路径经过禁飞区
 schedue:
   list:
     title: 计划库
