@@ -40,3 +40,22 @@
   margin-bottom: 0px !important;
   color: #fff !important;
 }
+
+.ant-tree-list-scrollbar-vertical {
+  width: 3px !important;
+  right: 2px !important;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transform-origin: right !important;
+  transform: scaleX(1) !important;
+
+  .ant-tree-list-scrollbar-thumb {
+    background: var(--ja-dark-gray-5) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transform-origin: right !important;
+    transform: scaleX(1) !important;
+    &:hover,
+    &:active {
+      transform: scaleX(2) !important;
+    }
+  }
+}
