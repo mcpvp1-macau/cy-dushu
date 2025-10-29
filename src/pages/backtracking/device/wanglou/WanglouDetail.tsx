@@ -6,7 +6,7 @@ import AppEmpty from '@/components/AppEmpty'
 import { Link } from 'react-router-dom'
 import { Button } from 'antd'
 import IconControlRoom from '@/assets/icons/jsx/IconControlRoom'
-import { DataTimeRange } from '../../dataTimeRange'
+import { DataTimeRange } from '../../DataTimeRange'
 
 type PropsType = {
   data: API_DEVICE.domain.Device

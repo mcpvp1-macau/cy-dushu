@@ -8,7 +8,7 @@ import { Button } from 'antd'
 import IconControlRoom from '@/assets/icons/jsx/IconControlRoom'
 import IconButton from '@/components/ui/button/IconButton'
 import IconClose from '@/assets/icons/jsx/IconClose'
-import { DataTimeRange } from '../../dataTimeRange'
+import { DataTimeRange } from '../../DataTimeRange'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
