@@ -6,6 +6,7 @@ import AppEmpty from '@/components/AppEmpty'
 import { Link } from 'react-router-dom'
 import { Button } from 'antd'
 import IconControlRoom from '@/assets/icons/jsx/IconControlRoom'
+import { DataTimeRange } from '../../dataTimeRange'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -71,8 +72,12 @@ const WanglouBackTrackingDetail: FC<PropsType> = memo(
             </Button>
           </Link>
         </section>
-        <div className="my-2 px-3 text-xs text-center">
-          数据时间: {updateTime}
+        <div className="my-2 px-3 text-xs flex items-center gap-2 text-white">
+          <div className="w-[2px] h-[10px] bg-[#3DCC91]"></div>数据采集时间:{' '}
+          {updateTime}
+        </div>
+        <div className="my-2 px-3 text-xs">
+          <DataTimeRange deviceId={data.deviceId} />
         </div>
       </>
     )

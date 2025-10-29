@@ -40,7 +40,7 @@ const Timeline: FC<PropsType> = memo(
 
     // 时间范围
     const [timeRange, setTimeRange] = useControllableValue(props, {
-      defaultValue: [dayjs().subtract(1, 'days'), dayjs()] as [
+      defaultValue: [dayjs().subtract(1, 'days').startOf('day'), dayjs().endOf('day')] as [
         DayjsInstance,
         DayjsInstance,
       ],
@@ -170,25 +170,25 @@ const Timeline: FC<PropsType> = memo(
                 if (!dates || !dates[0] || !dates[1]) {
                   return
                 }
-                setTimeRange([dates[0], dates[1]])
+                setTimeRange([dates[0].startOf('day'), dates[1].endOf('day')])
                 if (!timeline) {
                   return
                 }
 
                 try {
                   timeline.setWindow(
-                    dates[0].toDate(),
+                    dates[0].startOf('day').toDate(),
                     dates[1].endOf('day').toDate(),
                   )
-                  timeline.setCustomTime(dates[0].toDate(), 'current')
+                  timeline.setCustomTime(dates[0].startOf('day').toDate(), 'current')
                   timeline.setCustomTimeMarker(
-                    dayjs(dates[0]).format(dft),
+                    dayjs(dates[0].startOf('day')).format(dft),
                     'current',
                   )
                   timeline.setItems([
                     {
                       type: 'background',
-                      start: dates[0].toDate(),
+                      start: dates[0].startOf('day').toDate(),
                       end: dates[1].endOf('day').toDate(),
                       className: 'time-range',
                       id: 'time-range',
@@ -196,7 +196,7 @@ const Timeline: FC<PropsType> = memo(
                     },
                     {
                       type: 'background',
-                      start: dates[0].toDate(),
+                      start: dates[0].startOf('day').toDate(),
                       end: dates[1].endOf('day').toDate(),
                       className: 'time-range2',
                       id: 'time-range2',
