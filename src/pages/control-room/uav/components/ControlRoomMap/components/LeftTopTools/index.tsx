@@ -18,7 +18,7 @@ const LeftTopTools: FC<PropsType> = memo(() => {
         </FloatIconButton>
       </div>
       {active && (
-        <div className="absolute left-3 top-[52px] w-[350px] bg-ground-1/90 backdrop-blur max-h-[calc(100vh-172px)] overflow-hidden rounded border-ground-5 border flex flex-col">
+        <div className="absolute left-3 top-[52px] w-[350px] bg-ground-1/90 backdrop-blur h-[calc(100vh-172px)] overflow-hidden rounded border-ground-5 border flex flex-col">
           {active === 'device' && (
             <DeviceSelect onClose={() => setActive(null)} />
           )}

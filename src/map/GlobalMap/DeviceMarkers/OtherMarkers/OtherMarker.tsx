@@ -9,13 +9,11 @@ import uav from '/images/marker/icon/uav.png'
 import jiku from '@/assets/marker/wurenjiku.svg'
 import jiqigou from '@/assets/marker/jiqigou.png'
 import TTP from '@/assets/marker/TTP.png'
-import camera from '/images/marker/icon/camera.svg'
 import zhifayi from '/images/marker/icon/zhifayi.svg'
 import ren from '@/assets/marker/ren.png'
 // import wanglou from 'images/marker/wanglou.png'
 import car from '/images/marker/icon/car.svg'
 import wanglou from '/images/marker/icon/wanglou.svg'
-import radar from '/images/marker/icon/radar.svg'
 import GroundPolygonCircle from '@/components/map/GroundPolygonCircle'
 import VideoFrustum from './VideoFrustum'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
@@ -31,7 +29,7 @@ export const deviceIconMap: any = {
   UAV_AIRPORT: jiku,
   ROBOT_DOG: jiqigou,
   TTP_BOX: TTP,
-  CAMERA: camera,
+  CAMERA: '/images/marker/icon/camera.svg',
   SITE_ENFORCEMENT_RECORDER: zhifayi,
   PERSON: ren,
   WANGLOU: wanglou,
@@ -88,7 +86,7 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
         key={deviceId}
         id={`device--${deviceType}--${data.deviceName}--${deviceId}--${lng}--${lat}`}
         position={position}
-        image={deviceIconMap[deviceType] || camera}
+        image={deviceIconMap[deviceType]}
         width={24}
         height={24}
         disableDepthTestDistance={50000}

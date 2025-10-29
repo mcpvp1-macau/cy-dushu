@@ -3,6 +3,7 @@ import UavAirportMarkers from './UavAirportMarkers'
 import OtherMarkers from './OtherMarkers'
 import WangLouMarkers from './WangLouMarkers'
 import RebotDogMarkers from './RebotDogMarkers'
+import CameraMarkers from './CameraMarkers/CameraMarkers'
 
 type PropsType = unknown
 
@@ -17,6 +18,8 @@ const DeviceMarkers: FC<PropsType> = memo(() => {
       <WangLouMarkers />
       {/** 机器狗 */}
       <RebotDogMarkers />
+      {/** 摄像头 */}
+      <CameraMarkers />
       {/** 一般设备 */}
       <OtherMarkers />
     </>

@@ -1,14 +1,34 @@
-import { memo, type FC } from 'react'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { Dropdown, MenuProps } from 'antd'
 import DeviceIcon from '@/components/device/DeviceIcon'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { RightModeEnum } from '@/enum/right-mode'
-import useMapDevicesStore from '@/store/map/useMapDevices.store'
-import { postDeviceService } from '@/service/modules/device'
-import { msgMitt } from '@/hooks/useAppMsg'
-import useBoardObjStore from '@/store/map/useBoardObj.store'
+import * as helper from './DeviceMarkers/GlobalPickEvent/helper'
+
+const handlePickedObject = (e: any) => {
+  if (e.id?.startsWith?.('deviceCluster(')) {
+    return helper.parseDeviceCluster(e.id)
+  }
+
+  if (typeof e.id._id === 'string') {
+    // entity 的情况会在 e.id._id 上
+    if (e.id._id.startsWith('device--')) {
+      return helper.parseDevice(e.id._id)
+    } else {
+      return null
+    }
+  } else if (typeof e.primitive?.id === 'string') {
+    // 一般是 Primitive 的情况
+    const [kind] = e.primitive.id.split('--', 1) || []
+    if (kind === 'device') {
+      return helper.parseDevice(e.primitive.id)
+    } else if (kind === 'event') {
+      return helper.parseEvent(e.primitive.id)
+    }
+  }
+  return null
+}
 
 type PropsType = unknown
 
@@ -83,168 +103,8 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
     if (open === true) {
       setSelectOptions([])
       setOpen(false)
-      setRightMenuType(null)
     }
   })
-
-  const runDevice = (e) => {
-    const [kind, type, name, id, lng, lat] = e.primitive.id.split('--')
-    return {
-      kind,
-      type,
-      name,
-      id,
-      lng: parseFloat(lng),
-      lat: parseFloat(lat),
-    }
-  }
-
-  const runTarget = (e) => {
-    const [
-      kind,
-      type,
-      targetId,
-      targetPitch,
-      targetYaw,
-      parentId,
-      deviceId,
-      sourceType,
-      index,
-      uploadMode,
-    ] = e.primitive.id.split('--')
-    return {
-      kind,
-      type,
-      id: targetId,
-      targetPitch,
-      targetYaw,
-      parentId,
-      deviceId,
-      name: targetId,
-      targetId,
-      sourceType,
-      index,
-      uploadMode,
-    }
-  }
-
-  const runEvent = (e) => {
-    // `event--${eventType}--${data.deviceName}--${eventId}--${longitude}--${latitude}`
-    const [kind, type, name, id, lng, lat] = e.primitive.id.split('--')
-    return {
-      kind,
-      type,
-      name,
-      id,
-      lng: parseFloat(lng),
-      lat: parseFloat(lat),
-    }
-  }
-
-  const runkind = (e) => {
-    const [kind] = e.primitive.id.split('--')
-    if (kind === 'device') {
-      return runDevice(e)
-    }
-    // else if (kind === 'radartarget') {
-    //   return runTarget(e)
-    // }
-    else if (kind === 'event') {
-      return runEvent(e)
-    }
-  }
-
-  const [rightMenuType, setRightMenuType] = useState<SelectOptionType | null>()
-  const allDevicesMap = useMapDevicesStore((s) => s.allDevicesMap)
-
-  /** 引导 */
-  const handleClick1 = async (parentId, targetId) => {
-    const productKey = allDevicesMap[parentId][0]?.productKey
-    if (!productKey) return
-    const { message } = await postDeviceService(
-      productKey,
-      parentId,
-      'attractByRadar',
-      {
-        targetId: Number(targetId),
-      },
-    )
-    msgMitt.emit('open', {
-      content: message,
-    })
-    setRightMenuType(null)
-  }
-
-  const setBoardOpenMap = useBoardObjStore((s) => s.setBoardOpenMap)
-
-  // const RightMenus = useMemo<MenuProps['items']>(() => {
-  //   if (rightMenuType?.kind === 'radartarget') {
-  //     const arr: MenuProps['items'] = []
-  //     if (rightMenuType?.uploadMode === 'TIANLANG') {
-  //       arr.push({
-  //         key: '引导',
-  //         label: '引导',
-  //         onClick: () =>
-  //           handleClick1(rightMenuType.parentId, rightMenuType.targetId),
-  //       })
-  //     }
-  //     return [
-  //       ...arr,
-  //       {
-  //         key: '标牌',
-  //         label: '显示标牌',
-  //         onClick: () => {
-  //           setBoardOpenMap((s) => ({ ...s, [rightMenuType.targetId]: true }))
-  //           setRightMenuType(null)
-  //         },
-  //         // handleClick1(rightMenuType.parentId, rightMenuType.targetId),
-  //       },
-  //     ]
-  //   }
-  // }, [rightMenuType])
-
-  const listenRightClick = (evt) => {
-    if (!viewer?.scene) {
-      return
-    }
-    const pickedObjs = viewer.scene.drillPick(evt.position)
-    if (!pickedObjs || !pickedObjs.length) {
-      return
-    }
-
-    const res = pickedObjs
-      .filter(
-        (e) =>
-          (e.primitive instanceof Cesium.Billboard ||
-            e.primitive instanceof Cesium.PointPrimitive) &&
-          e.id &&
-          typeof e.id === 'string' &&
-          e.id.includes('device--'),
-        // || e.id.includes('radartarget--')
-      )
-      .slice(0, 8) // 限制 8 个
-      .map((e) => {
-        return runkind(e)
-      })
-      .filter((item) => !!item)
-
-    if (res?.[0]?.kind === 'radartarget') {
-      setRightMenuType(res[0])
-    } else {
-      setRightMenuType(null)
-    }
-    const position = evt.position
-    const { x, y } = viewer.scene.canvas.getBoundingClientRect()
-    if (divRef.current !== null) {
-      divRef.current.style.left = `${x + 5 + position.x}px`
-      divRef.current.style.top = `${y + 5 + position.y}px`
-    }
-
-    setTimeout(() => {
-      setOpen(true)
-      divRef.current?.click()
-    })
-  }
 
   useEffect(() => {
     if (!viewer?.scene) {
@@ -265,19 +125,22 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
         const res = pickedObjs
           .filter(
             (e) =>
-              (e.primitive instanceof Cesium.Billboard ||
+              // 普通情况
+              ((e.primitive instanceof Cesium.Billboard ||
                 e.primitive instanceof Cesium.PointPrimitive) &&
-              e.id &&
-              typeof e.id === 'string' &&
-              (e.id.includes('device--') ||
-                // e.id.includes('radartarget--') ||
-                e.id.includes('event--')),
+                e.id &&
+                typeof e.id === 'string' &&
+                (e.id.startsWith('device--') ||
+                  e.id.startsWith('event--') ||
+                  e.id.startsWith('deviceCluster('))) ||
+              // entity 情况
+              (typeof e.id?._id === 'string' &&
+                e.id._id.startsWith('device--')),
           )
-          .slice(0, 8) // 限制 8 个
-          .map((e) => {
-            return runkind(e)
-          })
-          .filter((item) => !!item)
+          .slice(0, 16) // 限制 16 个
+          .map(handlePickedObject)
+          .flat()
+          .filter((item) => !!item) as SelectOptionType[]
 
         // 只有 1 个时, 直接选择
         if (res.length === 1) {
@@ -302,40 +165,6 @@ const CesiumGlobalPickEvent: FC<PropsType> = memo(() => {
 
     handler.setInputAction(clearOptions, Cesium.ScreenSpaceEventType.LEFT_DOWN)
     handler.setInputAction(clearOptions, Cesium.ScreenSpaceEventType.WHEEL)
-
-    // handler.setInputAction(
-    //   listenRightClick,
-    //   Cesium.ScreenSpaceEventType.RIGHT_CLICK,
-    // )
-
-    // const handleDoubleClick = (evt) => {
-    //   const pickedObjs = viewer?.scene?.drillPick(evt.position)
-    //   if (!pickedObjs || !pickedObjs.length) {
-    //     return
-    //   }
-
-    //   const res = pickedObjs.find((e) => {
-    //     if (typeof e.id === 'string' && e.id.startsWith('overlay--')) {
-    //       return true
-    //     }
-    //     if (typeof e.id?.id === 'string' && e.id.id.startsWith('overlay--')) {
-    //       return true
-    //     }
-    //     return false
-    //   })
-
-    //   const id = res?.id?.id ?? res?.id
-    //   if (typeof id === 'string' && id.startsWith('overlay--')) {
-    //     const [, overlayId] = id.split('--')
-    //     console.log('id', id, overlayId)
-    //     updateRightMode(RightModeEnum.OVERLYA_DETAIL)
-    //     updateDetailId(overlayId)
-    //   }
-    // }
-    // handler.setInputAction(
-    //   handleDoubleClick,
-    //   Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK,
-    // )
 
     return () => {
       handler.destroy()

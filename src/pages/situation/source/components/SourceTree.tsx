@@ -6,8 +6,8 @@ import { Provider } from '../hooks/useSelectedGroup'
 import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
 import { deviceStatusFilter } from '../utils'
 import { useShallow } from 'zustand/react/shallow'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import XTree from '@/components/ui/XTree'
+import { useSize } from 'ahooks'
 
 type PropsType = {
   isLoading?: boolean
@@ -22,6 +22,7 @@ type PropsType = {
   ) => number
 }
 
+/** 设备树，该组件为虚拟列表，请确保父容器的高度 */
 const SourceTree: FC<PropsType> = memo(
   ({
     isLoading,
@@ -132,19 +133,23 @@ const SourceTree: FC<PropsType> = memo(
       updateHiddenGroupIds(newHiddenGroupIds)
     }, [data, hiddenDeviceIds, compareFn])
 
+    const wrapperRef = useRef<HTMLDivElement>(null)
+    const size = useSize(wrapperRef)
+
     return (
-      <ScrollArea className="h-full">
+      <div className="h-full" ref={wrapperRef}>
         <Spin spinning={isLoading}>
           <Provider value={expandKeys}>
             <XTree
               treeData={treeData}
               defaultExpandAll
               expandedKeys={expandKeys}
+              height={size?.height}
               onSelect={handleSelect}
             />
           </Provider>
         </Spin>
-      </ScrollArea>
+      </div>
     )
   },
 )

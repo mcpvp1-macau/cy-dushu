@@ -1,6 +1,5 @@
 import { DeviceEnum } from '@/enum/device'
 import { getDeviceTree } from '@/service/modules/device'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import IconButton from '@/components/ui/button/IconButton'
 import IconClose from '@/assets/icons/jsx/IconClose'
 import SourceTree from '@/pages/situation/source/components/SourceTree'
@@ -53,7 +52,7 @@ const DeviceSelect: FC<PropsType> = memo(({ onClose }) => {
         />
       </div>
       <SourceStatusCheckGroup className="px-3 my-2" />
-      <ScrollArea className="flex-1">
+      <div className="flex-1 overflow-hidden">
         {data ? (
           <SourceTree
             isLoading={isLoading || isRefetching}
@@ -63,7 +62,7 @@ const DeviceSelect: FC<PropsType> = memo(({ onClose }) => {
         ) : (
           <AppSpin />
         )}
-      </ScrollArea>
+      </div>
     </div>
   )
 })

@@ -17,6 +17,7 @@ import VideoProjection from '@/pages/control-room/uav/components/ControlRoomMap/
 import useMapSettingStore from '@/store/setting/useMapSetting.store'
 import useDeviceTrackColorStore from '@/store/setting/useDeviceTrackColor.store'
 import GLBModel from '@/map/CesiumMap/components/service/common/GLBModel'
+import SafetySphere from './SafetySphere'
 
 type PropsType = {
   deviceId: string
@@ -179,6 +180,7 @@ const UavDetailMarker: FC<PropsType> = memo(
             useGimbal={!enableUavDetailFrustum || !gimbalPickExist}
           />
         )}
+        <SafetySphere position={position} radius={20} />
         {historyTrack.map((track, index) => (
           <HistoryTrack
             key={index}

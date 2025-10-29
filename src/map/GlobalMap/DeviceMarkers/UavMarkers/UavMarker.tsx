@@ -19,6 +19,7 @@ import BoardMarker3D from '@/components/map/BoardCesium/BoardMarker3D'
 import DeviceIconUAV2 from '@/assets/icons/jsx/device/DeviceIconUAV2'
 import IconButton from '@/components/ui/button/IconButton'
 import IconClose from '@/assets/icons/jsx/IconClose'
+import SafetySphere from './SafetySphere'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -159,6 +160,7 @@ const UavMarker: FC<PropsType> = memo(({ data, onPositionChange }) => {
         position={position}
         heightReference={Cesium.HeightReference.NONE}
       />
+      {deviceIsOnline && <SafetySphere position={position} radius={20} />}
       {deviceIsOnline && alt !== groundHeight && (
         <HeightDashLine position={[lng || 120, lat || 30, alt]} color="#fff" />
       )}
