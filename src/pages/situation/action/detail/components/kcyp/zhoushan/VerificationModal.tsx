@@ -14,7 +14,6 @@ import {
   commitZSKCYPInfoOrder,
   commitZSKCYPPictures,
   commitZSKCYPVideo,
-  getZSKCYPVideoURL,
 } from '@/service/modules/action/kcyp'
 import { ZhoushanProcessResultEnum } from '@/service/modules/action/kcyp/enum'
 import { Dayjs } from 'dayjs'
@@ -148,7 +147,9 @@ const KCYPZSVerificationModal: FC<PropsType> = memo(
           }
           form.setFieldsValue({
             ...newData,
-            caseHapTime: dayjs(newData?.caseHapTime),
+            caseHapTime: newData?.caseHapTime
+              ? dayjs(newData?.caseHapTime)
+              : null,
           })
         })
       },
@@ -207,27 +208,6 @@ const KCYPZSVerificationModal: FC<PropsType> = memo(
     const [timeRange, setTimeRange] = useState<
       [Dayjs | null, Dayjs | null] | null
     >(null)
-
-    // const timeRangeTS = useMemo(() => {
-    //   if (!timeRange || timeRange[0] === null || timeRange[1] === null) {
-    //     return null
-    //   }
-    //   return [timeRange[0].valueOf(), timeRange[1].valueOf()] as [
-    //     number,
-    //     number,
-    //   ]
-    // }, [timeRange])
-
-    // const { data: videoUrlResp } = useQuery({
-    //   queryKey: ['getZSKCYPVideoURL', timeRangeTS],
-    //   enabled: !!timeRangeTS,
-    //   queryFn: () =>
-    //     getZSKCYPVideoURL({
-    //       deviceId: checkResults[0].deviceId,
-    //       begin: timeRangeTS![0],
-    //       end: timeRangeTS![1],
-    //     }),
-    // })
 
     const msgApi = useAppMsg()
     const handleSubmitVideo = async () => {
