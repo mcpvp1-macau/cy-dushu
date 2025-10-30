@@ -2,11 +2,22 @@ import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { attempt } from 'lodash'
+import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
+import { useShallow } from 'zustand/react/shallow'
 
 type PropsType = unknown
 
 const CameraMarkers: FC<PropsType> = memo(() => {
   const cameraDevices = useMapDevicesStore((s) => s.cameraDevices)
+
+  const listConfig = useDeviceListConfigStore(
+    useShallow((s) => ({
+      isOnline: s.isOnline,
+      isNotTask: s.isNotTask,
+      isTask: s.isTask,
+      hiddenDeviceIds: s.hiddenDeviceIds,
+    })),
+  )
 
   const { viewer } = useCesium()
 
@@ -21,6 +32,16 @@ const CameraMarkers: FC<PropsType> = memo(() => {
       if (!device.longitude || !device.latitude) {
         return
       }
+
+      // 过滤隐藏设备
+      if (listConfig.hiddenDeviceIds[device.deviceId]) {
+        return
+      }
+      // 过滤在线离线
+      if (listConfig.isOnline && device.status !== 'ONLINE') {
+        return
+      }
+
       dataSource.entities.add({
         position: Cesium.Cartesian3.fromDegrees(
           device.longitude,
@@ -82,9 +103,7 @@ const CameraMarkers: FC<PropsType> = memo(() => {
         viewer.dataSources.remove(dataSource)
       })
     }
-  }, [viewer, cameraDevices])
-
-  console.log('cameraDevices', cameraDevices)
+  }, [viewer, cameraDevices, listConfig])
 
   return null
 })
