@@ -98,6 +98,7 @@
     "react-use-websocket": "^4.8.1",
     "recorder-core": "^1.3.25011100",
     "resium": "^1.18.0",
+    "sonner": "^2.0.7",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "terriajs-tiff-imagery-provider": "2.13.3-webpack5-3",

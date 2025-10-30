@@ -6,12 +6,11 @@ import { heartbeat } from '@/constant/websocket'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import useUserStore from '@/store/useUser.store'
 import { shouldJson } from '@/utils/json'
-import { useInterval, useLatest, useThrottleFn } from 'ahooks'
+import { useInterval, useLatest } from 'ahooks'
 import dayjs from 'dayjs'
 import { isEqual, isNil } from 'lodash'
 import { type FC } from 'react'
 import useWebSocket from 'react-use-websocket'
-import { useEventData } from '@/store/event/useEvent.store'
 import { msgEmitter } from '@/pages/control-room/uav/components/Tanqi'
 import useReconstructionMapStore, {
   reconstructionMitt,
@@ -23,6 +22,7 @@ import useDeviceInactiveStore from '@/store/setting/useDeviceInactiveSetting.sto
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import { pathCompress3D } from '@/utils/path'
 import { deviceRelayEmitter } from './DeviceRelay'
+import useHandlePushEvent from './GlobalWebSocket/useHandlePushEvent'
 
 type PropsType = unknown
 
@@ -269,20 +269,7 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
   })
 
   // 事件推送 ------------------------
-  const { refetch } = useEventData()
-
-  const { run } = useThrottleFn(
-    () => {
-      refetch()
-    },
-    { wait: 2000 },
-  )
-  const updateNewEvent = useGlobalWsStore((s) => s.updateNewEvent)
-  const handleEventPush = useMemoizedFn((message: any) => {
-    //
-    run()
-    updateNewEvent(message)
-  })
+  const handleEventPush = useHandlePushEvent()
 
   // 日志 ----------------------------
   const updateNewLog = useGlobalWsStore((s) => s.updateNewLog)

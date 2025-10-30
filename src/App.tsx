@@ -24,6 +24,8 @@ import Update from './components/Update'
 import { lazy, Suspense } from 'react'
 import AppSpin from './components/AppSpin.tsx'
 
+import { Toaster } from 'sonner'
+
 const hidenSet = new Set([
   controlRoom.id,
   sources.id,
@@ -72,15 +74,6 @@ const App = () => {
   )
 
   const { i18n } = useTranslation()
-
-  useEffect(() => {
-    setTimeout(() => {
-      throw new Error(JSON.stringify({
-        code: 'ERROR',
-        message: '创建失败，唯一标识重复',
-      }))
-    }, 3000)
-  }, [])
 
   return (
     <XProvider
@@ -132,6 +125,14 @@ const App = () => {
                 </main>
               </div>
             </div>
+            <Toaster
+              position="top-right"
+              offset={{
+                top: '50px',
+                right: '54px',
+              }}
+              gap={12}
+            ></Toaster>
           </NotificationContext.Provider>
         </AppMsgContext.Provider>
       </div>

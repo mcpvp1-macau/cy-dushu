@@ -1,7 +1,7 @@
 import LayerAndOverlay from './LayerAndOverlay'
 import GlobalWebSocket from './GlobalWebSocket'
 import MapDevices from './MapDevices'
-import GlobalMessage from './GlobalMessage'
+import GlobalToast from './GlobalToast'
 import ReconstructionMap from './ReconstructionMap'
 import FlightArea from './FlightArea'
 import DeviceOverlays from './DeviceOverlays'
@@ -16,7 +16,7 @@ const GlobalState: FC<PropsType> = memo(() => {
       <GlobalWebSocket />
       <MapDevices />
       <LayerAndOverlay />
-      <GlobalMessage />
+      <GlobalToast />
       <DeviceRelay />
       {!globalConfig.useShanghaiBanRoutes && (
         <>
