@@ -23,7 +23,7 @@ import { useAsyncEffect } from 'ahooks'
 import { useForm } from 'antd/es/form/Form'
 import { omit, pick } from 'lodash'
 
-type PropsType = GetProps<typeof Form> & {
+type PropsType<ValuesType = any> = GetProps<typeof Form<ValuesType>> & {
   items: XFormItem[]
   themeKey?: string
   themeConfig?: NonNullable<ThemeConfig['components']>['Form']

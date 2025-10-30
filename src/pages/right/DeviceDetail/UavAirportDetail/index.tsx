@@ -265,7 +265,7 @@ const UavAirportDetail: FC<PropsType> = memo(
                 {
                   key: 'uavDockConfig',
                   label: t('device.setting.title'),
-                  children: <UavDockConfig />,
+                  children: <UavDockConfig state={state} />,
                 },
               ]}
             />

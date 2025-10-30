@@ -1,12 +1,22 @@
 import DeviceOverlayConfig from '../../components/DeviceOverlayConfig'
+import AirTransferEnable from './AirTransferEnable'
+import LocationCalibration from './LocationCalibration'
 
-type PropsType = unknown
+type PropsType = {
+  state: Record<string, any>
+}
 
 /** 机场配置 */
-const UavDockConfig: FC<PropsType> = memo(() => {
+const UavDockConfig: FC<PropsType> = memo((props) => {
   return (
     <div className="px-3 py-3">
       <DeviceOverlayConfig />
+      <div className="mt-2">
+        <LocationCalibration />
+      </div>
+      <div>
+        <AirTransferEnable state={props.state} />
+      </div>
     </div>
   )
 })
