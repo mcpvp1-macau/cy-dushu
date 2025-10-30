@@ -1,4 +1,3 @@
-import { memo, type FC, type ReactNode } from 'react'
 import styles from './index.module.less'
 import TakeOffPointConfig from './components/TakeOffPointConfig'
 import TakePhotoConfig from './components/TakePhotoConfig'
@@ -6,12 +5,11 @@ import AirlineHeightConfig from './components/HeightConfig'
 import AirlineSpeedConfig from './components/SpeedConfig'
 import AdvancedConfig from './components/AdvancedConfig'
 import TakeoffSpeedConfig from './components/TakeOffSpeedConfig'
-// import { useModel } from '@umijs/max';
-// import { pick } from 'lodash'
 import { takePhotoIgnoreDevices } from './constant/ignore-device'
 import GoHomeHeightConfig from './components/GoHomeHeightConfig'
 import RoadNetworkMode from './components/RoadNetworkMode'
 import RelayDeviceConfig from './components/RelayDeviceConfig'
+import Flight3D from './components/Flight3D'
 
 type PropsType = {
   info: ReactNode
@@ -31,6 +29,7 @@ const AirlineConfig: FC<PropsType> = ({ info, pilot }) => {
       {info}
       <TakeOffPointConfig />
       <RoadNetworkMode />
+      <Flight3D />
       {pilot}
       {!takePhotoIgnoreDevices.includes(modelName) && <TakePhotoConfig />}
       {/* 爬升模式设置 */}
