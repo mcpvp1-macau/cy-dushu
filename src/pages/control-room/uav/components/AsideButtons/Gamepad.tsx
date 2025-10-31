@@ -73,7 +73,9 @@ const Gamepad: FC<PropsType> = memo(() => {
           updateEnableGamepad(true)
         }}
       >
-        {t('controlRoom.uav.gamepad.title')}
+        <span className="hidden @[400px]:block">
+          {t('controlRoom.uav.gamepad.title')}
+        </span>
       </Button>
       {enableGamepad && <GamePadUser />}
     </>

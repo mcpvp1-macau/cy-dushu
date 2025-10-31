@@ -1,10 +1,10 @@
 import IconTakeoff from '@/assets/icons/jsx/uav/IconTakeoff'
-import VerticalIconButton from '@/components/ui/button/VerticalButton'
 import FormModal from '@/components/XForm/Modal'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { usePostDeviceServiceHandler } from '@/hooks/device/usePostDeviceService'
 import { getDeviceDetail } from '@/service/modules/device'
+import ServiceButton from './ServiceButton'
 
 type PropsType = {
   postServiceFn: (identifier: string, data?: any) => Promise<void>
@@ -43,14 +43,12 @@ const Takeoff: FC<PropsType> = memo(({ postServiceFn }) => {
 
   return (
     <>
-      <VerticalIconButton
-        className="flex-1 h-11 p-1 text-xs"
-        disabled={!canTakeoff}
-        icon={<IconTakeoff className="text-base" />}
+      <ServiceButton
+        title={t('controlRoom.uav.service.takeoff.title')}
+        icon={IconTakeoff}
         onClick={setTrue}
-      >
-        {t('controlRoom.uav.service.takeoff.title')}
-      </VerticalIconButton>
+      />
+
       {open && (
         <FormModal
           title="一键起飞"

@@ -116,6 +116,7 @@
   },
   "devDependencies": {
     "@modyfi/vite-plugin-yaml": "^1.1.1",
+    "@tailwindcss/container-queries": "^0.1.1",
     "@types/color": "^3.0.6",
     "@types/crypto-js": "^4.2.2",
     "@types/lodash": "^4.17.7",

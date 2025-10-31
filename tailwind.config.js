@@ -1,3 +1,5 @@
+import container_queries from '@tailwindcss/container-queries'
+
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: ['class'],
@@ -29,6 +31,9 @@ export default {
       },
     },
   },
-  // eslint-disable-next-line
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    // eslint-disable-next-line
+    require('tailwindcss-animate'),
+    container_queries,
+  ],
 }

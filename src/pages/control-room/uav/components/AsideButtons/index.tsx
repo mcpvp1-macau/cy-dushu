@@ -1,6 +1,5 @@
 import { Button } from 'antd'
 import ControlPower from './ControlPower'
-import VerticalIconButton from '@/components/ui/button/VerticalButton.tsx'
 import IconReturnBase from '@/assets/icons/jsx/uav/IconReturnBase'
 import IconLanding from '@/assets/icons/jsx/uav/IconLanding'
 import IconBoxSelect from '@/assets/icons/jsx/uav/IconBoxSelect'
@@ -14,6 +13,7 @@ import Takeoff from './Takeoff'
 import PointFly from './PointFly'
 import IntelligentPhotography from './IntelligentPhotograph'
 import IntelligentPhotographyV1 from './IntelligentPhotographV1'
+import ServiceButton from './ServiceButton'
 
 type PropsType = unknown
 
@@ -51,7 +51,7 @@ const AsideButtons: FC<PropsType> = memo(() => {
   )
 
   return (
-    <div className="flex flex-col gap-2.5">
+    <div className="flex flex-col gap-2.5 @container">
       <div>
         <ControlPower />
       </div>
@@ -63,7 +63,9 @@ const AsideButtons: FC<PropsType> = memo(() => {
           type={openPointZoom === 2 ? 'primary' : 'default'}
           onClick={() => updateOpenPointZoom(openPointZoom === 2 ? 0 : 2)}
         >
-          {t('controlRoom.uav.service.boxZoom.title')}
+          <span className="hidden @[400px]:block">
+            {t('controlRoom.uav.service.boxZoom.title')}
+          </span>
         </Button>
         {globalConfig.intelligentPhotographV1Filter?.includes(deviceModel) ? (
           <IntelligentPhotographyV1 postServiceFn={postSerivce} />
@@ -77,30 +79,24 @@ const AsideButtons: FC<PropsType> = memo(() => {
       <div className="flex justify-between gap-2.5">
         <Takeoff postServiceFn={postSerivce} />
         <PointFly />
-        <VerticalIconButton
-          className="flex-1 h-11 p-1 text-xs"
+        <ServiceButton
           disabled={!canStopAll}
-          icon={<IconStopCircle className="text-base" />}
+          icon={IconStopCircle}
+          title={t('controlRoom.uav.service.stopAll.title')}
           onClick={() => postSerivce('stopAll')}
-        >
-          {t('controlRoom.uav.service.stopAll.title')}
-        </VerticalIconButton>
-        <VerticalIconButton
-          className="flex-1 h-11 p-1 text-xs"
+        />
+        <ServiceButton
           disabled={!canGohome}
-          icon={<IconReturnBase className="text-base" />}
+          icon={IconReturnBase}
+          title={t('controlRoom.uav.service.goHome.title')}
           onClick={() => postSerivce('gohome')}
-        >
-          {t('controlRoom.uav.service.goHome.title')}
-        </VerticalIconButton>
-        <VerticalIconButton
-          className="flex-1 h-11 p-1 text-xs"
+        />
+        <ServiceButton
           disabled={!canAutoland}
-          icon={<IconLanding className="text-base" />}
+          icon={IconLanding}
+          title={t('controlRoom.uav.service.autoland.title')}
           onClick={() => postSerivce('autoland')}
-        >
-          {t('controlRoom.uav.service.autoland.title')}
-        </VerticalIconButton>
+        />
       </div>
     </div>
   )

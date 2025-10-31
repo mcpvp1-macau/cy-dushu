@@ -66,7 +66,9 @@ const IntelligentPhotographyV1: FC<PropsType> = memo(({ postServiceFn }) => {
       icon={<IconSmartTakingPhoto />}
       onClick={handleIntelligentPhotography}
     >
-      {t('controlRoom.uav.service.aiPhoto.title')}
+      <span className="hidden @[400px]:block">
+        {t('controlRoom.uav.service.aiPhoto.title')}
+      </span>
       {autoPhotoStatus &&
         `${i18n.language === 'en' ? ' ' : ''}${
           autoPhotoStatusMap[autoPhotoStatus]?.btnLabel

@@ -1,8 +1,8 @@
 import IconPointFly from '@/assets/icons/jsx/uav/IconPointFly'
-import VerticalIconButton from '@/components/ui/button/VerticalButton'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import useIdleControlTag from '../../hooks/useIdleControlTag'
+import ServiceButton from './ServiceButton'
 
 type PropsType = unknown
 
@@ -26,12 +26,10 @@ const PointFly: FC<PropsType> = memo(() => {
     !isLimitedFly && (hasControlPower || idleControlTag) && serviceHave
 
   return (
-    <VerticalIconButton
-      className={clsx('flex-1 h-11 p-1 text-xs', {
-        'text-primary': openPointFly,
-      })}
+    <ServiceButton
       disabled={!canPointFly}
-      icon={<IconPointFly className="text-base" />}
+      icon={IconPointFly}
+      title={t('controlRoom.uav.service.tapToFly.title')}
       onClick={() => {
         updateFlyParamsOpen(true)
         updatePointFly({
@@ -39,9 +37,7 @@ const PointFly: FC<PropsType> = memo(() => {
           targetPosition: null,
         })
       }}
-    >
-      {t('controlRoom.uav.service.tapToFly.title')}
-    </VerticalIconButton>
+    />
   )
 })
 
