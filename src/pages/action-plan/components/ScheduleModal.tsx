@@ -23,7 +23,7 @@ import {
 import useFormInstance from 'antd/es/form/hooks/useFormInstance'
 import type { Dayjs } from 'dayjs'
 import DayOfMonthCheckboxGroup from './DayOfMonthCheckboxGroup'
-import DayOfWeekCheckboxGroup from './DayOfWeekCheckboxGroup copy'
+import DayOfWeekCheckboxGroup from './DayOfWeekCheckboxGroup'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
 
@@ -110,7 +110,7 @@ const REPEATFormItems = memo(() => {
                               t('schedule.errors.smallThanThePrevious.msg'),
                             )
                           }
-                          if (diff < 60) {
+                          if (diff < 10) {
                             return Promise.reject(
                               t('schedule.errors.lessThan.msg'),
                             )

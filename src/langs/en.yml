@@ -964,7 +964,7 @@ schedule:
     lessThan2h:
       msg: The interval must be greater than 2 hours
     lessThan:
-      msg: The interval must be greater than 1 hours
+      msg: The interval must be greater than 10 minutes
   table:
     actionName:
       title: Action name

@@ -952,7 +952,7 @@ schedule:
     lessThan2h:
       msg: 时间间隔必须大于 2 小时
     lessThan:
-      msg: 时间间隔必须大于 1 小时
+      msg: 时间间隔必须大于 10 分钟
   table:
     actionName:
       title: 行动名称
