@@ -10,7 +10,7 @@ type PropsType = {
 
 /** 覆盖物 - 打点 */
 const OverlayPoint: FC<PropsType> = memo(({ data }) => {
-  const postion = shouldJson(data.overlayPositions)?.[0]
+  const p = shouldJson(data.overlayPositions)?.[0]
 
   const hiddenOverlayIds = useMapLayerAndOverlayConfigStore(
     (s) => s.hiddenOverlayIds,
@@ -22,19 +22,18 @@ const OverlayPoint: FC<PropsType> = memo(({ data }) => {
     return null
   }
 
-  if (!postion) {
+  if (!p) {
     return null
   }
 
-  const position = Cesium.Cartesian3.fromDegrees(
-    postion[0],
-    postion[1],
-    postion[2] ??
-      viewer?.scene.globe.getHeight(
-        Cesium.Cartographic.fromDegrees(postion[0], postion[1]),
-      ) ??
-      0,
-  )
+  const height =
+    p[2] ??
+    viewer?.scene.globe.getHeight(
+      Cesium.Cartographic.fromDegrees(p[0], p[1]),
+    ) ??
+    0
+
+  const position = Cesium.Cartesian3.fromDegrees(p[0], p[1], height)
 
   return (
     <>
