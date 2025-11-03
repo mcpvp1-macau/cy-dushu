@@ -7,13 +7,13 @@ import { attempt } from 'lodash'
 import { calcYaw } from '@/utils/cesium/rotation'
 
 type PropsType = {
-  data: {
+  data: Partial<{
     longitude: number
     latitude: number
     uavYaw: number
     gimbalYaw: number
     altitude?: number
-  }
+  }>
   useGimbal?: boolean
 }
 
@@ -31,8 +31,8 @@ const MapUavRealMarker: FC<PropsType> = memo(({ data, useGimbal = true }) => {
   if (!positionCallback.current) {
     positionCallback.current = new Cesium.CallbackProperty(() => {
       return Cesium.Cartesian3.fromDegrees(
-        lonRef.current,
-        latRef.current,
+        lonRef.current || 0,
+        latRef.current || 0,
         altRef.current || 0,
       )
     }, false) as unknown as Cesium.PositionProperty
@@ -50,7 +50,7 @@ const MapUavRealMarker: FC<PropsType> = memo(({ data, useGimbal = true }) => {
         scale: 0.5,
         disableDepthTestDistance: 16_000_000,
         rotation: new Cesium.CallbackProperty(
-          () => calcYaw(uavYaw.current, viewer),
+          () => calcYaw(uavYaw.current || 0, viewer),
           false,
         ),
       },
@@ -77,7 +77,7 @@ const MapUavRealMarker: FC<PropsType> = memo(({ data, useGimbal = true }) => {
         scale: 0.6,
         disableDepthTestDistance: 16_000_000,
         rotation: new Cesium.CallbackProperty(
-          () => calcYaw(gimbalYaw.current, viewer),
+          () => calcYaw(gimbalYaw.current || 0, viewer),
           false,
         ),
       },

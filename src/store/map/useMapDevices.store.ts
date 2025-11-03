@@ -24,7 +24,7 @@ type StateType = {
   robotDogDevices: API_DEVICE.domain.Device[]
   /** 无人机状态 */
   uavStates: {
-    [deviceId: string]: {
+    [deviceId: string]: Partial<{
       longitude: number
       latitude: number
       altitude: number
@@ -35,7 +35,7 @@ type StateType = {
       lensType: string
       zoomFactor: number
       cameraType: string
-    }
+    }>
   }
   /** 无人机轨迹 */
   uavTracks: { [deviceId: string]: { path: Track[]; useCallback: boolean } }

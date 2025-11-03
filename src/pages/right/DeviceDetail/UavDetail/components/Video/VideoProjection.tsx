@@ -1,6 +1,7 @@
 import IconVideoProjection from '@/assets/icons/jsx/IconVideoProjection'
 import IconButton from '@/components/ui/button/IconButton'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
+import useMapSettingStore from '@/store/setting/useMapSetting.store'
 import { RefObject } from 'react'
 
 type PropsType = {
@@ -22,6 +23,11 @@ const VideoProjection: FC<PropsType> = memo(({ deviceId, activeVideo }) => {
     } else {
       next[deviceId] = {
         videoElement: activeVideo.current,
+      }
+
+      // 确保打开无人机视椎体
+      if (!useMapSettingStore.getState().uavDetailFrustum) {
+        useMapSettingStore.getState().updateUavDetailFrustum(true)
       }
     }
     useMapDevicesStore.setState({

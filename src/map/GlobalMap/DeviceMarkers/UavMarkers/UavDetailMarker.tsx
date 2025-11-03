@@ -49,12 +49,12 @@ const UavDetailMarker: FC<PropsType> = memo(
     const lastCameraTypeRef = useRef<string | null>(null)
 
     if (lastCameraTypeRef.current !== state.cameraType && viewer) {
-      lastCameraTypeRef.current = state.cameraType
+      lastCameraTypeRef.current = state.cameraType || null
       pickerRef.current = new CameraVertexPicker(viewer)
     }
 
     const gimbalState = useCalcGimbalParams(
-      state.cameraType,
+      state.cameraType || 'H20T',
       state.lensType as 'wide' | 'zoom' | 'ir',
       state.zoomFactor,
     )
@@ -68,7 +68,12 @@ const UavDetailMarker: FC<PropsType> = memo(
     const gimbalPick = useMemo(() => {
       if (
         !pickerRef.current ||
-        (!enableUavDetailFrustum && !projectedVideo?.videoElement)
+        !enableUavDetailFrustum ||
+        !state.longitude ||
+        !state.latitude ||
+        !state.altitude ||
+        !state.gimbalYaw ||
+        !state.gimbalPitch
       ) {
         return {}
       }
@@ -126,6 +131,9 @@ const UavDetailMarker: FC<PropsType> = memo(
     }, [enableAreaScan])
 
     useEffect(() => {
+      if (!state.longitude || !state.latitude) {
+        return
+      }
       if (onPositionChange) {
         onPositionChange({
           longitude: state.longitude,
@@ -151,6 +159,10 @@ const UavDetailMarker: FC<PropsType> = memo(
       gimbalPick.rightTop &&
       gimbalPick.rightBottom &&
       gimbalPick.leftBottom
+
+    if (!state.longitude || !state.latitude) {
+      return null
+    }
 
     const position = Cesium.Cartesian3.fromDegrees(
       state.longitude,

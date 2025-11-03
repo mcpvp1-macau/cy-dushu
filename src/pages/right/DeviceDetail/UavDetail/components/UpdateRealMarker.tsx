@@ -17,40 +17,36 @@ const UavUpdateRealMarker: FC<PropsType> = memo(() => {
   )
 
   const wsState = useUavControlRoomStore(
-    useShallow((s) => ({
-      longitude: s.state.longitude ?? 0,
-      latitude: s.state.latitude ?? 0,
-      altitude: s.state.altitude ?? 0,
-      height: s.state.height ?? 0,
-      uavYaw: s.state.uavYaw || 0,
-      gimbalYaw: s.state.gimbalYaw || 0,
-      gimbalPitch: s.state.gimbalPitch || 0,
-      lensType: s.state.lensType || 'wide',
-      zoomFactor: s.state.zoomFactor || 1,
-      cameraType: s.state.gimbalType || s.state.cameraType,
-    })),
+    useShallow((s) => {
+      return {
+        longitude: s.state.longitude,
+        latitude: s.state.latitude,
+        altitude: s.state.altitude,
+        height: s.state.height,
+        uavYaw: s.state.uavYaw,
+        gimbalYaw: s.state.gimbalYaw,
+        gimbalPitch: s.state.gimbalPitch,
+        lensType: s.state.lensType || 'wide',
+        zoomFactor: s.state.zoomFactor || 1,
+        cameraType: s.state.gimbalType || s.state.cameraType,
+      }
+    }),
   )
 
   const state = useMemo(() => {
     return {
       longitude:
-        wsState.longitude || realProperties.longitude || data?.longitude || 0,
-      latitude:
-        wsState.latitude || realProperties.latitude || data?.latitude || 0,
-      altitude:
-        wsState.altitude || realProperties.altitude || data?.altitude || 0,
+        wsState.longitude || realProperties.longitude || data?.longitude,
+      latitude: wsState.latitude || realProperties.latitude || data?.latitude,
+      altitude: wsState.altitude || realProperties.altitude || data?.altitude,
       height:
-        wsState.height || realProperties.height || data?.properties.height || 0,
-      uavYaw: wsState.uavYaw || realProperties.uavYaw || 0,
-      gimbalYaw: wsState.gimbalYaw || realProperties.gimbalYaw || 0,
-      gimbalPitch: wsState.gimbalPitch || realProperties.gimbalPitch || 0,
-      lensType: wsState.lensType || realProperties.lensType || 'wide',
-      zoomFactor: wsState.zoomFactor || realProperties.zoomFactor || 1,
-      cameraType:
-        wsState.cameraType ||
-        realProperties.gimbalType ||
-        realProperties.cameraType ||
-        'H20T',
+        wsState.height || realProperties.height || data?.properties.height,
+      uavYaw: wsState.uavYaw || realProperties.uavYaw,
+      gimbalYaw: wsState.gimbalYaw || realProperties.gimbalYaw,
+      gimbalPitch: wsState.gimbalPitch,
+      lensType: wsState.lensType,
+      zoomFactor: wsState.zoomFactor,
+      cameraType: wsState.cameraType || 'H20T',
       deviceId: data!.deviceId,
     }
   }, [data, realProperties, wsState])
