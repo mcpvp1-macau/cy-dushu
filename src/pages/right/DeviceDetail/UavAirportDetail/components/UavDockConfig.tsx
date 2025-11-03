@@ -12,7 +12,7 @@ const UavDockConfig: FC<PropsType> = memo((props) => {
     <div className="px-3 py-3">
       <DeviceOverlayConfig />
       <div className="mt-2">
-        <LocationCalibration />
+        <LocationCalibration state={props.state} />
       </div>
       <div>
         <AirTransferEnable state={props.state} />

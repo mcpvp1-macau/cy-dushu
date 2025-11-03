@@ -4,17 +4,20 @@ import { useMemoizedFn } from 'ahooks'
 import { Form, Segmented } from 'antd'
 import usePostDeviceService from '../../hooks/usePostDeviceService'
 import SegmentTitle from '@/components/ui/SegmentTitle'
-import IconButton from '@/components/ui/button/IconButton'
 import XForm from '@/components/XForm'
+import { useAppMsg } from '@/hooks/useAppMsg'
+import TextButton from '@/components/ui/button/TextButton'
 
-type PropsType = unknown
+type PropsType = {
+  state: Record<string, any>
+}
 
 type CalibrationMode = 'manual' | 'auto'
 
 type FormValues = {
   longitude?: number
   latitude?: number
-  altitude?: number
+  height?: number
 }
 
 const parseToNumber = (value: unknown) => {
@@ -25,12 +28,13 @@ const parseToNumber = (value: unknown) => {
   return Number.isFinite(num) ? num : undefined
 }
 
-const LocationCalibration: FC<PropsType> = memo(() => {
-  const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)
+const LocationCalibration: FC<PropsType> = memo((props) => {
   const productKey = useDeviceDetailStore((s) => s.productKey)
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
 
   const postService = usePostDeviceService()
+
+  const msgApi = useAppMsg()
 
   const [mode, setMode] = useState<CalibrationMode>('manual')
   const [loading, setLoading] = useState(false)
@@ -38,17 +42,17 @@ const LocationCalibration: FC<PropsType> = memo(() => {
   const [form] = Form.useForm<FormValues>()
 
   const autoValues = useMemo(() => {
-    const detailRecord = deviceDetail as Record<string, unknown> | null
+    const detailRecord = props.state as Record<string, unknown> | null
     const longitude = parseToNumber(detailRecord?.['longitude'])
     const latitude = parseToNumber(detailRecord?.['latitude'])
-    const altitude = parseToNumber(detailRecord?.['altitude'])
+    const height = parseToNumber(detailRecord?.['height'])
 
     return {
       longitude,
       latitude,
-      altitude,
+      height,
     }
-  }, [deviceDetail])
+  }, [props.state])
 
   useEffect(() => {
     if (mode === 'auto') {
@@ -75,15 +79,21 @@ const LocationCalibration: FC<PropsType> = memo(() => {
     }
     setLoading(true)
     try {
-      await postService('rtkCalibration', {
-        longitude: values.longitude,
-        latitude: values.latitude,
-        altitude: values.altitude ?? 0,
-        mode,
-      })
+      await postService(
+        'rtkCalibration',
+        {
+          longitude: values.longitude,
+          latitude: values.latitude,
+          height: values.height ?? 0,
+          mode,
+        },
+        '',
+        false,
+      )
       await queryClient.invalidateQueries({
         queryKey: ['deviceDetail', deviceId],
       })
+      msgApi.success('位置标定成功')
     } finally {
       setLoading(false)
     }
@@ -93,9 +103,9 @@ const LocationCalibration: FC<PropsType> = memo(() => {
     <div className="text-sm">
       <div className="flex items-center justify-between">
         <SegmentTitle title={'位置标定'} />
-        <IconButton disabled={disabled} onClick={handleSubmit}>
-          <IconKCCheck />
-        </IconButton>
+        <TextButton disabled={disabled} onClick={handleSubmit}>
+          <IconKCCheck /> 提交
+        </TextButton>
       </div>
       <div className="mt-2">
         <Segmented<CalibrationMode>
@@ -112,6 +122,7 @@ const LocationCalibration: FC<PropsType> = memo(() => {
         layout="vertical"
         rowsProps={{ gutter: 8 }}
         form={form}
+        disabled={disabled || mode === 'auto'}
         items={[
           {
             label: '经度',
@@ -129,7 +140,7 @@ const LocationCalibration: FC<PropsType> = memo(() => {
           },
           {
             label: '高度',
-            name: 'altitude',
+            name: 'height',
             type: 'input-number',
             colsProps: { span: 24 },
           },
