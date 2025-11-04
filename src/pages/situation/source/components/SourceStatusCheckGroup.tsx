@@ -1,4 +1,4 @@
-import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
+import useDeviceFilterConfigStore from '@/store/useDeviceFilterConfig.store'
 import { Checkbox } from 'antd'
 import { pick } from 'lodash'
 import { HTMLAttributes } from 'react'
@@ -9,7 +9,7 @@ type PropsType = HTMLAttributes<HTMLDivElement>
 /** 资源状态选择器 */
 const SourceStatusCheckGroup: FC<PropsType> = memo((props) => {
   const { setDeviceStatus, isOnline, isTask, isNotTask } =
-    useDeviceListConfigStore(
+    useDeviceFilterConfigStore(
       useShallow((s) =>
         pick(s, ['isOnline', 'isTask', 'isNotTask', 'setDeviceStatus']),
       ),

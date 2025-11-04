@@ -2,7 +2,7 @@ import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { attempt } from 'lodash'
-import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
+import useDeviceFilterConfigStore from '@/store/useDeviceFilterConfig.store'
 import { useShallow } from 'zustand/react/shallow'
 
 type PropsType = unknown
@@ -10,7 +10,7 @@ type PropsType = unknown
 const CameraMarkers: FC<PropsType> = memo(() => {
   const cameraDevices = useMapDevicesStore((s) => s.cameraDevices)
 
-  const listConfig = useDeviceListConfigStore(
+  const listConfig = useDeviceFilterConfigStore(
     useShallow((s) => ({
       isOnline: s.isOnline,
       isNotTask: s.isNotTask,

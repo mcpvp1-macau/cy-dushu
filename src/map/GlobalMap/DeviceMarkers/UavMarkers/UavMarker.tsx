@@ -3,7 +3,7 @@ import useGlobalWsStore, {
 } from '@/store/useGlobalWebSocket.store'
 import { Billboard, useCesium } from 'resium'
 import * as Cesium from 'cesium'
-import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
+import useDeviceFilterConfigStore from '@/store/useDeviceFilterConfig.store'
 import { DeviceStatusEnum } from '@/enum/device'
 import { deviceStatusFilter } from '@/pages/situation/source/utils'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
@@ -51,10 +51,12 @@ const UavMarker: FC<PropsType> = memo(({ data, onPositionChange }) => {
   const lng = realLon || data.longitude
   const lat = realLat || data.latitude
 
-  const isOnline = useDeviceListConfigStore((s) => s.isOnline)
-  const isTask = useDeviceListConfigStore((s) => s.isTask)
-  const isNotTask = useDeviceListConfigStore((s) => s.isNotTask)
-  const isHidden = useDeviceListConfigStore((s) => s.hiddenDeviceIds[deviceId])
+  const isOnline = useDeviceFilterConfigStore((s) => s.isOnline)
+  const isTask = useDeviceFilterConfigStore((s) => s.isTask)
+  const isNotTask = useDeviceFilterConfigStore((s) => s.isNotTask)
+  const isHidden = useDeviceFilterConfigStore(
+    (s) => s.hiddenDeviceIds[deviceId],
+  )
 
   const status = useRealOnlineStatus(deviceId)
   const deviceIsOnline = status === DeviceStatusEnum.ONLINE

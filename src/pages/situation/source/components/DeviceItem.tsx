@@ -7,7 +7,7 @@ import IconVisible from '@/assets/icons/jsx/IconVisible'
 import DeviceIcon from '@/components/device/DeviceIcon'
 import IconButton from '@/components/ui/button/IconButton'
 import { Badge, Tooltip } from 'antd'
-import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
+import useDeviceFilterConfigStore from '@/store/useDeviceFilterConfig.store'
 import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
 import { DeviceEnum } from '@/enum/device'
 import TagItemV2 from '@/components/ui/TagItemV2'
@@ -82,10 +82,10 @@ const DeviceItem: FC<PropsType> = memo(
       [data],
     )
 
-    const isHidden = useDeviceListConfigStore(
+    const isHidden = useDeviceFilterConfigStore(
       (s) => s.hiddenDeviceIds[data.deviceId],
     )
-    const updateHiddenDeviceIds = useDeviceListConfigStore(
+    const updateHiddenDeviceIds = useDeviceFilterConfigStore(
       (s) => s.updateHiddenDeviceIds,
     )
 
@@ -115,7 +115,7 @@ const DeviceItem: FC<PropsType> = memo(
               onClick={(e) => {
                 e.stopPropagation()
                 const newHiddenDeviceIds = {
-                  ...useDeviceListConfigStore.getState().hiddenDeviceIds,
+                  ...useDeviceFilterConfigStore.getState().hiddenDeviceIds,
                 }
                 newHiddenDeviceIds[data.deviceId] = !isHidden
                 updateHiddenDeviceIds(newHiddenDeviceIds)

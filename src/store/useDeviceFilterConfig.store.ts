@@ -28,7 +28,7 @@ type ActionType = {
 }
 
 /** 设备列表配置 */
-const useDeviceListConfigStore = create<StateType & ActionType>()(
+const useDeviceFilterConfigStore = create<StateType & ActionType>()(
   devtools(
     persist(
       (set) => ({
@@ -63,4 +63,4 @@ const useDeviceListConfigStore = create<StateType & ActionType>()(
   ),
 )
 
-export default useDeviceListConfigStore
+export default useDeviceFilterConfigStore

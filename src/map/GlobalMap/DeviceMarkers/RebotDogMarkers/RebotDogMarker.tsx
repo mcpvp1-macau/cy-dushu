@@ -4,7 +4,7 @@ import useGlobalWsStore, {
 import icon from '/images/marker/icon/rebot_dog.svg'
 import { Billboard } from 'resium'
 import * as Cesium from 'cesium'
-import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
+import useDeviceFilterConfigStore from '@/store/useDeviceFilterConfig.store'
 import { DeviceStatusEnum } from '@/enum/device'
 import { deviceStatusFilter } from '@/pages/situation/source/utils'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
@@ -37,10 +37,12 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
 
   const groundHeight = useGroundHeight(lng, lat)
 
-  const isOnline = useDeviceListConfigStore((s) => s.isOnline)
-  const isTask = useDeviceListConfigStore((s) => s.isTask)
-  const isNotTask = useDeviceListConfigStore((s) => s.isNotTask)
-  const isHidden = useDeviceListConfigStore((s) => s.hiddenDeviceIds[deviceId])
+  const isOnline = useDeviceFilterConfigStore((s) => s.isOnline)
+  const isTask = useDeviceFilterConfigStore((s) => s.isTask)
+  const isNotTask = useDeviceFilterConfigStore((s) => s.isNotTask)
+  const isHidden = useDeviceFilterConfigStore(
+    (s) => s.hiddenDeviceIds[deviceId],
+  )
 
   const status = useRealOnlineStatus(deviceId)
 

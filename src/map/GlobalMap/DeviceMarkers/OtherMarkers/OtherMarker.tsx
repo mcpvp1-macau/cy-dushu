@@ -3,7 +3,7 @@ import useGlobalWsStore, {
 } from '@/store/useGlobalWebSocket.store'
 import { Billboard } from 'resium'
 import * as Cesium from 'cesium'
-import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
+import useDeviceFilterConfigStore from '@/store/useDeviceFilterConfig.store'
 import { DeviceStatusEnum } from '@/enum/device'
 import uav from '/images/marker/icon/uav.png'
 import jiku from '@/assets/marker/wurenjiku.svg'
@@ -63,8 +63,10 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
 
   const groundHeight = useGroundHeight(lng, lat)
 
-  const isOnline = useDeviceListConfigStore((s) => s.isOnline)
-  const isHidden = useDeviceListConfigStore((s) => s.hiddenDeviceIds[deviceId])
+  const isOnline = useDeviceFilterConfigStore((s) => s.isOnline)
+  const isHidden = useDeviceFilterConfigStore(
+    (s) => s.hiddenDeviceIds[deviceId],
+  )
 
   const status = useRealOnlineStatus(deviceId)
 

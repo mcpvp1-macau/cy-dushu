@@ -3,7 +3,7 @@ import GroupHeader from './GroupHeader'
 import { EventDataNode } from 'antd/es/tree'
 import DeviceItem from './DeviceItem'
 import { Provider } from '../hooks/useSelectedGroup'
-import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
+import useDeviceFilterConfigStore from '@/store/useDeviceFilterConfig.store'
 import { deviceStatusFilter } from '../utils'
 import { useShallow } from 'zustand/react/shallow'
 import XTree from '@/components/ui/XTree'
@@ -33,7 +33,7 @@ const SourceTree: FC<PropsType> = memo(
     deviceItemSuffix,
     deviceItemBottom,
   }) => {
-    const { isOnline, isTask, isNotTask } = useDeviceListConfigStore(
+    const { isOnline, isTask, isNotTask } = useDeviceFilterConfigStore(
       useShallow((s) => ({
         isOnline: s.isOnline,
         isTask: s.isTask,
@@ -113,8 +113,8 @@ const SourceTree: FC<PropsType> = memo(
       }
     }
 
-    const hiddenDeviceIds = useDeviceListConfigStore((s) => s.hiddenDeviceIds)
-    const updateHiddenGroupIds = useDeviceListConfigStore(
+    const hiddenDeviceIds = useDeviceFilterConfigStore((s) => s.hiddenDeviceIds)
+    const updateHiddenGroupIds = useDeviceFilterConfigStore(
       (s) => s.updateHiddenGroupIds,
     )
     useEffect(() => {

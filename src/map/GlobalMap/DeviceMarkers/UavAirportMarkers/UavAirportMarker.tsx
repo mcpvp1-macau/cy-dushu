@@ -3,7 +3,7 @@ import { Billboard } from 'resium'
 import * as Cesium from 'cesium'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
 import { deviceStatusFilter } from '@/pages/situation/source/utils'
-import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
+import useDeviceFilterConfigStore from '@/store/useDeviceFilterConfig.store'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
 import useGroundHeight from '@/hooks/cesium/useGroundHeight'
 import DeviceOverlays from '../components/DeviceOverlays'
@@ -21,10 +21,12 @@ const UavAirportMarker: FC<PropsType> = memo(({ data }) => {
 
   const onlineStatus = useRealOnlineStatus(deviceId)
 
-  const isOnline = useDeviceListConfigStore((s) => s.isOnline)
-  const isTask = useDeviceListConfigStore((s) => s.isTask)
-  const isNotTask = useDeviceListConfigStore((s) => s.isNotTask)
-  const isHidden = useDeviceListConfigStore((s) => s.hiddenDeviceIds[deviceId])
+  const isOnline = useDeviceFilterConfigStore((s) => s.isOnline)
+  const isTask = useDeviceFilterConfigStore((s) => s.isTask)
+  const isNotTask = useDeviceFilterConfigStore((s) => s.isNotTask)
+  const isHidden = useDeviceFilterConfigStore(
+    (s) => s.hiddenDeviceIds[deviceId],
+  )
 
   const groundHeight = useGroundHeight(lng, lat)
 

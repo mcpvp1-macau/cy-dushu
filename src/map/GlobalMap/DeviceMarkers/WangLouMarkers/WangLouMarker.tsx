@@ -3,7 +3,7 @@ import useGlobalWsStore, {
 } from '@/store/useGlobalWebSocket.store'
 import { Billboard } from 'resium'
 import * as Cesium from 'cesium'
-import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
+import useDeviceFilterConfigStore from '@/store/useDeviceFilterConfig.store'
 import { DeviceStatusEnum } from '@/enum/device'
 import wanglou from '/images/marker/icon/wanglou.svg'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
@@ -26,8 +26,10 @@ const WangLouMarker: FC<PropsType> = memo(({ data }) => {
   const lng = realLon || data.longitude || 0
   const lat = realLat || data.latitude || 0
 
-  const isOnline = useDeviceListConfigStore((s) => s.isOnline)
-  const isHidden = useDeviceListConfigStore((s) => s.hiddenDeviceIds[deviceId])
+  const isOnline = useDeviceFilterConfigStore((s) => s.isOnline)
+  const isHidden = useDeviceFilterConfigStore(
+    (s) => s.hiddenDeviceIds[deviceId],
+  )
 
   const status = useRealOnlineStatus(deviceId)
 

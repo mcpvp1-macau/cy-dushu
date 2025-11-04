@@ -2,7 +2,7 @@ import IconVisible from '@/assets/icons/jsx/IconVisible'
 import CustomExpandIcon from '@/components/CustomExpandIcon'
 import useSelectedGroup from '../hooks/useSelectedGroup'
 import IconButton from '@/components/ui/button/IconButton'
-import useDeviceListConfigStore from '@/store/useDeviceListConfig.store'
+import useDeviceFilterConfigStore from '@/store/useDeviceFilterConfig.store'
 import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
 
 type PropsType = {
@@ -38,10 +38,10 @@ const GroupHeader: FC<PropsType> = memo(({ data, depth }) => {
   const [total, onlineCnt] = useMemo(() => calcDeviceTotal(data), [data])
   const selectedKeys = useSelectedGroup()
 
-  const isHidden = useDeviceListConfigStore(
+  const isHidden = useDeviceFilterConfigStore(
     (s) => s.hiddenGroupIds[data.groupId],
   )
-  const updateHiddenDeviceIds = useDeviceListConfigStore(
+  const updateHiddenDeviceIds = useDeviceFilterConfigStore(
     (s) => s.updateHiddenDeviceIds,
   )
 
@@ -49,7 +49,7 @@ const GroupHeader: FC<PropsType> = memo(({ data, depth }) => {
     e.stopPropagation()
     const will = !isHidden
     const newDeviceIds = {
-      ...useDeviceListConfigStore.getState().hiddenDeviceIds,
+      ...useDeviceFilterConfigStore.getState().hiddenDeviceIds,
     }
     const dfs = (data: API_DEVICE.domain.DeviceTreeItem) => {
       data.devices?.forEach?.((d) => (newDeviceIds[d.deviceId] = will))
