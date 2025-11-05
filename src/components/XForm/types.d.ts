@@ -10,6 +10,7 @@ import type {
   Col,
   Checkbox,
   DefaultOptionType,
+  Slider,
 } from 'antd'
 import type { Rule } from 'antd/es/form'
 
@@ -74,5 +75,9 @@ export type XFormItem = CommonProps &
         type: 'checkbox'
         options: DefaultOptionType[]
         otherProps?: GetProps<typeof Checkbox.Group>
+      }
+    | {
+        type: 'slider'
+        otherProps?: GetProps<typeof Slider>
       }
   )

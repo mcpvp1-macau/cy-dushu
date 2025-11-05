@@ -11,6 +11,7 @@ import {
   InputNumber,
   Radio,
   Row,
+  Slider,
   ThemeConfig,
   TreeSelect,
   Upload,
@@ -153,6 +154,9 @@ const XForm: FC<PropsType> = memo(
           newItem.render = (
             <Checkbox.Group options={item.options} {...item.otherProps} />
           )
+          break
+        case 'slider':
+          newItem.render = <Slider {...item.otherProps} />
           break
         default:
           const _: never = item // 这里不要删掉, 用 ts 检查

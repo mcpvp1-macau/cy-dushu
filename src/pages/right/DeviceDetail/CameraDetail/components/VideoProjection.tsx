@@ -1,16 +1,14 @@
 import IconVideoProjection from '@/assets/icons/jsx/IconVideoProjection'
 import IconButton from '@/components/ui/button/IconButton'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
-import useMapSettingStore from '@/store/setting/useMapSetting.store'
+import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
 
-type PropsType = {
-  deviceId: string
-}
+type PropsType = {}
 
-/** 视频投射 */
-const VideoProjection: FC<PropsType> = memo(({ deviceId }) => {
-  const { t } = useTranslation()
+const CameraVideoProjection: FC<PropsType> = memo(() => {
+  const [t] = useTranslation()
 
+  const deviceId = useDeviceDetailStore((s) => s.deviceId)
   const isProjecting = useMapDevicesStore((s) => !!s.projectedVideos[deviceId])
 
   const handleClick = () => {
@@ -21,11 +19,6 @@ const VideoProjection: FC<PropsType> = memo(({ deviceId }) => {
     } else {
       next[deviceId] = {
         videoElement: null,
-      }
-
-      // 确保打开无人机视椎体
-      if (!useMapSettingStore.getState().uavDetailFrustum) {
-        useMapSettingStore.getState().updateUavDetailFrustum(true)
       }
     }
     useMapDevicesStore.setState({
@@ -44,6 +37,6 @@ const VideoProjection: FC<PropsType> = memo(({ deviceId }) => {
   )
 })
 
-VideoProjection.displayName = 'VideoProjection'
+CameraVideoProjection.displayName = 'CameraVideoProjection'
 
-export default VideoProjection
+export default CameraVideoProjection

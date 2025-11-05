@@ -42,6 +42,7 @@ import SeiAIDataMetaInfo from './components/SeiAIDataMetaInfo'
 import { Responses } from '@/service/servers/liqunAxios'
 import useSnapshot from './hooks/useSnapshot'
 import ShareQRCode from './ShareQRCode'
+import useUpdateProjectedVideo from './hooks/useUpdateProjectedVideo'
 
 type PropsType = {
   videoContainerId?: string
@@ -67,6 +68,8 @@ type PropsType = {
   }
   useDing?: boolean
   renderVideo?: boolean
+  /** 更新投影视频 */
+  updateProjectedVideo?: boolean
   onAspectRatioChange?: (aspectRatio: number) => void
   onUavProperties?: (properties: PropertiesData) => void
   onClickSeiBox?: (box: AiObject) => void
@@ -107,6 +110,7 @@ const DeviceLiveVideo = memo(
         useVideoQualityCheck,
         useDing = true,
         renderVideo = true,
+        updateProjectedVideo = false,
         onAspectRatioChange,
         onUavProperties,
         onClickSeiBox,
@@ -304,6 +308,11 @@ const DeviceLiveVideo = memo(
         return ''
       }, [url, fetchTime])
 
+      const handleVideoElementChange = useUpdateProjectedVideo(
+        deviceId,
+        updateProjectedVideo,
+      )
+
       return (
         <div
           className="size-full overflow-hidden relative bg-black text-sm"
@@ -374,7 +383,10 @@ const DeviceLiveVideo = memo(
                   }}
                   onStreamEnd={handleRefresh}
                   onTimeout={handleRefresh}
-                  onVideoElementChange={onVideoElementChange}
+                  onVideoElementChange={(video) => {
+                    handleVideoElementChange(video)
+                    onVideoElementChange?.(video)
+                  }}
                   refreshKey={jessibucaKey}
                 />
               )}

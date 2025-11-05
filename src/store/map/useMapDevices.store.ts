@@ -63,6 +63,8 @@ type StateType = {
   enableUavInfoBoard: boolean
   /** 隐藏的无人机信息面板 */
   hiddenUavInfoBoard: Set<string>
+  /** 摄像头详情页打开的 */
+  cameraInDetail: Set<string>
 }
 
 type ActionsType = {
@@ -93,6 +95,8 @@ type ActionsType = {
   updateHiddenUavInfoBoard: (
     hiddenUavInfoBoard: StateType['hiddenUavInfoBoard'],
   ) => void
+  /** 更新摄像头详情页状态 */
+  updateCameraInDetail: (cameraInDetail: StateType['cameraInDetail']) => void
 }
 
 const useMapDevicesStore = create<StateType & ActionsType>()(
@@ -116,6 +120,7 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       projectedVideos: {},
       enableUavInfoBoard: false,
       hiddenUavInfoBoard: new Set(),
+      cameraInDetail: new Set(),
       updateDeviceMap: (deviceMap) => {
         set({ deviceMap }, false, 'updateDeviceMap')
       },
@@ -169,6 +174,9 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       },
       updateHiddenUavInfoBoard: (hiddenUavInfoBoard) => {
         set({ hiddenUavInfoBoard }, false, 'updateHiddenUavInfoBoard')
+      },
+      updateCameraInDetail: (cameraInDetail) => {
+        set({ cameraInDetail }, false, 'updateCameraInDetail')
       },
     }),
     {

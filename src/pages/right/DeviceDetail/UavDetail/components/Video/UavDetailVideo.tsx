@@ -10,7 +10,6 @@ import AppViewSuspense from '@/components/AppViewSuspense'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import VideoFollow from './VideoFollow'
 import VideoProjection from './VideoProjection'
-import { isNil } from 'lodash'
 import AreaScanSwitch from './AreaScanSwitch'
 
 const DeviceLinkSwitch = lazy(
@@ -63,23 +62,6 @@ const UavDetailVideo: FC<PropsType> = memo((props) => {
 
   // 是否处于跟踪视频状态
   const isFollowing = useMapDevicesStore((s) => !!s.followedVideos[deviceId])
-  const activeVideo = useRef<HTMLVideoElement | null>(null)
-
-  //处理视频元素变化
-  const handleVideoElementChange = (video: HTMLVideoElement | null) => {
-    activeVideo.current = video
-    const { projectedVideos } = useMapDevicesStore.getState()
-    if (!isNil(projectedVideos[deviceId])) {
-      const next = { ...projectedVideos }
-      next[deviceId] = {
-        ...next[deviceId],
-        videoElement: video,
-      }
-      useMapDevicesStore.setState({
-        projectedVideos: next,
-      })
-    }
-  }
 
   return (
     <DeviceLiveVideo
@@ -95,7 +77,7 @@ const UavDetailVideo: FC<PropsType> = memo((props) => {
       }}
       // onClickSeiBox={handleSeiClik}
       renderVideo={!isFollowing}
-      onVideoElementChange={handleVideoElementChange}
+      updateProjectedVideo={!isFollowing}
       leftTop={
         <>
           <LinkSwitch
@@ -123,7 +105,7 @@ const UavDetailVideo: FC<PropsType> = memo((props) => {
           />
           {props.isInUavDetail && (
             <>
-              <VideoProjection deviceId={deviceId} activeVideo={activeVideo} />
+              <VideoProjection deviceId={deviceId} />
               <AreaScanSwitch deviceId={deviceId} />
             </>
           )}
