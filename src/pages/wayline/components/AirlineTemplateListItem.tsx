@@ -26,6 +26,11 @@ const AirlineTemplateListItem: FC<PropsType> = memo(({ data }) => {
   const handleDel = async () => {
     await delAirlineTempalte(data.waylineTemplateId)
     queryClient.invalidateQueries({ queryKey: ['airlineTemplates'] })
+    // 如果正在预览该航线模板，取消预览
+    const store = useWaylinesStore.getState()
+    if (store.previewedWayline?.id === data.templateId) {
+      store.setPreviewedWayline(null)
+    }
   }
 
   const { t } = useTranslation()
