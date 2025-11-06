@@ -60,7 +60,10 @@ const Polygon: FC<{ data: number[][] }> = memo(({ data }) => {
       return
     }
 
-    const positions = Cesium.Cartesian3.fromDegreesArrayHeights(data.flat())
+    const positions =
+      data[0].length === 3
+        ? Cesium.Cartesian3.fromDegreesArrayHeights(data.flat())
+        : Cesium.Cartesian3.fromDegreesArray(data.flat())
 
     // 创建多边形几何实例
     const instance1 = new Cesium.GeometryInstance({
