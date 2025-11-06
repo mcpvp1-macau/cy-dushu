@@ -42,6 +42,7 @@ const useAirlineOptions = () => {
           </div>
         ),
         value: i,
+        name: e.taskName,
       })) ?? [],
     [data],
   )

@@ -128,9 +128,11 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
       ) {
         list = list.filter((e) => e.deviceType === DeviceEnum.UAV)
       } else if (
-        [WaylineEnum.RebotDogWayline].includes(taskType as WaylineEnum)
+        [WaylineEnum.RebotDogWayline, WaylineEnum.PointCloud3DWayline].includes(
+          taskType as WaylineEnum,
+        )
       ) {
-        list = list.filter((e) => e.deviceType === DeviceEnum.UAV)
+        list = list.filter((e) => e.deviceType === DeviceEnum.ROBOT_DOG)
       }
     }
 

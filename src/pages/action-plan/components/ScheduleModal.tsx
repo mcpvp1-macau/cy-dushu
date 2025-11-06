@@ -4,7 +4,6 @@ import Select from '@/components/AntdOverride/Select'
 import XModal from '@/components/XModal'
 import { DeviceEnum } from '@/enum/device'
 import useAirlineOptions from '@/hooks/device/useAirlineOptions'
-import { getAllDeviceListV3 } from '@/service/modules/device'
 import { shouldJson } from '@/utils/json'
 import { InfoCircleOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { useUpdateEffect } from 'ahooks'
@@ -26,6 +25,9 @@ import DayOfMonthCheckboxGroup from './DayOfMonthCheckboxGroup'
 import DayOfWeekCheckboxGroup from './DayOfWeekCheckboxGroup'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
+import { WaylineEnum } from '@/constant/uav/wayline'
+import useMapDevicesStore from '@/store/map/useMapDevices.store'
+import DeviceIcon from '@/components/device/DeviceIcon'
 
 const TipInfo = memo(() => {
   const { t } = useTranslation()
@@ -238,26 +240,44 @@ const ScheduleModal: FC<PropsType> = memo(
       form.setFieldValue('executeTime', [undefined])
     }, [type])
 
-    const queryClient = useQueryClient()
-    const { data: airports } = useQuery(
-      {
-        queryKey: ['getAllDeviceList', DeviceEnum.UAV],
-        queryFn: () =>
-          getAllDeviceListV3({
-            type: DeviceEnum.UAV,
-          }),
-        select: (d) => d.data.rows,
-        staleTime: Infinity,
-      },
-      queryClient,
-    )
+    const airlineIndex = Form.useWatch('airlineIndex', form)
+    const taskType = airlines?.[airlineIndex]?.taskType
+    const allDevices = useMapDevicesStore((s) => s.allDevices)
+    const deviceOptions = useMemo(() => {
+      let list = allDevices
 
-    const uavDevices = useMemo(() => {
-      return (airports ?? []).map((e) => ({
-        label: e.deviceName,
+      if (taskType) {
+        if (
+          [
+            WaylineEnum.PointWayline,
+            WaylineEnum.AreaWayline,
+            WaylineEnum.SwarmWayline,
+            'mapping2d', // 第三方
+            'mapping3d',
+          ].includes(taskType as WaylineEnum)
+        ) {
+          list = list.filter((e) => e.deviceType === DeviceEnum.UAV)
+        } else if (
+          [
+            WaylineEnum.RebotDogWayline,
+            WaylineEnum.PointCloud3DWayline,
+          ].includes(taskType as WaylineEnum)
+        ) {
+          list = list.filter((e) => e.deviceType === DeviceEnum.ROBOT_DOG)
+        }
+      }
+
+      return list.map((e) => ({
+        label: (
+          <div className="flex gap-2">
+            <DeviceIcon type={e.deviceType} />
+            {e.deviceName}
+          </div>
+        ),
+        deviceName: e.deviceName,
         value: e.deviceId,
       }))
-    }, [airports])
+    }, [allDevices, taskType])
 
     // 初始化表单数据 ----------------------------------------------------------------
     useEffect(() => {
@@ -333,8 +353,8 @@ const ScheduleModal: FC<PropsType> = memo(
         name: values.name,
         actionConfig: {
           deviceIds: values.deviceId,
-          deviceNames: uavDevices.find((e) => e.value === values.deviceId)
-            ?.label,
+          deviceNames: deviceOptions.find((e) => e.value === values.deviceId)
+            ?.deviceName,
           deviceType: DeviceEnum.UAV,
           taskTemplateInfo: {
             parameters,
@@ -414,7 +434,7 @@ const ScheduleModal: FC<PropsType> = memo(
             },
           }}
         >
-          <ScrollArea className="max-h-[80vh] mb-3">
+          <ScrollArea className="max-h-[80vh] mb-3 overflow-hidden">
             <Form
               className="m-3"
               autoComplete="off"
@@ -431,18 +451,6 @@ const ScheduleModal: FC<PropsType> = memo(
                 <Input placeholder={t('common.form.pleaseInput')} />
               </Form.Item>
               <Form.Item
-                label={t('schedule.form.device.title')}
-                name="deviceId"
-                rules={[{ required: true }]}
-              >
-                <Select
-                  placeholder={t('common.form.pleaseSelect')}
-                  showSearch
-                  optionFilterProp="label"
-                  options={uavDevices}
-                />
-              </Form.Item>
-              <Form.Item
                 label={t('schedule.form.wayline.title')}
                 name="airlineIndex"
                 required
@@ -451,8 +459,21 @@ const ScheduleModal: FC<PropsType> = memo(
                 <Select
                   placeholder={t('common.form.pleaseSelect')}
                   showSearch
-                  optionFilterProp="label"
+                  optionFilterProp="name"
                   options={airlineOptions}
+                />
+              </Form.Item>
+              <Form.Item
+                label={t('schedule.form.device.title')}
+                name="deviceId"
+                rules={[{ required: true }]}
+              >
+                <Select
+                  className="max-w-[374px]"
+                  placeholder={t('common.form.pleaseSelect')}
+                  showSearch
+                  optionFilterProp="deviceName"
+                  options={deviceOptions}
                 />
               </Form.Item>
               <Form.Item
