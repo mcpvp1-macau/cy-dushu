@@ -28,6 +28,7 @@ import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
 import { WaylineEnum } from '@/constant/uav/wayline'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import DeviceIcon from '@/components/device/DeviceIcon'
+import { useAppMsg } from '@/hooks/useAppMsg'
 
 const TipInfo = memo(() => {
   const { t } = useTranslation()
@@ -230,6 +231,7 @@ type PropsType = {
 
 const ScheduleModal: FC<PropsType> = memo(
   ({ title, data, open, loading, onClose, onConfirm }) => {
+    const msgApi = useAppMsg()
     const { t } = useTranslation()
     const { data: airlines, airlineOptions, holder } = useAirlineOptions()
 
@@ -349,13 +351,17 @@ const ScheduleModal: FC<PropsType> = memo(
       const values = form.getFieldsValue()
       const activeAirline = airlines!.at(values.airlineIndex)!
       const parameters = shouldJson(activeAirline!.parameters)
+      const device = allDevices.find((e) => e.deviceId === values.deviceId)
+      if (!device) {
+        msgApi.error(t('schedule.errors.selectDevice.msg'))
+        return
+      }
       const submitData: API_ACTION_PLAN.domain.Plan = {
         name: values.name,
         actionConfig: {
           deviceIds: values.deviceId,
-          deviceNames: deviceOptions.find((e) => e.value === values.deviceId)
-            ?.deviceName,
-          deviceType: DeviceEnum.UAV,
+          deviceNames: device.deviceName,
+          deviceType: device.deviceType,
           taskTemplateInfo: {
             parameters,
             taskBasic: activeAirline.taskBasic,

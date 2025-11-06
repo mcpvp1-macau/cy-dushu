@@ -965,6 +965,8 @@ schedule:
       msg: The interval must be greater than 2 hours
     lessThan:
       msg: The interval must be greater than 10 minutes
+    selectDevice:
+      msg: Device select error
   table:
     actionName:
       title: Action name

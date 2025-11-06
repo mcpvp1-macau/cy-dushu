@@ -953,6 +953,8 @@ schedule:
       msg: 时间间隔必须大于 2 小时
     lessThan:
       msg: 时间间隔必须大于 10 分钟
+    selectDevice:
+      msg: 设备选择异常
   table:
     actionName:
       title: 行动名称

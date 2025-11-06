@@ -158,20 +158,24 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
               <WaylineIcon type={e.taskType} />
               {e.taskName}
             </div>
-            <IconButton
-              toolTipProps={{ title: t('common.preview') }}
-              onClick={(evt) => {
-                evt.stopPropagation()
-                handlePreview(e)
-              }}
-              onMouseDown={(e) => {
-                e.stopPropagation()
-                e.preventDefault()
-              }}
-              className="hover:text-white scale-90"
-            >
-              <IconPreview />
-            </IconButton>
+            {[WaylineEnum.PointWayline, WaylineEnum.AreaWayline].includes(
+              e.taskType as WaylineEnum,
+            ) && (
+              <IconButton
+                toolTipProps={{ title: t('common.preview') }}
+                onClick={(evt) => {
+                  evt.stopPropagation()
+                  handlePreview(e)
+                }}
+                onMouseDown={(e) => {
+                  e.stopPropagation()
+                  e.preventDefault()
+                }}
+                className="hover:text-white scale-90"
+              >
+                <IconPreview />
+              </IconButton>
+            )}
           </div>
         ),
         value: i,
@@ -183,14 +187,26 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
   const [confirmLoading, setConfirmLoading] = useState(false)
   const handleConfirm = useMemoizedFn(async (val: any) => {
     const airline = airlineTemplateList?.[val.airlineIndex]
+    // 获取设备类型
+    let deviceType = DeviceEnum.UAV
     if (Array.isArray(val.deviceIds)) {
+      const device = allDevices.find((e) => e.deviceId === val.deviceIds[0])
       val.deviceIds = val.deviceIds.join(',')
+      if (device) {
+        deviceType = device.deviceType as DeviceEnum
+      }
+    } else {
+      const device = allDevices.find((e) => e.deviceId === val.deviceIds)
+      if (device) {
+        deviceType = device.deviceType as DeviceEnum
+      }
     }
+
     const data = {
       ...pick(val, ['actionItemName', 'deviceIds']),
       pilotCode: val.shou,
       actionId,
-      deviceType: 'UAV',
+      deviceType,
     }
     if (airline) {
       data['templateId'] = airline.templateId
