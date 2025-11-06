@@ -73,6 +73,7 @@ class GlobalConfig {
   is72?: boolean
   /** 是否滨州演示 */
   isBinzhou?: boolean
+  isXiaoshan?: boolean
 
   /** minio */
   bucketName: undefined

@@ -6,7 +6,6 @@ import {
   warZoneCallSigns,
 } from './ShanghaiWarZone'
 import XModal from '@/components/XModal'
-import AppCollapse from '@/components/AppCollapse'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import IconButton from '@/components/ui/button/IconButton'
 import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
@@ -14,9 +13,8 @@ import IconVisible from '@/assets/icons/jsx/IconVisible'
 import useShanghaiWarZoneStore from '@/store/map/useShanghaiWarZone.store'
 import IconToLocation from '@/assets/icons/jsx/IconToLocation'
 import { Input } from 'antd'
-import { DataNode, EventDataNode } from 'antd/es/tree'
+import { EventDataNode } from 'antd/es/tree'
 import XTree from '@/components/ui/XTree'
-import { key } from 'localforage'
 
 type PropsType = unknown
 

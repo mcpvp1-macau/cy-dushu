@@ -42,6 +42,12 @@ const BinzhouDemo = lazy(() => import('./components/BinzhouDemo'))
 
 const GuizhouFarm = lazy(() => import('./components/custom/GuizhouFarm'))
 
+const XiaoshanXZZone = lazy(() => import('./components/custom/XiaoshanXZZone'))
+
+const XiaoshanXZZoneConfig = lazy(
+  () => import('./components/custom/XiaoshanXZZoneConfig'),
+)
+
 type PropsType = {
   id: string
   children?: ReactNode
@@ -122,6 +128,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
             )}
           </FloatIconButtonGroup>
           {globalConfig.useShanghaiBanRoutes && <ShanghaiWarZoneConfig />}
+          {globalConfig.isXiaoshan && <XiaoshanXZZoneConfig />}
           <FloatIconButton onClick={toggle}>
             {is2D ? '2D' : '3D'}
           </FloatIconButton>
@@ -139,6 +146,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
         {globalConfig.useHangzhouBanAreas && <HangzhouBanAreas />}
         {globalConfig.useGuizhouProjects && <GuizhouProjects />}
         {globalConfig.isBinzhou && <BinzhouDemo />}
+        {globalConfig.isXiaoshan && <XiaoshanXZZone />}
       </Suspense>
       <BottomBar />
       <FuzhouJiefangBridge />
