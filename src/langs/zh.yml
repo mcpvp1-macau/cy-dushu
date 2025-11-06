@@ -809,7 +809,7 @@ wayline:
         title: 开始录制
       STOP_RECORD:
         title: 停止录制
-    addBefore: 在航点 {{i}} 后添加
+    addBefore: 在航点 {{i}} 前添加
     addAfter: 在航点 {{i}} 后添加
     addLast: 在最后添加
     deleteIdx: 删除航点 {{i}}

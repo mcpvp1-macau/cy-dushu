@@ -817,7 +817,7 @@ wayline:
         title: Camera Mode
       SPEAKER_PLAY:
         title: Loudspeaker
-    addBefore: Add after waypoint {{i}}
+    addBefore: Add before waypoint {{i}}
     addAfter: Add before waypoint {{i}}
     addLast: Add at the end
     deleteIdx: Delete waypoint {{i}}
