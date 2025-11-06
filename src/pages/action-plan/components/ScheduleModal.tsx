@@ -2,8 +2,7 @@ import IconMinus from '@/assets/icons/jsx/IconMinus'
 import IconPlus from '@/assets/icons/jsx/IconPlus'
 import Select from '@/components/AntdOverride/Select'
 import XModal from '@/components/XModal'
-import { DeviceEnum } from '@/enum/device'
-import useAirlineOptions from '@/hooks/device/useAirlineOptions'
+import { useWaylineAndDeviceFormOptions } from '@/hooks/device/useAirlineOptions'
 import { shouldJson } from '@/utils/json'
 import { InfoCircleOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { useUpdateEffect } from 'ahooks'
@@ -25,9 +24,6 @@ import DayOfMonthCheckboxGroup from './DayOfMonthCheckboxGroup'
 import DayOfWeekCheckboxGroup from './DayOfWeekCheckboxGroup'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
-import { WaylineEnum } from '@/constant/uav/wayline'
-import useMapDevicesStore from '@/store/map/useMapDevices.store'
-import DeviceIcon from '@/components/device/DeviceIcon'
 import { useAppMsg } from '@/hooks/useAppMsg'
 
 const TipInfo = memo(() => {
@@ -199,7 +195,7 @@ const REPEATFormItems = memo(() => {
 
 type FormValuesType = {
   name: string
-  deviceId: string
+  deviceIds: string
   airlineIndex: number
   timeRange: Dayjs[]
   breakPointEnable?: boolean
@@ -233,53 +229,22 @@ const ScheduleModal: FC<PropsType> = memo(
   ({ title, data, open, loading, onClose, onConfirm }) => {
     const msgApi = useAppMsg()
     const { t } = useTranslation()
-    const { data: airlines, airlineOptions, holder } = useAirlineOptions()
 
     const [form] = Form.useForm<FormValuesType>()
-
     const type = Form.useWatch('type', form) ?? data?.type
+
+    const {
+      airlineOptions,
+      deviceOptions,
+      airlineTemplateList,
+      allDevices,
+      allowMultipleDevice,
+      holder,
+    } = useWaylineAndDeviceFormOptions(form, 'deviceIds')
+
     useUpdateEffect(() => {
       form.setFieldValue('executeTime', [undefined])
     }, [type])
-
-    const airlineIndex = Form.useWatch('airlineIndex', form)
-    const taskType = airlines?.[airlineIndex]?.taskType
-    const allDevices = useMapDevicesStore((s) => s.allDevices)
-    const deviceOptions = useMemo(() => {
-      let list = allDevices
-
-      if (taskType) {
-        if (
-          [
-            WaylineEnum.PointWayline,
-            WaylineEnum.AreaWayline,
-            WaylineEnum.SwarmWayline,
-            'mapping2d', // 第三方
-            'mapping3d',
-          ].includes(taskType as WaylineEnum)
-        ) {
-          list = list.filter((e) => e.deviceType === DeviceEnum.UAV)
-        } else if (
-          [
-            WaylineEnum.RebotDogWayline,
-            WaylineEnum.PointCloud3DWayline,
-          ].includes(taskType as WaylineEnum)
-        ) {
-          list = list.filter((e) => e.deviceType === DeviceEnum.ROBOT_DOG)
-        }
-      }
-
-      return list.map((e) => ({
-        label: (
-          <div className="flex gap-2">
-            <DeviceIcon type={e.deviceType} />
-            {e.deviceName}
-          </div>
-        ),
-        deviceName: e.deviceName,
-        value: e.deviceId,
-      }))
-    }, [allDevices, taskType])
 
     // 初始化表单数据 ----------------------------------------------------------------
     useEffect(() => {
@@ -290,8 +255,8 @@ const ScheduleModal: FC<PropsType> = memo(
       if (data) {
         form.setFieldsValue({
           name: data.name,
-          deviceId: data.actionConfig?.deviceIds,
-          airlineIndex: airlines?.findIndex(
+          deviceIds: data.actionConfig?.deviceIds,
+          airlineIndex: airlineTemplateList?.findIndex(
             (e) =>
               e.waylineTemplateId === data.actionConfig?.waylineTemplateId ||
               e.templateId === data.actionConfig?.templateId,
@@ -349,19 +314,29 @@ const ScheduleModal: FC<PropsType> = memo(
     const handleConfirm = async () => {
       await form.validateFields()
       const values = form.getFieldsValue()
-      const activeAirline = airlines!.at(values.airlineIndex)!
+      const activeAirline = airlineTemplateList!.at(values.airlineIndex)!
       const parameters = shouldJson(activeAirline!.parameters)
-      const device = allDevices.find((e) => e.deviceId === values.deviceId)
+
+      // 获取设备类型
+      let device: API_DEVICE.domain.Device | undefined
+      if (Array.isArray(values.deviceIds)) {
+        device = allDevices.find((e) => e.deviceId === values.deviceIds[0])
+        values.deviceIds = values.deviceIds.join(',')
+      } else {
+        device = allDevices.find((e) => e.deviceId === values.deviceIds)
+      }
+
       if (!device) {
         msgApi.error(t('schedule.errors.selectDevice.msg'))
         return
       }
+
       const submitData: API_ACTION_PLAN.domain.Plan = {
         name: values.name,
         actionConfig: {
-          deviceIds: values.deviceId,
-          deviceNames: device.deviceName,
-          deviceType: device.deviceType,
+          deviceIds: values.deviceIds,
+          deviceNames: device?.deviceName,
+          deviceType: device?.deviceType,
           taskTemplateInfo: {
             parameters,
             taskBasic: activeAirline.taskBasic,
@@ -471,7 +446,7 @@ const ScheduleModal: FC<PropsType> = memo(
               </Form.Item>
               <Form.Item
                 label={t('schedule.form.device.title')}
-                name="deviceId"
+                name="deviceIds"
                 rules={[{ required: true }]}
               >
                 <Select
@@ -480,6 +455,7 @@ const ScheduleModal: FC<PropsType> = memo(
                   showSearch
                   optionFilterProp="deviceName"
                   options={deviceOptions}
+                  mode={allowMultipleDevice ? 'multiple' : undefined}
                 />
               </Form.Item>
               <Form.Item
