@@ -6,13 +6,15 @@ import { shouldJson } from '@/utils/json'
 /**
  * 开始任务
  * @description 该 hook 用于处理设备的立即执行和开始, 可能存在有正在执行的任务, 用于停止。
+ * @param needProcessAfterStop 是否要再次执行停止操作后继续执行该 action
  * @returns
  */
-const useStartActionItem = () => {
+const useStartActionItem = (needProcessAfterStop = false) => {
   const [runningActionPayload, setRunningActionPayload] = useState<{
     actionItem: number
     message: string
   } | null>(null)
+  const willAction = useRef<(() => Promise<any>) | null>(null)
 
   const msgApi = useAppMsg()
 
@@ -33,6 +35,9 @@ const useStartActionItem = () => {
           actionItem: err.data.actionItemIdList[0],
           message: err.message,
         })
+        if (needProcessAfterStop) {
+          willAction.current = action
+        }
       } else {
         msgApi.error(err.message)
       }
@@ -48,6 +53,10 @@ const useStartActionItem = () => {
         await endActionItem(runningActionPayload.actionItem)
         msgApi.success(t('wayline.executeTask.success.stopTask.msg'))
         setRunningActionPayload(null)
+        if (willAction.current) {
+          await startActionItem(willAction.current)
+          willAction.current = null
+        }
       } finally {
         setConfirmLoading(false)
       }

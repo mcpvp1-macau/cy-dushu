@@ -27,6 +27,14 @@ export const addAction = (data: any) => {
   return serverJingqi.post('/action/add', data)
 }
 
+/** 快捷创建行动及任务 */
+export const fastAddAction = (data: API_ACTION.req.FastAddActionReq) => {
+  return serverJingqi.post<API_ACTION.res.FastAddActionRes>(
+    '/action/fastAdd',
+    data,
+  )
+}
+
 /** 结束行动 */
 export const endAction = (actionId: string) => {
   return serverJingqi.get('/action/stop', {

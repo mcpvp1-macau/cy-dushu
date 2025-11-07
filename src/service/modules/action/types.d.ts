@@ -85,6 +85,12 @@ declare namespace API_ACTION {
       endTime?: string
       status?: string[]
     }
+    interface FastAddActionReq {
+      name: string
+      type: string
+      deviceIds: string
+      deviceType: string
+    }
   }
   // ------------------ res ------------------
   namespace res {
@@ -96,6 +102,10 @@ declare namespace API_ACTION {
     interface AIResultListRes {
       rows: API_ACTION.domain.AIResultRecord[]
       total: number
+    }
+    interface FastAddActionRes {
+      actionId: number
+      actionItemIds: number[]
     }
   }
 }

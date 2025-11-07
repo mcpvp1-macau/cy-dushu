@@ -21,6 +21,7 @@ import { createPortal } from 'react-dom'
 import IconButtonWithDropDownDialog from '@/components/ui/button/IconButtonWithDropDownDialog'
 import { emtpyObject } from '@/constant/data'
 import { BugOutlined } from '@ant-design/icons'
+import { DeviceEnum } from '@/enum/device'
 
 const DeviceLinkSwitch = lazy(
   () => import('@/components/device/DeviceLinkSwitch'),
@@ -356,7 +357,7 @@ const ControlRoomUavHeader: FC = memo(() => {
             </ul>
           </section>
           <section>
-            <LatestTask deviceId={deviceId} />
+            <LatestTask deviceId={deviceId} deviceType={DeviceEnum.UAV} />
           </section>
         </div>
         <ScrollBar orientation="horizontal" />
