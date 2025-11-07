@@ -419,6 +419,26 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         // 断点续飞
         handleRelayEvent(message)
         break
+
+      case 'OVERLAY_SHARE':
+        // 共享结果
+        console.log('收到覆盖物共享结果', message)
+        notificationApi.success({
+          message: `收到${message.senderUserId}分享的覆盖物${message.overlayName}`,
+          duration: 0,
+          style: {
+            backgroundColor: '#15B371',
+            padding: '8px 0',
+            width: '280px',
+            borderRadius: '4px',
+          },
+          icon: <></>,
+        })
+        queryClient.invalidateQueries({
+          queryKey: ['overlayList'],
+          exact: false,
+        })
+        break
     }
   })
 
