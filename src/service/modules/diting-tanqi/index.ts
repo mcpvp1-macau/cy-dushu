@@ -14,7 +14,9 @@ export const getConversations = async (params: { group_name: string }) => {
 export const createConversation = async (data: {
   group_name: string
   name?: string
+  metadata?: Record<string, any>
   system_message: string
+  model?: string
 }) => {
   return serverDitingTanqi.post<API_DITING_TANQI.domain.ConversationItem>(
     '/user/conversations',

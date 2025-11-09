@@ -1,29 +1,20 @@
-import IconCommand from '@/assets/icons/jsx/IconCommand'
-import IconIntelligence from '@/assets/icons/jsx/IconIntelligence'
 import IconPlus from '@/assets/icons/jsx/IconPlus'
 import AppSpin from '@/components/AppSpin'
 import IconButton from '@/components/ui/button/IconButton'
-import { useAppMsg } from '@/hooks/useAppMsg'
-import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
-import { getDeviceDetail } from '@/service/modules/device'
-import { getUavInfo } from '@/service/modules/diting-mcp'
 import {
   createConversation,
   getChats,
   stopChat,
 } from '@/service/modules/diting-tanqi'
 import { shouldJson } from '@/utils/json'
-import { useInViewport } from 'ahooks'
-import { Button } from 'antd'
 import { useSearchParams } from 'react-router-dom'
 import ConversationDetail from '@/components/Tanqi/ConversationDetail'
 import Conversations from '@/components/Tanqi/HistoryConversations'
 import TanqiSender from '@/components/Tanqi/TanqiSender'
 import TanqiWelCome from '@/components/Tanqi/TanqiWelcome'
-import useGroupName from './hooks/useGroupName'
-import useMCPStream from './hooks/useMCPStream'
-import useMCPTools from './hooks/useMCPTools'
+
 import useSendMessage from './hooks/useSendMessage'
+import useUserStore from '@/store/useUser.store'
 
 type PropsType = unknown
 
@@ -33,25 +24,18 @@ enum APState {
   Replying = 2, // 回答中
 }
 
-/** 谛听版 檀棋 */
-const DitingTanqi: FC<PropsType> = memo(() => {
-  const groupName = useGroupName()
+const ActionTanqi: FC<PropsType> = memo(() => {
+  const username = useUserStore((s) => s.user?.username)
+  const actionId = useParams().actionId
+  const groupName = username && actionId ? `ds-${username}-${actionId}` : ''
 
   const { t } = useTranslation()
-  const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)
 
   const [searchParams, setSearchParams] = useSearchParams()
   const chatIdStr = searchParams.get('chat')
   const chatId = chatIdStr ? Number(chatIdStr) : undefined
 
-  // 任务理解开关
-  const [openUnderstand, setOpenUnderstand] = useState(false)
-  // 指令控制开关
-  const [openCommand, setOpenCommand] = useState(false)
-
   const toolsRef = useRef<HTMLDivElement>(null)
-  // const [inViewport] = useInViewport(toolsRef)
-  // const { mcps, isLoading: mcpLoading } = useAllMCP(!!inViewport)
 
   // 0 空闲 1 思考中 2 回答中
   const [aiState, setAiState] = useState<APState>(APState.Idle)
@@ -60,37 +44,20 @@ const DitingTanqi: FC<PropsType> = memo(() => {
   // 是否正在发送消息
   const [sending, setSending] = useState(false)
 
-  const msgApi = useAppMsg()
-
   const queryClient = useQueryClient()
+
   // 创建对话
   const newConversation = async () => {
-    if (!deviceDetail) {
-      return
-    }
-    let sn = deviceDetail.sn
-    // 尝试获取父设备的sn
-    if (deviceDetail.parentId) {
-      const parentDetail = await getDeviceDetail(deviceDetail.parentId)
-      sn = parentDetail?.data?.sn || sn
-    }
-    if (!sn) {
-      msgApi.error('无法获取设备SN, 请稍后再试')
-      return
-    }
-    const resp = await getUavInfo(sn)
-    const uav_name = resp.data.uav_name
-    if (!uav_name) {
-      msgApi.error('当前无人机未绑定到MCP, 无法使用谛听檀棋')
-      return
-    }
-
     setCreating(true)
     try {
       const resp = await createConversation({
         group_name: groupName,
-        system_message:
-          '当前操作的为无人机为: ' + JSON.stringify({ uav_name: uav_name }),
+        system_message: '',
+        metadata: {
+          actionId: actionId,
+          username: username,
+        },
+        model: 'tanqi-agent-ds-action',
       })
       if (resp.data.id) {
         const nextSearchParams = new URLSearchParams(searchParams)
@@ -114,16 +81,7 @@ const DitingTanqi: FC<PropsType> = memo(() => {
     }
   }, [chatId])
 
-  const [inViewport] = useInViewport(toolsRef)
-  const flyControlMCPTools = useMCPTools('FlyControl', !!inViewport)
-  const taskUnderstandMCPTools = useMCPTools('TaskUnderstand', !!inViewport)
-
   const { replyingContent, sendMessage } = useSendMessage({
-    openUnderstand,
-    understandTools: taskUnderstandMCPTools.mcps ?? [],
-    openCommandControl: openCommand,
-    commandControlTools: flyControlMCPTools.mcps ?? [],
-    // 开始时
     onStartReply: () => {
       setAiState(APState.Replying)
     },
@@ -205,35 +163,9 @@ const DitingTanqi: FC<PropsType> = memo(() => {
     enabled: !!chatId,
   })
 
-  const { replyingContent: taskUnderstandingReplyingContent } = useMCPStream(
-    !!chatId,
-    chatId ?? 0,
-    {
-      onStopMessage: (content) => {
-        setApendedRows((prev) => [
-          ...prev,
-          {
-            role: 'assistant',
-            content,
-            created_at: dayjs().format(),
-          },
-        ])
-        setAiState(APState.Idle)
-      },
-    },
-  )
-
   // 显示的内容
   const conversationDetailData = useMemo(() => {
     const data = [...(chatDetail ?? []), ...appendedRows]
-    // 任务理解内容
-    if (taskUnderstandingReplyingContent) {
-      data.push({
-        role: 'assistant',
-        content: taskUnderstandingReplyingContent,
-        created_at: dayjs().format(),
-      })
-    }
     // 回复内容
     if (replyingContent) {
       data.push({
@@ -243,12 +175,7 @@ const DitingTanqi: FC<PropsType> = memo(() => {
       })
     }
     return data
-  }, [
-    chatDetail,
-    appendedRows,
-    replyingContent,
-    taskUnderstandingReplyingContent,
-  ])
+  }, [chatDetail, appendedRows, replyingContent])
 
   return (
     <div className="tanqi size-full overflow-hidden flex flex-col">
@@ -268,7 +195,7 @@ const DitingTanqi: FC<PropsType> = memo(() => {
           )}
           {/* 工具栏 */}
           <div
-            className="right-4 left-2 pb-2 flex justify-between items-end absolute bottom-0 h-14 bg-gradient-to-b from-transparent to-ground-2 pointer-events-none"
+            className="right-4 left-2 pb-2 flex justify-between items-end absolute bottom-0 h-14 pointer-events-none"
             ref={toolsRef}
           >
             <div></div>
@@ -300,35 +227,7 @@ const DitingTanqi: FC<PropsType> = memo(() => {
             loading={creating || sending}
             onSubmit={handleSubmit}
             onCancel={handleStop}
-            foolter={
-              <div className="flex gap-2">
-                <Button
-                  size="small"
-                  icon={<IconIntelligence />}
-                  type={openUnderstand ? 'primary' : 'default'}
-                  disabled={taskUnderstandMCPTools.mcps.length === 0}
-                  loading={taskUnderstandMCPTools.isLoading}
-                  onClick={() => {
-                    if (!openUnderstand) {
-                      handleSubmit('请关注画面内容, 进行任务理解')
-                    }
-                    setOpenUnderstand(!openUnderstand)
-                  }}
-                >
-                  {t('tanqi.taskUnderstanding.title')}
-                </Button>
-                <Button
-                  size="small"
-                  icon={<IconCommand />}
-                  type={openCommand ? 'primary' : 'default'}
-                  disabled={flyControlMCPTools.mcps.length === 0}
-                  loading={flyControlMCPTools.isLoading}
-                  onClick={() => setOpenCommand(!openCommand)}
-                >
-                  {t('tanqi.commandControl.title')}
-                </Button>
-              </div>
-            }
+            foolter={<div className="flex gap-2"></div>}
           />
         </div>
       </div>
@@ -336,6 +235,6 @@ const DitingTanqi: FC<PropsType> = memo(() => {
   )
 })
 
-DitingTanqi.displayName = 'DitingTanqi'
+ActionTanqi.displayName = 'ActionTanqi'
 
-export default DitingTanqi
+export default ActionTanqi

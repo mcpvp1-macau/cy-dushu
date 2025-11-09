@@ -3,13 +3,13 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { getConversations } from '@/service/modules/diting-tanqi'
 import { HistoryOutlined } from '@ant-design/icons'
 import HistoryConversationItem from './HistoryConversationItem'
-import useGroupName from '../hooks/useGroupName'
 
-type PropsType = unknown
+type PropsType = {
+  groupName: string
+}
 
-const Conversations: FC<PropsType> = memo(() => {
+const Conversations: FC<PropsType> = memo(({ groupName }) => {
   const { t } = useTranslation()
-  const groupName = useGroupName()
 
   const queryClient = useQueryClient()
   const { data } = useQuery(

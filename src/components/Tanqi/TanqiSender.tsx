@@ -1,6 +1,6 @@
 import { Sender } from '@ant-design/x'
 import { t } from 'i18next'
-import useTranscribeAudio from '../hooks/useTranscribeAudio'
+import useTranscribeAudio from '../../pages/control-room/uav/components/DitingTanqi/hooks/useTranscribeAudio'
 
 type PropsType = {
   loading?: boolean

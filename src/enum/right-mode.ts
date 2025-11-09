@@ -25,3 +25,7 @@ export enum RightModeEnum {
   FLIGHT_AREA_DETAIL = 'flightAreaDetail',
   DEVICE_OVERLAY_DETAIL = 'deviceOverlayDetail',
 }
+
+export enum RightOuterEnum {
+  TANQI = 'tanqi',
+}

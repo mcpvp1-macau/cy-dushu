@@ -39,10 +39,10 @@ const CameraMarker: FC<PropsType> = memo((props) => {
       },
       label: {
         text: device.deviceName,
-        font: '12px sans-serif',
+        font: '600 13px Helvetica',
         fillColor: Cesium.Color.WHITE,
         outlineColor: Cesium.Color.BLACK,
-        outlineWidth: 2,
+        outlineWidth: 4,
         style: Cesium.LabelStyle.FILL_AND_OUTLINE,
         verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
         pixelOffset: new Cesium.Cartesian2(0, 36),
