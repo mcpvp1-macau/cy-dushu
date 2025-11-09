@@ -11,15 +11,19 @@ import CameraConfig from './CameraConfig'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import CameraDetailVideo from './CameraDetailVideo'
+import DeviceAlgorithmList from '@/components/device/algorithm/DeviceAlgorithmList'
+import { DeviceEnum } from '@/enum/device'
 
 type PropsType = unknown
 
 const speed = 90
 
 const CameraDetailDetail: FC<PropsType> = memo(() => {
+  const [t] = useTranslation()
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
 
   const deviceId = deviceDetail.deviceId
+  const productKey = deviceDetail.deviceModel.productKey
 
   const services = deviceDetail.deviceModel?.services
 
@@ -102,6 +106,18 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
                 },
               ]
             : []),
+          {
+            label: t('device.aiModel.title'),
+            children: (
+              <AppViewSuspense>
+                <DeviceAlgorithmList
+                  deviceType={DeviceEnum.CAMERA}
+                  deviceId={deviceId}
+                  productKey={productKey!}
+                />
+              </AppViewSuspense>
+            ),
+          },
           {
             label: '设备配置',
             key: 'config',
