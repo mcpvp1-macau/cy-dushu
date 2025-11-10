@@ -146,6 +146,7 @@ const AirlineTemplateList: FC<PropsType> = memo(() => {
                 allowClear
                 popupMatchSelectWidth={false}
                 options={createWaylineTypeOptions(t)}
+                defaultValue={waylineType || undefined}
                 onChange={(v) => {
                   if (v) {
                     searchParams.set('waylineType', v)
