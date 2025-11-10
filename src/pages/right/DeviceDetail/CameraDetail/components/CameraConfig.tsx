@@ -51,7 +51,6 @@ const CameraConfig: FC<PropsType> = memo(() => {
             ].some((key) => typeof cameraConfig[key] !== 'number')
           }
           onClick={() => {
-            console.log('cameraConfig', cameraConfig)
             bigFlyEmitter.emit('flyTo', {
               destination: Cesium.Cartesian3.fromDegrees(
                 cameraConfig.lng,
