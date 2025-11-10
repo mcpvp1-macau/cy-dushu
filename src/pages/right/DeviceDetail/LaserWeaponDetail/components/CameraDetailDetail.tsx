@@ -1,10 +1,5 @@
-import { ComponentRef, memo, type FC } from 'react'
-import CameraDetailInfoCard from './CameraDetailInfoCard'
 import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
 import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
-import VideoSnapshotBtn from '@/hooks/device/VideoSnapshot'
-
-import { useOthersControlRoomStore } from '@/store/context-store/useOthersControlRoom.store'
 import AppCollapse from '@/components/AppCollapse'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import { Link } from 'react-router-dom'
@@ -12,7 +7,6 @@ import { Button } from 'antd'
 import IconControlRoom from '@/assets/icons/jsx/IconControlRoom'
 import LaserWeaponInfoCard from './CameraDetailInfoCard'
 import { Tabs } from 'antd'
-import ArtilleryStatusInfo from '@/pages/control-room/laser-weapon/components/StatusInfo/ArtilleryStatusInfos'
 import SearchRadarStatusInfo from '@/pages/control-room/laser-weapon/components/StatusInfo/SearchRadarStatusInfo'
 import TrackingRadarStatusInfo from '@/pages/control-room/laser-weapon/components/StatusInfo/TrackingRadarStatusInfo'
 import ElectroOpticalStatusInfo from '@/pages/control-room/laser-weapon/components/StatusInfo/ElectroOpticalStatusInfo'
@@ -29,19 +23,18 @@ const CameraDetailDetail: FC<PropsType> = memo(() => {
   const productKey = (deviceDetail.productKey ||
     deviceDetail.deviceModel?.productKey)!
   const videoList = deviceDetail?.properties.videoList || []
-  const videoId = deviceDetail?.properties.videoList?.[0]?.videoId
-
-  const services = deviceDetail.deviceModel?.services
 
   const modelName =
     deviceDetail.deviceTags?.find(
       (item: { tagName: string }) => item.tagName === 'MODEL_NUMBER',
     )?.tagValue || '-'
 
-  const videoRef = useRef<ComponentRef<typeof DeviceLiveVideo>>(null)
-
-  const [videoSource1, setVideoSource1] = useState<string>(videoList?.[0]?.videoId)
-  const [videoSource2, setVideoSource2] = useState<string>(videoList?.[2]?.videoId)
+  const [videoSource1, setVideoSource1] = useState<string>(
+    videoList?.[0]?.videoId,
+  )
+  const [videoSource2, setVideoSource2] = useState<string>(
+    videoList?.[2]?.videoId,
+  )
   const videoSourceOptions1 = [
     {
       label: videoList?.[0]?.name,

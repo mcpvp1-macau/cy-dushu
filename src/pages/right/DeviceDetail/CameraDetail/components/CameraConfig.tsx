@@ -48,11 +48,10 @@ const CameraConfig: FC<PropsType> = memo(() => {
               'fov',
               'far',
               'aspectRatio',
-            ].some((key) => {
-              typeof cameraConfig[key] !== 'number'
-            })
+            ].some((key) => typeof cameraConfig[key] !== 'number')
           }
           onClick={() => {
+            console.log('cameraConfig', cameraConfig)
             bigFlyEmitter.emit('flyTo', {
               destination: Cesium.Cartesian3.fromDegrees(
                 cameraConfig.lng,

@@ -41,6 +41,7 @@ const CameraDetailVideo: FC<PropsType> = memo(() => {
             productKey={productKey!}
             deviceId={deviceId}
             videoLiveRef={videoRef}
+            disabled={isFollowing}
           />
         </>
       }

@@ -112,6 +112,7 @@ const UavDetailVideo: FC<PropsType> = memo((props) => {
           <VideoSnapshotBtn
             productKey={productKey}
             deviceId={deviceId}
+            disabled={isFollowing}
             videoLiveRef={videoLiveRef}
           />
           <IconButton

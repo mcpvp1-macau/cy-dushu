@@ -8,6 +8,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 type PropsType = {
   productKey: string
   deviceId: string
+  disabled?: boolean
   videoLiveRef: RefObject<{
     snapshot: (mediaTypes?: string, quality?: any) => string
   }>
@@ -15,7 +16,7 @@ type PropsType = {
 
 /** 视频截图按钮 */
 const VideoSnapshotBtn: FC<PropsType> = memo(
-  ({ productKey, deviceId, videoLiveRef }) => {
+  ({ productKey, deviceId, disabled, videoLiveRef }) => {
     const msgApi = useAppMsg()
     const [loading, setLoading] = useState(false)
 
@@ -41,6 +42,7 @@ const VideoSnapshotBtn: FC<PropsType> = memo(
       <IconButton
         toolTipProps={{ title: t('common.screenShot') }}
         onClick={handleSnapshot}
+        disabled={disabled}
       >
         {!loading ? <IconSnapshot /> : <LoadingOutlined />}
       </IconButton>
