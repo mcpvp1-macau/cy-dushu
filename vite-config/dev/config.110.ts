@@ -6,12 +6,20 @@ export default mergeConfig(
   defineConfig({
     server: {
       host: '0.0.0.0',
+      https: {
+        key: 'ssl/keystore.key',
+        cert: 'ssl/keystore.pem',
+      },
       proxy: {
         '/proxyApi/otherService/jingqi/vodServer': {
           target: 'http://135.100.11.115:8080',
           // target: 'http://127.0.0.1:7001/',
           changeOrigin: true,
           rewrite: (path) => path.replace('/proxyApi/otherService/jingqi/vodServer', ''),
+        },
+        '/i3s_svc': {
+          target: 'http://135.100.41.200',
+          changeOrigin: true,
         },
         // 4A 接口
         '/proxyApi': {

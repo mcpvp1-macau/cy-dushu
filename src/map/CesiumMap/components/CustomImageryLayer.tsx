@@ -5,6 +5,7 @@ import { ImageryLayer, useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { useAsyncEffect } from 'ahooks'
 import CustomTMSImageryLayer from './CustomTMSImageryLayer'
+import CustomI3SLayer from './CustomI3SLayer'
 type PropsType = {
   url: string
 }
@@ -122,6 +123,22 @@ const CustomImageryLayer: FC<unknown> = memo(() => {
       })
   }, [data, activeSpaceIds])
 
+
+    const i3s = useMemo(() => {
+    if (!data || !activeSpaceIds || activeSpaceIds.size === 0) {
+      return []
+    }
+    const map = new Map(data.map((e) => [e.spaceId, e]))
+    return Array.from(activeSpaceIds)
+      .filter((e) => {
+        const space = map.get(e)
+        return space?.spaceType === 'I3S'
+      })
+      .map((e) => {
+        return map.get(e)!.spaceMapUrl
+      })
+  }, [data, activeSpaceIds])
+
   return (
     <>
       {providers.map((provider, index) => (
@@ -132,6 +149,9 @@ const CustomImageryLayer: FC<unknown> = memo(() => {
       ))}
       {tms.map((t) => (
         <CustomTMSImageryLayer key={t} url={t} />
+      ))}
+      {i3s.map((t) => (
+        <CustomI3SLayer key={t} url={t} />
       ))}
     </>
   )

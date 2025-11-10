@@ -45,6 +45,10 @@ const useAddMapFormItems = () => {
               ),
               value: '3D_TILES',
             },
+            {
+              label: 'I3S',
+              value: 'I3S',
+            }
           ],
           rules: [{ required: true }],
         },
