@@ -21,7 +21,7 @@ const StatusPic: React.FC = () => {
   return (
     <div
       className={clsx(
-        "bg-[url('@/assets/imgs/car/laser.png')] size-full bg-origin-content bg-no-repeat bg-center bg-contain grid grid-cols-2 gap-x-2",
+        "bg-[url('@/assets/imgs/car/ow5ljqw.png')] size-full bg-origin-content bg-no-repeat bg-center bg-contain grid grid-cols-2 gap-x-2",
         'p-[0px]',
         'h-[132px]',
       )}
