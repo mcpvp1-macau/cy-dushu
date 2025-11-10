@@ -45,10 +45,10 @@ const CameraMarkers: FC<PropsType> = memo(() => {
 
         cluster.label.show = true
         cluster.label.text = `x ${clusteredEntities.length.toString()}`
-        cluster.label.font = '12px sans-serif'
+        cluster.label.font = '600 13px Helvetica'
         cluster.label.fillColor = Cesium.Color.WHITE
         cluster.label.outlineColor = Cesium.Color.BLACK
-        cluster.label.outlineWidth = 2
+        cluster.label.outlineWidth = 4
         cluster.label.style = Cesium.LabelStyle.FILL_AND_OUTLINE
         cluster.label.verticalOrigin = Cesium.VerticalOrigin.BOTTOM
         cluster.label.horizontalOrigin = Cesium.HorizontalOrigin.CENTER
