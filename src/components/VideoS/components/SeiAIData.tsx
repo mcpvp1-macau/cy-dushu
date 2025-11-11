@@ -1,4 +1,4 @@
-import { Fragment, memo, useDeferredValue, type FC } from 'react'
+import { Fragment, memo, useDeferredValue, useMemo, type FC } from 'react'
 import SeiEnum, { SEI_TYPE } from '../../Video/Jessibuca/sei-enum'
 import { AiObject } from '../../Video/Jessibuca/sei-types/ai-data'
 
@@ -22,40 +22,48 @@ const Inner: FC<PropsType> = memo(({ data, onClickSeiBox }) => {
 
   return (
     <div className="absolute inset-0">
-      {objList.map((item) => (
-        <Fragment key={item.objectId}>
-          <div
-            className="absolute z-[9999] pointer-events-auto border border-solid border-green-700 group hover:border-red-700 cursor-pointer"
-            style={{
-              left: `${((item.bboxLeft ?? 0) / data.sourceFrameWidth) * 100}%`,
-              top: `${((item.bboxTop ?? 0) / data.sourceFrameHeight) * 100}%`,
-              width: `${
-                ((item.bboxWidth ?? 0) / data.sourceFrameWidth) * 100
-              }%`,
-              height: `${
-                ((item.bboxHeight ?? 0) / data.sourceFrameHeight) * 100
-              }%`,
-            }}
-            onContextMenu={(e) => {
-              e.preventDefault()
-            }}
-            onMouseUp={(e) => {
-              if (e.button === 0) {
-                onClickSeiBox?.({
-                  ...item,
-                  seq: data.seq,
-                  sourceFrameWidth: data.sourceFrameWidth,
-                  sourceFrameHeight: data.sourceFrameHeight,
-                })
-              }
-            }}
-          >
-            <div className="absolute  -mt-4 text-nowrap bg-green-700 bg-opacity-70 text-center text-xs group-hover:bg-red-700 text-white">
-              {item.objectLabel}({item.objectId})
+      {objList.map((item) => {
+        const isSuspicious = item.objectLabel?.includes('可疑')
+        const borderClass = isSuspicious ? 'border-red-700' : 'border-green-700'
+        const bgClass = isSuspicious ? 'bg-red-700' : 'bg-green-700'
+
+        return (
+          <Fragment key={item.objectId}>
+            <div
+              className={`absolute z-[9999] pointer-events-auto border border-solid ${borderClass} group cursor-pointer`}
+              style={{
+                left: `${((item.bboxLeft ?? 0) / data.sourceFrameWidth) * 100}%`,
+                top: `${((item.bboxTop ?? 0) / data.sourceFrameHeight) * 100}%`,
+                width: `${
+                  ((item.bboxWidth ?? 0) / data.sourceFrameWidth) * 100
+                }%`,
+                height: `${
+                  ((item.bboxHeight ?? 0) / data.sourceFrameHeight) * 100
+                }%`,
+              }}
+              onContextMenu={(e) => {
+                e.preventDefault()
+              }}
+              onMouseUp={(e) => {
+                if (e.button === 0) {
+                  onClickSeiBox?.({
+                    ...item,
+                    seq: data.seq,
+                    sourceFrameWidth: data.sourceFrameWidth,
+                    sourceFrameHeight: data.sourceFrameHeight,
+                  })
+                }
+              }}
+            >
+              <div
+                className={`absolute -mt-4 text-nowrap ${bgClass} bg-opacity-70 text-center text-xs text-white`}
+              >
+                {item.objectLabel}({item.objectId})
+              </div>
             </div>
-          </div>
-        </Fragment>
-      ))}
+          </Fragment>
+        )
+      })}
     </div>
   )
 })
