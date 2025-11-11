@@ -125,10 +125,11 @@ const PageSituationActionDetail: FC<PropsType> = memo(() => {
           <Reconstruction2DResolver actionId={data.id} />
         )}
       </div>
-      {createPortal(
-        <ActionTanqi />,
-        document.getElementById('global-map-right-tools')!,
-      )}
+      {globalConfig.useTanqi &&
+        createPortal(
+          <ActionTanqi />,
+          document.getElementById('global-map-right-tools')!,
+        )}
     </>
   )
 })
