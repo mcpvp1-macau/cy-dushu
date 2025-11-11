@@ -22,6 +22,7 @@ import IconButtonWithDropDownDialog from '@/components/ui/button/IconButtonWithD
 import { emtpyObject } from '@/constant/data'
 import { BugOutlined } from '@ant-design/icons'
 import { DeviceEnum } from '@/enum/device'
+import QuickCreateAction from '@/components/device/QuickCreateAction'
 
 const DeviceLinkSwitch = lazy(
   () => import('@/components/device/DeviceLinkSwitch'),
@@ -357,7 +358,11 @@ const ControlRoomUavHeader: FC = memo(() => {
             </ul>
           </section>
           <section>
-            <LatestTask deviceId={deviceId} deviceType={DeviceEnum.UAV} />
+            <LatestTask deviceId={deviceId} />
+            <QuickCreateAction
+              deviceId={deviceId}
+              deviceType={DeviceEnum.UAV}
+            />
           </section>
         </div>
         <ScrollBar orientation="horizontal" />
