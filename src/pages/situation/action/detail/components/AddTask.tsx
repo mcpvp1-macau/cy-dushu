@@ -7,7 +7,7 @@ import { DeviceEnum } from '@/enum/device'
 import { useWaylineAndDeviceFormOptions } from '@/hooks/device/useAirlineOptions'
 import { usePilotTreeData } from '@/hooks/jinghang/usePilots'
 import { createActionItem, getPilotTree } from '@/service/modules/action-item'
-import { Form } from 'antd'
+import { Form, FormInstance } from 'antd'
 import { TFunction } from 'i18next'
 import { pick } from 'lodash'
 
@@ -26,6 +26,7 @@ const createTaskConfig = (
   deviceOptions: Option[],
   pilotTreeData: any[],
   allowMultipleDevice: boolean,
+  form: FormInstance<{ deviceIds: string | string[] }>,
 ) =>
   [
     {
@@ -47,6 +48,9 @@ const createTaskConfig = (
       otherProps: {
         optionFilterProp: 'name',
         allowClear: true,
+        onChange: () => {
+          form.setFieldValue('deviceIds', undefined)
+        },
       },
     },
     {
@@ -96,7 +100,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
     allDevices,
     allowMultipleDevice,
     holder,
-  } = useWaylineAndDeviceFormOptions(form, 'deviceIds')
+  } = useWaylineAndDeviceFormOptions(form)
 
   const [confirmLoading, setConfirmLoading] = useState(false)
   const handleConfirm = useMemoizedFn(async (val: any) => {
@@ -160,6 +164,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
         deviceOptions,
         treeData,
         allowMultipleDevice,
+        form,
       ),
     [
       i18n.language,
@@ -167,6 +172,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
       deviceOptions,
       allowMultipleDevice,
       treeData,
+      form,
     ],
   )
 

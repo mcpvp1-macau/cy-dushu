@@ -236,6 +236,12 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
           </div>
           <div className="mt-1 text-xs flex">
             <p className="w-full truncate max-w-72">
+              {t('schedule.form.taskType.title')}:{' '}
+              {t(`schedule.taskType.${data.taskType}.title`)}
+            </p>
+          </div>
+          <div className="mt-1 text-xs flex">
+            <p className="w-full truncate max-w-72">
               {t('wayline.title')}: {data.actionConfig?.templateName}
             </p>
           </div>

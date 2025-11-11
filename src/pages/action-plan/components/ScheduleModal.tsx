@@ -25,6 +25,11 @@ import DayOfWeekCheckboxGroup from './DayOfWeekCheckboxGroup'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
 import { useAppMsg } from '@/hooks/useAppMsg'
+import { WaylineEnum } from '@/constant/uav/wayline'
+import { getAllDeviceListV3 } from '@/service/modules/device'
+import { DeviceEnum } from '@/enum/device'
+import DeviceIcon from '@/components/device/DeviceIcon'
+import TagItemV2 from '@/components/ui/TagItemV2'
 
 const TipInfo = memo(() => {
   const { t } = useTranslation()
@@ -199,6 +204,8 @@ type FormValuesType = {
   airlineIndex: number
   timeRange: Dayjs[]
   breakPointEnable?: boolean
+  landDeviceId?: string
+  taskType: 'NORMAL' | 'MULTI'
 } & (
   | {
       type: 'SINGLE'
@@ -232,6 +239,8 @@ const ScheduleModal: FC<PropsType> = memo(
 
     const [form] = Form.useForm<FormValuesType>()
     const type = Form.useWatch('type', form) ?? data?.type
+    const taskType =
+      (Form.useWatch('taskType', form) || data?.taskType) ?? 'NORMAL'
 
     const {
       airlineOptions,
@@ -240,7 +249,56 @@ const ScheduleModal: FC<PropsType> = memo(
       allDevices,
       allowMultipleDevice,
       holder,
-    } = useWaylineAndDeviceFormOptions(form, 'deviceIds')
+    } = useWaylineAndDeviceFormOptions(form)
+
+    const filteredAirlineOptions = useMemo(() => {
+      if (taskType === 'MULTI') {
+        return airlineOptions.filter((e) =>
+          [WaylineEnum.AreaWayline, WaylineEnum.PointWayline].includes(
+            e.type as WaylineEnum,
+          ),
+        )
+      }
+      return airlineOptions
+    }, [taskType])
+
+    const queryClient = useQueryClient()
+    const { data: dockList } = useQuery(
+      {
+        queryKey: ['allDockDevices'],
+        queryFn: () =>
+          getAllDeviceListV3({
+            type: `${DeviceEnum.UAV_AIRPORT},${DeviceEnum.UAV}`,
+          }),
+        enabled: taskType === 'MULTI' && open,
+        select: (d) => d.data.rows,
+      },
+      queryClient,
+    )
+
+    const dockOptions = useMemo(
+      () =>
+        dockList
+          ?.filter((e) => e.deviceType === DeviceEnum.UAV_AIRPORT)
+          .map((e) => ({
+            label: (
+              <div className="flex justify-between items-center">
+                <div className="flex gap-2">
+                  <DeviceIcon type={e.deviceType} />
+                  {e.deviceName}
+                </div>
+                {e.childrenDevices?.length ? (
+                  <TagItemV2 type="error">{t('common.hosted')}</TagItemV2>
+                ) : (
+                  <TagItemV2 type="success">{t('common.hostless')}</TagItemV2>
+                )}
+              </div>
+            ),
+            deviceName: e.deviceName,
+            value: e.deviceId,
+          })),
+      [dockList],
+    )
 
     useUpdateEffect(() => {
       form.setFieldValue('executeTime', [undefined])
@@ -256,13 +314,14 @@ const ScheduleModal: FC<PropsType> = memo(
         form.setFieldsValue({
           name: data.name,
           deviceIds: data.actionConfig?.deviceIds,
+          landDeviceId: data.actionConfig?.landDeviceId,
           airlineIndex: airlineTemplateList?.findIndex(
             (e) =>
               e.waylineTemplateId === data.actionConfig?.waylineTemplateId ||
               e.templateId === data.actionConfig?.templateId,
           ),
-
           type: data.type as any,
+          taskType: (data.taskType || 'NORMAL') as any,
           timeRange: [dayjs(data.startTime), dayjs(data.endTime)],
           breakPointEnable: data.breakPointEnable === 'YES',
         })
@@ -336,6 +395,7 @@ const ScheduleModal: FC<PropsType> = memo(
         actionConfig: {
           deviceIds: values.deviceIds,
           deviceNames: device?.deviceName,
+          landDeviceId: values.landDeviceId || undefined,
           deviceType: device?.deviceType,
           taskTemplateInfo: {
             parameters,
@@ -347,6 +407,7 @@ const ScheduleModal: FC<PropsType> = memo(
         },
         breakPointEnable: values.breakPointEnable ? 'YES' : 'NO',
         type: values.type,
+        taskType: values.taskType,
       }
       switch (values.type) {
         case 'SINGLE':
@@ -420,7 +481,7 @@ const ScheduleModal: FC<PropsType> = memo(
               className="m-3"
               autoComplete="off"
               layout="vertical"
-              initialValues={{ type: 'SINGLE' }}
+              initialValues={{ type: 'SINGLE', taskType: 'NORMAL' }}
               form={form}
             >
               <Form.Item
@@ -432,6 +493,33 @@ const ScheduleModal: FC<PropsType> = memo(
                 <Input placeholder={t('common.form.pleaseInput')} />
               </Form.Item>
               <Form.Item
+                label={t('schedule.form.taskType.title')}
+                name="taskType"
+                required
+                rules={[{ required: true }]}
+              >
+                <Radio.Group
+                  optionType="button"
+                  buttonStyle="solid"
+                  className="w-full flex gap-[1px]"
+                  onChange={(e) => {
+                    const taskType = e.target.value
+                    if (taskType === 'MULTI' && type === 'REPEAT') {
+                      form.setFieldValue('type', 'SINGLE')
+                    }
+                    form.setFieldValue('airlineIndex', undefined)
+                    form.setFieldValue('deviceIds', undefined)
+                  }}
+                >
+                  <Radio.Button className="flex-1 text-center" value="NORMAL">
+                    {t('schedule.taskType.NORMAL.title')}
+                  </Radio.Button>
+                  <Radio.Button className="flex-1 text-center" value="MULTI">
+                    {t('schedule.taskType.MULTI.title')}
+                  </Radio.Button>
+                </Radio.Group>
+              </Form.Item>
+              <Form.Item
                 label={t('schedule.form.wayline.title')}
                 name="airlineIndex"
                 required
@@ -441,7 +529,10 @@ const ScheduleModal: FC<PropsType> = memo(
                   placeholder={t('common.form.pleaseSelect')}
                   showSearch
                   optionFilterProp="name"
-                  options={airlineOptions}
+                  options={filteredAirlineOptions}
+                  onChange={() => {
+                    form.setFieldValue('deviceIds', undefined)
+                  }}
                 />
               </Form.Item>
               <Form.Item
@@ -458,6 +549,24 @@ const ScheduleModal: FC<PropsType> = memo(
                   mode={allowMultipleDevice ? 'multiple' : undefined}
                 />
               </Form.Item>
+
+              {taskType === 'MULTI' && (
+                <Form.Item
+                  label={t('schedule.form.landDevice.title')}
+                  name="landDeviceId"
+                  rules={[{ required: true }]}
+                >
+                  <Select
+                    className="max-w-[374px]"
+                    placeholder={t('common.form.pleaseSelect')}
+                    showSearch
+                    optionFilterProp="deviceName"
+                    options={dockOptions}
+                    mode={allowMultipleDevice ? 'multiple' : undefined}
+                  />
+                </Form.Item>
+              )}
+
               <Form.Item
                 label={t('schedule.form.type.title')}
                 name="type"
@@ -472,32 +581,37 @@ const ScheduleModal: FC<PropsType> = memo(
                   <Radio.Button className="flex-1 text-center" value="SINGLE">
                     {t('schedule.type.SINGLE.title')}
                   </Radio.Button>
-                  <Radio.Button className="flex-1 text-center" value="REPEAT">
-                    {t('schedule.type.REPEAT.title')}
-                  </Radio.Button>
+                  {taskType === 'NORMAL' && (
+                    <Radio.Button className="flex-1 text-center" value="REPEAT">
+                      {t('schedule.type.REPEAT.title')}
+                    </Radio.Button>
+                  )}
                 </Radio.Group>
               </Form.Item>
+
               {
                 {
                   SINGLE: <SingleFormItems />,
                   REPEAT: <REPEATFormItems />,
                 }[type]
               }
-              <div className="flex justify-between items-center mb-1">
-                <div className="flex gap-1">
-                  断点续飞
-                  <Tooltip title="开启后，若飞行架次因电量不足等原因无法完成整个航线飞行，系统将记录待执行任务。">
-                    <InfoCircleOutlined />
-                  </Tooltip>
+              {taskType === 'NORMAL' && (
+                <div className="flex justify-between items-center mb-1">
+                  <div className="flex gap-1">
+                    {t('common.resumeFromBreakPoint')}
+                    <Tooltip title="开启后，若飞行架次因电量不足等原因无法完成整个航线飞行，系统将记录待执行任务。">
+                      <InfoCircleOutlined />
+                    </Tooltip>
+                  </div>
+                  <Form.Item
+                    name="breakPointEnable"
+                    noStyle
+                    valuePropName="checked"
+                  >
+                    <Switch size="small" />
+                  </Form.Item>
                 </div>
-                <Form.Item
-                  name="breakPointEnable"
-                  noStyle
-                  valuePropName="checked"
-                >
-                  <Switch size="small" />
-                </Form.Item>
-              </div>
+              )}
               <TipInfo />
             </Form>
           </ScrollArea>

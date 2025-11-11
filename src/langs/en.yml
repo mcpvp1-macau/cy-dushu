@@ -574,6 +574,9 @@ common:
   deviceConfig: Device Configuration
   center: Center
   region: Region
+  resumeFromBreakPoint: Resume Mission from Breakpoint
+  hosted: Hosted
+  hostless: Hostless
 events:
   search:
     placeholder: Please search by event name or ID
@@ -956,6 +959,10 @@ schedule:
       title: Wayline
     type:
       title: Type
+    taskType:
+      title: Task Type
+    landDevice:
+      title: Land Device
   errors:
     selectTime:
       msg: Please select execution time
@@ -985,6 +992,11 @@ schedule:
         title: Pending
       FINISHED:
         title: Finished
+  taskType:
+    NORMAL:
+      title: Normal
+    MULTI:
+      title: Leapfrog
 overlay:
   detail:
     createUser:

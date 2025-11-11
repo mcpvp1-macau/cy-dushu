@@ -43,6 +43,7 @@ declare namespace API_ACTION_PLAN {
        * 状态
        */
       status?: string
+      taskType?: string
       /**
        * 计划类型  单次、重复。。。
        *

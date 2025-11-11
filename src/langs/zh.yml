@@ -568,6 +568,9 @@ common:
   deviceConfig: 设备配置
   center: 中心
   region: 边缘
+  resumeFromBreakPoint: 断点续飞
+  hosted: 已承载
+  hostless: 未承载
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -944,6 +947,10 @@ schedule:
       title: 航线
     type:
       title: 计划策略
+    taskType:
+      title: 计划类型
+    landDevice:
+      title: 降落设备
   errors:
     selectTime:
       msg: 请选择执行时间
@@ -973,6 +980,11 @@ schedule:
         title: 未执行
       FINISHED:
         title: 已结束
+  taskType:
+    NORMAL:
+      title: 普通任务
+    MULTI:
+      title: 蛙跳任务
 overlay:
   detail:
     createUser:

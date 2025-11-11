@@ -60,6 +60,7 @@ const useWaylineOptions = () => {
         ),
         value: i,
         name: e.taskName,
+        type: e.taskType,
       })) ?? emtpyArray,
     [airlineTemplateList],
   )
@@ -71,10 +72,7 @@ const useWaylineOptions = () => {
   }
 }
 
-export const useWaylineAndDeviceFormOptions = (
-  form: FormInstance<any>,
-  deviceKey = 'deviceId',
-) => {
+export const useWaylineAndDeviceFormOptions = (form: FormInstance<any>) => {
   const { airlineOptions, airlineTemplateList, holder } = useWaylineOptions()
 
   const airlineIndex = Form.useWatch('airlineIndex', form)
@@ -82,10 +80,6 @@ export const useWaylineAndDeviceFormOptions = (
   const taskType = airlineTemplateList?.[airlineIndex]?.taskType
 
   const allDevices = useMapDevicesStore((s) => s.allDevices)
-
-  useEffect(() => {
-    form.setFieldValue(deviceKey, [])
-  }, [taskType])
 
   const deviceOptions = useMemo(() => {
     let list = allDevices
