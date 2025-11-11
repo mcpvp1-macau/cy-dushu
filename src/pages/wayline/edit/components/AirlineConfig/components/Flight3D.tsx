@@ -18,8 +18,8 @@ const Flight3D: FC<PropsType> = memo(() => {
         lat: item.pointY,
         alt: item.pointZ,
       })),
-      resolution: 5,
-      safedist: 10,
+      region: 'xiaozhen',
+      maxsamples: 200,
     })
 
     if (

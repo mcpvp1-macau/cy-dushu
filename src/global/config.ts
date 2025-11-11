@@ -101,6 +101,7 @@ class GlobalConfig {
   sentryProjectId?: string
   /** Tanqi */
   useTanqi?: boolean
+  useFlight3D?: boolean
 
   constructor(def: ConfigType) {
     Object.assign(this, def)
