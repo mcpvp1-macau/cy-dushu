@@ -357,7 +357,7 @@ const ControlRoomUavHeader: FC = memo(() => {
               <DebugState />
             </ul>
           </section>
-          <section>
+          <section className="flex gap-2">
             <LatestTask deviceId={deviceId} />
             <QuickCreateAction
               deviceId={deviceId}
