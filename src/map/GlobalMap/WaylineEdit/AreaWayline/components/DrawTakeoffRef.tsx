@@ -2,7 +2,8 @@ import useAreaWaylineStore from '@/store/wayline/uav-area-wayline/useAreaWayline
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import image from '@/assets/imgs/takeoff-active.ea7a1012.svg'
-import { attempt } from 'lodash'
+import { attempt, round } from 'lodash'
+import { cartesian3ToDegrees } from '@/utils/geo-math'
 
 type PropsType = unknown
 
@@ -66,31 +67,46 @@ const DrawTakeoffRef: FC<PropsType> = memo(() => {
     const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
     handler.setInputAction(
       (e: Cesium.ScreenSpaceEventHandler.PositionedEvent) => {
-        const ray = viewer.camera.getPickRay(e.position)
-        if (!ray) {
-          return
-        }
-        const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
-        if (!cartesian) {
-          return
-        }
-        // 地形上的点
-        const geo = Cesium.Cartographic.fromCartesian(cartesian)
-        const geoDegrees = {
-          longitude: Cesium.Math.toDegrees(geo.longitude),
-          latitude: Cesium.Math.toDegrees(geo.latitude),
-          height: geo.height,
-        }
+        const pickResults = viewer.scene.drillPick(e.position)
 
-        updateAirlineConfig({
-          ...useAreaWaylineStore.getState().airlineConfig,
-          takeOffRefPoint: [
-            geoDegrees.longitude,
-            geoDegrees.latitude,
-            geoDegrees.height,
-          ],
+        let is3dPick = false
+        pickResults.forEach((item) => {
+          if (item.primitive instanceof Cesium.Cesium3DTileset) {
+            is3dPick = true
+          }
         })
-        updateIsDrawHome(false)
+
+        requestAnimationFrame(() => {
+          let position: Cesium.Cartesian3 | undefined
+          if (is3dPick) {
+            position = viewer.scene.pickPosition(e.position)
+          } else {
+            const ray = viewer.camera.getPickRay(e.position)
+            position = ray
+              ? viewer.scene.globe.pick(ray, viewer.scene)
+              : undefined
+          }
+          if (!position) {
+            return
+          }
+          const geo = cartesian3ToDegrees(position)
+
+          const geoDegrees = {
+            longitude: Cesium.Math.toDegrees(geo[0]),
+            latitude: Cesium.Math.toDegrees(geo[1]),
+            height: round(geo[2], 4) + 0.05,
+          }
+
+          updateAirlineConfig({
+            ...useAreaWaylineStore.getState().airlineConfig,
+            takeOffRefPoint: [
+              geoDegrees.longitude,
+              geoDegrees.latitude,
+              geoDegrees.height,
+            ],
+          })
+          updateIsDrawHome(false)
+        })
       },
       Cesium.ScreenSpaceEventType.LEFT_CLICK,
     )
