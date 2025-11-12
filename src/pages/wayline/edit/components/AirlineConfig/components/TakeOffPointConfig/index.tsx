@@ -4,7 +4,13 @@ import IconTakeoff from '@/assets/icons/jsx/uav/IconTakeoff'
 import { Button, Tooltip } from 'antd'
 import { round } from 'lodash'
 import HNumber from '../../../HNumber'
-import { InfoCircleOutlined } from '@ant-design/icons'
+import { InfoCircleOutlined, LinkOutlined } from '@ant-design/icons'
+import IconButton from '@/components/ui/button/IconButton'
+import FormModal from '@/components/XForm/Modal'
+import { DeviceEnum } from '@/enum/device'
+import DeviceIcon from '@/components/device/DeviceIcon'
+import useMapDevicesStore from '@/store/map/useMapDevices.store'
+import { useAppMsg } from '@/hooks/useAppMsg'
 
 type PropsType = unknown
 
@@ -15,19 +21,54 @@ const TakeOffPointConfig: FC<PropsType> = () => {
   )
   const setIsDrawHome = useAirlineConfigStore((s) => s.updateIsDrawHome)
   const { t } = useTranslation()
+
+  const [deviceSelectOpen, setDeviceSelectOpen] = useState(false)
+
+  const allDevices = useMapDevicesStore((s) => s.allDevices)
+
+  const msgApi = useAppMsg()
+
+  const options = useMemo(() => {
+    if (!allDevices) {
+      return []
+    }
+    const devceTypes = [DeviceEnum.UAV, DeviceEnum.UAV_AIRPORT] as DeviceEnum[]
+
+    return allDevices
+      .filter((e) => devceTypes.includes(e.deviceType as DeviceEnum))
+      .map((device) => ({
+        label: (
+          <div className="flex gap-2">
+            <DeviceIcon type={device.deviceType} />
+            {device.name}
+          </div>
+        ),
+        value: device.deviceId,
+        name: device.name,
+      }))
+  }, [allDevices])
+
   return (
     <XCard
       title={
-        takeOffRefPoint ? (
-          <div>
-            {t('wayline.takeoffRefPoint.setted.title')}{' '}
-            <Tooltip title={t('wayline.takeoffRefPoint.setted.tooltip')}>
-              <InfoCircleOutlined className="text-fore" />
-            </Tooltip>
-          </div>
-        ) : (
-          t('wayline.takeoffRefPoint.notSetted.title')
-        )
+        <div className="flex gap-2">
+          {takeOffRefPoint ? (
+            <div>
+              {t('wayline.takeoffRefPoint.setted.title')}{' '}
+              <Tooltip title={t('wayline.takeoffRefPoint.setted.tooltip')}>
+                <InfoCircleOutlined className="text-fore" />
+              </Tooltip>
+            </div>
+          ) : (
+            t('wayline.takeoffRefPoint.notSetted.title')
+          )}
+          <IconButton
+            toolTipProps={{ title: t('common.refDevLoc') }}
+            onClick={() => setDeviceSelectOpen(true)}
+          >
+            <LinkOutlined />
+          </IconButton>
+        </div>
       }
       topRight={
         <Button
@@ -53,6 +94,57 @@ const TakeOffPointConfig: FC<PropsType> = () => {
               ...useAirlineConfigStore.getState().airlineConfig,
               takeOffRefPoint: [takeOffRefPoint[0], takeOffRefPoint[1], e],
             })
+          }}
+        />
+      )}
+      {deviceSelectOpen && (
+        <FormModal
+          title={
+            <div className="flex gap-1.5">
+              <LinkOutlined />
+              {t('common.refDevLoc')}
+            </div>
+          }
+          items={[
+            {
+              label: t('common.device'),
+              name: 'deviceId',
+              type: 'select',
+              options: options,
+              otherProps: {
+                optionFilterProp: 'name',
+              },
+            },
+          ]}
+          onClose={() => setDeviceSelectOpen(false)}
+          onConfirm={(values) => {
+            const device = allDevices.find(
+              (d) => d.deviceId === values.deviceId,
+            )
+            if (!device) {
+              return
+            }
+            let lng = 0,
+              lat = 0,
+              alt = 0
+            if (device.deviceType === DeviceEnum.UAV_AIRPORT) {
+              lng = device.properties?.longitude || 0
+              lat = device.properties?.latitude || 0
+              alt = device.properties?.height || 0
+            } else {
+              lng = device.properties?.lng || 0
+              lat = device.properties?.lat || 0
+              alt = device.properties?.altitude || 0
+            }
+            if (!lng || !lat) {
+              msgApi.error('该设备未设置位置，无法选择为参考起飞点')
+              return
+            }
+            useAirlineConfigStore.getState().updateAirlineConfig({
+              ...useAirlineConfigStore.getState().airlineConfig,
+              takeOffRefPoint: [lng, lat, alt],
+            })
+            setDeviceSelectOpen(false)
           }}
         />
       )}
