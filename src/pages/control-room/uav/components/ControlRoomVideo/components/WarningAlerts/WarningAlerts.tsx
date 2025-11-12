@@ -10,6 +10,7 @@ import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import { getSpaceDistance } from '@/utils/geo-math'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import useDeviceLatestTaskStore from '@/store/useDeviceLatestTask.store'
+import { attempt } from 'lodash'
 
 type PropsType = unknown
 
@@ -85,39 +86,41 @@ const WarningAlerts: FC<PropsType> = memo(() => {
 
   // 判断无人机是否进入禁飞区/返航经过禁飞区 -----------------------------------------------
   useEffect(() => {
-    if (!audioBuffers) {
-      // 警报声还没预备好
-      return
-    }
-    if (!state.lon || !state.lat) {
-      // 无人机坐标异常
-      return
-    }
+    attempt(() => {
+      if (!audioBuffers) {
+        // 警报声还没预备好
+        return
+      }
+      if (!state.lon || !state.lat) {
+        // 无人机坐标异常
+        return
+      }
 
-    // 判断无人机是否存在于禁飞区内
-    const point = turf.point([state.lon, state.lat])
-    const inNoFlyZone = noFlyZones.some((zone) =>
-      turf.booleanPointInPolygon(point, zone),
-    )
-    toggleWarning(WarningAlertType.InNoFlyZoneAlert, inNoFlyZone)
-    if (inNoFlyZone) {
-      toggleWarning(WarningAlertType.RTHInNoFlyZoneAlert, false)
-      return
-    }
+      // 判断无人机是否存在于禁飞区内
+      const point = turf.point([state.lon, state.lat])
+      const inNoFlyZone = noFlyZones.some((zone) =>
+        turf.booleanPointInPolygon(point, zone),
+      )
+      toggleWarning(WarningAlertType.InNoFlyZoneAlert, inNoFlyZone)
+      if (inNoFlyZone) {
+        toggleWarning(WarningAlertType.RTHInNoFlyZoneAlert, false)
+        return
+      }
 
-    // 判断返航航线是否经过禁飞区
-    if (!state.homeLon || !state.homeLat) {
-      return
-    }
-    const line = turf.lineString([
-      [state.lon, state.lat],
-      [state.homeLon, state.homeLat],
-    ])
+      // 判断返航航线是否经过禁飞区
+      if (!state.homeLon || !state.homeLat) {
+        return
+      }
+      const line = turf.lineString([
+        [state.lon, state.lat],
+        [state.homeLon, state.homeLat],
+      ])
 
-    const rthInNoFlyZone = noFlyZones.some((zone) =>
-      turf.booleanIntersects(zone, line),
-    )
-    toggleWarning(WarningAlertType.RTHInNoFlyZoneAlert, rthInNoFlyZone)
+      const rthInNoFlyZone = noFlyZones.some((zone) =>
+        turf.booleanIntersects(zone, line),
+      )
+      toggleWarning(WarningAlertType.RTHInNoFlyZoneAlert, rthInNoFlyZone)
+    })
   }, [state, noFlyZones, audioBuffers])
 
   // 判断无人机是否与其他设备距离过近 ------------------------------------------------------
@@ -125,35 +128,37 @@ const WarningAlerts: FC<PropsType> = memo(() => {
     (s) => s.deviceRealtimeProperties,
   )
   useEffect(() => {
-    if (!audioBuffers || !state.lon || !state.lat || !state.alt) {
-      toggleWarning(WarningAlertType.DistanceAlert, false)
-      return
-    }
-    const devices = Object.values(deviceRealtimeProperties)
-
-    const isClose = devices.some((d) => {
-      const pro = d.properties
-      if (
-        d.deviceId === deviceId ||
-        d.deviceStatus !== 'ONLINE' ||
-        !pro ||
-        !pro.longitude ||
-        !pro.latitude ||
-        !pro.altitude
-      ) {
+    attempt(() => {
+      if (!audioBuffers || !state.lon || !state.lat || !state.alt) {
+        toggleWarning(WarningAlertType.DistanceAlert, false)
         return
       }
-      const isClose =
-        getSpaceDistance([
-          [state.lon, state.lat, state.alt],
-          [pro.longitude, pro.latitude, pro.altitude],
-        ]) < 20
-      if (isClose) {
-        setCloseDeviceName(d.deviceName)
-      }
-      return isClose
+      const devices = Object.values(deviceRealtimeProperties)
+
+      const isClose = devices.some((d) => {
+        const pro = d.properties
+        if (
+          d.deviceId === deviceId ||
+          d.deviceStatus !== 'ONLINE' ||
+          !pro ||
+          !pro.longitude ||
+          !pro.latitude ||
+          !pro.altitude
+        ) {
+          return
+        }
+        const isClose =
+          getSpaceDistance([
+            [state.lon, state.lat, state.alt],
+            [pro.longitude, pro.latitude, pro.altitude],
+          ]) < 20
+        if (isClose) {
+          setCloseDeviceName(d.deviceName)
+        }
+        return isClose
+      })
+      toggleWarning(WarningAlertType.DistanceAlert, isClose)
     })
-    toggleWarning(WarningAlertType.DistanceAlert, isClose)
   }, [deviceId, state, deviceRealtimeProperties, audioBuffers])
 
   // 判断无人机是否在航线上 ---------------------------------------------------------------
@@ -168,27 +173,29 @@ const WarningAlerts: FC<PropsType> = memo(() => {
   const waypointIndex = useUavControlRoomStore((s) => s.state.waypointIndex)
 
   useEffect(() => {
-    if (
-      !audioBuffers ||
-      taskData?.status !== 'RUNNING' ||
-      !state.lon ||
-      !state.lat ||
-      !taskPositions ||
-      !waypointIndex ||
-      waypointIndex === -1 ||
-      waypointIndex >= taskPositions.length
-    ) {
-      toggleWarning(WarningAlertType.DeviationFromFlightPathAlert, false)
-      return
-    }
+    attempt(() => {
+      if (
+        !audioBuffers ||
+        taskData?.status !== 'RUNNING' ||
+        !state.lon ||
+        !state.lat ||
+        !taskPositions ||
+        !waypointIndex ||
+        waypointIndex === -1 ||
+        waypointIndex >= taskPositions.length
+      ) {
+        toggleWarning(WarningAlertType.DeviationFromFlightPathAlert, false)
+        return
+      }
+      const point = turf.point([state.lon, state.lat])
+      const line = turf.lineString(
+        taskPositions.map((p: any) => [p.pointX, p.pointY]),
+      )
 
-    const point = turf.point([state.lon, state.lat])
-    const line = turf.lineString(
-      taskPositions.map((p: any) => [p.pointX, p.pointY]),
-    )
-    const isDeviate =
-      turf.pointToLineDistance(point, line, { units: 'meters' }) > 10
-    toggleWarning(WarningAlertType.DeviationFromFlightPathAlert, isDeviate)
+      const isDeviate =
+        turf.pointToLineDistance(point, line, { units: 'meters' }) > 10
+      toggleWarning(WarningAlertType.DeviationFromFlightPathAlert, isDeviate)
+    })
   }, [state, audioBuffers, taskPositions])
 
   if (warnings.size === 0) {
