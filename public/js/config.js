@@ -74,4 +74,5 @@ window.config = {
   useTanqi: true,
   sentryDsn: '8a3f2951493342c6803439364cbd9dfa',
   sentryProjectId: '2',
+  useFlight3D: true,
 }
