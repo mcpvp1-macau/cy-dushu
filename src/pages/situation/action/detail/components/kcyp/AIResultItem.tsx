@@ -53,7 +53,14 @@ const AIResultItem: FC<{
     })
     run()
   })
-  const carTypeOptions = useDictOptions(DictEnum.ZHOUSHAN_KCYP_CAR_TYPE)
+
+  const carTypeOptions = useDictOptions(
+    {
+      [ActionEnum.KCYP]: DictEnum.KCYP_CAR_TYPE,
+      [ActionEnum.KCYPXS]: DictEnum.XIAOSHAN_KCYP_CAR_TYPE,
+      [ActionEnum.KCYPZS]: DictEnum.ZHOUSHAN_KCYP_CAR_TYPE,
+    }[actionType as ActionEnum],
+  )
 
   const msgApi = useAppMsg()
   const { mutate: handleGetSipCascadePicture, isPending } = useMutation(
