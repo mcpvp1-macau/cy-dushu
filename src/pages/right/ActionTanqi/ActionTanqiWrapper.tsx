@@ -7,7 +7,7 @@ type PropsType = unknown
 
 const RightActionTanqiWrapper: FC<PropsType> = memo(() => {
   return (
-    <div className="w-[350px]">
+    <div className="w-[350px] h-full overflow-hidden flex flex-col">
       <CloseableHeader
         onClose={() => {
           useRightMode.getState().updateRightOuterMode(null)
@@ -19,7 +19,7 @@ const RightActionTanqiWrapper: FC<PropsType> = memo(() => {
           <h6 className="text-white text-base">檀棋</h6>
         </div>
       </CloseableHeader>
-      <div className="h-[calc(100vh-128px)]">
+      <div className="h-screen">
         <ActionTanqi />
       </div>
     </div>

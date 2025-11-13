@@ -15,6 +15,8 @@ import TanqiWelCome from '@/components/Tanqi/TanqiWelcome'
 
 import useSendMessage from './hooks/useSendMessage'
 import useUserStore from '@/store/useUser.store'
+import mitt from 'mitt'
+import { MutableRefObject } from 'react'
 
 type PropsType = unknown
 
@@ -23,6 +25,14 @@ enum APState {
   Thinking = 1, // 思考中
   Replying = 2, // 回答中
 }
+
+export const currentActionTanqiEvent = {
+  current: null,
+} as MutableRefObject<{ id: number; eventId: string; eventName: string } | null>
+
+export const actionTanqiEmitter = mitt<{
+  resolveEvent: void
+}>()
 
 const ActionTanqi: FC<PropsType> = memo(() => {
   const username = useUserStore((s) => s.user?.username)
@@ -132,6 +142,19 @@ const ActionTanqi: FC<PropsType> = memo(() => {
       setSending(false)
     }
   })
+
+  useEffect(() => {
+    const fn = () => {
+      console.log(currentActionTanqiEvent.current)
+    }
+
+    console.log(currentActionTanqiEvent.current)
+
+    actionTanqiEmitter.on('resolveEvent', fn)
+    return () => {
+      actionTanqiEmitter.off('resolveEvent', fn)
+    }
+  }, [])
 
   // 停止对话
   const handleStop = useMemoizedFn(async () => {

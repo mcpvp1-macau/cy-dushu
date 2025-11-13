@@ -578,6 +578,7 @@ common:
   hosted: Hosted
   hostless: Hostless
   refDevLoc: Reference device location
+  options: Options
 events:
   search:
     placeholder: Please search by event name or ID

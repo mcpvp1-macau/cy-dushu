@@ -131,6 +131,9 @@ const App = () => {
                 top: '50px',
                 right: '54px',
               }}
+              style={{
+                zIndex: 1000,
+              }}
               gap={12}
             ></Toaster>
           </NotificationContext.Provider>
