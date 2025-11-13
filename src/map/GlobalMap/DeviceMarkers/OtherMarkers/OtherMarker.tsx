@@ -41,6 +41,7 @@ export const deviceIconMap: any = {
   LASER_WEAPON: '/images/marker/icon/laser_weapon2.svg',
   SHELL: '/images/marker/icon/shell.svg',
   MC: '/images/marker/icon/mc.svg',
+  UGV: '/images/marker/icon/ugv.svg',
 }
 
 const OtherMarker: FC<PropsType> = memo(({ data }) => {

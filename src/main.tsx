@@ -49,9 +49,11 @@ const videoRouter = createBrowserRouter([
     if (!suc) {
       return
     }
-    useUserStore.getState().fetchUserInfoAndMenus()
-    useUserStore.getState().fetchSystemInfo()
-    useUserStore.getState().initGroupDeviceTree()
+    const userStore = useUserStore.getState()
+    userStore.fetchUserInfoAndMenus()
+    userStore.fetchSystemInfo()
+    userStore.initGroupDeviceTree()
+    userStore.initVendorBackurl()
 
     ReactDOM.createRoot(document.getElementById('root')!).render(
       <QueryClientProvider client={queryClient}>

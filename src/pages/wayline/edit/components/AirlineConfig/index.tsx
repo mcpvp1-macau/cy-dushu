@@ -29,7 +29,7 @@ const AirlineConfig: FC<PropsType> = ({ info, pilot }) => {
       {info}
       <TakeOffPointConfig />
       <RoadNetworkMode />
-      <Flight3D />
+      {globalConfig.useFlight3D && <Flight3D />}
       {pilot}
       {!takePhotoIgnoreDevices.includes(modelName) && <TakePhotoConfig />}
       {/* 爬升模式设置 */}

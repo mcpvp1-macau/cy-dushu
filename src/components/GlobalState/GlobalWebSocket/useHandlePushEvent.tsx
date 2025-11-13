@@ -3,9 +3,13 @@ import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import { useThrottleFn } from 'ahooks'
 import { globalToastEmitter } from '../GlobalToast'
 import { WarningOutlined } from '@ant-design/icons'
-import { RightModeEnum } from '@/enum/right-mode'
+import { RightModeEnum, RightOuterEnum } from '@/enum/right-mode'
 import useRightMode from '@/store/layout/useRightMode.store'
 import useWarnningSettingStore from '@/store/setting/useWarnningSetting.store'
+import {
+  actionTanqiEmitter,
+  currentActionTanqiEvent,
+} from '@/pages/right/ActionTanqi/ActionTanqi'
 
 const useHandlePushEvent = () => {
   const { refetch } = useEventData()
@@ -18,6 +22,8 @@ const useHandlePushEvent = () => {
   )
   const updateNewEvent = useGlobalWsStore((s) => s.updateNewEvent)
   const navigate = useNavigate()
+
+  const { actionId } = useParams()
 
   const audioBuffer = useRef<AudioBuffer | null>(null)
   const isPlayingAudio = useRef(false)
@@ -34,19 +40,35 @@ const useHandlePushEvent = () => {
       title: (
         <div className="flex gap-1 text-sm font-medium text-white overflow-hidden">
           <WarningOutlined className="text-yellow-400" />
-          <p className="truncate max-w-[250px]">
-            {newEvent.eventName} ({newEvent.eventId})
-          </p>
+          <p className="truncate">{newEvent.eventName}</p>
         </div>
       ),
       description: `来源: [${newEvent.deviceName}]`,
-      button: {
-        label: '查看',
-        onClick: () => {
-          rightModeStore.updateRightMode(RightModeEnum.EVENT_DETAIL)
-          rightModeStore.updateDetailId(newEvent.eventId)
-          navigate('/')
-        },
+      menu: {
+        items: [
+          {
+            key: 'view-detail',
+            label: '查看',
+            onClick: () => {
+              rightModeStore.updateRightMode(RightModeEnum.EVENT_DETAIL)
+              rightModeStore.updateDetailId(newEvent.eventId)
+              navigate('/')
+            },
+          },
+          ...(actionId && globalConfig.useTanqi && newEvent.deviceName
+            ? [
+                {
+                  key: 'tanqi',
+                  label: '檀棋处理',
+                  onClick: () => {
+                    rightModeStore.updateRightOuterMode(RightOuterEnum.TANQI)
+                    currentActionTanqiEvent.current = newEvent
+                    actionTanqiEmitter.emit('resolveEvent')
+                  },
+                },
+              ]
+            : []),
+        ],
       },
     })
 

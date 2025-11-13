@@ -6,6 +6,7 @@ import IconButton from '@/components/ui/button/IconButton'
 import IconBack from '@/assets/icons/jsx/IconBack'
 import LatestTask from '@/components/device/LatestTask'
 import { DeviceEnum } from '@/enum/device'
+import QuickCreateAction from '@/components/device/QuickCreateAction'
 
 const useS = useRebotDogControlRoomStore
 
@@ -82,7 +83,11 @@ const ControlRoomRebotDogHeader: FC = memo(() => {
         <ul className="flex justify-center gap-1 xl:gap-3 2xl:gap-5 whitespace-nowrap">
           <Battery />
           <Speed />
-          <LatestTask deviceId={deviceId} deviceType={DeviceEnum.ROBOT_DOG} />
+          <LatestTask deviceId={deviceId} />
+          <QuickCreateAction
+            deviceId={deviceId}
+            deviceType={DeviceEnum.ROBOT_DOG}
+          />
         </ul>
       </section>
       <section></section>

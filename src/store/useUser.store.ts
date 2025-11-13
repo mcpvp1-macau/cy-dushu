@@ -63,6 +63,7 @@ type StateType = {
     | null
   /** 组织设备树 */
   groupDeviceTree: GroupDeviceTree[]
+  vendorBackUrl: string | null
 }
 
 type ActionsType = {
@@ -73,6 +74,8 @@ type ActionsType = {
   fetchGroupDeviceTreeByType: (type: string) => Promise<boolean>
   /** 初始化组织设备树 */
   initGroupDeviceTree: () => void
+  /** 初始化第三方返回地址 */
+  initVendorBackurl: () => void
 }
 
 /** 预加载的设备类型 */
@@ -88,6 +91,8 @@ const useUserStore = create<StateType & ActionsType>()(
       menuMap: null,
       systemInfo: null,
       groupDeviceTree: [],
+      /** 第三方返回地址 */
+      vendorBackUrl: null,
       // 登出
       logout: async () => {
         set({ token: null, user: null, menus: null }, false, 'logout')
@@ -203,6 +208,12 @@ const useUserStore = create<StateType & ActionsType>()(
         prepareDeviceType.forEach((deviceType) => {
           get().fetchGroupDeviceTreeByType(deviceType)
         })
+      },
+      initVendorBackurl: () => {
+        const param = new URLSearchParams(location.search)
+        const rawUrl = param.get('backurl')
+        const vendorBackUrl = rawUrl ? decodeURIComponent(rawUrl) : null
+        set({ vendorBackUrl })
       },
     }),
     {

@@ -26,31 +26,69 @@ const HomePoint: FC<PropsType> = () => {
 
     handler.setInputAction(
       (e: Cesium.ScreenSpaceEventHandler.PositionedEvent) => {
-        const ray = viewer.camera.getPickRay(e.position)
-        if (!ray) return
-        const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
-        if (!cartesian) return
-        // 地形上的点
-        const geo = cartesian3ToDegrees(cartesian)
+        const pickResults = viewer.scene.drillPick(e.position)
 
-        setAirlineConfig({
-          ...useAirlineConfigStore.getState().airlineConfig,
-          takeOffRefPoint: geo,
+        let is3dPick = false
+        pickResults.forEach((item) => {
+          if (item.primitive instanceof Cesium.Cesium3DTileset) {
+            is3dPick = true
+          }
         })
 
-        // 设置相机位置
-        viewer.camera?.lookAt(
-          cartesian,
-          new Cesium.HeadingPitchRange(
-            Cesium.Math.toRadians(0),
-            Cesium.Math.toRadians(-30),
-            1200,
-          ),
-        )
-        // 取消目标锁定
-        viewer.camera?.lookAtTransform(Cesium.Matrix4.IDENTITY)
+        requestAnimationFrame(() => {
+          let position: Cesium.Cartesian3 | undefined
+          if (is3dPick) {
+            position = viewer.scene.pickPosition(e.position)
+          } else {
+            const ray = viewer.camera.getPickRay(e.position)
+            position = ray
+              ? viewer.scene.globe.pick(ray, viewer.scene)
+              : undefined
+          }
+          if (!position) {
+            return
+          }
+          const geo = cartesian3ToDegrees(position)
 
-        viewer.scene.screenSpaceCameraController.enableRotate = true
+          // const geoDegrees = {
+          //   longitude: Cesium.Math.toDegrees(geo[0]),
+          //   latitude: Cesium.Math.toDegrees(geo[1]),
+          //   height: round(geo[2], 4) + 0.05,
+          // }
+
+          setAirlineConfig({
+            ...useAirlineConfigStore.getState().airlineConfig,
+            takeOffRefPoint: geo,
+          })
+
+          setIsDrawHome(false)
+        })
+
+        // const ray = viewer.camera.getPickRay(e.position)
+        // if (!ray) return
+        // const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
+        // if (!cartesian) return
+        // // 地形上的点
+        // const geo = cartesian3ToDegrees(cartesian)
+
+        // setAirlineConfig({
+        //   ...useAirlineConfigStore.getState().airlineConfig,
+        //   takeOffRefPoint: geo,
+        // })
+
+        // 设置相机位置
+        // viewer.camera?.lookAt(
+        //   cartesian,
+        //   new Cesium.HeadingPitchRange(
+        //     Cesium.Math.toRadians(0),
+        //     Cesium.Math.toRadians(-30),
+        //     1200,
+        //   ),
+        // )
+        // 取消目标锁定
+        // viewer.camera?.lookAtTransform(Cesium.Matrix4.IDENTITY)
+
+        // viewer.scene.screenSpaceCameraController.enableRotate = true
 
         setIsDrawHome(false)
       },

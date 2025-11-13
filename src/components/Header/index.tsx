@@ -18,6 +18,7 @@ const Header: FC<PropsType> = memo(() => {
   const [poVisible, setPoVisible] = useState(false)
 
   const user = useUserStore((s) => s.user)
+  const vendorBackUrl = useUserStore((s) => s.vendorBackUrl)
 
   const { i18n } = useTranslation()
 
@@ -49,12 +50,9 @@ const Header: FC<PropsType> = memo(() => {
           )}
         </IconButton>
         <Fullscreen target={document.documentElement} />
-        {globalConfig.useShanghaiBanRoutes && (
-          <Link
-            to="http://15.38.12.10:8081/airservice-thirdapi/external-login?signature=yvclOAQoG2SP5ugISaxTnIIhMUETFzv5"
-            target="_blank"
-          >
-            <IconButton toolTipProps={{ title: '风筝线' }}>
+        {vendorBackUrl && (
+          <Link to={vendorBackUrl}>
+            <IconButton>
               <IconThirdPartyPlatform />
             </IconButton>
           </Link>

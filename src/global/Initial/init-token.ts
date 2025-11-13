@@ -7,10 +7,11 @@ const initToken = async () => {
   if (token) {
     await local.setItem('token', token)
     param.delete('token')
+    const search = param.toString()
     history.replaceState(
       null,
       '',
-      `${location.pathname}${param.size > 0 ? '?' : ''}${param.toString()}`,
+      `${location.pathname}${search.length > 0 ? '?' : ''}${search}`,
     )
   } else {
     token = await local.getItem('token')

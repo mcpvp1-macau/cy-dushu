@@ -577,6 +577,8 @@ common:
   resumeFromBreakPoint: Resume Mission from Breakpoint
   hosted: Hosted
   hostless: Hostless
+  refDevLoc: Reference device location
+  options: Options
 events:
   search:
     placeholder: Please search by event name or ID

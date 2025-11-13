@@ -8,16 +8,13 @@ import { endActionItem, pauseActionItem } from '@/service/modules/action-item'
 import useDeviceLatestTaskStore from '@/store/useDeviceLatestTask.store'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import { LoadingOutlined } from '@ant-design/icons'
-import QuickCreateAction from './QuickCreateAction'
-import { DeviceEnum } from '@/enum/device'
 
 type PropsType = {
   deviceId: string
-  deviceType: DeviceEnum
 }
 
 /** 最新任务 */
-const LatestTask: FC<PropsType> = memo(({ deviceId, deviceType }) => {
+const LatestTask: FC<PropsType> = memo(({ deviceId }) => {
   const msgApi = useAppMsg()
   const actionItem = useGlobalWsStore((s) => s.actionItemStatus[deviceId])
 
@@ -30,10 +27,6 @@ const LatestTask: FC<PropsType> = memo(({ deviceId, deviceType }) => {
   const status = taskData?.status
 
   const [operLoading, setOperLoading] = useState(false)
-
-  if (!status || status === 'FINISH') {
-    return <QuickCreateAction deviceId={deviceId} deviceType={deviceType} />
-  }
 
   const taskId = actionItem?.actionItemId
   const handleClick = async (action: string) => {

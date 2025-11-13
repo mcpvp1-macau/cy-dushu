@@ -571,6 +571,8 @@ common:
   resumeFromBreakPoint: 断点续飞
   hosted: 已承载
   hostless: 未承载
+  refDevLoc: 参考设备位置
+  options: 选项
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索

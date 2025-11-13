@@ -35,6 +35,7 @@ import Reconstruction2DResultList from '@/map/CesiumMap/components/service/Recon
 import useDelayState from '@/hooks/useDelay'
 import BigFlyListener from '@/map/GlobalMap/BigFlyListener'
 import TanqiFlyPlan from './components/TanqiFlyPlan'
+import DeviceOverlays from '@/map/GlobalMap/DeviceMarkers/components/DeviceOverlays'
 
 type PropsType = unknown
 
@@ -51,6 +52,7 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
 
   // 热力图相关 --------------------------------------------------------------------
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
+  const parentId = useDeviceDetailStore((s) => s.deviceDetail?.parentId)
   const densityMapExpiration = useDensityMapStore((s) => s.densityMapExpiration)
   useGetDensityStatistics({
     deviceId: deviceId,
@@ -98,6 +100,8 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
       <BigFlyListener />
       {delayed && <Reconstruction2DResultList />}
       <TanqiFlyPlan />
+      <DeviceOverlays deviceId={deviceId} />
+      {parentId && <DeviceOverlays deviceId={parentId} />}
     </CesiumMap>
   )
 })
