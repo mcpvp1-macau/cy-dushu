@@ -9,7 +9,6 @@ import { Provider } from './context'
 import ActionTypeCheckout from './components/ActionTypeCheckout'
 import AppSpin from '@/components/AppSpin'
 import Reconstruction2DResolver from './components/ActionRecon2DResolver'
-import { createPortal } from 'react-dom'
 import ActionTanqi from './components/ActionTanqi/ActionTanqi'
 import { useSearchParams } from 'react-router-dom'
 
@@ -125,11 +124,7 @@ const PageSituationActionDetail: FC<PropsType> = memo(() => {
           <Reconstruction2DResolver actionId={data.id} />
         )}
       </div>
-      {globalConfig.useTanqi &&
-        createPortal(
-          <ActionTanqi />,
-          document.getElementById('global-map-right-tools')!,
-        )}
+      <ActionTanqi />
     </>
   )
 })
