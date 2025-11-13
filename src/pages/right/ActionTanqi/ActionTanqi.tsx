@@ -16,7 +16,6 @@ import TanqiWelCome from '@/components/Tanqi/TanqiWelcome'
 import useSendMessage from './hooks/useSendMessage'
 import useUserStore from '@/store/useUser.store'
 import mitt from 'mitt'
-import { MutableRefObject } from 'react'
 
 type PropsType = unknown
 
@@ -26,12 +25,8 @@ enum APState {
   Replying = 2, // 回答中
 }
 
-export const currentActionTanqiEvent = {
-  current: null,
-} as MutableRefObject<{ id: number; eventId: string; eventName: string } | null>
-
 export const actionTanqiEmitter = mitt<{
-  resolveEvent: void
+  resolveEvent: API_EVENTS.domain.Event
 }>()
 
 const ActionTanqi: FC<PropsType> = memo(() => {
@@ -123,32 +118,32 @@ const ActionTanqi: FC<PropsType> = memo(() => {
   const willSendMessage = useRef('')
 
   // 发送消息
-  const handleSubmit = useMemoizedFn(async (message: string) => {
-    let cId = chatId
-    setSending(true)
-    try {
-      if (!cId) {
-        cId = await newConversation()
-        // 等切换完再发送
-        willSendMessage.current = message
-        // 不能直接调用下面的原因是, 切换后, 会 重新请求 并且把 appendedRows 清空
-        return
+  const handleSubmit = useMemoizedFn(
+    async (message: string, metadata: Record<string, any> = {}) => {
+      let cId = chatId
+      setSending(true)
+      try {
+        if (!cId) {
+          cId = await newConversation()
+          // 等切换完再发送
+          willSendMessage.current = message
+          // 不能直接调用下面的原因是, 切换后, 会 重新请求 并且把 appendedRows 清空
+          return
+        }
+        appendUserMsg(message)
+        setAiState(APState.Thinking)
+        await sendMessage(cId, message, metadata)
+      } finally {
+        setAiState(APState.Idle)
+        setSending(false)
       }
-      appendUserMsg(message)
-      setAiState(APState.Thinking)
-      await sendMessage(cId, message)
-    } finally {
-      setAiState(APState.Idle)
-      setSending(false)
-    }
-  })
+    },
+  )
 
   useEffect(() => {
-    const fn = () => {
-      console.log(currentActionTanqiEvent.current)
+    const fn = (payload: API_EVENTS.domain.Event) => {
+      handleSubmit(`${payload.deviceName} 设备出现告警，请处理`, payload)
     }
-
-    console.log(currentActionTanqiEvent.current)
 
     actionTanqiEmitter.on('resolveEvent', fn)
     return () => {

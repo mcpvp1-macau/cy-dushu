@@ -2,8 +2,12 @@ import { toast as sonnerToast } from 'sonner'
 import { Button, Dropdown, GetProps } from 'antd'
 import mitt from 'mitt'
 import { CaretDownOutlined } from '@ant-design/icons'
+import { ReactElement } from 'react'
 
-export const globalToastEmitter = mitt<{ notify: ToastProps }>()
+export const globalToastEmitter = mitt<{
+  notify: ToastProps
+  notifyCustom: ToastCustomProps
+}>()
 
 /** 全局通知弹窗组件 */
 const GlobalToast: React.FC = () => {
@@ -12,9 +16,18 @@ const GlobalToast: React.FC = () => {
       toast(toastProps)
     }
 
+    const fnCustom = (toastProps: ToastCustomProps) => {
+      sonnerToast.custom(() => toastProps.element, {
+        duration: toastProps.duration ?? Infinity,
+        id: toastProps.id,
+      })
+    }
+
     globalToastEmitter.on('notify', fn)
+    globalToastEmitter.on('notifyCustom', fnCustom)
     return () => {
       globalToastEmitter.off('notify', fn)
+      globalToastEmitter.off('notifyCustom', fnCustom)
     }
   }, [])
 
@@ -40,6 +53,12 @@ interface ToastProps {
   title: ReactNode
   description: ReactNode
   menu?: GetProps<typeof Dropdown>['menu']
+}
+
+interface ToastCustomProps {
+  id?: string | number
+  element: ReactElement
+  duration?: number
 }
 
 function Toast(props: ToastProps) {

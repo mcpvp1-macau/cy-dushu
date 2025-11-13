@@ -19,7 +19,7 @@ const RightActionTanqiWrapper: FC<PropsType> = memo(() => {
           <h6 className="text-white text-base">檀棋</h6>
         </div>
       </CloseableHeader>
-      <div className="h-screen">
+      <div className="h-screen overflow-hidden">
         <ActionTanqi />
       </div>
     </div>

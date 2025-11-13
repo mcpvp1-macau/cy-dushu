@@ -1,4 +1,5 @@
 import serverDitingTanqi from '@/service/servers/serverDitingTanqi'
+import useUserStore from '@/store/useUser.store'
 import { chunkBuffer } from '@/utils/decode/http-chunk'
 import { shouldJson } from '@/utils/json'
 
@@ -23,8 +24,15 @@ const useSendMessage = (options?: {
   const [replyingContent, setContent] = useState('')
   const [done, setDone] = useState(false)
 
+  const userInfo = useUserStore((s) => s.user)
+  const { actionId } = useParams()
+
   const sendMessage = useMemoizedFn(
-    async (conversationId: number, message: string) => {
+    async (
+      conversationId: number,
+      message: string,
+      metadata: Record<string, any> = {},
+    ) => {
       setContent('')
       setDone(false)
 
@@ -42,6 +50,12 @@ const useSendMessage = (options?: {
             body: JSON.stringify({
               message,
               mcp_servers,
+              metadata: {
+                ...metadata,
+                actionId: Number(actionId) || undefined,
+                username: userInfo?.username,
+                groupId: userInfo?.groupId,
+              },
             }),
           },
         )
