@@ -3,6 +3,7 @@ import ControlPower from './ControlPower'
 import IconTakePhoto from '@/assets/icons/jsx/uav/IconTakePhoto'
 import { Button } from 'antd'
 import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
+import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useRebotDogControlRoomStore } from '@/store/context-store/useRebotDogControlRoom.store'
 import PointAction from './PointAction'
 
@@ -11,6 +12,12 @@ const RebotDogAsideButtons: FC<unknown> = memo(() => {
   const postDeviceService = usePostDeviceService()
 
   const dogMode = useRebotDogControlRoomStore((s) => s.state.dogMode)
+  const serviceHave = useDeviceDetailStore((s) => s.serviceHave)
+
+  const canStopFire = !!serviceHave['stopFire']
+  const canStartFire = !!serviceHave['startFire']
+  const canStopSmoke = !!serviceHave['stopSmoke']
+  const canStartSmoke = !!serviceHave['startSmoke']
 
   return (
     <div className="absolute inset-0 flex justify-center items-center">
@@ -46,6 +53,46 @@ const RebotDogAsideButtons: FC<unknown> = memo(() => {
               }}
             >
               紧急停止
+            </Button>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              disabled={!canStopFire}
+              onClick={() => {
+                if (!canStopFire) return
+                postDeviceService('stopFire')
+              }}
+            >
+              停止喷火
+            </Button>
+            <Button
+              type="primary"
+              disabled={!canStartFire}
+              onClick={() => {
+                if (!canStartFire) return
+                postDeviceService('startFire')
+              }}
+            >
+              开始喷火
+            </Button>
+            <Button
+              disabled={!canStopSmoke}
+              onClick={() => {
+                if (!canStopSmoke) return
+                postDeviceService('stopSmoke')
+              }}
+            >
+              停止发烟
+            </Button>
+            <Button
+              type="primary"
+              disabled={!canStartSmoke}
+              onClick={() => {
+                if (!canStartSmoke) return
+                postDeviceService('startSmoke')
+              }}
+            >
+              开始发烟
             </Button>
           </div>
         </div>
