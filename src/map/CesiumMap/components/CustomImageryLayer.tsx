@@ -6,6 +6,7 @@ import * as Cesium from 'cesium'
 import { useAsyncEffect } from 'ahooks'
 import CustomTMSImageryLayer from './CustomTMSImageryLayer'
 import CustomI3SLayer from './CustomI3SLayer'
+import CustomWMTSImageryLayer from './CustomWMTSImageryLayer'
 type PropsType = {
   url: string
 }
@@ -66,6 +67,8 @@ const CustomImageryLayer: FC<unknown> = memo(() => {
     queryClient,
   )
 
+  console.log('data', data)
+
   const activeSpaceIds = useMapLayerAndOverlayConfigStore(
     (s) => s.activeSpaceIds,
   )
@@ -123,8 +126,7 @@ const CustomImageryLayer: FC<unknown> = memo(() => {
       })
   }, [data, activeSpaceIds])
 
-
-    const i3s = useMemo(() => {
+  const i3s = useMemo(() => {
     if (!data || !activeSpaceIds || activeSpaceIds.size === 0) {
       return []
     }
@@ -136,6 +138,21 @@ const CustomImageryLayer: FC<unknown> = memo(() => {
       })
       .map((e) => {
         return map.get(e)!.spaceMapUrl
+      })
+  }, [data, activeSpaceIds])
+
+  const wmts = useMemo(() => {
+    if (!data || !activeSpaceIds || activeSpaceIds.size === 0) {
+      return []
+    }
+    const map = new Map(data.map((e) => [e.spaceId, e]))
+    return Array.from(activeSpaceIds)
+      .filter((e) => {
+        const space = map.get(e)
+        return space?.spaceType === 'WMTS'
+      })
+      .map((e) => {
+        return map.get(e)!
       })
   }, [data, activeSpaceIds])
 
@@ -152,6 +169,13 @@ const CustomImageryLayer: FC<unknown> = memo(() => {
       ))}
       {i3s.map((t) => (
         <CustomI3SLayer key={t} url={t} />
+      ))}
+      {wmts.map((t) => (
+        <CustomWMTSImageryLayer
+          key={t.spaceId}
+          url={t.spaceMapUrl}
+          spaceConfig={t.spaceConfig}
+        />
       ))}
     </>
   )

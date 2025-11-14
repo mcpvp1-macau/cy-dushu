@@ -46,7 +46,7 @@ declare namespace API_LAYER_OVERLAY {
       id: number
       spaceId: string
       spaceName: string
-      spaceType: 'XYZ' | '3D_TILES' | 'TMS' | 'POINT_CLOUD_2D' | 'POINT_CLOUD_3D' | 'MAPBOX_STYLE' | 'I3S'
+      spaceType: 'XYZ' | '3D_TILES' | 'TMS' | 'POINT_CLOUD_2D' | 'POINT_CLOUD_3D' | 'MAPBOX_STYLE' | 'I3S' | 'WMTS'
       spaceConfig: string
       gmtCreate: string
       gmtModified: string

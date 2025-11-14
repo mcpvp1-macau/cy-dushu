@@ -1,7 +1,7 @@
 import IconMap from '@/assets/icons/jsx/IconMap'
 import XModal from '@/components/XModal'
 import MapSpaceListConfig from './MapSpaceListConfig'
-import { Button, Input } from 'antd'
+import { Button, Form, Input } from 'antd'
 import IconPlus from '@/assets/icons/jsx/IconPlus'
 import FormModal from '@/components/XForm/Modal'
 import useAddMapFormItems from '../../hooks/useAddMapFormItems'
@@ -19,8 +19,10 @@ const MapSpace: FC<PropsType> = memo(() => {
     useBoolean(false)
   const { t } = useTranslation()
 
+  const [form] = Form.useForm()
+
   const msgApi = useAppMsg()
-  const spaceFormItems = useAddMapFormItems()
+  const spaceFormItems = useAddMapFormItems(form)
   const queryClient = useQueryClient()
 
   const handleAddSpaceConfirm = async (values: any) => {
@@ -37,6 +39,12 @@ const MapSpace: FC<PropsType> = memo(() => {
           isAdd: true,
         },
       ],
+      layer: values['WMTS.layer'],
+      style: values['WMTS.style'],
+      tileMatrixSetID: values['WMTS.tileMatrixSetID'],
+      format: values['WMTS.format'],
+      tileMatrixLabels: values['WMTS.tileMatrixLabels'],
+      tilingScheme: values['WMTS.tilingScheme'],
     })
     values.spaceConfig = spaceConfig
     values.spaceId = v4()
@@ -103,6 +111,7 @@ const MapSpace: FC<PropsType> = memo(() => {
           onClose={closeAddSpace}
           items={spaceFormItems}
           onConfirm={handleAddSpaceConfirm}
+          form={form}
         />
       )}
     </>
