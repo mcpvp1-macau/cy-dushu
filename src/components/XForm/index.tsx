@@ -229,6 +229,9 @@ const XForm: FC<PropsType> = memo(
                   valuePropName={item.valuePropName}
                   getValueFromEvent={item.getValueFromEvent}
                   tooltip={item.tooltip}
+                  dependencies={item.dependencies}
+                  shouldUpdate={item.shouldUpdate}
+                  hidden={item.hidden}
                 >
                   {item.render}
                 </Form.Item>

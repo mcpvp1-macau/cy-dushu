@@ -7,6 +7,7 @@ import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.
 import { CollapseProps } from 'antd'
 import { lazy } from 'react'
 import Scorpion from './Scorpion'
+import FC30PD1 from './FC30PD1'
 
 const MMC_Gimbal_P3 = lazy(() => import('./MMC_Gimbal_P3'))
 const MMC_Gimbal_D4 = lazy(() => import('./MMC_Gimbal_D4'))
@@ -30,6 +31,8 @@ type MountType =
   | 'MMC_Gimbal_LP12_2' // 探照灯
   | 'MMC_Gimbal_D4'
   | 'H3DSpeaker'
+  | 'Th4Thrower'
+  | 'FC30PD1'
 
 const labelMap: { [key in MountType]: string } = {
   PARACHUTE: '降落伞',
@@ -40,6 +43,8 @@ const labelMap: { [key in MountType]: string } = {
   MMC_Gimbal_LP12_1: '喊话器',
   MMC_Gimbal_LP12_2: '探照灯',
   H3DSpeaker: '喊话器 H3D',
+  Th4Thrower: '抛投器 Th4',
+  FC30PD1: '抛投器',
 }
 
 /** 无人机负载 */
@@ -83,9 +88,11 @@ const UavPayload: FC<PropsType> = memo(({ productKey }) => {
     MMC_Gimbal_LP12_1: <MMC_Gimbal_LP12_1 />,
     MMC_Gimbal_LP12_2: <MMC_Gimbal_LP12_2 />,
     H3DSpeaker: <MMC_Gimbal_H3D />,
+    Th4Thrower: <Scorpion />,
+    FC30PD1: <FC30PD1 />,
   }
 
-  const hasThrowAt = useDeviceDetailStore((s) => s.serviceHave['throwAt'])
+  // const hasThrowAt = useDeviceDetailStore((s) => s.serviceHave['throwAt'])
   const collapseItems = useMemo(() => {
     const res: CollapseProps['items'] = []
     mounts?.forEach((item: MountType) => {
@@ -96,15 +103,15 @@ const UavPayload: FC<PropsType> = memo(({ productKey }) => {
       })
     })
 
-    if (hasThrowAt) {
-      res.push({
-        key: 'throwAt',
-        label: '抛投器',
-        children: <AppViewSuspense>{<Scorpion />}</AppViewSuspense>,
-      })
-    }
+    // if (hasThrowAt) {
+    //   res.push({
+    //     key: 'throwAt',
+    //     label: '抛投器',
+    //     children: <AppViewSuspense>{<Scorpion />}</AppViewSuspense>,
+    //   })
+    // }
     return res
-  }, [mounts, hasThrowAt])
+  }, [mounts])
 
   return (
     <ScrollArea className="size-full">

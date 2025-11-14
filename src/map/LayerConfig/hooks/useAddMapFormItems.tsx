@@ -1,9 +1,11 @@
 import { XFormItem } from '@/components/XForm/types'
-import { message } from 'antd'
+import { message, Form } from 'antd'
 
-const useAddMapFormItems = () => {
+const useAddMapFormItems = (form) => {
   const { t } = useTranslation()
+  const spaceType = Form.useWatch(['spaceType'], form)
 
+  console.log('spaceType in hook', spaceType)
   return useMemo(
     () =>
       [
@@ -48,10 +50,75 @@ const useAddMapFormItems = () => {
             {
               label: 'I3S',
               value: 'I3S',
-            }
+            },
+            {
+              label: 'WMTS',
+              value: 'WMTS',
+            },
           ],
           rules: [{ required: true }],
         },
+        spaceType !== 'WMTS'
+          ? null
+          : {
+              label: 'layer (仅WMTS类型需要填写)',
+              name: 'WMTS.layer',
+              type: 'input',
+              rules: [{ required: true }],
+              hidden: spaceType !== 'WMTS',
+            },
+
+        spaceType !== 'WMTS'
+          ? null
+          : {
+              label: 'style (仅WMTS类型需要填写)',
+              name: 'WMTS.style',
+              type: 'input',
+              hidden: spaceType !== 'WMTS',
+            },
+
+        spaceType !== 'WMTS'
+          ? null
+          : {
+              label: 'tileMatrixSetID (仅WMTS类型需要填写)',
+              name: 'WMTS.tileMatrixSetID',
+              type: 'input',
+              hidden: spaceType !== 'WMTS',
+            },
+        spaceType !== 'WMTS'
+          ? null
+          : {
+              label: 'format (仅WMTS类型需要填写)',
+              name: 'WMTS.format',
+              type: 'input',
+              hidden: spaceType !== 'WMTS',
+            },
+        spaceType !== 'WMTS'
+          ? null
+          : {
+              label: 'tileMatrixLabels',
+              name: 'WMTS.tileMatrixLabels',
+              type: 'input',
+              hidden: spaceType !== 'WMTS',
+            },
+        spaceType !== 'WMTS'
+          ? null
+          : {
+              label: 'tilingScheme',
+              name: 'WMTS.tilingScheme',
+              type: 'select',
+              options: [
+                {
+                  label: 'WebMercatorTilingScheme',
+                  value: 'WebMercatorTilingScheme',
+                },
+                {
+                  label: 'GeographicTilingScheme',
+                  value: 'GeographicTilingScheme',
+                },
+              ],
+              hidden: spaceType !== 'WMTS',
+            },
         {
           label: `${t(
             'mapLayer.createMap.form.url.title',
@@ -117,8 +184,8 @@ const useAddMapFormItems = () => {
           },
           rules: [{ required: true }],
         },
-      ] as XFormItem[],
-    [t],
+      ].filter(Boolean) as XFormItem[],
+    [t, spaceType],
   )
 }
 

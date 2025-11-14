@@ -7,6 +7,11 @@ export default mergeConfig(
     server: {
       host: '0.0.0.0',
       proxy: {
+        '/img_w':{
+          target: 'http://t0.tianditu.gov.cn',
+          changeOrigin: true,
+          secure: false,
+        },
         // 4A 接口
         '/proxyApi': {
           target: 'http://47.111.155.82:31851/',
