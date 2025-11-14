@@ -207,6 +207,7 @@ device:
       title: Light
     alarmState:
       title: ALarm
+    title: UAV Dock
   aiList:
     title: AI List
   radar:

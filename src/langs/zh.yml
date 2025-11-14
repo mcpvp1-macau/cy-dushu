@@ -200,6 +200,7 @@ device:
       title: 补光灯
     alarmState:
       title: 声光报警
+    title: 机场
   aiList:
     title: 算法库
   radar:

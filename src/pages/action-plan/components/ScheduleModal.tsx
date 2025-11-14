@@ -492,7 +492,7 @@ const ScheduleModal: FC<PropsType> = memo(
               >
                 <Input placeholder={t('common.form.pleaseInput')} />
               </Form.Item>
-              {/* <Form.Item
+              <Form.Item
                 label={t('schedule.form.taskType.title')}
                 name="taskType"
                 required
@@ -518,7 +518,7 @@ const ScheduleModal: FC<PropsType> = memo(
                     {t('schedule.taskType.MULTI.title')}
                   </Radio.Button>
                 </Radio.Group>
-              </Form.Item> */}
+              </Form.Item>
               <Form.Item
                 label={t('schedule.form.wayline.title')}
                 name="airlineIndex"

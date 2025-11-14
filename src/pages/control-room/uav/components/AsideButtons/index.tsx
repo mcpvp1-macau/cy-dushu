@@ -1,6 +1,5 @@
 import { Button } from 'antd'
 import ControlPower from './ControlPower'
-import IconReturnBase from '@/assets/icons/jsx/uav/IconReturnBase'
 import IconLanding from '@/assets/icons/jsx/uav/IconLanding'
 import IconBoxSelect from '@/assets/icons/jsx/uav/IconBoxSelect'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
@@ -14,6 +13,7 @@ import PointFly from './PointFly'
 import IntelligentPhotography from './IntelligentPhotograph'
 import IntelligentPhotographyV1 from './IntelligentPhotographV1'
 import ServiceButton from './ServiceButton'
+import GoHome from './GoHome'
 
 type PropsType = unknown
 
@@ -28,8 +28,6 @@ const AsideButtons: FC<PropsType> = memo(() => {
     !isLimitedFly && hasControlPower && serviceHave['gimbalToPoint']
 
   const canStopAll = serviceHave['stopAll']
-
-  const canGohome = !isLimitedFly && serviceHave['gohome']
 
   const canAutoland =
     !isLimitedFly && hasControlPower && serviceHave['autoland']
@@ -85,12 +83,7 @@ const AsideButtons: FC<PropsType> = memo(() => {
           title={t('controlRoom.uav.service.stopAll.title')}
           onClick={() => postSerivce('stopAll')}
         />
-        <ServiceButton
-          disabled={!canGohome}
-          icon={IconReturnBase}
-          title={t('controlRoom.uav.service.goHome.title')}
-          onClick={() => postSerivce('gohome')}
-        />
+        <GoHome postServiceFn={postSerivce} />
         <ServiceButton
           disabled={!canAutoland}
           icon={IconLanding}
