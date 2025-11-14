@@ -1,3 +1,4 @@
+import Select from '@/components/AntdOverride/Select'
 import AsyncButton from '@/components/ui/button/AsyncButton'
 import XCard from '@/components/ui/XCard'
 import { useAppMsg } from '@/hooks/useAppMsg'
@@ -13,6 +14,8 @@ type PropsType = unknown
 const Flight3D: FC<PropsType> = memo(() => {
   const msgApi = useAppMsg()
 
+  const [region, setRegion] = useState('xiaozhen')
+
   const handleClick = async () => {
     const store = useAirlineConfigStore.getState()
     const airpoints = store.airpointsConfig
@@ -27,7 +30,7 @@ const Flight3D: FC<PropsType> = memo(() => {
           item.pointZ +
           (executeHeightMode === 'relativeToStartPoint' ? takeOffHeight : 0),
       })),
-      region: 'xiaozhen',
+      region,
       maxsamples: 200,
     })
 
@@ -43,6 +46,14 @@ const Flight3D: FC<PropsType> = memo(() => {
 
     const newAirpoints: AirpointsConfigItem[] = []
     for (let i = 0; i < airpoints.length - 1; i++) {
+      if (!result[i].success) {
+        msgApi.error(
+          `航点 ${i + 1} 到航点 ${i + 2} 的3D飞行计算失败：${
+            result[i].message || '未知原因'
+          }`,
+        )
+        return
+      }
       newAirpoints.push({
         ...airpoints[i],
         positionIndex: newAirpoints.length,
@@ -67,6 +78,7 @@ const Flight3D: FC<PropsType> = memo(() => {
       positionName: `航点${newAirpoints.length}`,
       xid: v4(),
     })
+
     // 调整高度
     if (executeHeightMode === 'relativeToStartPoint') {
       for (let i = 0; i < newAirpoints.length; i++) {
@@ -87,9 +99,24 @@ const Flight3D: FC<PropsType> = memo(() => {
         </div>
       }
       topRight={
-        <AsyncButton size="small" onClick={handleClick}>
-          计算
-        </AsyncButton>
+        <div className="flex gap-2">
+          <Select
+            className="w-32"
+            size="small"
+            options={[
+              { label: 'xiaozhen', value: 'xiaozhen' },
+              {
+                label: 'aoti',
+                value: 'aoti',
+              },
+            ]}
+            value={region}
+            onChange={(val) => setRegion(val)}
+          />
+          <AsyncButton size="small" onClick={handleClick} successMsg="">
+            计算
+          </AsyncButton>
+        </div>
       }
     ></XCard>
   )
