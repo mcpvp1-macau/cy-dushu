@@ -1,6 +1,7 @@
 export type DeviceConfigs = {
   /** 是否有驾驶舱 */
   isHaveControlRoom: boolean
+  controlRoomPath?: string
   /** 是否有视频 */
   isHaveVideo: boolean
   /** 是否有转台 */
@@ -23,6 +24,19 @@ const DeviceConfigsMap: { [key: string]: DeviceConfigs } = {
     isHaveControlPower: false,
     /** 是否有AI */
     isHaveAI: true,
+  },
+  ['UGV']: {
+    /** 是否有驾驶舱 */
+    isHaveControlRoom: true,
+    controlRoomPath: '/control-room/ugv',
+    /** 是否有视频 */
+    isHaveVideo: true,
+    /** 是否有转台 */
+    isHaveControl: false,
+    /** 是否有控制权 */
+    isHaveControlPower: false,
+    /** 是否有AI */
+    isHaveAI: false,
   },
   default: {
     /** 是否有驾驶舱 */

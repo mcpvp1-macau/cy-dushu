@@ -66,10 +66,21 @@ const OthersDetailDetail: React.FC = () => {
         })
       })}
 
-      {deviceType === 'RADAR' && <div className="mx-3 mb-3 pt-0 h-[154px] bg-[#1C2630]"><RadarMap deviceId={deviceId} /></div>}
+      {deviceType === 'RADAR' && (
+        <div className="mx-3 mb-3 pt-0 h-[154px] bg-[#1C2630]">
+          <RadarMap deviceId={deviceId} />
+        </div>
+      )}
       {deviceConfigs.isHaveControlRoom ? (
         <section className="mx-3 mr-[9px] my-3 flex gap-2">
-          <Link className="grow" to={`/control-room/others/${deviceId}`}>
+          <Link
+            className="grow"
+            to={
+              deviceConfigs['controlRoomPath']
+                ? `${deviceConfigs['controlRoomPath']}/${deviceId}`
+                : `/control-room/others/${deviceId}`
+            }
+          >
             <Button block className="h-7" icon={<IconControlRoom />}>
               {t('device.enterControlRoom.title')}
             </Button>
