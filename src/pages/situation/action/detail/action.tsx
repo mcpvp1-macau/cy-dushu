@@ -16,6 +16,7 @@ import IconMap from '@/assets/icons/jsx/IconMap'
 import ZSKCYPModal from './components/kcyp/zhoushan/Modal'
 import ZSBIWUModal from './components/zhoushan_biwu/Modal'
 import { ActionEnum } from '@/constant/action/action_type'
+import AddEventResolveTask from './components/AddEventResolveTask'
 
 const ChildActions = lazy(
   () => import('./components/ChildActions/ChildActions'),
@@ -82,7 +83,17 @@ const PageActionDetailSub: FC<PropsType> = memo(
       const task = {
         label: t('action.detail.task.title'),
         key: '2',
-        extra: !isBacktracking && <AddTask actionId={actionId!} />,
+        extra: !isBacktracking && (
+          <div className="flex gap-2">
+            {actionDetail.eventId && (
+              <AddEventResolveTask
+                actionId={Number(actionId!)}
+                eventId={actionDetail.eventId}
+              />
+            )}
+            <AddTask actionId={actionId!} />
+          </div>
+        ),
         children: (
           <AppViewSuspense>
             <ChildActions

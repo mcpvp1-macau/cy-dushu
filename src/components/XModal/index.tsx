@@ -13,6 +13,7 @@ type PropsType = GetProps<typeof Modal> & {
   footer?: boolean
   noPadding?: boolean
   confirmTitle?: string
+  confirmDisable?: boolean
 }
 
 const XModal: FC<PropsType> = ({
@@ -23,6 +24,7 @@ const XModal: FC<PropsType> = ({
   noPadding = false,
   titleRight,
   confirmTitle,
+  confirmDisable,
   onClose,
   onConfirm,
   ...restProps
@@ -132,6 +134,7 @@ const XModal: FC<PropsType> = ({
                 loading={confirmLoading}
                 type="primary"
                 className="ml-3"
+                disabled={confirmDisable}
                 onClick={(e) => {
                   e.stopPropagation()
                   onConfirm?.()

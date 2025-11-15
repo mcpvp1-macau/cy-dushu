@@ -9,6 +9,7 @@ type PropsType = Omit<GetProps<typeof XForm>, 'title'> & {
   open?: boolean
   /** FormModal 内部自动会处理 loading 状态 */
   confirmLoading?: boolean
+  confirmDisable?: boolean
   /** @deprecated 继承自 Form, 参考 https://ant-design.antgroup.com/components/form-cn#form */
   layout?: 'auto' | number
   modalProps?: GetProps<typeof XModal>
@@ -23,6 +24,7 @@ const FormModal: FC<PropsType> = ({
   open = true,
   title,
   confirmLoading,
+  confirmDisable,
   form: propForm,
   items,
   layout = 24,
@@ -73,6 +75,7 @@ const FormModal: FC<PropsType> = ({
         width={width ?? '318px'}
         centered
         confirmLoading={confirmLoading || loading}
+        confirmDisable={confirmDisable}
         mask={mask}
         {...modalProps}
       >

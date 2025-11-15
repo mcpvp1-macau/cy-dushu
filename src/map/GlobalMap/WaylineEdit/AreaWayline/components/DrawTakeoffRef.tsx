@@ -92,8 +92,8 @@ const DrawTakeoffRef: FC<PropsType> = memo(() => {
           const geo = cartesian3ToDegrees(position)
 
           const geoDegrees = {
-            longitude: Cesium.Math.toDegrees(geo[0]),
-            latitude: Cesium.Math.toDegrees(geo[1]),
+            longitude: geo[0],
+            latitude: geo[1],
             height: round(geo[2], 4) + 0.05,
           }
 

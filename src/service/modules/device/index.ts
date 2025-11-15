@@ -35,7 +35,10 @@ export const getAllDeviceList = (data: API_DEVICE.req.GetDeviceListReq) => {
 }
 
 /** 获取所有设备 (control-center) */
-export const getAllDeviceListV3 = (data: any) => {
+export const getAllDeviceListV3 = (data: {
+  type?: string
+  isPage?: boolean
+}) => {
   return serverControlCenter.post<API_DEVICE.res.AllDeviceListV3Res>(
     '/device/list/v3',
     data,
