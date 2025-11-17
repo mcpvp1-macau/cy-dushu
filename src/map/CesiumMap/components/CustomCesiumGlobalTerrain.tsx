@@ -1,6 +1,7 @@
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { MartiniTerrainProvider } from '@zjugis/cesium-martini'
+import { getTerrainUrl } from '@/constant/map'
 
 /**
  * 自定义全球地形
@@ -10,8 +11,7 @@ import { MartiniTerrainProvider } from '@zjugis/cesium-martini'
 const CustomCesiumGlobalTerrain = () => {
   const { viewer } = useCesium()
   useEffect(() => {
-    const url =
-      globalConfig.terrainUrl || `/data/maptiler-terrain-rgb/{z}/{x}/{y}.png`
+    const url = getTerrainUrl()
 
     const terrainLayer = new MartiniTerrainProvider({
       url: new Cesium.Resource({
