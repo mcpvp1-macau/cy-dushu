@@ -26,6 +26,7 @@ const RelayDeviceConfig: FC<PropsType> = memo(() => {
               {e.deviceName}
             </div>
           ),
+          name: e.deviceName,
         })),
 
     [allDevices],
@@ -38,7 +39,7 @@ const RelayDeviceConfig: FC<PropsType> = memo(() => {
         placeholder="请选择接力设备"
         options={deviceOptions}
         showSearch={true}
-        optionFilterProp="label"
+        optionFilterProp="name"
         allowClear
         value={relayDeviceId}
         onChange={(value) => {
