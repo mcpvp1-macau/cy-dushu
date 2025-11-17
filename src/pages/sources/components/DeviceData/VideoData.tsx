@@ -1,12 +1,13 @@
 import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
 import VideoPreview from '@/components/VideoPreview'
-import { dft } from '@/constant/time-fmt'
-import { getHistoryVideo2 } from '@/service/modules/device'
-import { Col, Row, Select } from 'antd'
+import { Col, Row } from 'antd'
 import { Dayjs } from 'dayjs'
 import VideoViewModal from './VideoViewModal'
 import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
+import Select from '@/components/AntdOverride/Select'
+import useVideoList from '@/pages/right/DeviceDetail/hooks/useVideoList'
+import { handleStorageURL } from '@/pages/events/components/EventDetail'
 
 type PropsType = {
   deviceList: API_DEVICE.domain.Device[]
@@ -24,11 +25,12 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
 
   const [deviceId, setDeviceId] = useState<string>(deviceList[0]?.deviceId)
 
-  const { videoId, productKey } = useMemo(() => {
+  const { videoId, productKey, deviceType } = useMemo(() => {
     const device = deviceList.find((e) => e.deviceId === deviceId)!
     return {
       videoId: device.properties?.videoList?.[0]?.videoId,
       productKey: device.deviceModel?.productKey,
+      deviceType: device.deviceType,
     }
   }, [deviceList, deviceId])
 
@@ -37,28 +39,23 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
     dayjs().endOf('minute'),
   ])
 
-  const queryClient = useQueryClient()
+  const [type, setType] = useState<'platform' | 'device'>('platform')
 
-  const { data: videoList, isLoading } = useQuery(
-    {
-      queryKey: [
-        'getHistoryVideo',
-        deviceId,
-        `${dateRange?.[0].unix()}-${dateRange?.[1].unix()}`,
-      ],
-      queryFn: () =>
-        getHistoryVideo2(productKey, deviceId, videoId!, {
-          startTime: dateRange![0].format(dft),
-          endTime: dateRange![1].format(dft),
-        }),
-      enabled: !!videoId && !!dateRange,
-      select: (d) => d.data.videoList,
-    },
-    queryClient,
+  const { videoList, isLoading } = useVideoList(
+    productKey!,
+    deviceId,
+    deviceType,
+    type,
+    videoId!,
+    dateRange ?? ([dayjs().subtract(1000, 'day'), dayjs()] as const),
   )
 
-  const [activeVideo, setActiveVideo] =
-    useState<API_DEVICE.domain.HistoryVideoListItem | null>(null)
+  const [activeVideo, setActiveVideo] = useState<{
+    isDevice?: boolean
+    playUrl: string
+    startTime: string
+    endTime: string
+  } | null>(null)
 
   return (
     <div>
@@ -85,6 +82,15 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
           options={deviceOptions}
           onChange={setDeviceId}
         />
+        <Select
+          className="w-40"
+          options={[
+            { label: '平台录像', value: 'platform' },
+            { label: '机身视频', value: 'device' },
+          ]}
+          value={type}
+          onChange={setType}
+        />
       </div>
       <div>
         {isLoading ? (
@@ -94,22 +100,59 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
         ) : (
           <div className="max-h-[460px] overflow-x-hidden overflow-y-auto">
             <Row className="mb-3" gutter={[8, 8]}>
-              {videoList.map((e) => (
-                <Col span={24} md={12} lg={8} key={e.playUrl}>
-                  <VideoPreview
-                    previewSrc={`/storage/${e.previewUrl}`}
-                    videoUrl={e.playUrl}
-                    isAutoSrc={!e.previewUrl}
-                    info={
-                      <p>
-                        <span>{e.timeRange[0]}</span>-
-                        <span>{e.timeRange[1]}</span>
-                      </p>
-                    }
-                    onClick={() => setActiveVideo(e)}
-                  />
-                </Col>
-              ))}
+              {type === 'platform'
+                ? videoList.map((e) => (
+                    <Col span={8} key={e.playUrl}>
+                      <VideoPreview
+                        size="small"
+                        previewSrc={`/storage/${e.previewUrl}`}
+                        videoUrl={e.playUrl}
+                        isAutoSrc={!e.previewUrl}
+                        info={
+                          <p className="flex gap-1">
+                            <span>
+                              {dayjs(e.timeRange[0])?.format('HH:mm')}
+                            </span>
+                            -
+                            <span>
+                              {dayjs(e.timeRange[1])?.format('HH:mm')}
+                            </span>
+                          </p>
+                        }
+                        onClick={() =>
+                          setActiveVideo({
+                            playUrl: e.playUrl,
+                            startTime: e.timeRange[0],
+                            endTime: e.timeRange[1],
+                          })
+                        }
+                      />
+                    </Col>
+                  ))
+                : videoList.map((e) => (
+                    <Col span={8} key={e.id}>
+                      <VideoPreview
+                        size="small"
+                        // previewSrc={`/storage/${e.previewUrl}`}
+                        videoUrl={handleStorageURL(e.url)}
+                        // isAutoSrc={!e.previewUrl}
+                        info={
+                          <p className="flex gap-1">
+                            <span>{dayjs(e.startTime)?.format('HH:mm')}</span>-
+                            <span>{dayjs(e.endTime)?.format('HH:mm')}</span>
+                          </p>
+                        }
+                        onClick={() =>
+                          setActiveVideo({
+                            isDevice: true,
+                            playUrl: handleStorageURL(e.url),
+                            startTime: e.startTime,
+                            endTime: e.endTime,
+                          })
+                        }
+                      />
+                    </Col>
+                  ))}
             </Row>
           </div>
         )}

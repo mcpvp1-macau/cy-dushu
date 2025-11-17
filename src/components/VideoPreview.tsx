@@ -5,7 +5,7 @@ import Player from 'xgplayer'
 import HlsPlugin from 'xgplayer-hls'
 
 type PropsType = {
-  previewSrc: string
+  previewSrc?: string
   size?: 'small' | 'middle' | 'large'
   info?: ReactNode
   onClick?: () => void

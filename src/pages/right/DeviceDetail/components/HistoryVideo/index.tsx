@@ -2,10 +2,11 @@ import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
 import VideoPreview from '@/components/VideoPreview'
 import VideoViewModal from '@/pages/sources/components/DeviceData/VideoViewModal'
-import { Col, DatePicker, Row } from 'antd'
-import Select from 'antd/es/select'
+import { Col, Row } from 'antd'
 import { Dayjs } from 'dayjs'
 import useVideoList from '../../hooks/useVideoList'
+import Select from '@/components/AntdOverride/Select'
+import { handleStorageURL } from '@/pages/events/components/EventDetail'
 
 type PropsType = {
   deviceList: API_DEVICE.domain.Device[]
@@ -15,9 +16,13 @@ type PropsType = {
 
 const HistoryVideo: React.FC<PropsType> = memo(
   ({ timeRange, deviceList, deviceType }) => {
-    const [date, setDate] = useState<Dayjs | null>(dayjs())
-    const [activeVideo, setActiveVideo] =
-      useState<API_DEVICE.domain.HistoryVideoListItem | null>(null)
+    const [type, setType] = useState<'platform' | 'device'>('platform')
+    const [activeVideo, setActiveVideo] = useState<{
+      isDevice?: boolean
+      playUrl: string
+      startTime: string
+      endTime: string
+    } | null>(null)
     const deviceOptions = useMemo(
       () =>
         deviceList.map((e) => ({
@@ -39,15 +44,24 @@ const HistoryVideo: React.FC<PropsType> = memo(
       productKey!,
       deviceId,
       deviceType,
+      type,
       videoId!,
-      timeRange || date || dayjs(),
+      timeRange ?? ([dayjs().subtract(1000, 'day'), dayjs()] as const),
     )
 
     return (
       <div>
         <section className="m-3 flex gap-2">
           <div className="flex-1">
-            <DatePicker className="w-full" value={date} onChange={setDate} />
+            <Select
+              className="w-full"
+              options={[
+                { label: '平台录像', value: 'platform' },
+                { label: '机身视频', value: 'device' },
+              ]}
+              value={type}
+              onChange={setType}
+            />
           </div>
           <div className="flex-1">
             <Select
@@ -65,23 +79,59 @@ const HistoryVideo: React.FC<PropsType> = memo(
         ) : (
           <div className="m-3 overflow-x-hidden overflow-y-auto">
             <Row gutter={[8, 8]}>
-              {videoList.map((e) => (
-                <Col span={8} key={e.playUrl}>
-                  <VideoPreview
-                    size="small"
-                    previewSrc={`/storage/${e.previewUrl}`}
-                    videoUrl={e.playUrl}
-                    isAutoSrc={!e.previewUrl}
-                    info={
-                      <p className="flex gap-1">
-                        <span>{dayjs(e.timeRange[0])?.format('HH:mm')}</span>-
-                        <span>{dayjs(e.timeRange[1])?.format('HH:mm')}</span>
-                      </p>
-                    }
-                    onClick={() => setActiveVideo(e)}
-                  />
-                </Col>
-              ))}
+              {type === 'platform'
+                ? videoList.map((e) => (
+                    <Col span={8} key={e.playUrl}>
+                      <VideoPreview
+                        size="small"
+                        previewSrc={`/storage/${e.previewUrl}`}
+                        videoUrl={e.playUrl}
+                        isAutoSrc={!e.previewUrl}
+                        info={
+                          <p className="flex gap-1">
+                            <span>
+                              {dayjs(e.timeRange[0])?.format('HH:mm')}
+                            </span>
+                            -
+                            <span>
+                              {dayjs(e.timeRange[1])?.format('HH:mm')}
+                            </span>
+                          </p>
+                        }
+                        onClick={() =>
+                          setActiveVideo({
+                            playUrl: e.playUrl,
+                            startTime: e.timeRange[0],
+                            endTime: e.timeRange[1],
+                          })
+                        }
+                      />
+                    </Col>
+                  ))
+                : videoList.map((e) => (
+                    <Col span={8} key={e.id}>
+                      <VideoPreview
+                        size="small"
+                        // previewSrc={`/storage/${e.previewUrl}`}
+                        videoUrl={handleStorageURL(e.url)}
+                        // isAutoSrc={!e.previewUrl}
+                        info={
+                          <p className="flex gap-1">
+                            <span>{dayjs(e.startTime)?.format('HH:mm')}</span>-
+                            <span>{dayjs(e.endTime)?.format('HH:mm')}</span>
+                          </p>
+                        }
+                        onClick={() =>
+                          setActiveVideo({
+                            isDevice: true,
+                            playUrl: handleStorageURL(e.url),
+                            startTime: e.startTime,
+                            endTime: e.endTime,
+                          })
+                        }
+                      />
+                    </Col>
+                  ))}
             </Row>
           </div>
         )}

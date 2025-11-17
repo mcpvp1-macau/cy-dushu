@@ -181,7 +181,12 @@ export const getHistoryVideo2 = async (
   productKey: string,
   deviceId: string,
   id: string,
-  data: { startTime: string; endTime: string },
+  data: {
+    startTime: string
+    endTime: string
+    isProxy?: boolean
+    proxyPrefix?: string
+  },
 ) => {
   return serverVod.post<API_DEVICE.res.GetHistoryListRes>(
     `/vod/${productKey}/${deviceId}/history`,

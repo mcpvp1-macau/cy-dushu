@@ -10,6 +10,11 @@ export const getPlatformCapture = (
   )
 }
 
+/** 获取设备机身视频 */
+export const getDeviceVideo = (data: any) => {
+  return serverDBAPI.post('/api/platformVideoPost2', data)
+}
+
 /** 电磁态势 */
 export const getWirelessSituation = (
   data: API_DBAPI.req.WirelessSituation,
@@ -37,7 +42,6 @@ export const getUavDeviceAttrBackV2 = (data: {
   return serverDBAPI.post('api/uavDeviceAttrBackV2', data)
 }
 
-
 export const getActiveTrackPeriods = (data: {
   deviceId: string
   startTime: string
@@ -45,7 +49,6 @@ export const getActiveTrackPeriods = (data: {
 }) => {
   return serverDBAPI.post('api/getActiveTrackPeriods', data)
 }
-
 
 /** deviceAttrInfoBack 属性回溯 */
 export const getDeviceAttrInfoBack = (data: {
