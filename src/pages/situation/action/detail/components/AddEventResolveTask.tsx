@@ -139,20 +139,6 @@ const AddEventResolveTask: FC<PropsType> = memo(({ actionId, eventId }) => {
             showSearch: true,
           },
         },
-        {
-          label: '起飞高度',
-          name: 'takeoffHeight',
-          type: 'input-number',
-          rules: [
-            {
-              required: true,
-              message: '请输入起飞高度',
-            },
-          ],
-          otherProps: {
-            min: 0,
-          },
-        },
       ] as XFormItem[],
     [deviceLoading, deviceOptions],
   )
@@ -244,12 +230,12 @@ const AddEventResolveTask: FC<PropsType> = memo(({ actionId, eventId }) => {
         return
       }
 
-      const groundHeight = await (viewer?.scene.globe.getHeight(
-        Cesium.Cartographic.fromDegrees(event!.longitude!, event!.latitude!),
-      ) ?? 0)
+      const groundHeight =
+        (await viewer?.scene.globe.getHeight(
+          Cesium.Cartographic.fromDegrees(event!.longitude!, event!.latitude!),
+        )) ?? 0
 
-      const uavDistanceFromGround =
-        values.takeoffHeight + values.airlineHeight - groundHeight
+      const uavDistanceFromGround = values.airlineHeight
 
       const resp = await getDeviceDetail(values.deviceId)
       const uavDetail = resp.data
@@ -271,8 +257,8 @@ const AddEventResolveTask: FC<PropsType> = memo(({ actionId, eventId }) => {
         Math.abs(Math.cos((lat * Math.PI) / 180)) *
         2
 
-      // 50 表示 50% 的横向覆盖率
-      const interval = w * (1 - 50 / 100)
+      // 75 表示 75% 的横向覆盖率
+      const interval = w * (1 - 75 / 100)
 
       const mercatorCoords = toMercator({
         type: 'Polygon',
@@ -285,8 +271,10 @@ const AddEventResolveTask: FC<PropsType> = memo(({ actionId, eventId }) => {
       takeoffRefPointRef.current = [
         uavDetail.properties?.longitude ?? 120,
         uavDetail.properties?.latitude ?? 30,
-        values.takeoffHeight,
+        groundHeight,
       ]
+
+      console.log('uavDistanceFromGround', uavDistanceFromGround)
 
       const area_path = get_polygon_area_wayline(
         mercatorCoords.coordinates[0].slice(0, -1).map((e) => ({
@@ -312,7 +300,9 @@ const AddEventResolveTask: FC<PropsType> = memo(({ actionId, eventId }) => {
             [
               e[0],
               e[1],
-              (values.airlineHeight + values.takeoffHeight) as number,
+              (values.airlineHeight +
+                // values.takeoffHeight +
+                groundHeight) as number,
             ] as const,
         ),
       )
@@ -356,12 +346,20 @@ const AddEventResolveTask: FC<PropsType> = memo(({ actionId, eventId }) => {
       ],
     }
 
-    parameters.spaces[0].positions[0].actions.push({
-      config: {
-        y: -90,
+    parameters.spaces[0].positions[0].actions.push(
+      {
+        config: {
+          y: -75,
+        },
+        type: 'CAMERA_POSITION',
       },
-      type: 'CAMERA_POSITION',
-    })
+      {
+        config: {
+          focalLength: 2,
+        },
+        type: 'ZOOM',
+      },
+    )
 
     const data: Record<string, any> = {
       actionId: actionId,
@@ -405,7 +403,7 @@ const AddEventResolveTask: FC<PropsType> = memo(({ actionId, eventId }) => {
         items={formItems}
         open={open}
         initialValues={{
-          takeoffHeight: 1,
+          // takeoffHeight: 1,
           airlineHeight: 100,
           goHomeHeight: 100,
           globalSpeed: 10,
