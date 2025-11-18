@@ -28,7 +28,7 @@ const RenderOverlayLabel: FC<PropsType> = ({ overlays }) => {
     labelCollection.renderCount = 0
 
     const addedLabels: ExtendLabel[] = []
-    for (let overlay of overlays) {
+    for (const overlay of overlays) {
       const position = shouldJson(overlay.overlayPositions)
       if (!position) continue
       const center = getCenter(position)
@@ -58,7 +58,7 @@ const RenderOverlayLabel: FC<PropsType> = ({ overlays }) => {
 
     return () => {
       attempt(() => {
-        for (let deleteLabel of preAddedLabels.current) {
+        for (const deleteLabel of preAddedLabels.current) {
           labelCollection.remove(deleteLabel)
         }
       })

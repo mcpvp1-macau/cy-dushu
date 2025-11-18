@@ -3,7 +3,6 @@ import * as Cesium from 'cesium'
 import CollisionCheckLabelCollection, {
   ExtendLabel,
 } from '@/utils/customPrimitive/CollisionCheckLabelCollection'
-import useARSettingStore from '@/store/setting/useARSetting.store'
 import { LabelLevelMap, LayerLevelMap, LabelRelateMap } from '../Enum'
 import { attempt } from 'lodash'
 import { shouldJson } from '@/utils/json'
@@ -30,7 +29,7 @@ const RenderPoints: FC<PropsType> = ({ points }) => {
     labelCollection.renderCount = 0
 
     const addedLabels: ExtendLabel[] = []
-    for (let point of points) {
+    for (const point of points) {
       const position = shouldJson(point.overlayPositions)?.[0]
       if (!position) continue
 
@@ -63,7 +62,7 @@ const RenderPoints: FC<PropsType> = ({ points }) => {
       )
 
       pointPrimitiveCollection.removeAll()
-      for (let label of pointLabels) {
+      for (const label of pointLabels) {
         const style = shouldJson(label.data?.overlayStyleConfig)
 
         pointPrimitiveCollection.add({
@@ -82,7 +81,7 @@ const RenderPoints: FC<PropsType> = ({ points }) => {
 
     return () => {
       attempt(() => {
-        for (let deleteLabel of preAddedLabels.current) {
+        for (const deleteLabel of preAddedLabels.current) {
           labelCollection.remove(deleteLabel)
         }
         pointPrimitiveCollection.removeAll()

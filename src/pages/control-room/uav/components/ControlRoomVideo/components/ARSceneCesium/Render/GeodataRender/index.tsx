@@ -346,7 +346,7 @@ const GeodataRender = () => {
         baseAoiPrimitiveCollection.removeAll()
         buildingAoiPrimitiveCollection.removeAll()
         roadPrimitiveCollection.removeAll()
-        for (let deleteLabel of preLabelRef.current) {
+        for (const deleteLabel of preLabelRef.current) {
           labelCollection.remove(deleteLabel)
         }
         poiMarkerCollection.removeAll()
