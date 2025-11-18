@@ -47,7 +47,7 @@ const VideoData: FC<PropsType> = memo(({ deviceList }) => {
     deviceType,
     type,
     videoId!,
-    dateRange ?? ([dayjs().subtract(1000, 'day'), dayjs()] as const),
+    dateRange ?? ([dayjs().subtract(1, 'day'), dayjs()] as const),
   )
 
   const [activeVideo, setActiveVideo] = useState<{

@@ -46,7 +46,7 @@ const HistoryVideo: React.FC<PropsType> = memo(
       deviceType,
       type,
       videoId!,
-      timeRange ?? ([dayjs().subtract(1000, 'day'), dayjs()] as const),
+      timeRange ?? ([dayjs().subtract(1, 'day'), dayjs()] as const),
     )
 
     return (
