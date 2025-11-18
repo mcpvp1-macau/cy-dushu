@@ -79,7 +79,8 @@ type ActionsType = {
 }
 
 /** 预加载的设备类型 */
-const prepareDeviceType = ['UAV']
+// const prepareDeviceType = ['UAV', 'UAV_AIRPORT']
+const prepareDeviceType = []
 
 /** 用户与组织信息 */
 const useUserStore = create<StateType & ActionsType>()(

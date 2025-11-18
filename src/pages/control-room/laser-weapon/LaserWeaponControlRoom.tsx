@@ -42,25 +42,22 @@ const initialLayout: DynamicLayoutType = {
       children: [
         {
           type: 'tabs',
-          size: 3,
-          children: [{ key: 'status' }],
+          size: 200,
+          children: [
+            {
+              key: 'video',
+            },
+          ],
         },
-      ],
-    },
-    {
-      type: 'tabs',
-      size: 350,
-      isCollapsed: true,
-      children: [
         {
-          key: 'status',
+          type: 'tabs',
+          size: 350,
+          children: [
+            {
+              key: 'status',
+            },
+          ],
         },
-        //   {
-        //     key: 'device-control',
-        //   },
-        //   {
-        //     key: 'ai-list',
-        //   },
       ],
     },
   ],
@@ -126,17 +123,27 @@ const LaserWeaponControlRoom: React.FC = () => {
   for (let index = 0; index < videoList?.length; index++) {
     const item = videoList[index]
     const key = `${item.name}-${item.videoId}-${deviceId}`
-    videoTabs.push({
-      type: 'tabs',
-      size: 3,
-      children: [
-        {
-          key: key,
-        },
-      ],
-    })
-    titleMap[key] = item.name
-    videoMap[key] = (
+    // videoTabs.push({
+    //   type: 'tabs',
+    //   size: 200,
+    //   children: [
+    //     {
+    //       key: key,
+    //     },
+    //   ],
+    // })
+    // titleMap[key] = '视频' //item.name
+    // videoMap[key] = (
+    //   <ControlRoomVideo
+    //     productKey={productKey!}
+    //     deviceId={deviceId}
+    //     videoId={item.videoId}
+    //     parentPost={post}
+    //     isHaveTapZoomAtTarget={isHaveTapZoomAtTarget}
+    //   />
+    // )
+    titleMap['video'] = '视频'
+    videoMap['video'] = (
       <ControlRoomVideo
         productKey={productKey!}
         deviceId={deviceId}
@@ -147,43 +154,43 @@ const LaserWeaponControlRoom: React.FC = () => {
     )
   }
   /** 子设备的视频 */
-  for (let index = 0; index < childDeviceVideos.length; index++) {
-    const item = childDeviceVideos[index]
-    for (
-      let index = 0;
-      index < (item.properties?.videoList?.length || 0);
-      index++
-    ) {
-      const video = item.properties.videoList?.[index]
-      const key = `${video?.name}-${video?.videoId}-${item.deviceId}`
-      if (video) {
-        videoTabs.push({
-          type: 'tabs',
-          size: 3,
-          children: [
-            {
-              key: key,
-            },
-          ],
-        })
+  // for (let index = 0; index < childDeviceVideos.length; index++) {
+  //   const item = childDeviceVideos[index]
+  //   for (
+  //     let index = 0;
+  //     index < (item.properties?.videoList?.length || 0);
+  //     index++
+  //   ) {
+  //     const video = item.properties.videoList?.[index]
+  //     const key = `${video?.name}-${video?.videoId}-${item.deviceId}`
+  //     if (video) {
+  //       videoTabs.push({
+  //         type: 'tabs',
+  //         size: 3,
+  //         children: [
+  //           {
+  //             key: key,
+  //           },
+  //         ],
+  //       })
 
-        titleMap[key] = item.deviceName || item.name || video.name
+  //       titleMap[key] = '视频' //item.deviceName || item.name || video.name
 
-        videoMap[key] = (
-          <ControlRoomVideo
-            productKey={item.deviceModel.productKey!}
-            deviceId={item.deviceId}
-            videoId={video?.videoId || ''}
-            parentPost={post}
-            isHaveTapZoomAtTarget={isHaveTapZoomAtTarget}
-          />
-        )
-      }
-    }
-  }
+  //       videoMap[key] = (
+  //         <ControlRoomVideo
+  //           productKey={item.deviceModel.productKey!}
+  //           deviceId={item.deviceId}
+  //           videoId={video?.videoId || ''}
+  //           parentPost={post}
+  //           isHaveTapZoomAtTarget={isHaveTapZoomAtTarget}
+  //         />
+  //       )
+  //     }
+  //   }
+  // }
 
   const [layout, setLayout] = useLocalStorageState<DynamicLayoutType>(
-    'laser-weapon-control-room-layout',
+    'laser-weapon-control-room-layout-v4',
     { defaultValue: initialLayout },
   )
 
@@ -198,14 +205,27 @@ const LaserWeaponControlRoom: React.FC = () => {
     return map
   }, [productKey, deviceId, videoMap])
 
-  useDeepCompareEffect(() => {
-    const l = _.cloneDeep(layout)
-    if (l && l.children[1])
-      (l.children[1] as DynamicLayoutType).children = videoTabs
-    setLayout(l)
-  }, [videoTabs])
+  // useDeepCompareEffect(() => {
+  //   const l = _.cloneDeep(layout)
+  //   if (l && l.children[1])
+  //     (l.children[1] as DynamicLayoutType).children = [
+  //       ...videoTabs,
+  //       {
+  //         type: 'tabs',
+  //         size: 350,
+  //         children: [
+  //           {
+  //             key: 'status',
+  //           },
+  //         ],
+  //       },
+  //     ]
+  //   setLayout(l)
+  // }, [videoTabs])
 
   const { pathname } = useLocation()
+
+  console.log('LaserWeaponControlRoom render', layout)
 
   return (
     <DeviceDetailStoreContext.Provider value={store}>
