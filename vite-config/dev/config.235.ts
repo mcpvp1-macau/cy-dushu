@@ -12,14 +12,14 @@ export default mergeConfig(
           target: 'http://172.21.30.235:31851/',
           // target: 'http://127.0.0.1:7001/',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/proxyApi/, '/'),
+          rewrite: (path) => path.replace(/^\/proxyApi/, ''),
         },
         '/proxyWsApi': {
           target: 'ws://172.21.30.235:31851/',
           // target: 'ws://127.0.0.1:7001/',
           ws: true,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/proxyWsApi/, '/'),
+          rewrite: (path) => path.replace(/^\/proxyWsApi/, ''),
         },
         // 全局 WebSocket
         '/ws': {
@@ -49,15 +49,16 @@ export default mergeConfig(
         '/_ws_proxy': {
           target: 'http://172.21.30.235:10080',
           ws: true,
-          rewrite: (path) => path.replace(/^\/_ws_proxy\/ws:\/\/172.21.30.235:10080/, '') 
-        }
+          rewrite: (path) =>
+            path.replace(/^\/_ws_proxy\/ws:\/\/172.21.30.235:10080/, ''),
+        },
       },
     },
     define: {
       // 用于合并 window.config 的配置
       __DEV_MERGE_CONFIG__: {
         systemName: 'jingqi',
-        loginUrl: 'https://172.21.30.235:32712/login'
+        loginUrl: 'https://172.21.30.235:32712/login',
       },
     },
   }),

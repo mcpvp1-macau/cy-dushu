@@ -11,7 +11,7 @@ export default mergeConfig(
           target: 'http://36.133.175.183:32711/',
           // target: 'http://127.0.0.1:7001/',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/proxyApi/, '/'),
+          rewrite: (path) => path.replace(/^\/proxyApi/, ''),
         },
         // 全局 WebSocket
         '/ws': {

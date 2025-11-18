@@ -580,6 +580,7 @@ common:
   hostless: Hostless
   refDevLoc: Reference device location
   options: Options
+  export: Expert
 events:
   search:
     placeholder: Please search by event name or ID
@@ -1490,3 +1491,4 @@ timeRange:
   last90Days: Last 90 Days
   last365Days: Last 1 Year
   last100Years: Last 100 Years
+expertError: Export Error

@@ -29,7 +29,7 @@ export default mergeConfig(
           // target: 'http://172.27.95.212:32711/',
           // target: 'http://localhost:7001',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/proxyApi/, '/'),
+          rewrite: (path) => path.replace(/^\/proxyApi/, ''),
         },
         '/proxy4aApi': {
           // target: 'http://172.27.95.212:31851/',

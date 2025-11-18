@@ -574,6 +574,7 @@ common:
   hostless: 未承载
   refDevLoc: 参考设备位置
   options: 选项
+  export: 导出
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -1476,3 +1477,4 @@ timeRange:
   last90Days: 最近 90 天
   last365Days: 最近 1 年
   last100Years: 最近 100 年
+expertError: 导出失败

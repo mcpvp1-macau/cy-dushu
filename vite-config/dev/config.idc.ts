@@ -12,14 +12,14 @@ export default mergeConfig(
           target: 'http://61.153.111.197:31851',
           // target: 'http://172.27.95.212:32711/',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/proxyApi/, '/'),
+          rewrite: (path) => path.replace(/^\/proxyApi/, ''),
         },
         '/proxyWsApi': {
           target: 'ws://61.153.111.197:31851/',
           // target: 'ws://127.0.0.1:7001/',
           ws: true,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/proxyWsApi/, '/'),
+          rewrite: (path) => path.replace(/^\/proxyWsApi/, ''),
         },
         // 全局 WebSocket
         '/ws': {
@@ -55,7 +55,7 @@ export default mergeConfig(
           target: 'ws://121.196.145.43:10096',
           ws: true,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/asr/, '/'),
+          rewrite: (path) => path.replace(/^\/asr/, ''),
         },
         '/_ws_proxy/': {
           target: 'ws://115.231.236.108:10080', // 默认需要动态设置，见 `configure` 部分

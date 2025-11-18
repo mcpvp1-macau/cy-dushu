@@ -14,14 +14,14 @@ export default mergeConfig(
           target: 'http://47.96.225.165:31851/',
           // target: 'http://127.0.0.1:7001/',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/proxyApi/, '/'),
+          rewrite: (path) => path.replace(/^\/proxyApi/, ''),
         },
         '/proxyWsApi': {
           target: 'ws://47.96.225.165:31851/',
           // target: 'ws://127.0.0.1:7001/',
           ws: true,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/proxyWsApi/, '/'),
+          rewrite: (path) => path.replace(/^\/proxyWsApi/, ''),
         },
         // 全局 WebSocket
         '/ws': {

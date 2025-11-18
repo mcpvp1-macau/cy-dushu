@@ -11,7 +11,7 @@ export default mergeConfig(
         '/proxyApi': {
           target: 'http://172.21.30.201:32711/',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/proxyApi/, '/'),
+          rewrite: (path) => path.replace(/^\/proxyApi/, ''),
         },
         // 全局 WebSocket
         '/ws': {

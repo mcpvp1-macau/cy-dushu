@@ -11,13 +11,13 @@ export default mergeConfig(
         '/proxyApi': {
           target: 'http://10.0.0.201:32711/',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/proxyApi/, '/'),
+          rewrite: (path) => path.replace(/^\/proxyApi/, ''),
         },
         '/proxyWsApi': {
           target: 'ws://10.0.0.201:31851/',
           ws: true,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/proxyWsApi/, '/'),
+          rewrite: (path) => path.replace(/^\/proxyWsApi/, ''),
         },
         // 全局 WebSocket
         '/ws': {
@@ -48,7 +48,6 @@ export default mergeConfig(
           target: 'http://api.mapbox.com',
           // secure: false,
           changeOrigin: true,
-          
         },
       },
     },

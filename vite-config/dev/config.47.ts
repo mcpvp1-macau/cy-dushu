@@ -7,7 +7,7 @@ export default mergeConfig(
     server: {
       host: '0.0.0.0',
       proxy: {
-        '/img_w':{
+        '/img_w': {
           target: 'http://t0.tianditu.gov.cn',
           changeOrigin: true,
           secure: false,
@@ -17,20 +17,20 @@ export default mergeConfig(
           target: 'http://47.111.155.82:31851/',
           // target: 'http://47.111.155.82:32711/',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/proxyApi/, '/'),
+          rewrite: (path) => path.replace(/^\/proxyApi/, ''),
         },
         '/proxy4aApi': {
           // target: 'http://47.111.155.82:31851/',
           target: 'http://47.111.155.82:32711/',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/proxy4aApi/, '/'),
+          rewrite: (path) => path.replace(/^\/proxy4aApi/, ''),
         },
         '/proxyWsApi': {
           target: 'ws://47.111.155.82:31851/',
           // target: 'ws://127.0.0.1:7001/',
           ws: true,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/proxyWsApi/, '/'),
+          rewrite: (path) => path.replace(/^\/proxyWsApi/, ''),
         },
         // 全局 WebSocket
         '/ws': {
@@ -66,7 +66,7 @@ export default mergeConfig(
           target: 'ws://121.196.145.43:10096',
           ws: true,
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/asr/, '/'),
+          rewrite: (path) => path.replace(/^\/asr/, ''),
         },
         '/upload': {
           target: 'http://47.111.155.82:32000',

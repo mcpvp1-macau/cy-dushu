@@ -15,7 +15,8 @@ export default mergeConfig(
           target: 'http://135.100.11.115:8080',
           // target: 'http://127.0.0.1:7001/',
           changeOrigin: true,
-          rewrite: (path) => path.replace('/proxyApi/otherService/jingqi/vodServer', ''),
+          rewrite: (path) =>
+            path.replace('/proxyApi/otherService/jingqi/vodServer', ''),
         },
         '/i3s_svc': {
           target: 'http://135.100.41.200',
@@ -26,7 +27,7 @@ export default mergeConfig(
           target: 'http://135.100.11.110:31851/',
           // target: 'http://127.0.0.1:7001/',
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/proxyApi/, '/'),
+          rewrite: (path) => path.replace(/^\/proxyApi/, ''),
         },
         // 全局 WebSocket
         '/ws': {
@@ -60,8 +61,8 @@ export default mergeConfig(
         },
         '/data': {
           target: 'https://135.100.11.110:32713',
-          secure: false
-        }
+          secure: false,
+        },
       },
     },
     define: {
