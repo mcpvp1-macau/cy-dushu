@@ -9,7 +9,7 @@ import { shouldJson } from '@/utils/json'
 import { argbToHex } from '@/utils/color'
 import { CotType } from '@/store/map/useDraw.store'
 import { attempt } from 'lodash'
-import { LayerEnum } from '../../Enum'
+import { LayerLevelMap } from '../../Enum'
 
 type PropsType = {
   overlay: API_LAYER_OVERLAY.domain.Overlay
@@ -84,12 +84,14 @@ const ShowNoFlyArea: FC<PropsType> = ({ overlay, ocrc }) => {
       }),
     })
     // 禁飞区可以遮挡label，所以添加到label层级
-    ocrc.orderPrimitives[LayerEnum.label].add(wallPrimitiveRef.current)
+    ocrc.orderPrimitives[LayerLevelMap.label].add(wallPrimitiveRef.current)
 
     return () => {
       attempt(() => {
         wallPrimitiveRef.current?.destroy()
-        ocrc.orderPrimitives[LayerEnum.label].remove(wallPrimitiveRef.current)
+        ocrc.orderPrimitives[LayerLevelMap.label].remove(
+          wallPrimitiveRef.current,
+        )
       })
     }
   }, [overlay])

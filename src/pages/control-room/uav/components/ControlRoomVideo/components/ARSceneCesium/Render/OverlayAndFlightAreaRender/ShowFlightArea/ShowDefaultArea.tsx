@@ -2,7 +2,7 @@ import ShowCircle from '@/map/CesiumMap/components/service/Overlaies/ShowCircle'
 import ShowPolygon from '@/map/CesiumMap/components/service/Overlaies/ShowPolygon'
 import ShowFan from '@/map/CesiumMap/components/service/Overlaies/ShowFan'
 import OrderCesiumRenderController from '@/utils/cesium/OrderCesiumRenderController'
-import { LayerEnum } from '../../Enum'
+import { LayerLevelMap } from '../../Enum'
 import { CotType } from '@/store/map/useDraw.store'
 import { FC } from 'react'
 
@@ -17,7 +17,7 @@ const ShowDefaultArea: FC<PropsType> = ({ overlay, ocrc }) => {
       <ShowCircle
         key={overlay.overlayId}
         overlayExtType={'flightArea'}
-        primitives={ocrc.orderPrimitives[LayerEnum.flightArea]}
+        primitives={ocrc.orderPrimitives[LayerLevelMap.flightArea]}
         overlay={overlay}
         isGround={false}
         showLabel={false}
@@ -32,7 +32,7 @@ const ShowDefaultArea: FC<PropsType> = ({ overlay, ocrc }) => {
       <ShowPolygon
         key={overlay.overlayId}
         overlayExtType={'flightArea'}
-        primitives={ocrc.orderPrimitives[LayerEnum.flightArea]}
+        primitives={ocrc.orderPrimitives[LayerLevelMap.flightArea]}
         overlay={overlay}
         isGround={false}
         showLabel={false}
@@ -44,7 +44,7 @@ const ShowDefaultArea: FC<PropsType> = ({ overlay, ocrc }) => {
       <ShowFan
         key={overlay.overlayId}
         overlayExtType={'flightArea'}
-        primitives={ocrc.orderPrimitives[LayerEnum.flightArea]}
+        primitives={ocrc.orderPrimitives[LayerLevelMap.flightArea]}
         overlay={overlay}
         isGround={false}
         showLabel={false}

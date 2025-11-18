@@ -4,7 +4,7 @@ import ShowCircle from '@/map/CesiumMap/components/service/Overlaies/ShowCircle'
 import ShowPolygon from '@/map/CesiumMap/components/service/Overlaies/ShowPolygon'
 import ShowFan from '@/map/CesiumMap/components/service/Overlaies/ShowFan'
 import RenderOverlayLabel from './RenderOverlayLabel'
-import { LayerEnum } from '../Enum'
+import { LayerLevelMap } from '../Enum'
 import { ARSceneCesiumContext } from '../context'
 
 type PropsType = {
@@ -22,7 +22,7 @@ const RenderOverlays: FC<PropsType> = ({ overlays }) => {
             <ShowCircle
               key={overlay.overlayId}
               overlayExtType={'overlay'}
-              primitives={ocrc!.orderPrimitives[LayerEnum.overlay]}
+              primitives={ocrc!.orderPrimitives[LayerLevelMap.overlay]}
               overlay={overlay}
               isGround={false}
               showLabel={false}
@@ -37,7 +37,7 @@ const RenderOverlays: FC<PropsType> = ({ overlays }) => {
             <ShowPolygon
               key={overlay.overlayId}
               overlayExtType={'overlay'}
-              primitives={ocrc!.orderPrimitives[LayerEnum.overlay]}
+              primitives={ocrc!.orderPrimitives[LayerLevelMap.overlay]}
               overlay={overlay}
               isGround={false}
               showLabel={false}
@@ -49,7 +49,7 @@ const RenderOverlays: FC<PropsType> = ({ overlays }) => {
             <ShowFan
               key={overlay.overlayId}
               overlayExtType={'overlay'}
-              primitives={ocrc!.orderPrimitives[LayerEnum.overlay]}
+              primitives={ocrc!.orderPrimitives[LayerLevelMap.overlay]}
               overlay={overlay}
               isGround={false}
               showLabel={false}

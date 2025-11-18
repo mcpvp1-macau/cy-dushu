@@ -2,7 +2,7 @@ import useMixARStore from '@/store/control-room/useMixAR.store'
 import useARSettingStore from '@/store/setting/useARSetting.store'
 import WalylinePrimitive from '@/utils/customPrimitive/WaylinePrimitive'
 import { attempt } from 'lodash'
-import { LayerEnum } from '../Enum'
+import { LayerLevelMap } from '../Enum'
 import * as Cesium from 'cesium'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { ARSceneCesiumContext } from '../context'
@@ -31,13 +31,13 @@ const WaylineRender = () => {
       indicatorSpace: 1200,
     })
 
-    ocrc!.orderPrimitives[LayerEnum.wayline].add(walylinePrimitive)
+    ocrc!.orderPrimitives[LayerLevelMap.wayline].add(walylinePrimitive)
 
     setWaylinePrimitive(walylinePrimitive)
 
     return () => {
       attempt(() => {
-        ocrc!.orderPrimitives[LayerEnum.wayline].remove(waylinePrimitive)
+        ocrc!.orderPrimitives[LayerLevelMap.wayline].remove(waylinePrimitive)
       })
       setWaylinePrimitive(null)
     }

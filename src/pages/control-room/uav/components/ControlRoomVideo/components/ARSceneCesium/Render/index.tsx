@@ -4,7 +4,7 @@ import GeodataRender from './GeodataRender'
 import OverlayAndFlightAreaRender from './OverlayAndFlightAreaRender'
 import { useEffect, useState } from 'react'
 import OrderCesiumRenderController from '@/utils/cesium/OrderCesiumRenderController'
-import { LayerEnum, LabelRelateEnum } from './Enum'
+import { LayerLevelMap, LabelRelateMap } from './Enum'
 import CollisionCheckLabelCollection from '@/utils/customPrimitive/CollisionCheckLabelCollection'
 import { ARSceneCesiumContext } from './context'
 import WaylineRender from './WaylineRender'
@@ -20,14 +20,14 @@ const ARSceneCesiumRender: FC = () => {
         viewer,
       )
       // 为ocrc预先生成primitiveCollection
-      for (let i = 0; i < LayerEnum.numberOfLayer; i++) {
-        if (i === LayerEnum.label) {
+      for (let i = 0; i < LayerLevelMap.numberOfLayer; i++) {
+        if (i === LayerLevelMap.label) {
           // 为 label层级预先生成好标注及其关联显示的图元
           const labelLevelCollection = new Cesium.PrimitiveCollection()
-          orderCesiumRenderController.orderPrimitives[LayerEnum.label] =
+          orderCesiumRenderController.orderPrimitives[LayerLevelMap.label] =
             labelLevelCollection
-          for (let j = 0; j < LabelRelateEnum.numberOfLabelRelate; j++) {
-            if (j === LabelRelateEnum.label) {
+          for (let j = 0; j < LabelRelateMap.numberOfLabelRelate; j++) {
+            if (j === LabelRelateMap.label) {
               labelLevelCollection.add(
                 new CollisionCheckLabelCollection(
                   10,
@@ -35,9 +35,9 @@ const ARSceneCesiumRender: FC = () => {
                   window.devicePixelRatio,
                 ),
               )
-            } else if (j === LabelRelateEnum.poiMarker) {
+            } else if (j === LabelRelateMap.poiMarker) {
               labelLevelCollection.add(new Cesium.BillboardCollection())
-            } else if (j === LabelRelateEnum.overlayPoint) {
+            } else if (j === LabelRelateMap.overlayPoint) {
               labelLevelCollection.add(new Cesium.PointPrimitiveCollection())
             }
           }
