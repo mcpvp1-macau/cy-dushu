@@ -4,7 +4,7 @@ import CollisionCheckLabelCollection, {
   ExtendLabel,
 } from '@/utils/customPrimitive/CollisionCheckLabelCollection'
 import { getCenter } from '@/utils/customPrimitive/OverlayPrimitive'
-import { LabelLevelEnum, LayerEnum, LabelRelateEnum } from '../Enum'
+import { LabelLevelMap, LayerLevelMap, LabelRelateMap } from '../Enum'
 import { attempt } from 'lodash'
 import { shouldJson } from '@/utils/json'
 import { ARSceneCesiumContext } from '../context'
@@ -21,21 +21,21 @@ const RenderOverlayLabel: FC<PropsType> = ({ overlays }) => {
 
   useEffect(() => {
     const labelCollection: CollisionCheckLabelCollection =
-      ocrc!.orderPrimitives[LayerEnum.label].get(LabelRelateEnum.label) ||
-      ocrc!.orderPrimitives[LayerEnum.label].add(
+      ocrc!.orderPrimitives[LayerLevelMap.label].get(LabelRelateMap.label) ||
+      ocrc!.orderPrimitives[LayerLevelMap.label].add(
         new CollisionCheckLabelCollection(10),
       )
     labelCollection.renderCount = 0
 
     const addedLabels: ExtendLabel[] = []
-    for (let overlay of overlays) {
+    for (const overlay of overlays) {
       const position = shouldJson(overlay.overlayPositions)
       if (!position) continue
       const center = getCenter(position)
 
       const label = labelCollection.add({
         id: 'point-' + overlay.overlayId,
-        level: LabelLevelEnum.overlayName,
+        level: LabelLevelMap.overlayName,
         position: Cesium.Cartesian3.fromDegrees(
           center[0],
           center[1],
@@ -58,7 +58,7 @@ const RenderOverlayLabel: FC<PropsType> = ({ overlays }) => {
 
     return () => {
       attempt(() => {
-        for (let deleteLabel of preAddedLabels.current) {
+        for (const deleteLabel of preAddedLabels.current) {
           labelCollection.remove(deleteLabel)
         }
       })

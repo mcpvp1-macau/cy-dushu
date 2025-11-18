@@ -2,7 +2,7 @@ import useMixARStore from '@/store/control-room/useMixAR.store'
 import useARSettingStore from '@/store/setting/useARSetting.store'
 import * as Cesium from 'cesium'
 import { Feature, Point, GeoJsonProperties } from 'geojson'
-import { LabelLevelEnum, LayerEnum, LabelRelateEnum } from '../Enum'
+import { LabelLevelMap, LayerLevelMap, LabelRelateMap } from '../Enum'
 import CollisionCheckLabelCollection, {
   ExtendLabel,
 } from '@/utils/customPrimitive/CollisionCheckLabelCollection'
@@ -24,14 +24,15 @@ const GeodataRender = () => {
   const preLabelRef = useRef<ExtendLabel[]>([])
 
   useEffect(() => {
-    const baseAoiPrimitiveCollection = ocrc!.orderPrimitives[LayerEnum.baseAoi]
+    const baseAoiPrimitiveCollection =
+      ocrc!.orderPrimitives[LayerLevelMap.baseAoi]
     const buildingAoiPrimitiveCollection =
-      ocrc!.orderPrimitives[LayerEnum.build]
-    const roadPrimitiveCollection = ocrc!.orderPrimitives[LayerEnum.road]
+      ocrc!.orderPrimitives[LayerLevelMap.build]
+    const roadPrimitiveCollection = ocrc!.orderPrimitives[LayerLevelMap.road]
     const labelCollection: CollisionCheckLabelCollection =
-      ocrc!.orderPrimitives[LayerEnum.label].get(LabelRelateEnum.label)
+      ocrc!.orderPrimitives[LayerLevelMap.label].get(LabelRelateMap.label)
     const poiMarkerCollection: Cesium.BillboardCollection =
-      ocrc!.orderPrimitives[LayerEnum.label].get(LabelRelateEnum.poiMarker)
+      ocrc!.orderPrimitives[LayerLevelMap.label].get(LabelRelateMap.poiMarker)
     labelCollection.renderCount = 0
 
     const attachmentPois: Feature<Point, GeoJsonProperties>[] = []
@@ -70,7 +71,7 @@ const GeodataRender = () => {
             },
             properties: {
               ...feature.properties,
-              level: LabelLevelEnum.aoi,
+              level: LabelLevelMap.aoi,
             },
           })
         }
@@ -179,7 +180,7 @@ const GeodataRender = () => {
             },
             properties: {
               ...feature.properties,
-              level: LabelLevelEnum.road,
+              level: LabelLevelMap.road,
             },
           })
         }
@@ -280,7 +281,7 @@ const GeodataRender = () => {
               id: 'poi' + label,
               position: position,
               text: label,
-              level: LabelLevelEnum.poi,
+              level: LabelLevelMap.poi,
               pixelOffset: new Cesium.Cartesian2(0, 16),
               extendBounds: new Cesium.Cartesian2(0, 20),
               ...labelOptions,
@@ -314,7 +315,7 @@ const GeodataRender = () => {
           (label) => label.show,
         )
         const poiLabels: ExtendLabel[] = showingLabels.filter(
-          (label) => label.level === LabelLevelEnum.poi,
+          (label) => label.level === LabelLevelMap.poi,
         )
         poiMarkerCollection.removeAll()
         for (const label of poiLabels) {
@@ -345,7 +346,7 @@ const GeodataRender = () => {
         baseAoiPrimitiveCollection.removeAll()
         buildingAoiPrimitiveCollection.removeAll()
         roadPrimitiveCollection.removeAll()
-        for (let deleteLabel of preLabelRef.current) {
+        for (const deleteLabel of preLabelRef.current) {
           labelCollection.remove(deleteLabel)
         }
         poiMarkerCollection.removeAll()

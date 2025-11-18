@@ -3,8 +3,7 @@ import * as Cesium from 'cesium'
 import CollisionCheckLabelCollection, {
   ExtendLabel,
 } from '@/utils/customPrimitive/CollisionCheckLabelCollection'
-import useARSettingStore from '@/store/setting/useARSetting.store'
-import { LabelLevelEnum, LayerEnum, LabelRelateEnum } from '../Enum'
+import { LabelLevelMap, LayerLevelMap, LabelRelateMap } from '../Enum'
 import { attempt } from 'lodash'
 import { shouldJson } from '@/utils/json'
 import { ARSceneCesiumContext } from '../context'
@@ -22,13 +21,15 @@ const RenderPoints: FC<PropsType> = ({ points }) => {
 
   useEffect(() => {
     const labelCollection: CollisionCheckLabelCollection =
-      ocrc!.orderPrimitives[LayerEnum.label].get(LabelRelateEnum.label)
+      ocrc!.orderPrimitives[LayerLevelMap.label].get(LabelRelateMap.label)
     const pointPrimitiveCollection: Cesium.PointPrimitiveCollection =
-      ocrc!.orderPrimitives[LayerEnum.label].get(LabelRelateEnum.overlayPoint)
+      ocrc!.orderPrimitives[LayerLevelMap.label].get(
+        LabelRelateMap.overlayPoint,
+      )
     labelCollection.renderCount = 0
 
     const addedLabels: ExtendLabel[] = []
-    for (let point of points) {
+    for (const point of points) {
       const position = shouldJson(point.overlayPositions)?.[0]
       if (!position) continue
 
@@ -40,7 +41,7 @@ const RenderPoints: FC<PropsType> = ({ points }) => {
           position?.[2] || 0,
         ),
         text: point.overlayName,
-        level: LabelLevelEnum.overlayPoint,
+        level: LabelLevelMap.overlayPoint,
         pixelOffset: new Cesium.Cartesian2(0, 12),
         data: point,
         font: '700 64px Helvetica',
@@ -57,11 +58,11 @@ const RenderPoints: FC<PropsType> = ({ points }) => {
     const handler = (labels: ExtendLabel[]) => {
       const showingLabels: ExtendLabel[] = labels.filter((label) => label.show)
       const pointLabels: ExtendLabel[] = showingLabels.filter(
-        (label) => label.level === LabelLevelEnum.overlayPoint,
+        (label) => label.level === LabelLevelMap.overlayPoint,
       )
 
       pointPrimitiveCollection.removeAll()
-      for (let label of pointLabels) {
+      for (const label of pointLabels) {
         const style = shouldJson(label.data?.overlayStyleConfig)
 
         pointPrimitiveCollection.add({
@@ -80,7 +81,7 @@ const RenderPoints: FC<PropsType> = ({ points }) => {
 
     return () => {
       attempt(() => {
-        for (let deleteLabel of preAddedLabels.current) {
+        for (const deleteLabel of preAddedLabels.current) {
           labelCollection.remove(deleteLabel)
         }
         pointPrimitiveCollection.removeAll()
