@@ -7,19 +7,22 @@ import XTable from '@/components/ui/XTable.tsx'
 import { emtpyArray } from '@/constant/data'
 import { dft } from '@/constant/time-fmt'
 import { DictEnum } from '@/enum/dict'
+import { useAppMsg } from '@/hooks/useAppMsg'
 import usePageSearchParams from '@/hooks/useTableSearchParams'
 import { getActionRecordList } from '@/service/modules/action'
 import serverJingqi from '@/service/servers/serverJingqi'
 import { useDictOptions } from '@/store/useDict.store'
 import useUserStore from '@/store/useUser.store'
 import { downloadAndRename } from '@/utils/download'
+import { DownloadOutlined } from '@ant-design/icons'
 import {
   createColumnHelper,
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { Input, Pagination } from 'antd'
+import { Button, Input, Pagination } from 'antd'
 import { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import { Link, useSearchParams } from 'react-router-dom'
 
 type PropsType = unknown
@@ -29,6 +32,8 @@ const h = createColumnHelper<API_ACTION.domain.ActionRecord>()
 const PageActionRecord: FC<PropsType> = memo(() => {
   const [searchParams, setSearchParams] = useSearchParams()
   const { t } = useTranslation()
+
+  const msgApi = useAppMsg()
 
   const kw = searchParams.get('kw') || undefined
   const type = searchParams.get('type') || undefined
@@ -150,6 +155,54 @@ const PageActionRecord: FC<PropsType> = memo(() => {
     getRowId: (r) => String(r.id),
   })
 
+  const handleExportClick = async () => {
+    try {
+      const body: Record<string, any> = {}
+      if (kw) body.name = kw
+      if (type) body.type = type
+      if (rangeValue) {
+        body.startTime = rangeValue[0].startOf('day').format(dft)
+        body.endTime = rangeValue[1].endOf('day').format(dft)
+      }
+
+      const res = await fetch(
+        `${serverJingqi.baseURL}/action/list/record.xlsx`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${useUserStore.getState().token}`,
+          },
+          body: JSON.stringify(body),
+        },
+      )
+
+      if (!res.ok) {
+        throw new Error(`${t('expertError')}: ${res.statusText}`)
+      }
+
+      if (res.headers.get('content-type')?.includes('application/json')) {
+        const json = await res.json()
+        if (json.code !== 'SUCCESS') {
+          throw new Error(`${t('expertError')}: ${json.message}`)
+        }
+      }
+
+      const blob = await res.blob()
+      const objectURL = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = objectURL
+      const startLabel = body.startTime ?? ''
+      const endLabel = body.endTime ?? ''
+      const nameLabel = kw ?? 'ActionRecords'
+      a.download = `${nameLabel}_${startLabel}_${endLabel}.xlsx`
+      a.click()
+      a.remove()
+    } catch (e) {
+      msgApi.error(`${t('expertError')}: ${(e as Error).message}`)
+    }
+  }
+
   return (
     <div className="page-full p-3 bg-ground-2 flex flex-col overflow-y-hidden">
       <h2 className="text-white">{t('actionRecord.title')}</h2>
@@ -188,6 +241,9 @@ const PageActionRecord: FC<PropsType> = memo(() => {
             )
           }}
         />
+        <Button onClick={handleExportClick} icon={<DownloadOutlined />}>
+          {t('common.export')}
+        </Button>
       </section>
       <section className="mt-3 grow flex flex-col overflow-hidden">
         <div className="flex-1 border border-solid border-ground-1 rounded-[3px] overflow-hidden">
