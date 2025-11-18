@@ -17,11 +17,13 @@ type PropsType = {
   alwayInViewport?: boolean
   children?: ReactNode
   offset?: [number, number]
+  /**标牌是否能触发鼠标事件。默认值false，允许事件 */
+  preventEvents?: boolean
 }
 
 /** 点位展示 */
 const PositionTooltip: FC<PropsType> = memo(
-  ({ position, alwayInViewport, offset, children }) => {
+  ({ position, alwayInViewport, offset, children, preventEvents = false }) => {
     const { viewer } = useCesium()
 
     const divRef = useRef<HTMLDivElement>(null)
@@ -159,7 +161,7 @@ const PositionTooltip: FC<PropsType> = memo(
     }, [])
 
     return (
-      <div>
+      <div style={{ pointerEvents: preventEvents ? 'none' : 'auto' }}>
         <div
           className="fixed h-0 z-[10] left-[-9999px] top-[-9999px]"
           ref={divRef}

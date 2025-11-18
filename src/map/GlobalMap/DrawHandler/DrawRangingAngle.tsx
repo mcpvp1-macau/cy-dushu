@@ -49,7 +49,7 @@ const DrawRangingAngle: FC<PropsType> = memo(() => {
       if (!pivot.current || !startPoint.current || !endPoint.current) {
         return Cesium.Cartesian3.fromDegreesArray([0, 0, 0, 0])
       }
-      const result = Cesium.Cartesian3.fromDegreesArray(
+      const result = Cesium.Cartesian3.fromDegreesArrayHeights(
         flatten([startPoint.current, pivot.current, endPoint.current]),
       )
       return result
@@ -60,6 +60,7 @@ const DrawRangingAngle: FC<PropsType> = memo(() => {
         positions: position,
         width: 2,
         material: Cesium.Color.fromCssColorString(drawingColor),
+        clampToGround: true,
       },
     })
 
@@ -88,9 +89,9 @@ const DrawRangingAngle: FC<PropsType> = memo(() => {
       if (!cartesian) return
       // 地形上的点
       if (!pivot.current) {
-        pivot.current = cartesian3ToDegrees(cartesian).slice(0, 2)
+        pivot.current = cartesian3ToDegrees(cartesian)
       } else {
-        startPoint.current = cartesian3ToDegrees(cartesian).slice(0, 2)
+        startPoint.current = cartesian3ToDegrees(cartesian)
       }
     }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
 
@@ -104,7 +105,7 @@ const DrawRangingAngle: FC<PropsType> = memo(() => {
       const cartesian = viewer.scene.globe.pick(ray, viewer.scene)
       if (!cartesian) return
       // 地形上的点
-      endPoint.current = cartesian3ToDegrees(cartesian).slice(0, 2)
+      endPoint.current = cartesian3ToDegrees(cartesian)
       setEndPointState(endPoint.current)
     }, Cesium.ScreenSpaceEventType.MOUSE_MOVE)
 
@@ -127,7 +128,11 @@ const DrawRangingAngle: FC<PropsType> = memo(() => {
 
   return (
     <PositionTooltip
-      position={[pivot.current?.[0] ?? 0, pivot.current?.[1] ?? 0]}
+      position={[
+        pivot.current?.[0] ?? 0,
+        pivot.current?.[1] ?? 0,
+        pivot.current?.[2] ?? 0,
+      ]}
       offset={[0, 20]}
     >
       <div className="py-1 px-2">
