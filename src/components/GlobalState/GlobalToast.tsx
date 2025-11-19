@@ -3,6 +3,8 @@ import { Button, Dropdown, GetProps } from 'antd'
 import mitt from 'mitt'
 import { CaretDownOutlined } from '@ant-design/icons'
 import { ReactElement } from 'react'
+import IconClose from '@/assets/icons/jsx/IconClose'
+import IconButton from '../ui/button/IconButton'
 
 export const globalToastEmitter = mitt<{
   notify: ToastProps
@@ -17,10 +19,25 @@ const GlobalToast: React.FC = () => {
     }
 
     const fnCustom = (toastProps: ToastCustomProps) => {
-      sonnerToast.custom(() => toastProps.element, {
-        duration: toastProps.duration ?? Infinity,
-        id: toastProps.id,
-      })
+      sonnerToast.custom(
+        (id) => (
+          <div className="relative group">
+            <IconButton
+              className="absolute top-0 right-0 z-10 bg-[#28323ccc] backdrop-blur translate-x-1.5 -translate-y-1.5 size-5 rounded-full items-center justify-center flex opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              onClick={() => {
+                sonnerToast.dismiss(id)
+              }}
+            >
+              <IconClose />
+            </IconButton>
+            {toastProps.element}
+          </div>
+        ),
+        {
+          duration: toastProps.duration ?? Infinity,
+          id: toastProps.id,
+        },
+      )
     }
 
     globalToastEmitter.on('notify', fn)
