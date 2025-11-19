@@ -2,7 +2,7 @@ import IconFlightArea from '@/assets/icons/jsx/IconFlightArea'
 import IconButton from '@/components/ui/button/IconButton'
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
-import { getGimbalInfo } from '@/constant/uav/gimbalV2'
+import { calcCameraParameters, getGimbalInfo } from '@/constant/uav/gimbalV2'
 import { DeviceEnum } from '@/enum/device'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { getAllDeviceListV3, getDeviceDetail } from '@/service/modules/device'
@@ -139,6 +139,15 @@ const AddEventResolveTask: FC<PropsType> = memo(({ actionId, eventId }) => {
             showSearch: true,
           },
         },
+        {
+          label: '变焦倍数',
+          name: 'zoomFocalLength',
+          type: 'input-number',
+          otherProps: {
+            min: 1,
+            max: 200,
+          },
+        },
       ] as XFormItem[],
     [deviceLoading, deviceOptions],
   )
@@ -244,11 +253,17 @@ const AddEventResolveTask: FC<PropsType> = memo(({ actionId, eventId }) => {
         return
       }
 
-      const cameraType = uavDetail.properties.cameraType
+      const cameraName = uavDetail.properties.cameraType
 
-      const gimbal = getGimbalInfo(cameraType)
+      const cameraType = getGimbalInfo(cameraName)
 
-      const hFov = calcFovRadiation(gimbal.wide.focal, gimbal.wide.width, 1)
+      const { width, focal } = calcCameraParameters(
+        cameraType,
+        values.zoomFocalLength === 1 ? 'wide' : 'zoom',
+        values.zoomFocalLength,
+      )
+
+      const hFov = calcFovRadiation(focal, width, 1)
 
       const lat = uavDetail.properties.latitude ?? 30
       const w =
@@ -257,8 +272,8 @@ const AddEventResolveTask: FC<PropsType> = memo(({ actionId, eventId }) => {
         Math.abs(Math.cos((lat * Math.PI) / 180)) *
         2
 
-      // 75 表示 75% 的横向覆盖率
-      const interval = w * (1 - 75 / 100)
+      // 50 表示 50% 的横向覆盖率
+      const interval = w * (1 - 50 / 100)
 
       const mercatorCoords = toMercator({
         type: 'Polygon',
@@ -273,8 +288,6 @@ const AddEventResolveTask: FC<PropsType> = memo(({ actionId, eventId }) => {
         uavDetail.properties?.latitude ?? 30,
         groundHeight,
       ]
-
-      console.log('uavDistanceFromGround', uavDistanceFromGround)
 
       const area_path = get_polygon_area_wayline(
         mercatorCoords.coordinates[0].slice(0, -1).map((e) => ({
@@ -353,12 +366,17 @@ const AddEventResolveTask: FC<PropsType> = memo(({ actionId, eventId }) => {
         },
         type: 'CAMERA_POSITION',
       },
-      {
-        config: {
-          focalLength: 2,
-        },
-        type: 'ZOOM',
-      },
+      values.zoomFocalLength === 1
+        ? {
+            config: {},
+            type: 'WIDE',
+          }
+        : {
+            config: {
+              focalLength: values.zoomFocalLength,
+            },
+            type: 'ZOOM',
+          },
     )
 
     const data: Record<string, any> = {
@@ -373,7 +391,6 @@ const AddEventResolveTask: FC<PropsType> = memo(({ actionId, eventId }) => {
       },
     }
 
-    // console.log('data', data)
     await createActionItem(data)
     await qc.invalidateQueries({
       queryKey: ['action', actionId + '', 'items'],
@@ -403,10 +420,10 @@ const AddEventResolveTask: FC<PropsType> = memo(({ actionId, eventId }) => {
         items={formItems}
         open={open}
         initialValues={{
-          // takeoffHeight: 1,
           airlineHeight: 100,
           goHomeHeight: 100,
           globalSpeed: 10,
+          zoomFocalLength: 2,
         }}
         localInitialValues={{ key: 'event-area-detect' }}
         confirmDisable={!wayline?.length || wayline.length < 2}
