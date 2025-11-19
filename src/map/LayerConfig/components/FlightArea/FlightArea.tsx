@@ -5,6 +5,7 @@ import { Input } from 'antd'
 import Select from '@/components/AntdOverride/Select'
 import FlightAreaGroupConfig from './FlightAreaGroupConfig'
 import AddFlightAreaGroup from './AddFlightAreaGroup'
+import { useDeferredValue } from 'react'
 
 type PropsType = unknown
 
@@ -43,6 +44,7 @@ const FlightAreaConfig: FC<PropsType> = memo(() => {
   }, [open])
 
   const [kw, setKw] = useState('')
+  const deferredKw = useDeferredValue(kw)
   const [type, setType] = useState<string | undefined>(undefined)
 
   return (
@@ -74,12 +76,12 @@ const FlightAreaConfig: FC<PropsType> = memo(() => {
           onClose={setFalse}
         >
           <div className="max-h-[75vh] flex flex-col overflow-hidden">
-            <div className="m-3 flex gap-1">
-              <Input.Search
+            <div className="m-3 flex gap-2">
+              <Input
                 className="w-2/3"
                 placeholder={t('poi_searcher.placeholder')}
                 allowClear
-                onSearch={setKw}
+                onChange={(e) => setKw(e.target.value)}
               />
               <Select
                 className="w-1/3"
@@ -90,7 +92,7 @@ const FlightAreaConfig: FC<PropsType> = memo(() => {
                 value={type}
               />
             </div>
-            <FlightAreaGroupConfig searchKw={kw} searchType={type} />
+            <FlightAreaGroupConfig searchKw={deferredKw} searchType={type} />
             <div className="p-3">
               <AddFlightAreaGroup type="add" />
             </div>

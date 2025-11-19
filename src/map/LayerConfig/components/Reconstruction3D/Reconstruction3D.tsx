@@ -8,6 +8,7 @@ import Select from '@/components/AntdOverride/Select'
 import { createReconstructionStatus } from './ReconstructionMapConfig'
 import IconRefresh from '@/assets/icons/jsx/IconRefresh'
 import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
+import { useDeferredValue } from 'react'
 
 type PropsType = unknown
 
@@ -17,6 +18,7 @@ const Reconstruction3D: FC<PropsType> = memo(() => {
   const queryClient = useQueryClient()
 
   const [kw, setKw] = useState('')
+  const deferredKw = useDeferredValue(kw)
   const [status, setStatus] = useState<string | undefined>(undefined)
 
   const reconstructionStatus = useMemo(() => createReconstructionStatus(), [t])
@@ -62,12 +64,12 @@ const Reconstruction3D: FC<PropsType> = memo(() => {
           onClose={setFalse}
         >
           <div className="max-h-[75vh] flex flex-col overflow-hidden">
-            <div className="m-3 flex gap-1">
-              <Input.Search
+            <div className="m-3 flex gap-2">
+              <Input
                 className="w-2/3"
                 placeholder={t('poi_searcher.placeholder')}
                 allowClear
-                onSearch={setKw}
+                onChange={(e) => setKw(e.target.value)}
               />
               <Select
                 className="w-1/3"
@@ -83,7 +85,10 @@ const Reconstruction3D: FC<PropsType> = memo(() => {
                 value={status}
               />
             </div>
-            <ReconstructionMapListConfig searchKw={kw} searchStatus={status} />
+            <ReconstructionMapListConfig
+              searchKw={deferredKw}
+              searchStatus={status}
+            />
             <div className="p-3">
               <AddReconstructionLayerGroup />
             </div>

@@ -5,6 +5,7 @@ import MapLayerListConfig from './MapLayerListConfig'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import AddLayerController from './AddLayerController'
 import { Input } from 'antd'
+import { useDeferredValue } from 'react'
 
 type PropsType = unknown
 
@@ -13,6 +14,7 @@ const LayerOverlay: FC<PropsType> = memo(() => {
   const { t } = useTranslation()
 
   const [kw, setKw] = useState('')
+  const deferredKw = useDeferredValue(kw)
 
   return (
     <>
@@ -44,14 +46,14 @@ const LayerOverlay: FC<PropsType> = memo(() => {
         >
           <div className="max-h-[75vh] flex flex-col overflow-hidden">
             <div className="m-3">
-              <Input.Search
+              <Input
                 placeholder={t('poi_searcher.placeholder')}
                 allowClear
-                onSearch={setKw}
+                onChange={(e) => setKw(e.target.value)}
               />
             </div>
             <ScrollArea className="flex-1">
-              <MapLayerListConfig searchKw={kw} />
+              <MapLayerListConfig searchKw={deferredKw} />
             </ScrollArea>
             <AddLayerController />
           </div>

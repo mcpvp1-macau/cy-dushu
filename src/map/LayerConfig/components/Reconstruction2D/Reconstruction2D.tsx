@@ -5,6 +5,7 @@ import { Input } from 'antd'
 import Reconstruction2DList from './Reconstruction2DList'
 import IconRefresh from '@/assets/icons/jsx/IconRefresh'
 import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
+import { useDeferredValue } from 'react'
 
 type PropsType = unknown
 
@@ -13,6 +14,7 @@ const Reconstruction2D: FC<PropsType> = memo(() => {
   const { t } = useTranslation()
   const [open, { toggle }] = useBoolean()
   const [kw, setKw] = useState('')
+  const deferredKw = useDeferredValue(kw)
   const queryClient = useQueryClient()
 
   return (
@@ -52,13 +54,13 @@ const Reconstruction2D: FC<PropsType> = memo(() => {
           onClose={toggle}
         >
           <div className="m-3">
-            <Input.Search
+            <Input
               allowClear
               placeholder={t('poi_searcher.placeholder')}
-              onSearch={setKw}
+              onChange={(e) => setKw(e.target.value)}
             />
           </div>
-          <Reconstruction2DList searchKw={kw} />
+          <Reconstruction2DList searchKw={deferredKw} />
         </XModal>
       )}
     </>

@@ -10,6 +10,7 @@ import { useAppMsg } from '@/hooks/useAppMsg'
 import { v4 } from 'uuid'
 import { addSpace } from '@/service/modules/layer_overlay'
 import FloatIconButton from '@/components/ui/button/FloatIconButton'
+import { useDeferredValue } from 'react'
 
 type PropsType = unknown
 
@@ -57,6 +58,7 @@ const MapSpace: FC<PropsType> = memo(() => {
   }
 
   const [kw, setKw] = useState('')
+  const deferredKw = useDeferredValue(kw)
 
   return (
     <>
@@ -88,13 +90,13 @@ const MapSpace: FC<PropsType> = memo(() => {
         >
           <div className="max-h-[75vh] flex flex-col">
             <div className="m-3 mb-0">
-              <Input.Search
+              <Input
                 placeholder={t('poi_searcher.placeholder')}
                 allowClear
-                onSearch={setKw}
+                onChange={(e) => setKw(e.target.value)}
               />
             </div>
-            <MapSpaceListConfig searchKw={kw} />
+            <MapSpaceListConfig searchKw={deferredKw} />
             <div className="px-3 mb-3">
               <Button icon={<IconPlus />} onClick={openAddSpace} block>
                 {t('mapLayer.createMap.title')}
