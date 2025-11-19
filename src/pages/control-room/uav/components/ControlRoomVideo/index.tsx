@@ -8,9 +8,8 @@ import useMixARStore from '@/store/control-room/useMixAR.store'
 import Avoidance from './components/Avoidance'
 import ARSceneCesium from './components/ARSceneCesium'
 import { AiObject } from '@/components/Video/Jessibuca/sei-types/ai-data'
-import useSmarkTrack from '@/hooks/device/useSmarkTrack'
+import useObjectTrack from '@/hooks/device/useObjectTrack'
 import ZoomFocus from './components/ZoomFocus'
-import AITrackBoxSelect from './components/AITrackBoxSelect'
 import { ComponentRef, lazy, Suspense } from 'react'
 import useHandleTakePhotoEvent from './hooks/useHandleTakePhotoEvent'
 import ZoomFocusMode from '../AsideToolBar/ZoomFucusMode'
@@ -19,6 +18,7 @@ import ExposureMode from '../AsideToolBar/ExposureMode'
 import PointOrBoxSelect from './components/PointOrBoxSelect/PointOrBoxSelect'
 import TapToFlyOnVideo from './components/TapToFlyOnVideo'
 import WarningAlerts from './components/WarningAlerts/WarningAlerts'
+import DrawBox from '@/components/DrawBox'
 
 const ExposureValue = lazy(() => import('./components/ExposureValue'))
 const ShutterValue = lazy(() => import('./components/ShutterValue'))
@@ -44,14 +44,21 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
   const useLW = searchParams.get('useLW')
 
   const videoQuality = useUavControlRoomStore((s) => s.state.videoQuality)
-  const enableSmartTrack = useUavControlRoomStore((s) => s.enableSmartTrack)
+
   const postService = usePostDeviceService(productKey!, deviceId)
 
-  const { handlePostSmartTrack } = useSmarkTrack(
-    enableSmartTrack,
-    postService,
-    'autoTrack',
-  )
+  const enableAutoTrack = useUavControlRoomStore((s) => s.enableAutoTrack)
+  const {
+    handlePostObjectTrack: handlePostAutoTrack,
+    handleDrawEnd: handleDrawEndAutoTrack,
+  } = useObjectTrack(enableAutoTrack, postService, 'autoTrack')
+
+  const enableSmartTrack = useUavControlRoomStore((s) => s.enableSmartTrack)
+  const {
+    handlePostObjectTrack: handlePostSmartTrack,
+    handleDrawEnd: handleDrawEndSmartTrack,
+  } = useObjectTrack(enableSmartTrack, postService, 'smartTrack')
+
   const liveSetQuality = (quality: string) => {
     postService('liveSetQuality', { quality })
   }
@@ -86,7 +93,20 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
     const y2 = (y1 + h) / fh
     x1 = x1 / fw
     y1 = y1 / fh
-    if (enableSmartTrack) {
+    if (enableAutoTrack) {
+      handlePostAutoTrack({
+        x1,
+        y1,
+        x2,
+        y2,
+        enable: true,
+        frame_no: seq,
+        object_label: e.objectLabel,
+        label_value: e.objLabelList?.[0]?.labelValue,
+        object_id: e.objectId,
+        objectId: e.objectId,
+      })
+    } else if (enableSmartTrack) {
       handlePostSmartTrack({
         x1,
         y1,
@@ -184,7 +204,10 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
                 <ARSceneCesium />
               </div>
             )}
-            {enableSmartTrack && <AITrackBoxSelect />}
+            {enableAutoTrack && <DrawBox onDrawEnd={handleDrawEndAutoTrack} />}
+            {enableSmartTrack && (
+              <DrawBox onDrawEnd={handleDrawEndSmartTrack} />
+            )}
             {irMeteringMode && irMeteringMode !== 'CLOSE' && <IrMetering />}
             <ZoomFocus />
             {posizionZoomOpen > 0 && (

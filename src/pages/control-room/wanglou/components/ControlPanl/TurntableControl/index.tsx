@@ -1,6 +1,6 @@
 import Icon from '@/components/Icon'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
-import useSmarkTrack from '@/hooks/device/useSmarkTrack'
+import useObjectTrack from '@/hooks/device/useObjectTrack'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import Control from '@/pages/right/DeviceDetail/WangLouDetail/components/Control'
 import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouControlRoom.store'

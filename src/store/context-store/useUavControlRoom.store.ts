@@ -73,6 +73,7 @@ type StateType = {
   /** 是否启用摇杆 */
   enableGamepad: boolean
   historyTracks: number[][][]
+  enableAutoTrack: boolean
   enableSmartTrack: boolean
   /**是否开启三维重建 */
   enableReconstruction: boolean
@@ -105,7 +106,9 @@ type ActionsType = {
   updateEnableGamepad: (open: boolean) => void
   /** 更新历史轨迹 */
   updateHistoryTracks: (tracks: StateType['historyTracks']) => void
-
+  /** 更新自动跟踪 */
+  updateEnableAutoTrack: (enable?: boolean) => void
+  /** 更新智能（云台）追踪 */
   updateEnableSmartTrack: (enable?: boolean) => void
   /**更新三维重建 */
   updateEnableReconstruction: (enable: boolean) => void
@@ -157,6 +160,7 @@ const createInitialState = () =>
     openTapToFlyOnVideo: false,
     enableGamepad: false,
     historyTracks: [],
+    enableAutoTrack: false,
     enableSmartTrack: false,
     enableReconstruction: false,
     links: [],
@@ -252,7 +256,6 @@ export const createUavControlRoomStore = (senders: WsSendersType) => {
             'updateUUID',
           )
         },
-
         updateUavControlInfo: (value) => {
           if (isEqual(value, get().uavControlInfo)) {
             return
@@ -297,6 +300,16 @@ export const createUavControlRoomStore = (senders: WsSendersType) => {
         },
         updateHistoryTracks: (tracks) => {
           set({ historyTracks: tracks }, false, 'updateHistory')
+        },
+        updateEnableAutoTrack: (enable) => {
+          set(
+            {
+              enableAutoTrack:
+                enable !== undefined ? enable : !get().enableAutoTrack,
+            },
+            false,
+            'updateEnableAutoTrack',
+          )
         },
         updateEnableSmartTrack: (enable) => {
           set(

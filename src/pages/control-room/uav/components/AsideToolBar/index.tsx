@@ -36,6 +36,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
   const openLarser = useUavControlRoomStore((s) => s.openLarser)
   const openPositionZoom = useUavControlRoomStore((s) => s.openPointZoom)
 
+  const enableAutoTrack = useUavControlRoomStore((s) => s.enableAutoTrack)
   const enableSmartTrack = useUavControlRoomStore((s) => s.enableSmartTrack)
 
   const serviceHave = useDeviceDetailStore((s) => s.serviceHave)
@@ -146,24 +147,48 @@ const AsideToolBar: FC<PropsType> = memo(() => {
         )}
         {hasCameraMode && <CameraMode />}
         <TakePhoto />
+        {/* 自动追踪 */}
         {serviceHave['autoTrack'] && (
           <IconButton
             className={borderedBtnClassName}
             toolTipProps={{
               title: t('controlRoom.uav.service.smartTrack.title'),
             }}
-            active={enableSmartTrack}
+            active={enableAutoTrack}
             onClick={() => {
-              if (!enableSmartTrack) {
-                uavControlRoomStore.getState().updateEnableSmartTrack(true)
+              if (!enableAutoTrack) {
+                uavControlRoomStore.getState().updateEnableAutoTrack(true)
                 uavControlRoomStore.getState().updateOpenPointZoom(0)
               } else {
-                uavControlRoomStore.getState().updateEnableSmartTrack(false)
+                uavControlRoomStore.getState().updateEnableAutoTrack(false)
                 postDeviceService('autoTrack', { enable: false })
               }
             }}
           >
             <IconSmartTrack />
+          </IconButton>
+        )}
+        {/* 智能云台追踪 */}
+        {serviceHave['smartTrack'] && (
+          <IconButton
+            toolTipProps={{ title: '智能追踪' }}
+            className={borderedBtnClassName}
+            active={enableSmartTrack}
+            onClick={() => {
+              if (enableAutoTrack) {
+                uavControlRoomStore.getState().updateEnableAutoTrack(false)
+                postDeviceService('autoTrack', { enable: false })
+              }
+              if (!enableSmartTrack) {
+                uavControlRoomStore.getState().updateEnableSmartTrack(true)
+                uavControlRoomStore.getState().updateOpenPointZoom(0)
+              } else {
+                uavControlRoomStore.getState().updateEnableSmartTrack(false)
+                postDeviceService('smartTrack', { enable: false })
+              }
+            }}
+          >
+            <IconTrack />
           </IconButton>
         )}
         {hasConfirmTrack && (

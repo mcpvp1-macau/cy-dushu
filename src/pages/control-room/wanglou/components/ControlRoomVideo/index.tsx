@@ -2,7 +2,7 @@ import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
 import useDrawVideoPosition from '../../hooks/useDrawVideoPosition'
 import DrawBox from '@/components/DrawBox'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
-import useSmarkTrack from '@/hooks/device/useSmarkTrack'
+import useObjectTrack from '@/hooks/device/useObjectTrack'
 import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouControlRoom.store'
 import { AiObject } from '@/components/Video/Jessibuca/sei-types/ai-data'
 import { useSearchParams } from 'react-router-dom'
@@ -33,7 +33,7 @@ const ControlRoomVideo: FC<PropsType> = memo(
       postService('liveSetQuality', { quality })
     }
 
-    const { handlePostSmartTrack } = useSmarkTrack(
+    const { handlePostObjectTrack: handlePostSmartTrack } = useObjectTrack(
       enableSmartTrack,
       (s, data) => postService('targetTrack', data),
     )
