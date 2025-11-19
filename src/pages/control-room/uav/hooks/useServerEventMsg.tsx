@@ -8,6 +8,7 @@ import { autoAIPhotoParamsEmitter } from '../components/AsideButtons/Intelligent
 import { playTextToSpeech } from '@/utils/voice/textToSpeech'
 import useVoiceSettingStore from '@/store/setting/useVoiceSetting.store'
 import { autoAIPhotoParamsPredictEmitter } from '../components/ControlRoomMap/components/AIPhotoPredict/AIPhotoPredict'
+import { controlRoomUavEmitter, type TargetAppearanceStatus } from '../events'
 
 /** 处理 Websocket 服务端来的消息弹窗 */
 const useServerEventMsg = (msgApi?: MessageInstance) => {
@@ -21,6 +22,18 @@ const useServerEventMsg = (msgApi?: MessageInstance) => {
         username: wsData.data.username,
         fileId: wsData.data.fileId,
       })
+      return
+    }
+    if (wsData.method === 'event.targetAppearance.info') {
+      const info = wsData?.data
+      const objectId = info?.objectId
+      const status = info?.status as TargetAppearanceStatus | undefined
+      if (objectId && (status === 'APPEARANCE' || status === 'LOST')) {
+        controlRoomUavEmitter.emit('targetAppearance', {
+          objectId,
+          status,
+        })
+      }
       return
     }
     if (wsData.method === 'event.prePhotoEvent.info') {

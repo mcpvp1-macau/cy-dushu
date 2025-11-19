@@ -79,7 +79,11 @@ type PropsType = {
 type DeviceLiveVideoRefType = {
   /** 截图 */
   snapshot: (mediaTypes?: string, quality?: any) => string
+  /** 获取当前帧解析到的 AI 数据 */
+  getAiData: () => AiDataSnapshot
 }
+
+type AiDataSnapshot = ReturnType<typeof useAIDataState>[0]
 
 function isDomainOrIP() {
   const hostname = window.location.hostname
@@ -232,10 +236,6 @@ const DeviceLiveVideo = memo(
       /** 截图 */
       const snapshot = useSnapshot(wrapperRef)
 
-      useImperativeHandle(ref, () => ({
-        snapshot,
-      }))
-
       const streamId = useMemo(
         () => playUrl && calcStreamId(playUrl),
         [playUrl],
@@ -298,8 +298,14 @@ const DeviceLiveVideo = memo(
       const { safeY, topBar, bottomBar, videoWrapper } = useCalcSafeArea(size)
 
       const [aiData, setAIData] = useAIDataState()
+      const aiDataRef = useLatest(aiData)
 
       const errMsg2 = useLatest(errMsg)
+
+      useImperativeHandle(ref, () => ({
+        snapshot,
+        getAiData: () => aiDataRef.current ?? null,
+      }))
 
       const finalUrl = useMemo(() => {
         if (url) {

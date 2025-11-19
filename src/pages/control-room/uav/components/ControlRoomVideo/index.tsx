@@ -10,7 +10,7 @@ import ARSceneCesium from './components/ARSceneCesium'
 import { AiObject } from '@/components/Video/Jessibuca/sei-types/ai-data'
 import useObjectTrack from '@/hooks/device/useObjectTrack'
 import ZoomFocus from './components/ZoomFocus'
-import { ComponentRef, lazy, Suspense } from 'react'
+import { ComponentRef, FC, lazy, memo, Suspense, useEffect } from 'react'
 import useHandleTakePhotoEvent from './hooks/useHandleTakePhotoEvent'
 import ZoomFocusMode from '../AsideToolBar/ZoomFucusMode'
 import IrMetering from './components/IrMetering'
@@ -19,6 +19,8 @@ import PointOrBoxSelect from './components/PointOrBoxSelect/PointOrBoxSelect'
 import TapToFlyOnVideo from './components/TapToFlyOnVideo'
 import WarningAlerts from './components/WarningAlerts/WarningAlerts'
 import DrawBox from '@/components/DrawBox'
+import { useMemoizedFn } from 'ahooks'
+import useHandleObjectTrack from './hooks/useHandleObjectTrack'
 
 const ExposureValue = lazy(() => import('./components/ExposureValue'))
 const ShutterValue = lazy(() => import('./components/ShutterValue'))
@@ -157,6 +159,8 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
     }
   }, [])
 
+  const { modalContextHolder } = useHandleObjectTrack(deviceLiveVideoRef)
+
   return (
     <div className="absolute inset-0  bg-black">
       <DeviceLiveVideo
@@ -225,6 +229,7 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
         wrapperChildren={<WarningAlerts />}
         onVideoElementChange={updateVideoElement}
       />
+      {modalContextHolder}
     </div>
   )
 })
