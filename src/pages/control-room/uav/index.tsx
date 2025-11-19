@@ -39,6 +39,7 @@ import { useListenRealProcessedResults } from '@/store/map/useReconstruction2DMa
 import { lazy } from 'react'
 import ParentVideoAlert from './components/ParentVideoAlert'
 import { useListenDeviceLatestTask } from '@/store/useDeviceLatestTask.store'
+import useTrickMessage from './useTrickMessage'
 
 const ControlRoomUavMap = lazy(() => import('./components/ControlRoomMap'))
 const DitingTanqi = lazy(() => import('./components/DitingTanqi/DitingTanqi'))
@@ -187,6 +188,8 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
 
   useListenRealProcessedResults((id) => id === deviceId)
   useListenDeviceLatestTask(deviceId)
+
+  useTrickMessage()
 
   return (
     <DeviceDetailStoreContext.Provider key={deviceId} value={store}>
