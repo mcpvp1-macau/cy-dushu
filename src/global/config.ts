@@ -102,6 +102,7 @@ class GlobalConfig {
   /** Tanqi */
   useTanqi?: boolean
   useFlight3D?: boolean
+  robotDogMap?: 'point-cloud' | 'wgs84'
 
   constructor(def: ConfigType) {
     Object.assign(this, def)

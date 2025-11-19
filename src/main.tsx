@@ -1,3 +1,4 @@
+// side-effect imports
 import './instrument.ts'
 import ReactDOM from 'react-dom/client'
 import initToken from './global/Initial/init-token.ts'
@@ -19,10 +20,7 @@ import '@/global/favicon-change.ts'
 
 import './langs/i18n.ts'
 
-import { queryTerrain } from './utils/map/queryTerrainElevation.js'
 import { createBrowserRouter } from 'react-router-dom'
-
-window.queryTerrain = queryTerrain
 
 // 设置 dayjs 语言
 dayjs.locale('zh-cn')

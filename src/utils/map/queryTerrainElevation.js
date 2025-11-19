@@ -1,3 +1,4 @@
+import { getTerrainUrl } from '@/constant/map'
 import { Jimp, intToRGBA } from 'jimp'
 
 // 地球半径
@@ -54,10 +55,17 @@ const getRGBValue = async (lng, lat, z) => {
   } else if (images[`${z}/${row}/${col}`] === 0) {
     image = images[`${z}/${row}/${col}`]
   } else {
-    let url =
-      globalConfig.terrainUrl || `/data/maptiler-terrain-rgb/{z}/{x}/{y}.png`
-    // // const url = `/data/maptiler-terrain-rgb/${z}/${row}/${col}.png`
-    url = url.replace('{z}', z).replace('{x}', row).replace('{y}', col)
+    const url = getTerrainUrl().replace(/\{(z|x|y)\}/g, (_, key) => {
+      switch (key) {
+        case 'z':
+          return z
+        case 'x':
+          return row
+        case 'y':
+          return col
+      }
+    })
+
     // console.log('url', url)
     // const url = `http://61.153.111.197:32650/data/maptiler-terrain-rgb/${z}/${row}/${col}.png`;
     image = await Jimp.read(url).catch((err) => {
