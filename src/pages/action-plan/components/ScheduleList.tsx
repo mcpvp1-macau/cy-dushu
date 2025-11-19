@@ -9,6 +9,7 @@ import AppEmpty from '@/components/AppEmpty'
 import MenuIconSchedule from '@/assets/icons/jsx/menus/MenuIconSchedule'
 import Select from '@/components/AntdOverride/Select'
 import { useSearchParams } from 'react-router-dom'
+import { useDebounceFn } from 'ahooks'
 
 type PropsType = unknown
 
@@ -46,14 +47,17 @@ const ScheduleList: FC<PropsType> = memo(() => {
     }
   }
 
-  const handleSearch = (value: string) => {
-    if (value) {
-      searchParams.set('kw', value)
-    } else {
-      searchParams.delete('kw')
-    }
-    setSearchParams(searchParams, { replace: true })
-  }
+  const { run: debouncedSearch } = useDebounceFn(
+    (value: string) => {
+      if (value) {
+        searchParams.set('kw', value)
+      } else {
+        searchParams.delete('kw')
+      }
+      setSearchParams(searchParams, { replace: true })
+    },
+    { wait: 500 },
+  )
 
   return (
     <div className="h-full min-w-[350px] w-[350px] border-r border-solid border-ground-4 flex flex-col">
@@ -67,6 +71,7 @@ const ScheduleList: FC<PropsType> = memo(() => {
       <div className="m-3 mb-0">
         <Input
           placeholder={t('poi_searcher.placeholder')}
+          allowClear
           addonAfter={
             <div className="px-2">
               <Select
@@ -89,8 +94,7 @@ const ScheduleList: FC<PropsType> = memo(() => {
               />
             </div>
           }
-          onClear={() => handleSearch('')}
-          onPressEnter={(evt) => handleSearch(evt.currentTarget.value)}
+          onChange={(evt) => debouncedSearch(evt.target.value)}
         />
       </div>
       <ScrollArea className="grow">

@@ -1,5 +1,4 @@
-import { Checkbox, Input, Radio } from 'antd'
-import AppSpin from '@/components/AppSpin'
+import { Checkbox, Input, Radio, Skeleton } from 'antd'
 import { getActionList } from '@/service/modules/action'
 import ActionItem from './components/ActionItem'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -9,10 +8,10 @@ import useReachBottom from '@/hooks/useReachBottom'
 import React from 'react'
 import AppEmpty from '@/components/AppEmpty'
 import IconButtonWithDropDownDialog from '@/components/ui/button/IconButtonWithDropDownDialog'
-import { LoadingOutlined } from '@ant-design/icons'
 import IconFilter from '@/assets/icons/jsx/IconFilter'
 import { useDictOptions } from '@/store/useDict.store'
 import { DictEnum } from '@/enum/dict'
+import { useDebounceFn } from 'ahooks'
 
 type PropsType = unknown
 
@@ -77,18 +76,21 @@ const PageSituationAction: FC<PropsType> = memo(() => {
     }
   })
 
-  const handlePressEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    setName(e.currentTarget.value)
-  }
-
   const { t } = useTranslation()
+
+  const { run: debouncedSetName } = useDebounceFn(
+    (v: string) => {
+      setName(v)
+    },
+    { wait: 500 },
+  )
 
   return (
     <div className="h-full flex flex-col my-3 overflow-hidden">
       <div className="flex items-center gap-3 px-3">
         <Input
           placeholder={t('action.input.placeholder')}
-          onPressEnter={handlePressEnter}
+          onChange={(e) => debouncedSetName(e.target.value)}
         />
         <IconButtonWithDropDownDialog
           title={'行动筛选'}
@@ -135,12 +137,19 @@ const PageSituationAction: FC<PropsType> = memo(() => {
             </div>
           )}
         >
-          {isLoading ? <LoadingOutlined /> : <IconFilter />}
+          <IconFilter />
         </IconButtonWithDropDownDialog>
       </div>
       <ScrollArea className="grow mt-3 px-3" onScroll={handleScroll}>
         {isLoading || isRefetching || !data ? (
-          <AppSpin />
+          Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="mb-3">
+              <Skeleton.Node
+                active
+                style={{ width: '326px', height: '106px' }}
+              />
+            </div>
+          ))
         ) : data.pages?.[0]?.rows.length === 0 ? (
           <AppEmpty />
         ) : (
@@ -156,9 +165,16 @@ const PageSituationAction: FC<PropsType> = memo(() => {
                 ))}
               </React.Fragment>
             ))}
+            {isFetchingNextPage &&
+              Array.from({ length: 2 }).map((_, i) => (
+                <Skeleton.Node
+                  key={i}
+                  active
+                  style={{ width: '326px', height: '106px' }}
+                />
+              ))}
           </div>
         )}
-        {isFetchingNextPage && <AppSpin />}
       </ScrollArea>
       <div className="mt-3 text-center">
         <AddAction />

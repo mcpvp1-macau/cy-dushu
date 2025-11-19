@@ -20,7 +20,7 @@ import TextButton from '@/components/ui/button/TextButton'
 import UavDetail from './UavDetail'
 import Logs from './Logs'
 import UploadDetail from './UavDetail/UploadDetail'
-import { useLocalStorageState } from 'ahooks'
+import { useDebounceFn, useLocalStorageState } from 'ahooks'
 import TTPBOXSnEditor from './TTPBOXSnEditor'
 
 type PropsType = unknown
@@ -382,19 +382,25 @@ const SourceTable: FC<PropsType> = memo(() => {
 
   const { handleValueChange, handlePaginationChange } = usePageSearchParams()
 
+  const { run: debouncedHandleValueChange } = useDebounceFn(handleValueChange, {
+    wait: 500,
+  })
+
   return (
     <div className="grow mt-3 overflow-y-hidden flex flex-col">
       <div className="flex gap-3 items-center">
-        <Input.Search
+        <Input
           placeholder={t('resource.table.deviceName.title')}
           defaultValue={kw ?? undefined}
-          onSearch={(e) => handleValueChange('kw', e)}
+          allowClear
+          onChange={(e) => debouncedHandleValueChange('kw', e.target.value)}
           className="w-72"
         />
-        <Input.Search
+        <Input
           placeholder={'设备序列号'}
           defaultValue={sn ?? undefined}
-          onSearch={(e) => handleValueChange('sn', e)}
+          allowClear
+          onChange={(e) => debouncedHandleValueChange('sn', e.target.value)}
           className="w-72"
         />
         {globalConfig.useUavAirportDocUpload &&

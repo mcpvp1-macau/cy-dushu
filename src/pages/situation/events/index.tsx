@@ -13,7 +13,7 @@ import IconButton from '@/components/ui/button/IconButton'
 import IconClear from '@/assets/icons/jsx/IconClear'
 import useEventStore, { useEventData } from '@/store/event/useEvent.store'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
-import { useDeepCompareEffect, useThrottleFn } from 'ahooks'
+import { useDeepCompareEffect, useDebounceFn, useThrottleFn } from 'ahooks'
 import IconButtonWithDropDownDialog from '@/components/ui/button/IconButtonWithDropDownDialog'
 
 type PropsType = unknown
@@ -85,10 +85,6 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
     }
   })
 
-  const handlePressEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    setEventName(e.currentTarget.value)
-  }
-
   const { refetch } = useEventData()
 
   const refetchEvent = () => {
@@ -138,12 +134,20 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
     useEventStore.getState().updateSwiperEvents(eventItems)
   }, [eventItems])
 
+  const { run: debouncedSetEventName } = useDebounceFn(
+    (v: string) => {
+      setEventName(v)
+    },
+    { wait: 500 },
+  )
+
   return (
     <div className="h-full flex flex-col my-3 overflow-hidden">
       <div className="px-3 flex gap-3 text-sm">
         <Input
           placeholder={t('events.search.placeholder')}
-          onPressEnter={handlePressEnter}
+          allowClear
+          onChange={(e) => debouncedSetEventName(e.target.value)}
         />
         <IconButtonWithDropDownDialog
           title={t('events.filter.title')}

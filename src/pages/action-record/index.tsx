@@ -24,6 +24,7 @@ import { Button, Input, Pagination } from 'antd'
 import { Dayjs } from 'dayjs'
 import dayjs from 'dayjs'
 import { Link, useSearchParams } from 'react-router-dom'
+import { useDebounceFn } from 'ahooks'
 
 type PropsType = unknown
 
@@ -203,15 +204,20 @@ const PageActionRecord: FC<PropsType> = memo(() => {
     }
   }
 
+  const { run: debouncedHandleValueChange } = useDebounceFn(handleValueChange, {
+    wait: 500,
+  })
+
   return (
     <div className="page-full p-3 bg-ground-2 flex flex-col overflow-y-hidden">
       <h2 className="text-white">{t('actionRecord.title')}</h2>
       <section className="mt-3 flex gap-2">
-        <Input.Search
+        <Input
           defaultValue={kw}
+          allowClear
           placeholder={t('actionRecord.table.actionName.title')}
           className="w-56"
-          onSearch={(e) => handleValueChange('kw', e)}
+          onChange={(e) => debouncedHandleValueChange('kw', e.target.value)}
         />
         <Select
           options={actionTypeOptions}

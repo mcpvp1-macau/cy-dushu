@@ -5,6 +5,7 @@ import AppSpin from '@/components/AppSpin'
 import SourceTree from './components/SourceTree'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { RightModeEnum } from '@/enum/right-mode'
+import { useDebounceFn } from 'ahooks'
 
 type PropsType = unknown
 
@@ -37,12 +38,20 @@ const PageSituationSource: FC<PropsType> = memo(() => {
     updateDetailId(data.deviceId)
   })
 
+  const { run: debouncedSetName } = useDebounceFn(
+    (v: string) => {
+      setName(v)
+    },
+    { wait: 500 },
+  )
+
   return (
     <div className="h-full flex flex-col overflow-hidden">
       <div className="px-3 mt-3">
         <Input
           placeholder={t('source.input.placeholder')}
-          onPressEnter={(e) => setName(e.currentTarget.value)}
+          allowClear
+          onChange={(e) => debouncedSetName(e.target.value)}
         />
       </div>
       <SourceStatusCheckGroup className="px-3 my-2" />

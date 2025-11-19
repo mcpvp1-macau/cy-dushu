@@ -13,7 +13,7 @@ import Select from '@/components/AntdOverride/Select'
 import IconWaylineAirpoint from '@/assets/icons/jsx/IconWaylineAirpoint'
 import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
 import IconSwarm from '@/assets/icons/jsx/IconSwarm'
-import { useUnmount } from 'ahooks'
+import { useDebounceFn, useUnmount } from 'ahooks'
 import useWaylinesStore from '@/store/map/useWaylines.store'
 import IconPointClout3DWayline from '@/assets/icons/jsx/IconPointCloud3DWayline'
 import { WaylineEnum } from '@/constant/uav/wayline'
@@ -116,14 +116,17 @@ const AirlineTemplateList: FC<PropsType> = memo(() => {
     }
   })
 
-  const handleSearch = useMemoizedFn((v: string) => {
-    if (v) {
-      searchParams.set('kw', v)
-    } else {
-      searchParams.delete('kw')
-    }
-    setSearchParams(searchParams, { replace: true })
-  })
+  const { run: debouncedSearch } = useDebounceFn(
+    (v: string) => {
+      if (v) {
+        searchParams.set('kw', v)
+      } else {
+        searchParams.delete('kw')
+      }
+      setSearchParams(searchParams, { replace: true })
+    },
+    { wait: 500 },
+  )
 
   useUnmount(() => {
     useWaylinesStore.getState().setPreviewedWayline(null)
@@ -136,8 +139,7 @@ const AirlineTemplateList: FC<PropsType> = memo(() => {
           allowClear
           placeholder={t('wayline.searcher.placeholder')}
           defaultValue={kw || undefined}
-          onPressEnter={(evt) => handleSearch(evt.currentTarget.value)}
-          onClear={() => handleSearch('')}
+          onChange={(evt) => debouncedSearch(evt.target.value)}
           addonAfter={
             <div className="px-2">
               <Select

@@ -18,6 +18,7 @@ import { useSearchParams } from 'react-router-dom'
 import useEventTypeOptions from './hooks/useEventTypeOptions'
 import EventDetailModal from './components/EventDetailModal'
 import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
+import { useDebounceFn } from 'ahooks'
 
 const h = createColumnHelper<API_EVENTS.domain.Event>()
 
@@ -145,15 +146,20 @@ const PageEvents: FC<PropsType> = memo(() => {
 
   const { handleValueChange, handlePaginationChange } = usePageSearchParams()
 
+  const { run: debouncedHandleValueChange } = useDebounceFn(handleValueChange, {
+    wait: 500,
+  })
+
   return (
     <div className="page-full p-3 bg-ground-2 flex flex-col overflow-y-hidden">
       <h2 className="text-white">{t('events.title')}</h2>
       <section className="mt-3 flex gap-2">
-        <Input.Search
+        <Input
           defaultValue={kw}
+          allowClear
           placeholder={t('events.search.placeholder')}
           className="w-56"
-          onSearch={(e) => handleValueChange('kw', e)}
+          onChange={(e) => debouncedHandleValueChange('kw', e.target.value)}
         />
         <DateRangePicker
           defaultValue={rangeValue}
