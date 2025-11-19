@@ -1,7 +1,7 @@
-import { DeviceEnum } from '@/enum/device'
-import { getDeviceTree } from '@/service/modules/device'
 import IconButton from '@/components/ui/button/IconButton'
 import IconClose from '@/assets/icons/jsx/IconClose'
+import { DeviceEnum } from '@/enum/device'
+import { getDeviceTree } from '@/service/modules/device'
 import SourceTree from '@/pages/situation/source/components/SourceTree'
 import AppSpin from '@/components/AppSpin'
 import { Input } from 'antd'
@@ -20,10 +20,10 @@ const DeviceSelect: FC<PropsType> = memo(({ onClose }) => {
   const qc = useQueryClient()
   const { data, isLoading, isRefetching } = useQuery(
     {
-      queryKey: ['deviceTreeList', DeviceEnum.UAV, name],
+      queryKey: ['deviceTreeList', DeviceEnum.ROBOT_DOG, name],
       queryFn: () =>
         getDeviceTree({
-          type: DeviceEnum.UAV,
+          type: DeviceEnum.ROBOT_DOG,
           name: name || undefined,
         }),
       select: (data) => data?.data,
@@ -33,7 +33,7 @@ const DeviceSelect: FC<PropsType> = memo(({ onClose }) => {
 
   const navigate = useNavigate()
   const handleClick = useMemoizedFn((data: API_DEVICE.domain.Device) => {
-    navigate(`/control-room/uav/${data.deviceId}`, { replace: true })
+    navigate(`/control-room/rebot-dog/${data.deviceId}`, { replace: true })
   })
 
   const { run: debouncedSetName } = useDebounceFn(
