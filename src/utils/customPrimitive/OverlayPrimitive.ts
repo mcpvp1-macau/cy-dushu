@@ -213,7 +213,7 @@ async function createPolygon(options: CreateOptions) {
   // 电子围栏为墙，不显示填充
   if (primitiveType === 'ELECTRONIC_FENCE' && flightAreaHeight > 0) return null
 
-  let PrimitiveClass = isGround ? Cesium.GroundPrimitive : Cesium.Primitive
+  const PrimitiveClass = isGround ? Cesium.GroundPrimitive : Cesium.Primitive
   // // 禁飞区为拉伸的多边形
   // PrimitiveClass =
   //   primitiveType === 'NO_FLY_ZONE' ? Cesium.Primitive : PrimitiveClass
@@ -331,7 +331,7 @@ export function getCenter(points: Coordinate[]) {
 }
 
 // 同一帧内像素大小不会变，所以将计算结果缓存起来
-let cachedPixelSizeInMeters: {
+const cachedPixelSizeInMeters: {
   [key: string]: number
 } = {}
 function getPixelSizeInMeters(frameState: any) {
@@ -718,6 +718,7 @@ export class OverlayCirclePrimitive {
     this.updateGeometry()
   }
 
+  /**通过圆的中点和半径获取经纬度坐标，整个圆的高度为中心点的高度 */
   static getCoordinates(center: Coordinate, radius: number) {
     const circle = turf.circle(center, radius, {
       steps: CIRCLE_POINT_NUMBER,

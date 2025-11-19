@@ -8,8 +8,8 @@ setting:
   video_decoder:
     title: Video Decoder
     description: >-
-      By default, the decoder will be automatically selected in the order of
-      WCS, MSE, Simd, and Wasm based on browser support.
+      By default, the decoder will be automatically selected in the order of WCS, MSE, Simd, and Wasm based on browser support.
+
     attention: Attention
   map:
     resolution:
@@ -21,8 +21,8 @@ setting:
       ultra: Ultra
       title: Resolution
       description: >-
-        For the best map browsing experience, please select an appropriate
-        resolution based on your computer's performance
+        For the best map browsing experience, please select an appropriate resolution based on your computer's performance
+
     title: Map
     imagery:
       size: Map Cache
@@ -32,10 +32,8 @@ setting:
     clearLocalData: Clear Local Data
     clear:
       description: >-
-        Clicking the 'Clear All' button will erase all local data and restore
-        default configurations (including settings and AR configuration
-        content). Before proceeding, please ensure you have backed up important
-        information to prevent data loss
+        Clicking the 'Clear All' button will erase all local data and restore default configurations (including settings and AR configuration content). Before proceeding, please ensure you have backed up important information to prevent data loss
+
       title: Clear All
   warning:
     description: Enable or disable the above warning settings as needed
@@ -162,8 +160,8 @@ device:
         close:
           title: Close
         openWarning: >-
-          Before opening the cover, please ensure the surrounding environment of
-          the airport is clear of obstacles and no personnel are nearby.
+          Before opening the cover, please ensure the surrounding environment of the airport is clear of obstacles and no personnel are nearby.
+
       putter:
         title: Putter
       aircraftCharging:
@@ -444,6 +442,7 @@ common:
     title: Execution Date
   distance: Distance
   area: Area
+  perimeter: Perimeter
   angle: Angle
   clockwise: Clockwise
   map: Map
@@ -708,8 +707,8 @@ wayline:
   deleteWayline:
     title: Delete the Wayline
     description: >-
-      After deletion, the wayline content cannot be recovered. Are you sure you
-      want to delete the wayline?
+      After deletion, the wayline content cannot be recovered. Are you sure you want to delete the wayline?
+
   regenerator:
     title: Regenerator
   create:
@@ -753,8 +752,8 @@ wayline:
     coverage:
       title: Coverage Rate
       tooltip: >-
-        The proportion of overlap between photos taken consecutively on the same
-        route.
+        The proportion of overlap between photos taken consecutively on the same route.
+
     titleRebotDog: Wayline Config
     speedRebotDog:
       title: Speed
@@ -763,8 +762,8 @@ wayline:
     lateralCoverage:
       title: Lateral Coverage
       tooltip: >-
-        The proportion of overlap between the fields of view captured by
-        adjacent routes, with the gimbal set to the default wide.
+        The proportion of overlap between the fields of view captured by adjacent routes, with the gimbal set to the default wide.
+
     relativeHeight:
       tooltip: Relative To Start Point
   waylinePoint:
@@ -853,8 +852,8 @@ wayline:
     setted:
       title: The ref take-off point is set
       tooltip: >-
-        Adjust the altitude of the take-off point. For example, if taking off
-        from a rooftop, it can be adjusted to the altitude of the rooftop.
+        Adjust the altitude of the take-off point. For example, if taking off from a rooftop, it can be adjusted to the altitude of the rooftop.
+
     notSetted:
       title: The ref take-off point is not set.
   advancedSetting:
@@ -952,8 +951,8 @@ schedule:
   tip:
     mustSetGoHome: End action of wayline must be set to `Go Home`
     20minsInterval: >-
-      The scheduled interval of repeated tasks must exceed the actual execution
-      duration of the previous task by at least 20 minutes
+      The scheduled interval of repeated tasks must exceed the actual execution duration of the previous task by at least 20 minutes
+
   form:
     name:
       title: Name
@@ -1083,8 +1082,8 @@ flightArea:
     countZone:
       title: AI Count Zone
       info: >-
-        The area where the algorithm needs special processing, such as data
-        analysis area
+        The area where the algorithm needs special processing, such as data analysis area
+
     noCountZone:
       title: No Count Zone
       info: The area where the algorithm ignores, such as the non-monitoring area.
@@ -1258,8 +1257,8 @@ controlRoom:
       reconstruction:
         title: Three-dimensional Reconstruction
         startInfo1: >-
-          n the area to be rebuilt, it is estimated that it takes 30 minutes for
-          each 100m radius. The maximum radius is
+          n the area to be rebuilt, it is estimated that it takes 30 minutes for each 100m radius. The maximum radius is
+
         startInfo2: and the minimum radius is
         reconstructingInfo: reconstructing
         error_max: The planned area exceeds the limit. Please draw again
