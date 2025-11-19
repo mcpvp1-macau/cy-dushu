@@ -67,8 +67,6 @@ const CustomImageryLayer: FC<unknown> = memo(() => {
     queryClient,
   )
 
-  console.log('data', data)
-
   const activeSpaceIds = useMapLayerAndOverlayConfigStore(
     (s) => s.activeSpaceIds,
   )
