@@ -30,6 +30,7 @@ import RebotDogPayload from './components/Payload'
 import PointCloudMapManager from './components/PointCloudMapManager'
 import useServerEventMsg from '../uav/hooks/useServerEventMsg'
 import { useListenDeviceLatestTask } from '@/store/useDeviceLatestTask.store'
+import RebotDogMapWGS84 from './components/MapWGS84'
 
 const initialLayout: DynamicLayoutType = {
   type: 'row',
@@ -158,7 +159,12 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
 
   const componentMap = useMemo(
     () => ({
-      map: <RebotDogMap />,
+      map:
+        globalConfig.robotDogMap === 'wgs84' ? (
+          <RebotDogMapWGS84 />
+        ) : (
+          <RebotDogMap />
+        ),
       // map: <div>123</div>,
       video: <RebotDogVideo />,
       control: (
