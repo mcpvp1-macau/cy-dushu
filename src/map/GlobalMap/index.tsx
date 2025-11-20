@@ -1,6 +1,7 @@
 import DeviceMarkers from './DeviceMarkers'
 import * as Cesium from 'cesium'
 import CesiumGlobalPickEvent from './GlobalPickEvent'
+import RightPick from './RightPick'
 import BigFlyListener from './BigFlyListener'
 import CesiumDebug from './Debug'
 import OverlayAndFlightArea from './OverlayAndFlightArea'
@@ -38,6 +39,7 @@ const GlobalMap: FC<PropsType> = memo(() => {
           <UpdateMap />
           <DeviceMarkers />
           <CesiumGlobalPickEvent />
+          <RightPick />
           <BigFlyListener />
           <OverlayAndFlightArea />
           <OverlayEditor />

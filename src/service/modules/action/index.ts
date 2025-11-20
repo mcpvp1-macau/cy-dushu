@@ -24,7 +24,7 @@ export const getAction = (params: { actionId?: string; eventId?: string }) => {
 
 /** 添加行动 */
 export const addAction = (data: any) => {
-  return serverJingqi.post('/action/add', data)
+  return serverJingqi.post<{ actionId: number }>('/action/add', data)
 }
 
 /** 快捷创建行动及任务 */
