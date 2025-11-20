@@ -159,7 +159,7 @@ const ControlRoomVideo: FC<PropsType> = memo(({ onAspectRatioChange }) => {
     }
   }, [])
 
-  const { modalContextHolder } = useHandleObjectTrack(deviceLiveVideoRef)
+  const { modalContextHolder } = useHandleObjectTrack()
 
   return (
     <div className="absolute inset-0  bg-black">

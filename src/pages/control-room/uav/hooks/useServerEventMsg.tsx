@@ -32,6 +32,7 @@ const useServerEventMsg = (msgApi?: MessageInstance) => {
         controlRoomUavEmitter.emit('targetAppearance', {
           objectId,
           status,
+          targetTrack: info?.targetTrack,
         })
       }
       return
