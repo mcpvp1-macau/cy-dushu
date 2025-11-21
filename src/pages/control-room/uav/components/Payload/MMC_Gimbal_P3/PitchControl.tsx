@@ -49,7 +49,7 @@ const PitchControl: React.FC<Props> = (props) => {
       >
         <Icon
           id="icon-zuozhuan2"
-          className="cursor-pointer text-[#C7D1DC] hover:text-[#4C90F0]"
+          className="cursor-pointer text-fore hover:text-primary"
         />
       </div>
     </div>

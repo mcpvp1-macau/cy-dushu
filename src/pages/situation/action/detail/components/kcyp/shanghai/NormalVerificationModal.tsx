@@ -9,15 +9,16 @@ import {
   CloseCircleFilled,
   SyncOutlined,
 } from '@ant-design/icons'
-import { Form, Image, Input, Select } from 'antd'
+import { Form, Image, Input } from 'antd'
 import { uniqWith } from 'lodash'
 import { shouldJson } from '@/utils/json'
 import { useDebounceFn } from 'ahooks'
+import Select from '@/components/AntdOverride/Select'
 
 const HeadLine: FC<{ title: string; suc?: boolean }> = memo(
   ({ title, suc }) => {
     return (
-      <ul className="bg-ground-3 flex text-white h-[38px]">
+      <ul className="bg-ground-3 flex text-highlight h-[38px]">
         <li className="w-[160px] px-3 py-1 flex items-center gap-1">
           {title}
           {suc === true && <CheckCircleFilled className="text-green-400" />}
@@ -34,7 +35,7 @@ const HeadLine: FC<{ title: string; suc?: boolean }> = memo(
 const Line: FC<{ items: [ReactNode, ReactNode, ReactNode, ReactNode] }> = memo(
   ({ items }) => {
     return (
-      <ul className="bg-ground-1 flex text-white">
+      <ul className="bg-ground-1 flex text-highlight">
         <li className="w-[160px] flex-shrink-0 px-3 py-1 flex items-center">
           {items[0]}
         </li>
@@ -281,7 +282,7 @@ const KCYPNormalVerificationModal: FC<PropsType> = memo(
             <p className="text-green-600">暂存成功</p>
           ) : null}
         </div>
-        <div className="my-3 text-white max-h-[456px] overflow-y-auto">
+        <div className="my-3 text-highlight max-h-[456px] overflow-y-auto">
           <Form form={form} onValuesChange={handleValuesChange}>
             <HeadLine
               title="一方当事人信息"

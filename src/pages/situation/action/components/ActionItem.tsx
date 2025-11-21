@@ -6,11 +6,6 @@ type PropsType = {
   actionType: string
 }
 
-// const statusMap = {
-//   PENDING: ['未开始', 'text-fore bg-[#d5d5d533]'],
-//   PROCESSING: ['进行中', 'text-[#15b371] bg-[#15b37133]'],
-// }
-
 /** 行动列表项 */
 const ActionItem: FC<PropsType> = memo(({ data, actionType }) => {
   const { t, i18n } = useTranslation()
@@ -37,7 +32,7 @@ const ActionItem: FC<PropsType> = memo(({ data, actionType }) => {
       <div className="flex items-center">
         <h4 className="flex-1 flex items-center gap-1 text-sm overflow-hidden">
           <MenuIconAction />
-          <p className="text-white truncate max-w-[200px]">{data.name}</p>
+          <p className="text-hightlight truncate max-w-[200px]">{data.name}</p>
         </h4>
         <div
           className={clsx(

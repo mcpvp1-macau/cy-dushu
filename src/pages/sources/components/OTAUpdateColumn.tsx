@@ -54,7 +54,7 @@ const OTAUpdateRender: React.FC<{
   if (currentStatus === UpdateStatusEnum.FAILED) {
     return (
       <div className="flex gap-2">
-        <div className="text-[#fe4348]">{UpdateStatusMap[currentStatus]}</div>
+        <div className="text-red-500">{UpdateStatusMap[currentStatus]}</div>
         <Button size="small" onClick={handleUpdateDevice}>
           重试
         </Button>
@@ -64,13 +64,13 @@ const OTAUpdateRender: React.FC<{
 
   if (currentStatus === UpdateStatusEnum.SUCCESS) {
     return (
-      <div className="text-[#4fbb30]">{UpdateStatusMap[currentStatus]}</div>
+      <div className="text-green-500">{UpdateStatusMap[currentStatus]}</div>
     )
   }
 
   if (currentStatus === DJIOtaStatusEnum.UPGRADE_ING) {
     return (
-      <div className="text-[#006ff9] flex items-center gap-2">
+      <div className="text-blue-500 flex items-center gap-2">
         <div>升级中</div>
         <LoadingOutlined />
       </div>
@@ -78,7 +78,7 @@ const OTAUpdateRender: React.FC<{
   }
 
   return (
-    <div className="flex gap-2 text-[#006ff9]">
+    <div className="flex gap-2 text-blue-500">
       <div>{UpdateStatusMap[currentStatus]}</div>
       <LoadingOutlined />
     </div>

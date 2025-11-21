@@ -8,10 +8,11 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { Pagination, Select, Tooltip } from 'antd'
+import { Pagination, Tooltip } from 'antd'
 import { Dayjs } from 'dayjs'
 import StartBreakPoint from './StartBreakPoint'
 import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
+import Select from '@/components/AntdOverride/Select'
 
 type PropsType = unknown
 

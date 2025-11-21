@@ -35,7 +35,7 @@ const OthersDetail: FC<PropsType> = memo(
         <div className="flex gap-2 items-center">
           {/* <DeviceIconCamera className="device-detail-icon" /> */}
           <DeviceIcon type={deviceType} className="device-detail-icon" />
-          <h6 className="text-white text-base">{data.deviceName}</h6>
+          <h6 className="text-hightlight text-base">{data.deviceName}</h6>
         </div>
       ),
       [data.deviceName],

@@ -20,11 +20,11 @@ const EventToast: FC<PropsType> = memo(({ data }) => {
   const rightOuterMode = useRightMode((s) => s.rightOuterMode)
 
   return (
-    <div className="flex rounded bg-[#16202be6] shadow-lg ring-1 ring-ground-1 w-[350px] backdrop-blur-sm items-center p-3 gap-3 z-10">
+    <div className="flex rounded bg-ground-1/90 ring-1 ring-ground-5 w-[350px] backdrop-blur-sm items-center p-3 gap-3 z-10">
       <div className="flex flex-1 items-center">
         <div className="w-full max-w-[240px] overflow-hidden">
-          <div className="flex gap-1 text-sm font-medium text-white overflow-hidden">
-            <WarningOutlined className="text-yellow-400" />
+          <div className="flex gap-1 text-sm font-medium text-hightlight overflow-hidden">
+            <WarningOutlined className="text-yellow-500" />
             <p className="truncate">{data.eventName}</p>
           </div>
           <div className="mt-1 text-sm">{`来源: [${data.deviceName}]`}</div>

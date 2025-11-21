@@ -121,7 +121,9 @@ const AddPoint: FC<PropsType> = memo(({ onClose }) => {
       <CloseableHeader onClose={onClose}>
         <div className="flex gap-2 items-center">
           <IconAddMark className="device-detail-icon" />
-          <h6 className="text-white text-base">{t('overlay.marker.title')}</h6>
+          <h6 className="text-hightlight text-base">
+            {t('overlay.marker.title')}
+          </h6>
         </div>
       </CloseableHeader>
       <AppCollapse

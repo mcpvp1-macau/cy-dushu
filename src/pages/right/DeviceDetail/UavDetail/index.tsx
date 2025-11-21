@@ -25,7 +25,7 @@ const Header: FC = memo(() => {
     <div className="flex justify-between">
       <div className="flex gap-2 items-center">
         <DeviceIcon type="UAV" className="device-detail-icon" />
-        <h6 className="text-white text-base">{deviceName}</h6>
+        <h6 className="text-highlight text-base">{deviceName}</h6>
       </div>
       {actionId && <UavCreateAction />}
     </div>

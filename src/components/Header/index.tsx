@@ -11,6 +11,8 @@ import IconLanguageEnglish from '@/assets/icons/jsx/IconLanguageEnglish'
 import IconLanguageChinese from '@/assets/icons/jsx/IconLanguageChinese'
 import IconThirdPartyPlatform from '@/assets/icons/jsx/IconThirdPartyPlatform'
 import { Link } from 'react-router-dom'
+import JALogo from '@/assets/svg_jsx/JALogo'
+import ThemeSwitcher from './ThemeSwitcher'
 
 type PropsType = unknown
 
@@ -21,22 +23,26 @@ const Header: FC<PropsType> = memo(() => {
   const vendorBackUrl = useUserStore((s) => s.vendorBackUrl)
 
   const { i18n } = useTranslation()
-
   return (
     <header className="h-[38px] bg-ground-1 flex items-center justify-between border-b border-solid border-ground-5 z-20 gap-3">
       {/* 左边 */}
       <div className="pl-1 flex items-center gap-3">
         <div className="w-[30px] max-w-[30px] h-[30px] max-h-[30px] p-1.5 bg-ground-3 text-fore text-center flex items-center justify-center rounded">
-          <img
-            src={globalConfig.logo ?? '/logo.svg'}
-            className="w-full h-full object-contain select-none"
-          />
+          {globalConfig.logo ? (
+            <img
+              src={globalConfig.logo}
+              className="w-full h-full object-contain select-none"
+            />
+          ) : (
+            <JALogo className="text-fore" />
+          )}
         </div>
         <POISearch />
       </div>
       <div id="app-header-center" className="flex-1 overflow-hidden"></div>
       {/* 右边 */}
       <div className="text-fore mr-3 flex gap-3">
+        <ThemeSwitcher />
         <IconButton
           onClick={() => {
             i18n.changeLanguage(i18n.language === 'en' ? 'zh' : 'en')

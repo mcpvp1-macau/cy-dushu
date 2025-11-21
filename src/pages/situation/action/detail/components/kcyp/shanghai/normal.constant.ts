@@ -11,7 +11,7 @@ export const statusColorMap: Record<
   { color: string; label: Record<string, string> }
 > = {
   INIT: {
-    color: '#BFCCD6',
+    color: 'rgb(var(--fore-color))',
     label: {
       en: 'Not Submitted',
       zh: '未提交',
@@ -52,7 +52,7 @@ export const zhoushanStatusColorMap: Record<
   { color: string; label: Record<string, string> }
 > = {
   [ZhoushanProcessResultEnum.NOT_PUSHED]: {
-    color: '#BFCCD6',
+    color: 'rgb(var(--fore-color))',
     label: {
       en: 'Not Submitted',
       zh: '未提交',

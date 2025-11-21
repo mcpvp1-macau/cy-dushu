@@ -110,7 +110,11 @@ const AIResultItem = forwardRef<
         `车牌: ${data.plateNo || '未知'}`,
         `类型: ${illegalMap[extra.illegalCode] || '未知'}`,
         `代码: ${extra.illegalCode || '未知'}`,
-        `颜色: ${carColorOptions.find((e) => e.value === data.plateColor)?.label || data.plateColor || '未知'}`,
+        `颜色: ${
+          carColorOptions.find((e) => e.value === data.plateColor)?.label ||
+          data.plateColor ||
+          '未知'
+        }`,
         `时间: ${illegalTime}`,
         `位置: ${data.longitude.toFixed(5)}, ${data.latitude.toFixed(5)}`,
         `地点: ${extra.address || '未知'}`,
@@ -132,7 +136,11 @@ const AIResultItem = forwardRef<
       const url = handleStorageURL(data.image || data.sourceImage)
       const texts = [
         `车牌号码: ${data.plateNo || '未知'}`,
-        `车牌颜色: ${carColorOptions.find((e) => e.value === data.plateColor)?.label || data.plateColor || '未知'}`,
+        `车牌颜色: ${
+          carColorOptions.find((e) => e.value === data.plateColor)?.label ||
+          data.plateColor ||
+          '未知'
+        }`,
         `违法类型: ${illegalMap[extra.illegalCode] || '未知'}`,
         `违法代码: ${extra.illegalCode || '未知'}`,
         `违法时间: ${illegalTime}`,
@@ -159,7 +167,9 @@ const AIResultItem = forwardRef<
     downloadImage: () =>
       downloadAndRename(
         newImage || orignalImageUrl,
-        `${illegalMap[extra.illegalCode]}.${orignalImageUrl.slice(orignalImageUrl.lastIndexOf('.') + 1)}`,
+        `${illegalMap[extra.illegalCode]}.${orignalImageUrl.slice(
+          orignalImageUrl.lastIndexOf('.') + 1,
+        )}`,
       ),
   }))
 
@@ -170,7 +180,9 @@ const AIResultItem = forwardRef<
           src={newImage || orignalImageUrl}
           sourceWidth={data.sourceFrameWidth}
           sourceHeight={data.sourceFrameHeight}
-          downloadName={`${illegalMap[extra.illegalCode]}.${orignalImageUrl.slice(orignalImageUrl.lastIndexOf('.') + 1)}`}
+          downloadName={`${
+            illegalMap[extra.illegalCode]
+          }.${orignalImageUrl.slice(orignalImageUrl.lastIndexOf('.') + 1)}`}
           loading="lazy"
         >
           {data.leftTopX && data.leftTopY && (
@@ -217,13 +229,13 @@ const AIResultItem = forwardRef<
         >
           <ul className="flex flex-col gap-1 justify-between text-fore">
             <li className="flex gap-1 whitespace-nowrap ">
-              <span className="text-white">车牌:</span>
+              <span className="text-hightlight">车牌:</span>
               <Form.Item name="plateNo" noStyle>
                 <Input size="small" className="w-full" />
               </Form.Item>
             </li>
             <li className="flex gap-1 whitespace-nowrap">
-              <span className="text-white">颜色:</span>
+              <span className="text-hightlight">颜色:</span>
               <Form.Item name="plateColor" noStyle>
                 <Select
                   size="small"
@@ -233,7 +245,7 @@ const AIResultItem = forwardRef<
               </Form.Item>
             </li>
             <li className="flex gap-1 whitespace-nowrap">
-              <span className="text-white">行为:</span>
+              <span className="text-hightlight">行为:</span>
               <Form.Item name="illegalCode" noStyle>
                 <Select
                   size="small"
@@ -250,7 +262,7 @@ const AIResultItem = forwardRef<
               </Form.Item>
             </li>
             <li className="flex gap-1 whitespace-nowrap">
-              <span className="text-white">代码:</span>
+              <span className="text-hightlight">代码:</span>
               <Form.Item name="illegalCode" noStyle>
                 <Select
                   size="small"
@@ -266,31 +278,31 @@ const AIResultItem = forwardRef<
               </Form.Item>
             </li>
             <li className="flex gap-1 whitespace-nowrap">
-              <span className="text-white">时间:</span>
+              <span className="text-hightlight">时间:</span>
               <span>{illegalTime}</span>
             </li>
             <li className="flex gap-1 whitespace-nowrap">
-              <span className="text-white">位置:</span>
+              <span className="text-hightlight">位置:</span>
               <span>
                 {data.longitude.toFixed(5)}, {data.latitude.toFixed(5)}
               </span>
             </li>
             <li className="flex gap-1 whitespace-nowrap">
-              <span className="text-white">地点:</span>
+              <span className="text-hightlight">地点:</span>
               <Form.Item name="address" noStyle>
                 <Input size="small" />
               </Form.Item>
             </li>
             <li className="flex gap-1">
-              <span className="text-white">设备:</span>
+              <span className="text-hightlight">设备:</span>
               <span>{data.source}</span>
             </li>
             <li className="flex gap-1">
-              <span className="text-white">编码:</span>
+              <span className="text-hightlight">编码:</span>
               <span>{sn}</span>
             </li>
             <li className="flex gap-1 whitespace-nowrap">
-              <span className="text-white">防伪:</span>
+              <span className="text-hightlight">防伪:</span>
               <span className="text-wrap max-w-48">{antiCode}</span>
             </li>
           </ul>

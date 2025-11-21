@@ -60,7 +60,7 @@ const RebotDogInfoCard: FC<PropsType> = memo(() => {
   }, [totalDistance])
 
   return (
-    <ul className="card-border flex p-3 px-1 text-xs text-center bg-[#1c2630] divide-x divide-ground-5">
+    <ul className="card-border flex p-3 px-1 text-xs text-center bg-ground-1 divide-x divide-ground-5">
       {[
         ['length', distanceFmt],
         ['time', flyTimeFmt],

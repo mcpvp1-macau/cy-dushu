@@ -7,7 +7,7 @@ type PropsType = {
 
 const AppSpin: FC<PropsType> = ({ className, size }) => {
   return (
-    <div className={clsx('text-center m-3', className)}>
+    <div className={clsx('text-center p-3', className)}>
       <Spin size={size ?? 'default'} />
     </div>
   )

@@ -23,7 +23,7 @@ const GlobalToast: React.FC = () => {
         (id) => (
           <div className="relative group">
             <IconButton
-              className="absolute top-0 right-0 z-10 bg-[#28323ccc] backdrop-blur translate-x-1.5 -translate-y-1.5 size-5 rounded-full items-center justify-center flex opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              className="absolute top-0 right-0 z-10 bg-ground-5/80 backdrop-blur translate-x-1.5 -translate-y-1.5 size-5 rounded-full items-center justify-center flex opacity-0 group-hover:opacity-100 transition-opacity duration-200"
               onClick={() => {
                 sonnerToast.dismiss(id)
               }}
@@ -83,7 +83,7 @@ function Toast(props: ToastProps) {
   const { t } = useTranslation()
 
   return (
-    <div className="flex rounded bg-[#16202be6] shadow-lg ring-1 ring-ground-1 w-[350px] backdrop-blur-sm items-center p-3 gap-3 z-10">
+    <div className="flex rounded bg-ground-1/90 shadow-lg border-ground-5 border border-solid ring-1 ring-ground-5 w-[350px] backdrop-blur-sm items-center p-3 gap-3 z-10">
       <div className="flex flex-1 items-center">
         <div className="w-full max-w-[240px] overflow-hidden">
           {title}

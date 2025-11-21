@@ -27,12 +27,7 @@ export const TaskStatusTag: FC<{ taskStatus: string }> = ({ taskStatus }) => {
     taskStatus === 'RUNNING'
       ? t('device.status.task.RUNNING')
       : t('device.status.task.IDLE')
-  const color =
-    taskStatus === 'RUNNING' ? 'rgb(21, 179, 113)' : 'rgb(199, 209, 220)'
-  const bgColor =
-    taskStatus === 'RUNNING'
-      ? 'rgba(21, 179, 113, 0.15)'
-      : 'rgba(199, 209, 220, 0.1)'
+  const type = taskStatus === 'RUNNING' ? 'success' : 'default'
   const icon =
     taskStatus === 'RUNNING' ? (
       <IconTaskRunning className="text-[10px]" />
@@ -40,7 +35,7 @@ export const TaskStatusTag: FC<{ taskStatus: string }> = ({ taskStatus }) => {
       <IconTaskIdle className="text-[10px]" />
     )
   return (
-    <TagItemV2 color={color} bgColor={bgColor} icon={icon}>
+    <TagItemV2 type={type} icon={icon}>
       {label}
     </TagItemV2>
   )
@@ -140,7 +135,7 @@ const DeviceItem: FC<PropsType> = memo(
               (tag) => 'FLIGHT_REPORTING_STATUS' === tag.tagName,
             )?.tagValue ? (
               <Tooltip title={t('device.status.reported.ok')}>
-                <IconReported className="text-xs text-[#15B371]" />
+                <IconReported className="text-xs text-green-500" />
               </Tooltip>
             ) : (
               <Tooltip title={t('device.status.reported.no')}>

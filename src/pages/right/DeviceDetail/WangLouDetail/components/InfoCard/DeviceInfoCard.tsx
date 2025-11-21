@@ -11,7 +11,7 @@ const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
         <div className="truncate w-[60px]">{l}</div>
       </Tooltip>
       <div>:</div>
-      <span className="text-[#fff] text-[14px]">
+      <span className="text-white text-[14px]">
         {v === undefined ? '-' : v}
       </span>
     </li>

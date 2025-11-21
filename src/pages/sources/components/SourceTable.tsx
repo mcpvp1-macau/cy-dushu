@@ -42,7 +42,9 @@ const SourceTable: FC<PropsType> = memo(() => {
 
   const [refreshKey, setRefreshKey] = useState(0)
 
-  const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined)
+  const [statusFilter, setStatusFilter] = useState<string | undefined>(
+    undefined,
+  )
   const [djiOtaInfoFilter, setDjiOtaInfoFilter] = useState<string>('ALL')
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -79,7 +81,7 @@ const SourceTable: FC<PropsType> = memo(() => {
 
   const queryClient = useQueryClient()
 
-  const { data, isLoading, isRefetching, refetch } = useQuery(
+  const { data, isLoading, isRefetching } = useQuery(
     {
       queryKey: [
         'getAllDeviceListTable',
@@ -170,7 +172,7 @@ const SourceTable: FC<PropsType> = memo(() => {
             <Badge
               color={StatusColorMap[cell.getValue()]}
               text={
-                <span className="text-white">
+                <span className="text-hightlight">
                   {/* {StatusMap[cell?.getValue()]} */}
                   {cell?.getValue()
                     ? t(`device.status.online.${cell?.getValue()}`)
@@ -319,7 +321,13 @@ const SourceTable: FC<PropsType> = memo(() => {
       }),
     ]
     return columns
-  }, [i18n.language, searchParams.get('type'), uavDocSnSet, statusFilter, djiOtaInfoFilter])
+  }, [
+    i18n.language,
+    searchParams.get('type'),
+    uavDocSnSet,
+    statusFilter,
+    djiOtaInfoFilter,
+  ])
 
   const table = useReactTable({
     data: data?.rows ?? defaultData,
@@ -406,7 +414,7 @@ const SourceTable: FC<PropsType> = memo(() => {
         {globalConfig.useUavAirportDocUpload &&
           (type === 'UAV_AIRPORT' || type === 'UAV') && <UploadDetail />}
       </div>
-      <div className="mt-3 w-full grow rounded overflow-hidden border border-solid border-[#23272D]">
+      <div className="mt-3 w-full grow rounded overflow-hidden border border-solid border-ground-3">
         <ScrollArea className="h-full">
           <XTable
             key={refreshKey}

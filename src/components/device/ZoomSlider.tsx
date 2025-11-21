@@ -211,10 +211,10 @@ const ZoomSlider: FC<PropsType> = memo(
             <div className="absolute left-0 -translate-x-[110%] top-1/2 -translate-y-1/2 select-none">
               <p
                 className="px-2 py-1"
-                style={{
-                  background:
-                    'linear-gradient(to top,#0000 0%,#1b222b 30%,#1b222b,#1b222b 70%,#0000 100%)',
-                }}
+                // style={{
+                //   background:
+                //     'linear-gradient(to top,#0000 0%,#1b222b 30%,#1b222b,#1b222b 70%,#0000 100%)',
+                // }}
               >
                 {Math.floor(value)}x
               </p>

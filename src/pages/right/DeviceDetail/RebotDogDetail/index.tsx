@@ -36,7 +36,7 @@ const RobotDogDetail: FC<BaseDeviceDetailProps> = memo(
                 type={DeviceEnum.ROBOT_DOG}
                 className="device-detail-icon"
               />
-              <h6 className="text-white text-base">{data.deviceName}</h6>
+              <h6 className="text-hightlight text-base">{data.deviceName}</h6>
             </div>
           </CloseableHeader>
           <div className="px-3 mb-3">

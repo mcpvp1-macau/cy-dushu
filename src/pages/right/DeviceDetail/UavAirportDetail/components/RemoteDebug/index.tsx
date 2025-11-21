@@ -11,7 +11,6 @@ import {
 import IconExpand from '@/assets/icons/jsx/IconExpand'
 import { useBoolean } from 'ahooks'
 import AppEmpty from '@/components/AppEmpty'
-import IconClose from '@/assets/icons/jsx/IconClose'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import { twMerge } from 'tailwind-merge'
 import { CSSProperties } from 'react'
@@ -123,7 +122,6 @@ const _ServiceItem: FC<ServiceItemProps> = ({
               style={{
                 width: '48px',
                 padding: '0',
-                backgroundColor: '#28323C',
                 fontSize: '12px',
                 height: '20px',
               }}
@@ -138,7 +136,6 @@ const _ServiceItem: FC<ServiceItemProps> = ({
             style={{
               width: '48px',
               padding: '0',
-              backgroundColor: '#28323C',
               fontSize: '12px',
               height: '20px',
             }}
@@ -502,7 +499,7 @@ const RemoteDebug: FC<PropsType> = ({
   return (
     <div
       className={twMerge(
-        'bg-[#16202be6] backdrop-blur-sm overflow-hidden z-10 w-[400px]',
+        'bg-ground-1/90 backdrop-blur-sm overflow-hidden z-10 w-[400px]',
         className,
       )}
       style={style}
@@ -518,7 +515,7 @@ const RemoteDebug: FC<PropsType> = ({
             className={styles.progressHeader}
             style={{
               borderBottom: open
-                ? '1px solid #37414d'
+                ? '1px solid rgb(var(--ground-color-5))'
                 : '1px solid transparent',
             }}
           >
@@ -543,7 +540,11 @@ const RemoteDebug: FC<PropsType> = ({
                   <div
                     key={index}
                     className="whitespace-nowrap"
-                    style={{ color: colorMap[item.output.status] ?? '#c7d1dc' }}
+                    style={{
+                      color:
+                        colorMap[item.output.status] ??
+                        'rgb(var(--fore-color))',
+                    }}
                   >
                     <span style={{ marginRight: '6px' }}>
                       {iconMap[item.output.status]}

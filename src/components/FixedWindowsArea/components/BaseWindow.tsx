@@ -286,7 +286,7 @@ const BaseWindow = memo(
     return (
       <div
         className={clsx('absolute pointer-events-auto', {
-          'rounded border border-solid border-[#37414d]': !props.noBorder,
+          'rounded border border-solid border-ground-5': !props.noBorder,
         })}
         style={{
           width: props.width,
@@ -296,7 +296,7 @@ const BaseWindow = memo(
       >
         {!props.noHeader && (
           <div
-            className="flex justify-between items-center h-8 px-3 border-b border-solid bg-ground-1 border-[#37414d]"
+            className="flex justify-between items-center h-8 px-3 border-b border-solid bg-ground-1 border-ground-5"
             onMouseDown={(e) => {
               setMouseAction(MouseActionType.Move)
               handleMouseDown(e)

@@ -15,6 +15,7 @@ import useEventStore, { useEventData } from '@/store/event/useEvent.store'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import { useDeepCompareEffect, useDebounceFn, useThrottleFn } from 'ahooks'
 import IconButtonWithDropDownDialog from '@/components/ui/button/IconButtonWithDropDownDialog'
+import SegmentTitle from '@/components/ui/SegmentTitle'
 
 type PropsType = unknown
 
@@ -114,9 +115,12 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
     })
   }
 
-  const { run } = useThrottleFn(() => {
-    refetchEvent()
-  }, { wait: 800 })
+  const { run } = useThrottleFn(
+    () => {
+      refetchEvent()
+    },
+    { wait: 800 },
+  )
 
   useDeepCompareEffect(() => {
     run()
@@ -155,12 +159,10 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
           trigger={['click']}
           popupRender={() => (
             <div className="p-2">
-              <div className="flex gap-2 items-center mb-1">
-                <div className="h-[10px] w-[2px] bg-green-500 rounded-sm" />
-                <span className="text-white">
-                  {t('events.filter.riskLevel.title')}
-                </span>
-              </div>
+              <SegmentTitle
+                title={t('events.filter.riskLevel.title')}
+                className="mb-1"
+              />
               <div>
                 <Checkbox.Group
                   options={[
@@ -180,36 +182,30 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
                   onChange={setEventLevelList}
                 />
               </div>
-              <div className="flex gap-2 items-center mt-3 mb-1">
-                <div className="h-[10px] w-[2px] bg-green-500 rounded-sm" />
-                <span className="text-white">
-                  {t('events.filter.source.title')}
-                </span>
-              </div>
+              <SegmentTitle
+                className="mt-3 mb-1"
+                title={t('events.filter.source.title')}
+              />
               <div>
                 <Checkbox.Group
                   options={eventSourceOptions}
                   onChange={setEventSourceList}
                 />
               </div>
-              <div className="flex gap-2 items-center mt-3 mb-1">
-                <div className="h-[10px] w-[2px] bg-green-500 rounded-sm" />
-                <span className="text-white">
-                  {t('events.filter.type.title')}
-                </span>
-              </div>
+              <SegmentTitle
+                className="mt-3 mb-1"
+                title={t('events.filter.type.title')}
+              />
               <div>
                 <Checkbox.Group
                   options={eventTypeOptions}
                   onChange={setEventTypeList}
                 />
               </div>
-              <div className="flex gap-2 items-center mt-3 mb-1">
-                <div className="h-[10px] w-[2px] bg-green-500 rounded-sm" />
-                <span className="text-white">
-                  {t('events.filter.status.title')}
-                </span>
-              </div>
+              <SegmentTitle
+                className="mt-3 mb-1"
+                title={t('events.filter.status.title')}
+              />
               <div>
                 <Checkbox.Group
                   options={[

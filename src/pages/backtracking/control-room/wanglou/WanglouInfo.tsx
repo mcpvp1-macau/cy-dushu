@@ -30,7 +30,6 @@ const WanglouInfo: React.FC = memo(() => {
     }
   }, [currentAttribute])
 
-
   const { t } = useTranslation()
 
   const beidouStatus = getChildDevice(Name.BeiDou)?.status
@@ -105,7 +104,7 @@ const WanglouInfo: React.FC = memo(() => {
             title: text,
           }}
         >
-          <Icon id="icon-tishi" className="text-[#F29D49]" />
+          <Icon id="icon-tishi" className="text-orange-500" />
         </IconButton>
       )
     }

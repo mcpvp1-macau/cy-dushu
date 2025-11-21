@@ -45,7 +45,7 @@ const PageSources: FC<PropsType> = memo(() => {
 
   return (
     <div className="page-full p-3 bg-ground-2 flex flex-col overflow-y-hidden">
-      <h2 className="text-white">{t('resource.title')}</h2>
+      <h2 className="text-hightlight">{t('resource.title')}</h2>
       <div>
         {isLoading || !data ? (
           <div className="w-64">

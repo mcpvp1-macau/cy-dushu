@@ -45,7 +45,7 @@ const FixedWindowDeviceDetail: FC<PropsType> = memo(({ data }) => {
         <AppSpin />
       ) : (
         <DeviceDetailStoreContext.Provider value={deviceDetailStore}>
-          <div className="h-full w-[350px] flex flex-col overflow-hidden bg-[#16202be6] backdrop-blur-sm rounded border border-solid border-[#37414d]">
+          <div className="h-full w-[350px] flex flex-col overflow-hidden bg-ground-1/90 backdrop-blur-sm rounded border border-solid border-ground-5">
             <AppViewSuspense>
               <DetailComponent
                 key={detail.deviceId}

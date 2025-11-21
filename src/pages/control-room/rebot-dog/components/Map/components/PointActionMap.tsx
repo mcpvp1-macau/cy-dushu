@@ -6,7 +6,8 @@ import { InfoCircleOutlined } from '@ant-design/icons'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import PositionTooltip from '@/components/three/PositionTooltip'
-import { themeConfig } from '@/config/theme-config'
+import { getThemeConfig } from '@/config/theme-config'
+import useThemeStore from '@/store/useTheme.store'
 
 const PointActionMap: FC = () => {
   const x = useRebotDogControlRoomStore((s) => s.state.x || 0)
@@ -19,6 +20,7 @@ const PointActionMap: FC = () => {
   )
 
   const displayMode = useRebotDogControlRoomStore((s) => s.state.displayMode)
+  const resolvedTheme = useThemeStore((s) => s.resolvedTheme)
 
   const postDeviceService = usePostDeviceService(productKey!, deviceId)
 
@@ -90,8 +92,8 @@ const PointActionMap: FC = () => {
       />
       {pointAction.confirm && (
         <PositionTooltip position={targetPosition} offset={[0, 30]}>
-          <ConfigProvider theme={themeConfig}>
-            <div className="p-2 flex flex-col gap-1 text-fore bg-[#27303b] min-w-[150px] rounded-md shadow-lg">
+          <ConfigProvider theme={getThemeConfig(resolvedTheme)}>
+            <div className="p-2 flex flex-col gap-1 text-fore min-w-[150px] rounded-md shadow-lg">
               <p className="flex justify-between">
                 {'任务距离'}:{' '}
                 <span>

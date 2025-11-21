@@ -30,7 +30,7 @@ const UavAirportInfoCard: FC<PropsType> = memo((props) => {
   }, [props.stockStatus, t])
 
   return (
-    <ul className="card-border p-2 flex flex-wrap whitespace-nowrap text-sm">
+    <ul className="card-border border-ground-5 p-2 flex flex-wrap whitespace-nowrap text-sm">
       <I l={t('common.modelNumber')} v={props.modelNumber || '-'} />
       <I
         l={t('common.onlineStatus')}

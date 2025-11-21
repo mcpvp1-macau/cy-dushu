@@ -99,7 +99,7 @@ const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
     <div className="text-fore p-3">
       <div className="flex items-center justify-between">
         <p className="flex gap-2">
-          <span className="text-white">
+          <span className="text-hightlight">
             {t('action.detail.kcyp.case_code.title')}:
           </span>
           <span>{data.caseId}</span>
@@ -107,7 +107,7 @@ const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
         {stateLabel}
       </div>
       <p className="flex gap-2 mt-1">
-        <span className="text-white">
+        <span className="text-hightlight">
           {t('action.detail.kcyp.process_status.title')}:
         </span>
         <span style={{ color: statusColorMap[data.processStatus!]?.color }}>

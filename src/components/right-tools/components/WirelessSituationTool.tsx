@@ -151,7 +151,7 @@ const WirelessSituationTool: FC<PropsType> = memo((props) => {
             )}
           >
             <div className="flex flex-nowrap gap-3 items-center justify-between">
-              <h5 className="text-base text-white">
+              <h5 className="text-base text-hightlight">
                 {t('signalSituation.heightFilter.title')}
               </h5>
               <IconButton onClick={() => updateEnableSignalLayer(false)}>

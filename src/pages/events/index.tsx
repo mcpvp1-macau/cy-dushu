@@ -152,7 +152,7 @@ const PageEvents: FC<PropsType> = memo(() => {
 
   return (
     <div className="page-full p-3 bg-ground-2 flex flex-col overflow-y-hidden">
-      <h2 className="text-white">{t('events.title')}</h2>
+      <h2 className="text-hightlight">{t('events.title')}</h2>
       <section className="mt-3 flex gap-2">
         <Input
           defaultValue={kw}

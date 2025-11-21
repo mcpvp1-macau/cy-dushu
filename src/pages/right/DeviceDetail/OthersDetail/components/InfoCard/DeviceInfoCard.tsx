@@ -7,12 +7,12 @@ import { ReactNode } from 'react'
 
 const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
   return (
-    <li className="w-1/2 flex gap-1 leading-5  text-[#C7D1DC] text-[12px]">
+    <li className="w-1/2 flex gap-1 leading-5  text-fore text-xs">
       <Tooltip title={l}>
         <div className="truncate w-[60px]">{l}</div>
       </Tooltip>
       <div>:</div>
-      <span className="text-[#fff] text-[14px]">
+      <span className="text-hightlight text-sm">
         {v === undefined ? '-' : v}
       </span>
     </li>
@@ -21,7 +21,7 @@ const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
 
 const T: FC<{ l: ReactNode }> = ({ l }) => {
   return (
-    <li className="w-[100%] leading-5 text-[12px]">
+    <li className="w-[100%] leading-5 text-xs">
       <Tooltip title={l}>
         <div className="truncate w-[60px]">{l}</div>
       </Tooltip>

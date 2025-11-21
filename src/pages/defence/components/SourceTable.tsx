@@ -124,7 +124,7 @@ const SourceTable: React.FC<SourceTablesProp> = (props) => {
           onSearch={(e) => handleValueChange('overlayName', e)}
         />
       </div>
-      <div className="mt-3 w-full grow rounded overflow-hidden border border-solid border-[#23272D]">
+      <div className="mt-3 w-full grow rounded overflow-hidden border border-solid border-ground-3">
         <ScrollArea className="h-full">
           <XTable table={table} loading={isLoading || isRefetching} />
           <ScrollBar orientation="horizontal" />

@@ -40,7 +40,7 @@ const Right: FC<PropsType> = memo(() => {
     <div
       className={clsx(
         'absolute top-3 right-[54px] z-10',
-        'bg-[#16202be6] rounded-[3px]',
+        'bg-ground-1/90 rounded-[3px]',
         'border border-solid border-ground-5',
         'flex flex-col',
         'overflow-y-hidden',

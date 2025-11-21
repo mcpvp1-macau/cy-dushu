@@ -47,7 +47,7 @@ export const taskStatusMap: Record<string, Record<string, string>> = {
 }
 
 const statusColor: Record<string, string> = {
-  PENDING: '#C7D1DC',
+  PENDING: 'rgb(var(--fore-color))',
   PROCESSING: '#4C90F0',
   FINISHED: '#15B371',
   PAUSE: '#C7D1DC',
@@ -199,7 +199,9 @@ const ChildAction: FC<PropsType> = memo(
             >
               {visible ? <IconVisible /> : <IconNotVisible />}
             </IconButton>
-            <span className="text-white">{data.actionItemName || '-'}</span>
+            <span className="text-hightlight">
+              {data.actionItemName || '-'}
+            </span>
           </div>
           <OperatorBtns data={data} noEdit={noEdit} />
         </div>
