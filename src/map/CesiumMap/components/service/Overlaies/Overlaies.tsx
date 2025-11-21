@@ -1,6 +1,11 @@
 import { CotType } from '@/store/map/useDraw.store'
 import useMapLayerAndOverlayStore from '@/store/map/useLayerAndOverlay.store'
-import { LabelCollection, PointPrimitiveCollection, useCesium } from 'resium'
+import {
+  BillboardCollection,
+  LabelCollection,
+  PointPrimitiveCollection,
+  useCesium,
+} from 'resium'
 import OverlayPoint from './Point'
 import useRightMode from '@/store/layout/useRightMode.store'
 import useMapDrawStore from '@/store/map/useDraw.store'
@@ -9,6 +14,7 @@ import ShowCircle from './ShowCircle'
 import ShowPolygon from './ShowPolygon'
 import ShowFan from './ShowFan'
 import { RightModeEnum } from '@/enum/right-mode'
+import ShowPath from './ShowPath'
 
 type PropsType = unknown
 
@@ -57,46 +63,59 @@ const LayerOverlaies: FC<PropsType> = memo(() => {
   return (
     <>
       <PointPrimitiveCollection>
-        <LabelCollection>
-          {overlays.map((overlay) => {
-            if (overlay.cotType === CotType.POINT) {
-              return <OverlayPoint key={overlay.overlayId} data={overlay} />
-            }
-            if (overlay.cotType === CotType.SHAPE_CIRCLE) {
-              return (
-                <ShowCircle
-                  key={overlay.overlayId}
-                  overlayExtType={'overlay'}
-                  primitives={primitives}
-                  overlay={overlay}
-                />
-              )
-            }
-            if (
-              overlay.cotType === CotType.SHAPE_POLYGON ||
-              overlay.cotType === CotType.SHAPE_RECT
-            ) {
-              return (
-                <ShowPolygon
-                  key={overlay.overlayId}
-                  overlayExtType={'overlay'}
-                  primitives={primitives}
-                  overlay={overlay}
-                />
-              )
-            }
-            if (overlay.cotType === CotType.SHAPE_FAN) {
-              return (
-                <ShowFan
-                  key={overlay.overlayId}
-                  overlayExtType={'overlay'}
-                  primitives={primitives}
-                  overlay={overlay}
-                />
-              )
-            }
-          })}
-        </LabelCollection>
+        <BillboardCollection>
+          <LabelCollection>
+            {overlays.map((overlay) => {
+              if (overlay.cotType === CotType.POINT) {
+                return <OverlayPoint key={overlay.overlayId} data={overlay} />
+              }
+              if (overlay.cotType === CotType.SHAPE_CIRCLE) {
+                return (
+                  <ShowCircle
+                    key={overlay.overlayId}
+                    overlayExtType={'overlay'}
+                    primitives={primitives}
+                    overlay={overlay}
+                  />
+                )
+              }
+              if (
+                overlay.cotType === CotType.SHAPE_POLYGON ||
+                overlay.cotType === CotType.SHAPE_RECT
+              ) {
+                return (
+                  <ShowPolygon
+                    key={overlay.overlayId}
+                    overlayExtType={'overlay'}
+                    primitives={primitives}
+                    overlay={overlay}
+                  />
+                )
+              }
+              if (overlay.cotType === CotType.SHAPE_FAN) {
+                return (
+                  <ShowFan
+                    key={overlay.overlayId}
+                    overlayExtType={'overlay'}
+                    primitives={primitives}
+                    overlay={overlay}
+                  />
+                )
+              }
+
+              if (overlay.cotType === CotType.LINE_LUJING) {
+                return (
+                  <ShowPath
+                    key={overlay.overlayId}
+                    overlayExtType={'overlay'}
+                    primitives={primitives}
+                    overlay={overlay}
+                  />
+                )
+              }
+            })}
+          </LabelCollection>
+        </BillboardCollection>
       </PointPrimitiveCollection>
     </>
   )

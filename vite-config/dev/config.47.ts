@@ -6,6 +6,10 @@ export default mergeConfig(
   defineConfig({
     server: {
       host: '0.0.0.0',
+      https: {
+        key: 'ssl/keystore.key',
+        cert: 'ssl/keystore.pem',
+      },
       proxy: {
         '/img_w': {
           target: 'http://t0.tianditu.gov.cn',
@@ -85,7 +89,7 @@ export default mergeConfig(
       __DEV_MERGE_CONFIG__: {
         systemName: 'jingqi-v3',
         loginUrl: 'http://test.4a.jing-an.com:32712/login',
-        globalWs: 'ws',
+        globalWs: 'wss',
       },
     },
   }),

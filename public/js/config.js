@@ -3,7 +3,7 @@ window.config = {
   systemName: 'jingqi-v3', // 应用名称
   version: 'v3.13.0',
   loginUrl: 'http://test.4a.jing-an.com:32712/login',
-  globalWs: 'ws', // 全局
+  globalWs: 'wss', // 全局
   useShanghaiBanRoutes: false, // 使用上海禁飞航线
   isBinzhou: true,
   defaultImageries: [

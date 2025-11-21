@@ -89,6 +89,12 @@ const DrawPoint: FC<PropsType> = memo(({ onSuccess }) => {
           '-munitionVisibility': 'false', //目标弹药是否可见
         },
         remarks: '',
+        icon: {
+          url:
+            data.icon?.fileList?.[0]?.thumbUrl ||
+            useMapDrawStore.getState().drawingPointIcon ||
+            '',
+        },
       }),
       cotType: CotType.POINT,
     }

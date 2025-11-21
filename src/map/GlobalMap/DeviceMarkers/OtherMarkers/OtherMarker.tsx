@@ -42,6 +42,7 @@ export const deviceIconMap: any = {
   SHELL: '/images/marker/icon/shell.svg',
   MC: '/images/marker/icon/mc.svg',
   UGV: '/images/marker/icon/ugv.svg',
+  'DUSHU-MB': '/images/marker/icon/ren.svg',
 }
 
 const OtherMarker: FC<PropsType> = memo(({ data }) => {
@@ -82,6 +83,8 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
     lat,
     altitude || groundHeight,
   )
+
+  console.log('OtherMarker render', deviceIconMap[deviceType], deviceType)
 
   return (
     <>

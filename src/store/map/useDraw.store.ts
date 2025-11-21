@@ -28,6 +28,7 @@ export enum DrawType {
   RangingCircle = 8,
   RangingAngle = 9,
   ReconstructionArea = 10,
+  Path = 11,
 }
 
 export type PointIconType =
@@ -39,6 +40,15 @@ export type PointIconType =
   | ''
 
 export type LineStyle = 'solid' | 'dashed' | 'no-fly'
+
+export const DrawingPointIconMap: Record<string, string> = {
+  'COT_MAPPING_SPOTMAP/b-m-p-s-m/': '默认小圆点',
+  'COT_MAPPING_2525C/a-n/a-n-G': '友方图标',
+  'COT_MAPPING_2525C/a-h/a-h-G': '敌方图标',
+  'COT_MAPPING_2525C/a-f/a-f-G': '中立图标',
+  'COT_MAPPING_2525C/a-u/a-u-G': '未知图标',
+  '': '无图标',
+}
 
 // useRightMode保存处于详情编辑的覆盖物，此处的isEdit用于保存覆盖物是否处于编辑状态
 
@@ -60,6 +70,8 @@ type StateType = {
   bindingDeviceId: string
   /** 初始绘制中心点 (用于可飞行区域标识设备中心位置) */
   devicePosition: [number, number] | null
+  /** 绘制点位图标 */
+  drawingPointIcon: string
 }
 
 type ActionsType = {
@@ -78,6 +90,7 @@ type ActionsType = {
   updateBindingDeviceId: (bindingDeviceId: string) => void
   /** 更新初始绘制中心点 */
   updateDevicePosition: (center: [number, number] | null) => void
+  updateDrawingPointIcon: (icon: string) => void
 }
 
 // 新增的三维重建也有绘制逻辑，并且其优先级应该最高，也就是无法从三维重建状态转为普通绘制和测量
@@ -89,6 +102,7 @@ const useMapDrawStore = create<StateType & ActionsType>()(
       (set, get) => ({
         drawing: DrawType.None,
         drawingColor: '#4C90F0',
+        drawingPointIcon: '',
         lineStyle: 'solid',
         fillOpacity: 0.5,
         positions: [],
@@ -97,6 +111,9 @@ const useMapDrawStore = create<StateType & ActionsType>()(
         isDrawingDeviceOverlay: false,
         bindingDeviceId: '',
         devicePosition: null,
+        updateDrawingPointIcon: (icon) => {
+          set({ drawingPointIcon: icon }, false, 'updateDrawingPointIcon')
+        },
         updateDrawing: (drawing) => {
           // 如果是三维重建转为其他绘制，那么不响应
           const pre = get().drawing
@@ -104,6 +121,10 @@ const useMapDrawStore = create<StateType & ActionsType>()(
             //  三维测量无法在此关闭且无法转为其他绘制，所以不做处理
           } else {
             set({ drawing }, false, 'updateDrawing')
+            if (drawing === DrawType.None) {
+              // 关闭绘制时重置图标
+              set({ drawingPointIcon: '' }, false, 'resetDrawingPointIcon')
+            }
           }
         },
         updateDrawingColor: (drawingColor) => {

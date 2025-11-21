@@ -2,14 +2,23 @@ import Icon from '@/components/Icon'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { Tooltip } from 'antd'
 import React from 'react'
+import { UploadAudio } from './UploadAudio'
+import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 
 type Props = {
   playing: boolean
   onPlay: (fileName: string, action: 'play' | 'pause') => void
+  onUpload: (file: any) => void
 }
 
 const FileTo: React.FC<Props> = (props) => {
-  const { playing, onPlay } = props
+  const { playing, onPlay, onUpload } = props
+  const deviceDetail = useDeviceDetailStore((m) => m.deviceDetail)
+  const deviceId = deviceDetail?.deviceId || ''
+  const productKey = deviceDetail?.deviceModel?.productKey || ''
+  const postDevice = usePostDeviceService(deviceId, productKey)
+
   const recordAudioFiles =
     useUavControlRoomStore((m) => m.state?.recordAudioFiles) || ''
 
@@ -53,7 +62,12 @@ const FileTo: React.FC<Props> = (props) => {
       </div>
     )
   }
-  return <div>{Arr.map(render)}</div>
+  return (
+    <div>
+      {Arr.map(render)}
+      <UploadAudio onUpload={onUpload} accept='.pcm' />
+    </div>
+  )
 }
 
 export default React.memo(FileTo)

@@ -1,5 +1,6 @@
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
+import useMapDrawStore from '@/store/map/useDraw.store'
 import useMapLayerAndOverlayStore from '@/store/map/useLayerAndOverlay.store'
 import { GetProps } from 'antd'
 
@@ -19,6 +20,8 @@ const AddFormModal: FC<PropsType> = memo((props) => {
       })),
     [layerList],
   )
+
+  const drawingPointIcon = useMapDrawStore((s) => s.drawingPointIcon)
 
   const items = useMemo(
     () =>
@@ -46,8 +49,24 @@ const AddFormModal: FC<PropsType> = memo((props) => {
             },
           ],
         },
-      ] as XFormItem[],
-    [layerOptions],
+        drawingPointIcon === 'take_photo'
+          ? {
+              label: '上传图标',
+              name: 'icon',
+              type: 'upload',
+              // render: () => <div className="flex items-center gap-2"></div>,
+              otherProps: {
+                accept: 'image/*',
+                maxCount: 1,
+                listType: 'picture-card',
+                beforeUpload: (file: File) => {
+                  return false // 阻止上传
+                },
+              },
+            }
+          : undefined,
+      ].filter(Boolean) as XFormItem[],
+    [layerOptions, drawingPointIcon],
   )
 
   return (

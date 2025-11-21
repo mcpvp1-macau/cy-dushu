@@ -32,6 +32,10 @@ const DrawingTypeSelecter: FC<PropsType> = ({ onChange, lockedType }) => {
       label: t('overlay.drawing.sector.title'),
       value: DrawType.Fan,
     },
+    {
+      label: '路径',
+      value: DrawType.Path,
+    },
   ]
 
   const [type, setType] = useState<DrawType>(opts[0].value)

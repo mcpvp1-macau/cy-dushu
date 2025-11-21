@@ -10,6 +10,7 @@ import DrawRangingArea from './DrawRangingArea'
 import DrawRangingCircle from './DrawRangingCircle'
 import DrawRangingAngle from './DrawRangingAngle'
 import useCesiumMouseCrosshair from '@/map/CesiumMap/hooks/useCesiumMouseCrosshair'
+import DrawPath from './DrawPath'
 
 type PropsType = unknown
 
@@ -78,6 +79,9 @@ const DrawHandler: FC<PropsType> = memo(() => {
   }
   if (drawingType === DrawType.RangingAngle) {
     return <DrawRangingAngle />
+  }
+  if (drawingType === DrawType.Path) {
+    return <DrawPath onSuccess={handleSuccess} />
   }
   return null
 })

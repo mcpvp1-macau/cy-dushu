@@ -8,7 +8,7 @@ import PitchControl from './PitchControl'
 import TextTo from './TextTo'
 import FileTo from './FileTo'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
-
+import TalkTo from './TalkTo'
 
 const MMC_Gimbal_P3: React.FC = () => {
   const productKey = useDeviceDetailStore(
@@ -77,6 +77,35 @@ const MMC_Gimbal_P3: React.FC = () => {
     })
   }
 
+  const onUpload = async (file: { name: string; md5: string }) => {
+    await postSerivce('recordAudioFileUpload', {
+      name: file.name,
+      url: `/storage/${globalConfig.bucketName || 'ja-media-storage'}/${
+        file.name
+      }`,
+      md5: file.md5,
+      format: 'pcm',
+    })
+  }
+
+  const onUploadTalk = async (file: { name: string; md5: string }) => {
+    await postSerivce('recordAudioFilePlay', {
+      name: file.name,
+      url: `/storage/${globalConfig.bucketName || 'ja-media-storage'}/${
+        file.name
+      }`,
+      md5: file.md5,
+      format: 'pcm',
+      action: 'play',
+    })
+  }
+
+  const stopPlay = () => {
+    postSerivce('recordAudioFilePlay', {
+      action: 'stop',
+    })
+  }
+
   const items: TabsProps['items'] = [
     {
       key: '1',
@@ -94,15 +123,23 @@ const MMC_Gimbal_P3: React.FC = () => {
     {
       key: '2',
       label: '实时广播',
-      children: <>实时广播</>,
-      disabled: true,
+      children: (
+        <>
+          <TalkTo onUpload={onUploadTalk} stopPlay={stopPlay} />
+        </>
+      ),
+      // disabled: true,
     },
     {
       key: '3',
       label: '音频文件',
       children: (
         <>
-          <FileTo onPlay={handlePlay} playing={status === '录音音乐播报中'} />
+          <FileTo
+            onUpload={onUpload}
+            onPlay={handlePlay}
+            playing={status === '录音音乐播报中'}
+          />
         </>
       ),
     },
