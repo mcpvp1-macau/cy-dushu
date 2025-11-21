@@ -17,13 +17,13 @@ const useVideoList = (
     if (Array.isArray(date)) {
       //
       return {
-        startTime: date[0].startOf('day').format(dft),
-        endTime: date[1].endOf('day').format(dft),
+        startTime: date[0].format(dft),
+        endTime: date[1].format(dft),
       }
     } else {
       return {
-        startTime: date.startOf('day').format(dft),
-        endTime: date.endOf('day').format(dft),
+        startTime: date.format(dft),
+        endTime: date.format(dft),
       }
     }
   }, [date])
