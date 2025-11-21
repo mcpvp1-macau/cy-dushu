@@ -4,7 +4,8 @@ import { getDeviceAttrInfoBack } from '@/service/modules/db-api'
 import { useBackTrackingStore } from '@/store/context-store/useBackTracking.store'
 import { shouldJson } from '@/utils/json'
 import { sortSearchFnAsc } from '@/utils/sort'
-import { useThrottleFn } from 'ahooks'
+import { useLatest, useThrottleFn } from 'ahooks'
+
 const INTERVAL = 1000 * 60 * 10
 /**
  * 属性回溯
@@ -13,6 +14,7 @@ const useBackTrackingInfo = (deviceId, callbacl?) => {
   const currentTime = useBackTrackingStore((s) => s.currentTime)
   const timeRange = useBackTrackingStore((s) => s.timeRange)
   const [requestTime, setRequestTime] = useState(timeRange[0].valueOf())
+  const requestTimeRef = useLatest(requestTime)
   const [time, setTime] = useState(timeRange[0].valueOf())
 
   const { data: attrData } = useQuery({
@@ -50,11 +52,12 @@ const useBackTrackingInfo = (deviceId, callbacl?) => {
       setTime(t)
       if (
         // 当前时间小于上一次请求时间
-        t - requestTime < 0 ||
+        t - requestTimeRef.current < 0 ||
         // 当前时间超过上一次请求时间且超过间隔的 3/4
-        t - requestTime > (INTERVAL / 4) * 3 ||
-        // 上一次请求没有数据
-        !Array.isArray(attrData)
+        t - requestTimeRef.current > (INTERVAL / 4) * 3 
+        // ||
+        // // 上一次请求没有数据
+        // !Array.isArray(attrData)
       ) {
         setRequestTime(t)
       }
