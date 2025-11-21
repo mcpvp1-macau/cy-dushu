@@ -17,7 +17,6 @@ const useHandleObjectTrack = () => {
     const handleTargetAppearance = ({
       objectId,
       status,
-      targetTrack,
     }: TargetAppearancePayload) => {
       if (status !== 'APPEARANCE') return
       modal.confirm({
@@ -26,7 +25,11 @@ const useHandleObjectTrack = () => {
         okText: '追踪',
         cancelText: '取消',
         onOk: () => {
-          postDeviceService(targetTrack, { objectId, object_id: objectId })
+          postDeviceService('targetTrack', {
+            objectId,
+            object_id: objectId,
+            enable: true,
+          })
         },
       })
     }
