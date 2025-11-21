@@ -12,11 +12,12 @@
   --ja-gray-4: 167, 182, 194;
   --ja-gray-5: 191, 204, 214;
 
-  --ja-light-gray-1: 199, 209, 220;
-  --ja-light-gray-2: 216, 225, 232;
+  --ja-light-gray-1: 245, 248, 250;
+  --ja-light-gray-2: 235, 241, 245;
   --ja-light-gray-3: 225, 232, 237;
-  --ja-light-gray-4: 235, 241, 245;
-  --ja-light-gray-5: 245, 248, 250;
+  --ja-light-gray-4: 216, 225, 232;
+  --ja-light-gray-5: 199, 209, 220;
+  --ja-light-gray-6: 199, 209, 220;
 
   --ja-blue-1: 53, 101, 169;
   --ja-blue-2: 69, 128, 214;
@@ -108,23 +109,59 @@
   --primary-color-3: var(--ja-blue-3);
   --primary-color-4: var(--ja-blue-4);
   --primary-color-5: var(--ja-blue-5);
+}
 
-  // --ground-color-1: var(--ja-dark-gray-1);
-  // --ground-color-2: var(--ja-dark-gray-2);
-  // --ground-color-3: var(--ja-dark-gray-3);
-  // --ground-color-4: var(--ja-dark-gray-4);
-  // --ground-color-5: var(--ja-dark-gray-5);
-  // --ground-color-6: var(--ja-dark-gray-6);
+:root {
+  --ground-color-1: var(--ja-dark-gray-1);
+  --ground-color-2: var(--ja-dark-gray-2);
+  --ground-color-3: var(--ja-dark-gray-3);
+  --ground-color-4: var(--ja-dark-gray-4);
+  --ground-color-5: var(--ja-dark-gray-5);
+  --ground-color-6: var(--ja-dark-gray-6);
 
-  --ground-color-1: var(--ja-light-gray-5);
-  --ground-color-2: var(--ja-light-gray-4);
+  --fore-color: var(--ja-light-gray-5);
+
+  --highlight-color: 255, 255, 255;
+}
+
+:root[data-theme='light'] {
+  --ground-color-1: var(--ja-light-gray-1);
+  --ground-color-2: var(--ja-light-gray-2);
   --ground-color-3: var(--ja-light-gray-3);
-  --ground-color-4: var(--ja-light-gray-2);
-  --ground-color-5: var(--ja-light-gray-1);
-  --ground-color-6: var(--ja-light-gray-1);
+  --ground-color-4: var(--ja-light-gray-4);
+  --ground-color-5: var(--ja-light-gray-5);
+  --ground-color-6: var(--ja-light-gray-6);
 
   --fore-color: var(--ja-dark-gray-5);
-  // --fore-color: var(--ja-light-gray-1);
+  --primary-color: var(--ja-blue-4);
 
-  --highlight-color: var(0, 0, 0);
+  --highlight-color: 0, 0, 0;
+}
+
+:root[data-theme='dark'] {
+  --ground-color-1: var(--ja-dark-gray-1);
+  --ground-color-2: var(--ja-dark-gray-2);
+  --ground-color-3: var(--ja-dark-gray-3);
+  --ground-color-4: var(--ja-dark-gray-4);
+  --ground-color-5: var(--ja-dark-gray-5);
+  --ground-color-6: var(--ja-dark-gray-6);
+
+  --fore-color: var(--ja-light-gray-5);
+  --primary-color: var(--ja-blue-3);
+
+  --highlight-color: 255, 255, 255;
+}
+
+:root[data-theme='jh-police'] {
+  --ground-color-1: 0, 34, 74;
+  --ground-color-2: 0, 45, 97;
+  --ground-color-3: 0, 57, 122;
+  --ground-color-4: 13, 67, 129;
+  --ground-color-5: 25, 76, 135;
+  --ground-color-6: 37, 85, 141;
+
+  --fore-color: var(--ja-light-gray-5);
+  --primary-color: var(--ja-blue-4);
+
+  --highlight-color: 255, 255, 255;
 }

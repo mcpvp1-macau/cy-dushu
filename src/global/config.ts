@@ -17,6 +17,7 @@ globalConfig.uavHeightLimit ??= 1000
 
 globalConfig.mcps ??= {}
 globalConfig.enableJessibucaMetrics ??= true
+globalConfig.defaultTheme ??= 'dark'
 
 class GlobalConfig {
   systemName = 'jingqi'
@@ -103,6 +104,8 @@ class GlobalConfig {
   useTanqi?: boolean
   useFlight3D?: boolean
   robotDogMap?: 'point-cloud' | 'wgs84'
+  /** 默认主题色 */
+  defaultTheme: string = 'dark'
 
   constructor(def: ConfigType) {
     Object.assign(this, def)

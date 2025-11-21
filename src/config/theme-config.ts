@@ -1,7 +1,8 @@
 import { theme, type ThemeConfig } from 'antd'
 
-export const themeConfig: ThemeConfig = {
-  // algorithm: theme.darkAlgorithm,
+type ResolvedTheme = 'light' | 'dark'
+
+const baseThemeConfig: Omit<ThemeConfig, 'algorithm'> = {
   cssVar: {
     key: 'dushu',
   },
@@ -96,3 +97,10 @@ export const themeConfig: ThemeConfig = {
     },
   },
 }
+
+export const getThemeConfig = (mode: ResolvedTheme): ThemeConfig => ({
+  ...baseThemeConfig,
+  algorithm: mode === 'light' ? theme.defaultAlgorithm : theme.darkAlgorithm,
+})
+
+export type { ResolvedTheme }
