@@ -82,7 +82,7 @@ const HNumber: FC<PropsType> = ({
             {value}
           </span>
         )}
-        <span className="text-white text-sm ml-0.5">{unit}</span>
+        <span className="text-hightlight text-sm ml-0.5">{unit}</span>
       </div>
       {positives ? (
         positives?.map((item) => (

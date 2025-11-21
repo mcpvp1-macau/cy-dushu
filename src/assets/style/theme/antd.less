@@ -8,6 +8,8 @@
   --ant-color-text-description: rgb(var(--fore-color));
 
   --ant-color-fill-content: var(--ground-color-3);
+  --ant-color-bg-container: transparent;
+  --ant-color-border: rgb(var(--ground-color-5));
 }
 
 .dushu.ant-btn {
@@ -16,10 +18,14 @@
   --ant-button-default-bg: rgb(var(--ground-color-3));
   --ant-button-default-hover-bg: rgb(var(--ground-color-4));
   --ant-button-default-active-bg: rgb(var(--ground-color-4));
+  --ant-button-default-border-color: rgb(var(--ground-color-5));
+  --ant-button-default-hover-border-color: rgb(var(--ground-color-5));
+  --ant-button-border-color-disabled: rgb(var(--ground-color-5));
 }
 
 .dushu.ant-select-css-var {
   --ant-padding-sm: 12px;
+  --ant-select-selector-bg: transparent;
   --ant-select-option-selected-bg: rgb(var(--primary-color-3));
   --ant-select-option-active-bg: rgb(var(--primary-color-3));
 }
@@ -35,6 +41,20 @@
   --ant-tabs-item-hover-color: rgb(var(--primary-color-4));
   --ant-tabs-item-active-color: rgb(var(--primary-color-4));
   --ant-tabs-ink-bar-color: rgb(var(--primary-color-3));
+}
+
+.dushu.ant-segmented {
+  --ant-segmented-track-bg: rgb(var(--ground-color-1));
+  --ant-segmented-item-color: rgb(var(--primary-color));
+  --ant-segmented-item-hover-color: rgba(var(--highlight-color), 0.85);
+  --ant-segmented-item-hover-bg: rgba(var(--highlight-color), 0.12);
+  --ant-segmented-item-selected-bg: rgba(var(--primary-color), 0.18);
+  --ant-segmented-item-selected-color: rgb(var(--primary-color));
+  --ant-segmented-item-active-bg: rgba(var(--highlight-color), 0.18);
+}
+
+.ant-picker-outlined:hover {
+  background-color: transparent;
 }
 
 .ant-bubble-list {
@@ -94,4 +114,17 @@
 
 .ant-modal-root .ant-modal-mask {
   pointer-events: auto;
+}
+
+.dushu.ant-collapse {
+  --ant-collapse-content-bg: transparent;
+}
+
+.dushu.ant-input-css-var {
+  --ant-input-hover-bg: transparent;
+  --ant-input-active-bg: transparent;
+}
+
+.dushu.ant-tree {
+  background-color: transparent;
 }

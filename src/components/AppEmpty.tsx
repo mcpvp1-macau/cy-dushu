@@ -1,5 +1,5 @@
+import JSXEmpty from '@/assets/svg_jsx/empty'
 import { Empty, GetProps } from 'antd'
-import zanwushujuSvg from '@/assets/imgs/zanwushuju.svg'
 import { twMerge } from 'tailwind-merge'
 
 type PropsType = GetProps<typeof Empty>
@@ -13,7 +13,7 @@ const AppEmpty: FC<PropsType> = ({ ...restProps }) => {
 
   return (
     <Empty
-      image={zanwushujuSvg}
+      image={<JSXEmpty className="text-fore" />}
       {...restProps}
       className={twMerge(
         'flex flex-col items-center justify-center py-3 opacity-50 text-xs',

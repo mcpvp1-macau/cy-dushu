@@ -1,0 +1,30 @@
+import { SVGProps } from 'react'
+
+const JALogo = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    className="icon"
+    viewBox="0 0 1024 1024"
+    xmlns="http://www.w3.org/2000/svg"
+    p-id={32712}
+    width={128}
+    height={128}
+    {...props}
+  >
+    <path
+      d="M411.264 0v101.568H103.04v302.656H0V0zM411.264 1024v-101.568H103.04V619.776H0V1024z"
+      p-id={32713}
+      fill="currentColor"
+    />
+    <path
+      d="M512 512m-128 0a128 128 0 1 0 256 0 128 128 0 1 0-256 0Z"
+      p-id={32714}
+      fill="currentColor"
+    />
+    <path
+      d="M612.736 0v101.568h308.16v302.656H1024V0zM612.736 1024v-101.568h308.16V619.776H1024V1024z"
+      p-id={32715}
+      fill="currentColor"
+    />
+  </svg>
+)
+export default JALogo

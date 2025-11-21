@@ -25,10 +25,10 @@ type PropsType = {
 
 export const StatusList = ['PENDING', 'PROCESSING', 'TERMINATE'] as const
 
-const StatusColorMap = {
-  PENDING: '#C7D1DC',
-  PROCESSING: '#15B371',
-  TERMINATE: '#DD4444',
+const StatusType = {
+  PENDING: 'default',
+  PROCESSING: 'success',
+  TERMINATE: 'error',
 }
 
 const weekOfDayMap = new Map<string, string>([
@@ -140,13 +140,12 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <TagItemV2
-                color={StatusColorMap[data.status!]}
-                bgColor={`${StatusColorMap[data.status!]}33`}
+                type={StatusType[data.status as (typeof StatusList)[number]]}
               >
                 {t(`schedule.status.${data.status}.title`)}
               </TagItemV2>
               <Tooltip title={data.name}>
-                <span className="text-white flex-1 truncate max-w-40">
+                <span className="text-hightlight flex-1 truncate max-w-40">
                   {data.name}
                 </span>
               </Tooltip>
@@ -227,7 +226,7 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
               <span>
                 断点续飞:{' '}
                 {data.breakPointEnable === 'YES' ? (
-                  <CheckCircleOutlined className="text-green-600" />
+                  <CheckCircleOutlined className="text-green-500" />
                 ) : (
                   <CloseCircleOutlined />
                 )}

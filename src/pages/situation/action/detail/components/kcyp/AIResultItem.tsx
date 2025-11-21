@@ -148,7 +148,7 @@ const AIResultItem: FC<{
         >
           <ul className="flex flex-col gap-1 justify-between text-fore">
             <li className="flex gap-1 whitespace-nowrap ">
-              <span className="text-white">车牌:</span>
+              <span className="text-hightlight">车牌:</span>
               <Form.Item name="plateNo" noStyle>
                 <Input
                   size="small"
@@ -174,7 +174,7 @@ const AIResultItem: FC<{
               </Form.Item>
             </li>
             <li className="flex gap-1 whitespace-nowrap">
-              <span className="text-white">车型:</span>
+              <span className="text-hightlight">车型:</span>
               <Form.Item name="plateType" noStyle>
                 <Select
                   size="small"
@@ -184,17 +184,17 @@ const AIResultItem: FC<{
               </Form.Item>
             </li>
             <li className="flex gap-1 whitespace-nowrap">
-              <span className="text-white">时间:</span>
+              <span className="text-hightlight">时间:</span>
               <span>{dayjs(data.resultTime).format('MM/DD HH:mm:ss')}</span>
             </li>
             <li className="flex gap-1 whitespace-nowrap">
-              <span className="text-white">位置:</span>
+              <span className="text-hightlight">位置:</span>
               <span>
                 {data.longitude.toFixed(5)}, {data.latitude.toFixed(5)}
               </span>
             </li>
             <li className="flex gap-1">
-              <span className="text-white">来源:</span>
+              <span className="text-hightlight">来源:</span>
               <span>{data.source}</span>
             </li>
           </ul>
