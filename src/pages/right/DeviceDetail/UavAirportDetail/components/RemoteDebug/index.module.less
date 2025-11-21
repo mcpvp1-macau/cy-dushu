@@ -3,8 +3,8 @@
   display: flex;
   flex-wrap: wrap;
   border-radius: 3px;
-  background: #1c2631;
-  border: 1px solid #37414d;
+  background: rgb(var(--ground-color-2));
+  border: 1px solid rgb(var(--ground-color-5));
   gap: 12px;
 
   .item {
@@ -12,7 +12,7 @@
     height: 48px;
     border-radius: 3px;
     background: rgba(255, 255, 255, 0%);
-    border: 1px solid #37414d;
+    border: 1px solid rgb(var(--ground-color-5));
     display: flex;
     justify-content: space-between;
     padding: 8px;
@@ -34,12 +34,12 @@
       }
 
       .title {
-        color: #c7d1dc;
+        color: rgb(var(--fore-color));
         line-height: 12px;
       }
 
       .value {
-        color: #fff;
+        color: rgb(var(--highlight-color));
         line-height: 12px;
         max-width: 70px;
         overflow: hidden;
@@ -51,9 +51,9 @@
 
 .content2 {
   margin-top: 12px;
-  border: 1px solid #37414d;
+  border: 1px solid rgb(var(--ground-color-5));
   border-radius: 3px;
-  background-color: #1c2631;
+  background-color: rgb(var(--ground-color-2));
   box-sizing: content;
 
   .progressHeader {

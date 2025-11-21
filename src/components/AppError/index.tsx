@@ -1,4 +1,4 @@
-import { themeConfig } from '@/config/theme-config'
+import { getThemeConfig } from '@/config/theme-config'
 import { postServerLog } from '@/service/modules/logs'
 import { Button, ConfigProvider } from 'antd'
 import { useRouteError } from 'react-router'
@@ -65,7 +65,7 @@ const Content = () => {
 
 const AppErrorBoundary: FC<ErrorBoundaryProps> = memo(() => {
   return (
-    <ConfigProvider theme={themeConfig}>
+    <ConfigProvider theme={getThemeConfig('dark')}>
       <div className="w-screen h-screen flex items-center justify-center bg-ground-1">
         <Content />
       </div>

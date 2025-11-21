@@ -125,7 +125,7 @@ const EventDetail: FC<PropsType> = memo(({ data, useCol, swiper, useGo }) => {
                   {properties.map((e) => (
                     <li key={e.label} className="flex gap-3">
                       <label>{e.label}:</label>
-                      <p className="text-white">
+                      <p className="text-hightlight">
                         <span>{e.value}</span>
                         {e.label === '位置' &&
                           (useGo ? (
@@ -154,7 +154,7 @@ const EventDetail: FC<PropsType> = memo(({ data, useCol, swiper, useGo }) => {
                   {Object.keys(expand).map((e) => (
                     <li key={e} className="flex gap-3">
                       <label>{e}:</label>
-                      <span className="text-white">
+                      <span className="text-hightlight">
                         {JSON.stringify(expand[e])}
                       </span>
                     </li>

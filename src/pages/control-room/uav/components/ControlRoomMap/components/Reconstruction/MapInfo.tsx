@@ -1,3 +1,5 @@
+import { InfoCircleOutlined, InfoOutlined } from '@ant-design/icons'
+
 type PropsType = {
   state:
     | 'drawing'
@@ -34,10 +36,8 @@ const MapInfo: FC<PropsType> = memo(({ state, MAX_RADIUS, MIN_RADIUS }) => {
 
   return (
     !!infoMsg() && (
-      <div
-        className="absolute p-6 top-16 left-1/2 -translate-x-1/2 w-4/5 text-center"
-        style={{ backgroundColor: '#0009' }}
-      >
+      <div className="absolute p-3 top-16 left-1/2 -translate-x-1/2 w-4/5 text-center bg-ground-1/70 rounded backdrop-blur-sm">
+        <InfoCircleOutlined className="text-blue-500 mr-3" />
         {infoMsg()}
       </div>
     )

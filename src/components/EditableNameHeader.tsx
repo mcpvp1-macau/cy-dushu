@@ -56,7 +56,7 @@ const EditableNameHeader: FC<PropsType> = memo(
       <div
         className={clsx(
           'w-full flex items-center justify-between gap-2 overflow-hidden',
-          'border-b border-solid border-gray-700',
+          'border-b border-solid border-ground-5',
           className,
         )}
       >
@@ -91,7 +91,9 @@ const EditableNameHeader: FC<PropsType> = memo(
                 <Input size="small" onPressEnter={handlePressEnter} />
               </Form.Item>
             ) : (
-              <h3 className="text-white text-base truncate pr-1">{value}</h3>
+              <h3 className="text-hightlight text-base truncate pr-1">
+                {value}
+              </h3>
             )}
           </Form>
         </div>

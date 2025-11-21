@@ -264,30 +264,30 @@ const AlgorithmSettingModal: FC<PropsType> = memo(
         onClose={onClose}
         onConfirm={handleConfirm}
       >
-        <div className="bg-[#16202B] p-3 mb-3">
+        <div className="bg-ground-1 p-3 mb-3">
           <div className="flex gap-2">
             <Icon className="text-fore" />
             <span>{aiData.name}</span>
           </div>
-          <div className="mt-3 border border-solid border-gray-700 rounded-[3px] p-2 flex text-fore text-sm">
+          <div className="mt-3 border border-solid border-ground-5 rounded-[3px] p-2 flex text-fore text-sm">
             <div className="grow">
               <div>{t('device.algorithm.deviceCountofDeployed.title')}</div>
-              <div className="text-white">{aiData.deviceCount}</div>
+              <div className="text-hightlight">{aiData.deviceCount}</div>
             </div>
             <div className="grow">
               <div>{t('common.source')}</div>
-              <div className="text-white">{envMap['from'] || '-'}</div>
+              <div className="text-hightlight">{envMap['from'] || '-'}</div>
             </div>
             <div className="grow">
               <div>{t('common.createTime')}</div>
-              <div className="text-white">{aiData.createTime}</div>
+              <div className="text-hightlight">{aiData.createTime}</div>
             </div>
             <div className="grow">
               <div>{t('common.version')}</div>
-              <div className="text-white">{envMap['version'] || '-'}</div>
+              <div className="text-hightlight">{envMap['version'] || '-'}</div>
             </div>
           </div>
-          <div className="mt-3 border border-solid border-gray-700 rounded-[3px] p-2">
+          <div className="mt-3 border border-solid border-ground-5 rounded-[3px] p-2">
             {formItems.length === 0 ? (
               <AppEmpty
                 description={t('device.algorithm.emptyConfig.description')}

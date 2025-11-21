@@ -114,7 +114,7 @@ const UavAirportUavDetail: FC<PropsType> = memo(({ deviceId }) => {
         <div className="flex justify-between">
           <div className="flex gap-2 items-center">
             <DeviceIcon type="UAV" className="device-detail-icon" />
-            <h6 className="text-white text-base">
+            <h6 className="text-hightlight text-base">
               {isLoading || !data ? (
                 <LoadingOutlined />
               ) : (

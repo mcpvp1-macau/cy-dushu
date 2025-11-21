@@ -10,7 +10,7 @@ const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
         <div className="truncate w-[60px]">{l}</div>
       </Tooltip>
       <div>:</div>
-      <span className="text-[#fff] text-[14px]">
+      <span className="text-white text-[14px]">
         {v === undefined ? '-' : v}
       </span>
     </li>
@@ -53,10 +53,6 @@ const WangLouInfoCard: FC<PropsType> = memo(({ data }) => {
           l={t('common.latitude')}
           v={(state.latitude ?? properties.latitude)?.toFixed(5) || '-'}
         />
-        {/* <I l="高度" v={`${state.statusInfo?.altitude?.toFixed(2) || 0} m`} />
-        <I l="速度" v={`${state.statusInfo?.speed?.toFixed(2) || 0} m/s`} />
-        <I l="车体横滚" v={`${state.statusInfo?.roll?.toFixed(2) || 0} m`} />
-        <I l="车体俯仰" v={`${state.statusInfo?.pitch?.toFixed(2) || 0} m/s`} /> */}
       </ul>
     </div>
   )

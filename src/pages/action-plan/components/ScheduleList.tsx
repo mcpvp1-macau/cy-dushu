@@ -64,7 +64,7 @@ const ScheduleList: FC<PropsType> = memo(() => {
       <header className="flex justify-between items-center p-3 border-b border-solid border-ground-4">
         <div className="flex gap-1">
           <MenuIconSchedule />
-          <h2 className="text-white">{t('schedue.list.title')}</h2>
+          <h2 className="text-hightlight">{t('schedue.list.title')}</h2>
         </div>
       </header>
       <div className="h-[1px] bg-ground-4" />

@@ -73,7 +73,7 @@ const RightEventDetail: FC<PropsType> = memo(() => {
       <CloseableHeader>
         <div className="flex gap-2 items-center">
           <Icon />
-          <h6 className="text-white text-base">
+          <h6 className="text-hightlight text-base">
             {data?.eventName} {data?.id && `(${data.id})`}
           </h6>
         </div>

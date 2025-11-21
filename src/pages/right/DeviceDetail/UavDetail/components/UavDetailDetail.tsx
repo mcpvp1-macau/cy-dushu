@@ -66,7 +66,7 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
         horizontalSpeed={state.horizontalSpeed}
       />
 
-      <section className="m-3 rounded overflow-hidden">
+      <section className="m-3 overflow-hidden">
         <UavDetailVideo
           videoSource={videoSource ?? ''}
           sn={isRtcDemo ? data.sn : undefined}

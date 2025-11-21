@@ -34,7 +34,7 @@ const ColorSelecter: FC = () => {
           onChange(color)
         }}
       />
-      <div className="w-[1px] h-3 bg-[#494f56]"></div>
+      <div className="w-[1px] h-3 bg-ground-5"></div>
       {presetColors.map((c) => {
         return (
           <div

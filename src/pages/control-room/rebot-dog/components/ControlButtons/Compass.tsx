@@ -18,7 +18,7 @@ const Compass: FC<PropsType> = memo(() => {
       {/* 姿态(横滚角) */}
       <div className="absolute inset-5 rounded-full overflow-hidden">
         <div
-          className="absolute inset-0 -left-80 -right-80 bg-gradient-to-b from-[#4c90f055] to-transparent"
+          className="absolute inset-0 -left-80 -right-80 bg-gradient-to-b from-ground-5 to-transparent"
           style={{
             top: `${((pitch + 90) / 180) * 100}%`,
             transformOrigin: 'top center',

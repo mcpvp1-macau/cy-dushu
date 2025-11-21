@@ -178,7 +178,7 @@ const GimbalSwitch: FC<PropsType> = memo(() => {
                         onClick={() => handleChangeThermalStyle(e.value)}
                       >
                         <span
-                          className={clsx({
+                          className={clsx('text-white', {
                             ['text-primary']:
                               e.value == thermalCurrentPaletteStyle,
                           })}

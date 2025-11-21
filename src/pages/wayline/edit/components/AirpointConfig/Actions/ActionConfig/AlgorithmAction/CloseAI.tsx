@@ -157,7 +157,7 @@ const CloseAI: FC<PropsType> = memo(({ config, onChange }) => {
                 onChange={handleTimingChange}
               />
             </div>
-            <div className="mt-3 border border-solid border-[#37414D] rounded-[3px] p-2 flex gap-2">
+            <div className="mt-3 border border-solid border-ground-5 rounded-[3px] p-2 flex gap-2">
               <div className="pt-0.5">
                 <Icon />
               </div>
@@ -203,7 +203,7 @@ const CloseAI: FC<PropsType> = memo(({ config, onChange }) => {
               {dataOptions?.map((item) => (
                 <div
                   key={item.id}
-                  className="w-[300px] border border-solid border-[#37414D] p-1.5 rounded-[3px] flex"
+                  className="w-[300px] border border-solid border-ground-5 p-1.5 rounded-[3px] flex"
                 >
                   <div className="overflow-hidden">
                     <Radio value={item.id} />

@@ -8,14 +8,15 @@ export default {
     extend: {
       colors: {
         ground: {
-          1: '#16202b',
-          2: 'var(--ja-dark-gray-2)',
-          3: 'var(--ja-dark-gray-3)',
-          4: 'var(--ja-dark-gray-4)',
-          5: 'var(--ja-dark-gray-5)',
+          1: 'rgba(var(--ground-color-1), <alpha-value>)',
+          2: 'rgba(var(--ground-color-2), <alpha-value>)',
+          3: 'rgba(var(--ground-color-3), <alpha-value>)',
+          4: 'rgba(var(--ground-color-4), <alpha-value>)',
+          5: 'rgba(var(--ground-color-5), <alpha-value>)',
+          6: 'rgba(var(--ground-color-6), <alpha-value>)',
         },
-        fore: 'var(--ja-light-gray-1)',
-        primary: 'var(--primary-color)',
+        fore: 'rgba(var(--fore-color), <alpha-value>)',
+        primary: 'rgba(var(--primary-color), <alpha-value>)',
         ['primary-color']: {
           1: 'var(--primary-color-1)',
           2: 'var(--primary-color-2)',
@@ -23,6 +24,7 @@ export default {
           4: 'var(--primary-color-4)',
           5: 'var(--primary-color-5)',
         },
+        hightlight: 'rgba(var(--highlight-color), <alpha-value>)',
       },
       borderRadius: {
         lg: 'var(--radius)',

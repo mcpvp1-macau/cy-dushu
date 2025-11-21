@@ -3,6 +3,7 @@ import DeviceInfoCard from './DeviceInfoCard'
 import styles from './index.module.less'
 import IconSetting from '@/assets/icons/jsx/IconSetting'
 import InitParams from './InitParams'
+import IconButton from '@/components/ui/button/IconButton'
 
 type PropsType = {
   /** 详情数据 */
@@ -46,10 +47,9 @@ const InfoCard: FC<PropsType> = memo(({ data }) => {
             right: (
               <>
                 {isHaveRadar ? (
-                  <IconSetting
-                    className="hover:text-[#447dcf] cursor-pointer"
-                    onClick={onClick}
-                  />
+                  <IconButton onClick={onClick}>
+                    <IconSetting />
+                  </IconButton>
                 ) : null}
               </>
             ),

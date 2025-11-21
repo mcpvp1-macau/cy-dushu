@@ -7,8 +7,6 @@ import { message, notification } from 'antd'
 import { AppMsgContext, msgMitt } from './hooks/useAppMsg'
 import { NotificationContext } from './hooks/useNotification.ts'
 import GlobalState from './components/GlobalState'
-import { themeConfig } from './config/theme-config'
-import AppEmpty from './components/AppEmpty.tsx'
 import zh from 'antd/es/locale/zh_CN'
 import en from 'antd/es/locale/en_US'
 
@@ -19,12 +17,12 @@ import organization from './router/modules/organization'
 import FixedWindowArea from './components/FixedWindowsArea'
 import backtracking from './router/modules/backtracking'
 import share from './router/modules/share.tsx'
-import { XProvider } from '@ant-design/x'
 import Update from './components/Update'
 import { lazy, Suspense } from 'react'
 import AppSpin from './components/AppSpin.tsx'
 
 import { Toaster } from 'sonner'
+import AppThemeProvider from './components/AppThemeProvider'
 
 const hidenSet = new Set([
   controlRoom.id,
@@ -41,7 +39,6 @@ const Right = lazy(() => import('./pages/right'))
 
 const App = () => {
   useTitle(globalConfig.title ?? '牍术·无人装备智能引擎')
-
   const [messageApi, contextHolder] = message.useMessage({
     top: 45,
     maxCount: 3,
@@ -76,11 +73,7 @@ const App = () => {
   const { i18n } = useTranslation()
 
   return (
-    <XProvider
-      renderEmpty={() => <AppEmpty />}
-      theme={themeConfig}
-      locale={i18n.language === 'zh' ? zh : en}
-    >
+    <AppThemeProvider locale={i18n.language === 'zh' ? zh : en}>
       <Update />
       <div
         className={clsx(
@@ -139,7 +132,7 @@ const App = () => {
           </NotificationContext.Provider>
         </AppMsgContext.Provider>
       </div>
-    </XProvider>
+    </AppThemeProvider>
   )
 }
 

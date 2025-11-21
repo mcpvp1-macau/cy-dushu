@@ -150,7 +150,7 @@ const UavAirportDetail: FC<PropsType> = memo(
         <div className="flex justify-between gap-2">
           <div className="flex gap-2 items-center">
             <DeviceIconAIRPORT className="device-detail-icon" />
-            <h6 className="text-white text-base max-w-[224px] truncate">
+            <h6 className="text-hightlight text-base max-w-[224px] truncate">
               {data.deviceName}
             </h6>
           </div>
@@ -226,7 +226,7 @@ const UavAirportDetail: FC<PropsType> = memo(
                 stockStatus={state.isInDock}
               />
             </div>
-            <div className="mx-3 rounded overflow-hidden">
+            <div className="mx-3 overflow-hidden">
               <DeviceLiveVideo
                 productKey={productKey}
                 deviceId={deviceId}

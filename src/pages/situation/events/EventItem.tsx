@@ -61,7 +61,7 @@ const EventItem: FC<PropsType> = memo(({ data, active }) => {
       <div className="flex justify-between">
         <div className="flex gap-2">
           <MenuIconEvents />
-          <p className="text-white">
+          <p className="text-hightlight">
             {data.eventName} ({data.id})
           </p>
         </div>

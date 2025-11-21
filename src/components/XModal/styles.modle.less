@@ -1,7 +1,8 @@
 .liqun-modal {
-  border: 1px solid #37414d;
+  border: 1px solid rgba(var(--ground-color-5));
   border-radius: 2px;
-  background-color: #1c2630;
+  background-color: rgba(var(--ground-color-1), 0.9);
+  backdrop-filter: blur(4px);
 
   .ant-form-item {
     margin-bottom: 12px;
@@ -13,13 +14,13 @@
     align-items: center;
     height: 32px;
     padding: 0 8px 0 12px;
-    background-color: #28323c;
-    border-bottom: 1px solid #37414d;
+    background-color: rgb(var(--ground-color-3));
+    border-bottom: 1px solid rgba(var(--ground-color-5));
     cursor: move;
 
     .title {
       flex: 1;
-      color: #fff;
+      color: rgb(var(--highlight-color));
     }
   }
 

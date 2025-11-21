@@ -83,7 +83,7 @@ const XModal: FC<PropsType> = ({
         hashed: false,
         components: {
           Modal: {
-            contentBg: '#1c2630',
+            contentBg: 'transparent',
           },
         },
       }}

@@ -73,7 +73,7 @@ const WanglouBackTrackingDetail: FC<PropsType> = memo(
           </Link>
         </section>
         <div className="my-2 px-3 text-xs flex items-center gap-2 text-white">
-          <div className="w-[2px] h-[10px] bg-[#3DCC91]"></div>数据采集时间:{' '}
+          <div className="w-[2px] h-[10px] bg-green-500"></div>数据采集时间:{' '}
           {updateTime}
         </div>
         <div className="my-2 px-3 text-xs">

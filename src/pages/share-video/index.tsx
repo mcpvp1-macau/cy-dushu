@@ -225,7 +225,7 @@ const ShareVideo: React.FC = () => {
     <div className="bg-ground-1 text-fore w-full h-[100vh]">
       {finalUrl ? (
         <div className="absolute top-0 left-0 w-full z-10 h-10 bg-black/50 flex items-center justify-center">
-          <div className="text-[#fff] text-xs">{formatTs(ts)}</div>
+          <div className="text-white text-xs">{formatTs(ts)}</div>
         </div>
       ) : (
         <></>

@@ -6,6 +6,7 @@ import IconClose from '@/assets/icons/jsx/IconClose'
 import useMapDrawStore, { DrawType } from '@/store/map/useDraw.store'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { RightModeEnum } from '@/enum/right-mode'
+import IconButton from '@/components/ui/button/IconButton'
 
 type PropsType = {
   onClose?: () => void
@@ -33,16 +34,18 @@ const AddGeometry: FC<PropsType> = (props) => {
   })
 
   return (
-    <div className="flex p-1 gap-2 flex-wrap">
+    <div className="flex p-1 gap-2 flex-wrap text-sm">
       <DrawingTypeSelecter onChange={updateDrawing} />
       <ColorSelecter />
       <LineStyleSelecter showNoFly={isFlightArea} />
       <OpacityInput />
-      <div className="flex items-center justify-center gap-2 ml-3">
-        <IconClose
-          className="text-[22px] cursor-pointer hover:text-[#4c90f0]"
+      <div className="flex items-center justify-center mx-3 pointer-events-auto">
+        <IconButton
+          className="text-lg size-[16px] flex items-center justify-center"
           onClick={onCloseFn}
-        />
+        >
+          <IconClose />
+        </IconButton>
       </div>
     </div>
   )

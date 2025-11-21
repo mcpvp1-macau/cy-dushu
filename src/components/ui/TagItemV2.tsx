@@ -1,3 +1,5 @@
+import { twMerge } from 'tailwind-merge'
+
 type PropsType = {
   type?: 'default' | 'primary' | 'success' | 'warning' | 'error' | string
   /** 标签内容 */
@@ -11,26 +13,25 @@ type PropsType = {
   className?: string
 }
 
-const defaultColorMap: Record<string, string> = {
-  default: '#c7d1dc',
-  primary: '#4c90f0',
-  success: '#0f9960',
-  warning: '#d9822b',
-  error: '#dd4444',
-}
-
 const TagItemV2: FC<PropsType> = memo((props) => {
-  const foreColor = props.color || defaultColorMap[props.type || 'default']
-  const bgColor =
-    props.bgColor || `${defaultColorMap[props.type || 'default']}33`
+  const type = props.type || 'default'
 
   return (
     <div
-      className={clsx(
-        'text-xs inline-flex items-center gap-1 h-[18px] p-1 px-2 rounded-[3px] whitespace-nowrap',
-        props.className,
+      className={twMerge(
+        clsx(
+          'text-xs inline-flex items-center gap-1 h-[18px] p-1 px-2 rounded-[3px] whitespace-nowrap',
+          {
+            'text-fore bg-fore/20': type === 'default',
+            'text-primary bg-primary/20': type === 'primary',
+            'text-green-500 bg-green-500/20': type === 'success',
+            'text-orange-500 bg-orange-500/20': type === 'warning',
+            'text-red-500 bg-red-500/20': type === 'error',
+          },
+          props.className,
+        ),
       )}
-      style={{ color: foreColor, background: bgColor }}
+      style={{ color: props.color, background: props.bgColor }}
     >
       {props.icon}
       {props.children}

@@ -24,14 +24,14 @@ const CollapsedPage: FC<PropsType> = memo(({ children }) => {
           hidden: !open,
         })}
       >
-        <div className=" bg-[#141d28] bg-opacity-90 backdrop-blur-sm flex-1 overflow-hidden">
+        <div className=" bg-ground-1/90 backdrop-blur-sm flex-1 overflow-hidden">
           {children}
         </div>
         {/* 地图底部状态栏栏目占位 */}
         <div className="h-5" />
       </div>
       <button
-        className="bg-[#141d28e6] h-12 border border-solid border-ground-4 rounded-r mt-12 text-fore hover:text-primary origin-top-left scale-90"
+        className="bg-ground-1/90 h-12 border border-solid border-ground-4 rounded-r mt-12 text-fore hover:text-primary origin-top-left scale-90"
         onClick={() => setOpen(!open)}
       >
         {open ? (

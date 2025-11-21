@@ -1,27 +1,28 @@
 .tippy-box[data-theme~='liqun'] {
-  background-color: #27303b;
-  color: #c7d1dc;
+  background-color: rgba(var(--ground-color-1), 0.9);
+  color: rgb(var(--fore-color));
+  backdrop-filter: blur(4px);
 }
 
 .tippy-box[data-theme~='liqun'][data-placement^='top'] > .tippy-arrow::before {
-  border-top-color: #27303b;
+  border-top-color: rgba(var(--ground-color-1), 0.9);
 }
 .tippy-box[data-theme~='liqun'][data-placement^='bottom']
   > .tippy-arrow::before {
-  border-bottom-color: #27303b;
+  border-bottom-color: rgba(var(--ground-color-1), 0.9);
 }
 .tippy-box[data-theme~='liqun'][data-placement^='left'] > .tippy-arrow::before {
-  border-left-color: #27303b;
+  border-left-color: rgba(var(--ground-color-1), 0.9);
 }
 .tippy-box[data-theme~='liqun'][data-placement^='right']
   > .tippy-arrow::before {
-  border-right-color: #27303b;
+  border-right-color: rgba(var(--ground-color-1), 0.9);
 }
 
 /* The border of the arrow will now match the border of the box */
 .tippy-box[data-theme~='liqun'] {
-  background: #27303b;
-  border: 1px solid #424b54;
+  background: rgba(var(--ground-color-1), 0.9);
+  border: 1px solid rgb(var(--ground-color-5));
 }
 
 .tippy-content {
