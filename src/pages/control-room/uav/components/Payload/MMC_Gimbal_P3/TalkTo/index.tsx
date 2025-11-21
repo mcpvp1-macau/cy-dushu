@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react'
 import { Button, message } from 'antd'
 import { useUploadMinio } from '@/hooks/useUploadMinio'
 import CryptoJS, { MD5 } from 'crypto-js'
-import { FFmpeg } from '@ffmpeg/ffmpeg'
 
 type PropsType = {
   onUpload?: (file: any) => void
@@ -13,40 +12,48 @@ const TalkTo: React.FC<PropsType> = ({ onUpload, stopPlay }) => {
   const [recording, setRecording] = useState(false)
 
   const { uploadToMinio } = useUploadMinio('speakerRecord')
-
-  const to16BitPCM = (input) => {
-    const dataLength = input.length * (16 / 8)
-    const dataBuffer = new ArrayBuffer(dataLength)
-    const dataView = new DataView(dataBuffer)
-    let offset = 0
-    for (let i = 0; i < input.length; i++, offset += 2) {
-      const s = Math.max(-1, Math.min(1, input[i]))
-      dataView.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true)
-    }
-    return dataView
-  }
-
   // webm转pcm（16k单声道s16le）
   const convertWebmToPCM = async (webmBlob: Blob): Promise<Blob | null> => {
-    const ffmpeg = new FFmpeg();
-    await ffmpeg.load();
-    const webmBuffer = await webmBlob.arrayBuffer();
-    await ffmpeg.writeFile('record.webm', new Uint8Array(webmBuffer));
-    await ffmpeg.exec(['-y', '-i', 'record.webm', '-f', 's16le', '-ac', '1', '-ar', '16000', '16k.pcm']);
-    const pcmData = await ffmpeg.readFile('16k.pcm');
-    let pcmBuffer: ArrayBuffer;
-    if (pcmData instanceof Uint8Array) {
-      if (pcmData.buffer instanceof SharedArrayBuffer) {
-        // 转为标准ArrayBuffer
-        pcmBuffer = new Uint8Array(pcmData).buffer.slice(0);
-      } else {
-        pcmBuffer = pcmData.buffer;
-      }
-    } else {
-      // string类型不处理
-      return null;
+    // 1. 解码 webm
+    const arrayBuffer = await webmBlob.arrayBuffer()
+    const audioCtx = new (window.AudioContext ||
+      (window as any).webkitAudioContext)()
+    const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer)
+
+    // 2. 重采样到 16k 单声道
+    const offlineCtx = new OfflineAudioContext({
+      numberOfChannels: 1,
+      length: Math.ceil(audioBuffer.duration * 16000),
+      sampleRate: 16000,
+    })
+    const source = offlineCtx.createBufferSource()
+    // 合成单声道
+    const monoBuffer = offlineCtx.createBuffer(
+      1,
+      audioBuffer.length,
+      audioBuffer.sampleRate,
+    )
+    const input =
+      audioBuffer.numberOfChannels > 1
+        ? audioBuffer
+            .getChannelData(0)
+            .map((v, i) => (v + audioBuffer.getChannelData(1)[i]) / 2)
+        : audioBuffer.getChannelData(0)
+    monoBuffer.copyToChannel(input, 0)
+    source.buffer = monoBuffer
+    source.connect(offlineCtx.destination)
+    source.start()
+    const renderedBuffer = await offlineCtx.startRendering()
+
+    // 3. 导出 s16le PCM
+    const pcmData = renderedBuffer.getChannelData(0)
+    const buffer = new ArrayBuffer(pcmData.length * 2)
+    const view = new DataView(buffer)
+    for (let i = 0; i < pcmData.length; i++) {
+      const s = Math.max(-1, Math.min(1, pcmData[i]))
+      view.setInt16(i * 2, s < 0 ? s * 0x8000 : s * 0x7fff, true)
     }
-    return new Blob([pcmBuffer], { type: 'application/octet-stream' });
+    return new Blob([buffer], { type: 'application/octet-stream' })
   }
 
   // 开始录音
@@ -65,7 +72,11 @@ const TalkTo: React.FC<PropsType> = ({ onUpload, stopPlay }) => {
           message.error('转码失败，请重试')
           return
         }
-        const file = new File([pcmBlob], `talk_${Date.now()}.pcm`, { type: 'application/octet-stream' })
+        console.log('pcmBlob', pcmBlob)
+        message.success('转码完成，正在上传...')
+        const file = new File([pcmBlob], `talk_${Date.now()}.pcm`, {
+          type: 'application/octet-stream',
+        })
         const audioBuffer = await pcmBlob.arrayBuffer()
         const chunkArray = CryptoJS.lib.WordArray.create(audioBuffer)
         const md5 = MD5(chunkArray).toString()
@@ -103,7 +114,7 @@ const TalkTo: React.FC<PropsType> = ({ onUpload, stopPlay }) => {
       <Button onClick={stopRecording} disabled={!recording}>
         开始广播
       </Button>
-      <Button onClick={stopPlay} disabled={!recording}>
+      <Button onClick={stopPlay} disabled={false}>
         停止广播
       </Button>
     </div>

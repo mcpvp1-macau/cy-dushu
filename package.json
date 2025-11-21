@@ -43,7 +43,6 @@
     "@dnd-kit/modifiers": "^7.0.0",
     "@dnd-kit/sortable": "^8.0.0",
     "@dnd-kit/utilities": "^3.2.2",
-    "@ffmpeg/ffmpeg": "^0.12.15",
     "@mapbox/tile-cover": "^3.0.2",
     "@mapbox/tilebelt": "^2.0.2",
     "@mkkellogg/gaussian-splats-3d": "^0.4.7",
