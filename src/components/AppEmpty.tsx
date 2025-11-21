@@ -1,4 +1,4 @@
-import JSXEmpty from '@/assets/svg_jsx/empty'
+import JSXEmpty from '@/assets/svg_jsx/Empty'
 import { Empty, GetProps } from 'antd'
 import { twMerge } from 'tailwind-merge'
 
