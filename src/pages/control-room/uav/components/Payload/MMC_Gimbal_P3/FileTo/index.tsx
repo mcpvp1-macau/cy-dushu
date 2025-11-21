@@ -65,7 +65,9 @@ const FileTo: React.FC<Props> = (props) => {
   return (
     <div>
       {Arr.map(render)}
-      <UploadAudio onUpload={onUpload} accept='.pcm' />
+      {globalConfig.usePayloadP3Upload ? (
+        <UploadAudio onUpload={onUpload} accept=".pcm" />
+      ) : null}
     </div>
   )
 }

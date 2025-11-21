@@ -128,7 +128,7 @@ const MMC_Gimbal_P3: React.FC = () => {
           <TalkTo onUpload={onUploadTalk} stopPlay={stopPlay} />
         </>
       ),
-      // disabled: true,
+      disabled: !globalConfig.usePayloadP3Upload,
     },
     {
       key: '3',

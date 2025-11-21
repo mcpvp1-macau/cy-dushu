@@ -104,6 +104,9 @@ class GlobalConfig {
   useFlight3D?: boolean
   robotDogMap?: 'point-cloud' | 'wgs84'
 
+  // 是否开启喊话器音频上传功能
+  usePayloadP3Upload: boolean = false
+
   constructor(def: ConfigType) {
     Object.assign(this, def)
   }
