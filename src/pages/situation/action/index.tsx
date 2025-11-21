@@ -100,7 +100,7 @@ const PageSituationAction: FC<PropsType> = memo(() => {
             <div className="p-2">
               <div className="flex gap-2 items-center mb-1">
                 <div className="h-[10px] w-[2px] bg-green-500 rounded-sm" />
-                <span className="text-white">{'行动类型'}</span>
+                <span className="text-hightlight">{'行动类型'}</span>
               </div>
               <div>
                 <Radio.Group
@@ -116,7 +116,7 @@ const PageSituationAction: FC<PropsType> = memo(() => {
               </div>
               <div className="flex gap-2 items-center mt-3 mb-1">
                 <div className="h-[10px] w-[2px] bg-green-500 rounded-sm" />
-                <span className="text-white">{'行动状态'}</span>
+                <span className="text-hightlight">{'行动状态'}</span>
               </div>
 
               <div>

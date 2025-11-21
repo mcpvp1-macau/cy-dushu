@@ -38,11 +38,7 @@ const SurveillanceComp: React.FC<PropsType> = ({
         items={[
           {
             key: '1',
-            label: (
-              <div>
-                侦察频段 {rf.length}个
-              </div>
-            ),
+            label: <div>侦察频段 {rf.length}个</div>,
             children: (
               <div className="flex flex-col gap-2 text-xs bg-[#28323C] my-2 p-2">
                 {rf?.map((item, i) => (
@@ -73,7 +69,7 @@ const SurveillanceComp: React.FC<PropsType> = ({
                 {keyAreas?.map((item, i) => (
                   <div>
                     <div className="flex items-center gap-1">
-                      <div className="w-[2px] h-[8px] bg-[#15B371]"></div>
+                      <div className="w-[2px] h-[8px] bg-green-500"></div>
                       侦测区域 {i + 1}
                     </div>
                     <div className="flex text-xs text-fore pl-[6px]">

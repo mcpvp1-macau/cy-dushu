@@ -94,7 +94,6 @@ const Health: FC<PropsType> = memo(({ deviceId }) => {
           导出
         </Button>
       </div>
-      {/**bg-[#2E3A46]  bg-[#28323C]*/}
       <div>
         <ConfigProvider
           theme={{

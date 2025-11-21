@@ -11,7 +11,7 @@ import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDevice
 
 type PropsType = {
   noFile?: boolean
-}     
+}
 
 const MMC_Gimbal_P3: React.FC<PropsType> = ({ noFile }) => {
   const productKey = useDeviceDetailStore(
@@ -68,9 +68,14 @@ const MMC_Gimbal_P3: React.FC<PropsType> = ({ noFile }) => {
   }
 
   const onChangeMode = async (mode: string, showMsg = true) => {
-    await postSerivce('ttsMode', {
-      mode,
-    }, undefined, showMsg)
+    await postSerivce(
+      'ttsMode',
+      {
+        mode,
+      },
+      undefined,
+      showMsg,
+    )
   }
 
   // "audioPayloadControl"
@@ -118,7 +123,7 @@ const MMC_Gimbal_P3: React.FC<PropsType> = ({ noFile }) => {
         <div className="flex leading-[32px] space-x-2 w-full pt-[12px]">
           <Icon
             id="icon-volume-up"
-            className="pt-[8px] text-[24px] text-[#C7D1DC]"
+            className="pt-[8px] text-[24px] text-fore"
           />
           <Slider value={volume} onChange={onChangeVolume} className="w-full" />
           <span>{volume}%</span>

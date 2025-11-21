@@ -85,7 +85,7 @@ const Right: FC<PropsType> = memo(() => {
       <div
         className={clsx(
           'absolute z-10',
-          'bg-[#16202be6] rounded-[3px] backdrop-blur-sm',
+          'bg-ground-1/90 rounded-[3px] backdrop-blur-sm',
           'border border-solid border-ground-5',
           'flex flex-col',
           'overflow-y-hidden',
@@ -122,7 +122,7 @@ const Right: FC<PropsType> = memo(() => {
       <div
         className={clsx(
           'absolute z-10',
-          'bg-[#16202be6] rounded-[3px] backdrop-blur-sm',
+          'bg-ground-1/90 rounded-[3px] backdrop-blur-sm',
           'border border-solid border-ground-5',
           'flex flex-col',
           'overflow-y-hidden',

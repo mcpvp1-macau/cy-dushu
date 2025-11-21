@@ -57,7 +57,9 @@ const RightRangingPanel: FC<PropsType> = memo(({ onClose }) => {
       <CloseableHeader onClose={onClose}>
         <div className="flex gap-2 items-center">
           <IconRangeFinder className="device-detail-icon" />
-          <h6 className="text-white text-base">{t('overlay.measure.title')}</h6>
+          <h6 className="text-hightlight text-base">
+            {t('overlay.measure.title')}
+          </h6>
         </div>
       </CloseableHeader>
       <div className="mx-3 mb-3 flex justify-between gap-3">

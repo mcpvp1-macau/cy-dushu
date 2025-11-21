@@ -55,7 +55,7 @@ const ChildDeviceStatusItem: React.FC<PropsType> = memo(({ data, state }) => {
                     fontSize: 12,
                   }}
                   ellipsis
-                  className='text-[#fff] text-[14px]'
+                  className="text-white text-sm"
                 >
                   {text}
                 </Typography.Text>

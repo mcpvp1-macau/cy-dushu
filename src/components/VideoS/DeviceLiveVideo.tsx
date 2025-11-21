@@ -321,7 +321,7 @@ const DeviceLiveVideo = memo(
 
       return (
         <div
-          className="size-full overflow-hidden relative bg-black text-sm"
+          className="size-full overflow-hidden relative text-sm"
           ref={wrapperRef}
           style={{ aspectRatio: aspectRatio }}
         >
@@ -342,7 +342,7 @@ const DeviceLiveVideo = memo(
             {/* 视频内容 */}
             <div
               ref={videoBoxRef}
-              className={clsx('absolute inset-0 bg-black')}
+              className={clsx('absolute inset-0 bg-black/60')}
               style={{
                 aspectRatio: aspectRatio,
                 transformOrigin: `${originCenter[0] * 100}% ${
@@ -447,7 +447,7 @@ const DeviceLiveVideo = memo(
             {useTopBar && (leftTop || rightTop || useDing) && (
               <aside
                 ref={topBar}
-                className="absolute inset-x-0 bg-[#1c2630] bg-opacity-70 p-1 px-2 h-8 backdrop-blur-sm"
+                className="absolute inset-x-0 bg-ground-1/80 p-1 px-2 h-8 backdrop-blur-sm"
               >
                 <div className="flex justify-between items-center h-full">
                   <section className="flex items-center gap-3">
@@ -470,7 +470,7 @@ const DeviceLiveVideo = memo(
             {useBottomBar && (
               <aside
                 ref={bottomBar}
-                className="absolute bottom-0 inset-x-0 bg-[#1c2630] bg-opacity-70 p-1 px-2 h-8 z-30 backdrop-blur-sm"
+                className="absolute bottom-0 inset-x-0 bg-ground-1/80 p-1 px-2 h-8 z-30 backdrop-blur-sm"
               >
                 <div className="flex justify-between items-center h-full">
                   <section className="flex items-center gap-3">

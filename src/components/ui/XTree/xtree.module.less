@@ -30,17 +30,21 @@
 
     // 树选中样式
     .ant-tree .ant-tree-node-content-wrapper:hover {
-      background-color: #141d28;
+      background-color: rgb(var(--ground-color-1));
+    }
+
+    .ant-tree .ant-tree-treenode {
+      margin-bottom: 0px;
     }
 
     .ant-tree-node-selected {
-      background-color: #141d28 !important;
+      background-color: rgb(var(--ground-color-1)) !important;
     }
 
     .ant-tree-treenode-switcher-open {
-      border-top: 1px solid rgb(57 67 75 / 100%);
-      border-bottom: 1px solid rgb(57 67 75 / 100%);
-      background-color: rgb(57 67 75 / 20%) !important;
+      border-top: 1px solid rgb(var(--ground-color-5));
+      border-bottom: 1px solid rgb(var(--ground-color-5));
+      background-color: rgb(var(--ground-color-1)) !important;
 
       & .downUpIcon {
         // color: red;
@@ -49,9 +53,9 @@
     }
 
     .ant-tree-treenode-switcher-close {
-      border-top: 1px solid rgb(57 67 75 / 100%);
-      border-bottom: 1px solid rgb(57 67 75 / 100%);
-      background-color: rgb(57 67 75 / 20%) !important;
+      border-top: 1px solid rgb(var(--ground-color-5));
+      border-bottom: 1px solid rgb(var(--ground-color-5));
+      background-color: rgb(var(--ground-color-1)) !important;
     }
   }
 }

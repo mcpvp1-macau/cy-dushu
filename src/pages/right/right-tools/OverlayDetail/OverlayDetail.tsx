@@ -56,7 +56,7 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                   {isEdit ? (
                     <Input ref={inputRef} size="small" />
                   ) : (
-                    <h6 className="text-white text-base max-w-[190px] truncate">
+                    <h6 className="text-hightlight text-base max-w-[190px] truncate">
                       {overlay?.overlayName || '-'}
                     </h6>
                   )}
@@ -105,15 +105,15 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
             <div className="mx-3 mb-3 flex flex-col gap-2 text-sm">
               <p className="flex gap-2">
                 {t('common.createTime')}:
-                <span className="text-white">{overlay.gmtCreate}</span>
+                <span className="text-hightlight">{overlay.gmtCreate}</span>
               </p>
               <p className="flex gap-2">
                 {t('overlay.detail.createUser.title')}:
-                <span className="text-white">{overlay.name}</span>
+                <span className="text-hightlight">{overlay.name}</span>
               </p>
               <p className="flex gap-2">
                 {t('overlay.detail.position.title')}:
-                <span className="text-white">
+                <span className="text-hightlight">
                   {shouldJson(overlay.overlayPositions)?.[0]
                     ?.slice(0, 2)
                     ?.join(', ')}
@@ -127,7 +127,7 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                   {isEdit ? (
                     <Input size="small" className="h-5" />
                   ) : (
-                    <span className="text-white">
+                    <span className="text-hightlight">
                       {styleConfig.remarks || '-'}
                     </span>
                   )}

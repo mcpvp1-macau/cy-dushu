@@ -1,5 +1,4 @@
 import { Empty, GetProps } from 'antd'
-import { type FC } from 'react'
 import zanwushujuSvg from '@/assets/imgs/zanwushuju.svg'
 import { twMerge } from 'tailwind-merge'
 
@@ -17,7 +16,7 @@ const AppEmpty: FC<PropsType> = ({ ...restProps }) => {
       image={zanwushujuSvg}
       {...restProps}
       className={twMerge(
-        'flex flex-col items-center justify-center my-3 opacity-50 text-xs',
+        'flex flex-col items-center justify-center py-3 opacity-50 text-xs',
         restProps.className,
       )}
     />

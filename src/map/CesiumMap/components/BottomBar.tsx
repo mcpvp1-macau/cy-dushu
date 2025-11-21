@@ -107,7 +107,7 @@ const BottomBar: FC<unknown> = memo(() => {
   }, [openCopy])
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 h-5 bg-[#16202be6] backdrop-blur-sm z-10">
+    <div className="absolute bottom-0 left-0 right-0 h-5 bg-ground-1/90 backdrop-blur-sm z-10">
       <div className="flex h-full items-center justify-end text-fore text-xs px-3 gap-1">
         <IconButton
           active={openCopy}

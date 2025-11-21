@@ -32,15 +32,15 @@ const XTable: FC<PropsType> = ({ table, loading }) => {
           {table.getHeaderGroups().map((headerGroup) => (
             <tr
               key={headerGroup.id}
-              className="rounded overflow-hidden bg-[#2E3A46]"
+              className="rounded overflow-hidden bg-ground-6"
             >
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
                   colSpan={header.colSpan}
                   className={clsx(
-                    'p-3 whitespace-nowrap font-normal text-white text-left',
-                    'border-b border-r border-solid border-[#23272D]',
+                    'p-3 whitespace-nowrap font-normal text-highlight text-left',
+                    'border-b border-r border-solid border-ground-3',
                     'first:rounded-tl last:border-r-0',
                     (header.id === 'actions' ||
                       header.column.columnDef.enableColumnFilter) &&
@@ -61,23 +61,20 @@ const XTable: FC<PropsType> = ({ table, loading }) => {
                         placement="bottomRight"
                         trigger={['click']}
                         styles={{
-                         
                           body: {
                             backgroundColor: '#16202b',
                             padding: 0,
-                            
                           },
-                          
                         }}
                         content={() => (
-                          <div className="p-2 bg-[#16202b]">
+                          <div className="p-2 bg-ground-1">
                             {/* @ts-ignore */}
                             {header.column.columnDef.meta?.filterRender?.(
                               header.column,
                             )}
                           </div>
                         )}
-                        rootClassName="[&_.ant-popover-arrow:before]:!bg-[#16202b]"
+                        rootClassName="[&_.ant-popover-arrow:before]:!bg-ground-1"
                       >
                         {/* <IconFilter /> */}
                         <CaretDownOutlined />
@@ -91,7 +88,7 @@ const XTable: FC<PropsType> = ({ table, loading }) => {
                       trigger={['click']}
                       popupRender={() => (
                         <div className="p-2">
-                          <div className="text-sm text-white mb-2">
+                          <div className="text-sm text-highlight mb-2">
                             字段名称
                           </div>
                           {table
@@ -131,8 +128,8 @@ const XTable: FC<PropsType> = ({ table, loading }) => {
                 <td
                   key={cell.id}
                   className={clsx(
-                    'h-[33px] leading-6 py-1 px-3 whitespace-nowrap font-normal text-white',
-                    'border-r border-b border-solid border-[#23272D]',
+                    'h-[33px] leading-6 py-1 px-3 whitespace-nowrap font-normal text-highlight',
+                    'border-r border-b border-solid border-ground-3',
                     'last:border-r-0',
                   )}
                 >

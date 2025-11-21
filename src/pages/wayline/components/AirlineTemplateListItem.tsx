@@ -36,11 +36,11 @@ const AirlineTemplateListItem: FC<PropsType> = memo(({ data }) => {
   const { t } = useTranslation()
 
   return (
-    <li className="card-border text-sm p-2 bg-[#1C2630]">
+    <li className="card-border text-sm p-2 bg-ground-2">
       <div className="flex gap-2">
         <WaylineIcon type={data.taskType} />
         <div className="grow">
-          <p className="max-w-60 truncate text-white">{data.taskName}</p>
+          <p className="max-w-60 truncate text-hightlight">{data.taskName}</p>
         </div>
         <IconButton
           toolTipProps={{ title: t('common.preview') }}

@@ -14,7 +14,9 @@ const FileTo: React.FC<Props> = (props) => {
     useRebotDogControlRoomStore((m) => m.state?.recordAudioFiles) || ''
 
   const currentSelectedRecordAudioFile =
-    useRebotDogControlRoomStore((m) => m.state?.currentSelectedRecordAudioFile) || ''
+    useRebotDogControlRoomStore(
+      (m) => m.state?.currentSelectedRecordAudioFile,
+    ) || ''
 
   const Arr = recordAudioFiles.split(',').filter((item: string) => !!item)
 
@@ -36,7 +38,7 @@ const FileTo: React.FC<Props> = (props) => {
             <Tooltip title={'停止播放'}>
               <Icon
                 id="icon-pause"
-                className="ml-[10px] text-[#C7D1DC] hover:text-[#4C90F0] cursor-pointer"
+                className="ml-[10px] text-fore hover:text-primary cursor-pointer"
                 onClick={() => pause(item)}
               />
             </Tooltip>
@@ -44,7 +46,7 @@ const FileTo: React.FC<Props> = (props) => {
             <Tooltip title={'单次播放'}>
               <Icon
                 id="icon-play"
-                className="ml-[10px] text-[#C7D1DC] hover:text-[#4C90F0] cursor-pointer"
+                className="ml-[10px] text-fore hover:text-primary cursor-pointer"
                 onClick={() => play(item)}
               />
             </Tooltip>

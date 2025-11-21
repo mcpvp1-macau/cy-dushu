@@ -6,6 +6,7 @@ import IconSetting from '@/assets/icons/jsx/IconSetting'
 import InitParams from './InitParams'
 import Sleep from './Sleep'
 import IconSleep from '@/assets/icons/jsx/IconSleep'
+import IconButton from '@/components/ui/button/IconButton'
 
 type PropsType = {
   /** 详情数据 */
@@ -55,10 +56,9 @@ const InfoCard: FC<PropsType> = memo(({ data }) => {
               >
                 <IconSleep className="w-[14px] h-[14px] mr-[10px] cursor-pointer" />
               </Popover>
-              <IconSetting
-                className="hover:text-[#447dcf] cursor-pointer"
-                onClick={onClick}
-              />
+              <IconButton onClick={onClick}>
+                <IconSetting />
+              </IconButton>
             </>
           ),
         }}

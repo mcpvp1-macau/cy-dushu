@@ -6,16 +6,23 @@ import { pick } from 'lodash'
 import cn from 'clsx'
 import { Tooltip } from 'antd'
 
-const I: FC<{ l: ReactNode; v: ReactNode; inline?: boolean }> = ({ l, v, inline }) => {
+const I: FC<{ l: ReactNode; v: ReactNode; inline?: boolean }> = ({
+  l,
+  v,
+  inline,
+}) => {
   return (
-    <li className={cn("flex gap-1 leading-5 text-[#C7D1DC]  text-[12px]", inline ? 'w-full' : 'w-1/2')}>
+    <li
+      className={cn(
+        'flex gap-1 leading-5 text-fore text-xs',
+        inline ? 'w-full' : 'w-1/2',
+      )}
+    >
       <Tooltip title={l}>
         <div className="truncate w-[60px]">{l}</div>
       </Tooltip>
       <div>:</div>
-      <span className="text-[#fff] text-[14px]">
-        {v === undefined ? '-' : v}
-      </span>
+      <span className="text-white text-sm">{v === undefined ? '-' : v}</span>
     </li>
   )
 }
@@ -119,14 +126,48 @@ const CameraDetailInfoCard: FC<PropsType> = memo(
         <I l={'设备经度'} v={renderItemValue('longitude', longitude) ?? '-'} />
         <I l={'设备纬度'} v={renderItemValue('latitude', latitude) ?? '-'} />
         <I l={'设备高度'} v={renderItemValue('altitude', altitude) ?? '-'} />
-        <I l={'任务编号'} v={renderItemValue('taskNumber', taskNumber) ?? '-'} />
-        <I l={'任务类型'} v={renderItemValue('taskStatusType', taskStatusType) ?? '-'} />
+        <I
+          l={'任务编号'}
+          v={renderItemValue('taskNumber', taskNumber) ?? '-'}
+        />
+        <I
+          l={'任务类型'}
+          v={renderItemValue('taskStatusType', taskStatusType) ?? '-'}
+        />
         <I l={'ISM状态'} v={renderItemValue('ISMStatus', ISMStatus) ?? '-'} />
-        <I l={'全频干扰'} v={renderItemValue('fullFrequencyIFStatus', fullFrequencyIFStatus)   ?? '-'} />
-        <I l={'导航干扰'} v={renderItemValue('navigationIFState', navigationIFState) ?? '-'} />
-        <I l={'导航诱骗'} v={renderItemValue('navigationDecoyState', navigationDecoyState) ?? '-'} />
-        <I l={'任务开始时间'} v={openTime ? dayjs(openTime * 1000).format('YYYY-MM-DD HH:mm:ss') : '-'} inline />
-        <I l={'任务结束时间'} v={endTime ? dayjs(endTime * 1000).format('YYYY-MM-DD HH:mm:ss') : '-'} inline />
+        <I
+          l={'全频干扰'}
+          v={
+            renderItemValue('fullFrequencyIFStatus', fullFrequencyIFStatus) ??
+            '-'
+          }
+        />
+        <I
+          l={'导航干扰'}
+          v={renderItemValue('navigationIFState', navigationIFState) ?? '-'}
+        />
+        <I
+          l={'导航诱骗'}
+          v={
+            renderItemValue('navigationDecoyState', navigationDecoyState) ?? '-'
+          }
+        />
+        <I
+          l={'任务开始时间'}
+          v={
+            openTime
+              ? dayjs(openTime * 1000).format('YYYY-MM-DD HH:mm:ss')
+              : '-'
+          }
+          inline
+        />
+        <I
+          l={'任务结束时间'}
+          v={
+            endTime ? dayjs(endTime * 1000).format('YYYY-MM-DD HH:mm:ss') : '-'
+          }
+          inline
+        />
       </ul>
     )
   },

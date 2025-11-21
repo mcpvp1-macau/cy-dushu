@@ -52,7 +52,7 @@ const ImageOrVideo: React.FC<PropsType> = ({ data }) => {
       <Flex
         justify="space-between"
         align="center"
-        className="top-0 left-0 right-0 z-50 text-[14px] px-[1px] h-[30px] leading-[30px] text-[#c7d1dc]"
+        className="top-0 left-0 right-0 z-50 text-[14px] px-[1px] h-[30px] leading-[30px] text-fore"
       >
         <Flex gap={8}>
           <div

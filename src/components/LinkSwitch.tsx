@@ -17,7 +17,7 @@ const LinkSwitch: FC<PropsType> = memo(({ items, value = '', onChange }) => {
           <Button
             size="small"
             className={clsx('p-0', {
-              'text-white': value !== e.value,
+              'text-hightlight': value !== e.value,
               'text-primary': value === e.value,
             })}
             type="text"

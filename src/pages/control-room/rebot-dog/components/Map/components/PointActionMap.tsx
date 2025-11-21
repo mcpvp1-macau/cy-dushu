@@ -91,7 +91,7 @@ const PointActionMap: FC = () => {
       {pointAction.confirm && (
         <PositionTooltip position={targetPosition} offset={[0, 30]}>
           <ConfigProvider theme={themeConfig}>
-            <div className="p-2 flex flex-col gap-1 text-fore bg-[#27303b] min-w-[150px] rounded-md shadow-lg">
+            <div className="p-2 flex flex-col gap-1 text-fore min-w-[150px] rounded-md shadow-lg">
               <p className="flex justify-between">
                 {'任务距离'}:{' '}
                 <span>

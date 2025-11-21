@@ -203,7 +203,7 @@ const WarningAlerts: FC<PropsType> = memo(() => {
   }
 
   return (
-    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-[#16202b99] p-2 rounded flex gap-2 backdrop-blur">
+    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-ground-1/70 p-2 rounded flex gap-2 backdrop-blur-sm">
       <WarningOutlined className="text-yellow-500 animate-pulse" />
       <div>
         <div className="text-sm text-fore flex flex-col gap-1">

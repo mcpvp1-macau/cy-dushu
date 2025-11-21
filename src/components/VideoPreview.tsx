@@ -61,7 +61,7 @@ const VideoPreview: FC<PropsType> = memo(
       >
         {error ? (
           <>
-            <div className="bg-[#28323C] pt-1 w-full h-full flex justify-center text-[10px]">
+            <div className="bg-ground-4 pt-1 w-full h-full flex justify-center text-[10px]">
               解码失败
               <br /> 请尝试下载观看
             </div>

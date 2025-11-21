@@ -129,9 +129,9 @@ const IconButtonWithDropDownDialog: FC<PropsType> = memo(
               return <></>
             }
             return (
-              <div className="bg-[#16202b] bg-opacity-90 backdrop-blur-sm rounded max-w-[400px] border border-solid border-ground-5 text-sm text-fore">
+              <div className="bg-ground-1/90 backdrop-blur-sm rounded max-w-[400px] border border-solid border-ground-5 text-sm text-fore">
                 <div className="bg-ground-4 px-2 flex justify-between items-center gap-3 border-b border-solid border-ground-5">
-                  <span className="text-white leading-8">{title}</span>
+                  <span className="text-highlight leading-8">{title}</span>
                   <div className="flex items-center gap-1">
                     {useDing && (
                       <IconButton
@@ -167,7 +167,7 @@ const IconButtonWithDropDownDialog: FC<PropsType> = memo(
                 transform: `translate(${position.x}px, ${position.y}px)`,
               }}
             >
-              <div className="bg-[#16202b] bg-opacity-90 backdrop-blur-sm rounded max-w-[400px] border border-solid border-ground-5 text-sm text-fore">
+              <div className="bg-ground-1/90 backdrop-blur-sm rounded max-w-[400px] border border-solid border-ground-5 text-sm text-fore">
                 <div
                   className="bg-ground-4 px-2 flex justify-between items-center gap-3 border-b border-solid border-ground-5"
                   onMouseDown={handleMouseDown}

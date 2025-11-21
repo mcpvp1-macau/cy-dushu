@@ -5,15 +5,15 @@
   background-color: transparent;
   border: 0;
   cursor: pointer;
-  color: #bfcbd6;
+  color: rgb(var(--fore-color));
 
   &:hover {
-    color: var(--primary-color);
+    color: rgb(var(--primary-color));
   }
 
   &[disabled] {
     cursor: not-allowed;
-    color: #c7d1dc;
+    color: rgb(var(--fore-color));
     opacity: 0.5;
   }
 
@@ -23,5 +23,5 @@
 }
 
 .active {
-  color: var(--primary-color);
+  color: rgb(var(--primary-color));
 }

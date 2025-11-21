@@ -45,7 +45,7 @@ const OverlayStyleEditor: FC<PropsType> = ({
       className={clsx(
         'absolute top-3 z-50',
         'flex items-center p-1 gap-2 px-2',
-        'bg-[#16202be6] rounded backdrop-blur-sm text-white text-xs',
+        'bg-ground-1/90 rounded backdrop-blur-sm text-white text-xs',
         collapsedOpen ? 'left-[362px]' : 'left-3',
       )}
     >

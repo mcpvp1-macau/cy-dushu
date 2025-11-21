@@ -26,7 +26,7 @@ const UavBackTrackingDetail: FC<PropsType> = memo(
         <div className="flex justify-between px-3 my-2">
           <div className="flex gap-2 items-center">
             <DeviceIconUAV className="device-detail-icon" />
-            <h6 className="text-white text-base">{data.deviceName}</h6>
+            <h6 className="text-hightlight text-base">{data.deviceName}</h6>
             {state.healthInfo?.length > 0 && (
               <HealthInfoMini healthInfo={state.healthInfo} />
             )}
@@ -73,8 +73,9 @@ const UavBackTrackingDetail: FC<PropsType> = memo(
               </Button>
             </Link>
           </section>
-          <div className="my-2 px-3 text-xs flex items-center gap-2 text-white">
-           <div className="w-[2px] h-[10px] bg-[#3DCC91]"></div>数据采集时间: {updateTime}
+          <div className="my-2 px-3 text-xs flex items-center gap-2 text-hightlight">
+            <div className="w-[2px] h-[10px] bg-green-500"></div>数据采集时间:{' '}
+            {updateTime}
           </div>
           <div className="my-2 px-3 text-xs">
             <DataTimeRange deviceId={data.deviceId} />

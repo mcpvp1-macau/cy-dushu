@@ -15,7 +15,7 @@ const PageAirline: FC<PropsType> = memo(() => {
         <header className="flex justify-between items-center p-3 border-b border-solid border-ground-4">
           <div className="flex gap-1">
             <MenuIconAirline />
-            <h2 className="text-white">{t('wayline.title')}</h2>
+            <h2 className="text-hightlight">{t('wayline.title')}</h2>
           </div>
           <div className="text-sm flex gap-3">
             <UploadAirlineTemplte />
