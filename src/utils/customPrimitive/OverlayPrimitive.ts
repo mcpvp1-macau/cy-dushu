@@ -93,6 +93,7 @@ type CreateOptions = {
   isGround: boolean
   primitiveType: PrimitiveType
   flightAreaHeight: number
+  mode: Cesium.SceneMode
 }
 
 async function createPolyline(options: CreateOptions) {
@@ -103,12 +104,17 @@ async function createPolyline(options: CreateOptions) {
     isGround,
     primitiveType,
     flightAreaHeight,
+    mode,
   } = options
   // // 禁飞区为拉伸的实心多边形，不显示描边
   // if (primitiveType === 'NO_FLY_ZONE') return null
 
   // 电子围栏为围墙，使用WallGeometry
-  if (primitiveType === 'ELECTRONIC_FENCE' && flightAreaHeight > 0) {
+  if (
+    mode === Cesium.SceneMode.SCENE3D &&
+    primitiveType === 'ELECTRONIC_FENCE' &&
+    flightAreaHeight > 0
+  ) {
     return new Cesium.Primitive({
       geometryInstances: new Cesium.GeometryInstance({
         geometry: new Cesium.WallGeometry({
@@ -208,10 +214,16 @@ async function createPolygon(options: CreateOptions) {
     isGround,
     primitiveType,
     flightAreaHeight,
+    mode,
   } = options
 
-  // 电子围栏为墙，不显示填充
-  if (primitiveType === 'ELECTRONIC_FENCE' && flightAreaHeight > 0) return null
+  // 电子围栏为墙，不显示填充，但是2d情况下需要显示
+  if (
+    mode === Cesium.SceneMode.SCENE3D &&
+    primitiveType === 'ELECTRONIC_FENCE' &&
+    flightAreaHeight > 0
+  )
+    return null
 
   const PrimitiveClass = isGround ? Cesium.GroundPrimitive : Cesium.Primitive
   // // 禁飞区为拉伸的多边形
@@ -249,6 +261,7 @@ function createCircle(options: {
   isGround: boolean
   primitiveType: PrimitiveType
   flightAreaHeight: number
+  mode: Cesium.SceneMode
 }) {
   const {
     center,
@@ -258,6 +271,7 @@ function createCircle(options: {
     isGround,
     primitiveType,
     flightAreaHeight,
+    mode,
   } = options
 
   const circle = turf.circle(center, radius, {
@@ -276,6 +290,7 @@ function createCircle(options: {
     isGround,
     primitiveType,
     flightAreaHeight,
+    mode,
   })
 }
 
@@ -287,6 +302,7 @@ function createCircleOutline(options: {
   isGround: boolean
   primitiveType: PrimitiveType
   flightAreaHeight: number
+  mode: Cesium.SceneMode
 }) {
   const {
     center,
@@ -296,6 +312,7 @@ function createCircleOutline(options: {
     isGround,
     primitiveType,
     flightAreaHeight,
+    mode,
   } = options
 
   const circle = turf.circle(center, radius, {
@@ -314,6 +331,7 @@ function createCircleOutline(options: {
     isGround,
     primitiveType,
     flightAreaHeight,
+    mode,
   })
 }
 
@@ -396,6 +414,7 @@ export class OverlayPolygonPrimitive {
   private _isGround: boolean = true
   private _label: Cesium.LabelCollection
   private _styleOptions: StyleOptions
+  private _mode: Cesium.SceneMode = Cesium.SceneMode.SCENE3D
   /**是否异步创建几何体 */
   asynchronous: boolean
   positions: Coordinate[] = []
@@ -418,10 +437,12 @@ export class OverlayPolygonPrimitive {
   update(frameState: any) {
     if (
       this.positions !== this._positions ||
-      this.isGround !== this._isGround
+      this.isGround !== this._isGround ||
+      this._mode !== frameState.mode
     ) {
       this._positions = this.positions
       this._isGround = this.isGround
+      this._mode = frameState.mode
       this.updateGeometry(frameState)
     }
 
@@ -548,6 +569,7 @@ export class OverlayPolygonPrimitive {
       isGround: this._isGround,
       primitiveType: this.primitiveType,
       flightAreaHeight: this.flightAreaHeight,
+      mode: this._mode,
     }
   }
 
@@ -569,6 +591,7 @@ export class OverlayCirclePrimitive {
     | null = null
   private _label: Cesium.LabelCollection
   private _isGround: boolean = true
+  private _mode: Cesium.SceneMode = Cesium.SceneMode.SCENE3D
   /**是否异步创建几何体 */
   asynchronous: boolean
   show: boolean = true
@@ -593,11 +616,13 @@ export class OverlayCirclePrimitive {
     if (
       this._center !== this.center ||
       this._radius !== this.radius ||
-      this._isGround !== this.isGround
+      this._isGround !== this.isGround ||
+      this._mode !== frameState.mode
     ) {
       this._center = this.center
       this._radius = this.radius
       this._isGround = this.isGround
+      this._mode = frameState.mode
       this.updateGeometry(frameState)
     }
 
@@ -710,6 +735,7 @@ export class OverlayCirclePrimitive {
       isGround: this._isGround,
       primitiveType: this.primitiveType,
       flightAreaHeight: this.flightAreaHeight,
+      mode: this._mode,
     }
   }
 
@@ -746,6 +772,7 @@ export class OverlayFanPrimitive {
   private _label: Cesium.LabelCollection
   private _isGround: boolean = true
   private _styleOptions: StyleOptions
+  private _mode: Cesium.SceneMode = Cesium.SceneMode.SCENE3D
   /**是否异步创建几何体 */
   asynchronous: boolean
   /**[pivot, startPoint, endPoint]，[支点，起点、终点] */
@@ -769,10 +796,12 @@ export class OverlayFanPrimitive {
   update(frameState: any) {
     if (
       this.positions !== this._positions ||
-      this._isGround !== this.isGround
+      this._isGround !== this.isGround ||
+      this._mode !== frameState.mode
     ) {
       this._positions = this.positions
       this._isGround = this.isGround
+      this._mode = frameState.mode
       this.updateGeometry(frameState)
     }
 
@@ -894,6 +923,7 @@ export class OverlayFanPrimitive {
       isGround: this._isGround,
       primitiveType: this.primitiveType,
       flightAreaHeight: this.flightAreaHeight,
+      mode: this._mode,
     }
   }
 

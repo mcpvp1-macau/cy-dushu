@@ -104,16 +104,19 @@ const FlightAreaGroupConfig: FC<PropsType> = memo((props) => {
                 )}
               </IconButton>
 
-              <EditFlightAreaGroup data={layerGroup} type="edit" />
-
-              {layerGroup.layerType !== 'DEFAULT' && (
-                <IconButton
-                  className="scale-90"
-                  onClick={() => handleDelGroup(layerGroup.layerId)}
-                >
-                  <IconDelete />
-                </IconButton>
+              {layerGroup.layerId !== -1 && (
+                <EditFlightAreaGroup data={layerGroup} type="edit" />
               )}
+
+              {layerGroup.layerId !== -1 &&
+                layerGroup.layerType !== 'DEFAULT' && (
+                  <IconButton
+                    className="scale-90"
+                    onClick={() => handleDelGroup(layerGroup.layerId)}
+                  >
+                    <IconDelete />
+                  </IconButton>
+                )}
             </div>
           ),
           children: (
