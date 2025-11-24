@@ -40,7 +40,7 @@ const AirlineTemplateListItem: FC<PropsType> = memo(({ data }) => {
       <div className="flex gap-2">
         <WaylineIcon type={data.taskType} />
         <div className="grow">
-          <p className="max-w-60 truncate text-hightlight">{data.taskName}</p>
+          <p className="max-w-52 truncate text-hightlight">{data.taskName}</p>
         </div>
         <IconButton
           toolTipProps={{ title: t('common.preview') }}
