@@ -5,6 +5,7 @@ import { Dropdown, MenuProps } from 'antd'
 import * as Cesium from 'cesium'
 import { useCesium } from 'resium'
 import { useMatches } from 'react-router-dom'
+import useMapDrawStore from '@/store/map/useDraw.store'
 
 type PropsType = unknown
 
@@ -30,6 +31,8 @@ const RightPick: FC<PropsType> = memo(() => {
     return Number.isNaN(id) ? undefined : id
   }, [params.actionId])
 
+  const isDrawing = useMapDrawStore((s) => s.drawing)
+
   const divRef = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
@@ -43,7 +46,7 @@ const RightPick: FC<PropsType> = memo(() => {
   })
 
   useEffect(() => {
-    if (!viewer || !canUse) {
+    if (!viewer || !canUse || isDrawing) {
       return
     }
 
@@ -81,7 +84,7 @@ const RightPick: FC<PropsType> = memo(() => {
     return () => {
       handler.destroy()
     }
-  }, [viewer, canUse, closeDropdown, msgApi])
+  }, [viewer, canUse, closeDropdown, msgApi, isDrawing])
 
   useEffect(() => {
     if (!canUse) {

@@ -72,23 +72,21 @@ const RightTools: FC<PropsType> = memo(() => {
             >
               <IconRangeFinder />
             </FloatIconButton>
-            {!globalConfig.useShanghaiBanRoutes && (
-              <FloatIconButton
-                toolTipProps={{
-                  title: t('flightArea.create.title'),
-                  placement: 'left',
-                  mouseEnterDelay: 0.5,
-                }}
-                variant="borderless"
-                active={rightMode === RightModeEnum.DRAW_FLIGHT_AREA}
-                onClick={() => {
-                  updateRightMode(RightModeEnum.DRAW_FLIGHT_AREA)
-                  updateIsFlightArea(true)
-                }}
-              >
-                <IconCreateFlightArea />
-              </FloatIconButton>
-            )}
+            <FloatIconButton
+              toolTipProps={{
+                title: t('flightArea.create.title'),
+                placement: 'left',
+                mouseEnterDelay: 0.5,
+              }}
+              variant="borderless"
+              active={rightMode === RightModeEnum.DRAW_FLIGHT_AREA}
+              onClick={() => {
+                updateRightMode(RightModeEnum.DRAW_FLIGHT_AREA)
+                updateIsFlightArea(true)
+              }}
+            >
+              <IconCreateFlightArea />
+            </FloatIconButton>
           </>
         </FloatIconButtonGroup>
         <WirelessSituationTool />

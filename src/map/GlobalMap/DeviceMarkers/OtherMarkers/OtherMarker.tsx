@@ -9,7 +9,6 @@ import uav from '/images/marker/icon/uav.png'
 import jiku from '@/assets/marker/wurenjiku.svg'
 import jiqigou from '@/assets/marker/jiqigou.png'
 import TTP from '@/assets/marker/TTP.png'
-import zhifayi from '/images/marker/icon/zhifayi.svg'
 import ren from '@/assets/marker/ren.png'
 // import wanglou from 'images/marker/wanglou.png'
 import car from '/images/marker/icon/car.svg'
@@ -30,7 +29,7 @@ export const deviceIconMap: any = {
   ROBOT_DOG: jiqigou,
   TTP_BOX: TTP,
   CAMERA: '/images/marker/icon/camera.svg',
-  SITE_ENFORCEMENT_RECORDER: zhifayi,
+  SITE_ENFORCEMENT_RECORDER: '/images/marker/icon/zhifayi.svg',
   PERSON: ren,
   WANGLOU: wanglou,
   CAR: car,
@@ -83,8 +82,6 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
     lat,
     altitude || groundHeight,
   )
-
-  console.log('OtherMarker render', deviceIconMap[deviceType], deviceType)
 
   return (
     <>

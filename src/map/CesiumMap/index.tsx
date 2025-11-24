@@ -119,13 +119,9 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
           <FloatIconButtonGroup mode="vertical">
             <MapSpace />
             <LayerOverlay />
-            {!globalConfig.useShanghaiBanRoutes && (
-              <>
-                <FlightAreaConfig />
-                <Reconstruction3D />
-                <Reconstruction2D />
-              </>
-            )}
+            <FlightAreaConfig />
+            <Reconstruction3D />
+            <Reconstruction2D />
           </FloatIconButtonGroup>
           {globalConfig.useShanghaiBanRoutes && <ShanghaiWarZoneConfig />}
           {globalConfig.isXiaoshan && <XiaoshanXZZoneConfig />}

@@ -10,7 +10,6 @@ import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDevice
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { useShallow } from 'zustand/react/shallow'
 import { getGimbalInfo, calcCameraParameters } from '@/constant/uav/gimbalV2'
-import { useLatest } from 'ahooks'
 
 type PropsType = unknown
 
@@ -52,7 +51,6 @@ const ARSceneCamera: FC<PropsType> = memo(() => {
         ),
       }
     }
-    console.log(uav2)
     const gimbalInfo = getGimbalInfo(uav2.cameraType || '')
     const cameraParams = calcCameraParameters(
       gimbalInfo,
