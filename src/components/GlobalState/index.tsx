@@ -18,13 +18,9 @@ const GlobalState: FC<PropsType> = memo(() => {
       <LayerAndOverlay />
       <GlobalToast />
       <DeviceRelay />
-      {!globalConfig.useShanghaiBanRoutes && (
-        <>
-          <ReconstructionMap />
-          <FlightArea />
-          <DeviceOverlays />
-        </>
-      )}
+      <ReconstructionMap />
+      <FlightArea />
+      <DeviceOverlays />
     </>
   )
 })
