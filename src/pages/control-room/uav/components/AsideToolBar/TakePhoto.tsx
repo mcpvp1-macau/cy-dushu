@@ -34,7 +34,7 @@ const TakePhoto: FC<PropsType> = memo(() => {
   return (
     <IconButton
       className={borderedBtnClassName}
-      toolTipProps={{ title: t('controlRoom.uav.service.takePhoto.title') }}
+      tippyProps={{ content: t('controlRoom.uav.service.takePhoto.title') }}
       disabled={disabled}
       onClick={handleClick}
     >

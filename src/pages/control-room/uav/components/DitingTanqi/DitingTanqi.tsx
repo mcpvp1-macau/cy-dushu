@@ -276,7 +276,7 @@ const DitingTanqi: FC<PropsType> = memo(() => {
               {chatId && (
                 <IconButton
                   className="text-sm"
-                  toolTipProps={{ title: t('tanqi.createChat.title') }}
+                  tippyProps={{ content: t('tanqi.createChat.title') }}
                   onClick={() => {
                     const nextSearchParams = new URLSearchParams(searchParams)
                     nextSearchParams.delete('chat')

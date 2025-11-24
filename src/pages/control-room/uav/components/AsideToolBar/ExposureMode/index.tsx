@@ -42,9 +42,7 @@ const ExposureMode: FC<PropsType> = memo(({ postSerivce }) => {
   return (
     <IconButtonWithDropDown
       className="text-xs"
-      tooltipProps={{
-        title: t('controlRoom.uav.service.exposureMode.title'),
-      }}
+      tippyProps={{ content: t('controlRoom.uav.service.exposureMode.title') }}
       menu={{
         items: [
           {

@@ -1,3 +1,4 @@
+import { emtpyArray } from '@/constant/data'
 import serverDitingTanqi from '@/service/servers/serverDitingTanqi'
 import useUserStore from '@/store/useUser.store'
 import { chunkBuffer } from '@/utils/decode/http-chunk'
@@ -23,6 +24,7 @@ const useSendMessage = (options?: {
   // 回复内容
   const [replyingContent, setContent] = useState('')
   const [done, setDone] = useState(false)
+  const [currentToolCalls, setCurrentToolCalls] = useState<any[]>([])
 
   const userInfo = useUserStore((s) => s.user)
   const { actionId } = useParams()
@@ -84,21 +86,36 @@ const useSendMessage = (options?: {
           const eventData = parseEvent(chunk)
           const data = eventData.data
 
-          const content: string | undefined = data?.choices?.[0]?.delta?.content
-          if (content) {
-            if (!replayStart) {
-              options?.onStartReply?.()
-              replayStart = true
-            }
-            const c = shouldJson(content) ?? content
-            if (typeof c === 'object') {
-              const toolCalls = c.tool_calls || c.tool_call_id
-              if (toolCalls) {
-                continue
+          const choice0 = data?.choices?.[0]?.delta ?? {}
+
+          setCurrentToolCalls(emtpyArray)
+          if (choice0.role === 'tool_calls') {
+            const tool_calls: any[] | undefined = shouldJson(choice0.content)
+            console.log('tool_calls', tool_calls)
+            if (tool_calls && tool_calls.length > 0) {
+              setCurrentToolCalls(tool_calls)
+              if (!replayStart) {
+                options?.onStartReply?.()
+                replayStart = true
               }
             }
-            content_acc += c
-            setContent(content_acc)
+          } else {
+            const content: string | undefined = choice0.content
+            if (content) {
+              if (!replayStart) {
+                options?.onStartReply?.()
+                replayStart = true
+              }
+              const c = shouldJson(content) ?? content
+              if (typeof c === 'object') {
+                const toolCalls = c.tool_calls || c.tool_call_id
+                if (toolCalls) {
+                  continue
+                }
+              }
+              content_acc += c
+              setContent(content_acc)
+            }
           }
         }
         options?.onEndReply?.(content_acc)
@@ -116,6 +133,7 @@ const useSendMessage = (options?: {
   )
 
   return {
+    currentToolCalls,
     replyingContent,
     done,
     sendMessage,

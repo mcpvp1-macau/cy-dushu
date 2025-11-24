@@ -101,9 +101,8 @@ const AirpointAddAction: FC<PropsType> = memo(({ setActiveOperator }) => {
     <IconButtonWithDropDown
       className="my-2"
       menu={{ items: menus }}
-      tooltipProps={{
-        title: t('wayline.waylinePoint.createWaypointAction.title'),
-        mouseEnterDelay: 0.5,
+      tippyProps={{
+        content: t('wayline.waylinePoint.createWaypointAction.title'),
       }}
       trigger={['click']}
       placement="bottomRight"

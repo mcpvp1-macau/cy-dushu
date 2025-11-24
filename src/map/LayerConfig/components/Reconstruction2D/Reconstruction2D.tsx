@@ -21,10 +21,9 @@ const Reconstruction2D: FC<PropsType> = memo(() => {
     <>
       <FloatIconButton
         variant="borderless"
-        toolTipProps={{
-          title: t('common.2dMap'),
+        tippyProps={{
+          content: t('common.2dMap'),
           placement: 'left',
-          mouseEnterDelay: 0.5,
         }}
         active={open}
         onClick={toggle}

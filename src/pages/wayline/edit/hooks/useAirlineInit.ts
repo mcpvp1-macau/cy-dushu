@@ -90,6 +90,8 @@ const useAirlineInit = () => {
           'waypointHeadingMode',
           'globalTransitionalSpeed',
           'globalWaypointTurnMode',
+          'duration',
+          'distance',
         ])
         if (t.camera) {
           const cameraParams = shouldJson(camera?.defaultParam)

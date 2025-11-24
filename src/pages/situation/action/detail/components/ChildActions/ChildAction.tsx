@@ -220,7 +220,7 @@ const ChildAction: FC<PropsType> = memo(
               <div className="flex items-center gap-1 overflow-hidden">
                 {data.deviceId && (
                   <IconButton
-                    toolTipProps={{ title: t('common.detail') }}
+                    tippyProps={{ content: t('common.detail') }}
                     onClick={handleDetailClick}
                   >
                     <IconDetail />
@@ -252,7 +252,7 @@ const ChildAction: FC<PropsType> = memo(
             {breakPointId && (
               <>
                 <IconButton
-                  toolTipProps={{ title: '接力飞行' }}
+                  tippyProps={{ content: '接力飞行' }}
                   onClick={() => {
                     setRelayModalOpen(true)
                   }}

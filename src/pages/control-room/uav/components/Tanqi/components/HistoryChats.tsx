@@ -45,9 +45,7 @@ const HistoryChats: FC<PropsType> = memo(({ data }) => {
   return (
     <IconButtonWithDropDown
       disabled={data.length === 0}
-      tooltipProps={{
-        title: t('tanqi.historyChat.title'),
-      }}
+      tippyProps={{ content: t('tanqi.historyChat.title') }}
       placement="topRight"
       trigger={['click']}
       popupRender={() => {

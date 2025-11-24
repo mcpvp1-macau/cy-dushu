@@ -45,8 +45,8 @@ const IrMeteringMode: FC<PropsType> = memo(({ postServiceFn }) => {
   return (
     <IconButtonWithDropDown
       className={borderedBtnClassName}
-      tooltipProps={{
-        title: t('controlRoom.uav.service.irMeteringModeSet.title'),
+      tippyProps={{
+        content: t('controlRoom.uav.service.irMeteringModeSet.title'),
       }}
       menu={{
         items: menuItems,

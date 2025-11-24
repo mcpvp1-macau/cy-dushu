@@ -37,7 +37,7 @@ const TTPBOXSnEditor: React.FC<PropsType> = ({ cell, onRefresh }) => {
       {cell?.getValue() || '-'}
       <IconButton
         onClick={() => setOpen(true)}
-        toolTipProps={{ title: '编辑盒子序列号' }}
+        tippyProps={{ content: '编辑盒子序列号' }}
       >
         <IconEdit className="cursor-pointer text-text-primary" />
       </IconButton>

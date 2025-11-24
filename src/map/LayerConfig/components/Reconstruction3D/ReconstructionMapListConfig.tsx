@@ -206,8 +206,8 @@ const ReconstructionMapListConfig: FC<PropsType> = memo((props) => {
               </IconButton>
 
               <IconButton
-                toolTipProps={{
-                  title: t('mapLayer.reconstructionMap.create.overlay.title'),
+                tippyProps={{
+                  content: t('mapLayer.reconstructionMap.create.overlay.title'),
                 }}
                 onClick={() => handleCreate(layerGroup.id)}
               >

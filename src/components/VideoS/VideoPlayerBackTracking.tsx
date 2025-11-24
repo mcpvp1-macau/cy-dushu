@@ -29,7 +29,6 @@ type PropsType = {
 
 const VideoPlayer: FC<PropsType> = memo(
   ({ src, rightTools, playing, time, multiple }) => {
-
     const playerRef = useRef<ComponentRef<typeof CyberPlayer>>(null)
 
     const [buffering, setBuffering] = useState(true)
@@ -165,14 +164,11 @@ const VideoPlayer: FC<PropsType> = memo(
             </div>
             <div>
               <IconButton
-                toolTipProps={{
-                  title: !fullScreen
+                tippyProps={{
+                  content: !fullScreen
                     ? t('common.fullScreen')
                     : t('common.exit'),
-                  align: {
-                    offset: [-20, -10],
-                  },
-                  getPopupContainer: () =>
+                  appendTo: () =>
                     (document.fullscreenElement as HTMLElement) ??
                     document.body,
                 }}

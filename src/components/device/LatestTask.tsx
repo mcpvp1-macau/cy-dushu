@@ -56,18 +56,16 @@ const LatestTask: FC<PropsType> = memo(({ deviceId }) => {
         ) : status === 'RUNNING' ? (
           <>
             <IconButton
-              toolTipProps={{
-                title: t('action.detail.task.pause.title'),
-                placement: 'bottomRight',
+              tippyProps={{
+                content: t('action.detail.task.pause.title'),
               }}
               onClick={() => handleClick('pause')}
             >
               <IconPause className="scale-75" />
             </IconButton>
             <IconButton
-              toolTipProps={{
-                title: t('action.detail.task.end.title'),
-                placement: 'bottomRight',
+              tippyProps={{
+                content: t('action.detail.task.end.title'),
               }}
               onClick={() => handleClick('end')}
             >
@@ -77,18 +75,16 @@ const LatestTask: FC<PropsType> = memo(({ deviceId }) => {
         ) : status === 'HANGUP' ? (
           <>
             <IconButton
-              toolTipProps={{
-                title: t('action.detail.task.continue.title'),
-                placement: 'bottomRight',
+              tippyProps={{
+                content: t('action.detail.task.continue.title'),
               }}
               onClick={() => handleClick('continue')}
             >
               <IconPlay className="scale-75" />
             </IconButton>
             <IconButton
-              toolTipProps={{
-                title: t('action.detail.task.end.title'),
-                placement: 'bottomRight',
+              tippyProps={{
+                content: t('action.detail.task.end.title'),
               }}
               onClick={() => handleClick('end')}
             >

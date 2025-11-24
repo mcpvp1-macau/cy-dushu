@@ -13,7 +13,7 @@ const AreaScanSwitch: FC<PropsType> = memo((props) => {
 
   return (
     <IconButton
-      toolTipProps={{ title: t('common.scan') }}
+      tippyProps={{ content: t('common.scan') }}
       active={enable}
       onClick={() => {
         const next = { ...useMapDevicesStore.getState().scanAreasEnable }

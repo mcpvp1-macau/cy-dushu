@@ -89,12 +89,7 @@ const DeviceStatusInfo: React.FC<PropsType> = () => {
       warnConfig?.tooltip || wanglouProps[warnConfig?.warningName || '']
     if (showWarning) {
       return (
-        <IconButton
-          style={{ marginLeft: 6 }}
-          toolTipProps={{
-            title: text,
-          }}
-        >
+        <IconButton style={{ marginLeft: 6 }} tippyProps={{ content: text }}>
           <Icon id="icon-tishi" className="text-[#F29D49]" />
         </IconButton>
       )
@@ -102,9 +97,7 @@ const DeviceStatusInfo: React.FC<PropsType> = () => {
     return (
       <IconButton
         style={{ marginLeft: 6 }}
-        toolTipProps={{
-          title: t('source.status.online'),
-        }}
+        tippyProps={{ content: t('source.status.online') }}
       >
         <Icon id="icon-tishi" className="text-[#15B371]" />
       </IconButton>
@@ -156,7 +149,10 @@ const DeviceStatusInfo: React.FC<PropsType> = () => {
         top: 65,
         left: `calc(50% + 80px)`,
       })}
-      {render(t('device.wanglou.child.radar'), 'radarStatus', { top: 96, left: `calc(50% + 80px)` })}
+      {render(t('device.wanglou.child.radar'), 'radarStatus', {
+        top: 96,
+        left: `calc(50% + 80px)`,
+      })}
       {render(t('device.wanglou.child.vibrator'), 'vibratorStatus', {
         top: 144,
         left: `calc(50% + 80px)`,

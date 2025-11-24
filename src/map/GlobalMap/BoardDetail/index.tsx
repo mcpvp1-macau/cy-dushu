@@ -1,4 +1,4 @@
-import { Flex, Tooltip } from 'antd'
+import { Flex } from 'antd'
 import clsx from 'clsx'
 import dayjs from 'dayjs'
 import styles from './index.module.less'
@@ -6,6 +6,7 @@ import React from 'react'
 import { infoFieldFormatter } from '@/utils/other/utils'
 import useBoardObjStore from '@/store/map/useBoardObj.store'
 import IconClose from '@/assets/icons/jsx/IconClose'
+import IconButton from '@/components/ui/button/IconButton'
 
 interface Props {
   data: {
@@ -79,20 +80,8 @@ const BoardDetail: React.FC<Props> = ({ data, onClose }) => {
               justify="space-between"
               align="center"
             >
-              {/* <Tooltip
-                className={styles.icon}
-                overlayClassName={styles.tooltip}
-                title={renderDeviceTitle()}
-              >
-                {renderIcon(sourceType)}
-              </Tooltip> */}
               <div
-                className={clsx(
-                  styles.close,
-                  //   {
-                  //   [styles.hasImage]: hasImage,
-                  // }
-                )}
+                className={clsx(styles.close)}
                 onClick={() => {
                   if (onClose) {
                     onClose()
@@ -104,10 +93,10 @@ const BoardDetail: React.FC<Props> = ({ data, onClose }) => {
                   }
                 }}
               >
-                <Tooltip title={t('common.close')}>
+                <IconButton>
                   {/* <CloseIcon style={{ fontSize: 12 }} /> */}
                   <IconClose />
-                </Tooltip>
+                </IconButton>
               </div>
             </Flex>
           </Flex>

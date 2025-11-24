@@ -50,7 +50,7 @@ const DeviceOverlayConfig: FC<PropsType> = memo(() => {
               <div>{e.overlayName}</div>
               <div className="flex gap-2">
                 <IconButton
-                  toolTipProps={{ title: t('common.edit') }}
+                  tippyProps={{ content: t('common.edit') }}
                   onClick={() => {
                     const sto = useRightMode.getState()
                     sto.updateRightMode(RightModeEnum.DEVICE_OVERLAY_DETAIL)
@@ -60,7 +60,7 @@ const DeviceOverlayConfig: FC<PropsType> = memo(() => {
                   <IconEdit />
                 </IconButton>
                 <IconAsyncButton
-                  toolTipProps={{ title: t('common.delete') }}
+                  tippyProps={{ content: t('common.delete') }}
                   onClick={async () => {
                     await deleteDeviceOverlay([e.overlayId])
                     await queryClient.invalidateQueries({

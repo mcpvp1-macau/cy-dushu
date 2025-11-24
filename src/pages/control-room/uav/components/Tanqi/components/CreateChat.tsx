@@ -8,9 +8,7 @@ const CreateChat: FC = memo(() => {
 
   return (
     <IconButton
-      toolTipProps={{
-        title: t('tanqi.createChat.title'),
-      }}
+      tippyProps={{ content: t('tanqi.createChat.title') }}
       onClick={() => {
         const nextSearchParams = new URLSearchParams(searchParams)
         nextSearchParams.delete('chat')

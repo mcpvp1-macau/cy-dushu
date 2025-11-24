@@ -27,10 +27,9 @@ const RightTools: FC<PropsType> = memo(() => {
         <FloatIconButtonGroup mode="vertical">
           <>
             <FloatIconButton
-              toolTipProps={{
-                title: t('overlay.marker.title'),
+              tippyProps={{
+                content: t('overlay.marker.title'),
                 placement: 'left',
-                mouseEnterDelay: 0.5,
               }}
               variant="borderless"
               active={rightMode === RightModeEnum.SET_POINT}
@@ -39,10 +38,9 @@ const RightTools: FC<PropsType> = memo(() => {
               <IconAddMark />
             </FloatIconButton>
             <FloatIconButton
-              toolTipProps={{
-                title: t('overlay.drawing.title'),
+              tippyProps={{
+                content: t('overlay.drawing.title'),
                 placement: 'left',
-                mouseEnterDelay: 0.5,
               }}
               variant="borderless"
               active={rightMode === RightModeEnum.DRAW_GEOMETRY}
@@ -54,10 +52,9 @@ const RightTools: FC<PropsType> = memo(() => {
               <IconDrawArea />
             </FloatIconButton>
             <FloatIconButton
-              toolTipProps={{
-                title: t('overlay.measure.title'),
+              tippyProps={{
+                content: t('overlay.measure.title'),
                 placement: 'left',
-                mouseEnterDelay: 0.5,
               }}
               variant="borderless"
               active={rightMode === RightModeEnum.RANGING}
@@ -66,10 +63,9 @@ const RightTools: FC<PropsType> = memo(() => {
               <IconRangeFinder />
             </FloatIconButton>
             <FloatIconButton
-              toolTipProps={{
-                title: t('flightArea.create.title'),
+              tippyProps={{
+                content: t('flightArea.create.title'),
                 placement: 'left',
-                mouseEnterDelay: 0.5,
               }}
               variant="borderless"
               active={rightMode === RightModeEnum.DRAW_FLIGHT_AREA}
@@ -85,8 +81,8 @@ const RightTools: FC<PropsType> = memo(() => {
         <WirelessSituationTool />
         <UavInfoBoardSwitchButton />
         <FloatIconButton
-          toolTipProps={{
-            title: t('tools.saveMapView.title'),
+          tippyProps={{
+            content: t('tools.saveMapView.title'),
             placement: 'left',
           }}
           onClick={() => mapViewSaveEmitter.emit('save')}

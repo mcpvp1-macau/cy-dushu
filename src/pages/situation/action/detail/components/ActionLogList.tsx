@@ -6,6 +6,7 @@ import dayjs from 'dayjs'
 import { memo, type FC } from 'react'
 import styles from './ActionLogList.module.less'
 import { timeOnly } from '@/constant/time-fmt'
+import OverflowText from '@/components/ui/OverflowText'
 
 type PropsType = {
   actionId: string
@@ -38,9 +39,9 @@ const ActionLogList: FC<PropsType> = memo(({ actionId }) => {
           return {
             children: (
               <p className={styles.logItem}>
-                <span className={clsx(`${item.taskLogLevel}`, styles.logInfo)}>
-                  <Tooltip title={item.log}>{item.log}</Tooltip>
-                </span>
+                <OverflowText className="flex-1 truncate">
+                  {item.log}
+                </OverflowText>
                 <span className={styles.logTime}>
                   {dayjs(item.logTime).format(timeOnly)}
                 </span>

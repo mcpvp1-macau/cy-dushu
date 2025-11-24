@@ -35,7 +35,7 @@ const CameraConfig: FC<PropsType> = memo(() => {
       <div className="mb-2 flex justify-between">
         <SegmentTitle title="投影配置" />
         <IconButton
-          toolTipProps={{ title: '地图定位' }}
+          tippyProps={{ content: '地图定位' }}
           disabled={
             !detail ||
             [

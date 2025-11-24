@@ -110,7 +110,7 @@ const RightOverlayDetail: FC<PropsType> = memo(() => {
                       {t('common.edit')}
                     </Button>
                   )}
-                  {/* <IconButton toolTipProps={{ title: '分享' }}>
+                  {/* <IconButton tippyProps={{ content: '分享' }}>
                   <IconShare className="scale-90" />
                 </IconButton> */}
                   <Button

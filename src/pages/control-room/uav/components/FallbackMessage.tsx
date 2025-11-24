@@ -3,7 +3,7 @@ import { uavDisplayModeTransMap } from '@/constant/trans_map/uav_display_mode'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
-import { Popover } from 'antd'
+import Tippy from '@tippyjs/react'
 
 type PropsType = unknown
 
@@ -104,9 +104,10 @@ const FallbackMessage: FC<PropsType> = memo(() => {
     <>
       {renderMsgs.length > 0 && (
         <>
-          <Popover
+          <Tippy
             content={<div className="flex flex-col gap-1">{renderMsgs}</div>}
-            placement="bottomLeft"
+            placement="bottom"
+            theme="liqun"
           >
             <div className="flex gap-3 h-8">
               <div className="size-8 flex justify-center items-center text-hightlight text-sm rounded-[3px] bg-ground-2">
@@ -114,7 +115,7 @@ const FallbackMessage: FC<PropsType> = memo(() => {
               </div>
               <div className="max-w-64">{renderMsgs[0]}</div>
             </div>
-          </Popover>
+          </Tippy>
         </>
       )}
       {mode && (

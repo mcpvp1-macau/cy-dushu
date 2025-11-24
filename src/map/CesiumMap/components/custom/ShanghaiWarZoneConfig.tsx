@@ -179,7 +179,7 @@ const ShanghaiWarZoneConfig: FC<PropsType> = memo(() => {
   return (
     <>
       <FloatIconButton
-        toolTipProps={{ title: '战区呼号', placement: 'left' }}
+        tippyProps={{ content: '战区呼号', placement: 'left' }}
         onClick={toggle}
       >
         <IconWarZone />

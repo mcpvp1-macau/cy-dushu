@@ -1,4 +1,3 @@
-import { Tooltip } from 'antd'
 import React from 'react'
 import IconLine from '@/assets/icons/jsx/IconLine'
 import IconDashedLine from '@/assets/icons/jsx/IconDashedLine'
@@ -6,6 +5,7 @@ import IconNoFly from '@/assets/icons/jsx/IconNoFly'
 import useMapDrawStore, { LineStyle } from '@/store/map/useDraw.store'
 import { useTranslation } from 'react-i18next'
 import Select from '@/components/AntdOverride/Select'
+import LiqunTippy from '@/components/ui/LiqunTippy'
 
 type PropsType = {
   showNoFly?: boolean
@@ -21,17 +21,17 @@ const LineStyleSelecter: FC<PropsType> = ({ showNoFly = false }) => {
     const options = [
       {
         label: (
-          <Tooltip title={t('overlay.drawing.lineStyle.solid')}>
+          <LiqunTippy content={t('overlay.drawing.lineStyle.solid')}>
             <IconLine className="text-2xl" />
-          </Tooltip>
+          </LiqunTippy>
         ),
         value: 'solid',
       },
       {
         label: (
-          <Tooltip title={t('overlay.drawing.lineStyle.dashed')}>
+          <LiqunTippy content={t('overlay.drawing.lineStyle.dashed')}>
             <IconDashedLine className="text-2xl" />
-          </Tooltip>
+          </LiqunTippy>
         ),
         value: 'dashed',
       },
@@ -40,9 +40,9 @@ const LineStyleSelecter: FC<PropsType> = ({ showNoFly = false }) => {
     if (showNoFly) {
       options.push({
         label: (
-          <Tooltip title={t('overlay.drawing.lineStyle.noFly')}>
+          <LiqunTippy content={t('overlay.drawing.lineStyle.noFly')}>
             <IconNoFly className="text-2xl" />
-          </Tooltip>
+          </LiqunTippy>
         ),
         value: 'no-fly',
       })

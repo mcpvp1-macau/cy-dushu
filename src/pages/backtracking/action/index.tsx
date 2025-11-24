@@ -66,7 +66,7 @@ const PageBackTrackingAction: FC<PropsType> = memo(() => {
               <h3 className="text-white text-base truncate mx-3 mt-3 min-h-6 flex gap-2">
                 <div className="cursor-pointer">
                   <IconButton
-                    toolTipProps={{ title: '返回' }}
+                    tippyProps={{ content: '返回' }}
                     onClick={() => window.history.back()}
                   >
                     <IconBack />

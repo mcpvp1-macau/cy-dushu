@@ -43,7 +43,7 @@ const EventResolvePage: FC<PropsType> = memo(() => {
           >
             <div>
               <IconButton
-                toolTipProps={{ title: t('common.back') }}
+                tippyProps={{ content: t('common.back') }}
                 onClick={() => navigate(-1)}
               >
                 <IconBack />

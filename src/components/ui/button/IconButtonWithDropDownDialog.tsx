@@ -6,9 +6,12 @@ import { v4 } from 'uuid'
 import IconDing from '@/assets/icons/jsx/IconDing'
 import { createPortal } from 'react-dom'
 import { limitNum } from '@/utils/math'
+import Tippy from '@tippyjs/react'
 
 type PropsType = GetProps<typeof Dropdown> & {
+  /** @deprecated 使用 tippyProps 替代 */
   tooltipProps?: GetProps<typeof Tooltip>
+  tippyProps?: GetProps<typeof Tippy>
   title: ReactNode
   useDing?: boolean
   className?: string
@@ -16,7 +19,15 @@ type PropsType = GetProps<typeof Dropdown> & {
 
 /** 图标按钮携带下拉菜单（对话框） */
 const IconButtonWithDropDownDialog: FC<PropsType> = memo(
-  ({ children, tooltipProps, className, title, useDing = false, ...props }) => {
+  ({
+    children,
+    tooltipProps,
+    tippyProps,
+    className,
+    title,
+    useDing = false,
+    ...props
+  }) => {
     const [open, setOpen] = useState(false)
     const dropId = useRef<string | null>(null)
     if (!dropId.current) {
@@ -154,6 +165,7 @@ const IconButtonWithDropDownDialog: FC<PropsType> = memo(
           <IconButton
             className={className}
             toolTipProps={open ? undefined : tooltipProps}
+            tippyProps={open ? undefined : tippyProps}
             active={open || isDing}
           >
             {children}

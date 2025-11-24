@@ -4,7 +4,7 @@ import useRightMode from '@/store/layout/useRightMode.store'
 import { lazy } from 'react'
 import OverlayDetail from './right-tools/OverlayDetail/OverlayDetail'
 import RightRangingPanel from './right-tools/Ranging'
-import { useSonner } from 'sonner'
+import { useCurrentToasts } from '@/store/useToast'
 
 const RightDeviceDetail = lazy(() => import('./DeviceDetail'))
 const RightAddPoint = lazy(() => import('./right-tools/AddPoint'))
@@ -48,7 +48,7 @@ const Right: FC<PropsType> = memo(() => {
   const rightMode = useRightMode((s) => s.rightMode)
   const rightOuterMode = useRightMode((s) => s.rightOuterMode)
 
-  const { toasts } = useSonner()
+  const toasts = useCurrentToasts()
 
   const layoutShift = useMemo(() => {
     if (toasts.length === 0) {

@@ -59,7 +59,7 @@ const ControlRoomVideo: FC<PropsType> = memo(
               {isHaveTapZoomAtTarget ? (
                 <IconButton
                   className="scale-90"
-                  toolTipProps={{ title: '指点跟踪' }}
+                  tippyProps={{ content: '指点跟踪' }}
                   active={!!enable}
                   onClick={() => setEnable((v) => !v)}
                 >

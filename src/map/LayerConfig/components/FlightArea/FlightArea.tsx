@@ -51,10 +51,9 @@ const FlightAreaConfig: FC<PropsType> = memo(() => {
     <>
       <FloatIconButton
         active={open}
-        toolTipProps={{
-          title: t('flightArea.title'),
+        tippyProps={{
+          content: t('flightArea.title'),
           placement: 'left',
-          mouseEnterDelay: 0.5,
         }}
         variant="borderless"
         onClick={toggle}

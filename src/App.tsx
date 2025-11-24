@@ -23,6 +23,7 @@ import AppSpin from './components/AppSpin.tsx'
 
 import { Toaster } from 'sonner'
 import AppThemeProvider from './components/AppThemeProvider'
+import Toast from './components/Toast.tsx'
 
 const hidenSet = new Set([
   controlRoom.id,
@@ -118,17 +119,7 @@ const App = () => {
                 </main>
               </div>
             </div>
-            <Toaster
-              position="top-right"
-              offset={{
-                top: '50px',
-                right: '54px',
-              }}
-              style={{
-                zIndex: 1000,
-              }}
-              gap={12}
-            ></Toaster>
+            <Toast />
           </NotificationContext.Provider>
         </AppMsgContext.Provider>
       </div>

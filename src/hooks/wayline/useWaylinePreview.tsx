@@ -12,6 +12,8 @@ const WaylinePreview: FC<{ data: API_AIRLINE.domain.AIRLINE_TEMPLATE }> = ({
     return shouldJson(data.parameters)?.spaces?.[0]?.positions || []
   }, [data])
 
+  const [loading, setLoading] = useState(false)
+
   useEffect(() => {
     if (!map) return
 
@@ -19,6 +21,7 @@ const WaylinePreview: FC<{ data: API_AIRLINE.domain.AIRLINE_TEMPLATE }> = ({
 
     // 加载航点图标
     if (!map.hasImage('wayline-point-icon')) {
+      setLoading(false)
       map.loadImage('/images/airline/inverted-triangle.png', (error, image) => {
         if (error) {
           console.error('Error loading wayline point icon:', error)
@@ -26,6 +29,7 @@ const WaylinePreview: FC<{ data: API_AIRLINE.domain.AIRLINE_TEMPLATE }> = ({
         }
         if (image) {
           map.addImage('wayline-point-icon', image)
+          setLoading(true)
         }
       })
     }
@@ -55,6 +59,10 @@ const WaylinePreview: FC<{ data: API_AIRLINE.domain.AIRLINE_TEMPLATE }> = ({
       },
     )
   }, [positions, map])
+
+  if (!loading) {
+    return null
+  }
 
   return (
     <>

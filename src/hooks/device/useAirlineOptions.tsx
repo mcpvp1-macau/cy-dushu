@@ -42,7 +42,7 @@ const useWaylineOptions = () => {
               e.taskType as WaylineEnum,
             ) && (
               <IconButton
-                toolTipProps={{ title: t('common.preview') }}
+                tippyProps={{ content: t('common.preview') }}
                 onClick={(evt) => {
                   evt.stopPropagation()
                   handlePreview(e)

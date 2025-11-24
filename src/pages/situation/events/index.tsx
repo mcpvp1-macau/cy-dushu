@@ -155,7 +155,7 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
         />
         <IconButtonWithDropDownDialog
           title={t('events.filter.title')}
-          tooltipProps={{ title: t('events.filter.title') }}
+          tippyProps={{ content: t('events.filter.title') }}
           trigger={['click']}
           popupRender={() => (
             <div className="p-2">
@@ -227,7 +227,7 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
           {tsIsLoading ? <LoadingOutlined /> : <IconFilter />}
         </IconButtonWithDropDownDialog>
 
-        <IconButton toolTipProps={{ title: '全部忽略' }}>
+        <IconButton tippyProps={{ content: '全部忽略' }}>
           <IconClear onClick={handleClear} />
         </IconButton>
       </div>

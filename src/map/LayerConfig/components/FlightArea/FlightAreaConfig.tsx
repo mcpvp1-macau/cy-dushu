@@ -6,9 +6,10 @@ import IconButton from '@/components/ui/button/IconButton'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { deleteFlightArea } from '@/service/modules/flightArea'
 import { LoadingOutlined } from '@ant-design/icons'
-import { Tooltip } from 'antd'
 import queryClient from '@/global/query-client'
 import { useFlightAreaConfigStore } from '@/store/map/useFlightArea.store'
+import LiqunTippy from '@/components/ui/LiqunTippy'
+import OverflowText from '@/components/ui/OverflowText'
 
 type PropsType = {
   data: API_LAYER_OVERLAY.domain.Overlay
@@ -50,11 +51,11 @@ const FlightAreaItemConfig: FC<PropsType> = memo((props) => {
   return (
     <li>
       <div className="flex justify-between">
-        <div className="flex gap-2">
+        <div className="flex gap-2 overflow-hidden">
           <IconFlightArea className="text-primary" />
-          <p className="truncate w-[210px] overflow-hidden text-ellipsis  ">
-            <Tooltip title={data.overlayName}>{data.overlayName}</Tooltip>
-          </p>
+          <OverflowText className="flex-1 truncate mr-3">
+            {data.overlayName}
+          </OverflowText>
         </div>
         <div className="flex gap-3" onClick={(e) => e.stopPropagation()}>
           {loading ? (

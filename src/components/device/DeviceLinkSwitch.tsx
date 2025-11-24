@@ -32,9 +32,7 @@ const DeviceLinkSwitch: FC<PropsType> = memo(
 
     return (
       <IconButtonWithDropDown
-        tooltipProps={{
-          title: t('device.linkSwitch.title'),
-        }}
+        tippyProps={{ content: t('device.linkSwitch.title') }}
         menu={{
           items: linkOptions,
           onClick: (e) => handleLinkChange(e.key),

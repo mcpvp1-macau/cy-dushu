@@ -31,9 +31,7 @@ const ZoomFocusMode: FC<PropsType> = memo(({ postSerivce }) => {
   return (
     <IconButtonWithDropDown
       className="text-xs"
-      tooltipProps={{
-        title: t('controlRoom.uav.service.focusMode.title'),
-      }}
+      tippyProps={{ content: t('controlRoom.uav.service.focusMode.title') }}
       menu={{
         items: Array.from(modeMap.entries()).map(([k, v]) => ({
           key: k,

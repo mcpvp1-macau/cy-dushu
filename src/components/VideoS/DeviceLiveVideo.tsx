@@ -500,9 +500,9 @@ const DeviceLiveVideo = memo(
                   </section>
                   <section className="flex items-center gap-3">
                     <IconButton
-                      toolTipProps={{
-                        title: t('common.refresh'),
-                        getPopupContainer: () =>
+                      tippyProps={{
+                        content: t('common.refresh'),
+                        appendTo: () =>
                           (document.fullscreenElement as HTMLElement) ??
                           document.body,
                       }}
@@ -517,16 +517,17 @@ const DeviceLiveVideo = memo(
                     </IconButton>
                     {isDomainOrIP() === 'Domain' ? (
                       <IconButton
-                        toolTipProps={{
-                          title: '分享',
-                          overlay: (
-                            <ShareQRCode
-                              productKey={productKey}
-                              deviceId={deviceId}
-                              videoId={videoId}
-                            />
+                        tippyProps={{
+                          content: (
+                            <div>
+                              <ShareQRCode
+                                productKey={productKey}
+                                deviceId={deviceId}
+                                videoId={videoId}
+                              />
+                            </div>
                           ),
-                          getPopupContainer: () =>
+                          appendTo: () =>
                             (document.fullscreenElement as HTMLElement) ??
                             document.body,
                         }}
@@ -545,7 +546,7 @@ const DeviceLiveVideo = memo(
                     {globalConfig.enableElectricScale && (
                       <IconButton
                         className="scale-90"
-                        toolTipProps={{ title: t('video.electricScale.title') }}
+                        tippyProps={{ content: t('video.electricScale.title') }}
                         active={!!enableScale}
                         onClick={() => {
                           setEnableScale(1 - Math.sign(enableScale))
@@ -555,14 +556,11 @@ const DeviceLiveVideo = memo(
                       </IconButton>
                     )}
                     <IconButton
-                      toolTipProps={{
-                        title: !fullScreen
+                      tippyProps={{
+                        content: !fullScreen
                           ? t('common.fullScreen')
                           : t('common.exit'),
-                        align: {
-                          offset: [-20, -10],
-                        },
-                        getPopupContainer: () =>
+                        appendTo: () =>
                           (document.fullscreenElement as HTMLElement) ??
                           document.body,
                       }}

@@ -9,7 +9,6 @@ import Filter from '../Filter/index'
 import { GroupType } from '@/components/Filter/FilterPopover/interface'
 import AppEmpty from '../AppEmpty'
 import { Dayjs } from 'dayjs'
-import { t } from 'i18next'
 
 type PropsType = {
   deviceId: string
@@ -102,7 +101,7 @@ const AiData: React.FC<PropsType> = ({ deviceId, timeRange, height = 500 }) => {
 
   return (
     <Flex vertical gap={12}>
-      <div className='pl-3'>
+      <div className="pl-3">
         <Filter
           onChange={onChange}
           items={[

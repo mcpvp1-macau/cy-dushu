@@ -10,7 +10,7 @@ const UavInfoBoardSwitchButton: FC<PropsType> = memo(() => {
 
   return (
     <FloatIconButton
-      toolTipProps={{ title: t('uav.infoBoard.title'), placement: 'left' }}
+      tippyProps={{ content: t('uav.infoBoard.title'), placement: 'left' }}
       active={enableUavInfoBoard}
       onClick={() => {
         useMapDevicesStore

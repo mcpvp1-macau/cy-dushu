@@ -99,9 +99,8 @@ const UploadAirlineTemplte: FC<PropsType> = memo(() => {
   return (
     <>
       <IconButton
-        toolTipProps={{
-          title: t('wayline.upload.title'),
-          mouseEnterDelay: 0.5,
+        tippyProps={{
+          content: t('wayline.upload.title'),
         }}
         onClick={setTrue}
       >

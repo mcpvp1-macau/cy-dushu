@@ -107,9 +107,7 @@ const ReconstructionMapConfig: FC<PropsType> = memo((props) => {
     } else if (data.status === 'PROCESSING' || data.status === 'PAUSE') {
       return (
         <IconAsyncButton
-          toolTipProps={{
-            title: t('mapLayer.reconstructionMap.task.restart'),
-          }}
+          tippyProps={{ content: t('mapLayer.reconstructionMap.task.restart') }}
           onClick={async () => await restartReconstruction(data)}
         >
           <IconRefresh className="cursor-pointer text-[14px]" />

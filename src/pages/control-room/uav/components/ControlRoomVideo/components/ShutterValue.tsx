@@ -137,7 +137,7 @@ const ShutterValue: FC<PropsType> = memo(() => {
     >
       <IconButton
         className="text-xs"
-        toolTipProps={{ title: t('controlRoom.uav.shutter.title') }}
+        tippyProps={{ content: t('controlRoom.uav.shutter.title') }}
       >
         {shutterMap.get(truthValue)}
       </IconButton>

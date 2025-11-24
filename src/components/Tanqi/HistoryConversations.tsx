@@ -57,9 +57,7 @@ const Conversations: FC<PropsType> = memo(({ groupName }) => {
   return (
     <IconButtonWithDropDown
       disabled={data?.content?.length === 0}
-      tooltipProps={{
-        title: t('tanqi.historyChat.title'),
-      }}
+      tippyProps={{ content: t('tanqi.historyChat.title') }}
       placement="topRight"
       trigger={['click']}
       popupRender={() => {

@@ -208,7 +208,7 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
 
                       <Suspense fallback={<LoadingOutlined />}>
                         <IconButton
-                          toolTipProps={{ title: '校验' }}
+                          tippyProps={{ content: '校验' }}
                           onClick={handleVerificationClick}
                         >
                           <IconKCCheck />
@@ -235,7 +235,7 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
                       </Suspense>
 
                       <IconAsyncButton
-                        toolTipProps={{ title: '删除' }}
+                        tippyProps={{ content: '删除' }}
                         disabled={checkIds.length === 0}
                         onClick={async () => {
                           await delAIResult(actionId, checkIds)

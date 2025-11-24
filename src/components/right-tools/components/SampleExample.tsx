@@ -1,5 +1,5 @@
+import LiqunTippy from '@/components/ui/LiqunTippy'
 import styles from './SampleExample.module.less'
-import { Tooltip } from 'antd'
 
 type PropsType = unknown
 
@@ -23,16 +23,22 @@ const SignalExample: FC<PropsType> = memo(() => {
       <p className={styles.small}>图例</p>
       <div className={styles.bar}>
         {colorMap.map((e, i) => (
-          <Tooltip title={`信号${infoMap[i]}: ${title[i]}`} placement="top">
+          <LiqunTippy
+            content={`信号${infoMap[i]}: ${title[i]}`}
+            placement="top"
+          >
             <div className={styles.barItem} style={{ background: e }}></div>
-          </Tooltip>
+          </LiqunTippy>
         ))}
       </div>
       <div className={styles.bar2}>
         {infoMap.map((e, i) => (
-          <Tooltip title={`信号${infoMap[i]}: ${title[i]}`} placement="top">
+          <LiqunTippy
+            content={`信号${infoMap[i]}: ${title[i]}`}
+            placement="top"
+          >
             <p className={clsx(styles.small, styles.barItem)}>{e}</p>
-          </Tooltip>
+          </LiqunTippy>
         ))}
       </div>
     </div>

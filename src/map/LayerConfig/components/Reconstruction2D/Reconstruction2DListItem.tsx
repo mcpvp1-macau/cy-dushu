@@ -25,6 +25,7 @@ import {
 } from '@ant-design/icons'
 import { t } from 'i18next'
 import * as Cesium from 'cesium'
+import OverflowText from '@/components/ui/OverflowText'
 
 type PropsType = {
   data: API_RECONSTRUCTION.Reconstruction2DListItem
@@ -63,15 +64,17 @@ const Recon2DListItem: FC<PropsType> = memo(
     return (
       <>
         <li>
-          <div className="flex justify-between text-sm">
-            <div className="flex gap-2">
+          <div className="flex justify-between text-sm overflow-hidden">
+            <div className="flex gap-2 overflow-hidden">
               <IconReconstruction2D className="text-primary" />
-              {data.name}
+              <OverflowText className="max-w-[180px] truncate">
+                {data.name}
+              </OverflowText>
             </div>
             <div className="flex items-center gap-2">
               <IconButton
-                toolTipProps={{
-                  title: hiddenSet.has(data.id)
+                tippyProps={{
+                  content: hiddenSet.has(data.id)
                     ? t('common.show')
                     : t('common.hide'),
                 }}
@@ -115,9 +118,7 @@ const Recon2DListItem: FC<PropsType> = memo(
                     )}
                   <IconButton
                     className="scale-90"
-                    toolTipProps={{
-                      title: t('common.restart'),
-                    }}
+                    tippyProps={{ content: t('common.restart') }}
                     onClick={async () => {
                       setIsLoading(true)
                       try {
@@ -132,14 +133,14 @@ const Recon2DListItem: FC<PropsType> = memo(
                   </IconButton>
                   <IconButton
                     className="scale-90"
-                    toolTipProps={{ title: t('common.edit') }}
+                    tippyProps={{ content: t('common.edit') }}
                     onClick={setTrue}
                   >
                     <IconEdit />
                   </IconButton>
                   <IconButton
                     className="scale-90"
-                    toolTipProps={{ title: t('common.delete') }}
+                    tippyProps={{ content: t('common.delete') }}
                     onClick={async () => {
                       setIsLoading(true)
                       try {

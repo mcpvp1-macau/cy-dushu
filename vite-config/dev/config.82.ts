@@ -7,6 +7,11 @@ export default mergeConfig(
     server: {
       host: '0.0.0.0',
       proxy: {
+        '/humanLoopServer': {
+          target: 'http://47.99.132.132:36009',
+          rewrite: (path) => path.replace(/^\/humanLoopServer/, ''),
+          changeOrigin: true,
+        },
         '/ditingMCPServer': {
           target: 'http://api-mcp.jing-an.com:28080',
           rewrite: (path) => path.replace(/^\/ditingMCPServer/, ''),

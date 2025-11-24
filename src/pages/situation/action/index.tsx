@@ -94,7 +94,7 @@ const PageSituationAction: FC<PropsType> = memo(() => {
         />
         <IconButtonWithDropDownDialog
           title={'行动筛选'}
-          tooltipProps={{ title: '行动筛选' }}
+          tippyProps={{ content: '行动筛选' }}
           trigger={['click']}
           popupRender={() => (
             <div className="p-2">

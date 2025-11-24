@@ -1,4 +1,5 @@
 import MenuIconAction from '@/assets/icons/jsx/menus/MenuIconAction'
+import OverflowText from '@/components/ui/OverflowText'
 import { Link } from 'react-router-dom'
 
 type PropsType = {
@@ -32,7 +33,9 @@ const ActionItem: FC<PropsType> = memo(({ data, actionType }) => {
       <div className="flex items-center">
         <h4 className="flex-1 flex items-center gap-1 text-sm overflow-hidden">
           <MenuIconAction />
-          <p className="text-hightlight truncate max-w-[200px]">{data.name}</p>
+          <OverflowText className="text-hightlight max-w-[200px] truncate">
+            {data.name}
+          </OverflowText>
         </h4>
         <div
           className={clsx(

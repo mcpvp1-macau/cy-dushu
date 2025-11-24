@@ -4,6 +4,7 @@ import ARSceneConfig from './Config'
 import ARSceneCamera from './Camera'
 import ARSenceUpdateData from './UpdateData'
 import ARSceneCesiumRender from './Render'
+import DeviceOverlaysRender from './Render/DeviceOverlaysRender/DeviceOverlaysRender'
 
 /**纯cesium版的AR */
 const ARSceneCesium: FC = () => {
@@ -37,6 +38,7 @@ const ARSceneCesium: FC = () => {
       <ARSenceUpdateData />
 
       <ARSceneCesiumRender />
+      <DeviceOverlaysRender />
     </Viewer>
   )
 }

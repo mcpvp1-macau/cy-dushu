@@ -16,7 +16,7 @@ const RightActionTanqiWrapper: FC<PropsType> = memo(() => {
       >
         <div className="flex gap-2 items-center">
           <IconTanQi className="device-detail-icon" />
-          <h6 className="text-white text-base">檀棋</h6>
+          <h6 className="text-hightlight text-base">檀棋</h6>
         </div>
       </CloseableHeader>
       <div className="h-screen overflow-hidden">

@@ -102,8 +102,8 @@ const AsideToolBar: FC<PropsType> = memo(() => {
         {hasLaserDistance && (
           <IconButton
             className={borderedBtnClassName}
-            toolTipProps={{
-              title: t('controlRoom.uav.service.laserRanging.title'),
+            tippyProps={{
+              content: t('controlRoom.uav.service.laserRanging.title'),
             }}
             active={openLarser}
             onClick={() =>
@@ -116,8 +116,8 @@ const AsideToolBar: FC<PropsType> = memo(() => {
         {hasTapZoomAtTarget && (
           <IconButton
             className={borderedBtnClassName}
-            toolTipProps={{
-              title: t('controlRoom.uav.service.gimbalToPoint.title'),
+            tippyProps={{
+              content: t('controlRoom.uav.service.gimbalToPoint.title'),
             }}
             active={openPositionZoom === 1}
             onClick={() =>
@@ -132,8 +132,8 @@ const AsideToolBar: FC<PropsType> = memo(() => {
         {hasGotoPosAtTarget && (
           <IconButton
             className={borderedBtnClassName}
-            toolTipProps={{
-              title: t('controlRoom.uav.service.gotoPosAtTarget.title'),
+            tippyProps={{
+              content: t('controlRoom.uav.service.gotoPosAtTarget.title'),
             }}
             active={openTapToFlyOnVideo}
             onClick={() => {
@@ -151,8 +151,8 @@ const AsideToolBar: FC<PropsType> = memo(() => {
         {serviceHave['autoTrack'] && (
           <IconButton
             className={borderedBtnClassName}
-            toolTipProps={{
-              title: t('controlRoom.uav.service.smartTrack.title'),
+            tippyProps={{
+              content: t('controlRoom.uav.service.smartTrack.title'),
             }}
             active={enableAutoTrack}
             onClick={() => {
@@ -171,7 +171,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
         {/* 智能云台追踪 */}
         {serviceHave['smartTrack'] && (
           <IconButton
-            toolTipProps={{ title: '智能追踪' }}
+            tippyProps={{ content: '智能追踪' }}
             className={borderedBtnClassName}
             active={enableSmartTrack}
             onClick={() => {
@@ -193,7 +193,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
         )}
         {hasConfirmTrack && (
           <IconButton
-            toolTipProps={{ title: '确认追踪' }}
+            tippyProps={{ content: '确认追踪' }}
             onClick={() => postDeviceService('confirmStartTrack')}
           >
             <IconTrack />
@@ -203,9 +203,7 @@ const AsideToolBar: FC<PropsType> = memo(() => {
           <IconButton
             className={borderedBtnClassName}
             active={arEnable}
-            toolTipProps={{
-              title: t('controlRoom.uav.service.ar.title'),
-            }}
+            tippyProps={{ content: t('controlRoom.uav.service.ar.title') }}
             onClick={handleToggleMixAR}
           >
             <IconAR />
@@ -214,8 +212,8 @@ const AsideToolBar: FC<PropsType> = memo(() => {
         {arEnable && (
           <>
             <IconButton
-              toolTipProps={{
-                title: t('controlRoom.uav.service.ar.setting.title'),
+              tippyProps={{
+                content: t('controlRoom.uav.service.ar.setting.title'),
               }}
               onClick={setVRTrue}
             >
@@ -237,8 +235,8 @@ const AsideToolBar: FC<PropsType> = memo(() => {
           <IconButton
             className={borderedBtnClassName}
             active={enableReconstruction}
-            toolTipProps={{
-              title: t('controlRoom.uav.service.reconstruction.title'),
+            tippyProps={{
+              content: t('controlRoom.uav.service.reconstruction.title'),
             }}
             onClick={handleToggleReconstruction}
           >

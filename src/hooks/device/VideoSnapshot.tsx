@@ -40,7 +40,7 @@ const VideoSnapshotBtn: FC<PropsType> = memo(
 
     return (
       <IconButton
-        toolTipProps={{ title: t('common.screenShot') }}
+        tippyProps={{ content: t('common.screenShot') }}
         onClick={handleSnapshot}
         disabled={disabled}
       >

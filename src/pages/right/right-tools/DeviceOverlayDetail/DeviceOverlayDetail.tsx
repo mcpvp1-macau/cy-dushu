@@ -70,7 +70,7 @@ const RightDeviceOverlayDetail: FC<PropsType> = memo(() => {
                     {isEdit ? (
                       <>
                         <IconButton
-                          toolTipProps={{ title: t('common.save') }}
+                          tippyProps={{ content: t('common.save') }}
                           onClick={handleSave}
                         >
                           <IconTick className="scale-90" />
@@ -78,7 +78,7 @@ const RightDeviceOverlayDetail: FC<PropsType> = memo(() => {
                       </>
                     ) : (
                       <IconButton
-                        toolTipProps={{ title: t('common.edit') }}
+                        tippyProps={{ content: t('common.edit') }}
                         onClick={() => {
                           toggle()
                           setTimeout(() => {
@@ -90,7 +90,7 @@ const RightDeviceOverlayDetail: FC<PropsType> = memo(() => {
                       </IconButton>
                     )}
                     <IconButton
-                      toolTipProps={{ title: t('common.delete') }}
+                      tippyProps={{ content: t('common.delete') }}
                       onClick={handleDelete}
                     >
                       <IconDelete className="scale-90" />

@@ -67,13 +67,13 @@ const EditableNameHeader: FC<PropsType> = memo(
               placement={backConfirm.placement}
               onConfirm={onBackClick}
             >
-              <IconButton toolTipProps={{ title: t('common.back') }}>
+              <IconButton tippyProps={{ content: t('common.back') }}>
                 <IconBack />
               </IconButton>
             </Popconfirm>
           ) : (
             <IconButton
-              toolTipProps={{ title: t('common.back') }}
+              tippyProps={{ content: t('common.back') }}
               onClick={onBackClick}
             >
               <IconBack />
@@ -101,14 +101,14 @@ const EditableNameHeader: FC<PropsType> = memo(
           {right}
           {isEdit ? (
             <IconButton
-              toolTipProps={{ title: t('common.save') }}
+              tippyProps={{ content: t('common.save') }}
               onClick={handleSaveClick}
             >
               <IconTick />
             </IconButton>
           ) : (
             <IconButton
-              toolTipProps={{ title: t('common.edit') }}
+              tippyProps={{ content: t('common.edit') }}
               onClick={() => setIsEdit(true)}
             >
               <IconEdit />

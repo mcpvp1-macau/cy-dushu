@@ -31,7 +31,7 @@ const AddEventResolveTask: FC<PropsType> = memo(({ actionId, eventId }) => {
     >
       <IconButton
         disabled={!event}
-        toolTipProps={{ title: '区域侦查' }}
+        tippyProps={{ content: '区域侦查' }}
         onClick={() => setOpen(true)}
       >
         <IconFlightArea />

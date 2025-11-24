@@ -28,7 +28,7 @@ const CameraVideoProjection: FC<PropsType> = memo(() => {
 
   return (
     <IconButton
-      toolTipProps={{ title: t('common.videoProjection') }}
+      tippyProps={{ content: t('common.videoProjection') }}
       active={isProjecting}
       onClick={handleClick}
     >

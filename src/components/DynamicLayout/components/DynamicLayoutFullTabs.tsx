@@ -75,9 +75,8 @@ const DynamicLayoutFullTabs: FC<PropsType> = memo(
         >
           <IconButton
             className="text-sm"
-            toolTipProps={{
-              title: t('dynamicLayout.exit.title'),
-              mouseEnterDelay: 0.2,
+            tippyProps={{
+              content: t('dynamicLayout.exit.title'),
             }}
             onClick={handleExitFull}
           >

@@ -62,7 +62,7 @@ const RightDeviceDetail: FC<PropsType> = memo(() => {
             data={deviceDetail}
             headerTools={
               <IconButton
-                toolTipProps={{ title: t('common.fixedOut') }}
+                tippyProps={{ content: t('common.fixedOut') }}
                 onClick={() => {
                   addWindow({
                     params: {

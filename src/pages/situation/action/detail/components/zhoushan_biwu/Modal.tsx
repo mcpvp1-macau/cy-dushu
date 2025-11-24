@@ -42,7 +42,7 @@ const ZSBIWUModal: FC<PropsType> = memo(({ actionId }) => {
   })
 
   const handleCheckAllChange = useMemoizedFn((e: CheckboxChangeEvent) => {
-    setCheckIds(e.target.checked ? (data?.map((e) => e.id) ?? []) : [])
+    setCheckIds(e.target.checked ? data?.map((e) => e.id) ?? [] : [])
   })
 
   const componentMap = useRef<{
@@ -86,7 +86,7 @@ const ZSBIWUModal: FC<PropsType> = memo(({ actionId }) => {
 
                       <IconButton
                         disabled={checkIds.length === 0}
-                        toolTipProps={{ title: '下载全部' }}
+                        tippyProps={{ content: '下载全部' }}
                         onClick={() => {
                           for (const id of checkIds) {
                             const component = componentMap.current[id]
@@ -100,7 +100,7 @@ const ZSBIWUModal: FC<PropsType> = memo(({ actionId }) => {
                       </IconButton>
 
                       <IconAsyncButton
-                        toolTipProps={{ title: '删除' }}
+                        tippyProps={{ content: '删除' }}
                         disabled={checkIds.length === 0}
                         onClick={async () => {
                           await delAIResult(actionId, checkIds)

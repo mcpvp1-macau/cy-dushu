@@ -31,7 +31,7 @@ const ActionTanqi: FC<PropsType> = memo(() => {
   return createPortal(
     <FloatIconButton
       active={rightOuterMode === RightOuterEnum.TANQI}
-      toolTipProps={{ title: '檀棋', placement: 'left' }}
+      tippyProps={{ content: '檀棋', placement: 'left' }}
       onClick={() => {
         const store = useRightMode.getState()
         store.updateRightOuterMode(

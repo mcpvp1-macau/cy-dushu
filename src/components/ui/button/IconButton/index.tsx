@@ -1,17 +1,21 @@
-import { Tooltip, type TooltipProps } from 'antd'
+import { GetProps, Tooltip, type TooltipProps } from 'antd'
 import type { ButtonHTMLAttributes, FC, ReactNode } from 'react'
 import styles from './index.module.less'
+import Tippy from '@tippyjs/react'
 
 type PropsType = ButtonHTMLAttributes<HTMLButtonElement> & {
   active?: boolean
   children: ReactNode
+  /** @deprecated 使用 tippyProps 替代 */
   toolTipProps?: TooltipProps
+  tippyProps?: GetProps<typeof Tippy>
 }
 
 const IconButton: FC<PropsType> = ({
   children,
   toolTipProps,
   active,
+  tippyProps,
   ...restProps
 }) => {
   // 存在 toolTipProps 时，渲染带有 Tooltip 的按钮
@@ -28,6 +32,25 @@ const IconButton: FC<PropsType> = ({
           {children}
         </button>
       </Tooltip>
+    )
+  }
+  if (tippyProps) {
+    return (
+      <Tippy
+        theme="liqun"
+        {...tippyProps}
+        content={<div className="p-1.5">{tippyProps.content}</div>}
+      >
+        <button
+          type="button"
+          {...restProps}
+          className={clsx(styles.iconButton, restProps.className, {
+            [styles.active]: active,
+          })}
+        >
+          {children}
+        </button>
+      </Tippy>
     )
   }
   return (

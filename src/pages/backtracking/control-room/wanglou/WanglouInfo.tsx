@@ -98,12 +98,7 @@ const WanglouInfo: React.FC = memo(() => {
       warnConfig?.tooltip || wanglouProps[warnConfig?.warningName || '']
     if (showWarning) {
       return (
-        <IconButton
-          style={{ marginLeft: 6 }}
-          toolTipProps={{
-            title: text,
-          }}
-        >
+        <IconButton style={{ marginLeft: 6 }} tippyProps={{ content: text }}>
           <Icon id="icon-tishi" className="text-orange-500" />
         </IconButton>
       )
@@ -111,9 +106,7 @@ const WanglouInfo: React.FC = memo(() => {
     return (
       <IconButton
         style={{ marginLeft: 6 }}
-        toolTipProps={{
-          title: t('source.status.online'),
-        }}
+        tippyProps={{ content: t('source.status.online') }}
       >
         <Icon id="icon-tishi" className="text-[#15B371]" />
       </IconButton>

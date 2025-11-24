@@ -170,7 +170,7 @@ const XiaoshanXZZoneConfig: FC<PropsType> = memo(() => {
   return (
     <>
       <FloatIconButton
-        toolTipProps={{ title: '行政区域', placement: 'left' }}
+        tippyProps={{ content: '行政区域', placement: 'left' }}
         onClick={openModal}
       >
         <IconWarZone />

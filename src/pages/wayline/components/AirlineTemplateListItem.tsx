@@ -7,6 +7,7 @@ import IconSwarm from '@/assets/icons/jsx/IconSwarm'
 import IconWaylineAirpoint from '@/assets/icons/jsx/IconWaylineAirpoint'
 import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
 import IconButton from '@/components/ui/button/IconButton'
+import OverflowText from '@/components/ui/OverflowText'
 import { WaylineEnum } from '@/constant/uav/wayline'
 import { delAirlineTempalte } from '@/service/modules/airline'
 import useWaylinesStore from '@/store/map/useWaylines.store'
@@ -40,10 +41,12 @@ const AirlineTemplateListItem: FC<PropsType> = memo(({ data }) => {
       <div className="flex gap-2">
         <WaylineIcon type={data.taskType} />
         <div className="grow">
-          <p className="max-w-52 truncate text-hightlight">{data.taskName}</p>
+          <OverflowText className="text-hightlight max-w-52 truncate">
+            {data.taskName}
+          </OverflowText>
         </div>
         <IconButton
-          toolTipProps={{ title: t('common.preview') }}
+          tippyProps={{ content: t('common.preview') }}
           disabled={
             data.taskType === WaylineEnum.SwarmWayline ||
             data.taskType === WaylineEnum.PointCloud3DWayline
@@ -69,7 +72,7 @@ const AirlineTemplateListItem: FC<PropsType> = memo(({ data }) => {
         >
           <IconButton
             className="text-xs"
-            toolTipProps={{ title: t('common.edit') }}
+            tippyProps={{ content: t('common.edit') }}
           >
             <IconEdit2 />
           </IconButton>

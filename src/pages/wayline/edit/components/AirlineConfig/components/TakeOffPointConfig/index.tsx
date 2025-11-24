@@ -11,6 +11,7 @@ import { DeviceEnum } from '@/enum/device'
 import DeviceIcon from '@/components/device/DeviceIcon'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import { useAppMsg } from '@/hooks/useAppMsg'
+import LiqunTippy from '@/components/ui/LiqunTippy'
 
 type PropsType = unknown
 
@@ -55,15 +56,15 @@ const TakeOffPointConfig: FC<PropsType> = () => {
           {takeOffRefPoint ? (
             <div>
               {t('wayline.takeoffRefPoint.setted.title')}{' '}
-              <Tooltip title={t('wayline.takeoffRefPoint.setted.tooltip')}>
+              <LiqunTippy content={t('wayline.takeoffRefPoint.setted.tooltip')}>
                 <InfoCircleOutlined className="text-fore" />
-              </Tooltip>
+              </LiqunTippy>
             </div>
           ) : (
             t('wayline.takeoffRefPoint.notSetted.title')
           )}
           <IconButton
-            toolTipProps={{ title: t('common.refDevLoc') }}
+            tippyProps={{ content: t('common.refDevLoc') }}
             onClick={() => setDeviceSelectOpen(true)}
           >
             <LinkOutlined />

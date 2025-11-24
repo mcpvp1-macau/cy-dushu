@@ -113,7 +113,7 @@ const ExposureValue: FC<PropsType> = memo(() => {
     >
       <IconButton
         className="text-xs"
-        toolTipProps={{ title: t('controlRoom.uav.exposure.title') }}
+        tippyProps={{ content: t('controlRoom.uav.exposure.title') }}
       >
         {display}
       </IconButton>

@@ -16,6 +16,7 @@ import TanqiWelCome from '@/components/Tanqi/TanqiWelcome'
 import useSendMessage from './hooks/useSendMessage'
 import useUserStore from '@/store/useUser.store'
 import mitt from 'mitt'
+import HumanInLoopDialog from './components/HumanInLoopDialog'
 
 type PropsType = unknown
 
@@ -78,15 +79,7 @@ const ActionTanqi: FC<PropsType> = memo(() => {
     }
   }
 
-  useEffect(() => {
-    setApendedRows([])
-    if (willSendMessage.current) {
-      handleSubmit(willSendMessage.current)
-      willSendMessage.current = ''
-    }
-  }, [chatId])
-
-  const { replyingContent, sendMessage } = useSendMessage({
+  const { replyingContent, currentToolCalls, sendMessage } = useSendMessage({
     onStartReply: () => {
       setAiState(APState.Replying)
     },
@@ -100,6 +93,9 @@ const ActionTanqi: FC<PropsType> = memo(() => {
           created_at: dayjs().format(),
         },
       ])
+      setTimeout(() => {
+        refetch()
+      })
     },
   })
 
@@ -159,7 +155,11 @@ const ActionTanqi: FC<PropsType> = memo(() => {
   })
 
   const [appendedRows, setApendedRows] = useState<any[]>([])
-  const { data: chatDetail, isLoading } = useQuery({
+  const {
+    data: chatDetail,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ['chatDetail', chatId],
     queryFn: async () => {
       const res = await getChats(chatId!)
@@ -169,6 +169,9 @@ const ActionTanqi: FC<PropsType> = memo(() => {
           content: shouldJson(e.content) ?? e.content,
         }))
         .filter((e) => {
+          if (e.role === 'tool_calls') {
+            return false
+          }
           if (typeof e.content === 'object') {
             if (e.content.images) {
               return true
@@ -181,19 +184,49 @@ const ActionTanqi: FC<PropsType> = memo(() => {
     enabled: !!chatId,
   })
 
+  useEffect(() => {
+    setApendedRows([])
+    if (willSendMessage.current) {
+      handleSubmit(willSendMessage.current)
+      willSendMessage.current = ''
+    }
+  }, [chatId, chatDetail])
+
   // 显示的内容
   const conversationDetailData = useMemo(() => {
     const data = [...(chatDetail ?? []), ...appendedRows]
     // 回复内容
-    if (replyingContent) {
+    const humanInTheLoopFn = currentToolCalls.find((tc) => {
+      if (!tc || typeof tc !== 'object') {
+        return false
+      }
+      if (tc.type === 'function' && tc.function?.name === 'human_in_the_loop') {
+        return true
+      }
+    })
+    if (replyingContent || humanInTheLoopFn) {
+      const getDisplayContent = () => {
+        if (humanInTheLoopFn) {
+          return (
+            <div>
+              <div>{replyingContent}</div>
+              {humanInTheLoopFn && (
+                <HumanInLoopDialog humanInTheLoopPayload={humanInTheLoopFn} />
+              )}
+            </div>
+          )
+        }
+        return replyingContent
+      }
+
       data.push({
         role: 'assistant',
-        content: replyingContent,
+        content: getDisplayContent(),
         created_at: dayjs().format(),
       })
     }
     return data
-  }, [chatDetail, appendedRows, replyingContent])
+  }, [chatDetail, appendedRows, replyingContent, currentToolCalls])
 
   return (
     <div className="tanqi size-full overflow-hidden flex flex-col">
@@ -221,7 +254,7 @@ const ActionTanqi: FC<PropsType> = memo(() => {
               {chatId && (
                 <IconButton
                   className="text-sm"
-                  toolTipProps={{ title: t('tanqi.createChat.title') }}
+                  tippyProps={{ content: '新建会话' }}
                   onClick={() => {
                     const nextSearchParams = new URLSearchParams(searchParams)
                     nextSearchParams.delete('chat')

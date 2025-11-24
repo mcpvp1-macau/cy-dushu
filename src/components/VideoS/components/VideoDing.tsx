@@ -16,7 +16,7 @@ const VideoDing: FC<PropsType> = memo((props) => {
 
   return (
     <IconButton
-      toolTipProps={{ title: t('common.fixedOut') }}
+      tippyProps={{ content: t('common.fixedOut') }}
       onClick={() => {
         addWindow({
           params: {

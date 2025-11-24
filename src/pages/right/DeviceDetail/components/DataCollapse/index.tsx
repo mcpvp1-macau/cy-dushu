@@ -67,7 +67,7 @@ const DataCollapse: FC<PropsType> = memo(({ ...props }) => {
                   </IconAsyncButton>
                   <IconButton
                     active={enablePictureOnMap}
-                    toolTipProps={{ title: '照片上图' }}
+                    tippyProps={{ content: '照片上图' }}
                     onClick={toggle}
                   >
                     <IconMap />

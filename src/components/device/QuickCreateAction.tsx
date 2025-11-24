@@ -84,7 +84,7 @@ const QuickCreateAction: FC<PropsType> = memo(({ deviceId, deviceType }) => {
   return (
     <>
       <IconButton
-        toolTipProps={{ title: '创建行动' }}
+        tippyProps={{ content: '创建行动' }}
         onClick={() => setOpen(true)}
       >
         <IconAddAction />

@@ -1,9 +1,9 @@
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
 import useFlightAreaStore from '@/store/map/useFlightArea.store'
-import { GetProps, Tooltip } from 'antd'
+import { GetProps } from 'antd'
 import { InfoCircleOutlined } from '@ant-design/icons'
-import { max } from 'lodash'
+import LiqunTippy from '@/components/ui/LiqunTippy'
 
 type FormModalProps = GetProps<typeof FormModal>
 
@@ -90,9 +90,9 @@ const AddFlightAreaModal: FC<PropsType> = memo((props) => {
               return (
                 <div className="flex items-center gap-3">
                   <span>{option.label}</span>
-                  <Tooltip title={overlayExtTypeOptions[index].info}>
+                  <LiqunTippy content={overlayExtTypeOptions[index].info}>
                     <InfoCircleOutlined />
-                  </Tooltip>
+                  </LiqunTippy>
                 </div>
               )
             },

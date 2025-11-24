@@ -34,9 +34,7 @@ const VideoFollow: FC<PropsType> = memo(({ deviceId, productKey, videoId }) => {
   return (
     <IconButton
       className="text-base"
-      toolTipProps={{
-        title: t('common.videoFollow'),
-      }}
+      tippyProps={{ content: t('common.videoFollow') }}
       active={isFollowing}
       onClick={handleFollowVideo}
     >

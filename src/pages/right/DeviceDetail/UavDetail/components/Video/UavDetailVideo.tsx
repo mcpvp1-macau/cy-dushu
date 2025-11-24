@@ -116,7 +116,7 @@ const UavDetailVideo: FC<PropsType> = memo((props) => {
             videoLiveRef={videoLiveRef}
           />
           <IconButton
-            toolTipProps={{ title: t('common.takePhoto') }}
+            tippyProps={{ content: t('common.takePhoto') }}
             onClick={handleTakePhoto}
           >
             <IconCamera />

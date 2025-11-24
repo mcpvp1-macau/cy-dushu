@@ -63,8 +63,8 @@ const ChildDeviceStatusItem: React.FC<PropsType> = memo(({ data, state }) => {
               {showWarning && (
                 <IconButton
                   style={{ marginLeft: 8 }}
-                  toolTipProps={{
-                    title:
+                  tippyProps={{
+                    content:
                       warnConfig?.tooltip ||
                       properties[warnConfig?.warningName || ''] ||
                       t('device.status.def'),

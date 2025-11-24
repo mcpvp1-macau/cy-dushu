@@ -185,9 +185,8 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
   return (
     <>
       <IconButton
-        toolTipProps={{
-          title: t('wayline.create.title'),
-          mouseEnterDelay: 0.5,
+        tippyProps={{
+          content: t('wayline.create.title'),
         }}
         onClick={() => setOpen(true)}
       >

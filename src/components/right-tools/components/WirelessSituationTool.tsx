@@ -135,7 +135,7 @@ const WirelessSituationTool: FC<PropsType> = memo((props) => {
   return (
     <>
       <FloatIconButton
-        toolTipProps={{ title: t('signalSituation.title'), placement: 'left' }}
+        tippyProps={{ content: t('signalSituation.title'), placement: 'left' }}
         onClick={handleClick}
         active={enableSignalLayer}
       >

@@ -50,7 +50,7 @@ const UavCreateAction: FC<PropsType> = memo(() => {
   return (
     <IconButton
       className="text-sm"
-      toolTipProps={{ title: t('action.add.title') }}
+      tippyProps={{ content: t('action.add.title') }}
       onClick={createAction}
     >
       {loading ? <LoadingOutlined /> : <IconAddAction />}

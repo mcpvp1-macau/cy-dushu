@@ -1,7 +1,6 @@
 import IconLoginUser from '@/assets/icons/jsx/IconLoginUser'
 import useUserStore from '@/store/useUser.store'
 import { CaretDownOutlined } from '@ant-design/icons'
-import { Popover } from 'antd'
 import UserDownMenu from './UserDownMenu'
 import HeaderSetting from './HeaderSetting'
 import POISearch from './POISearch'
@@ -13,12 +12,11 @@ import IconThirdPartyPlatform from '@/assets/icons/jsx/IconThirdPartyPlatform'
 import { Link } from 'react-router-dom'
 import JALogo from '@/assets/svg_jsx/JALogo'
 import ThemeSwitcher from './ThemeSwitcher'
+import LiqunTippy from '../ui/LiqunTippy'
 
 type PropsType = unknown
 
 const Header: FC<PropsType> = memo(() => {
-  const [poVisible, setPoVisible] = useState(false)
-
   const user = useUserStore((s) => s.user)
   const vendorBackUrl = useUserStore((s) => s.vendorBackUrl)
 
@@ -64,20 +62,13 @@ const Header: FC<PropsType> = memo(() => {
           </Link>
         )}
         <HeaderSetting />
-        <Popover
-          className="hover:cursor-pointer"
-          placement={'bottomRight'}
-          content={<UserDownMenu />}
-          trigger={'click'}
-          open={poVisible}
-          onOpenChange={() => setPoVisible(!poVisible)}
-        >
-          <div className="flex items-center gap-1 text-sm">
+        <LiqunTippy content={<UserDownMenu />} trigger={'click'}>
+          <div className="flex items-center gap-1 text-sm cursor-pointer">
             <IconLoginUser className="text-lg" />
             <span>{user?.name}</span>
             <CaretDownOutlined />
           </div>
-        </Popover>
+        </LiqunTippy>
       </div>
     </header>
   )

@@ -24,7 +24,7 @@ const VideoAreaPicker: FC<PropsType> = memo(({ filedName, videoInfo }) => {
         <>
           <IconButton
             className="w-7 h-7"
-            toolTipProps={{ title: '在视频上划选区域' }}
+            tippyProps={{ content: '在视频上划选区域' }}
             onClick={setTrue}
           >
             <IconPositionZoom />

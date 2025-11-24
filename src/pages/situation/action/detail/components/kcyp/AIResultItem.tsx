@@ -160,7 +160,7 @@ const AIResultItem: FC<{
                           <LoadingOutlined />
                         ) : (
                           <IconButton
-                            toolTipProps={{ title: '获取卡口照片' }}
+                            tippyProps={{ content: '获取卡口照片' }}
                             className="text-xs"
                             onClick={() => handleGetSipCascadePicture()}
                           >

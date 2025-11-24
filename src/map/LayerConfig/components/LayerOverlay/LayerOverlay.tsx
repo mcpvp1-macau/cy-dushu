@@ -21,10 +21,9 @@ const LayerOverlay: FC<PropsType> = memo(() => {
       <FloatIconButton
         active={open}
         variant="borderless"
-        toolTipProps={{
-          title: t('common.mapPlotting'),
+        tippyProps={{
+          content: t('common.mapPlotting'),
           placement: 'left',
-          mouseEnterDelay: 0.5,
         }}
         onClick={toggle}
       >

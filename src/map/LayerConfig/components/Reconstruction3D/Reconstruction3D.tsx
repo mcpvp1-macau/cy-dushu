@@ -27,10 +27,9 @@ const Reconstruction3D: FC<PropsType> = memo(() => {
     <>
       <FloatIconButton
         active={open}
-        toolTipProps={{
-          title: t('common.threeMap'),
+        tippyProps={{
+          content: t('common.threeMap'),
           placement: 'left',
-          mouseEnterDelay: 0.5,
         }}
         variant="borderless"
         onClick={toggle}

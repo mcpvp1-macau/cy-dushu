@@ -6,6 +6,7 @@ import { Bubble } from '@ant-design/x'
 import { GetProp, Image } from 'antd'
 
 import markdownit from 'markdown-it'
+import React from 'react'
 import { ReactNode } from 'react'
 
 const md = markdownit()
@@ -68,6 +69,9 @@ const ConversationDetail: FC<PropsType> = memo(({ data, aiState }) => {
                 </Image.PreviewGroup>
               </div>
             )
+          } else if (React.isValidElement(c)) {
+            // 判断是否为 JSX.Element
+            content = c
           }
 
           if (!content) {

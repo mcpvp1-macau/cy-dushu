@@ -9,10 +9,11 @@ import { pick, round } from 'lodash'
 import { useShallow } from 'zustand/react/shallow'
 import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
 import { emtpyObject } from '@/constant/data'
+import OverflowText from '@/components/ui/OverflowText'
 
 const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
   return (
-    <li className="w-1/2 flex gap-1">
+    <li className="w-1/2 flex gap-1 overflow-hidden">
       <div className="whitespace-nowrap">{l}:</div>
       {v}
     </li>
@@ -113,7 +114,7 @@ const UavDetailInfoCard: FC<PropsType> = memo(
     }
 
     return (
-      <ul className="p-2 mx-3 mr-[9px] card-border text-sm flex flex-wrap">
+      <ul className="p-2 mx-3 mr-[9px] card-border text-sm flex flex-wrap overflow-hidden">
         <I l={t('common.modelNumber')} v={modelNumber} />
         <I
           l={t('common.onlineStatus')}
@@ -129,8 +130,10 @@ const UavDetailInfoCard: FC<PropsType> = memo(
         <I
           l={t('uav.displayMode.title')}
           v={
-            uavDisplayModeTransMap[displayMode || '']?.[i18n.language] ||
-            displayMode
+            <OverflowText className="flex-1 truncate">
+              {uavDisplayModeTransMap[displayMode || '']?.[i18n.language] ||
+                displayMode}
+            </OverflowText>
           }
         />
         <I l={t('common.electricity')} v={`${electricity || 0} %`} />
@@ -141,7 +144,7 @@ const UavDetailInfoCard: FC<PropsType> = memo(
             <div className="flex items-center gap-1">
               <span>{latitude?.toFixed(5) || '-'}</span>
               <IconButton
-                toolTipProps={{ title: '复制飞参信息' }}
+                tippyProps={{ content: '复制飞参信息' }}
                 onClick={handleCopy}
               >
                 <CopyOutlined />

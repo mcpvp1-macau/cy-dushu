@@ -73,8 +73,8 @@ const AirpointConfig: FC<PropsType> = ({ info }) => {
               onConfirm={handleDelteAllConfirm}
             >
               <IconButton
-                toolTipProps={{
-                  title: t('wayline.waylinePoint.deleteAllWaypoint.title'),
+                tippyProps={{
+                  content: t('wayline.waylinePoint.deleteAllWaypoint.title'),
                 }}
               >
                 <IconDelete />

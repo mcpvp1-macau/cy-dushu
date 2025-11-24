@@ -112,8 +112,8 @@ const BottomBar: FC<unknown> = memo(() => {
         <IconButton
           active={openCopy}
           onClick={toggleOpenCopy}
-          toolTipProps={{
-            title: openCopy
+          tippyProps={{
+            content: openCopy
               ? '坐标复制'
               : '坐标复制 (点击地图后坐标会复制到剪切板)',
           }}

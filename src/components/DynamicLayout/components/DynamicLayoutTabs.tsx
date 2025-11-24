@@ -192,11 +192,10 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
         >
           <IconButton
             className="text-sm"
-            toolTipProps={{
-              title: layout.isFull
+            tippyProps={{
+              content: layout.isFull
                 ? t('dynamicLayout.exit.title')
                 : t('dynamicLayout.maximize.title'),
-              mouseEnterDelay: 0.2,
             }}
             onClick={() =>
               onLayoutChange?.({ ...layout, isFull: !layout.isFull })
@@ -205,11 +204,10 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
             <IconFullscreen2 className="scale-90" />
           </IconButton>
           <IconButton
-            toolTipProps={{
-              title: layout.isCollapsed
+            tippyProps={{
+              content: layout.isCollapsed
                 ? t('dynamicLayout.unfold.title')
                 : t('dynamicLayout.fold.title'),
-              mouseEnterDelay: 0.2,
             }}
             onClick={handleCollapseToggle}
           >

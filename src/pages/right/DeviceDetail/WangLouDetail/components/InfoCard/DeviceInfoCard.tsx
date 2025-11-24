@@ -1,15 +1,15 @@
+import LiqunTippy from '@/components/ui/LiqunTippy'
 import { StatusColorMap } from '@/enum/device'
 import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouControlRoom.store'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
-import { Tooltip } from 'antd'
 import { ReactNode } from 'react'
 
 const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
   return (
     <li className="w-1/2 flex gap-1 leading-5  text-[12px]">
-      <Tooltip title={l}>
+      <LiqunTippy content={l}>
         <div className="truncate w-[60px]">{l}</div>
-      </Tooltip>
+      </LiqunTippy>
       <div>:</div>
       <span className="text-white text-[14px]">
         {v === undefined ? '-' : v}
@@ -21,9 +21,9 @@ const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
 const T: FC<{ l: ReactNode }> = ({ l }) => {
   return (
     <li className="w-[100%] leading-5 text-[12px]">
-      <Tooltip title={l}>
+      <LiqunTippy content={l}>
         <div className="truncate w-[60px]">{l}</div>
-      </Tooltip>
+      </LiqunTippy>
     </li>
   )
 }

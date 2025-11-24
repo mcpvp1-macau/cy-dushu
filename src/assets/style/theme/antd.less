@@ -1,4 +1,5 @@
-.dushu {
+.dushu,
+.dushu-kcyp {
   --ant-color-primary: rgb(var(--primary-color-3));
   --ant-color-primary-hover: rgb(var(--primary-color-4));
   --ant-color-primary-active: rgb(var(--primary-color-4));
@@ -11,6 +12,7 @@
   --ant-color-bg-container: transparent;
   --ant-color-border: rgb(var(--ground-color-5));
   --ant-color-bg-elevated: rgba(var(--ground-color-3), 1);
+  --ant-color-bg-spotlight: rgba(var(--ground-color-3), 1);
 }
 
 .dushu.ant-btn {
@@ -24,7 +26,8 @@
   --ant-button-border-color-disabled: rgb(var(--ground-color-5));
 }
 
-.dushu.ant-select-css-var {
+.dushu.ant-select-css-var,
+.dushu-kcyp.ant-select-css-var {
   --ant-padding-sm: 12px;
   --ant-select-selector-bg: transparent;
   --ant-select-option-selected-bg: rgb(var(--primary-color-3));
@@ -71,8 +74,6 @@
 
 .ant-bubble-content.ant-bubble-content-filled {
   padding: 0px;
-  // min-height: 24px;
-  // background-color: auto;
 }
 
 .ant-bubble .ant-bubble-content {
@@ -121,11 +122,16 @@
   --ant-collapse-content-bg: transparent;
 }
 
-.dushu.ant-input-css-var {
+.dushu.ant-input-css-var,
+.dushu-kcyp.ant-input-css-var {
   --ant-input-hover-bg: transparent;
   --ant-input-active-bg: transparent;
 }
 
 .dushu.ant-tree {
   background-color: transparent;
+}
+
+.ant-radio-button-wrapper {
+  background-color: rgb(var(--ground-color-2));
 }

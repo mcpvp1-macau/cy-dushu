@@ -1,17 +1,9 @@
 import Select from '@/components/AntdOverride/Select'
 import IconButton from '@/components/ui/button/IconButton'
+import LiqunTippy from '@/components/ui/LiqunTippy'
 import useARSettingStore from '@/store/setting/useARSetting.store'
 import { InfoCircleOutlined, UndoOutlined } from '@ant-design/icons'
-import {
-  Col,
-  ColorPicker,
-  Form,
-  InputNumber,
-  Row,
-  Slider,
-  Switch,
-  Tooltip,
-} from 'antd'
+import { Col, ColorPicker, Form, InputNumber, Row, Slider, Switch } from 'antd'
 import { isNil } from 'lodash'
 
 type PropsType = {
@@ -638,9 +630,9 @@ const ARSetting: FC<PropsType> = memo(({ deviceId }) => {
                   return (
                     <div className="flex items-center gap-3">
                       <span>{option.label}</span>
-                      <Tooltip title={flightAreaFilterOptions[index].info}>
+                      <LiqunTippy content={flightAreaFilterOptions[index].info}>
                         <InfoCircleOutlined />
-                      </Tooltip>
+                      </LiqunTippy>
                     </div>
                   )
                 }}

@@ -30,6 +30,7 @@ import { getAllDeviceListV3 } from '@/service/modules/device'
 import { DeviceEnum } from '@/enum/device'
 import DeviceIcon from '@/components/device/DeviceIcon'
 import TagItemV2 from '@/components/ui/TagItemV2'
+import LiqunTippy from '@/components/ui/LiqunTippy'
 
 const TipInfo = memo(() => {
   const { t } = useTranslation()
@@ -81,18 +82,15 @@ const REPEATFormItems = memo(() => {
                   {...restField}
                   className="w-full"
                   label={
-                    <span>
-                      {t('common.executeTime.title')}{' '}
-                      <Tooltip
-                        title={
-                          <p className="text-justify">
-                            {t('schedule.tip.20minsInterval')}
-                          </p>
-                        }
+                    <div className="flex items-center gap-1">
+                      {t('common.executeTime.title')}
+                      <LiqunTippy
+                        interactive={false}
+                        content={t('schedule.tip.20minsInterval')}
                       >
                         <InfoCircleOutlined />
-                      </Tooltip>
-                    </span>
+                      </LiqunTippy>
+                    </div>
                   }
                   name={restField.name}
                   rules={[
@@ -492,7 +490,7 @@ const ScheduleModal: FC<PropsType> = memo(
               >
                 <Input placeholder={t('common.form.pleaseInput')} />
               </Form.Item>
-              <Form.Item
+              {/* <Form.Item
                 label={t('schedule.form.taskType.title')}
                 name="taskType"
                 required
@@ -518,7 +516,7 @@ const ScheduleModal: FC<PropsType> = memo(
                     {t('schedule.taskType.MULTI.title')}
                   </Radio.Button>
                 </Radio.Group>
-              </Form.Item>
+              </Form.Item> */}
               <Form.Item
                 label={t('schedule.form.wayline.title')}
                 name="airlineIndex"
@@ -599,9 +597,9 @@ const ScheduleModal: FC<PropsType> = memo(
                 <div className="flex justify-between items-center mb-1">
                   <div className="flex gap-1">
                     {t('common.resumeFromBreakPoint')}
-                    <Tooltip title="开启后，若飞行架次因电量不足等原因无法完成整个航线飞行，系统将记录待执行任务。">
+                    <LiqunTippy content="开启后，若飞行架次因电量不足等原因无法完成整个航线飞行，系统将记录待执行任务。">
                       <InfoCircleOutlined />
-                    </Tooltip>
+                    </LiqunTippy>
                   </div>
                   <Form.Item
                     name="breakPointEnable"

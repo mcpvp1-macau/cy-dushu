@@ -160,8 +160,8 @@ const FlyParamsSetting: FC<PropsType> = memo(() => {
                   <IconButton
                     active={flyParams.isResetHome}
                     className="text-sm scale-90 px-1"
-                    toolTipProps={{
-                      title: t('controlRoom.uav.goHome.reset.msg'),
+                    tippyProps={{
+                      content: t('controlRoom.uav.goHome.reset.msg'),
                     }}
                     onClick={() =>
                       updateFlyParams({

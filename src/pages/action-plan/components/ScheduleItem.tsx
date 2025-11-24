@@ -18,6 +18,8 @@ import CustomExpandIcon from '@/components/CustomExpandIcon'
 import TagItemV2 from '@/components/ui/TagItemV2'
 import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
 import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
+import LiqunTippy from '@/components/ui/LiqunTippy'
+import OverflowText from '@/components/ui/OverflowText'
 
 type PropsType = {
   data: API_ACTION_PLAN.domain.Plan
@@ -144,11 +146,9 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
               >
                 {t(`schedule.status.${data.status}.title`)}
               </TagItemV2>
-              <Tooltip title={data.name}>
-                <span className="text-hightlight flex-1 truncate max-w-40">
-                  {data.name}
-                </span>
-              </Tooltip>
+              <OverflowText className="text-hightlight flex-1 max-w-40 truncate text-sm">
+                {data.name}
+              </OverflowText>
             </div>
             <div className="flex items-center gap-2">
               {data.status !== 'TERMINATE' ? (
@@ -187,7 +187,7 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
                 </div>
               ) : (
                 <IconAsyncButton
-                  toolTipProps={{ title: t('common.delete') }}
+                  tippyProps={{ content: t('common.delete') }}
                   onClick={handleDelete}
                 >
                   <IconDelete />

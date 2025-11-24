@@ -84,7 +84,7 @@ const XTable: FC<PropsType> = ({ table, loading }) => {
                   {isHaveVisible && header.id === 'actions' && (
                     <IconButtonWithDropDownDialog
                       title={'配置表头'}
-                      tooltipProps={{ title: '配置表头' }}
+                      tippyProps={{ content: '配置表头' }}
                       trigger={['click']}
                       popupRender={() => (
                         <div className="p-2">

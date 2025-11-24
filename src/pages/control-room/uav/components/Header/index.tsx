@@ -303,9 +303,7 @@ const DebugState = memo(() => {
           trigger={['click']}
           useDing
           autoAdjustOverflow
-          tooltipProps={{
-            title: t('common.debug'),
-          }}
+          tippyProps={{ content: t('common.debug') }}
           destroyOnHidden
           popupRender={() => (
             <ScrollArea className="max-h-[80vh] text-xs">

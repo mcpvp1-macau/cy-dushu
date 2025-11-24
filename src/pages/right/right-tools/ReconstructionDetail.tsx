@@ -83,14 +83,14 @@ const ReconstructionDetail: FC = () => {
             <div className="flex gap-2">
               {isEdit ? (
                 <IconAsyncButton
-                  toolTipProps={{ title: t('common.save') }}
+                  tippyProps={{ content: t('common.save') }}
                   onClick={handleSave}
                 >
                   <IconTick className="scale-90" />
                 </IconAsyncButton>
               ) : (
                 <IconButton
-                  toolTipProps={{ title: t('common.edit') }}
+                  tippyProps={{ content: t('common.edit') }}
                   onClick={() => {
                     toggle()
                     setTimeout(() => {
@@ -102,7 +102,7 @@ const ReconstructionDetail: FC = () => {
                 </IconButton>
               )}
               <IconAsyncButton
-                toolTipProps={{ title: t('common.delete') }}
+                tippyProps={{ content: t('common.delete') }}
                 onClick={handleDelete}
               >
                 <IconDelete className="scale-90" />

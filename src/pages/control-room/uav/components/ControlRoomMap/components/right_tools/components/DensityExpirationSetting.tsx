@@ -18,10 +18,7 @@ const DensityExpirationSetting: FC<PropsType> = memo(() => {
   return (
     <>
       <FloatIconButton
-        toolTipProps={{
-          title: '密集有效期',
-          placement: 'left',
-        }}
+        tippyProps={{ content: '密集有效期', placement: 'left' }}
         active={open}
         onClick={toggle}
       >

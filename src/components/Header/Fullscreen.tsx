@@ -18,7 +18,7 @@ const Fullscreen: FC<PropsType> = memo(({ target }) => {
   if (isFullScreen) {
     return (
       <IconButton
-        toolTipProps={{ title: t('common.exit') }}
+        tippyProps={{ content: t('common.exit') }}
         onClick={exitFullscreen}
       >
         <FullscreenExitOutlined />
@@ -28,7 +28,7 @@ const Fullscreen: FC<PropsType> = memo(({ target }) => {
 
   return (
     <IconButton
-      toolTipProps={{ title: t('common.fullScreen') }}
+      tippyProps={{ content: t('common.fullScreen') }}
       onClick={enterFullscreen}
     >
       <IconFull className="scale-95" />

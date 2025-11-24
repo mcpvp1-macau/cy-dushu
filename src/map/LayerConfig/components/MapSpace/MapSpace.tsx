@@ -65,10 +65,9 @@ const MapSpace: FC<PropsType> = memo(() => {
       <FloatIconButton
         active={open}
         variant="borderless"
-        toolTipProps={{
-          title: t('common.map'),
+        tippyProps={{
+          content: t('common.map'),
           placement: 'left',
-          mouseEnterDelay: 0.5,
         }}
         onClick={toggle}
       >

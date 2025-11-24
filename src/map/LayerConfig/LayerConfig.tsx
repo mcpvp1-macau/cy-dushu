@@ -11,10 +11,9 @@ const MapLayerConfig: FC<PropsType> = memo(() => {
   return (
     <div>
       <FloatIconButton
-        toolTipProps={{
-          title: t('mapLayer.setting.layer.title'),
+        tippyProps={{
+          content: t('mapLayer.setting.layer.title'),
           placement: 'left',
-          mouseEnterDelay: 0.3,
         }}
         onClick={toggle}
       >
