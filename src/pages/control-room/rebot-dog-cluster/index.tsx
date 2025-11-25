@@ -1,0 +1,76 @@
+import { memo, useMemo, type FC } from 'react'
+import IconBack from '@/assets/icons/jsx/IconBack'
+import IconButton from '@/components/ui/button/IconButton'
+import { useNavigate } from 'react-router'
+import VideoWall from './components/VideoWall'
+import ClusterMap from './components/ClusterMap'
+import {
+  ClusterControlButtons,
+  ClusterControlSender,
+  ClusterParams,
+} from './components/ClusterControl'
+import { useRebotDogClusterStore } from '@/store/control-room/useRebotDogCluster.store'
+import RobotDogClient from './components/RobotDogClient'
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from '@/components/ui/resizable'
+
+type PropsType = unknown
+
+const PageRebotDogCluster: FC<PropsType> = memo(() => {
+  const navigate = useNavigate()
+  const dogs = useRebotDogClusterStore((s) => s.dogs)
+
+  const clients = useMemo(
+    () => dogs.map((dog) => <RobotDogClient key={dog.deviceId} dog={dog} />),
+    [dogs],
+  )
+
+  return (
+    <div className="page-full flex flex-col">
+      <header className="flex items-center justify-between px-4 py-3 border-b border-ground-5 bg-ground-1/80 backdrop-blur">
+        <div className="flex items-center gap-3">
+          <IconButton className="text-base" onClick={() => navigate(-1)}>
+            <IconBack />
+          </IconButton>
+          <div>
+            <p className="font-medium">机器狗集群驾驶舱</p>
+            <p className="text-xs opacity-70">
+              已加入 {dogs.length} 台，支持多选同时操控
+            </p>
+          </div>
+        </div>
+        <div className="text-xs opacity-70">
+          WGS84 地图同步显示全部机器狗位置
+        </div>
+      </header>
+      <main className="flex grow overflow-hidden">
+        <ResizablePanelGroup direction="horizontal">
+          <ResizablePanel defaultSize={35} minSize={20} maxSize={60}>
+            <VideoWall />
+          </ResizablePanel>
+          <ResizableHandle withHandle className="bg-ground-5/40" />
+          <ResizablePanel defaultSize={65} minSize={40}>
+            <div className="h-full relative">
+              <ClusterMap />
+              <div className="absolute left-1/2 -translate-x-1/2 bottom-4 flex flex-col md:flex-row items-center md:items-end gap-3 z-10">
+                <div className="bg-ground-1/80 backdrop-blur rounded border border-ground-5 px-3 py-2 shadow">
+                  <ClusterControlButtons />
+                </div>
+                <ClusterParams />
+              </div>
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </main>
+      <ClusterControlSender />
+      {clients}
+    </div>
+  )
+})
+
+PageRebotDogCluster.displayName = 'PageRebotDogCluster'
+
+export default PageRebotDogCluster

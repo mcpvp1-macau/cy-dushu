@@ -9,6 +9,9 @@ const PageControlRoomOthers = lazy(() => import('@/pages/control-room/others'))
 const PageControlRoomRebotDog = lazy(
   () => import('@/pages/control-room/rebot-dog'),
 )
+const PageControlRoomRebotDogCluster = lazy(
+  () => import('@/pages/control-room/rebot-dog-cluster'),
+)
 const PageControlRoomLaserWeapon = lazy(
   () => import('@/pages/control-room/laser-weapon/LaserWeaponControlRoom'),
 )
@@ -32,6 +35,11 @@ export default {
       id: 'control-room/rebot-dog',
       path: 'rebot-dog/:deviceId',
       element: <PageControlRoomRebotDog />,
+    },
+    {
+      id: 'control-room/rebot-dog-cluster',
+      path: 'rebot-dog/cluster',
+      element: <PageControlRoomRebotDogCluster />,
     },
     {
       id: 'control-room/laser-weapon',
