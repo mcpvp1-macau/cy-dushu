@@ -324,6 +324,10 @@ const LinkWorkModeStatus = memo(() => {
   const linkWorkMode = useS((s) => s.state?.linkWorkMode)
   const is4GEnhanced = linkWorkMode === '1' || linkWorkMode === 1
 
+  if (isNil(linkWorkMode) || linkWorkMode === '') {
+    return null
+  }
+
   return (
     <I
       t={'4G图传'}
