@@ -1,7 +1,8 @@
+import IconRobot from '@/assets/icons/jsx/IconRobot'
 import AsyncButton from '@/components/ui/button/AsyncButton'
 import { humanAnswer } from '@/service/modules/human-loop'
 import { shouldJson } from '@/utils/json'
-import { CodeOutlined, LoadingOutlined } from '@ant-design/icons'
+import {  LoadingOutlined } from '@ant-design/icons'
 
 type PropsType = {
   humanInTheLoopPayload: any
@@ -25,7 +26,7 @@ const HumanInLoopDialog: FC<PropsType> = memo(({ humanInTheLoopPayload }) => {
   return (
     <div className="rounded overflow-hidden bg-ground-3 border border-ground-5">
       <div className="bg-ground-4 px-2 py-1 border-b border-ground-5">
-        <CodeOutlined /> 等待答复
+        <IconRobot /> 等待答复
       </div>
       <div className="p-2">{description}</div>
       <div className="flex justify-end pb-2 pr-2">
