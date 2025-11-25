@@ -1287,6 +1287,10 @@ controlRoom:
         title: 全景
       gotoPosAtTarget:
         title: 视频指点飞行
+      stopRecording:
+        title: 停止录像
+      startRecording:
+        title: 开始录像
     gamepad:
       title: 摇杆
     goHome:

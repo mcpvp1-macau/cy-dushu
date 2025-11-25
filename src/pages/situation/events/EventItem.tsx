@@ -1,4 +1,5 @@
 import MenuIconEvents from '@/assets/icons/jsx/menus/MenuIconEvents'
+import OverflowText from '@/components/ui/OverflowText'
 import TagItemV2 from '@/components/ui/TagItemV2'
 import { EventStatusMap } from '@/enum/event'
 import { RightModeEnum } from '@/enum/right-mode'
@@ -58,12 +59,12 @@ const EventItem: FC<PropsType> = memo(({ data, active }) => {
         updateDetailId(data.eventId)
       }}
     >
-      <div className="flex justify-between">
-        <div className="flex gap-2">
+      <div className="flex justify-between overflow-hidden">
+        <div className="flex gap-2 overflow-hidden">
           <MenuIconEvents />
-          <p className="text-hightlight">
-            {data.eventName} ({data.id})
-          </p>
+          <OverflowText className="flex-1 text-hightlight">
+            {data.eventName} ({data.eventId})
+          </OverflowText>
         </div>
         <TagItemV2 type={process.key === 'PENDING' ? 'default' : 'primary'}>
           {t(`events.status.${process?.key}.title`)}

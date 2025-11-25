@@ -16,7 +16,6 @@ const serverAK = new LiqunAxios<'common'>({
 serverAK.interceptors.request.use(withToken)
 serverAK.interceptors.request.use(withInternational)
 serverAK.interceptors.request.use((config) => {
-  
   const { AccessKeyId, Signature } = createSign({
     ...(config.params || {}),
     ...(config.data || {}),
@@ -34,7 +33,7 @@ serverAK.interceptors.response.use(unAuthorized, unAuthorized)
 serverAK.interceptors.response.use((resp) => {
   if (resp.data?.code !== 'SUCCESS') {
     shouldShowError(resp)
-    return Promise.reject(formatThrowError(resp))
+    return Promise.reject(resp.data)
   }
   return resp.data
 })

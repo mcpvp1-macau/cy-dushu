@@ -20,9 +20,13 @@ const CollapsedPage: FC<PropsType> = memo(({ children }) => {
   return (
     <div className="h-full overflow-y-hidden flex">
       <div
-        className={clsx('h-full flex flex-col overflow-hidden', 'w-[350px]', {
-          hidden: !open,
-        })}
+        className={clsx(
+          'h-full flex flex-col overflow-hidden w-[350px] transition-[transform,filter] duration-500 ease-in-out',
+          {
+            ['-translate-x-[350px]']: !open,
+            ['blur-sm']: !open,
+          },
+        )}
       >
         <div className=" bg-ground-1/90 backdrop-blur-sm flex-1 overflow-hidden">
           {children}
@@ -31,7 +35,12 @@ const CollapsedPage: FC<PropsType> = memo(({ children }) => {
         <div className="h-5" />
       </div>
       <button
-        className="bg-ground-1/90 h-12 border border-solid border-ground-4 rounded-r mt-12 text-fore hover:text-primary origin-top-left scale-90"
+        className={clsx(
+          'bg-ground-1/90 h-11 border border-solid border-ground-4 rounded-r mt-12 text-fore hover:text-primary origin-left scale-90 transition-transform duration-500 ease-in-out',
+          {
+            ['-translate-x-[350px]']: !open,
+          },
+        )}
         onClick={() => setOpen(!open)}
       >
         {open ? (

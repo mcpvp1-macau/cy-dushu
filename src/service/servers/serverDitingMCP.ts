@@ -9,7 +9,7 @@ const serverDitingMCP = new LiqunAxios<'ditingTanqi'>({
 serverDitingMCP.interceptors.response.use((resp) => {
   if (!resp.data?.success) {
     shouldShowError(resp)
-    return Promise.reject(formatThrowError(resp))
+    return Promise.reject(resp.data)
   }
   return resp.data
 })

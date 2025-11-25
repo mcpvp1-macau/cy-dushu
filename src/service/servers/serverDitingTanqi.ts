@@ -11,7 +11,7 @@ const serverDitingTanqi = new LiqunAxios<'ditingTanqi'>({
 serverDitingTanqi.interceptors.response.use((resp) => {
   if (!resp.data?.success) {
     shouldShowError(resp)
-    return Promise.reject(formatThrowError(resp)) 
+    return Promise.reject(resp.data)
   }
   return resp.data
 })

@@ -21,11 +21,7 @@ serverControlCenter.interceptors.response.use(unAuthorized, unAuthorized)
 serverControlCenter.interceptors.response.use((resp) => {
   if (resp.data?.code !== 'SUCCESS') {
     shouldShowError(resp)
-    if(resp.config.url?.includes('/live/post')){
-      return Promise.reject(resp.data) 
-    } else {
-      return Promise.reject(formatThrowError(resp))
-    }
+    return Promise.reject(resp.data)
   }
   return resp.data
 })

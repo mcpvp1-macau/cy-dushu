@@ -19,7 +19,7 @@ serverVoiceSpeech.interceptors.response.use((resp) => {
       type: 'error',
       content: `${resp.data.error.message}`,
     })
-    return Promise.reject(formatThrowError(resp))
+    return Promise.reject(resp.data)
   }
   return resp.data
 })

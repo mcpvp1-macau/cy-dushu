@@ -20,13 +20,7 @@ serverJingqi.interceptors.response.use(unAuthorized, unAuthorized)
 serverJingqi.interceptors.response.use((resp) => {
   if (resp.data?.code !== 'SUCCESS') {
     shouldShowError(resp)
-    return Promise.reject(
-      JSON.stringify({
-        code: resp.data?.code,
-        data: resp.data?.data,
-        message: resp.data?.message,
-      }),
-    )
+    return Promise.reject(resp.data)
   }
   return resp.data
 })

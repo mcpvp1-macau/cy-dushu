@@ -9,6 +9,9 @@ import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.
 import { GetProps, Menu, Tooltip } from 'antd'
 import { borderedBtnClassName } from '.'
 import IconPanorama from '@/assets/icons/jsx/IconPanorma'
+import IconStartRecord from '@/assets/icons/jsx/IconStartRecord'
+import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
+import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
 
 type PropsType = unknown
 
@@ -88,24 +91,52 @@ const CameraMode: FC<PropsType> = memo(() => {
     ]
   }, [hasCameraMode, videoSource, cameraMode])
 
+  const recordingState = useUavControlRoomStore((s) => s.state.recordingState)
+
+  const postService = usePostDeviceService()
+
   return (
-    <IconButtonWithDropDown
-      className={borderedBtnClassName}
-      disabled={cameraModeMenuItems?.length === 0}
-      menu={{
-        items: cameraModeMenuItems,
-        openKeys: [cameraMode ?? 'NEVER'],
-        onClick: (info) => {
-          handleClick(info.key)
-        },
-      }}
-    >
-      {{
-        '0': <IconCamera />,
-        '1': <IconCameraVideo />,
-        '3': <IconPanorama />,
-      }[cameraMode ?? '-1'] || <IconCameraMode />}
-    </IconButtonWithDropDown>
+    <>
+      <IconButtonWithDropDown
+        className={borderedBtnClassName}
+        disabled={cameraModeMenuItems?.length === 0}
+        menu={{
+          items: cameraModeMenuItems,
+          openKeys: [cameraMode ?? 'NEVER'],
+          onClick: (info) => {
+            handleClick(info.key)
+          },
+        }}
+      >
+        {{
+          '0': <IconCamera />,
+          '1': <IconCameraVideo />,
+          '3': <IconPanorama />,
+        }[cameraMode ?? '-1'] || <IconCameraMode />}
+      </IconButtonWithDropDown>
+      {recordingState === '0' && (
+        <IconAsyncButton
+          className={borderedBtnClassName}
+          tippyProps={{
+            content: t('controlRoom.uav.service.startRecording.title'),
+          }}
+          onClick={() => postService('recordingStart')}
+        >
+          <IconStartRecord />
+        </IconAsyncButton>
+      )}
+      {recordingState === '1' && (
+        <IconAsyncButton
+          className={borderedBtnClassName}
+          tippyProps={{
+            content: t('controlRoom.uav.service.stopRecording.title'),
+          }}
+          onClick={() => postService('recordingStop')}
+        >
+          <IconStartRecord />
+        </IconAsyncButton>
+      )}
+    </>
   )
 })
 

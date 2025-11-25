@@ -21,7 +21,7 @@ serverUavXiaoshan.interceptors.response.use(unAuthorized, unAuthorized)
 serverUavXiaoshan.interceptors.response.use((resp) => {
   if (resp.data?.code !== 'SUCCESS') {
     shouldShowError(resp)
-    return Promise.reject(formatThrowError(resp))
+    return Promise.reject(resp.data)
   }
   return resp.data
 })

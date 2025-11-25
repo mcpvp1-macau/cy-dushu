@@ -34,7 +34,7 @@ const UavAirportMarker: FC<PropsType> = memo(({ data }) => {
 
   if (
     !deviceStatusFilter(
-      { status: onlineStatus, taskStatus: 'RUNNING' },
+      { status: onlineStatus, taskStatus: 'IDLE' },
       isOnline,
       isTask,
       isNotTask,

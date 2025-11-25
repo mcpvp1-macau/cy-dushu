@@ -22,7 +22,7 @@ const TakePhoto: FC<PropsType> = memo(() => {
 
   const disabled =
     !(hasCameraMode && videoSource === 'gimbal') ||
-    !['0', '3'].includes(cameraMode || '') // 0: photo, 3: panorama
+    !['0', '1', '3'].includes(cameraMode || '') // 0: photo, 3: panorama
 
   const handleClick = () => {
     if (disabled) {

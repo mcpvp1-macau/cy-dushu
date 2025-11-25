@@ -87,8 +87,7 @@ const LocationCalibration: FC<PropsType> = memo((props) => {
           height: values.height ?? 0,
           mode,
         },
-        '',
-        false,
+        '位置标定失败',
       )
       await queryClient.invalidateQueries({
         queryKey: ['deviceDetail', deviceId],
