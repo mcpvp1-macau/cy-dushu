@@ -1,7 +1,7 @@
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { controlRoomUavEmitter, TargetAppearancePayload } from '../../../events'
 import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
-import { Modal } from 'antd'
+import XModal from '@/components/XModal'
 
 /** 处理目标出现进行智能追踪 */
 const useHandleObjectTrack = () => {
@@ -9,7 +9,23 @@ const useHandleObjectTrack = () => {
   const hasSmartTrackService = !!serviceHave['smartTrack']
   const postDeviceService = usePostDeviceService()
 
-  const [modal, contextHolder] = Modal.useModal()
+  const [modalOpen, setModalOpen] = useState(false)
+  const [targetObjectId, setTargetObjectId] = useState<string>()
+
+  const handleClose = () => {
+    setModalOpen(false)
+    setTargetObjectId(undefined)
+  }
+
+  const handleConfirm = () => {
+    if (!targetObjectId) return
+    postDeviceService('targetTrack', {
+      objectId: targetObjectId,
+      object_id: targetObjectId,
+      enable: true,
+    })
+    handleClose()
+  }
 
   useEffect(() => {
     if (!hasSmartTrackService) return
@@ -19,19 +35,8 @@ const useHandleObjectTrack = () => {
       status,
     }: TargetAppearancePayload) => {
       if (status !== 'APPEARANCE') return
-      modal.confirm({
-        title: '智能追踪',
-        content: `检测到目标 ${objectId} 出现，是否立即追踪？`,
-        okText: '追踪',
-        cancelText: '取消',
-        onOk: () => {
-          postDeviceService('targetTrack', {
-            objectId,
-            object_id: objectId,
-            enable: true,
-          })
-        },
-      })
+      setTargetObjectId(objectId)
+      setModalOpen(true)
     }
     controlRoomUavEmitter.on('targetAppearance', handleTargetAppearance)
     return () => {
@@ -40,7 +45,21 @@ const useHandleObjectTrack = () => {
   }, [hasSmartTrackService, postDeviceService])
 
   return {
-    modalContextHolder: contextHolder,
+    modalContextHolder: (
+      <XModal
+        title="智能追踪"
+        open={modalOpen}
+        cancelText="取消"
+        confirmTitle="追踪"
+        onClose={handleClose}
+        onConfirm={handleConfirm}
+        destroyOnHidden
+      >
+        {targetObjectId
+          ? `检测到目标 ${targetObjectId} 出现，是否立即追踪？`
+          : '检测到目标出现，是否立即追踪？'}
+      </XModal>
+    ),
   }
 }
 
