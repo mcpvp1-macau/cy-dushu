@@ -320,6 +320,19 @@ const DebugState = memo(() => {
   )
 })
 
+const LinkWorkModeStatus = memo(() => {
+  const linkWorkMode = useS((s) => s.state?.linkWorkMode)
+  const is4GEnhanced = linkWorkMode === '1' || linkWorkMode === 1
+
+  return (
+    <I
+      t={'4G图传'}
+      l="Link"
+      v={is4GEnhanced ? '4G+' : 'SDR'}
+    />
+  )
+})
+
 const ControlRoomUavHeader: FC = memo(() => {
   const productKey = useDeviceDetailStore((s) => s.productKey)
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
@@ -341,6 +354,7 @@ const ControlRoomUavHeader: FC = memo(() => {
                 className="text-fore"
                 onLinksChange={updateLinks}
               />
+              <LinkWorkModeStatus />
               <Signal14G />
               <SDRStrength />
               <SignalStrength />
