@@ -13,7 +13,7 @@ import { useBoolean } from 'ahooks'
 import AppEmpty from '@/components/AppEmpty'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import { twMerge } from 'tailwind-merge'
-import { CSSProperties } from 'react'
+import { CSSProperties, ReactNode } from 'react'
 
 const transMap = {
   en: {
@@ -40,6 +40,10 @@ const transMap = {
       '3': 'Closing',
       '4': 'Hatch Status Abnormal',
     },
+    linkWorkMode: {
+      '0': 'SDR Only',
+      '1': '4G Enhanced',
+    },
   },
   zh: {
     modeCode: {
@@ -65,6 +69,10 @@ const transMap = {
       '3': '关闭中',
       '4': '舱盖状态异常',
     },
+    linkWorkMode: {
+      '0': '仅 SDR',
+      '1': '4G 增强',
+    },
   },
 }
 
@@ -79,6 +87,7 @@ type ServiceItemProps = {
   loading?: boolean
   disabled?: boolean
   btnLabel?: string
+  renderAction?: () => ReactNode
   onClick?: () => unknown
 }
 
@@ -90,8 +99,61 @@ const _ServiceItem: FC<ServiceItemProps> = ({
   loading,
   disabled,
   btnLabel,
+  renderAction,
 }) => {
   const { t } = useTranslation()
+
+  const actionNode = renderAction ? (
+    loading ? (
+      <Spin
+        style={{ width: '44px' }}
+        indicator={<LoadingOutlined style={{ fontSize: 20 }} spin />}
+      />
+    ) : (
+      renderAction()
+    )
+  ) : !loading ? (
+    btnLabel &&
+    (title === t('device.uavDock.remoteDebug.cover.title') &&
+    btnLabel === t('device.uavDock.remoteDebug.cover.open.title') ? (
+      <Popconfirm
+        title={t('device.uavDock.remoteDebug.cover.openWarning')}
+        onConfirm={onClick}
+      >
+        <Button
+          size="small"
+          style={{
+            width: '48px',
+            padding: '0',
+            fontSize: '12px',
+            height: '20px',
+          }}
+          disabled={disabled}
+        >
+          {btnLabel}
+        </Button>
+      </Popconfirm>
+    ) : (
+      <Button
+        size="small"
+        style={{
+          width: '48px',
+          padding: '0',
+          fontSize: '12px',
+          height: '20px',
+        }}
+        disabled={disabled}
+        onClick={onClick}
+      >
+        {btnLabel}
+      </Button>
+    ))
+  ) : (
+    <Spin
+      style={{ width: '44px' }}
+      indicator={<LoadingOutlined style={{ fontSize: 20 }} spin />}
+    />
+  )
 
   return (
     <div className={styles.item}>
@@ -109,48 +171,7 @@ const _ServiceItem: FC<ServiceItemProps> = ({
         </p>
         <p className={styles.title}>{title}</p>
       </div>
-      {!loading ? (
-        btnLabel &&
-        (title === t('device.uavDock.remoteDebug.cover.title') &&
-        btnLabel === t('device.uavDock.remoteDebug.cover.open.title') ? (
-          <Popconfirm
-            title={t('device.uavDock.remoteDebug.cover.openWarning')}
-            onConfirm={onClick}
-          >
-            <Button
-              size="small"
-              style={{
-                width: '48px',
-                padding: '0',
-                fontSize: '12px',
-                height: '20px',
-              }}
-              disabled={disabled}
-            >
-              {btnLabel}
-            </Button>
-          </Popconfirm>
-        ) : (
-          <Button
-            size="small"
-            style={{
-              width: '48px',
-              padding: '0',
-              fontSize: '12px',
-              height: '20px',
-            }}
-            disabled={disabled}
-            onClick={onClick}
-          >
-            {btnLabel}
-          </Button>
-        ))
-      ) : (
-        <Spin
-          style={{ width: '44px' }}
-          indicator={<LoadingOutlined style={{ fontSize: 20 }} spin />}
-        />
-      )}
+      {actionNode}
     </div>
   )
 }
@@ -479,6 +500,32 @@ const RemoteDebug: FC<PropsType> = ({
           }),
       },
       {
+        icon: icons.FXQ,
+        title: i18n.language === 'zh' ? '4G 图传' : '4G Link',
+        info: getEnumValue(
+          i18n.language,
+          'linkWorkMode',
+          String(state?.linkWorkMode ?? ''),
+        ),
+        disabled: state['modeCode'] !== 2,
+        renderAction: () => (
+          <Switch
+            size="small"
+            checked={
+              state?.linkWorkMode === 1 || state?.linkWorkMode === '1'
+            }
+            disabled={state['modeCode'] !== 2}
+            checkedChildren={i18n.language === 'zh' ? '4G增强' : '4G+'}
+            unCheckedChildren={i18n.language === 'zh' ? '仅SDR' : 'SDR'}
+            onChange={(checked) =>
+              runService('sdrWorkmodeSwitch', {
+                link_workmode: checked ? '1' : '0',
+              })
+            }
+          />
+        ),
+      },
+      {
         icon: icons.SGBJ,
         title: t('device.uavDock.alarmState.title'),
         info: getEnumValue(i18n.language, 'alarmState', state?.alarmState),
@@ -493,7 +540,7 @@ const RemoteDebug: FC<PropsType> = ({
           }),
       },
     ],
-    [t, state, propertiesMap],
+    [t, state, propertiesMap, i18n.language],
   )
 
   return (
