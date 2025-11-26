@@ -1,5 +1,4 @@
 import IconLoading from '@/assets/icons/jsx/IconLoading'
-import IconTanQi from '@/assets/icons/jsx/IconTanQi'
 import { baseURL } from '@/service/servers/serverDitingTanqi'
 import { shouldJson } from '@/utils/json'
 import { Bubble } from '@ant-design/x'
@@ -45,7 +44,9 @@ const ConversationDetail: FC<PropsType> = memo(({ data, aiState }) => {
           return {
             role: 'user',
             content: (
-              <div className="bg-ground-4 px-2 py-1 rounded">{e.content}</div>
+              <div className="bg-primary bg-opacity-30 px-2 py-1 rounded">
+                {e.content}
+              </div>
             ),
           }
         } else {
@@ -80,10 +81,10 @@ const ConversationDetail: FC<PropsType> = memo(({ data, aiState }) => {
 
           return {
             role: 'ai',
-            avatar: {
-              icon: <IconTanQi />,
-              className: 'bg-ground-4',
-            },
+            // avatar: {
+            //   icon: <IconTanQi />,
+            //   className: 'bg-ground-4',
+            // },
             content,
             typing: true,
             loading: false,
@@ -97,10 +98,10 @@ const ConversationDetail: FC<PropsType> = memo(({ data, aiState }) => {
         {
           role: 'ai',
           // header: '檀棋',
-          avatar: {
-            icon: <IconTanQi />,
-            className: 'bg-ground-4',
-          },
+          // avatar: {
+          //   icon: <IconTanQi />,
+          //   className: 'bg-ground-4',
+          // },
           loading: true,
           loadingRender: () => (
             <IconLoading className="text-fore scale-150 translate-y-2" />
@@ -114,7 +115,7 @@ const ConversationDetail: FC<PropsType> = memo(({ data, aiState }) => {
   return (
     <Bubble.List
       autoScroll
-      className="tanqi-chat flex-1 overflow-y-auto px-2 pt-2 pb-9"
+      className="tanqi-chat flex-1 overflow-y-auto pl-3 pr-2 pt-2 pb-9"
       roles={roles}
       items={items}
     />
