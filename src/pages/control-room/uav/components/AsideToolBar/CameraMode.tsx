@@ -12,6 +12,7 @@ import IconPanorama from '@/assets/icons/jsx/IconPanorma'
 import IconStartRecord from '@/assets/icons/jsx/IconStartRecord'
 import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
+import IconStopRecord from '@/assets/icons/jsx/IconStopRecord'
 
 type PropsType = unknown
 
@@ -114,7 +115,7 @@ const CameraMode: FC<PropsType> = memo(() => {
           '3': <IconPanorama />,
         }[cameraMode ?? '-1'] || <IconCameraMode />}
       </IconButtonWithDropDown>
-      {recordingState === '0' && (
+      {String(recordingState) === '0' && (
         <IconAsyncButton
           className={borderedBtnClassName}
           tippyProps={{
@@ -125,7 +126,7 @@ const CameraMode: FC<PropsType> = memo(() => {
           <IconStartRecord />
         </IconAsyncButton>
       )}
-      {recordingState === '1' && (
+      {String(recordingState) === '1' && (
         <IconAsyncButton
           className={borderedBtnClassName}
           tippyProps={{
@@ -133,7 +134,7 @@ const CameraMode: FC<PropsType> = memo(() => {
           }}
           onClick={() => postService('recordingStop')}
         >
-          <IconStartRecord />
+          <IconStopRecord />
         </IconAsyncButton>
       )}
     </>
