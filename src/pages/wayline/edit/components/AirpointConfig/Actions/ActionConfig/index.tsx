@@ -20,7 +20,7 @@ interface Props {
   activeOperator: string
 }
 
-const ActionConfig: React.FC<Props> = (props) => {
+const ActionConfig: React.FC<Props> = memo((props) => {
   const { t } = useTranslation()
   const { activeOperator } = props
   const currentAirpoint = useCurrentAirpoint()
@@ -33,7 +33,7 @@ const ActionConfig: React.FC<Props> = (props) => {
 
   const action = actions.find((item) => item.xid === activeOperator)
 
-  const onChange = (config: any) => {
+  const onChange = useMemoizedFn((config: any) => {
     editCurrentAirPoint({
       ...currentAirpoint,
       actions: actions.map((item) => {
@@ -46,7 +46,7 @@ const ActionConfig: React.FC<Props> = (props) => {
         return item
       }),
     })
-  }
+  })
 
   const onChangePosition = (
     type: 'pointX' | 'pointY' | 'pointZ' | 'speed',
@@ -60,7 +60,7 @@ const ActionConfig: React.FC<Props> = (props) => {
     useAirlineConfigStore.getState().calcUavByCurrentAirpoint()
   }
 
-  const getActionComponent = () => {
+  const actionComponent = useMemo(() => {
     if (!action) {
       return <AppEmpty className="m-0 mt-3" />
     }
@@ -171,17 +171,18 @@ const ActionConfig: React.FC<Props> = (props) => {
         />
       )
     }
+
     return (
       <AppEmpty
         className="m-0 mt-3"
         description={t('wayline.action.noSupportEdit')}
       />
     )
-  }
+  }, [action, t])
 
   return (
     <>
-      {getActionComponent()}
+      {actionComponent}
 
       <div className="h-[1px] my-3 bg-ground-5"></div>
       <div>
@@ -225,7 +226,11 @@ const ActionConfig: React.FC<Props> = (props) => {
       <div>
         <div className="my-2">{t('common.speed')} (m/s)</div>
         <InputNumber
-          value={Number(currentAirpoint?.speed?.toFixed(2) ?? globalSpeed)}
+          value={
+            isNaN(Number(currentAirpoint?.speed))
+              ? globalSpeed
+              : Number(currentAirpoint?.speed?.toFixed(2))
+          }
           className="w-full"
           min={1}
           max={15}
@@ -236,6 +241,6 @@ const ActionConfig: React.FC<Props> = (props) => {
       </div>
     </>
   )
-}
+})
 
 export default ActionConfig

@@ -12,6 +12,7 @@ import IconRight from '@/assets/icons/jsx/IconRight'
 import AirpointAddAction from './Actions/AddAction'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { StopOutlined } from '@ant-design/icons'
+import { useLayoutEffect } from 'react'
 
 type PropsType = {
   info: ReactNode
@@ -37,7 +38,7 @@ const AirpointConfig: FC<PropsType> = ({ info }) => {
     (s) => s.updateAirpointsConfig,
   )
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setCurrentActionIndex(0)
     setActiveAction(airpointsConfig[currentIndex]?.actions?.[0]?.xid || '')
   }, [currentIndex])
