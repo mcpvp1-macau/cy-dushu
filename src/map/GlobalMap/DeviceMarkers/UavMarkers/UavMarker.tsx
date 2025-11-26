@@ -1,5 +1,6 @@
 import useGlobalWsStore, {
   useRealOnlineStatus,
+  useRealTaskStatus,
 } from '@/store/useGlobalWebSocket.store'
 import { Billboard, useCesium } from 'resium'
 import * as Cesium from 'cesium'
@@ -59,6 +60,7 @@ const UavMarker: FC<PropsType> = memo(({ data, onPositionChange }) => {
   )
 
   const status = useRealOnlineStatus(deviceId)
+  const taskStatus = useRealTaskStatus(deviceId)
   const deviceIsOnline = status === DeviceStatusEnum.ONLINE
   const { viewer } = useCesium()
 
@@ -116,13 +118,7 @@ const UavMarker: FC<PropsType> = memo(({ data, onPositionChange }) => {
 
   if (
     isHidden || // 隐藏
-    (isOnline && !deviceIsOnline) || // 在线状态不显示
-    !deviceStatusFilter(
-      { status, taskStatus: 'RUNNING' },
-      isOnline,
-      isTask,
-      isNotTask,
-    )
+    !deviceStatusFilter({ status, taskStatus }, isOnline, isTask, isNotTask)
   ) {
     return null
   }

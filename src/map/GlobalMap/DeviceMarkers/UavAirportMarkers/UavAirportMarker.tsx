@@ -1,7 +1,10 @@
 import icon from '/images/marker/icon/uav_dock.svg'
 import { Billboard } from 'resium'
 import * as Cesium from 'cesium'
-import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
+import {
+  useRealOnlineStatus,
+  useRealTaskStatus,
+} from '@/store/useGlobalWebSocket.store'
 import { deviceStatusFilter } from '@/pages/situation/source/utils'
 import useDeviceFilterConfigStore from '@/store/useDeviceFilterConfig.store'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
@@ -20,6 +23,7 @@ const UavAirportMarker: FC<PropsType> = memo(({ data }) => {
   const lat = data.latitude ?? 0
 
   const onlineStatus = useRealOnlineStatus(deviceId)
+  const taskStatus = useRealTaskStatus(deviceId)
 
   const isOnline = useDeviceFilterConfigStore((s) => s.isOnline)
   const isTask = useDeviceFilterConfigStore((s) => s.isTask)
@@ -34,7 +38,7 @@ const UavAirportMarker: FC<PropsType> = memo(({ data }) => {
 
   if (
     !deviceStatusFilter(
-      { status: onlineStatus, taskStatus: 'IDLE' },
+      { status: onlineStatus, taskStatus },
       isOnline,
       isTask,
       isNotTask,
