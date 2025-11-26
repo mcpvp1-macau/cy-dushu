@@ -4,7 +4,6 @@ import XModal from '@/components/XModal'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { getVodUrl } from '@/service/modules/video'
 import { DownloadOutlined } from '@ant-design/icons'
-import { saveAs } from 'file-saver'
 
 type PropsType = {
   /** data 存在时 自动打开 */
@@ -25,7 +24,7 @@ const VideoViewModal: FC<PropsType> = memo(({ data, onClose }) => {
 
   const handleDownloadClick = async () => {
     if (data.isDevice) {
-      saveAs(data.playUrl, 'download.mp4')
+      window.open(data.playUrl, 'download')
       return
     }
     if (data.playUrl) {
@@ -35,9 +34,7 @@ const VideoViewModal: FC<PropsType> = memo(({ data, onClose }) => {
         if (globalConfig.vodVideoUrl) {
           url = url.replace(globalConfig.vodVideoUrl, '')
         }
-        // saveAs(url)
         window.open(url, 'download')
-        // downloadUrl(url, 'download.mp4')
       } else {
         msgApi.error(resp.message)
       }
