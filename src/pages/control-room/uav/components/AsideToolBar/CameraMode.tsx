@@ -115,7 +115,7 @@ const CameraMode: FC<PropsType> = memo(() => {
           '3': <IconPanorama />,
         }[cameraMode ?? '-1'] || <IconCameraMode />}
       </IconButtonWithDropDown>
-      {String(recordingState) === '0' && (
+      {cameraMode === '1' && String(recordingState) === '0' && (
         <IconAsyncButton
           className={borderedBtnClassName}
           tippyProps={{
