@@ -515,7 +515,7 @@ const DeviceLiveVideo = memo(
                     >
                       <IconRefresh />
                     </IconButton>
-                    {isDomainOrIP() === 'Domain' ? (
+                    {location.hostname.includes('jing-an.com') ? (
                       <IconButton
                         tippyProps={{
                           content: (
