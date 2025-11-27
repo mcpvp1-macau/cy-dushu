@@ -1,8 +1,9 @@
 import HNumber from '../../../HNumber'
 import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import XCard from '@/components/ui/XCard'
-import { Radio, Tooltip } from 'antd'
+import { Radio } from 'antd'
 import { InfoCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons'
+import LiqunTippy from '@/components/ui/LiqunTippy'
 
 type PropsType = unknown
 
@@ -20,34 +21,14 @@ const AirlineHeightConfig: FC<PropsType> = () => {
       title={
         <div>
           {t('wayline.waylineConfig.atl.title')}{' '}
-          <Tooltip title={t('wayline.waylineConfig.height.tooltip')}>
+          <LiqunTippy content={t('wayline.waylineConfig.height.tooltip')}>
             <InfoCircleOutlined className="text-fore" />
-          </Tooltip>
+          </LiqunTippy>
         </div>
       }
     >
       <Radio.Group
         style={{ width: '100%' }}
-        className="flex"
-        options={[
-          {
-            label: (
-              <div>
-                相对高度{' '}
-                <Tooltip
-                  title={t('wayline.waylineConfig.relativeHeight.tooltip')}
-                >
-                  <QuestionCircleOutlined />
-                </Tooltip>
-              </div>
-            ),
-            value: 'relativeToStartPoint',
-          },
-          {
-            label: '海拔高度',
-            value: 'WGS84',
-          },
-        ]}
         value={heightMode}
         optionType="button"
         buttonStyle="solid"
@@ -57,7 +38,19 @@ const AirlineHeightConfig: FC<PropsType> = () => {
             executeHeightMode: e.target.value,
           })
         }}
-      />
+      >
+        <Radio.Button className="flex-1" value="relativeToStartPoint">
+          {t('wayline.waylineConfig.relativeHeight.title')}
+          <LiqunTippy
+            content={t('wayline.waylineConfig.relativeHeight.tooltip')}
+          >
+            <QuestionCircleOutlined className="ml-1" />
+          </LiqunTippy>
+        </Radio.Button>
+        <Radio.Button className="flex-1" value="WGS84">
+          {t('wayline.waylineConfig.altitudeHeight.title')}
+        </Radio.Button>
+      </Radio.Group>
       <div style={{ marginTop: '12px' }}>
         <HNumber
           negatives={[-100, -10]}

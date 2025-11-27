@@ -20,9 +20,13 @@ const AdvancedConfig: FC<PropsType> = () => {
   const { t } = useTranslation()
 
   return (
-    <XCard title={t('common.advancedSetting')} collapsible>
+    <XCard
+      className="w-full overflow-hidden"
+      title={t('common.advancedSetting')}
+      collapsible
+    >
       <div
-        className="w-full overflow-hidden"
+        className="overflow-hidden"
         style={{ marginTop: '8px', marginBottom: '-12px' }}
       >
         {moreFormItems.map((item) => (
@@ -31,7 +35,7 @@ const AdvancedConfig: FC<PropsType> = () => {
               {t(`wayline.advancedSetting.${item.key}.title`)}
             </p>
             <Select
-              className="w-full"
+              className="w-[300px]"
               options={item.options.map((e) => ({
                 value: e.value,
                 label: t(
