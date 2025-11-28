@@ -16,12 +16,94 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/components/ui/resizable'
+import { useSearchParams } from 'react-router-dom'
+import { useMemoizedFn } from 'ahooks'
+import { getDeviceDetail } from '@/service/modules/device'
+import { useAppMsg } from '@/hooks/useAppMsg'
 
 type PropsType = unknown
 
 const PageRebotDogCluster: FC<PropsType> = memo(() => {
+  const [initialized, setInitialized] = useState(false)
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const msgApi = useAppMsg()
   const dogs = useRebotDogClusterStore((s) => s.dogs)
+  const addDog = useRebotDogClusterStore((s) => s.addDog)
+
+  const fetchDogDetail = useMemoizedFn(async (deviceId: string) => {
+    const exists = useRebotDogClusterStore
+      .getState()
+      .dogs.some((dog) => dog.deviceId === deviceId)
+
+    if (exists) {
+      return
+    }
+
+    try {
+      const detailRes = await getDeviceDetail(deviceId)
+      const detail = detailRes.data
+
+      const productKey = detail.productKey || detail.deviceModel?.productKey
+
+      if (!productKey) {
+        msgApi?.error?.('无法获取设备产品信息')
+        return
+      }
+
+      const videoId =
+        detail.properties?.videoList?.[0]?.videoId ||
+        detail.videos?.[0]?.videoId
+
+      addDog(
+        {
+          deviceId,
+          deviceName: detail.deviceName || deviceId,
+          productKey,
+          videoId,
+        },
+        detail.properties,
+      )
+    } catch (error) {
+      msgApi?.error?.('加载机器狗信息失败')
+    }
+  })
+
+  useEffect(() => {
+    const currentDogs = new URLSearchParams(window.location.search)
+      .get('currentDogs')
+      ?.split(',')
+      .map((item) => item.trim())
+      .filter(Boolean)
+
+    if (!currentDogs || currentDogs.length === 0) {
+      setInitialized(true)
+      return
+    }
+
+    Promise.all(currentDogs.map((id) => fetchDogDetail(id))).finally(() => {
+      setInitialized(true)
+    })
+  }, [fetchDogDetail])
+
+  useEffect(() => {
+    if (!initialized) {
+      return
+    }
+
+    const dogIds = dogs.map((dog) => dog.deviceId).join(',')
+    const nextParams = new URLSearchParams(searchParams)
+
+    if (dogIds) {
+      nextParams.set('currentDogs', dogIds)
+    } else {
+      nextParams.delete('currentDogs')
+    }
+
+    if (nextParams.toString() !== searchParams.toString()) {
+      setSearchParams(nextParams, { replace: true })
+    }
+  }, [dogs, initialized, searchParams, setSearchParams])
 
   const clients = useMemo(
     () => dogs.map((dog) => <RobotDogClient key={dog.deviceId} dog={dog} />),

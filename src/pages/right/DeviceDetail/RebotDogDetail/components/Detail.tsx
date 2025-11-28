@@ -1,7 +1,7 @@
 import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
 import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
 import { Button } from 'antd'
-import { Link } from 'react-router-dom'
+import { Link, createSearchParams } from 'react-router-dom'
 import IconControlRoom from '@/assets/icons/jsx/IconControlRoom'
 import AppCollapse from '@/components/AppCollapse'
 import AppViewSuspense from '@/components/AppViewSuspense'
@@ -58,10 +58,21 @@ const RebotDogDetailDetail: FC<unknown> = memo(() => {
           useVideoQualityCheck={{ open: true }}
         />
       </div>
-      <div className="m-3">
+      <div className="m-3 space-y-2">
         <Link className="grow" to={`/control-room/rebot-dog/${deviceId}`}>
           <Button block className="h-7" icon={<IconControlRoom />}>
             {t('device.enterControlRoom.title')}
+          </Button>
+        </Link>
+        <Link
+          className="grow"
+          to={{
+            pathname: '/control-room/rebot-dog/cluster',
+            search: createSearchParams({ currentDogs: deviceId }).toString(),
+          }}
+        >
+          <Button block className="h-7" icon={<IconControlRoom />}>
+            机器狗集群驾驶舱
           </Button>
         </Link>
       </div>
