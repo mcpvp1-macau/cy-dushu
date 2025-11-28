@@ -56,6 +56,7 @@ const Reconstruction2D: FC<PropsType> = memo(() => {
             <Input
               allowClear
               placeholder={t('poi_searcher.placeholder')}
+              value={kw}
               onChange={(e) => setKw(e.target.value)}
             />
           </div>

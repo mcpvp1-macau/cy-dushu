@@ -68,6 +68,7 @@ const Reconstruction3D: FC<PropsType> = memo(() => {
                 className="w-2/3"
                 placeholder={t('poi_searcher.placeholder')}
                 allowClear
+                value={kw}
                 onChange={(e) => setKw(e.target.value)}
               />
               <Select

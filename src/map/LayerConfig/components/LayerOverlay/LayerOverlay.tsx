@@ -48,6 +48,7 @@ const LayerOverlay: FC<PropsType> = memo(() => {
               <Input
                 placeholder={t('poi_searcher.placeholder')}
                 allowClear
+                value={kw}
                 onChange={(e) => setKw(e.target.value)}
               />
             </div>
