@@ -18,10 +18,12 @@ globalConfig.uavHeightLimit ??= 1000
 globalConfig.mcps ??= {}
 globalConfig.enableJessibucaMetrics ??= true
 globalConfig.defaultTheme ??= 'dark'
+globalConfig.env ??= 'default'
 
 class GlobalConfig {
   systemName = 'jingqi'
   title = '牍术·无人装备智能引擎'
+  env?: string
   loginUrl?: string
   version?: string
   globalWs = 'ws'
@@ -60,8 +62,6 @@ class GlobalConfig {
   terrainUrl?: string
   /** 是否使用地形 */
   useTerrain?: boolean
-  /** 上海禁飞区/航线 */
-  useShanghaiBanRoutes?: boolean
   /** 杭州禁飞区 */
   useHangzhouBanAreas?: boolean
   /** 贵州自定义 */

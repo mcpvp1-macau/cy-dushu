@@ -69,7 +69,7 @@ const createTaskConfig = (
         },
       ],
     },
-    ...(globalConfig.useShanghaiBanRoutes
+    ...(globalConfig.env === 'sh-jh'
       ? [
           {
             label: t('action.detail.task.add.form.staff.label'),
@@ -79,6 +79,12 @@ const createTaskConfig = (
             otherProps: {
               multiple: false,
             },
+            rules: [
+              {
+                required: true,
+                message: '请选择飞手',
+              },
+            ],
           },
         ]
       : []),
@@ -122,7 +128,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
 
     const data = {
       ...pick(val, ['actionItemName', 'deviceIds']),
-      pilotCode: val.shou,
+      pilotCode: val.feishou,
       actionId,
       deviceType,
     }
@@ -151,7 +157,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
     queryKey: ['pilotTree'],
     queryFn: () => getPilotTree(),
     select: (d) => d.data?.rows ?? emtpyArray,
-    enabled: !!globalConfig.useShanghaiBanRoutes,
+    enabled: globalConfig.env === 'sh-jh',
   })
 
   const { treeData } = usePilotTreeData(pilotData)

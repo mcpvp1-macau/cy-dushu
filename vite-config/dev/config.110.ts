@@ -82,6 +82,7 @@ export default mergeConfig(
             max: 18,
           },
         ],
+        env: 'sh-jh',
       },
     },
   }),
