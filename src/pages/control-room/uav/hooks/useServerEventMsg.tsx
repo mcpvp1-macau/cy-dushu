@@ -45,6 +45,10 @@ const useServerEventMsg = (msgApi?: MessageInstance) => {
     if (wsData.method === 'event.finishAiPhotoPoint.info') {
       autoAIPhotoParamsPredictEmitter.emit('autoAIPhotoParams', null)
     }
+    if (wsData.method === 'event.lowerPower.error') {
+      appMsgAPI?.warning('无人机电量过低，请立即返航或寻找安全地点强制降落！')
+      return
+    }
     const [c, kind, type] = wsData.method?.split('.') ?? []
     if (c === 'event') {
       if (kind === 'commonEvent' || kind === 'pipelineTaskEvent') {
