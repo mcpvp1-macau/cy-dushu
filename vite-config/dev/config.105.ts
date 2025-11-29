@@ -76,6 +76,7 @@ export default mergeConfig(
         systemName: 'jingqi',
         loginUrl: 'http://172.21.30.105:32712/login',
         videoProxy: true,
+        globalWs: 'ws',
       },
     },
   }),
