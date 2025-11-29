@@ -666,6 +666,43 @@ actionRecord:
       title: Action Name
   signalDownload:
     title: Download Signal Info
+alarm:
+  title: Alarms
+  filters:
+    processStatus: Process Status
+    deviceId: Device ID
+    sn: Device SN
+    groupId: Group ID
+  status:
+    processed: Processed
+    unprocessed: Unprocessed
+  level:
+    info: Info
+    warn: Warning
+    error: Error
+  table:
+    time: Alarm Time
+    deviceName: Device Name
+    deviceId: Device ID
+    sn: Device SN
+    groupId: Group ID
+    alarmLevel: Alarm Level
+    msg: Alarm Message
+    processStatus: Process Status
+    processUsername: Handler
+    processTime: Process Time
+    processMsg: Handling Note
+  delete:
+    batch: Delete Selected
+    confirmTitle: Delete Alarms
+    confirmContent: 'Are you sure you want to delete {{count}} alarm(s)?'
+    success: Deleted successfully
+  edit:
+    title: Edit Alarm
+    processMsg: Handling Note
+    processMsgPlaceholder: Please enter a handling note (up to 100 characters)
+    processMsgRequired: Please enter a handling note
+    success: Saved successfully
 resource:
   title: Resources
   table:

@@ -163,3 +163,25 @@ export const getDensityStatistics = (data: {
     data,
   )
 }
+
+/** 告警列表查询 */
+export const queryAlarmList = (data: API_DBAPI.req.AlarmQueryReq) => {
+  return serverDBAPI.post<API_DBAPI.res.AlarmQueryRes>(
+    '/api/alarms/query',
+    data,
+  )
+}
+
+/** 批量更新告警（编辑） */
+export const batchUpdateAlarms = (
+  data: API_DBAPI.req.AlarmBatchUpdateReq,
+) => {
+  return serverDBAPI.post('/api/alarms/batchUpdate', data)
+}
+
+/** 批量删除告警 */
+export const batchDeleteAlarms = (
+  data: API_DBAPI.req.AlarmBatchDeleteReq,
+) => {
+  return serverDBAPI.post('/api/alarms/batchDelete', data)
+}

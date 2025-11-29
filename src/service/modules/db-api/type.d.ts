@@ -262,6 +262,23 @@ declare namespace API_DBAPI {
       /** 采集时间 */
       acquireTimestampFormat: string
     }
+
+    type AlarmLevel = 'Info' | 'Warn' | 'Error'
+
+    interface AlarmRecord {
+      alarmId: number
+      time: string
+      deviceName: string
+      deviceId: string
+      sn: string
+      groupId: string
+      alarmLevel: AlarmLevel
+      msg: string
+      processStatus: 'PROCESSED' | 'UNPROCESSED'
+      processUsername: string | null
+      processTime: string | null
+      processMsg: string | null
+    }
   }
 
   // ------------------ req ------------------
@@ -285,6 +302,28 @@ declare namespace API_DBAPI {
       maxHeight: number
       deviceId?: string
       level: number
+    }
+
+    type AlarmQueryReq = {
+      startTime?: string
+      endTime?: string
+      processStatus?: 'PROCESSED' | 'UNPROCESSED'
+      deviceId?: string
+      sn?: string
+      groupId?: string
+      pageNum?: number
+      pageSize?: number
+    }
+
+    type AlarmBatchUpdateReq = {
+      alarmIds: (number | string)[]
+      processUsername?: string
+      isDeleted: 0 | 1
+      processMsg?: string
+    }
+
+    type AlarmBatchDeleteReq = {
+      alarmIds: (number | string)[]
     }
   }
   // ------------------ res ------------------
@@ -310,5 +349,12 @@ declare namespace API_DBAPI {
     type GetDeviceOperateLogsRes = API_DBAPI.domain.OperateLog[]
     type GetDeviceCapacityEnumRes = API_DBAPI.domain.DeviceCapacityEnum[]
     type GetDensityStatisticsRes = API_DBAPI.domain.DensityItem[]
+
+    type AlarmQueryRes = {
+      total: number
+      pageNum: number
+      pageSize: number
+      list: API_DBAPI.domain.AlarmRecord[]
+    }
   }
 }

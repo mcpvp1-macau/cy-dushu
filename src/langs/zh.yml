@@ -662,6 +662,43 @@ actionRecord:
       title: 行动名称
   signalDownload:
     title: 信号下载
+alarm:
+  title: 告警
+  filters:
+    processStatus: 处理状态
+    deviceId: 设备ID
+    sn: 设备SN
+    groupId: 组织ID
+  status:
+    processed: 已处理
+    unprocessed: 未处理
+  level:
+    info: 提示
+    warn: 警告
+    error: 错误
+  table:
+    time: 告警时间
+    deviceName: 设备名称
+    deviceId: 设备ID
+    sn: 设备SN
+    groupId: 组织ID
+    alarmLevel: 告警级别
+    msg: 告警信息
+    processStatus: 处理状态
+    processUsername: 处理人
+    processTime: 处理时间
+    processMsg: 处理备注
+  delete:
+    batch: 批量删除
+    confirmTitle: 确认删除告警
+    confirmContent: '是否删除选中的 {{count}} 条告警？'
+    success: 删除成功
+  edit:
+    title: 处理告警
+    processMsg: 处理意见
+    processMsgPlaceholder: 请输入处理意见（最多100字）
+    processMsgRequired: 请输入处理意见
+    success: 保存成功
 resource:
   title: 资源
   table:

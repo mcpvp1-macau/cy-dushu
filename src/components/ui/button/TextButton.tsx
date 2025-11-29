@@ -1,18 +1,20 @@
-import { ButtonHTMLAttributes } from 'react'
+import clsx from 'clsx'
+import { ButtonHTMLAttributes, FC, memo } from 'react'
 
-type PropsType = ButtonHTMLAttributes<HTMLButtonElement>
+type PropsType = ButtonHTMLAttributes<HTMLButtonElement> & { danger?: boolean }
 
-const TextButton: FC<PropsType> = memo((props) => {
+const TextButton: FC<PropsType> = memo(({ danger, className, ...rest }) => {
   return (
     <button
-      {...props}
+      {...rest}
       className={clsx(
-        'text-primary hover:text-primary-color-4',
+        danger ? 'text-red-500' : 'text-primary',
+        danger ? 'hover:text-red-400' : 'hover:text-primary-color-4',
         {
-          'opacity-80': props.disabled,
-          'cursor-not-allowed': props.disabled,
+          'opacity-80': rest.disabled,
+          'cursor-not-allowed': rest.disabled,
         },
-        props.className,
+        className,
       )}
     ></button>
   )
