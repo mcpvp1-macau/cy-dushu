@@ -59,10 +59,10 @@ const EventItem: FC<PropsType> = memo(({ data, active }) => {
         updateDetailId(data.eventId)
       }}
     >
-      <div className="flex justify-between overflow-hidden">
+      <div className="flex justify-between overflow-hidden gap-2">
         <div className="flex gap-2 overflow-hidden">
           <MenuIconEvents />
-          <OverflowText className="flex-1 text-hightlight">
+          <OverflowText className="flex-1 text-hightlight truncate">
             {data.eventName} ({data.eventId})
           </OverflowText>
         </div>
