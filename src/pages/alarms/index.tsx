@@ -71,13 +71,16 @@ const PageAlarms: FC = memo(() => {
           pageNum,
           pageSize,
         }),
-      select: (resp) => resp.data,
+      select: (resp) => ({
+        list: resp.data.list ?? emtpyArray,
+        total: resp.data.count?.[0]?.cnt ?? 0,
+      }),
     },
     queryClient,
   )
 
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
-  const [deleteTargets, setDeleteTargets] = useState<number[]>([])
+  const [deleteTargets, setDeleteTargets] = useState<string[]>([])
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [editingAlarm, setEditingAlarm] = useState<
     API_DBAPI.domain.AlarmRecord | null
@@ -114,7 +117,7 @@ const PageAlarms: FC = memo(() => {
   )
 
   const deleteMutation = useMutation({
-    mutationFn: (alarmIds: number[]) =>
+    mutationFn: (alarmIds: string[]) =>
       batchDeleteAlarms({
         alarmIds,
       }),
@@ -129,7 +132,7 @@ const PageAlarms: FC = memo(() => {
     },
   })
 
-  const handleDelete = useMemoizedFn((alarmIds: number[]) => {
+  const handleDelete = useMemoizedFn((alarmIds: string[]) => {
     if (!alarmIds.length) return
     setDeleteTargets(alarmIds)
     setDeleteModalOpen(true)
@@ -387,10 +390,10 @@ const PageAlarms: FC = memo(() => {
           <Pagination
             className="mt-2"
             current={pageNum}
-            pageSize={pageSize}
-            total={data?.total ?? 0}
-            onChange={handlePaginationChange}
-          />
+          pageSize={pageSize}
+          total={data?.total ?? 0}
+          onChange={handlePaginationChange}
+        />
         </div>
       </section>
 

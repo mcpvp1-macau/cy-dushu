@@ -266,7 +266,7 @@ declare namespace API_DBAPI {
     type AlarmLevel = 'Info' | 'Warn' | 'Error'
 
     interface AlarmRecord {
-      alarmId: number
+      alarmId: string
       time: string
       deviceName: string
       deviceId: string
@@ -275,9 +275,10 @@ declare namespace API_DBAPI {
       alarmLevel: AlarmLevel
       msg: string
       processStatus: 'PROCESSED' | 'UNPROCESSED'
-      processUsername: string | null
-      processTime: string | null
-      processMsg: string | null
+      alarmTypeId?: number
+      processUsername?: string | null
+      processTime?: string | null
+      processMsg?: string | null
     }
   }
 
@@ -316,14 +317,14 @@ declare namespace API_DBAPI {
     }
 
     type AlarmBatchUpdateReq = {
-      alarmIds: (number | string)[]
+      alarmIds: string[]
       processUsername?: string
       isDeleted: 0 | 1
       processMsg?: string
     }
 
     type AlarmBatchDeleteReq = {
-      alarmIds: (number | string)[]
+      alarmIds: string[]
     }
   }
   // ------------------ res ------------------
@@ -351,10 +352,8 @@ declare namespace API_DBAPI {
     type GetDensityStatisticsRes = API_DBAPI.domain.DensityItem[]
 
     type AlarmQueryRes = {
-      total: number
-      pageNum: number
-      pageSize: number
       list: API_DBAPI.domain.AlarmRecord[]
+      count: { cnt: number }[]
     }
   }
 }
