@@ -35,6 +35,13 @@ setting:
         Clicking the 'Clear All' button will erase all local data and restore default configurations (including settings and AR configuration content). Before proceeding, please ensure you have backed up important information to prevent data loss
 
       title: Clear All
+  warnning:
+    title: Alarm
+    isAllowEventNotification: Allow event notifications
+    isAllowAlarmNotification: Allow alarm notifications
+    isAddMap: Alarm overlay
+    isHaveAvdio: Sound alarm
+    isHaveLight: Light alarm
   warning:
     description: Enable or disable the above warning settings as needed
   voice:

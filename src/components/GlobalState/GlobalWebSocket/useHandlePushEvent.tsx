@@ -24,10 +24,14 @@ const useHandlePushEvent = () => {
     updateNewEvent(message)
 
     const newEvent = message
-    globalToastEmitter.emit('notifyCustom', {
-      id: 'global-event',
-      element: <EventToast data={newEvent} />,
-    })
+    const isAllowEventNotification =
+      useWarnningSettingStore.getState().isAllowEventNotification
+    if (isAllowEventNotification) {
+      globalToastEmitter.emit('notifyCustom', {
+        id: 'global-event',
+        element: <EventToast data={newEvent} />,
+      })
+    }
 
     // 播放声音 -------------------------------------------------------------------
     const isHaveAudio = useWarnningSettingStore.getState().isHaveAvdio

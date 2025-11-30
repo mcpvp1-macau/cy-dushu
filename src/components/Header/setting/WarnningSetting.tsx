@@ -1,6 +1,7 @@
 import IconTip from '@/assets/icons/jsx/IconTip'
 import useWarnningSettingStore from '@/store/setting/useWarnningSetting.store'
 import { Switch } from 'antd'
+import { useTranslation } from 'react-i18next'
 
 const WarnningSetting = () => {
   const s = useWarnningSettingStore((s) => s)
@@ -9,8 +10,18 @@ const WarnningSetting = () => {
 
   return (
     <div className="mt-3">
-      <div className="flex gap-4">
+      <div className="flex gap-4 flex-wrap">
         {[
+          [
+            'isAllowEventNotification',
+            s.isAllowEventNotification,
+            s.updateIsAllowEventNotification,
+          ] as const,
+          [
+            'isAllowAlarmNotification',
+            s.isAllowAlarmNotification,
+            s.updateIsAllowAlarmNotification,
+          ] as const,
           ['isAddMap', s.isAddMap, s.updateIsAddMap] as const,
           ['isHaveAvdio', s.isHaveAvdio, s.updateIsHaveAvdio] as const,
           ['isHaveLight', s.isHaveLight, s.updateIsHaveLight] as const,

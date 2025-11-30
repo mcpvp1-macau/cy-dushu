@@ -19,10 +19,13 @@ import { useAppNotification } from '@/hooks/useNotification'
 import { realDensityMapEmitter } from '@/store/map/useDensityMap.store'
 import { processEventImageDataEmitter } from '@/store/map/useReconstruction2DMap.store'
 import useDeviceInactiveStore from '@/store/setting/useDeviceInactiveSetting.store'
+import useWarnningSettingStore from '@/store/setting/useWarnningSetting.store'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import { pathCompress3D } from '@/utils/path'
 import { deviceRelayEmitter } from './DeviceRelay'
 import useHandlePushEvent from './GlobalWebSocket/useHandlePushEvent'
+import { globalToastEmitter } from './GlobalToast'
+import AlarmToast from './GlobalWebSocket/AlarmToast'
 
 type PropsType = unknown
 
@@ -271,6 +274,29 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
   // 事件推送 ------------------------
   const handleEventPush = useHandlePushEvent()
 
+  // 告警推送 ------------------------
+  const handleAlarmPush = useMemoizedFn((message: any) => {
+    const alarm = shouldJson(message) ?? message
+
+    if (!alarm) {
+      return
+    }
+
+    const isAllowAlarmNotification =
+      useWarnningSettingStore.getState().isAllowAlarmNotification
+    if (!isAllowAlarmNotification) {
+      return
+    }
+
+    const alarmId =
+      alarm.alarm_id || alarm.alarmId || alarm.msg || alarm.device_name || alarm.deviceName
+
+    globalToastEmitter.emit('notifyCustom', {
+      id: alarmId || `alarm-${Date.now()}`,
+      element: <AlarmToast data={alarm} />,
+    })
+  })
+
   // 日志 ----------------------------
   const updateNewLog = useGlobalWsStore((s) => s.updateNewLog)
   const handleActionLog = useMemoizedFn((message: any) => {
@@ -390,6 +416,9 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         break
       case 'EVENT_PUSH':
         handleEventPush(message)
+        break
+      case 'ALARMS':
+        handleAlarmPush(message)
         break
       case 'ACTION_LOG':
         handleActionLog(message)

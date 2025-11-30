@@ -31,6 +31,8 @@ setting:
       title: 一键清理
   warnning:
     title: 告警
+    isAllowEventNotification: 允许事件通知
+    isAllowAlarmNotification: 允许告警通知
     isAddMap: 告警上图
     isHaveAvdio: 声音报警
     isHaveLight: 光信号报警
