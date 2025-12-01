@@ -8,7 +8,7 @@ type PropsType = {
 /** 告警通知 */
 const AlarmToast: FC<PropsType> = memo(({ data }) => {
   const source = data.device_name || data.deviceName || data.sn || '未知设备'
-  const time = data.update_time || data.time
+  const time = data.time || data.update_time
   const level = data.alarm_level || data.alarmLevel
   const message = data.msg || '收到告警'
 
