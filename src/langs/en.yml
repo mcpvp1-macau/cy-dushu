@@ -1487,6 +1487,7 @@ dynamicLayout:
 video:
   electricScale:
     title: Electric Scale
+  downloading: Downloading video...
 screenshot:
   screenshotSuccess: Screenshot successful
 forecast:

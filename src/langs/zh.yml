@@ -1464,6 +1464,7 @@ dynamicLayout:
 video:
   electricScale:
     title: 电子放大
+  downloading: 视频下载中...
 screenshot:
   screenshotSuccess: 截图成功
 forecast:
