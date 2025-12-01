@@ -64,7 +64,8 @@ const PageAlarms: FC = memo(() => {
         queryAlarmList({
           startTime: rangeValue?.[0]?.format(dft),
           endTime: rangeValue?.[1]?.format(dft),
-          processStatus: processStatus as API_DBAPI.req.AlarmQueryReq['processStatus'],
+          processStatus:
+            processStatus as API_DBAPI.req.AlarmQueryReq['processStatus'],
           deviceId: deviceId || undefined,
           sn: sn || undefined,
           groupId: groupId || undefined,
@@ -72,8 +73,8 @@ const PageAlarms: FC = memo(() => {
           pageSize,
         }),
       select: (resp) => ({
-        list: resp.data.list ?? emtpyArray,
-        total: resp.data.count?.[0]?.cnt ?? 0,
+        list: resp.data?.list ?? emtpyArray,
+        total: resp.data?.count?.[0]?.cnt ?? 0,
       }),
     },
     queryClient,
@@ -82,9 +83,8 @@ const PageAlarms: FC = memo(() => {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   const [deleteTargets, setDeleteTargets] = useState<string[]>([])
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
-  const [editingAlarm, setEditingAlarm] = useState<
-    API_DBAPI.domain.AlarmRecord | null
-  >(null)
+  const [editingAlarm, setEditingAlarm] =
+    useState<API_DBAPI.domain.AlarmRecord | null>(null)
 
   const processStatusOptions = useMemo(
     () => [
@@ -95,14 +95,18 @@ const PageAlarms: FC = memo(() => {
   )
 
   const processStatusLabelMap = useMemo(
-    () => Object.fromEntries(processStatusOptions.map((o) => [o.value, o.label])),
+    () =>
+      Object.fromEntries(processStatusOptions.map((o) => [o.value, o.label])),
     [processStatusOptions],
   )
 
   const processStatusTagMap = useMemo(
     () => ({
       PROCESSED: { label: processStatusLabelMap.PROCESSED, type: 'success' },
-      UNPROCESSED: { label: processStatusLabelMap.UNPROCESSED, type: 'warning' },
+      UNPROCESSED: {
+        label: processStatusLabelMap.UNPROCESSED,
+        type: 'warning',
+      },
     }),
     [processStatusLabelMap],
   )
@@ -128,7 +132,9 @@ const PageAlarms: FC = memo(() => {
       queryClient.invalidateQueries({ queryKey: ['getAlarmList'] })
     },
     onError: (err: any) => {
-      msgApi.error((err?.msg as string) || (err as Error)?.message || t('common.error'))
+      msgApi.error(
+        (err?.msg as string) || (err as Error)?.message || t('common.error'),
+      )
     },
   })
 
@@ -147,7 +153,9 @@ const PageAlarms: FC = memo(() => {
       queryClient.invalidateQueries({ queryKey: ['getAlarmList'] })
     },
     onError: (err: any) => {
-      msgApi.error((err?.msg as string) || (err as Error)?.message || t('common.error'))
+      msgApi.error(
+        (err?.msg as string) || (err as Error)?.message || t('common.error'),
+      )
     },
   })
 
@@ -186,7 +194,10 @@ const PageAlarms: FC = memo(() => {
         size: 60,
         header: ({ table }) => (
           <Checkbox
-            indeterminate={table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()}
+            indeterminate={
+              table.getIsSomePageRowsSelected() &&
+              !table.getIsAllPageRowsSelected()
+            }
             checked={table.getIsAllPageRowsSelected()}
             onChange={table.getToggleAllRowsSelectedHandler()}
           />
@@ -278,12 +289,16 @@ const PageAlarms: FC = memo(() => {
             <TextButton
               onClick={() => setEditingAlarm(row.original)}
               disabled={
-                editMutation.isPending && editingAlarm?.alarmId === row.original.alarmId
+                editMutation.isPending &&
+                editingAlarm?.alarmId === row.original.alarmId
               }
             >
-              {t('common.edit')}
+              {t('common.resolve')}
             </TextButton>
-            <TextButton danger onClick={() => handleDelete([row.original.alarmId])}>
+            <TextButton
+              danger
+              onClick={() => handleDelete([row.original.alarmId])}
+            >
               {t('common.delete')}
             </TextButton>
           </div>
@@ -350,7 +365,9 @@ const PageAlarms: FC = memo(() => {
           className="w-52"
           defaultValue={deviceId}
           placeholder={t('alarm.filters.deviceId')}
-          onChange={(e) => debouncedHandleValueChange('deviceId', e.target.value)}
+          onChange={(e) =>
+            debouncedHandleValueChange('deviceId', e.target.value)
+          }
         />
         <Input
           allowClear
@@ -364,14 +381,18 @@ const PageAlarms: FC = memo(() => {
           className="w-52"
           defaultValue={groupId}
           placeholder={t('alarm.filters.groupId')}
-          onChange={(e) => debouncedHandleValueChange('groupId', e.target.value)}
+          onChange={(e) =>
+            debouncedHandleValueChange('groupId', e.target.value)
+          }
         />
         <Button
           type="primary"
           danger
           disabled={!selectedAlarms.length}
           loading={deleteMutation.isPending}
-          onClick={() => handleDelete(selectedAlarms.map((item) => item.alarmId))}
+          onClick={() =>
+            handleDelete(selectedAlarms.map((item) => item.alarmId))
+          }
         >
           {t('alarm.delete.batch')}
         </Button>
@@ -390,10 +411,10 @@ const PageAlarms: FC = memo(() => {
           <Pagination
             className="mt-2"
             current={pageNum}
-          pageSize={pageSize}
-          total={data?.total ?? 0}
-          onChange={handlePaginationChange}
-        />
+            pageSize={pageSize}
+            total={data?.total ?? 0}
+            onChange={handlePaginationChange}
+          />
         </div>
       </section>
 

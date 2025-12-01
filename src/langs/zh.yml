@@ -578,6 +578,7 @@ common:
   refDevLoc: 参考设备位置
   options: 选项
   export: 导出
+  resolve: 处理
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -693,7 +694,7 @@ alarm:
   delete:
     batch: 批量删除
     confirmTitle: 确认删除告警
-    confirmContent: '是否删除选中的 {{count}} 条告警？'
+    confirmContent: 是否删除选中的 {{count}} 条告警？
     success: 删除成功
   edit:
     title: 处理告警
