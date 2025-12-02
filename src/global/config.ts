@@ -110,6 +110,8 @@ class GlobalConfig {
   // 是否开启喊话器音频上传功能
   usePayloadP3Upload: boolean = false
 
+  useRelayDevice: boolean = true
+
   constructor(def: ConfigType) {
     Object.assign(this, def)
   }

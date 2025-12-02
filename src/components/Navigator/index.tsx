@@ -35,12 +35,6 @@ const menus = [
     component: <MenuIconAction className="text-lg text-[rgb(78,154,160)]" />,
   },
   {
-    id: 'alarms',
-    path: '/alarms',
-    auth: 'alarm',
-    component: <MenuIconAlarm className="text-lg text-[#E3A551]" />,
-  },
-  {
     id: 'sources',
     path: '/sources',
     auth: 'device',
@@ -70,6 +64,12 @@ const menus = [
     path: '/defence',
     auth: 'defence',
     component: <MenuIconDefence className="text-lg text-[#4F81D7]" />,
+  },
+  {
+    id: 'alarms',
+    path: '/alarms',
+    auth: 'alarm',
+    component: <MenuIconAlarm className="text-lg text-[#E3A551]" />,
   },
 ]
 

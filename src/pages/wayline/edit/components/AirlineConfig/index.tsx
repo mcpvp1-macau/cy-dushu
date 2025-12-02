@@ -8,7 +8,7 @@ import TakeoffSpeedConfig from './components/TakeOffSpeedConfig'
 import { takePhotoIgnoreDevices } from './constant/ignore-device'
 import GoHomeHeightConfig from './components/GoHomeHeightConfig'
 import RoadNetworkMode from './components/RoadNetworkMode'
-// import RelayDeviceConfig from './components/RelayDeviceConfig'
+import RelayDeviceConfig from './components/RelayDeviceConfig'
 import Flight3D from './components/Flight3D'
 
 type PropsType = {
@@ -39,7 +39,7 @@ const AirlineConfig: FC<PropsType> = ({ info, pilot }) => {
       <AirlineSpeedConfig />
       {!takePhotoIgnoreDevices.includes(modelName) && <TakeoffSpeedConfig />}
       <AdvancedConfig />
-      {/* <RelayDeviceConfig /> */}
+      {globalConfig.useRelayDevice && <RelayDeviceConfig />}
     </div>
   )
 }
