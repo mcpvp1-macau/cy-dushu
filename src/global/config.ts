@@ -88,6 +88,9 @@ class GlobalConfig {
   /** 是否使用无人机日志 */
   useUavLogs?: boolean | undefined
 
+  /** 是否启用飞行报备 */
+  useFlightReporting?: boolean
+
   /** 访问密钥 */
   accessKeyId?: string
   /** 访问密钥 */

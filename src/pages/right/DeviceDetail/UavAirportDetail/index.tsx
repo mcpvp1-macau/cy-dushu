@@ -7,7 +7,7 @@ import UavAirportWeatherSection from './components/WeatherSection'
 import UavAirportInfoCard from './components/InfoCard'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
 import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
-import { Button, Switch } from 'antd'
+import { Button, Switch, Tooltip } from 'antd'
 import IconDebug from '@/assets/icons/jsx/uav/IconDebug'
 import IconTakeoff from '@/assets/icons/jsx/uav/IconTakeoff'
 import RemoteDebug from './components/RemoteDebug'
@@ -26,6 +26,8 @@ import IconButton from '@/components/ui/button/IconButton'
 import IconClose from '@/assets/icons/jsx/IconClose'
 import UavDockConfig from './components/UavDockConfig'
 import AppCollapse from '@/components/AppCollapse'
+import globalConfig from '@/global/config'
+import useFlightReporting from '@/hooks/jinghang/useFlightReporting'
 
 type PropsType = BaseDeviceDetailProps
 
@@ -42,6 +44,13 @@ const UavAirportDetail: FC<PropsType> = memo(
     const productKey = data.productKey || data.deviceModel!.productKey
     const deviceId = data.deviceId
     const videoId = data?.properties.videoList?.[0]?.videoId ?? ''
+    const childDeviceId = data?.childDevice?.[0]?.deviceId
+
+    const {
+      isCanFly: canTakeoff,
+      reason: cannotTakeoffReason,
+      isLoading: isLoadingFlightReporting,
+    } = useFlightReporting(childDeviceId)
 
     const { t, i18n } = useTranslation()
 
@@ -243,15 +252,18 @@ const UavAirportDetail: FC<PropsType> = memo(
               >
                 {t('device.uavDock.remoteDebug.title')}
               </Button>
-              <Button
-                disabled={state.modeCode !== 0}
-                block
-                className="h-7"
-                icon={<IconTakeoff />}
-                onClick={setTakeoffTrue}
-              >
-                {t('device.uavDock.takeoffForm.title')}
-              </Button>
+              <Tooltip title={!canTakeoff ? cannotTakeoffReason : undefined}>
+                <Button
+                  loading={isLoadingFlightReporting}
+                  disabled={state.modeCode !== 0 || !canTakeoff}
+                  block
+                  className="h-7"
+                  icon={<IconTakeoff />}
+                  onClick={setTakeoffTrue}
+                >
+                  {t('device.uavDock.takeoffForm.title')}
+                </Button>
+              </Tooltip>
             </div>
 
             {data?.childDevice?.[0]?.deviceId && (

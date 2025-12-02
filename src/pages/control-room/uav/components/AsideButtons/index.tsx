@@ -14,6 +14,7 @@ import IntelligentPhotography from './IntelligentPhotograph'
 import IntelligentPhotographyV1 from './IntelligentPhotographV1'
 import ServiceButton from './ServiceButton'
 import GoHome from './GoHome'
+import useFlightReporting from '@/hooks/jinghang/useFlightReporting'
 
 type PropsType = unknown
 
@@ -39,6 +40,12 @@ const AsideButtons: FC<PropsType> = memo(() => {
 
   const productKey = useDeviceDetailStore((s) => s.productKey)
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
+
+  const {
+    isCanFly,
+    reason: cannotFlyReason,
+    isLoading: isLoadingFlightReporting,
+  } = useFlightReporting(deviceId)
 
   const postSerivce = usePostDeviceService(productKey, deviceId)
 
@@ -75,8 +82,17 @@ const AsideButtons: FC<PropsType> = memo(() => {
         <Gamepad />
       </div>
       <div className="flex justify-between gap-2.5">
-        <Takeoff postServiceFn={postSerivce} />
-        <PointFly />
+        <Takeoff
+          canFly={isCanFly}
+          disabledReason={cannotFlyReason}
+          loading={isLoadingFlightReporting}
+          postServiceFn={postSerivce}
+        />
+        <PointFly
+          loading={isLoadingFlightReporting}
+          canFly={isCanFly}
+          disabledReason={cannotFlyReason}
+        />
         <ServiceButton
           disabled={!canStopAll}
           icon={IconStopCircle}

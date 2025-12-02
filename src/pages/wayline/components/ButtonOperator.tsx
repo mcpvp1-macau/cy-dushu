@@ -221,7 +221,7 @@ const BottomOperator: FC<PropsType> = memo(
         >
           {t('wayline.saveTask.title')}
         </Button>
-        {!actionItemId && !backUrl && (
+        {!actionItemId && !backUrl && globalConfig.env !== 'sh-jh' && (
           <Button
             className="flex-1"
             loading={loading === 2}
