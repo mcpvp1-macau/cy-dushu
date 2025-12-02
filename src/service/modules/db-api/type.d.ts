@@ -310,6 +310,7 @@ declare namespace API_DBAPI {
       endTime?: string
       processStatus?: 'PROCESSED' | 'UNPROCESSED'
       deviceId?: string
+      deviceName?: string
       sn?: string
       groupId?: string
       pageNum?: number

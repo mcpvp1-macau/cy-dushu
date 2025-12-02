@@ -680,9 +680,8 @@ alarm:
   title: Alarms
   filters:
     processStatus: Process Status
-    deviceId: Device ID
+    deviceName: Device Name
     sn: Device SN
-    groupId: Group ID
   status:
     processed: Processed
     unprocessed: Unprocessed
@@ -693,9 +692,7 @@ alarm:
   table:
     time: Alarm Time
     deviceName: Device Name
-    deviceId: Device ID
     sn: Device SN
-    groupId: Group ID
     alarmLevel: Alarm Level
     msg: Alarm Message
     processStatus: Process Status

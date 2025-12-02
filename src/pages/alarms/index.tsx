@@ -40,9 +40,8 @@ const PageAlarms: FC = memo(() => {
   const username = useUserStore((s) => s.user?.username ?? '')
 
   const processStatus = searchParams.get('processStatus') || undefined
-  const deviceId = searchParams.get('deviceId') || undefined
+  const deviceName = searchParams.get('deviceName') || undefined
   const sn = searchParams.get('sn') || undefined
-  const groupId = searchParams.get('groupId') || undefined
 
   const pageNum = Number(searchParams.get('page') ?? 1)
   const pageSize = Number(searchParams.get('size') ?? 20)
@@ -58,7 +57,14 @@ const PageAlarms: FC = memo(() => {
     {
       queryKey: [
         'getAlarmList',
-        { pageNum, pageSize, processStatus, deviceId, sn, groupId, rangeValue },
+        {
+          pageNum,
+          pageSize,
+          processStatus,
+          deviceName,
+          sn,
+          rangeValue,
+        },
       ],
       queryFn: () =>
         queryAlarmList({
@@ -66,9 +72,8 @@ const PageAlarms: FC = memo(() => {
           endTime: rangeValue?.[1]?.format(dft),
           processStatus:
             processStatus as API_DBAPI.req.AlarmQueryReq['processStatus'],
-          deviceId: deviceId || undefined,
+          deviceName: deviceName || undefined,
           sn: sn || undefined,
-          groupId: groupId || undefined,
           pageNum,
           pageSize,
         }),
@@ -221,19 +226,9 @@ const PageAlarms: FC = memo(() => {
         size: 160,
         minSize: 140,
       }),
-      h.accessor('deviceId', {
-        header: t('alarm.table.deviceId'),
-        size: 160,
-        minSize: 140,
-      }),
       h.accessor('sn', {
         header: 'SN',
         size: 140,
-      }),
-      h.accessor('groupId', {
-        header: t('alarm.table.groupId'),
-        size: 160,
-        minSize: 140,
       }),
       h.accessor('alarmLevel', {
         header: t('alarm.table.alarmLevel'),
@@ -363,10 +358,10 @@ const PageAlarms: FC = memo(() => {
         <Input
           allowClear
           className="w-52"
-          defaultValue={deviceId}
-          placeholder={t('alarm.filters.deviceId')}
+          defaultValue={deviceName}
+          placeholder={t('alarm.filters.deviceName')}
           onChange={(e) =>
-            debouncedHandleValueChange('deviceId', e.target.value)
+            debouncedHandleValueChange('deviceName', e.target.value)
           }
         />
         <Input
@@ -375,15 +370,6 @@ const PageAlarms: FC = memo(() => {
           defaultValue={sn}
           placeholder={t('alarm.filters.sn')}
           onChange={(e) => debouncedHandleValueChange('sn', e.target.value)}
-        />
-        <Input
-          allowClear
-          className="w-52"
-          defaultValue={groupId}
-          placeholder={t('alarm.filters.groupId')}
-          onChange={(e) =>
-            debouncedHandleValueChange('groupId', e.target.value)
-          }
         />
         <Button
           type="primary"

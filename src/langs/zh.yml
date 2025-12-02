@@ -669,9 +669,8 @@ alarm:
   title: 告警
   filters:
     processStatus: 处理状态
-    deviceId: 设备ID
+    deviceName: 设备名称
     sn: 设备SN
-    groupId: 组织ID
   status:
     processed: 已处理
     unprocessed: 未处理
@@ -682,9 +681,7 @@ alarm:
   table:
     time: 告警时间
     deviceName: 设备名称
-    deviceId: 设备ID
     sn: 设备SN
-    groupId: 组织ID
     alarmLevel: 告警级别
     msg: 告警信息
     processStatus: 处理状态
