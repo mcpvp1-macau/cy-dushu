@@ -7,10 +7,25 @@ type PropsType = {
 
 /** 告警通知 */
 const AlarmToast: FC<PropsType> = memo(({ data }) => {
+  const { t } = useTranslation()
+
   const source = data.device_name || data.deviceName || data.sn || '未知设备'
   const time = data.time || data.update_time
   const level = data.alarm_level || data.alarmLevel
   const message = data.msg || '收到告警'
+
+  const alarmLevelLabelMap = useMemo(
+    () => ({
+      Info: t('alarm.level.info'),
+      Warn: t('alarm.level.warn'),
+      Error: t('alarm.level.error'),
+    }),
+    [t],
+  )
+
+  const alarmLevelLabel = level
+    ? alarmLevelLabelMap[level as keyof typeof alarmLevelLabelMap] ?? level
+    : undefined
 
   return (
     <div className="flex rounded bg-ground-1/90 ring-1 ring-ground-5 w-[350px] backdrop-blur-sm items-start p-3 gap-3 z-10 shadow-lg">
@@ -25,7 +40,9 @@ const AlarmToast: FC<PropsType> = memo(({ data }) => {
           </div>
           {(level || time) && (
             <div className="mt-1 text-xs text-ground-11 flex gap-3">
-              {level && <span className="shrink-0">{`等级: ${level}`}</span>}
+              {level && (
+                <span className="shrink-0">{`等级: ${alarmLevelLabel}`}</span>
+              )}
               {time && (
                 <span className="truncate" title={time}>
                   {`时间: ${time}`}
