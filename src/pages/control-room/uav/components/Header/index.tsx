@@ -184,26 +184,70 @@ const SatelliteNumber = memo(() => {
 const Battery = memo(() => {
   const { t } = useTranslation()
   const electricity = useS((s) => s.state?.electricity)
+  const battery = useS((s) => s.state?.cloudApiOsdData?.battery)
+
+  const formatPercent = (value?: number | null) =>
+    isNil(value) ? '-' : `${value}%`
+
+  const batteryElectricity = battery?.capacity_percent ?? electricity
 
   const eleColor = useMemo(() => {
     // 电量正常
-    if (isNil(electricity) || electricity > 40) {
+    if (isNil(batteryElectricity) || batteryElectricity > 40) {
       return
     }
     // 低电量
-    if (electricity > 20) {
+    if (batteryElectricity > 20) {
       return '#F29D49'
     }
     // 严重低电量
     return '#DD4444'
-  }, [electricity])
+  }, [batteryElectricity])
 
   return (
-    <I
-      l={<IconBattery />}
-      v={<span style={{ color: eleColor }}>{electricity ?? '-'} %</span>}
-      t={t('common.electricity')}
-    />
+    <IconButtonWithDropDownDialog
+      title={t('common.electricity')}
+      trigger={['click']}
+      useDing
+      popupRender={() => (
+        <div className="p-2 text-xs">
+          <ul className="flex flex-col gap-1">
+            <li className="flex gap-2">
+              <p>电量</p>
+              <p>{formatPercent(batteryElectricity)}</p>
+            </li>
+            <li className="flex gap-2">
+              <p>电池循环数</p>
+              <div className="flex flex-col">
+                {battery?.batteries?.length ? (
+                  battery.batteries.map((item, index) => (
+                    <p key={item?.sn ?? index}>
+                      电池{(item?.index ?? index) + 1}: {item?.loop_times ?? '-'}
+                    </p>
+                  ))
+                ) : (
+                  <p>-</p>
+                )}
+              </div>
+            </li>
+            <li className="flex gap-2">
+              <p>返航电量阈值</p>
+              <p>{formatPercent(battery?.return_home_power)}</p>
+            </li>
+            <li className="flex gap-2">
+              <p>强制降落阈值</p>
+              <p>{formatPercent(battery?.landing_power)}</p>
+            </li>
+          </ul>
+        </div>
+      )}
+    >
+      <I
+        l={<IconBattery />}
+        v={<span style={{ color: eleColor }}>{formatPercent(batteryElectricity)}</span>}
+        t={t('common.electricity')}
+      />
+    </IconButtonWithDropDownDialog>
   )
 })
 
