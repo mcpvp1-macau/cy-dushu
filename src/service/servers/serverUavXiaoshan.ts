@@ -1,6 +1,5 @@
 import config from '@/global/config'
 import {
-  formatThrowError,
   shouldShowError,
   unAuthorized,
   withInternational,

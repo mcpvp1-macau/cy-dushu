@@ -1,5 +1,5 @@
 import config from '@/global/config'
-import { formatThrowError, unAuthorized, withToken } from './interceptors'
+import { unAuthorized, withToken } from './interceptors'
 import LiqunAxios from './liqunAxios/liqun-axios'
 import { msgMitt } from '@/hooks/useAppMsg'
 

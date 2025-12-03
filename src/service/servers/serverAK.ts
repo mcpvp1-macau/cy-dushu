@@ -1,5 +1,4 @@
 import {
-  formatThrowError,
   shouldShowError,
   unAuthorized,
   withInternational,
