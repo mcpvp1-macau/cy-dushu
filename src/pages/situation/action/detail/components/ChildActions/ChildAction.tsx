@@ -28,6 +28,7 @@ import { Button } from 'antd'
 import { isNil } from 'lodash'
 import IconRelayWayline from '@/assets/icons/jsx/IconRelayWayline'
 import globalConfig from '@/global/config'
+import IconNotReported from '@/assets/icons/jsx/IconNotReported'
 
 type PropsType = {
   data: API_ACTION_ITEM.domain.ActionItem
@@ -126,7 +127,11 @@ const OperatorBtns: FC<PropsType> = ({ data, noEdit }) => {
               {t('action.detail.task.edit.title')}
             </Button>
           )}
-          <Button size="small" onClick={() => handleClick('start')}>
+          <Button
+            size="small"
+            disabled={globalConfig.useFlightReporting && data.isPassed !== 1}
+            onClick={() => handleClick('start')}
+          >
             {t('action.detail.task.start.title')}
           </Button>
           {stopModalHolder}
@@ -292,9 +297,14 @@ const ChildAction: FC<PropsType> = memo(
                   <ClockCircleOutlined />
                   待审批
                 </div>
-              ) : (
+              ) : data.isPassed === 0 ? (
                 <div className="text-red-500 flex gap-1">
                   <CloseOutlined />
+                  未通过
+                </div>
+              ) : (
+                <div className="text-fore flex gap-1">
+                  <IconNotReported />
                   未报备
                 </div>
               )}

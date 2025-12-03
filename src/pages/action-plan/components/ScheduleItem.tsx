@@ -26,6 +26,7 @@ import {
 import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
 import OverflowText from '@/components/ui/OverflowText'
 import globalConfig from '@/global/config'
+import IconNotReported from '@/assets/icons/jsx/IconNotReported'
 
 type PropsType = {
   data: API_ACTION_PLAN.domain.Plan
@@ -258,19 +259,24 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
           {isShJhEnv && (
             <div className="mt-1 text-xs flex gap-1 items-center">
               <span>报备状态:</span>
-              {data.isPass === 1 ? (
-                <div className="text-green-500 flex gap-1 items-center">
+              {data.isPassed === 1 ? (
+                <div className="text-green-500 flex gap-1">
                   <CheckOutlined />
                   已报备
                 </div>
-              ) : data.isPass === 2 ? (
-                <div className="text-orange-500 flex gap-1 items-center">
+              ) : data.isPassed === 2 ? (
+                <div className="text-orange-500 flex gap-1">
                   <ClockCircleOutlined />
                   待审批
                 </div>
-              ) : (
-                <div className="text-red-500 flex gap-1 items-center">
+              ) : data.isPassed === 0 ? (
+                <div className="text-red-500 flex gap-1">
                   <CloseOutlined />
+                  未通过
+                </div>
+              ) : (
+                <div className="text-fore flex gap-1">
+                  <IconNotReported />
                   未报备
                 </div>
               )}

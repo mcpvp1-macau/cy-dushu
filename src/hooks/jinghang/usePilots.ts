@@ -9,11 +9,13 @@ type PilotInfo = {
 }
 
 export const usePilotTreeData = (data: API_ACTION_ITEM.domain.PilotTree[]) => {
-  const map = new Map<string, PilotInfo>()
-
-  const treeData = useMemo(() => {
+  const result = useMemo(() => {
+    const map = new Map<string, PilotInfo>()
     if (!data.length) {
-      return []
+      return {
+        treeData: [],
+        pilotMap: map,
+      }
     }
 
     const dfs = (data: API_ACTION_ITEM.domain.PilotTree): TreeNode => {
@@ -39,8 +41,11 @@ export const usePilotTreeData = (data: API_ACTION_ITEM.domain.PilotTree[]) => {
       return node
     }
 
-    return data.map(dfs)
+    return {
+      treeData: data.map(dfs),
+      pilotMap: map,
+    }
   }, [data])
 
-  return { treeData, pilotMap: map }
+  return result
 }

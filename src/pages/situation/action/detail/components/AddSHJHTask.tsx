@@ -69,7 +69,7 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
     queryClient,
   )
 
-  const { treeData, pilotMap } = usePilotTreeData(pilotData as any[])
+  const { treeData, pilotMap } = usePilotTreeData(pilotData)
 
   const resetForm = () => {
     form.resetFields()
