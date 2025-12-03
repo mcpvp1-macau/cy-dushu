@@ -14,9 +14,9 @@ import {
   Input,
   InputNumber,
   Radio,
+  TreeSelect,
   Switch,
   TimePicker,
-  Tooltip,
 } from 'antd'
 import useFormInstance from 'antd/es/form/hooks/useFormInstance'
 import type { Dayjs } from 'dayjs'
@@ -27,10 +27,23 @@ import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { WaylineEnum } from '@/constant/uav/wayline'
 import { getAllDeviceListV3 } from '@/service/modules/device'
+import { getPilotTree } from '@/service/modules/action-item'
 import { DeviceEnum } from '@/enum/device'
 import DeviceIcon from '@/components/device/DeviceIcon'
 import TagItemV2 from '@/components/ui/TagItemV2'
 import LiqunTippy from '@/components/ui/LiqunTippy'
+import { DictEnum } from '@/enum/dict'
+import { useDictOptions } from '@/store/useDict.store'
+import globalConfig from '@/global/config'
+import { usePilotTreeData } from '@/hooks/jinghang/usePilots'
+import { CaretDownFilled } from '@ant-design/icons'
+import { pilotMock } from '@/pages/situation/action/detail/components/pilot-mock'
+
+type PilotInfo = {
+  pilotName: string
+  orgCode?: string
+  orgName?: string
+}
 
 const TipInfo = memo(() => {
   const { t } = useTranslation()
@@ -204,6 +217,8 @@ type FormValuesType = {
   breakPointEnable?: boolean
   landDeviceId?: string
   taskType: 'NORMAL' | 'MULTI'
+  actionName?: string
+  pilotCode?: string
 } & (
   | {
       type: 'SINGLE'
@@ -239,6 +254,17 @@ const ScheduleModal: FC<PropsType> = memo(
     const type = Form.useWatch('type', form) ?? data?.type
     const taskType =
       (Form.useWatch('taskType', form) || data?.taskType) ?? 'NORMAL'
+    const isShJhEnv = globalConfig.env === 'sh-jh'
+
+    const actionTypeOptions = useDictOptions(DictEnum.ACTION_TYPE)
+    const actionNameOptions = useMemo(
+      () =>
+        actionTypeOptions.map((item) => ({
+          value: item.label,
+          label: item.label,
+        })),
+      [actionTypeOptions],
+    )
 
     const {
       airlineOptions,
@@ -273,6 +299,53 @@ const ScheduleModal: FC<PropsType> = memo(
       },
       queryClient,
     )
+
+    const { data: pilotData = [] } = useQuery(
+      {
+        queryKey: ['pilotTree'],
+        queryFn: () => {
+          if (
+            location.hostname === 'localhost' ||
+            location.hostname.startsWith('test.')
+          ) {
+            return Promise.resolve(pilotMock)
+          }
+          return getPilotTree()
+        },
+        select: (d: any) => d.data?.rows ?? [],
+        enabled: isShJhEnv && open,
+      },
+      queryClient,
+    )
+
+    const { treeData } = usePilotTreeData(pilotData as any[])
+
+    const pilotInfoMap = useMemo(() => {
+      const map = new Map<string, PilotInfo>()
+
+      const dfs = (
+        nodes: any[] = [],
+        parentOrg: { orgCode?: string; orgName?: string } = {},
+      ) => {
+        nodes.forEach((node) => {
+          const currentOrg = {
+            orgCode: node.orgCode ?? parentOrg.orgCode,
+            orgName: node.name ?? parentOrg.orgName,
+          }
+          node?.pilots?.forEach((pilot: any) => {
+            map.set(pilot.userCode, {
+              pilotName: pilot.name,
+              orgCode: pilot.orgCode ?? currentOrg.orgCode,
+              orgName: pilot.orgName ?? currentOrg.orgName,
+            })
+          })
+          dfs(node?.children ?? [], currentOrg)
+        })
+      }
+
+      dfs(pilotData)
+      return map
+    }, [pilotData])
 
     const dockOptions = useMemo(
       () =>
@@ -312,6 +385,8 @@ const ScheduleModal: FC<PropsType> = memo(
         form.setFieldsValue({
           name: data.name,
           deviceIds: data.actionConfig?.deviceIds,
+          actionName: data.actionName,
+          pilotCode: data.pilotCode,
           landDeviceId: data.actionConfig?.landDeviceId,
           airlineIndex: airlineTemplateList?.findIndex(
             (e) =>
@@ -407,6 +482,7 @@ const ScheduleModal: FC<PropsType> = memo(
         type: values.type,
         taskType: values.taskType,
       }
+
       switch (values.type) {
         case 'SINGLE':
           submitData.startTime = values.executeTime.format(
@@ -440,6 +516,21 @@ const ScheduleModal: FC<PropsType> = memo(
               .sort((a, b) => a - b)
               .join(',')
           }
+      }
+
+      if (isShJhEnv) {
+        const pilotInfo = pilotInfoMap.get(values.pilotCode as string)
+        if (!pilotInfo) {
+          msgApi.error('请选择飞手')
+          return
+        }
+        Object.assign(submitData, {
+          pilotName: pilotInfo.pilotName,
+          orgCode: pilotInfo.orgCode,
+          orgName: pilotInfo.orgName,
+          flightType: 2,
+          actionName: values.actionName,
+        })
       }
       onConfirm?.(submitData)
     }
@@ -490,6 +581,19 @@ const ScheduleModal: FC<PropsType> = memo(
               >
                 <Input placeholder={t('common.form.pleaseInput')} />
               </Form.Item>
+              {isShJhEnv && (
+                <Form.Item
+                  label="行动类型"
+                  name="actionName"
+                  required
+                  rules={[{ required: true, message: '请选择行动类型' }]}
+                >
+                  <Select
+                    placeholder={t('common.form.pleaseSelect')}
+                    options={actionNameOptions}
+                  />
+                </Form.Item>
+              )}
               {/* <Form.Item
                 label={t('schedule.form.taskType.title')}
                 name="taskType"
@@ -547,6 +651,26 @@ const ScheduleModal: FC<PropsType> = memo(
                   mode={allowMultipleDevice ? 'multiple' : undefined}
                 />
               </Form.Item>
+
+              {isShJhEnv && (
+                <Form.Item
+                  label="飞手"
+                  name="pilotCode"
+                  rules={[{ required: true, message: '请选择飞手' }]}
+                >
+                  <TreeSelect
+                    treeData={treeData}
+                    placeholder="选择飞手"
+                    showSearch
+                    treeDefaultExpandAll
+                    allowClear
+                    treeNodeFilterProp="label"
+                    suffixIcon={
+                      <CaretDownFilled style={{ pointerEvents: 'none' }} />
+                    }
+                  />
+                </Form.Item>
+              )}
 
               {taskType === 'MULTI' && (
                 <Form.Item

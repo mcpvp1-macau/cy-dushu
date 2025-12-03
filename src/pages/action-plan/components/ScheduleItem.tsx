@@ -1,4 +1,4 @@
-import { Switch, Tooltip } from 'antd'
+import { Switch } from 'antd'
 import ScheduleModal from './ScheduleModal'
 import {
   deleteActionPlan,
@@ -16,10 +16,16 @@ import IconDelete from '@/assets/icons/jsx/IconDelete'
 import { dateOnly } from '@/constant/time-fmt'
 import CustomExpandIcon from '@/components/CustomExpandIcon'
 import TagItemV2 from '@/components/ui/TagItemV2'
-import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
+import {
+  CheckCircleOutlined,
+  CheckOutlined,
+  ClockCircleOutlined,
+  CloseCircleOutlined,
+  CloseOutlined,
+} from '@ant-design/icons'
 import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
-import LiqunTippy from '@/components/ui/LiqunTippy'
 import OverflowText from '@/components/ui/OverflowText'
+import globalConfig from '@/global/config'
 
 type PropsType = {
   data: API_ACTION_PLAN.domain.Plan
@@ -83,6 +89,10 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
     if (checked) {
       await stopActionPlan(data.id!)
     } else {
+      if (globalConfig.env === 'sh-jh' && data.isPass !== 1) {
+        msgApi.error('行动未报备审批通过，无法开启计划')
+        return
+      }
       await startActionPlan(data.id!)
     }
     queryClient.invalidateQueries({
@@ -122,6 +132,7 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
 
   const [expand, { toggle: toggleExpand }] = useBoolean(false)
   const [searchParams] = useSearchParams()
+  const isShJhEnv = globalConfig.env === 'sh-jh'
 
   return (
     <li
@@ -244,6 +255,27 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
               {t('wayline.title')}: {data.actionConfig?.templateName}
             </p>
           </div>
+          {isShJhEnv && (
+            <div className="mt-1 text-xs flex gap-1 items-center">
+              <span>报备状态:</span>
+              {data.isPass === 1 ? (
+                <div className="text-green-500 flex gap-1 items-center">
+                  <CheckOutlined />
+                  已报备
+                </div>
+              ) : data.isPass === 2 ? (
+                <div className="text-orange-500 flex gap-1 items-center">
+                  <ClockCircleOutlined />
+                  待审批
+                </div>
+              ) : (
+                <div className="text-red-500 flex gap-1 items-center">
+                  <CloseOutlined />
+                  未报备
+                </div>
+              )}
+            </div>
+          )}
           {expand && (
             <>
               <div className="mt-1 text-xs">

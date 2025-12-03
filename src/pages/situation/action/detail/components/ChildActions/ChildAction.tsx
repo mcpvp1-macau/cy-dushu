@@ -27,6 +27,7 @@ import {
 import { Button } from 'antd'
 import { isNil } from 'lodash'
 import IconRelayWayline from '@/assets/icons/jsx/IconRelayWayline'
+import globalConfig from '@/global/config'
 
 type PropsType = {
   data: API_ACTION_ITEM.domain.ActionItem
@@ -278,25 +279,27 @@ const ChildAction: FC<PropsType> = memo(
               </>
             )}
           </div>
-          <div className="flex gap-1">
-            <span>报备状态:</span>
-            {data.isPassed === 1 ? (
-              <div className="text-green-500 flex gap-1">
-                <CheckOutlined />
-                已报备
-              </div>
-            ) : data.isPassed === 2 ? (
-              <div className="text-orange-500 flex gap-1">
-                <ClockCircleOutlined />
-                待审批
-              </div>
-            ) : (
-              <div className="text-red-500 flex gap-1">
-                <CloseOutlined />
-                未报备
-              </div>
-            )}
-          </div>
+          {globalConfig.env === 'sh-jh' && (
+            <div className="flex gap-1">
+              <span>报备状态:</span>
+              {data.isPassed === 1 ? (
+                <div className="text-green-500 flex gap-1">
+                  <CheckOutlined />
+                  已报备
+                </div>
+              ) : data.isPassed === 2 ? (
+                <div className="text-orange-500 flex gap-1">
+                  <ClockCircleOutlined />
+                  待审批
+                </div>
+              ) : (
+                <div className="text-red-500 flex gap-1">
+                  <CloseOutlined />
+                  未报备
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </>
     )
