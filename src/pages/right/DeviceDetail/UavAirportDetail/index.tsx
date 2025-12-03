@@ -28,6 +28,7 @@ import UavDockConfig from './components/UavDockConfig'
 import AppCollapse from '@/components/AppCollapse'
 import globalConfig from '@/global/config'
 import useFlightReporting from '@/hooks/jinghang/useFlightReporting'
+import MaintenanceStatusSwitch from './components/MaintenanceStatusSwitch'
 
 type PropsType = BaseDeviceDetailProps
 
@@ -200,17 +201,24 @@ const UavAirportDetail: FC<PropsType> = memo(
     const isRightDetail = useIsRightDetail()
 
     const debugHeader = (
-      <div className="flex items-center gap-2">
-        {t('device.uavDock.remoteDebug.title')}
-        <Switch
-          size="small"
-          disabled={[1, 3, 4].includes(state['modeCode'])}
-          value={state['modeCode'] === 2}
-          onClick={() => {
-            postDeviceService('debugMode', {
-              action: state['modeCode'] === 0 ? 0 : 1,
-            })
-          }}
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          {t('device.uavDock.remoteDebug.title')}
+          <Switch
+            size="small"
+            disabled={[1, 3, 4].includes(state['modeCode'])}
+            value={state['modeCode'] === 2}
+            onClick={() => {
+              postDeviceService('debugMode', {
+                action: state['modeCode'] === 0 ? 0 : 1,
+              })
+            }}
+          />
+        </div>
+        <MaintenanceStatusSwitch
+          deviceId={deviceId}
+          productKey={productKey}
+          deviceTags={data.deviceTags}
         />
       </div>
     )
