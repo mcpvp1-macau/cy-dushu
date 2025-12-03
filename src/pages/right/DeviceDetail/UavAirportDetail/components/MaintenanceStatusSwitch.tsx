@@ -36,6 +36,8 @@ const MaintenanceStatusSwitch: FC<MaintenanceStatusSwitchProps> = memo(
       setHasMaintenanceStatusTag(Boolean(maintenanceStatusTagValue))
     }, [maintenanceStatusTagValue])
 
+    const queryClient = useQueryClient()
+
     const handleMaintenanceStatusChange = useMemoizedFn(
       async (checked: boolean) => {
         const targetValue = checked ? '维修中' : '运行中'
@@ -56,6 +58,9 @@ const MaintenanceStatusSwitch: FC<MaintenanceStatusSwitchProps> = memo(
           }
           setMaintenanceStatus(targetValue)
           msgApi.success('维修状态更新成功')
+          await queryClient.invalidateQueries({
+            queryKey: ['deviceDetail', deviceId],
+          })
         } catch (error) {
           msgApi.error('维修状态更新失败')
           throw error
