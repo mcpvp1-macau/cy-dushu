@@ -16,9 +16,12 @@ import Select from '@/components/AntdOverride/Select'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { CaretDownFilled } from '@ant-design/icons'
 import { pilotMock } from './pilot-mock'
+import { useDictOptions } from '@/store/useDict.store'
+import { DictEnum } from '@/enum/dict'
 
 type PropsType = {
   actionId: string
+  actionType: string
 }
 
 type PilotInfo = {
@@ -27,7 +30,7 @@ type PilotInfo = {
   orgName?: string
 }
 
-const AddSHJHTask: FC<PropsType> = memo(({ actionId }) => {
+const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
   const message = useAppMsg()
   const [open, setOpen] = useState(false)
   const [flightType, setFlightType] = useState<0 | 1>(0)
@@ -47,6 +50,12 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId }) => {
   } = useWaylineAndDeviceFormOptions(form)
 
   const uavStates = useMapDevicesStore((s) => s.uavStates)
+
+  const actionTypeOptions = useDictOptions(DictEnum.ACTION_TYPE)
+  const currentActionType = useMemo(
+    () => actionTypeOptions.find((e) => e.value === actionType),
+    [actionTypeOptions, actionType],
+  )
 
   const { data: pilotData = [] } = useQuery(
     {
@@ -122,6 +131,11 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId }) => {
       return
     }
 
+    if (!currentActionType) {
+      message.error('行动类型不存在')
+      return
+    }
+
     const selectedDeviceIds = Array.isArray(values.deviceIds)
       ? values.deviceIds
       : [values.deviceIds].filter(Boolean)
@@ -142,6 +156,7 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId }) => {
       pilotName: pilotInfo.pilotName,
       orgCode: pilotInfo.orgCode,
       orgName: pilotInfo.orgName,
+      actionType: currentActionType.label,
     }
 
     if (flightType === 0) {
