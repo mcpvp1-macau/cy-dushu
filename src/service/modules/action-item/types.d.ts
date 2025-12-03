@@ -84,6 +84,53 @@ declare namespace API_ACTION_ITEM {
       taskTplId?: string
       [property: string]: any
     }
+
+    interface PilotInfo {
+      /**
+       * 飞手名称
+       */
+      name?: string
+      /**
+       * 组织Code
+       */
+      orgCode?: string
+      /**
+       * 组织名称
+       */
+      orgName?: string
+      /**
+       * 飞手id
+       */
+      userCode?: string
+    }
+
+    /**
+     * 飞手组织树查询列表
+     *
+     * PilotTree
+     */
+    interface PilotTree {
+      /**
+       * 下级单位列表
+       */
+      children: PilotTree[]
+      /**
+       * 单位名称
+       */
+      name: string
+      /**
+       * 单位编号
+       */
+      orgCode: string
+      /**
+       * 父单位编码
+       */
+      parentCode: string
+      /**
+       * 飞手列表
+       */
+      pilots: PilotInfo[]
+    }
   }
   // ------------------ req ------------------
   namespace req {
@@ -142,6 +189,11 @@ declare namespace API_ACTION_ITEM {
       taskName: string
       id: number
       parameters: string
+    }
+
+    interface GetPilotTreeRes {
+      rows: API_ACTION_ITEM.domain.PilotTree[]
+      total: number
     }
   }
 }

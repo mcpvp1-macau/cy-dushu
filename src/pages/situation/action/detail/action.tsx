@@ -3,6 +3,7 @@ import { endAction } from '@/service/modules/action'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import AppCollapse from '@/components/AppCollapse'
 import AddTask from './components/AddTask'
+import AddSHJHTask from './components/AddSHJHTask'
 import KCYPModal from './components/kcyp/Modal'
 import useActionDetail from './context'
 import AppSpin from '@/components/AppSpin'
@@ -54,6 +55,9 @@ const PageActionDetailSub: FC<PropsType> = memo(
 
     const [enablePictureOnMap, setEnablePictureOnMap] = useState(false)
 
+    const TaskComponent =
+      globalConfig.env === 'sh-jh' ? AddSHJHTask : AddTask
+
     const items = useMemo(() => {
       if (!actionDetail?.type) {
         return []
@@ -91,7 +95,7 @@ const PageActionDetailSub: FC<PropsType> = memo(
                 eventId={actionDetail.eventId}
               />
             )}
-            <AddTask actionId={actionId!} />
+            <TaskComponent actionId={actionId!} />
           </div>
         ),
         children: (

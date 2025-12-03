@@ -18,7 +18,12 @@ import {
 } from '@/service/modules/action-item'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { shouldJson } from '@/utils/json'
-import { LoadingOutlined } from '@ant-design/icons'
+import {
+  CheckOutlined,
+  ClockCircleOutlined,
+  CloseOutlined,
+  LoadingOutlined,
+} from '@ant-design/icons'
 import { Button } from 'antd'
 import { isNil } from 'lodash'
 import IconRelayWayline from '@/assets/icons/jsx/IconRelayWayline'
@@ -168,6 +173,9 @@ const ChildAction: FC<PropsType> = memo(
 
     // 执行人员
     const pilotsStr = useMemo(() => {
+      if (data.pilotName) {
+        return data.pilotName
+      }
       const pilots = shouldJson(data.extra) || []
       if (Array.isArray(pilots)) {
         return pilots.map((p) => p.name).join(', ')
@@ -268,6 +276,25 @@ const ChildAction: FC<PropsType> = memo(
                   onClose={() => setRelayModalOpen(false)}
                 />
               </>
+            )}
+          </div>
+          <div className="flex gap-1">
+            <span>报备状态:</span>
+            {data.isPassed === 1 ? (
+              <div className="text-green-500 flex gap-1">
+                <CheckOutlined />
+                已报备
+              </div>
+            ) : data.isPassed === 2 ? (
+              <div className="text-orange-500 flex gap-1">
+                <ClockCircleOutlined />
+                待审批
+              </div>
+            ) : (
+              <div className="text-red-500 flex gap-1">
+                <CloseOutlined />
+                未报备
+              </div>
             )}
           </div>
         </div>

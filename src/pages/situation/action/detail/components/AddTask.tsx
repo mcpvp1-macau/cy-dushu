@@ -2,11 +2,9 @@ import IconPlus from '@/assets/icons/jsx/IconPlus'
 import IconButton from '@/components/ui/button/IconButton'
 import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
-import { emtpyArray } from '@/constant/data'
 import { DeviceEnum } from '@/enum/device'
 import { useWaylineAndDeviceFormOptions } from '@/hooks/device/useAirlineOptions'
-import { usePilotTreeData } from '@/hooks/jinghang/usePilots'
-import { createActionItem, getPilotTree } from '@/service/modules/action-item'
+import { createActionItem } from '@/service/modules/action-item'
 import { Form, FormInstance } from 'antd'
 import { TFunction } from 'i18next'
 import { pick } from 'lodash'
@@ -24,7 +22,6 @@ const createTaskConfig = (
   t: TFunction,
   airlineTemplateOptions: Option[],
   deviceOptions: Option[],
-  pilotTreeData: any[],
   allowMultipleDevice: boolean,
   form: FormInstance<{ deviceIds: string | string[] }>,
 ) =>
@@ -69,25 +66,6 @@ const createTaskConfig = (
         },
       ],
     },
-    ...(globalConfig.env === 'sh-jh'
-      ? [
-          {
-            label: t('action.detail.task.add.form.staff.label'),
-            name: 'feishou',
-            type: 'tree-select',
-            treeData: pilotTreeData,
-            otherProps: {
-              multiple: false,
-            },
-            rules: [
-              {
-                required: true,
-                message: '请选择飞手',
-              },
-            ],
-          },
-        ]
-      : []),
   ] as XFormItem[]
 
 /** 添加子任务 */
@@ -128,7 +106,6 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
 
     const data = {
       ...pick(val, ['actionItemName', 'deviceIds']),
-      pilotCode: val.feishou,
       actionId,
       deviceType,
     }
@@ -153,33 +130,16 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
     }
   })
 
-  const { data: pilotData = emtpyArray } = useQuery({
-    queryKey: ['pilotTree'],
-    queryFn: () => getPilotTree(),
-    select: (d) => d.data?.rows ?? emtpyArray,
-    enabled: globalConfig.env === 'sh-jh',
-  })
-
-  const { treeData } = usePilotTreeData(pilotData)
-
   const formItems = useMemo(
     () =>
       createTaskConfig(
         t,
         airlineOptions,
         deviceOptions,
-        treeData,
         allowMultipleDevice,
         form,
       ),
-    [
-      i18n.language,
-      airlineOptions,
-      deviceOptions,
-      allowMultipleDevice,
-      treeData,
-      form,
-    ],
+    [i18n.language, airlineOptions, deviceOptions, allowMultipleDevice, form],
   )
 
   return (

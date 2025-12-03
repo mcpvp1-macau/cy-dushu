@@ -54,5 +54,7 @@ export const updateActionItem = (data: any) => {
 
 /** 获取飞手树 */
 export const getPilotTree = () => {
-  return serverJingqi.get('/jinghang/pilots')
+  return serverJingqi.get<API_ACTION_ITEM.res.GetPilotTreeRes>(
+    '/jinghang/pilots',
+  )
 }
