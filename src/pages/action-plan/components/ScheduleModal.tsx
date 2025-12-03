@@ -318,34 +318,7 @@ const ScheduleModal: FC<PropsType> = memo(
       queryClient,
     )
 
-    const { treeData } = usePilotTreeData(pilotData as any[])
-
-    const pilotInfoMap = useMemo(() => {
-      const map = new Map<string, PilotInfo>()
-
-      const dfs = (
-        nodes: any[] = [],
-        parentOrg: { orgCode?: string; orgName?: string } = {},
-      ) => {
-        nodes.forEach((node) => {
-          const currentOrg = {
-            orgCode: node.orgCode ?? parentOrg.orgCode,
-            orgName: node.name ?? parentOrg.orgName,
-          }
-          node?.pilots?.forEach((pilot: any) => {
-            map.set(pilot.userCode, {
-              pilotName: pilot.name,
-              orgCode: pilot.orgCode ?? currentOrg.orgCode,
-              orgName: pilot.orgName ?? currentOrg.orgName,
-            })
-          })
-          dfs(node?.children ?? [], currentOrg)
-        })
-      }
-
-      dfs(pilotData)
-      return map
-    }, [pilotData])
+    const { treeData, pilotMap } = usePilotTreeData(pilotData as any[])
 
     const dockOptions = useMemo(
       () =>
@@ -519,7 +492,7 @@ const ScheduleModal: FC<PropsType> = memo(
       }
 
       if (isShJhEnv) {
-        const pilotInfo = pilotInfoMap.get(values.pilotCode as string)
+        const pilotInfo = pilotMap.get(values.pilotCode as string)
         if (!pilotInfo) {
           msgApi.error('请选择飞手')
           return
@@ -664,7 +637,7 @@ const ScheduleModal: FC<PropsType> = memo(
                     showSearch
                     treeDefaultExpandAll
                     allowClear
-                    treeNodeFilterProp="label"
+                    treeNodeFilterProp="title"
                     suffixIcon={
                       <CaretDownFilled style={{ pointerEvents: 'none' }} />
                     }

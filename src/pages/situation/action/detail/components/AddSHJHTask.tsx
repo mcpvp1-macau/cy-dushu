@@ -24,12 +24,6 @@ type PropsType = {
   actionType: string
 }
 
-type PilotInfo = {
-  pilotName: string
-  orgCode?: string
-  orgName?: string
-}
-
 const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
   const message = useAppMsg()
   const [open, setOpen] = useState(false)
@@ -75,34 +69,7 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
     queryClient,
   )
 
-  const { treeData } = usePilotTreeData(pilotData as any[])
-
-  const pilotInfoMap = useMemo(() => {
-    const map = new Map<string, PilotInfo>()
-
-    const dfs = (
-      nodes: any[] = [],
-      parentOrg: { orgCode?: string; orgName?: string } = {},
-    ) => {
-      nodes.forEach((node) => {
-        const currentOrg = {
-          orgCode: node.orgCode ?? parentOrg.orgCode,
-          orgName: node.name ?? parentOrg.orgName,
-        }
-        node?.pilots?.forEach((pilot: any) => {
-          map.set(pilot.userCode, {
-            pilotName: pilot.name,
-            orgCode: pilot.orgCode ?? currentOrg.orgCode,
-            orgName: pilot.orgName ?? currentOrg.orgName,
-          })
-        })
-        dfs(node?.children ?? [], currentOrg)
-      })
-    }
-
-    dfs(pilotData)
-    return map
-  }, [pilotData])
+  const { treeData, pilotMap } = usePilotTreeData(pilotData as any[])
 
   const resetForm = () => {
     form.resetFields()
@@ -125,7 +92,7 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
   const handleConfirm = useMemoizedFn(async () => {
     const values = await form.validateFields()
 
-    const pilotInfo = pilotInfoMap.get(values.pilotCode)
+    const pilotInfo = pilotMap.get(values.pilotCode)
     if (!pilotInfo) {
       message.error('请选择飞手')
       return
@@ -221,12 +188,7 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
         onClose={handleClose}
         onConfirm={handleConfirm}
       >
-        <Form
-          form={form}
-          layout="vertical"
-          requiredMark={false}
-          initialValues={{ flightType: 0 }}
-        >
+        <Form form={form} layout="vertical" initialValues={{ flightType: 0 }}>
           <Form.Item
             label={t('action.detail.task.add.form.name.label')}
             name="actionItemName"
@@ -327,6 +289,7 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
                   mode={allowMultipleDevice ? 'multiple' : undefined}
                   placeholder={t('action.detail.task.add.form.device.label')}
                   optionFilterProp="deviceName"
+                  showSearch
                 />
               </Form.Item>
             </>
@@ -343,7 +306,7 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
               showSearch
               treeDefaultExpandAll
               allowClear
-              treeNodeFilterProp="label"
+              treeNodeFilterProp="title"
               suffixIcon={<CaretDownFilled style={{ pointerEvents: 'none' }} />}
             />
           </Form.Item>
