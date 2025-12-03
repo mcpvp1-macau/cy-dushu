@@ -39,12 +39,6 @@ import { usePilotTreeData } from '@/hooks/jinghang/usePilots'
 import { CaretDownFilled } from '@ant-design/icons'
 import { pilotMock } from '@/pages/situation/action/detail/components/pilot-mock'
 
-type PilotInfo = {
-  pilotName: string
-  orgCode?: string
-  orgName?: string
-}
-
 const TipInfo = memo(() => {
   const { t } = useTranslation()
 
@@ -217,7 +211,7 @@ type FormValuesType = {
   breakPointEnable?: boolean
   landDeviceId?: string
   taskType: 'NORMAL' | 'MULTI'
-  actionName?: string
+  actionType?: string
   pilotCode?: string
 } & (
   | {
@@ -256,14 +250,14 @@ const ScheduleModal: FC<PropsType> = memo(
       (Form.useWatch('taskType', form) || data?.taskType) ?? 'NORMAL'
     const isShJhEnv = globalConfig.env === 'sh-jh'
 
-    const actionTypeOptions = useDictOptions(DictEnum.ACTION_TYPE)
-    const actionNameOptions = useMemo(
+    const _actionTypeOptions = useDictOptions(DictEnum.ACTION_TYPE)
+    const actionTypeOptions = useMemo(
       () =>
-        actionTypeOptions.map((item) => ({
+        _actionTypeOptions.map((item) => ({
           value: item.label,
           label: item.label,
         })),
-      [actionTypeOptions],
+      [_actionTypeOptions],
     )
 
     const {
@@ -358,7 +352,7 @@ const ScheduleModal: FC<PropsType> = memo(
         form.setFieldsValue({
           name: data.name,
           deviceIds: data.actionConfig?.deviceIds,
-          actionName: data.actionName,
+          actionType: data.actionType,
           pilotCode: data.pilotCode,
           landDeviceId: data.actionConfig?.landDeviceId,
           airlineIndex: airlineTemplateList?.findIndex(
@@ -502,7 +496,7 @@ const ScheduleModal: FC<PropsType> = memo(
           orgCode: pilotInfo.orgCode,
           orgName: pilotInfo.orgName,
           flightType: 2,
-          actionName: values.actionName,
+          actionType: values.actionType,
         })
       }
       onConfirm?.(submitData)
@@ -557,13 +551,13 @@ const ScheduleModal: FC<PropsType> = memo(
               {isShJhEnv && (
                 <Form.Item
                   label="行动类型"
-                  name="actionName"
+                  name="actionType"
                   required
                   rules={[{ required: true, message: '请选择行动类型' }]}
                 >
                   <Select
                     placeholder={t('common.form.pleaseSelect')}
-                    options={actionNameOptions}
+                    options={actionTypeOptions}
                   />
                 </Form.Item>
               )}
