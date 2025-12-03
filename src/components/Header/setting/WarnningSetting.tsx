@@ -24,7 +24,7 @@ const WarnningSetting = () => {
           ] as const,
           ['isAddMap', s.isAddMap, s.updateIsAddMap] as const,
           ['isHaveAvdio', s.isHaveAvdio, s.updateIsHaveAvdio] as const,
-          ['isHaveLight', s.isHaveLight, s.updateIsHaveLight] as const,
+          // ['isHaveLight', s.isHaveLight, s.updateIsHaveLight] as const,
         ].map(([key, value, updateFn]) => (
           <div key={key} className="flex gap-2 items-center">
             <span>{t(`setting.warnning.${key}`)}</span>
