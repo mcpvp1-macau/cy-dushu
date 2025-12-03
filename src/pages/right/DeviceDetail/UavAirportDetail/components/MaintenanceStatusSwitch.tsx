@@ -2,7 +2,7 @@ import { addDeviceTag, updateDeviceTag } from '@/service/modules/device-dushu'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { Switch } from 'antd'
 
-const MAINTENANCE_STATUS_TAG = 'MAINTENANCE_STATUS'
+export const MAINTENANCE_STATUS_TAG = 'MAINTENANCE_STATUS'
 
 type DeviceTag = {
   tagName: string
@@ -19,7 +19,8 @@ const MaintenanceStatusSwitch: FC<MaintenanceStatusSwitchProps> = memo(
   ({ deviceId, productKey, deviceTags }) => {
     const msgApi = useAppMsg()
     const [maintenanceStatus, setMaintenanceStatus] = useState('运行中')
-    const [hasMaintenanceStatusTag, setHasMaintenanceStatusTag] = useState(false)
+    const [hasMaintenanceStatusTag, setHasMaintenanceStatusTag] =
+      useState(false)
     const [maintenanceStatusLoading, setMaintenanceStatusLoading] =
       useState(false)
 

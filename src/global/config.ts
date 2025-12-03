@@ -115,6 +115,8 @@ class GlobalConfig {
 
   useRelayDevice: boolean = true
 
+  useMaintenanceStatusSwitch: boolean = false
+
   constructor(def: ConfigType) {
     Object.assign(this, def)
   }

@@ -28,7 +28,11 @@ import UavDockConfig from './components/UavDockConfig'
 import AppCollapse from '@/components/AppCollapse'
 import globalConfig from '@/global/config'
 import useFlightReporting from '@/hooks/jinghang/useFlightReporting'
-import MaintenanceStatusSwitch from './components/MaintenanceStatusSwitch'
+import MaintenanceStatusSwitch, {
+  MAINTENANCE_STATUS_TAG,
+} from './components/MaintenanceStatusSwitch'
+import IconMaintenance from '@/assets/icons/jsx/IconMaintenance'
+import OverflowText from '@/components/ui/OverflowText'
 
 type PropsType = BaseDeviceDetailProps
 
@@ -169,12 +173,15 @@ const UavAirportDetail: FC<PropsType> = memo(
 
     const header = useMemo(
       () => (
-        <div className="flex justify-between gap-2">
-          <div className="flex gap-2 items-center">
+        <div className="flex justify-between max-w-[210px] gap-2 overflow-hidden">
+          <div className="flex gap-2 items-center overflow-hidden">
             <DeviceIconAIRPORT className="device-detail-icon" />
-            <h6 className="text-hightlight text-base max-w-[224px] truncate">
+            {/* <h6 className="text-hightlight text-base flex-1 truncate">
+              
+            </h6> */}
+            <OverflowText className="text-hightlight truncate">
               {data.deviceName}
-            </h6>
+            </OverflowText>
           </div>
         </div>
       ),
@@ -200,6 +207,13 @@ const UavAirportDetail: FC<PropsType> = memo(
 
     const isRightDetail = useIsRightDetail()
 
+    const maintenanceStatusTagValue = useMemo(
+      () =>
+        data.deviceTags?.find((item) => item.tagName === MAINTENANCE_STATUS_TAG)
+          ?.tagValue,
+      [data.deviceTags],
+    )
+
     const debugHeader = (
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
@@ -215,11 +229,13 @@ const UavAirportDetail: FC<PropsType> = memo(
             }}
           />
         </div>
-        <MaintenanceStatusSwitch
-          deviceId={deviceId}
-          productKey={productKey}
-          deviceTags={data.deviceTags}
-        />
+        {globalConfig.useMaintenanceStatusSwitch && (
+          <MaintenanceStatusSwitch
+            deviceId={deviceId}
+            productKey={productKey}
+            deviceTags={data.deviceTags}
+          />
+        )}
       </div>
     )
 
@@ -234,6 +250,16 @@ const UavAirportDetail: FC<PropsType> = memo(
             {header}
             {state.healthInfo?.length && (
               <HealthInfoMini healthInfo={state.healthInfo} />
+            )}
+            {maintenanceStatusTagValue === '维修中' && (
+              <div
+                className={clsx(
+                  'text-xs flex items-center gap-1 text-red-500 whitespace-nowrap',
+                )}
+              >
+                <IconMaintenance />
+                {maintenanceStatusTagValue}
+              </div>
             )}
           </div>
         </CloseableHeader>

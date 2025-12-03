@@ -1,4 +1,4 @@
-import serverDushu from '@/service/servers/serverDushu'
+import serverControlCenter from '@/service/servers/serverControlCenter'
 
 export const addDeviceTag = (data: {
   deviceId: string
@@ -7,7 +7,7 @@ export const addDeviceTag = (data: {
   name: string
   value: string
 }) => {
-  return serverDushu.post('/mobileDevice/manage/device/tag/add', data)
+  return serverControlCenter.post('/manage/device/tag/add', data)
 }
 
 export const updateDeviceTag = (data: {
@@ -17,5 +17,5 @@ export const updateDeviceTag = (data: {
   name: string
   value: string
 }) => {
-  return serverDushu.post('/mobileDevice/manage/device/tag/update', data)
+  return serverControlCenter.post('/manage/device/tag/update', data)
 }
