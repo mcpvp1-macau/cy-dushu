@@ -121,7 +121,7 @@ const UavDetailFlightControl: FC<PropsType> = memo(() => {
   const leftBtns = useMemo(
     () =>
       [
-        ['takeoff', t('uav.takeOff.title'), true],
+        ['takeoff', t('uav.takeOff.title'), false],
         ['autoland', t('uav.land.title'), true],
         ['gohome', t('uav.return.title'), false],
       ] as const,
