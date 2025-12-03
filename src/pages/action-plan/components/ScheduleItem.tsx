@@ -90,7 +90,7 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
     if (checked) {
       await stopActionPlan(data.id!)
     } else {
-      if (globalConfig.env === 'sh-jh' && data.isPass !== 1) {
+      if (globalConfig.env === 'sh-jh' && data.isPassed !== 1) {
         msgApi.error('行动未报备审批通过，无法开启计划')
         return
       }
