@@ -7,8 +7,6 @@ type PropsType = {
 
 /** 告警通知 */
 const AlarmToast: FC<PropsType> = memo(({ data }) => {
-  const { t } = useTranslation()
-
   const source = data.device_name || data.deviceName || data.sn || '未知设备'
   const time = data.time || data.update_time
   const level = data.alarm_level || data.alarmLevel
@@ -16,11 +14,11 @@ const AlarmToast: FC<PropsType> = memo(({ data }) => {
 
   const alarmLevelLabelMap = useMemo(
     () => ({
-      Info: t('alarm.level.info'),
-      Warn: t('alarm.level.warn'),
-      Error: t('alarm.level.error'),
+      Info: '普通',
+      Warn: '警告',
+      Error: '严重',
     }),
-    [t],
+    [],
   )
 
   const alarmLevelLabel = level

@@ -118,9 +118,9 @@ const PageAlarms: FC = memo(() => {
 
   const alarmLevelTagMap = useMemo(
     () => ({
-      Info: { label: t('alarm.level.info'), type: 'default' },
-      Warn: { label: t('alarm.level.warn'), type: 'warning' },
-      Error: { label: t('alarm.level.error'), type: 'error' },
+      Info: { label: '普通', type: 'default' },
+      Warn: { label: '警告', type: 'warning' },
+      Error: { label: '严重', type: 'error' },
     }),
     [t],
   )
