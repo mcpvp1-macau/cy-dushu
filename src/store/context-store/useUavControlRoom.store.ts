@@ -81,6 +81,11 @@ type StateType = {
   links: API_DEVICE.domain.DeviceLink[]
   videoElement: HTMLVideoElement | null
   openVideoProjection: boolean
+  /** 飞行报备信息 */
+  flightReporting: {
+    flightAltitude?: number | null
+    returnAltitude?: number | null
+  }
 }
 
 type ActionsType = {
@@ -118,6 +123,8 @@ type ActionsType = {
   updateVideoElement: (videoElement: HTMLVideoElement | null) => void
   /** 发送命令 */
   updateOpenVideoProjection: (open: boolean) => void
+  /** 更新飞行报备信息 */
+  updateFlightReporting: (data: StateType['flightReporting']) => void
 }
 
 type WsSendersType = {
@@ -167,6 +174,7 @@ const createInitialState = () =>
     videoElement: null,
     openVideoProjection: false,
     takeOffHeight: null,
+    flightReporting: {},
   } as StateType)
 
 export const createUavControlRoomStore = (senders: WsSendersType) => {
@@ -336,6 +344,9 @@ export const createUavControlRoomStore = (senders: WsSendersType) => {
         },
         updateOpenVideoProjection: (open) => {
           set({ openVideoProjection: open }, false, 'updateOpenVideoProjection')
+        },
+        updateFlightReporting: (data) => {
+          set({ flightReporting: data ?? {} }, false, 'updateFlightReporting')
         },
       }),
       {

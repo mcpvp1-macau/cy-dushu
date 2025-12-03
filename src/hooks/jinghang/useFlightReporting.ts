@@ -18,8 +18,21 @@ const useFlightReporting = (deviceId?: string) => {
 
   const isCanFly = globalConfig.useFlightReporting ? data?.isCanFly ?? true : true
   const reason = globalConfig.useFlightReporting ? data?.reason : ''
+  const flightAltitudeLimit = globalConfig.useFlightReporting
+    ? data?.flightAltitude
+    : undefined
+  const returnAltitudeLimit = globalConfig.useFlightReporting
+    ? data?.returnAltitude
+    : undefined
 
-  return { data, isCanFly, reason, ...rest }
+  return {
+    data,
+    isCanFly,
+    reason,
+    flightAltitudeLimit,
+    returnAltitudeLimit,
+    ...rest,
+  }
 }
 
 export default useFlightReporting

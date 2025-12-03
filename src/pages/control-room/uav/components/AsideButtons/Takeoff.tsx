@@ -5,6 +5,7 @@ import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.
 import { usePostDeviceServiceHandler } from '@/hooks/device/usePostDeviceService'
 import { getDeviceDetail } from '@/service/modules/device'
 import ServiceButton from './ServiceButton'
+import globalConfig from '@/global/config'
 
 type PropsType = {
   postServiceFn: (identifier: string, data?: any) => Promise<void>
@@ -18,6 +19,12 @@ const Takeoff: FC<PropsType> = memo(
   ({ postServiceFn, canFly, disabledReason, loading }) => {
     const { t } = useTranslation()
     const isLimitedFly = useUavControlRoomStore((s) => s.isLimitedFly)
+    const flightAltitudeLimit = useUavControlRoomStore(
+      (s) => s.flightReporting.flightAltitude,
+    )
+    const returnAltitudeLimit = useUavControlRoomStore(
+      (s) => s.flightReporting.returnAltitude,
+    )
     const hasService = useDeviceDetailStore((s) => s.serviceHave['takeoff'])
 
     const parentId = useDeviceDetailStore((s) => s.deviceDetail?.parentId)
@@ -45,6 +52,16 @@ const Takeoff: FC<PropsType> = memo(
 
     const [open, { setTrue, setFalse }] = useBoolean(false)
 
+    const maxFlightAltitude = useMemo(
+      () => flightAltitudeLimit ?? globalConfig.uavHeightLimit,
+      [flightAltitudeLimit],
+    )
+
+    const maxReturnAltitude = useMemo(
+      () => returnAltitudeLimit ?? globalConfig.uavHeightLimit,
+      [returnAltitudeLimit],
+    )
+
     return (
       <>
         <ServiceButton
@@ -69,7 +86,7 @@ const Takeoff: FC<PropsType> = memo(
                 otherProps: {
                   addonAfter: <div className="mx-1">m</div>,
                   min: 1,
-                  max: globalConfig.uavHeightLimit,
+                  max: maxFlightAltitude,
                 },
               },
               {
@@ -79,7 +96,7 @@ const Takeoff: FC<PropsType> = memo(
                 otherProps: {
                   addonAfter: <div className="mx-1">m</div>,
                   min: 50,
-                  max: globalConfig.uavHeightLimit,
+                  max: maxReturnAltitude,
                 },
               },
             ]}

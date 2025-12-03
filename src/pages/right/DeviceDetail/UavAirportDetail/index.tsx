@@ -50,9 +50,21 @@ const UavAirportDetail: FC<PropsType> = memo(
       isCanFly: canTakeoff,
       reason: cannotTakeoffReason,
       isLoading: isLoadingFlightReporting,
+      flightAltitudeLimit,
+      returnAltitudeLimit,
     } = useFlightReporting(childDeviceId)
 
     const { t, i18n } = useTranslation()
+
+    const maxFlightAltitude = useMemo(
+      () => flightAltitudeLimit ?? globalConfig.uavHeightLimit,
+      [flightAltitudeLimit],
+    )
+
+    const maxReturnAltitude = useMemo(
+      () => returnAltitudeLimit ?? globalConfig.uavHeightLimit,
+      [returnAltitudeLimit],
+    )
 
     const items = useMemo(
       () =>
@@ -70,7 +82,7 @@ const UavAirportDetail: FC<PropsType> = memo(
             otherProps: {
               style: { width: '100%' },
               min: 1,
-              max: globalConfig.uavHeightLimit,
+              max: maxFlightAltitude,
             },
           },
           {
@@ -80,11 +92,11 @@ const UavAirportDetail: FC<PropsType> = memo(
             otherProps: {
               style: { width: '100%' },
               min: 50,
-              max: globalConfig.uavHeightLimit,
+              max: maxReturnAltitude,
             },
           },
         ] as XFormItem[],
-      [t],
+      [maxFlightAltitude, maxReturnAltitude, t],
     )
 
     const [state, setState] = useState<Record<string, any>>({})

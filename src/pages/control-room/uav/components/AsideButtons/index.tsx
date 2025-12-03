@@ -1,4 +1,5 @@
 import { Button } from 'antd'
+import { useEffect } from 'react'
 import ControlPower from './ControlPower'
 import IconLanding from '@/assets/icons/jsx/uav/IconLanding'
 import IconBoxSelect from '@/assets/icons/jsx/uav/IconBoxSelect'
@@ -24,6 +25,9 @@ const AsideButtons: FC<PropsType> = memo(() => {
   const hasControlPower = useUavControlRoomStore((s) => s.hasControlPower)
   const serviceHave = useDeviceDetailStore((s) => s.serviceHave)
   const isLimitedFly = useUavControlRoomStore((s) => s.isLimitedFly)
+  const updateFlightReporting = useUavControlRoomStore(
+    (s) => s.updateFlightReporting,
+  )
 
   const canBoxSelect =
     !isLimitedFly && hasControlPower && serviceHave['gimbalToPoint']
@@ -45,7 +49,16 @@ const AsideButtons: FC<PropsType> = memo(() => {
     isCanFly,
     reason: cannotFlyReason,
     isLoading: isLoadingFlightReporting,
+    flightAltitudeLimit,
+    returnAltitudeLimit,
   } = useFlightReporting(deviceId)
+
+  useEffect(() => {
+    updateFlightReporting({
+      flightAltitude: flightAltitudeLimit ?? null,
+      returnAltitude: returnAltitudeLimit ?? null,
+    })
+  }, [flightAltitudeLimit, returnAltitudeLimit, updateFlightReporting])
 
   const postSerivce = usePostDeviceService(productKey, deviceId)
 

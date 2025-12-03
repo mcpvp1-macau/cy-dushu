@@ -11,6 +11,7 @@ import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import useFlightAreaStore from '@/store/map/useFlightArea.store'
 import * as turf from '@turf/turf'
 import { shouldJson } from '@/utils/json'
+import globalConfig from '@/global/config'
 
 type PropsType = {
   position: [number, number, number]
@@ -20,10 +21,26 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
   const uavLon = useUavControlRoomStore((s) => s.state.longitude)
   const uavLat = useUavControlRoomStore((s) => s.state.latitude)
   const speed = useUavControlRoomStore((s) => s.flyParams.flySpeed)
+  const flightAltitudeLimit = useUavControlRoomStore(
+    (s) => s.flightReporting.flightAltitude,
+  )
+  const returnAltitudeLimit = useUavControlRoomStore(
+    (s) => s.flightReporting.returnAltitude,
+  )
 
   const updatePointFly = useUavControlRoomStore((s) => s.updatePointFly)
 
   const { t } = useTranslation()
+
+  const maxFlightAltitude = useMemo(
+    () => flightAltitudeLimit ?? globalConfig.uavHeightLimit,
+    [flightAltitudeLimit],
+  )
+
+  const maxReturnAltitude = useMemo(
+    () => returnAltitudeLimit ?? globalConfig.uavHeightLimit,
+    [returnAltitudeLimit],
+  )
 
   const distance = useMemo(() => {
     if (!uavLon || !uavLat) {
@@ -199,7 +216,7 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
               otherProps: {
                 addonAfter: <div className="px-1">m</div>,
                 min: 1,
-                max: globalConfig.uavHeightLimit,
+                max: maxFlightAltitude,
               },
             },
             {
@@ -227,7 +244,7 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
               otherProps: {
                 addonAfter: <div className="px-1">m</div>,
                 min: 50,
-                max: globalConfig.uavHeightLimit,
+                max: maxReturnAltitude,
               },
             },
           ]}
