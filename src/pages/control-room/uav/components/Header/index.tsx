@@ -20,7 +20,7 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { createPortal } from 'react-dom'
 import IconButtonWithDropDownDialog from '@/components/ui/button/IconButtonWithDropDownDialog'
 import { emtpyObject } from '@/constant/data'
-import { BugOutlined } from '@ant-design/icons'
+import { BugOutlined, WarningOutlined } from '@ant-design/icons'
 import { DeviceEnum } from '@/enum/device'
 import QuickCreateAction from '@/components/device/QuickCreateAction'
 
@@ -222,7 +222,8 @@ const Battery = memo(() => {
                 {battery?.batteries?.length ? (
                   battery.batteries.map((item, index) => (
                     <p key={item?.sn ?? index}>
-                      电池{(item?.index ?? index) + 1}: {item?.loop_times ?? '-'}
+                      电池{(item?.index ?? index) + 1}:{' '}
+                      {item?.loop_times ?? '-'}
                     </p>
                   ))
                 ) : (
@@ -238,13 +239,21 @@ const Battery = memo(() => {
               <p>强制降落阈值</p>
               <p>{formatPercent(battery?.landing_power)}</p>
             </li>
+            <li>
+              <WarningOutlined className="text-yellow-500 mr-1" />
+              阈值动态计算非固定
+            </li>
           </ul>
         </div>
       )}
     >
       <I
         l={<IconBattery />}
-        v={<span style={{ color: eleColor }}>{formatPercent(batteryElectricity)}</span>}
+        v={
+          <span style={{ color: eleColor }}>
+            {formatPercent(batteryElectricity)}
+          </span>
+        }
         t={t('common.electricity')}
       />
     </IconButtonWithDropDownDialog>
@@ -372,13 +381,7 @@ const LinkWorkModeStatus = memo(() => {
     return null
   }
 
-  return (
-    <I
-      t={'4G图传'}
-      l="Link"
-      v={is4GEnhanced ? '4G+' : 'SDR'}
-    />
-  )
+  return <I t={'4G图传'} l="Link" v={is4GEnhanced ? '4G+' : 'SDR'} />
 })
 
 const ControlRoomUavHeader: FC = memo(() => {
