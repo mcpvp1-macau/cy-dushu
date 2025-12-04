@@ -62,6 +62,18 @@ const Takeoff: FC<PropsType> = memo(
       [returnAltitudeLimit],
     )
 
+    const initialValues = useMemo(
+      () => ({
+        ...(flightAltitudeLimit === undefined || flightAltitudeLimit === null
+          ? {}
+          : { height: flightAltitudeLimit }),
+        ...(returnAltitudeLimit === undefined || returnAltitudeLimit === null
+          ? {}
+          : { gohomeAltitude: returnAltitudeLimit }),
+      }),
+      [flightAltitudeLimit, returnAltitudeLimit],
+    )
+
     return (
       <>
         <ServiceButton
@@ -75,8 +87,11 @@ const Takeoff: FC<PropsType> = memo(
 
         {open && (
           <FormModal
-            title="一键起飞"
-            localInitialValues={{ key: 'uav_takeoff' }}
+          title="一键起飞"
+          initialValues={initialValues}
+          localInitialValues={
+            !globalConfig.useFlightReporting ? { key: 'uav_takeoff' } : undefined
+          }
             items={[
               {
                 label: '起飞高度',

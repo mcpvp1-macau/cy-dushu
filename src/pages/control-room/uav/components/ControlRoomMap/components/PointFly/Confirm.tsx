@@ -42,6 +42,19 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
     [returnAltitudeLimit],
   )
 
+  const initialValues = useMemo(
+    () => ({
+      ...(flightAltitudeLimit === undefined || flightAltitudeLimit === null
+        ? {}
+        : { height: flightAltitudeLimit }),
+      ...(speed === undefined || speed === null ? {} : { speed }),
+      ...(returnAltitudeLimit === undefined || returnAltitudeLimit === null
+        ? {}
+        : { gohomeAltitude: returnAltitudeLimit }),
+    }),
+    [flightAltitudeLimit, speed, returnAltitudeLimit],
+  )
+
   const distance = useMemo(() => {
     if (!uavLon || !uavLat) {
       return 0
@@ -52,7 +65,7 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
     ])
   }, [uavLon, uavLat, position])
 
-  const predicateTime = distance / speed / 60
+  const predicateTime = distance / (speed ?? 10) / 60
 
   const postService = usePostDeviceService()
 
@@ -196,10 +209,10 @@ const UavPointFlyConfirm: FC<PropsType> = memo(({ position }) => {
       {paramsOpen && (
         <FormModal
           title={t('controlRoom.uav.service.tapToFly.title')}
-          initialValues={{ height: 100, speed: 10 }}
-          localInitialValues={{
-            key: 'uav_point_fly',
-          }}
+          initialValues={initialValues}
+          localInitialValues={
+            !globalConfig.useFlightReporting ? { key: 'uav_point_fly' } : undefined
+          }
           items={[
             {
               label: t('controlRoom.uav.targetAltitude.title'),
