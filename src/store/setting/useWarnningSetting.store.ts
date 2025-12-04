@@ -5,12 +5,16 @@ type StateType = {
   isAddMap: boolean
   isHaveAvdio: boolean
   isHaveLight: boolean
+  isAllowEventNotification: boolean
+  isAllowAlarmNotification: boolean
 }
 
 type ActionsType = {
   updateIsAddMap: (data: boolean) => void
   updateIsHaveAvdio: (data: boolean) => void
   updateIsHaveLight: (data: boolean) => void
+  updateIsAllowEventNotification: (data: boolean) => void
+  updateIsAllowAlarmNotification: (data: boolean) => void
 }
 
 const useWarnningSettingStore = create<StateType & ActionsType>()(
@@ -20,6 +24,8 @@ const useWarnningSettingStore = create<StateType & ActionsType>()(
         isAddMap: true,
         isHaveAvdio: true,
         isHaveLight: true,
+        isAllowEventNotification: true,
+        isAllowAlarmNotification: true,
         updateIsAddMap: (data) => {
           set(
             {
@@ -40,6 +46,22 @@ const useWarnningSettingStore = create<StateType & ActionsType>()(
           set(
             {
               isHaveLight: data,
+            },
+            false,
+          )
+        },
+        updateIsAllowEventNotification: (data) => {
+          set(
+            {
+              isAllowEventNotification: data,
+            },
+            false,
+          )
+        },
+        updateIsAllowAlarmNotification: (data) => {
+          set(
+            {
+              isAllowAlarmNotification: data,
             },
             false,
           )

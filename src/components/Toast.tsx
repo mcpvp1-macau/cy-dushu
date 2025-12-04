@@ -16,6 +16,7 @@ const Toast: FC<PropsType> = memo(() => {
           zIndex: 1000,
         }}
         gap={12}
+        visibleToasts={3}
       />
     ),
     [],

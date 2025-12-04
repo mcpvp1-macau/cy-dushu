@@ -268,8 +268,8 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
     }
   })
 
-  // 事件推送 ------------------------
-  const handleEventPush = useHandlePushEvent()
+  // 事件/告警推送 ------------------------
+  const { handleEventPush, handleAlarmPush } = useHandlePushEvent()
 
   // 日志 ----------------------------
   const updateNewLog = useGlobalWsStore((s) => s.updateNewLog)
@@ -390,6 +390,9 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         break
       case 'EVENT_PUSH':
         handleEventPush(message)
+        break
+      case 'ALARMS':
+        handleAlarmPush(message)
         break
       case 'ACTION_LOG':
         handleActionLog(message)

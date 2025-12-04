@@ -1,8 +1,11 @@
 import { useEventData } from '@/store/event/useEvent.store'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
-import { useThrottleFn } from 'ahooks'
-import { globalToastEmitter } from '../GlobalToast'
 import useWarnningSettingStore from '@/store/setting/useWarnningSetting.store'
+import { shouldJson } from '@/utils/json'
+import { useMemoizedFn, useThrottleFn } from 'ahooks'
+import { useRef } from 'react'
+import { globalToastEmitter } from '../GlobalToast'
+import AlarmToast from './AlarmToast'
 import EventToast from './EventToast'
 
 const useHandlePushEvent = () => {
@@ -16,37 +19,30 @@ const useHandlePushEvent = () => {
   )
   const updateNewEvent = useGlobalWsStore((s) => s.updateNewEvent)
 
+  const audioContext = useRef<AudioContext | null>(null)
   const audioBuffer = useRef<AudioBuffer | null>(null)
   const isPlayingAudio = useRef(false)
 
-  const handleEventPush = useMemoizedFn(async (message: any) => {
-    run()
-    updateNewEvent(message)
-
-    const newEvent = message
-    globalToastEmitter.emit('notifyCustom', {
-      id: 'global-event',
-      element: <EventToast data={newEvent} />,
-    })
-
-    // 播放声音 -------------------------------------------------------------------
+  const playWarningAudio = useMemoizedFn(async () => {
     const isHaveAudio = useWarnningSettingStore.getState().isHaveAvdio
     if (!isHaveAudio) {
       return
     }
 
-    const audioCtx = new AudioContext()
+    if (!audioContext.current) {
+      audioContext.current = new AudioContext()
+    }
 
     if (!audioBuffer.current) {
       const resp = await fetch(globalConfig.warnAudioUrl || '/images/4611.wav')
       const buffer = await resp.arrayBuffer()
-      audioBuffer.current = await audioCtx.decodeAudioData(buffer)
+      audioBuffer.current = await audioContext.current.decodeAudioData(buffer)
     }
 
-    if (audioBuffer.current && !isPlayingAudio.current) {
-      const source = audioCtx.createBufferSource()
+    if (audioContext.current && audioBuffer.current && !isPlayingAudio.current) {
+      const source = audioContext.current.createBufferSource()
       source.buffer = audioBuffer.current
-      source.connect(audioCtx.destination)
+      source.connect(audioContext.current.destination)
       isPlayingAudio.current = true
       source.start(0)
       source.onended = () => {
@@ -56,7 +52,48 @@ const useHandlePushEvent = () => {
     }
   })
 
-  return handleEventPush
+  const handleEventPush = useMemoizedFn(async (message: any) => {
+    run()
+    updateNewEvent(message)
+
+    const newEvent = message
+    const isAllowEventNotification =
+      useWarnningSettingStore.getState().isAllowEventNotification
+    if (isAllowEventNotification) {
+      globalToastEmitter.emit('notifyCustom', {
+        id: 'global-event',
+        element: <EventToast data={newEvent} />,
+      })
+    }
+
+    await playWarningAudio()
+  })
+
+  const handleAlarmPush = useMemoizedFn(async (message: any) => {
+    const alarm = shouldJson(message) ?? message
+
+    if (!alarm) {
+      return
+    }
+
+    const isAllowAlarmNotification =
+      useWarnningSettingStore.getState().isAllowAlarmNotification
+    if (!isAllowAlarmNotification) {
+      return
+    }
+
+    const alarmId =
+      alarm.alarm_id || alarm.alarmId || alarm.msg || alarm.device_name || alarm.deviceName
+
+    globalToastEmitter.emit('notifyCustom', {
+      id: alarmId || `alarm-${Date.now()}`,
+      element: <AlarmToast data={alarm} />,
+    })
+
+    await playWarningAudio()
+  })
+
+  return { handleAlarmPush, handleEventPush }
 }
 
 export default useHandlePushEvent

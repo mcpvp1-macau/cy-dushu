@@ -13,6 +13,7 @@ import IconDownStraight from '@/assets/icons/jsx/IconDownStraight'
 import IconUpStraight from '@/assets/icons/jsx/IconUpStraight'
 import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 import { useDeviceDetailStore } from '../../../hooks/useDeviceDetail.store'
+import useFlightReporting from '@/hooks/jinghang/useFlightReporting'
 
 type PropsType = unknown
 
@@ -21,6 +22,13 @@ const UavDetailFlightControl: FC<PropsType> = memo(() => {
   const controlTag = useUavControlRoomStore((s) => s.state.controlTag)
 
   const uuid = useUavControlRoomStore((s) => s.uuid)
+
+  const deviceId = useDeviceDetailStore((s) => s.deviceId)
+  const {
+    isCanFly: canTakeoff,
+    reason: cannotTakeoffReason,
+    isLoading: isLoadingFlightReporting,
+  } = useFlightReporting(deviceId)
 
   const [downKey, setDownKey] = useState<Record<string, number> | null>(null)
 
@@ -113,7 +121,7 @@ const UavDetailFlightControl: FC<PropsType> = memo(() => {
   const leftBtns = useMemo(
     () =>
       [
-        ['takeoff', t('uav.takeOff.title'), true],
+        ['takeoff', t('uav.takeOff.title'), false],
         ['autoland', t('uav.land.title'), true],
         ['gohome', t('uav.return.title'), false],
       ] as const,
@@ -123,18 +131,32 @@ const UavDetailFlightControl: FC<PropsType> = memo(() => {
   return (
     <div className="p-3 flex items-center justify-between gap-3">
       <div className="flex flex-col gap-3 w-[90px]">
-        {leftBtns.map(([service, label, needControl]) => (
-          <Button
-            key={service}
-            type="primary"
-            block
-            size="small"
-            disabled={(!canControl && needControl) || !serviceHave[service]}
-            onClick={() => postService(service)}
-          >
-            {label}
-          </Button>
-        ))}
+        {leftBtns.map(([service, label, needControl]) => {
+          const disabled =
+            (!canControl && needControl) ||
+            !serviceHave[service] ||
+            (service === 'takeoff' && !canTakeoff)
+
+          const tooltip =
+            service === 'takeoff' && !canTakeoff
+              ? cannotTakeoffReason
+              : undefined
+
+          return (
+            <Tooltip key={service} title={tooltip}>
+              <Button
+                type="primary"
+                block
+                size="small"
+                disabled={disabled}
+                loading={service === 'takeoff' && isLoadingFlightReporting}
+                onClick={() => postService(service)}
+              >
+                {label}
+              </Button>
+            </Tooltip>
+          )
+        })}
       </div>
 
       {/* 左边控制区 */}

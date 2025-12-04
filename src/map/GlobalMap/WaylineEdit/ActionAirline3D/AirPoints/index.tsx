@@ -37,15 +37,11 @@ const AirPoints: FC<PropsType> = () => {
       <Path data={airpointsConfig} deltaHeight={deltaHeight} />
       {
         // 起飞点与第一个航点之间的连线
-        takeOffRefPoint && airpointsConfig[0] && (
+        takeOffRefPoint && points[0] && (
           <HomePathLine
             key={`home-${airpointsConfig[0].xid}`}
             homePoint={takeOffRefPoint}
-            point1={[
-              airpointsConfig[0].pointX,
-              airpointsConfig[0].pointY,
-              airpointsConfig[0].pointZ + deltaHeight,
-            ]}
+            point1={[points[0].pointX, points[0].pointY, points[0].pointZ]}
             deltaHeight={deltaHeight}
           />
         )

@@ -7,6 +7,8 @@ import IconBack from '@/assets/icons/jsx/IconBack'
 import LatestTask from '@/components/device/LatestTask'
 import { DeviceEnum } from '@/enum/device'
 import QuickCreateAction from '@/components/device/QuickCreateAction'
+import { Button } from 'antd'
+import { createSearchParams, useNavigate } from 'react-router-dom'
 
 const useS = useRebotDogControlRoomStore
 
@@ -75,6 +77,18 @@ const HeaderLeft = memo(() => {
 const ControlRoomRebotDogHeader: FC = memo(() => {
   const appHeader = document.getElementById('app-header-center')
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
+  const navigate = useNavigate()
+
+  const handleEnterCluster = useMemoizedFn(() => {
+    if (!deviceId) {
+      return
+    }
+
+    navigate({
+      pathname: '/control-room/rebot-dog/cluster',
+      search: createSearchParams({ currentDogs: deviceId }).toString(),
+    })
+  })
 
   const h = (
     <header className="h-7 flex justify-between gap-3 px-3 items-center text-sm">
@@ -90,7 +104,11 @@ const ControlRoomRebotDogHeader: FC = memo(() => {
           />
         </ul>
       </section>
-      <section></section>
+      <section>
+        <Button size="small" type="primary" onClick={handleEnterCluster}>
+          机器狗集群驾驶舱
+        </Button>
+      </section>
     </header>
   )
 

@@ -42,6 +42,13 @@ export const endAction = (actionId: string) => {
   })
 }
 
+/** 行动终止前检查 */
+export const checkEndAction = (actionId: string) => {
+  return serverJingqi.get('/action/stop/check', {
+    params: { actionId },
+  })
+}
+
 /** 更新行动 */
 export const updAction = (data: any) => {
   return serverJingqi.post('/action/update', data)
@@ -79,4 +86,9 @@ export const updAIResult = (data: {
 /** 事故照片检测结果删除 */
 export const delAIResult = (actionId: string, ids: string[]) => {
   return serverJingqi.post('/result/delete', { actionId, ids })
+}
+
+/** 删除行动 */
+export const deleteAction = (actionId: string | number) => {
+  return serverJingqi.post(`/action/delete/${actionId}`)
 }

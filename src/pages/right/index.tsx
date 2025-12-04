@@ -54,6 +54,9 @@ const Right: FC<PropsType> = memo(() => {
     if (toasts.length === 0) {
       return 0
     }
+    if (toasts[0].id !== 'global-event') {
+      return 88 + Math.min(3, toasts.length) * 10
+    }
     return 70 + Math.min(3, toasts.length) * 10
   }, [toasts.length])
 

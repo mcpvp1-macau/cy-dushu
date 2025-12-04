@@ -1,4 +1,4 @@
-import { formatThrowError, shouldShowError } from './interceptors'
+import { shouldShowError } from './interceptors'
 import LiqunAxios from './liqunAxios'
 
 const serverDitingMCP = new LiqunAxios<'ditingTanqi'>({

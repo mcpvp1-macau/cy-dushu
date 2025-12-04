@@ -1,28 +1,51 @@
-import { pick } from 'lodash'
+import { GetProps, TreeSelect } from 'antd'
 
-export const usePilotTreeData = (data: any[]) => {
-  const pilotMap = useRef<Map<string, any> | null>(null)
-  const treeData = useMemo(() => {
-    pilotMap.current = new Map()
-    if (!data.length) return []
-    const dfs = (data: any) => {
-      data.label = data.name
-      data.value = `orgCode-${data.orgCode}`
-      data.selectable = false
-      for (const child of data?.children ?? []) {
-        dfs(child)
+type TreeNode = NonNullable<GetProps<typeof TreeSelect>['treeData']>[number]
+
+type PilotInfo = {
+  pilotName: string
+  orgCode: string
+  orgName: string
+}
+
+export const usePilotTreeData = (data: API_ACTION_ITEM.domain.PilotTree[]) => {
+  const result = useMemo(() => {
+    const map = new Map<string, PilotInfo>()
+    if (!data.length) {
+      return {
+        treeData: [],
+        pilotMap: map,
       }
-      for (const pilot of data?.pilots ?? []) {
-        data.children.push({
-          value: pilot.userCode,
-          label: pilot.name,
-        })
-        pilotMap.current!.set(pilot.userCode, pick(pilot, ['name', 'userCode']))
-      }
-      return data
     }
-    return data.map(dfs)
+
+    const dfs = (data: API_ACTION_ITEM.domain.PilotTree): TreeNode => {
+      const node = {} as TreeNode
+      node.title = data.name
+      node.selectable = false
+      node.value = data.orgCode
+
+      node.children = data?.children?.map(dfs) || []
+      node.children = node.children.concat(
+        data?.pilots?.map((pilot) => {
+          map.set(pilot.userCode!, {
+            pilotName: pilot.name!,
+            orgCode: data.orgCode,
+            orgName: data.name,
+          })
+          return {
+            value: pilot.userCode,
+            title: pilot.name,
+          }
+        }) || [],
+      )
+      return node
+    }
+
+    return {
+      treeData: data.map(dfs),
+      pilotMap: map,
+    }
   }, [data])
 
-  return { treeData, pilotMap }
+  return result
 }

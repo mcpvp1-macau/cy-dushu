@@ -31,6 +31,8 @@ setting:
       title: 一键清理
   warnning:
     title: 告警
+    isAllowEventNotification: 允许事件通知
+    isAllowAlarmNotification: 允许告警通知
     isAddMap: 告警上图
     isHaveAvdio: 声音报警
     isHaveLight: 光信号报警
@@ -366,6 +368,9 @@ action:
       title: 行动记录
     end:
       title: 结束行动
+      forceConfirm:
+        title: 设备正在使用中!
+        description: 是否强制停止任务
     aiResult:
       empty:
         title: 暂无结果
@@ -576,6 +581,7 @@ common:
   refDevLoc: 参考设备位置
   options: 选项
   export: 导出
+  resolve: 处理
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索
@@ -662,6 +668,43 @@ actionRecord:
       title: 行动名称
   signalDownload:
     title: 信号下载
+  delete:
+    confirmTitle: 删除行动
+    confirmContent: 是否删除行动「{{name}}」？
+alarm:
+  title: 告警
+  filters:
+    processStatus: 处理状态
+    deviceName: 设备名称
+    sn: 设备SN
+  status:
+    processed: 已处理
+    unprocessed: 未处理
+  level:
+    info: 提示
+    warn: 警告
+    error: 错误
+  table:
+    time: 告警时间
+    deviceName: 设备名称
+    sn: 设备SN
+    alarmLevel: 告警级别
+    msg: 告警信息
+    processStatus: 处理状态
+    processUsername: 处理人
+    processTime: 处理时间
+    processMsg: 处理备注
+  delete:
+    batch: 批量删除
+    confirmTitle: 确认删除告警
+    confirmContent: 是否删除选中的 {{count}} 条告警？
+    success: 删除成功
+  edit:
+    title: 处理告警
+    processMsg: 处理意见
+    processMsgPlaceholder: 请输入处理意见（最多100字）
+    processMsgRequired: 请输入处理意见
+    success: 保存成功
 resource:
   title: 资源
   table:
@@ -756,6 +799,9 @@ wayline:
       tooltip: 相邻两条航线的拍摄视野重叠部分的比例，云台默认正射角度
     relativeHeight:
       tooltip: 相对起飞点高度
+      title: 相对高度
+    altitudeHeight:
+      title: 海拔高度
   waylinePoint:
     config: 航点设置
     waypointList:
@@ -1421,6 +1467,7 @@ dynamicLayout:
 video:
   electricScale:
     title: 电子放大
+  downloading: 视频下载中...
 screenshot:
   screenshotSuccess: 截图成功
 forecast:

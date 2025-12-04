@@ -1,12 +1,12 @@
 import Select from '@/components/AntdOverride/Select'
 import AsyncButton from '@/components/ui/button/AsyncButton'
+import LiqunTippy from '@/components/ui/LiqunTippy'
 import XCard from '@/components/ui/XCard'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { calcFlight3DRoute } from '@/service/modules/flight3D'
 import { AirpointsConfigItem } from '@/store/wayline/uav-airline/types'
 import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import { InfoCircleOutlined } from '@ant-design/icons'
-import { Tooltip } from 'antd'
 import { v4 } from 'uuid'
 
 type PropsType = unknown
@@ -93,9 +93,9 @@ const Flight3D: FC<PropsType> = memo(() => {
       title={
         <div className="flex gap-1 ">
           3D飞行
-          <Tooltip title="根据航线点位生成绕开3D模型的路径路径">
+          <LiqunTippy content="根据航线点位生成绕开3D模型的路径路径">
             <InfoCircleOutlined className="text-fore" />
-          </Tooltip>
+          </LiqunTippy>
         </div>
       }
       topRight={

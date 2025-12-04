@@ -231,25 +231,27 @@ const PageSituationEvents: FC<PropsType> = memo(() => {
           <IconClear onClick={handleClear} />
         </IconButton>
       </div>
-      <ScrollArea className="grow mt-3 px-3" onScroll={handleScroll}>
-        {isLoading || !data ? (
-          <AppSpin />
-        ) : data.pages.at(-1)?.rows.length === 0 ? (
-          <AppEmpty />
-        ) : (
-          <Spin spinning={isRefetching}>
-            <ul className="flex flex-col gap-3">
-              {eventItems.map((item) => (
-                <EventItem
-                  key={item.id}
-                  data={item}
-                  active={item.eventId == detailEventId}
-                />
-              ))}
-            </ul>
-          </Spin>
-        )}
-        {isFetchingNextPage && <AppSpin />}
+      <ScrollArea className="grow mt-3" onScroll={handleScroll}>
+        <div className="w-[350px] px-3">
+          {isLoading || !data ? (
+            <AppSpin />
+          ) : data.pages.at(-1)?.rows.length === 0 ? (
+            <AppEmpty />
+          ) : (
+            <Spin spinning={isRefetching}>
+              <ul className="flex flex-col gap-3">
+                {eventItems.map((item) => (
+                  <EventItem
+                    key={item.id}
+                    data={item}
+                    active={item.eventId == detailEventId}
+                  />
+                ))}
+              </ul>
+            </Spin>
+          )}
+          {isFetchingNextPage && <AppSpin />}
+        </div>
       </ScrollArea>
     </div>
   )

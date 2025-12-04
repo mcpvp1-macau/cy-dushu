@@ -18,10 +18,12 @@ globalConfig.uavHeightLimit ??= 1000
 globalConfig.mcps ??= {}
 globalConfig.enableJessibucaMetrics ??= true
 globalConfig.defaultTheme ??= 'dark'
+globalConfig.env ??= 'default'
 
 class GlobalConfig {
   systemName = 'jingqi'
   title = '牍术·无人装备智能引擎'
+  env?: string
   loginUrl?: string
   version?: string
   globalWs = 'ws'
@@ -60,8 +62,6 @@ class GlobalConfig {
   terrainUrl?: string
   /** 是否使用地形 */
   useTerrain?: boolean
-  /** 上海禁飞区/航线 */
-  useShanghaiBanRoutes?: boolean
   /** 杭州禁飞区 */
   useHangzhouBanAreas?: boolean
   /** 贵州自定义 */
@@ -88,6 +88,9 @@ class GlobalConfig {
   /** 是否使用无人机日志 */
   useUavLogs?: boolean | undefined
 
+  /** 是否启用飞行报备 */
+  useFlightReporting?: boolean
+
   /** 访问密钥 */
   accessKeyId?: string
   /** 访问密钥 */
@@ -109,6 +112,10 @@ class GlobalConfig {
 
   // 是否开启喊话器音频上传功能
   usePayloadP3Upload: boolean = false
+
+  useRelayDevice: boolean = true
+
+  useMaintenanceStatusSwitch: boolean = false
 
   constructor(def: ConfigType) {
     Object.assign(this, def)

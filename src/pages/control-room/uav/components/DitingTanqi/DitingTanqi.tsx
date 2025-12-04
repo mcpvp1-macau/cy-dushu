@@ -117,6 +117,8 @@ const DitingTanqi: FC<PropsType> = memo(() => {
   const [inViewport] = useInViewport(toolsRef)
   const flyControlMCPTools = useMCPTools('FlyControl', !!inViewport)
   const taskUnderstandMCPTools = useMCPTools('TaskUnderstand', !!inViewport)
+  const taskUnderstandUrl = globalConfig.mcps?.['TaskUnderstand']
+  const flyControlUrl = globalConfig.mcps?.['FlyControl']
 
   const { replyingContent, sendMessage } = useSendMessage({
     openUnderstand,
@@ -306,7 +308,9 @@ const DitingTanqi: FC<PropsType> = memo(() => {
                   size="small"
                   icon={<IconIntelligence />}
                   type={openUnderstand ? 'primary' : 'default'}
-                  disabled={taskUnderstandMCPTools.mcps.length === 0}
+                  disabled={
+                    taskUnderstandMCPTools.mcps.length === 0 || !taskUnderstandUrl
+                  }
                   loading={taskUnderstandMCPTools.isLoading}
                   onClick={() => {
                     if (!openUnderstand) {
@@ -321,7 +325,7 @@ const DitingTanqi: FC<PropsType> = memo(() => {
                   size="small"
                   icon={<IconCommand />}
                   type={openCommand ? 'primary' : 'default'}
-                  disabled={flyControlMCPTools.mcps.length === 0}
+                  disabled={flyControlMCPTools.mcps.length === 0 || !flyControlUrl}
                   loading={flyControlMCPTools.isLoading}
                   onClick={() => setOpenCommand(!openCommand)}
                 >

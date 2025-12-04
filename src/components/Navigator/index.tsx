@@ -1,5 +1,6 @@
 import { Link, useMatches } from 'react-router-dom'
 import MenuIconAction from '@/assets/icons/jsx/menus/MenuIconAction'
+import MenuIconAlarm from '@/assets/icons/jsx/menus/MenuIconAlarm'
 import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
 import MenuIconOrganization from '@/assets/icons/jsx/menus/MenuIconOrganization'
 import MenuIconSituation from '@/assets/icons/jsx/menus/MenuIconSituation'
@@ -63,6 +64,12 @@ const menus = [
     path: '/defence',
     auth: 'defence',
     component: <MenuIconDefence className="text-lg text-[#4F81D7]" />,
+  },
+  {
+    id: 'alarms',
+    path: '/alarms',
+    auth: 'alarm',
+    component: <MenuIconAlarm className="text-lg text-[#E3A551]" />,
   },
 ]
 

@@ -123,7 +123,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
             <Reconstruction3D />
             <Reconstruction2D />
           </FloatIconButtonGroup>
-          {globalConfig.useShanghaiBanRoutes && <ShanghaiWarZoneConfig />}
+          {globalConfig.env === 'sh-jh' && <ShanghaiWarZoneConfig />}
           {globalConfig.isXiaoshan && <XiaoshanXZZoneConfig />}
           <FloatIconButton onClick={toggle}>
             {is2D ? '2D' : '3D'}
@@ -131,7 +131,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
         </div>
       )}
       <Suspense fallback={null}>
-        {globalConfig.useShanghaiBanRoutes && (
+        {globalConfig.env === 'sh-jh' && (
           <>
             <ShanghaiWarZone />
             <ShanghaiBanRoutes />

@@ -5,84 +5,124 @@ import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.
 import { usePostDeviceServiceHandler } from '@/hooks/device/usePostDeviceService'
 import { getDeviceDetail } from '@/service/modules/device'
 import ServiceButton from './ServiceButton'
+import globalConfig from '@/global/config'
 
 type PropsType = {
   postServiceFn: (identifier: string, data?: any) => Promise<void>
+  canFly: boolean
+  loading?: boolean
+  disabledReason?: string
 }
 
 /** 一键起飞 */
-const Takeoff: FC<PropsType> = memo(({ postServiceFn }) => {
-  const { t } = useTranslation()
-  const isLimitedFly = useUavControlRoomStore((s) => s.isLimitedFly)
-  const hasService = useDeviceDetailStore((s) => s.serviceHave['takeoff'])
+const Takeoff: FC<PropsType> = memo(
+  ({ postServiceFn, canFly, disabledReason, loading }) => {
+    const { t } = useTranslation()
+    const isLimitedFly = useUavControlRoomStore((s) => s.isLimitedFly)
+    const flightAltitudeLimit = useUavControlRoomStore(
+      (s) => s.flightReporting.flightAltitude,
+    )
+    const returnAltitudeLimit = useUavControlRoomStore(
+      (s) => s.flightReporting.returnAltitude,
+    )
+    const hasService = useDeviceDetailStore((s) => s.serviceHave['takeoff'])
 
-  const parentId = useDeviceDetailStore((s) => s.deviceDetail?.parentId)
+    const parentId = useDeviceDetailStore((s) => s.deviceDetail?.parentId)
 
-  const links = useUavControlRoomStore((s) => s.links)
-  const currentLink = useMemo(
-    () => links?.find((link) => link.active)?.name ?? 'auto',
-    [links],
-  )
+    const links = useUavControlRoomStore((s) => s.links)
+    const currentLink = useMemo(
+      () => links?.find((link) => link.active)?.name ?? 'auto',
+      [links],
+    )
 
-  const postServicehandler = usePostDeviceServiceHandler()
+    const postServicehandler = usePostDeviceServiceHandler()
 
-  const canTakeoff = !isLimitedFly && hasService
+    const canTakeoff = !isLimitedFly && hasService && canFly
 
-  const handleClick = async (data) => {
-    if (!parentId || currentLink?.toUpperCase?.() === '5G') {
-      await postServiceFn('takeoff', data)
-    } else {
-      const resp = await getDeviceDetail(parentId)
-      const productKey = resp.data.deviceModel.productKey
-      await postServicehandler(productKey, parentId, 'takeoff', data)
+    const handleClick = async (data) => {
+      if (!parentId || currentLink?.toUpperCase?.() === '5G') {
+        await postServiceFn('takeoff', data)
+      } else {
+        const resp = await getDeviceDetail(parentId)
+        const productKey = resp.data.deviceModel.productKey
+        await postServicehandler(productKey, parentId, 'takeoff', data)
+      }
+      setFalse()
     }
-    setFalse()
-  }
 
-  const [open, { setTrue, setFalse }] = useBoolean(false)
+    const [open, { setTrue, setFalse }] = useBoolean(false)
 
-  return (
-    <>
-      <ServiceButton
-        title={t('controlRoom.uav.service.takeoff.title')}
-        icon={IconTakeoff}
-        onClick={setTrue}
-      />
+    const maxFlightAltitude = useMemo(
+      () => flightAltitudeLimit ?? globalConfig.uavHeightLimit,
+      [flightAltitudeLimit],
+    )
 
-      {open && (
-        <FormModal
-          title="一键起飞"
-          localInitialValues={{ key: 'uav_takeoff' }}
-          items={[
-            {
-              label: '起飞高度',
-              name: 'height',
-              type: 'input-number',
-              rules: [{ required: true, message: '请输入起飞高度' }],
-              otherProps: {
-                addonAfter: <div className="mx-1">m</div>,
-                min: 1,
-                max: globalConfig.uavHeightLimit,
-              },
-            },
-            {
-              label: t('device.uav.takeoffForm.goHomeAltitude.title'),
-              name: 'gohomeAltitude',
-              type: 'input-number',
-              otherProps: {
-                addonAfter: <div className="mx-1">m</div>,
-                min: 50,
-                max: globalConfig.uavHeightLimit,
-              },
-            },
-          ]}
-          onClose={setFalse}
-          onConfirm={handleClick}
+    const maxReturnAltitude = useMemo(
+      () => returnAltitudeLimit ?? globalConfig.uavHeightLimit,
+      [returnAltitudeLimit],
+    )
+
+    const initialValues = useMemo(
+      () => ({
+        ...(flightAltitudeLimit === undefined || flightAltitudeLimit === null
+          ? {}
+          : { height: flightAltitudeLimit }),
+        ...(returnAltitudeLimit === undefined || returnAltitudeLimit === null
+          ? {}
+          : { gohomeAltitude: returnAltitudeLimit }),
+      }),
+      [flightAltitudeLimit, returnAltitudeLimit],
+    )
+
+    return (
+      <>
+        <ServiceButton
+          disabled={!canTakeoff}
+          tooltip={!canFly ? disabledReason : undefined}
+          title={t('controlRoom.uav.service.takeoff.title')}
+          icon={IconTakeoff}
+          onClick={setTrue}
+          loading={loading}
         />
-      )}
-    </>
-  )
-})
+
+        {open && (
+          <FormModal
+          title="一键起飞"
+          initialValues={initialValues}
+          localInitialValues={
+            !globalConfig.useFlightReporting ? { key: 'uav_takeoff' } : undefined
+          }
+            items={[
+              {
+                label: '起飞高度',
+                name: 'height',
+                type: 'input-number',
+                rules: [{ required: true, message: '请输入起飞高度' }],
+                otherProps: {
+                  addonAfter: <div className="mx-1">m</div>,
+                  min: 1,
+                  max: maxFlightAltitude,
+                },
+              },
+              {
+                label: t('device.uav.takeoffForm.goHomeAltitude.title'),
+                name: 'gohomeAltitude',
+                type: 'input-number',
+                otherProps: {
+                  addonAfter: <div className="mx-1">m</div>,
+                  min: 50,
+                  max: maxReturnAltitude,
+                },
+              },
+            ]}
+            onClose={setFalse}
+            onConfirm={handleClick}
+          />
+        )}
+      </>
+    )
+  },
+)
 
 Takeoff.displayName = 'Takeoff'
 

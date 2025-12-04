@@ -1,6 +1,7 @@
 import data from './GuizhouFarm.json'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
+import { attempt } from 'lodash'
 
 type PropsType = unknown
 
@@ -38,9 +39,11 @@ const GuizhouFarm: FC<PropsType> = memo(() => {
     viewer.scene.primitives.add(outlinePrimitive)
 
     return () => {
-      if (viewer.scene.primitives) {
-        viewer.scene.primitives.remove(outlinePrimitive)
-      }
+      attempt(() => {
+        if (viewer.scene.primitives) {
+          viewer.scene.primitives.remove(outlinePrimitive)
+        }
+      })
     }
   }, [viewer])
 

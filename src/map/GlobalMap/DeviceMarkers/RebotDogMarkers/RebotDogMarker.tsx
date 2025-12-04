@@ -1,11 +1,11 @@
 import useGlobalWsStore, {
   useRealOnlineStatus,
+  useRealTaskStatus,
 } from '@/store/useGlobalWebSocket.store'
 import icon from '/images/marker/icon/rebot_dog.svg'
 import { Billboard } from 'resium'
 import * as Cesium from 'cesium'
 import useDeviceFilterConfigStore from '@/store/useDeviceFilterConfig.store'
-import { DeviceStatusEnum } from '@/enum/device'
 import { deviceStatusFilter } from '@/pages/situation/source/utils'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
 import directionIcon from '/images/marker/icon/rebot_dog_direction.svg'
@@ -45,16 +45,11 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
   )
 
   const status = useRealOnlineStatus(deviceId)
+  const taskStatus = useRealTaskStatus(deviceId)
 
   if (
     isHidden || // 隐藏
-    (isOnline && status !== DeviceStatusEnum.ONLINE) || // 在线状态不显示
-    !deviceStatusFilter(
-      { status, taskStatus: 'RUNNING' },
-      isOnline,
-      isTask,
-      isNotTask,
-    )
+    !deviceStatusFilter({ status, taskStatus }, isOnline, isTask, isNotTask)
   ) {
     return null
   }

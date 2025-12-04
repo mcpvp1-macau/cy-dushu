@@ -21,7 +21,6 @@ import Update from './components/Update'
 import { lazy, Suspense } from 'react'
 import AppSpin from './components/AppSpin.tsx'
 
-import { Toaster } from 'sonner'
 import AppThemeProvider from './components/AppThemeProvider'
 import Toast from './components/Toast.tsx'
 

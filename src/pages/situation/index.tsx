@@ -29,7 +29,7 @@ const PageSituation: FC<PropsType> = memo(() => {
     setSourceType(type)
     if (type && activeKey === 'source') {
       // 确定是 sourceType 变化，才跳转
-      navigate(`source/${type}`)
+      navigate(`source/${type}`, { replace: true })
     }
   })
 

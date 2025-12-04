@@ -1,5 +1,6 @@
 import useGlobalWsStore, {
   useRealOnlineStatus,
+  useRealTaskStatus,
 } from '@/store/useGlobalWebSocket.store'
 import { Billboard } from 'resium'
 import * as Cesium from 'cesium'
@@ -18,6 +19,7 @@ import VideoFrustum from './VideoFrustum'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
 import useGroundHeight from '@/hooks/cesium/useGroundHeight'
 import Radar from '../WangLouMarkers/Radar'
+import { deviceStatusFilter } from '@/pages/situation/source/utils'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -70,12 +72,17 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
   )
 
   const status = useRealOnlineStatus(deviceId)
+  const taskStatus = useRealTaskStatus(deviceId)
 
-  if (isHidden) return null
+  const isTask = useDeviceFilterConfigStore((s) => s.isTask)
+  const isNotTask = useDeviceFilterConfigStore((s) => s.isNotTask)
 
-  const isDeviceOnline = isOnline && status === DeviceStatusEnum.ONLINE
-
-  if (isOnline && !isDeviceOnline) return null
+  if (
+    isHidden || // 隐藏
+    !deviceStatusFilter({ status, taskStatus }, isOnline, isTask, isNotTask)
+  ) {
+    return null
+  }
 
   const position = Cesium.Cartesian3.fromDegrees(
     lng,
@@ -103,7 +110,7 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
       />
       {deviceType === 'RADAR' && properties.scope ? (
         <>
-          {isDeviceOnline && (
+          {status === DeviceStatusEnum.ONLINE && (
             <GroundPolygonCircle lng={lng} lat={lat} scope={properties.scope} />
           )}
         </>

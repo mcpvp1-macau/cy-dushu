@@ -37,6 +37,13 @@ setting:
         content). Before proceeding, please ensure you have backed up important
         information to prevent data loss
       title: Clear All
+  warnning:
+    title: Alarm
+    isAllowEventNotification: Allow event notifications
+    isAllowAlarmNotification: Allow alarm notifications
+    isAddMap: Alarm overlay
+    isHaveAvdio: Sound alarm
+    isHaveLight: Light alarm
   warning:
     description: Enable or disable the above warning settings as needed
   voice:
@@ -372,6 +379,9 @@ action:
       title: Action Logs
     end:
       title: Finish Action
+      forceConfirm:
+        title: Device is in use!
+        description: Force stop the task?
     aiResult:
       empty:
         title: Null Result
@@ -582,6 +592,7 @@ common:
   refDevLoc: Reference device location
   options: Options
   export: Expert
+  resolve: Resolve
 events:
   search:
     placeholder: Please search by event name or ID
@@ -668,6 +679,43 @@ actionRecord:
       title: Action Name
   signalDownload:
     title: Download Signal Info
+  delete:
+    confirmTitle: Delete Action
+    confirmContent: Do you want to delete action "{{name}}"?
+alarm:
+  title: Alarms
+  filters:
+    processStatus: Process Status
+    deviceName: Device Name
+    sn: Device SN
+  status:
+    processed: Processed
+    unprocessed: Unprocessed
+  level:
+    info: Info
+    warn: Warning
+    error: Error
+  table:
+    time: Alarm Time
+    deviceName: Device Name
+    sn: Device SN
+    alarmLevel: Alarm Level
+    msg: Alarm Message
+    processStatus: Process Status
+    processUsername: Handler
+    processTime: Process Time
+    processMsg: Handling Note
+  delete:
+    batch: Delete Selected
+    confirmTitle: Delete Alarms
+    confirmContent: Are you sure you want to delete {{count}} alarm(s)?
+    success: Deleted successfully
+  edit:
+    title: Edit Alarm
+    processMsg: Handling Note
+    processMsgPlaceholder: Please enter a handling note (up to 100 characters)
+    processMsgRequired: Please enter a handling note
+    success: Saved successfully
 resource:
   title: Resources
   table:
@@ -768,6 +816,9 @@ wayline:
         adjacent routes, with the gimbal set to the default wide.
     relativeHeight:
       tooltip: Relative To Start Point
+      title: Relative
+    altitudeHeight:
+      title: Altitude
   waylinePoint:
     config: Waypoints
     waypointList:
@@ -825,6 +876,10 @@ wayline:
         title: Camera Mode
       SPEAKER_PLAY:
         title: Loudspeaker
+      START_RECORD:
+        title: Start Record
+      STOP_RECORD:
+        title: Stop Record
     addBefore: Add before waypoint {{i}}
     addAfter: Add before waypoint {{i}}
     addLast: Add at the end
@@ -1435,6 +1490,7 @@ dynamicLayout:
 video:
   electricScale:
     title: Electric Scale
+  downloading: Downloading video...
 screenshot:
   screenshotSuccess: Screenshot successful
 forecast:

@@ -3,6 +3,7 @@ import App from '@/App'
 import situation from './modules/situation'
 import sources from './modules/sources'
 import actionRecord from './modules/action-record'
+import alarms from './modules/alarms'
 import organization from './modules/organization'
 import controlRoom from './modules/control-room'
 import actionPlan from './modules/action-plan'
@@ -25,6 +26,7 @@ export const rootRoute = {
     eventResolve,
     sources,
     actionRecord,
+    alarms,
     organization,
     controlRoom,
     actionPlan,

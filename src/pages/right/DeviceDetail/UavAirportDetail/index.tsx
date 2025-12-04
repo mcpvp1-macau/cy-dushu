@@ -1,3 +1,6 @@
+import { FC, memo, useMemo, useState } from 'react'
+import dayjs from 'dayjs'
+import clsx from 'clsx'
 import CloseableHeader from '../../components/CloseableHeader'
 import DeviceIconAIRPORT from '@/assets/icons/jsx/device/DeviceIconAIRPORT'
 import { shouldJson } from '@/utils/json'
@@ -9,14 +12,11 @@ import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
 import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
 import { Button, Switch } from 'antd'
 import IconDebug from '@/assets/icons/jsx/uav/IconDebug'
-import IconTakeoff from '@/assets/icons/jsx/uav/IconTakeoff'
 import RemoteDebug from './components/RemoteDebug'
 import UavAirportUavDetail from './components/Uav'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import FormModal from '@/components/XForm/Modal'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import HealthInfoMini from '@/components/device/HealthInfoMini'
-import { XFormItem } from '@/components/XForm/types'
 import useDeviceWsURL from '@/hooks/device/useDeviceWsURL'
 import { BaseDeviceDetailProps } from '../routes'
 import XModal from '@/components/XModal'
@@ -26,6 +26,15 @@ import IconButton from '@/components/ui/button/IconButton'
 import IconClose from '@/assets/icons/jsx/IconClose'
 import UavDockConfig from './components/UavDockConfig'
 import AppCollapse from '@/components/AppCollapse'
+import globalConfig from '@/global/config'
+import MaintenanceStatusSwitch, {
+  MAINTENANCE_STATUS_TAG,
+} from './components/MaintenanceStatusSwitch'
+import IconMaintenance from '@/assets/icons/jsx/IconMaintenance'
+import OverflowText from '@/components/ui/OverflowText'
+import TakeoffAction from './components/TakeoffAction'
+import { useMemoizedFn } from 'ahooks'
+import { useTranslation } from 'react-i18next'
 
 type PropsType = BaseDeviceDetailProps
 
@@ -42,41 +51,9 @@ const UavAirportDetail: FC<PropsType> = memo(
     const productKey = data.productKey || data.deviceModel!.productKey
     const deviceId = data.deviceId
     const videoId = data?.properties.videoList?.[0]?.videoId ?? ''
+    const childDeviceId = data?.childDevice?.[0]?.deviceId
 
     const { t, i18n } = useTranslation()
-
-    const items = useMemo(
-      () =>
-        [
-          {
-            label: t('device.uav.takeoffForm.takeoffHeight.title'),
-            name: 'height',
-            type: 'input-number',
-            rules: [
-              {
-                required: true,
-                message: t('device.uav.takeoffForm.takeoffHeight.required_msg'),
-              },
-            ],
-            otherProps: {
-              style: { width: '100%' },
-              min: 1,
-              max: globalConfig.uavHeightLimit,
-            },
-          },
-          {
-            label: t('device.uav.takeoffForm.goHomeAltitude.title'),
-            name: 'gohomeAltitude',
-            type: 'input-number',
-            otherProps: {
-              style: { width: '100%' },
-              min: 50,
-              max: globalConfig.uavHeightLimit,
-            },
-          },
-        ] as XFormItem[],
-      [t],
-    )
 
     const [state, setState] = useState<Record<string, any>>({})
 
@@ -147,12 +124,15 @@ const UavAirportDetail: FC<PropsType> = memo(
 
     const header = useMemo(
       () => (
-        <div className="flex justify-between gap-2">
-          <div className="flex gap-2 items-center">
+        <div className="flex justify-between max-w-[210px] gap-2 overflow-hidden">
+          <div className="flex gap-2 items-center overflow-hidden">
             <DeviceIconAIRPORT className="device-detail-icon" />
-            <h6 className="text-hightlight text-base max-w-[224px] truncate">
+            {/* <h6 className="text-hightlight text-base flex-1 truncate">
+              
+            </h6> */}
+            <OverflowText className="text-hightlight truncate">
               {data.deviceName}
-            </h6>
+            </OverflowText>
           </div>
         </div>
       ),
@@ -161,11 +141,6 @@ const UavAirportDetail: FC<PropsType> = memo(
 
     const [openDebug, setOpenDebug] = useState(false)
 
-    const [
-      takeOffOpen,
-      { setTrue: setTakeoffTrue, setFalse: setTakeoffFalse },
-    ] = useBoolean(false)
-
     const postDeviceService = usePostDeviceService(productKey, deviceId)
     const handleTakeoffOk = async (values: any) => {
       await postDeviceService(
@@ -173,24 +148,39 @@ const UavAirportDetail: FC<PropsType> = memo(
         values,
         t('controlRoom.uav.service.takeoff.title'),
       )
-      setTakeoffFalse()
     }
 
     const isRightDetail = useIsRightDetail()
 
+    const maintenanceStatusTagValue = useMemo(
+      () =>
+        data.deviceTags?.find((item) => item.tagName === MAINTENANCE_STATUS_TAG)
+          ?.tagValue,
+      [data.deviceTags],
+    )
+
     const debugHeader = (
-      <div className="flex items-center gap-2">
-        {t('device.uavDock.remoteDebug.title')}
-        <Switch
-          size="small"
-          disabled={[1, 3, 4].includes(state['modeCode'])}
-          value={state['modeCode'] === 2}
-          onClick={() => {
-            postDeviceService('debugMode', {
-              action: state['modeCode'] === 0 ? 0 : 1,
-            })
-          }}
-        />
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          {t('device.uavDock.remoteDebug.title')}
+          <Switch
+            size="small"
+            disabled={[1, 3, 4].includes(state['modeCode'])}
+            value={state['modeCode'] === 2}
+            onClick={() => {
+              postDeviceService('debugMode', {
+                action: state['modeCode'] === 0 ? 0 : 1,
+              })
+            }}
+          />
+        </div>
+        {globalConfig.useMaintenanceStatusSwitch && (
+          <MaintenanceStatusSwitch
+            deviceId={deviceId}
+            productKey={productKey}
+            deviceTags={data.deviceTags}
+          />
+        )}
       </div>
     )
 
@@ -205,6 +195,16 @@ const UavAirportDetail: FC<PropsType> = memo(
             {header}
             {state.healthInfo?.length && (
               <HealthInfoMini healthInfo={state.healthInfo} />
+            )}
+            {maintenanceStatusTagValue === '维修中' && (
+              <div
+                className={clsx(
+                  'text-xs flex items-center gap-1 text-red-500 whitespace-nowrap',
+                )}
+              >
+                <IconMaintenance />
+                {maintenanceStatusTagValue}
+              </div>
             )}
           </div>
         </CloseableHeader>
@@ -243,15 +243,11 @@ const UavAirportDetail: FC<PropsType> = memo(
               >
                 {t('device.uavDock.remoteDebug.title')}
               </Button>
-              <Button
-                disabled={state.modeCode !== 0}
-                block
-                className="h-7"
-                icon={<IconTakeoff />}
-                onClick={setTakeoffTrue}
-              >
-                {t('device.uavDock.takeoffForm.title')}
-              </Button>
+              <TakeoffAction
+                childDeviceId={childDeviceId}
+                modeCode={state.modeCode}
+                onConfirm={handleTakeoffOk}
+              />
             </div>
 
             {data?.childDevice?.[0]?.deviceId && (
@@ -311,17 +307,6 @@ const UavAirportDetail: FC<PropsType> = memo(
               />
             </XModal>
           ))}
-        {takeOffOpen && (
-          <FormModal
-            localInitialValues={{ key: 'uav_takeoff' }}
-            title={`${t('device.uavDock.takeoffForm.title')} ALT(m)`}
-            open={takeOffOpen}
-            items={items}
-            onClose={setTakeoffFalse}
-            onConfirm={handleTakeoffOk}
-            confirmLoading={state.modeCode !== 0}
-          />
-        )}
       </div>
     )
   },

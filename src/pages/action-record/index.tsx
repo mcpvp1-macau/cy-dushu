@@ -9,7 +9,7 @@ import { dft } from '@/constant/time-fmt'
 import { DictEnum } from '@/enum/dict'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import usePageSearchParams from '@/hooks/useTableSearchParams'
-import { getActionRecordList } from '@/service/modules/action'
+import { deleteAction, getActionRecordList } from '@/service/modules/action'
 import serverJingqi from '@/service/servers/serverJingqi'
 import { useDictOptions } from '@/store/useDict.store'
 import useUserStore from '@/store/useUser.store'
@@ -20,7 +20,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { Button, Input, Pagination } from 'antd'
+import { Button, Input, Pagination, Popconfirm } from 'antd'
 import { Dayjs } from 'dayjs'
 import dayjs from 'dayjs'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -76,6 +76,19 @@ const PageActionRecord: FC<PropsType> = memo(() => {
   const actionTypeMap = useMemo(
     () => Object.fromEntries(actionTypeOptions.map((o) => [o.value, o.label])),
     [actionTypeOptions],
+  )
+
+  const deleteMutation = useMutation({
+    mutationFn: (actionId: string | number) => deleteAction(actionId),
+    onSuccess: () => {
+      msgApi.success(t('api.success.msg'))
+      queryClient.invalidateQueries({ queryKey: ['getActionRecordList'] })
+    },
+  })
+
+  const handleDeleteAction = useMemoizedFn(
+    (record: API_ACTION.domain.ActionRecord) =>
+      deleteMutation.mutateAsync(record.actionId),
   )
 
   const columns = useMemo(
@@ -141,12 +154,29 @@ const PageActionRecord: FC<PropsType> = memo(() => {
               >
                 {t('actionRecord.signalDownload.title')}
               </TextButton>
+              <Popconfirm
+                title={t('actionRecord.delete.confirmTitle')}
+                description={t('actionRecord.delete.confirmContent', {
+                  name: item.name,
+                })}
+                okText={t('modal.confirm')}
+                cancelText={t('modal.cancel')}
+                okButtonProps={{
+                  danger: true,
+                  loading: deleteMutation.isPending,
+                }}
+                onConfirm={() => handleDeleteAction(item)}
+              >
+                <TextButton danger disabled={deleteMutation.isPending}>
+                  {t('common.delete')}
+                </TextButton>
+              </Popconfirm>
             </div>
           )
         },
       }),
     ],
-    [t, actionTypeMap],
+    [t, actionTypeMap, deleteMutation.isPending, handleDeleteAction],
   )
 
   const table = useReactTable<API_ACTION.domain.ActionRecord>({

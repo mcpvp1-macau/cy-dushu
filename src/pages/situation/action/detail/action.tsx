@@ -1,8 +1,8 @@
-import { Button } from 'antd'
-import { endAction } from '@/service/modules/action'
+import ActionStopButton from './components/ActionStopButton'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import AppCollapse from '@/components/AppCollapse'
 import AddTask from './components/AddTask'
+import AddSHJHTask from './components/AddSHJHTask'
 import KCYPModal from './components/kcyp/Modal'
 import useActionDetail from './context'
 import AppSpin from '@/components/AppSpin'
@@ -36,23 +36,14 @@ const PageActionDetailSub: FC<PropsType> = memo(
   ({ detail, isBacktracking = false }) => {
     const { actionId } = useParams()
 
-    const queryClient = useQueryClient()
-    const navigate = useNavigate()
-    const handleEndActionClick = useMemoizedFn(async () => {
-      await endAction(actionId!)
-      await queryClient.invalidateQueries({
-        queryKey: ['actionList'],
-        exact: false,
-        type: 'all',
-      })
-      navigate('/action', { replace: true })
-    })
     const d = useActionDetail()
     const actionDetail = detail || d
 
     const { t } = useTranslation()
 
     const [enablePictureOnMap, setEnablePictureOnMap] = useState(false)
+
+    const TaskComponent = globalConfig.env === 'sh-jh' ? AddSHJHTask : AddTask
 
     const items = useMemo(() => {
       if (!actionDetail?.type) {
@@ -91,7 +82,10 @@ const PageActionDetailSub: FC<PropsType> = memo(
                 eventId={actionDetail.eventId}
               />
             )}
-            <AddTask actionId={actionId!} />
+            <TaskComponent
+              actionId={actionId!}
+              actionType={actionDetail.type}
+            />
           </div>
         ),
         children: (
@@ -197,13 +191,7 @@ const PageActionDetailSub: FC<PropsType> = memo(
         )}
         {!isBacktracking && (
           <div className="text-center p-3">
-            <Button
-              type="primary"
-              className="w-28"
-              onClick={handleEndActionClick}
-            >
-              {t('action.detail.end.title')}
-            </Button>
+            <ActionStopButton actionId={actionId!} />
           </div>
         )}
       </div>
