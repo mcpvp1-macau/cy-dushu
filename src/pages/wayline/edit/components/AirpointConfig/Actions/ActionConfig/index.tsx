@@ -15,6 +15,8 @@ import AppEmpty from '@/components/AppEmpty'
 import CameraModeSet from './CameraModeSet'
 import Loudspeaker from './Loudspeaker'
 import StartRecord from './StartRecord'
+import IconButton from '@/components/ui/button/IconButton'
+import IconApplyGlobal from '@/assets/icons/jsx/IconApplyGlobal'
 
 interface Props {
   activeOperator: string
@@ -28,6 +30,9 @@ const ActionConfig: React.FC<Props> = memo((props) => {
     (s) => s.updateCurrentAirpoint,
   )
   const globalSpeed = useAirlineConfigStore((s) => s.airlineConfig.speed)
+  const applyToGlobalLabel = t('common.applyToGlobal', {
+    defaultValue: '应用到全局',
+  })
 
   const actions = currentAirpoint?.actions || []
 
@@ -59,6 +64,42 @@ const ActionConfig: React.FC<Props> = memo((props) => {
     })
     useAirlineConfigStore.getState().calcUavByCurrentAirpoint()
   }
+
+  const applyHeightToAll = useMemoizedFn(() => {
+    if (currentAirpoint === undefined) return
+    const { airpointsConfig, airlineConfig } = useAirlineConfigStore.getState()
+    const pointZ = currentAirpoint.pointZ
+
+    const nextAirpoints = airpointsConfig.map((item) => ({
+      ...item,
+      pointZ,
+    }))
+
+    useAirlineConfigStore.getState().updateAirpointsConfig(nextAirpoints)
+    useAirlineConfigStore
+      .getState()
+      .updateAirlineConfig({ ...airlineConfig, height: pointZ })
+    useAirlineConfigStore.getState().calcUavByCurrentAirpoint()
+  })
+
+  const applySpeedToAll = useMemoizedFn(() => {
+    if (currentAirpoint === undefined) return
+    const { airpointsConfig, airlineConfig } = useAirlineConfigStore.getState()
+    const speed = currentAirpoint.speed ?? airlineConfig.speed
+
+    const nextAirpoints = airpointsConfig.map((item) => ({
+      ...item,
+      speed,
+    }))
+
+    useAirlineConfigStore.getState().updateAirpointsConfig(nextAirpoints)
+    useAirlineConfigStore.getState().updateAirlineConfig({
+      ...airlineConfig,
+      speed,
+      takeOffSecurityHeight: speed,
+    })
+    useAirlineConfigStore.getState().calcUavByCurrentAirpoint()
+  })
 
   const actionComponent = useMemo(() => {
     if (!action) {
@@ -186,24 +227,6 @@ const ActionConfig: React.FC<Props> = memo((props) => {
 
       <div className="h-[1px] my-3 bg-ground-5"></div>
       <div>
-        <div className="my-2">{t('common.height')} (m)</div>
-        <InputNumber
-          value={Number(currentAirpoint?.pointZ.toFixed(2) ?? 0)}
-          className="w-full"
-          onChange={(value: number | null) =>
-            value &&
-            onChangePosition(
-              'pointZ',
-              limitNum(
-                value,
-                -globalConfig.uavHeightLimit,
-                globalConfig.uavHeightLimit,
-              ),
-            )
-          }
-        />
-      </div>
-      <div>
         <div className="my-2">{t('common.longitude')}</div>
         <InputNumber
           value={Number(currentAirpoint?.pointX.toFixed(6) ?? 0)}
@@ -224,6 +247,33 @@ const ActionConfig: React.FC<Props> = memo((props) => {
         />
       </div>
       <div>
+        <div className="my-2">{t('common.height')} (m)</div>
+        <InputNumber
+          value={Number(currentAirpoint?.pointZ.toFixed(2) ?? 0)}
+          className="w-full"
+          addonAfter={
+            <IconButton
+              className="mx-1"
+              tippyProps={{ content: applyToGlobalLabel }}
+              onClick={applyHeightToAll}
+            >
+              <IconApplyGlobal />
+            </IconButton>
+          }
+          onChange={(value: number | null) =>
+            value &&
+            onChangePosition(
+              'pointZ',
+              limitNum(
+                value,
+                -globalConfig.uavHeightLimit,
+                globalConfig.uavHeightLimit,
+              ),
+            )
+          }
+        />
+      </div>
+      <div>
         <div className="my-2">{t('common.speed')} (m/s)</div>
         <InputNumber
           value={
@@ -234,6 +284,15 @@ const ActionConfig: React.FC<Props> = memo((props) => {
           className="w-full"
           min={1}
           max={15}
+          addonAfter={
+            <IconButton
+              className="mx-1"
+              tippyProps={{ content: applyToGlobalLabel }}
+              onClick={applySpeedToAll}
+            >
+              <IconApplyGlobal />
+            </IconButton>
+          }
           onChange={(value: number | null) =>
             value && onChangePosition('speed', value)
           }

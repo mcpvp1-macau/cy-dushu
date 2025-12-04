@@ -4,6 +4,7 @@ import XCard from '@/components/ui/XCard'
 import { Radio } from 'antd'
 import { InfoCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons'
 import LiqunTippy from '@/components/ui/LiqunTippy'
+import { round } from 'lodash'
 
 type PropsType = unknown
 
@@ -55,7 +56,7 @@ const AirlineHeightConfig: FC<PropsType> = () => {
         <HNumber
           negatives={[-100, -10]}
           positives={[10, 100]}
-          value={height}
+          value={round(height, 2)}
           unit="m"
           max={globalConfig.uavHeightLimit}
           onChange={(e) => {
