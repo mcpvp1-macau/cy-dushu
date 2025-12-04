@@ -10,51 +10,8 @@ import useFlightAreaStore, {
 } from '@/store/map/useFlightArea.store'
 import { RightModeEnum } from '@/enum/right-mode'
 import NoFlyZonePrimitives from './NoFlyZonePrimitives'
-import config from '@/global/config'
-import * as Cesium from 'cesium'
 
 type PropsType = unknown
-
-/** 渲染覆盖物形状 */
-const renderOverlayShape = (
-  overlay: API_LAYER_OVERLAY.domain.Overlay,
-  primitives: Cesium.PrimitiveCollection | undefined,
-) => {
-  if (overlay.cotType === CotType.SHAPE_CIRCLE) {
-    return (
-      <ShowCircle
-        key={overlay.overlayId}
-        overlayExtType={'flightArea'}
-        primitives={primitives}
-        overlay={overlay}
-      />
-    )
-  }
-  if (
-    overlay.cotType === CotType.SHAPE_POLYGON ||
-    overlay.cotType === CotType.SHAPE_RECT
-  ) {
-    return (
-      <ShowPolygon
-        key={overlay.overlayId}
-        overlayExtType={'flightArea'}
-        primitives={primitives}
-        overlay={overlay}
-      />
-    )
-  }
-  if (overlay.cotType === CotType.SHAPE_FAN) {
-    return (
-      <ShowFan
-        key={overlay.overlayId}
-        overlayExtType={'flightArea'}
-        primitives={primitives}
-        overlay={overlay}
-      />
-    )
-  }
-  return null
-}
 
 /** 渲染飞行区域 */
 const FlightAreas: FC<PropsType> = memo(() => {
@@ -105,16 +62,46 @@ const FlightAreas: FC<PropsType> = memo(() => {
 
   return (
     <>
-      {customOverlays.map((overlay) => renderOverlayShape(overlay, primitives))}
-      {config.noFlyZoneDisplayStyle === 'fence' ? (
-        djOverlays.map((overlay) => renderOverlayShape(overlay, primitives))
-      ) : (
-        <NoFlyZonePrimitives
-          overlays={djOverlays}
-          primitives={primitives}
-          isGround={true}
-        />
-      )}
+      {customOverlays.map((overlay) => {
+        if (overlay.cotType === CotType.SHAPE_CIRCLE) {
+          return (
+            <ShowCircle
+              key={overlay.overlayId}
+              overlayExtType={'flightArea'}
+              primitives={primitives}
+              overlay={overlay}
+            />
+          )
+        }
+        if (
+          overlay.cotType === CotType.SHAPE_POLYGON ||
+          overlay.cotType === CotType.SHAPE_RECT
+        ) {
+          return (
+            <ShowPolygon
+              key={overlay.overlayId}
+              overlayExtType={'flightArea'}
+              primitives={primitives}
+              overlay={overlay}
+            />
+          )
+        }
+        if (overlay.cotType === CotType.SHAPE_FAN) {
+          return (
+            <ShowFan
+              key={overlay.overlayId}
+              overlayExtType={'flightArea'}
+              primitives={primitives}
+              overlay={overlay}
+            />
+          )
+        }
+      })}
+      <NoFlyZonePrimitives
+        overlays={djOverlays}
+        primitives={primitives}
+        isGround={true}
+      />
     </>
   )
 })
