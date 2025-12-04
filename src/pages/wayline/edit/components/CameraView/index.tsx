@@ -1,13 +1,15 @@
-import CameraControl from './components/Controller'
 import { Button } from 'antd'
-import TopTip from './components/TopTip'
-import NarrowRect from './components/NarrowRect'
-import DistanceMeasure from './components/DistanceMeasure'
-import { limitNum } from '@/utils/math'
-import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
-import CesiumMap from '@/map/CesiumMap'
-import ZoomSlider from '@/components/device/ZoomSlider'
+
 import IconClose from '@/assets/icons/jsx/IconClose'
+import ZoomSlider from '@/components/device/ZoomSlider'
+import CesiumMap from '@/map/CesiumMap'
+import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
+import { limitNum } from '@/utils/math'
+
+import DistanceMeasure from './components/DistanceMeasure'
+import NarrowRect from './components/NarrowRect'
+import CameraControl from './components/Controller'
+import TopTip from './components/TopTip'
 
 type PropsType = {
   onClose?: () => void
@@ -19,6 +21,14 @@ const CameraView: FC<PropsType> = memo(({ onClose }) => {
   const fovMultipiler = useAirlineConfigStore((s) => s.uav.eoFovMultiplier)
   const updateUav = useAirlineConfigStore((s) => s.updateUav)
   const [viewType, setViewType] = useState<'wide' | 'narrow'>('narrow')
+  const [offset, setOffset] = useState({ x: 0, y: 0 })
+  const containerRef = useRef<HTMLDivElement>(null)
+  const dragRef = useRef<{
+    startX: number
+    startY: number
+    initX: number
+    initY: number
+  }>()
 
   const takeOffRefPoint = useAirlineConfigStore(
     (s) => s.airlineConfig.takeOffRefPoint,
@@ -37,6 +47,61 @@ const CameraView: FC<PropsType> = memo(({ onClose }) => {
     })
   }
 
+  const handleMouseMove = (event: MouseEvent) => {
+    if (!dragRef.current) return
+
+    const { startX, startY, initX, initY } = dragRef.current
+    const nextX = initX + (event.clientX - startX)
+    const nextY = initY + (event.clientY - startY)
+
+    const container = containerRef.current
+
+    if (container) {
+      const { offsetWidth: width, offsetHeight: height } = container
+      const viewportWidth = window.innerWidth
+      const viewportHeight = window.innerHeight
+      const minX = -(viewportWidth - width - 52 - 38)
+      const maxX = 52
+      const minY = -14
+      const maxY = viewportHeight - height - 52
+
+      setOffset({
+        x: limitNum(nextX, minX, maxX),
+        y: limitNum(nextY, minY, maxY),
+      })
+      return
+    }
+
+    setOffset({ x: nextX, y: nextY })
+  }
+
+  const handleMouseUp = () => {
+    dragRef.current = undefined
+    document.removeEventListener('mousemove', handleMouseMove)
+    document.removeEventListener('mouseup', handleMouseUp)
+  }
+
+  const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault()
+
+    dragRef.current = {
+      startX: event.clientX,
+      startY: event.clientY,
+      initX: offset.x,
+      initY: offset.y,
+    }
+
+    document.addEventListener('mousemove', handleMouseMove)
+    document.addEventListener('mouseup', handleMouseUp)
+  }
+
+  useEffect(() => {
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+    }
+  }, [])
+
   if (!cameraInfo || !takeOffRefPoint) {
     return null
   }
@@ -53,9 +118,15 @@ const CameraView: FC<PropsType> = memo(({ onClose }) => {
       )}
       style={{
         height: (cameraInfo.sensorHeight / cameraInfo.sensorWidth) * 400,
+        transform: `translate(${offset.x}px, ${offset.y}px)`,
       }}
+      ref={containerRef}
       onWheel={handleWheel}
     >
+      <div
+        className="absolute left-0 right-0 top-0 h-8 cursor-move z-10"
+        onMouseDown={handleMouseDown}
+      />
       <CesiumMap id="airline-edit-camera-view-map" useToolBar={false}>
         <CameraControl viewType={viewType} />
         {viewType === 'wide' && <NarrowRect />}
@@ -69,7 +140,7 @@ const CameraView: FC<PropsType> = memo(({ onClose }) => {
       >
         {viewType === 'narrow' ? '广角[1]' : `变焦[2]`}
       </Button>
-      <div className="absolute top-3 left-3">
+      <div className="absolute top-3 left-3 z-20">
         <Button
           shape="circle"
           size="small"
