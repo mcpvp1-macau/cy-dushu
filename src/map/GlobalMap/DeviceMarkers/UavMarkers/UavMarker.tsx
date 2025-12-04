@@ -36,7 +36,7 @@ const UavMarker: FC<PropsType> = memo(({ data, onPositionChange }) => {
 
   const { t } = useTranslation()
 
-  const { realLon, realLat, realHeading, realAlt } = useGlobalWsStore(
+  const { realLon, realLat, realHeading, realAlt, realHeight, realHorizontalSpeed } = useGlobalWsStore(
     useShallow((s) => {
       const p = s.deviceRealtimeProperties[data.deviceId]?.properties
       return {
@@ -44,12 +44,16 @@ const UavMarker: FC<PropsType> = memo(({ data, onPositionChange }) => {
         realLat: round(p?.latitude ?? 0, 5),
         realHeading: round(p?.uavYaw ?? 0, 5),
         realAlt: round(p?.altitude ?? 0, 1),
+        realHeight: round(p?.height ?? 0, 1),
+        realHorizontalSpeed: round(p?.horizontalSpeed ?? 0, 1),
       }
     }),
   )
 
   const lng = realLon || data.longitude
   const lat = realLat || data.latitude
+  const height = realHeight || data.properties?.height || 0
+  const speed = realHorizontalSpeed || data.properties?.horizontalSpeed || 0
 
   const isOnline = useDeviceFilterConfigStore((s) => s.isOnline)
   const isTask = useDeviceFilterConfigStore((s) => s.isTask)
@@ -208,13 +212,13 @@ const UavMarker: FC<PropsType> = memo(({ data, onPositionChange }) => {
                 {t('common.altitude')}: {round(alt, 1)} m
               </p>
               <p>
-                {t('common.height')}: {round(data.properties?.height ?? 0, 1)} m
+                {t('common.height')}: {round(height ?? 0, 1)} m
               </p>
             </div>
             <div className="text-xs text-fore flex gap-2 whitespace-nowrap">
               <p>
                 {t('common.speed')}:{' '}
-                {round(data.properties?.horizontalSpeed ?? 0, 1)} m/s
+                {round(speed, 1)} m/s
               </p>
             </div>
           </div>
