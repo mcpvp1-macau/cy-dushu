@@ -1,5 +1,4 @@
 import { shouldJson } from '@/utils/json'
-import { useCesium } from 'resium'
 import OverlayPolygon from './OverlayPolygon'
 import { argbToHex } from '@/utils/color'
 import * as Cesium from 'cesium'

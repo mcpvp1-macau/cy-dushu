@@ -108,13 +108,21 @@ async function createPolyline(options: CreateOptions) {
   } = options
   // // 禁飞区为拉伸的实心多边形，不显示描边
   // if (primitiveType === 'NO_FLY_ZONE') return null
+  const useFenceStyle = globalConfig.noFlyZoneDisplayStyle === 'fence'
 
-  // 电子围栏为围墙，使用WallGeometry
-  if (
+  const isWallOfFence =
     mode === Cesium.SceneMode.SCENE3D &&
     primitiveType === 'ELECTRONIC_FENCE' &&
     flightAreaHeight > 0
-  ) {
+
+  const isWallOfNoFlyZone =
+    mode === Cesium.SceneMode.SCENE3D &&
+    primitiveType === 'NO_FLY_ZONE' &&
+    flightAreaHeight > 0 &&
+    useFenceStyle
+
+  // 电子围栏为围墙，使用WallGeometry
+  if (isWallOfFence || isWallOfNoFlyZone) {
     return new Cesium.Primitive({
       geometryInstances: new Cesium.GeometryInstance({
         geometry: new Cesium.WallGeometry({

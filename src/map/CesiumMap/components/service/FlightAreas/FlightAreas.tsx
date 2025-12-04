@@ -60,6 +60,7 @@ const FlightAreas: FC<PropsType> = memo(() => {
   const { viewer } = useCesium()
   const primitives = useMemo(() => viewer?.scene.primitives, [viewer])
 
+
   return (
     <>
       {customOverlays.map((overlay) => {

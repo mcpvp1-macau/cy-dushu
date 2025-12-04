@@ -4,11 +4,6 @@ import * as Cesium from 'cesium'
 import * as turf from '@turf/turf'
 import { CIRCLE_POINT_NUMBER } from '@/utils/customPrimitive/OverlayPrimitive'
 import { attempt } from 'lodash'
-import config from '@/global/config'
-import { argbToHex } from '@/utils/color'
-
-/** 禁飞区墙体高度 */
-const NO_FLY_ZONE_WALL_HEIGHT = 500
 
 type Props = {
   overlays: API_LAYER_OVERLAY.domain.Overlay[]
@@ -49,44 +44,6 @@ const NoFlyZonePrimitives: FC<Props> = (props) => {
   const createZonePrimitive = useMemoizedFn(() => {
     const collection = new Cesium.PrimitiveCollection()
     if (!overlays.length) return collection
-
-    const useFenceStyle = config.noFlyZoneDisplayStyle === 'fence'
-
-    // 使用电子围栏样式时，使用WallGeometry
-    if (useFenceStyle) {
-      polygonOverlays.forEach((overlay) => {
-        const positions = shouldJson(overlay.overlayPositions).map((item) =>
-          Cesium.Cartesian3.fromDegrees(item[0], item[1], item[2]),
-        )
-        // 闭合多边形
-        const closedPositions = [...positions, positions[0]]
-
-        const style = shouldJson(overlay.overlayStyleConfig)
-        const fillColor =
-          argbToHex(String(style?.fillColor?.['-value']))?.[0] || '#4c90f0'
-        const fillOpacity = parseFloat(style?.fillOpacity?.['-value']) || 0.5
-
-        const wallPrimitive = new Cesium.Primitive({
-          geometryInstances: new Cesium.GeometryInstance({
-            geometry: new Cesium.WallGeometry({
-              positions: closedPositions,
-              maximumHeights: closedPositions.map(() => NO_FLY_ZONE_WALL_HEIGHT),
-            }),
-          }),
-          appearance: new Cesium.MaterialAppearance({
-            material: Cesium.Material.fromType(Cesium.Material.ColorType, {
-              color: Cesium.Color.fromCssColorString(fillColor).withAlpha(
-                fillOpacity,
-              ),
-            }),
-          }),
-          asynchronous: false,
-        })
-        collection.add(wallPrimitive)
-      })
-
-      return collection
-    }
 
     // 默认样式：红色填充
     const fillInstances: Cesium.GeometryInstance[] = []
