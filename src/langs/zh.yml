@@ -368,6 +368,9 @@ action:
       title: 行动记录
     end:
       title: 结束行动
+      forceConfirm:
+        title: 设备正在使用中!
+        description: 是否强制停止任务
     aiResult:
       empty:
         title: 暂无结果

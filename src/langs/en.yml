@@ -379,6 +379,9 @@ action:
       title: Action Logs
     end:
       title: Finish Action
+      forceConfirm:
+        title: Device is in use!
+        description: Force stop the task?
     aiResult:
       empty:
         title: Null Result

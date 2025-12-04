@@ -42,6 +42,13 @@ export const endAction = (actionId: string) => {
   })
 }
 
+/** 行动终止前检查 */
+export const checkEndAction = (actionId: string) => {
+  return serverJingqi.get('/action/stop/check', {
+    params: { actionId },
+  })
+}
+
 /** 更新行动 */
 export const updAction = (data: any) => {
   return serverJingqi.post('/action/update', data)
