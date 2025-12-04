@@ -24,7 +24,8 @@ const useAddMapFormItems = (form) => {
               label: t('mapLayer.createMap.form.mapType.options.xyz.label'),
               value: 'LNG_LAT',
             },
-            // { label: '点云地图', value: 'POINT_CLOUD', disabled: true },
+            { label: '点云地图', value: 'POINT_CLOUD' },
+            // { label: '点云地图', value: 'POINT_CLOUD_3D' },
           ],
           rules: [{ required: true }],
         },
@@ -55,6 +56,10 @@ const useAddMapFormItems = (form) => {
               label: 'WMTS',
               value: 'WMTS',
             },
+            {
+              label: '点云3D',
+              value: 'POINT_CLOUD_3D',
+            }
           ],
           rules: [{ required: true }],
         },

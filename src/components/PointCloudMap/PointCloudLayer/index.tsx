@@ -52,11 +52,10 @@ const PointCloudLayer: React.FC<PropsType> = ({ url, ...props }) => {
         // 根据z值设置颜色
         for (let i = 0; i < positions.count; i++) {
           const z = positions.getZ(i)
+          const normalizedZ = Math.min(z / maxZ, 1) // 归一化到0-1
 
           // 过滤掉z值小于0.02的点
-          if (z > 0.02) {
-            const normalizedZ = Math.min(z / 1, 1) // 归一化到0-1
-
+          // if (normalizedZ > 0.02) {
             // 使用颜色映射：z=0绿色，z=0.5黄色，z=1红色
             let r, g, b
 
@@ -78,7 +77,7 @@ const PointCloudLayer: React.FC<PropsType> = ({ url, ...props }) => {
             colors[i * 3 + 1] = g / 255
             colors[i * 3 + 2] = b / 255
             vertices.push(positions.getX(i), positions.getY(i), z)
-          }
+          // }
         }
         geometry.setAttribute(
           'position',

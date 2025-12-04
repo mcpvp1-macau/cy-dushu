@@ -14,7 +14,7 @@ const PointCloudMapManager: FC = () => {
   const queryClient = useQueryClient()
   const { data = [], isLoading } = useQuery(
     {
-      queryKey: ['getSpaceList'],
+      queryKey: ['getSpaceListPOINT_CLOUD_3D'],
       queryFn: () => getSpaceList({ spaceType: 'POINT_CLOUD_3D' }),
       select: (d) =>
         d.data.rows?.map((item: any) => ({

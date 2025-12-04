@@ -75,7 +75,7 @@ window.config = {
   sentryDsn: '8a3f2951493342c6803439364cbd9dfa',
   sentryProjectId: '2',
   useFlight3D: true,
-  robotDogMap: 'wgs84',
+  // robotDogMap: 'wgs84',
   // 是否开启喊话器音频上传功能
   usePayloadP3Upload: true,
 }
