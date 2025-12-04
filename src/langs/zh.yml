@@ -665,6 +665,9 @@ actionRecord:
       title: 行动名称
   signalDownload:
     title: 信号下载
+  delete:
+    confirmTitle: 删除行动
+    confirmContent: 是否删除行动「{{name}}」？
 alarm:
   title: 告警
   filters:

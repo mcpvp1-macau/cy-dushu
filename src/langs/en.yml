@@ -676,6 +676,9 @@ actionRecord:
       title: Action Name
   signalDownload:
     title: Download Signal Info
+  delete:
+    confirmTitle: Delete Action
+    confirmContent: Do you want to delete action "{{name}}"?
 alarm:
   title: Alarms
   filters:

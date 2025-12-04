@@ -80,3 +80,8 @@ export const updAIResult = (data: {
 export const delAIResult = (actionId: string, ids: string[]) => {
   return serverJingqi.post('/result/delete', { actionId, ids })
 }
+
+/** 删除行动 */
+export const deleteAction = (actionId: string | number) => {
+  return serverJingqi.post(`/action/delete/${actionId}`)
+}
