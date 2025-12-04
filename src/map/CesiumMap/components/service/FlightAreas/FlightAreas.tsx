@@ -10,6 +10,7 @@ import useFlightAreaStore, {
 } from '@/store/map/useFlightArea.store'
 import { RightModeEnum } from '@/enum/right-mode'
 import NoFlyZonePrimitives from './NoFlyZonePrimitives'
+import config from '@/global/config'
 
 type PropsType = unknown
 
@@ -97,11 +98,49 @@ const FlightAreas: FC<PropsType> = memo(() => {
           )
         }
       })}
-      <NoFlyZonePrimitives
-        overlays={djOverlays}
-        primitives={primitives}
-        isGround={true}
-      />
+      {config.noFlyZoneDisplayStyle === 'fence' ? (
+        djOverlays.map((overlay) => {
+          if (overlay.cotType === CotType.SHAPE_CIRCLE) {
+            return (
+              <ShowCircle
+                key={overlay.overlayId}
+                overlayExtType={'flightArea'}
+                primitives={primitives}
+                overlay={overlay}
+              />
+            )
+          }
+          if (
+            overlay.cotType === CotType.SHAPE_POLYGON ||
+            overlay.cotType === CotType.SHAPE_RECT
+          ) {
+            return (
+              <ShowPolygon
+                key={overlay.overlayId}
+                overlayExtType={'flightArea'}
+                primitives={primitives}
+                overlay={overlay}
+              />
+            )
+          }
+          if (overlay.cotType === CotType.SHAPE_FAN) {
+            return (
+              <ShowFan
+                key={overlay.overlayId}
+                overlayExtType={'flightArea'}
+                primitives={primitives}
+                overlay={overlay}
+              />
+            )
+          }
+        })
+      ) : (
+        <NoFlyZonePrimitives
+          overlays={djOverlays}
+          primitives={primitives}
+          isGround={true}
+        />
+      )}
     </>
   )
 })
