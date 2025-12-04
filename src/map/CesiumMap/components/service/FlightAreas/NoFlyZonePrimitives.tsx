@@ -45,6 +45,7 @@ const NoFlyZonePrimitives: FC<Props> = (props) => {
     const collection = new Cesium.PrimitiveCollection()
     if (!overlays.length) return collection
 
+    // 默认样式：红色填充
     const fillInstances: Cesium.GeometryInstance[] = []
     const outlineInstances: Cesium.GeometryInstance[] = []
 
