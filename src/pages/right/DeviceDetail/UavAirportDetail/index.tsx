@@ -1,3 +1,6 @@
+import { FC, memo, useMemo, useState } from 'react'
+import dayjs from 'dayjs'
+import clsx from 'clsx'
 import CloseableHeader from '../../components/CloseableHeader'
 import DeviceIconAIRPORT from '@/assets/icons/jsx/device/DeviceIconAIRPORT'
 import { shouldJson } from '@/utils/json'
@@ -7,16 +10,13 @@ import UavAirportWeatherSection from './components/WeatherSection'
 import UavAirportInfoCard from './components/InfoCard'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
 import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
-import { Button, Switch, Tooltip } from 'antd'
+import { Button, Switch } from 'antd'
 import IconDebug from '@/assets/icons/jsx/uav/IconDebug'
-import IconTakeoff from '@/assets/icons/jsx/uav/IconTakeoff'
 import RemoteDebug from './components/RemoteDebug'
 import UavAirportUavDetail from './components/Uav'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import FormModal from '@/components/XForm/Modal'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import HealthInfoMini from '@/components/device/HealthInfoMini'
-import { XFormItem } from '@/components/XForm/types'
 import useDeviceWsURL from '@/hooks/device/useDeviceWsURL'
 import { BaseDeviceDetailProps } from '../routes'
 import XModal from '@/components/XModal'
@@ -27,12 +27,14 @@ import IconClose from '@/assets/icons/jsx/IconClose'
 import UavDockConfig from './components/UavDockConfig'
 import AppCollapse from '@/components/AppCollapse'
 import globalConfig from '@/global/config'
-import useFlightReporting from '@/hooks/jinghang/useFlightReporting'
 import MaintenanceStatusSwitch, {
   MAINTENANCE_STATUS_TAG,
 } from './components/MaintenanceStatusSwitch'
 import IconMaintenance from '@/assets/icons/jsx/IconMaintenance'
 import OverflowText from '@/components/ui/OverflowText'
+import TakeoffAction from './components/TakeoffAction'
+import { useMemoizedFn } from 'ahooks'
+import { useTranslation } from 'react-i18next'
 
 type PropsType = BaseDeviceDetailProps
 
@@ -51,58 +53,7 @@ const UavAirportDetail: FC<PropsType> = memo(
     const videoId = data?.properties.videoList?.[0]?.videoId ?? ''
     const childDeviceId = data?.childDevice?.[0]?.deviceId
 
-    const {
-      isCanFly: canTakeoff,
-      reason: cannotTakeoffReason,
-      isLoading: isLoadingFlightReporting,
-      flightAltitudeLimit,
-      returnAltitudeLimit,
-    } = useFlightReporting(childDeviceId)
-
     const { t, i18n } = useTranslation()
-
-    const maxFlightAltitude = useMemo(
-      () => flightAltitudeLimit ?? globalConfig.uavHeightLimit,
-      [flightAltitudeLimit],
-    )
-
-    const maxReturnAltitude = useMemo(
-      () => returnAltitudeLimit ?? globalConfig.uavHeightLimit,
-      [returnAltitudeLimit],
-    )
-
-    const items = useMemo(
-      () =>
-        [
-          {
-            label: t('device.uav.takeoffForm.takeoffHeight.title'),
-            name: 'height',
-            type: 'input-number',
-            rules: [
-              {
-                required: true,
-                message: t('device.uav.takeoffForm.takeoffHeight.required_msg'),
-              },
-            ],
-            otherProps: {
-              style: { width: '100%' },
-              min: 1,
-              max: maxFlightAltitude,
-            },
-          },
-          {
-            label: t('device.uav.takeoffForm.goHomeAltitude.title'),
-            name: 'gohomeAltitude',
-            type: 'input-number',
-            otherProps: {
-              style: { width: '100%' },
-              min: 50,
-              max: maxReturnAltitude,
-            },
-          },
-        ] as XFormItem[],
-      [maxFlightAltitude, maxReturnAltitude, t],
-    )
 
     const [state, setState] = useState<Record<string, any>>({})
 
@@ -190,11 +141,6 @@ const UavAirportDetail: FC<PropsType> = memo(
 
     const [openDebug, setOpenDebug] = useState(false)
 
-    const [
-      takeOffOpen,
-      { setTrue: setTakeoffTrue, setFalse: setTakeoffFalse },
-    ] = useBoolean(false)
-
     const postDeviceService = usePostDeviceService(productKey, deviceId)
     const handleTakeoffOk = async (values: any) => {
       await postDeviceService(
@@ -202,7 +148,6 @@ const UavAirportDetail: FC<PropsType> = memo(
         values,
         t('controlRoom.uav.service.takeoff.title'),
       )
-      setTakeoffFalse()
     }
 
     const isRightDetail = useIsRightDetail()
@@ -298,18 +243,11 @@ const UavAirportDetail: FC<PropsType> = memo(
               >
                 {t('device.uavDock.remoteDebug.title')}
               </Button>
-              <Tooltip title={!canTakeoff ? cannotTakeoffReason : undefined}>
-                <Button
-                  loading={isLoadingFlightReporting}
-                  disabled={state.modeCode !== 0 || !canTakeoff}
-                  block
-                  className="h-7"
-                  icon={<IconTakeoff />}
-                  onClick={setTakeoffTrue}
-                >
-                  {t('device.uavDock.takeoffForm.title')}
-                </Button>
-              </Tooltip>
+              <TakeoffAction
+                childDeviceId={childDeviceId}
+                modeCode={state.modeCode}
+                onConfirm={handleTakeoffOk}
+              />
             </div>
 
             {data?.childDevice?.[0]?.deviceId && (
@@ -369,17 +307,6 @@ const UavAirportDetail: FC<PropsType> = memo(
               />
             </XModal>
           ))}
-        {takeOffOpen && (
-          <FormModal
-            localInitialValues={{ key: 'uav_takeoff' }}
-            title={`${t('device.uavDock.takeoffForm.title')} ALT(m)`}
-            open={takeOffOpen}
-            items={items}
-            onClose={setTakeoffFalse}
-            onConfirm={handleTakeoffOk}
-            confirmLoading={state.modeCode !== 0}
-          />
-        )}
       </div>
     )
   },
