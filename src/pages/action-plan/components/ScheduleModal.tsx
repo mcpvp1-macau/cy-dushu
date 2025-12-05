@@ -4,6 +4,8 @@ import Select from '@/components/AntdOverride/Select'
 import XModal from '@/components/XModal'
 import { useWaylineAndDeviceFormOptions } from '@/hooks/device/useAirlineOptions'
 import { shouldJson } from '@/utils/json'
+import { parseLastWaypoint } from '@/utils/wayline'
+import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import { InfoCircleOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { useUpdateEffect } from 'ahooks'
 import {
@@ -269,6 +271,8 @@ const ScheduleModal: FC<PropsType> = memo(
       holder,
     } = useWaylineAndDeviceFormOptions(form)
 
+    const uavStates = useMapDevicesStore((s) => s.uavStates)
+
     const filteredAirlineOptions = useMemo(() => {
       if (taskType === 'MULTI') {
         return airlineOptions.filter((e) =>
@@ -491,12 +495,34 @@ const ScheduleModal: FC<PropsType> = memo(
           msgApi.error('请选择飞手')
           return
         }
+
+        // 获取设备位置作为起飞位置
+        const realtimeState = device && uavStates?.[device.deviceId]
+        const flightLng =
+          realtimeState?.longitude ?? device?.properties?.longitude ?? null
+        const flightLat =
+          realtimeState?.latitude ?? device?.properties?.latitude ?? null
+
+        // 解析航线最后一个航点作为目标位置
+        const lastWaypoint = parseLastWaypoint(parameters)
+
         Object.assign(submitData, {
           pilotName: pilotInfo.pilotName,
           orgCode: pilotInfo.orgCode,
           orgName: pilotInfo.orgName,
           flightType: 2,
           actionType: values.actionType,
+          // 添加起飞位置
+          ...(flightLng != null &&
+            flightLat != null && {
+              uavFlightLongitude: flightLng,
+              uavFlightLatitude: flightLat,
+            }),
+          // 添加目标位置（航线最后一个航点）
+          ...(lastWaypoint && {
+            uavTargetLongitude: lastWaypoint.lng,
+            uavTargetLatitude: lastWaypoint.lat,
+          }),
         })
       }
       onConfirm?.(submitData)
