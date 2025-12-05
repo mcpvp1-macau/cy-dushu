@@ -33,12 +33,14 @@ const FixedWindowLiveVideo: FC<PropsType> = memo(({ data }) => {
       }
     >
       <Suspense fallback={<AppSpin className="abs-center" />}>
-        <DeviceLiveVideo
-          useDing={false}
-          productKey={data.params.productKey}
-          deviceId={data.params.deviceId}
-          videoId={data.params.videoId}
-        />
+        <div className="size-full relative bg-black">
+          <DeviceLiveVideo
+            useDing={false}
+            productKey={data.params.productKey}
+            deviceId={data.params.deviceId}
+            videoId={data.params.videoId}
+          />
+        </div>
       </Suspense>
     </BaseWindow>
   )

@@ -91,10 +91,8 @@ const PageAreaWaylineEdit: FC<PropsType> = memo(() => {
             <div className="m-3">
               <AdvancedConfig />
             </div>
-            <div className="m-3 ">
-              <BottomButtions />
-            </div>
           </ScrollArea>
+          <BottomButtions />
         </div>
       </CollapsedPage>
       <CalcAreaPath />

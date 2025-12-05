@@ -212,7 +212,7 @@ const BottomOperator: FC<PropsType> = memo(
     )
 
     return (
-      <div className="m-3 flex gap-5 px-3">
+      <div className="m-3 flex gap-5">
         <Button
           className="flex-1"
           loading={loading === 1}

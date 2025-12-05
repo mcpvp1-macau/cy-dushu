@@ -32,14 +32,14 @@ const ActionStopButton: FC<Props> = ({ actionId }) => {
 
   // 点击终止按钮时的流程：
   // 1. 先调用检查接口，如果需要二次确认则弹出 Popconfirm。
-  // 2. 如果检查失败，按需求直接执行终止逻辑。
+  // 2. 如果检查要弹窗，按需求直接执行终止逻辑。
   // 3. 未触发确认弹窗时直接执行终止。
   const handleEndActionClick = useMemoizedFn(async () => {
     setEndActionLoading(true)
     let needConfirm = false
     try {
       const res = await checkEndAction(actionId)
-      if (res.data === false) {
+      if (res.data === true) {
         needConfirm = true
         setShowStopConfirm(true)
         return
