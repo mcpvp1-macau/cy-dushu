@@ -51,8 +51,6 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
     holder,
   } = useWaylineAndDeviceFormOptions(form)
 
-  const uavStates = useMapDevicesStore((s) => s.uavStates)
-
   const actionTypeOptions = useDictOptions(DictEnum.ACTION_TYPE)
   const currentActionType = useMemo(
     () => actionTypeOptions.find((e) => e.value === actionType),
@@ -130,6 +128,7 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
       (e) => e.deviceId === selectedDeviceIds[0],
     )
     const deviceType = primaryDevice?.deviceType ?? DeviceEnum.UAV
+    const uavStates = useMapDevicesStore.getState().uavStates
 
     const commonData: any = {
       ...pick(values, ['actionItemName']),

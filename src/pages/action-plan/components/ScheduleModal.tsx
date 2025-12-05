@@ -271,8 +271,6 @@ const ScheduleModal: FC<PropsType> = memo(
       holder,
     } = useWaylineAndDeviceFormOptions(form)
 
-    const uavStates = useMapDevicesStore((s) => s.uavStates)
-
     const filteredAirlineOptions = useMemo(() => {
       if (taskType === 'MULTI') {
         return airlineOptions.filter((e) =>
@@ -497,6 +495,7 @@ const ScheduleModal: FC<PropsType> = memo(
         }
 
         // 获取设备位置作为起飞位置
+        const uavStates = useMapDevicesStore.getState().uavStates
         const realtimeState = device && uavStates?.[device.deviceId]
         const flightLng =
           realtimeState?.longitude ?? device?.properties?.longitude ?? null
