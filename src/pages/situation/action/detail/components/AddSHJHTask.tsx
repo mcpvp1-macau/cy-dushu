@@ -6,6 +6,7 @@ import { useWaylineAndDeviceFormOptions } from '@/hooks/device/useAirlineOptions
 import { usePilotTreeData } from '@/hooks/jinghang/usePilots'
 import { createActionItem, getPilotTree } from '@/service/modules/action-item'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
+import usePositionPickerStore from '@/store/map/usePositionPicker.store'
 import { useMemoizedFn } from 'ahooks'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Form, Input, InputNumber, Radio, TreeSelect } from 'antd'
@@ -14,14 +15,75 @@ import { useTranslation } from 'react-i18next'
 import { pick } from 'lodash'
 import Select from '@/components/AntdOverride/Select'
 import { useAppMsg } from '@/hooks/useAppMsg'
-import { CaretDownFilled } from '@ant-design/icons'
+import { CaretDownFilled, AimOutlined } from '@ant-design/icons'
 import { pilotMock } from './pilot-mock'
 import { useDictOptions } from '@/store/useDict.store'
 import { DictEnum } from '@/enum/dict'
+import { shouldJson } from '@/utils/json'
 
 type PropsType = {
   actionId: string
   actionType: string
+}
+
+/**
+ * 解析航线参数，获取最后一个航点的经纬度
+ * 支持多种数据结构：
+ * 1. 数组元素为三元组 [lng, lat, alt]
+ * 2. 数组元素为对象 { pointX, pointY, pointZ }
+ * 3. 数组元素为对象 { x, y, z }
+ * 4. 数组元素为对象 { lng, lat, alt }
+ */
+const parseLastWaypoint = (
+  parameters: any,
+): { lng: number; lat: number } | null => {
+  try {
+    const positions = parameters?.spaces?.[0]?.positions
+    if (!Array.isArray(positions) || positions.length === 0) {
+      return null
+    }
+
+    const lastPosition = positions[positions.length - 1]
+
+    // 情况1：三元组数组 [lng, lat, alt]
+    if (Array.isArray(lastPosition) && lastPosition.length >= 2) {
+      return { lng: lastPosition[0], lat: lastPosition[1] }
+    }
+
+    // 情况2：对象 { pointX, pointY }
+    if (
+      lastPosition != null &&
+      typeof lastPosition === 'object' &&
+      'pointX' in lastPosition &&
+      'pointY' in lastPosition
+    ) {
+      return { lng: lastPosition.pointX, lat: lastPosition.pointY }
+    }
+
+    // 情况3：对象 { x, y }
+    if (
+      lastPosition != null &&
+      typeof lastPosition === 'object' &&
+      'x' in lastPosition &&
+      'y' in lastPosition
+    ) {
+      return { lng: lastPosition.x, lat: lastPosition.y }
+    }
+
+    // 情况4：对象 { lng, lat }
+    if (
+      lastPosition != null &&
+      typeof lastPosition === 'object' &&
+      'lng' in lastPosition &&
+      'lat' in lastPosition
+    ) {
+      return { lng: lastPosition.lng, lat: lastPosition.lat }
+    }
+
+    return null
+  } catch {
+    return null
+  }
 }
 
 const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
@@ -33,6 +95,11 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
   const queryClient = useQueryClient()
   const { t } = useTranslation()
   const [form] = Form.useForm()
+
+  // 选点相关状态
+  const startPicking = usePositionPickerStore((s) => s.startPicking)
+  const stopPicking = usePositionPickerStore((s) => s.stopPicking)
+  const isPicking = usePositionPickerStore((s) => s.isPicking)
 
   const {
     airlineOptions,
@@ -74,12 +141,23 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
   const resetForm = () => {
     form.resetFields()
     setFlightType(0)
+    stopPicking()
   }
 
   const handleClose = () => {
     setOpen(false)
     resetForm()
   }
+
+  // 地图选点处理函数
+  const handlePickPosition = useMemoizedFn(() => {
+    startPicking((lng: number, lat: number) => {
+      form.setFieldsValue({
+        uavTargetLongitude: lng,
+        uavTargetLatitude: lat,
+      })
+    })
+  })
 
   const handleFlightTypeChange = (value: 0 | 1) => {
     setFlightType(value)
@@ -138,22 +216,58 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
         return
       }
 
+      // 验证目标经纬度
+      const targetLng = values.uavTargetLongitude
+      const targetLat = values.uavTargetLatitude
+      if (targetLng == null || targetLat == null) {
+        message.error('请输入目标经纬度')
+        return
+      }
+
       Object.assign(commonData, {
         ...pick(values, ['flightAltitude', 'returnAltitude', 'targetAddress']),
-        uavLongitude: longitude,
-        uavLatitude: latitude,
+        uavFlightLongitude: longitude,
+        uavFlightLatitude: latitude,
+        uavTargetLongitude: targetLng,
+        uavTargetLatitude: targetLat,
       })
     } else {
       const airline = airlineTemplateList?.[values.airlineIndex]
       if (airline) {
+        const parameters = shouldJson(airline.parameters)
+
+        // 解析航线最后一个航点作为目标位置
+        const lastWaypoint = parseLastWaypoint(parameters)
+
+        // 获取设备位置作为起飞位置
+        const realtimeState =
+          primaryDevice && uavStates?.[primaryDevice.deviceId]
+        const flightLng =
+          realtimeState?.longitude ??
+          primaryDevice?.properties?.longitude ??
+          null
+        const flightLat =
+          realtimeState?.latitude ?? primaryDevice?.properties?.latitude ?? null
+
         Object.assign(commonData, {
           templateId: airline.templateId,
           waylineTemplateId: airline.waylineTemplateId,
           taskTemplateInfo: {
             taskBasic: airline.taskBasic,
             defaultDeviceId: values.deviceIds,
-            parameters: JSON.parse(airline.parameters),
+            parameters: parameters,
           },
+          // 添加起飞位置
+          ...(flightLng != null &&
+            flightLat != null && {
+              uavFlightLongitude: flightLng,
+              uavFlightLatitude: flightLat,
+            }),
+          // 添加目标位置（航线最后一个航点）
+          ...(lastWaypoint && {
+            uavTargetLongitude: lastWaypoint.lng,
+            uavTargetLatitude: lastWaypoint.lat,
+          }),
         })
       }
     }
@@ -253,6 +367,48 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
                   min={1}
                   addonAfter={<span className="mx-1">m</span>}
                   placeholder="100m"
+                />
+              </Form.Item>
+              <Form.Item
+                label="目标经度"
+                name="uavTargetLongitude"
+                rules={[{ required: true, message: '请输入目标经度' }]}
+              >
+                <InputNumber
+                  className="w-full"
+                  precision={6}
+                  addonAfter={
+                    <IconButton
+                      className="mx-1"
+                      tippyProps={{ content: '地图选点' }}
+                      active={isPicking}
+                      onClick={handlePickPosition}
+                    >
+                      <AimOutlined />
+                    </IconButton>
+                  }
+                  placeholder="请输入或地图选点"
+                />
+              </Form.Item>
+              <Form.Item
+                label="目标纬度"
+                name="uavTargetLatitude"
+                rules={[{ required: true, message: '请输入目标纬度' }]}
+              >
+                <InputNumber
+                  className="w-full"
+                  precision={6}
+                  addonAfter={
+                    <IconButton
+                      className="mx-1"
+                      tippyProps={{ content: '地图选点' }}
+                      active={isPicking}
+                      onClick={handlePickPosition}
+                    >
+                      <AimOutlined />
+                    </IconButton>
+                  }
+                  placeholder="请输入或地图选点"
                 />
               </Form.Item>
             </>

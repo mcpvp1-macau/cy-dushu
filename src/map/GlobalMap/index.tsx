@@ -25,6 +25,7 @@ import FlightAreaEditor from './OverlayEditor/FlightAreaEditor'
 import Reconstruction2D from '../CesiumMap/components/service/Reconstruction2D/Reconstruction2D'
 import Reconstruction2DResultList from '../CesiumMap/components/service/Reconstruction2D/Reconstruction2DResultList'
 import BottomSafeArea from './BottomSafeArea'
+import GlobalPositionPicker from './GlobalPositionPicker'
 // import Demo from './Test'
 
 type PropsType = unknown
@@ -60,6 +61,7 @@ const GlobalMap: FC<PropsType> = memo(() => {
           <Reconstruction2D />
           <Reconstruction2DResultList />
           <BottomSafeArea />
+          <GlobalPositionPicker />
           {/* <Demo /> */}
         </CesiumMap>
       </DeferredRender>
