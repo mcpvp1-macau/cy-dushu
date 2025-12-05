@@ -20,7 +20,7 @@ import { pilotMock } from './pilot-mock'
 import { useDictOptions } from '@/store/useDict.store'
 import { DictEnum } from '@/enum/dict'
 import { shouldJson } from '@/utils/json'
-import { parseLastWaypoint } from '@/utils/wayline'
+import { parseLastWaypoint, parseMaxFlightAltitude } from '@/utils/wayline'
 
 type PropsType = {
   actionId: string
@@ -175,9 +175,16 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
       const airline = airlineTemplateList?.[values.airlineIndex]
       if (airline) {
         const parameters = shouldJson(airline.parameters)
+        const taskBasic = shouldJson(airline.taskBasic)
 
         // 解析航线最后一个航点作为目标位置
         const lastWaypoint = parseLastWaypoint(parameters)
+
+        // 解析航线中所有航点的最高飞行高度
+        const maxFlightAltitude = parseMaxFlightAltitude(parameters)
+
+        // 解析返航高度
+        const returnAltitude = taskBasic?.globalRTHHeight ?? null
 
         // 获取设备位置作为起飞位置
         const realtimeState =
@@ -197,6 +204,14 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
             defaultDeviceId: values.deviceIds,
             parameters: parameters,
           },
+          // 添加飞行高度（航线中最高点的高度）
+          ...(maxFlightAltitude != null && {
+            flightAltitude: maxFlightAltitude,
+          }),
+          // 添加返航高度
+          ...(returnAltitude != null && {
+            returnAltitude,
+          }),
           // 添加起飞位置
           ...(flightLng != null &&
             flightLat != null && {

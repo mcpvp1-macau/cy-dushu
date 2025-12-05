@@ -4,7 +4,7 @@ import Select from '@/components/AntdOverride/Select'
 import XModal from '@/components/XModal'
 import { useWaylineAndDeviceFormOptions } from '@/hooks/device/useAirlineOptions'
 import { shouldJson } from '@/utils/json'
-import { parseLastWaypoint } from '@/utils/wayline'
+import { parseLastWaypoint, parseMaxFlightAltitude } from '@/utils/wayline'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import { InfoCircleOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { useUpdateEffect } from 'ahooks'
@@ -505,12 +505,27 @@ const ScheduleModal: FC<PropsType> = memo(
         // 解析航线最后一个航点作为目标位置
         const lastWaypoint = parseLastWaypoint(parameters)
 
+        // 解析航线中所有航点的最高飞行高度
+        const maxFlightAltitude = parseMaxFlightAltitude(parameters)
+
+        // 解析返航高度
+        const taskBasic = shouldJson(activeAirline.taskBasic)
+        const returnAltitude = taskBasic?.globalRTHHeight ?? null
+
         Object.assign(submitData, {
           pilotName: pilotInfo.pilotName,
           orgCode: pilotInfo.orgCode,
           orgName: pilotInfo.orgName,
           flightType: 2,
           actionType: values.actionType,
+          // 添加飞行高度（航线中最高点的高度）
+          ...(maxFlightAltitude != null && {
+            flightAltitude: maxFlightAltitude,
+          }),
+          // 添加返航高度
+          ...(returnAltitude != null && {
+            returnAltitude,
+          }),
           // 添加起飞位置
           ...(flightLng != null &&
             flightLat != null && {
