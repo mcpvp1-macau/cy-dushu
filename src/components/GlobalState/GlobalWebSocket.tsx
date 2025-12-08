@@ -422,6 +422,19 @@ const GlobalWebSocket: FC<PropsType> = memo(() => {
         // 断点续飞
         handleRelayEvent(message)
         break
+      case 'SHJH_PILOT_APPROVAL': {
+        const { actionId, deviceId } = shouldJson(message) ?? message ?? {}
+        if (!actionId || !deviceId) {
+          break
+        }
+        queryClient.invalidateQueries({
+          queryKey: ['action', String(actionId), 'items'],
+        })
+        queryClient.invalidateQueries({
+          queryKey: ['jinghang', 'deviceCanFly', deviceId],
+        })
+        break
+      }
 
       case 'OVERLAY_SHARE':
         // 共享结果
