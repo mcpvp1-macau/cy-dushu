@@ -437,7 +437,7 @@ const ShanghaiBanAreas: FC<PropsType> = memo(() => {
         entities.forEach((entity) => {
           viewer.entities.remove(entity)
         })
-      } catch (error) {}
+      } catch (_error) {}
     }
   }, [viewer])
   return null

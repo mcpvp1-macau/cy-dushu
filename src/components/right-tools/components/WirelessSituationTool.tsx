@@ -110,7 +110,7 @@ const WirelessSituationTool: FC<PropsType> = memo((props) => {
           updateLevelGQSByLevel(level, gqs)
         }
       }
-    } catch (e) {}
+  } catch (_e) {}
   })
 
   useDebounceEffect(

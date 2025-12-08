@@ -10,7 +10,7 @@ import {
 import useDeviceState from '../../hooks/useDeviceState'
 import useConfig from './useConfig'
 
-type PropsType = {}
+type PropsType = Record<string, never>
 
 const DeviceStatusInfo: React.FC<PropsType> = () => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!

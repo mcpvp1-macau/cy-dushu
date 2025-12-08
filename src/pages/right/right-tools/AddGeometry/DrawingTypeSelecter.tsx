@@ -10,7 +10,7 @@ type PropsType = {
 const DrawingTypeSelecter: FC<PropsType> = ({ onChange, lockedType }) => {
   const onChangeType = useMemoizedFn((val) => {
     setType(val)
-    onChange && onChange(val)
+    onChange?.(val)
   })
 
   const { t } = useTranslation()

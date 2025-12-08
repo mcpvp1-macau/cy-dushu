@@ -26,7 +26,7 @@ type ActionsType = {
   resetState: () => void
 }
 
-type CustomerSenderType = {}
+type CustomerSenderType = Record<string, never>
 
 const createInitialState = () => ({
     currentTime: dayjs(),

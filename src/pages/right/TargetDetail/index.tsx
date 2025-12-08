@@ -97,7 +97,7 @@ const TargetDetail: React.FC = () => {
     let data: any[] = []
     try {
       data = JSON.parse(source) || []
-    } catch (error) {}
+    } catch (_error) {}
 
     return data.map((item) => item.deviceName).join(',')
   }

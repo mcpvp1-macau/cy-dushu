@@ -62,8 +62,10 @@ const GroundPolygonCircle: React.FC<PropsType> = ({
     return () => {
       // circleScan.clear()
       try {
-        a && viewer?.entities.remove(a)
-      } catch (error) {}
+        if (a) {
+          viewer?.entities.remove(a)
+        }
+      } catch (_error) {}
     }
   }, [lng, lat, scope])
 
@@ -133,7 +135,9 @@ const GroundPolygonCircle: React.FC<PropsType> = ({
       },
     })
     return () => {
-      radar && viewer?.entities.remove(radar)
+      if (radar) {
+        viewer?.entities.remove(radar)
+      }
     }
   }, [lng, lat, scope, viewer, color, calculatePane])
 

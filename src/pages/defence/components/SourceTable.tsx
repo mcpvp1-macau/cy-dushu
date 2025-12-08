@@ -11,7 +11,7 @@ import {
 import { useSearchParams } from 'react-router-dom'
 import usePageSearchParams from '@/hooks/useTableSearchParams'
 
-type SourceTablesProp = {}
+type SourceTablesProp = Record<string, never>
 
 const columnHelper = createColumnHelper<any>()
 

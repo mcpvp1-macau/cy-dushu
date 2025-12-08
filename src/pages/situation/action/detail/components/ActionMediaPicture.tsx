@@ -74,10 +74,10 @@ const ActionMediaPicture: FC<PropsType> = memo(
         const data = new Uint8Array(arrayBuffer)
 
         // 查找 XMP 数据块
-        const text = new TextDecoder().decode(data)
-        setUsePanorama(text.includes('GPano:UsePanoramaViewer="True"'))
-      } catch (e) {}
-    }
+      const text = new TextDecoder().decode(data)
+      setUsePanorama(text.includes('GPano:UsePanoramaViewer="True"'))
+    } catch (_e) {}
+  }
 
     return (
       <>

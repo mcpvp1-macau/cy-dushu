@@ -3,7 +3,7 @@ import {FC, memo} from 'react'
 import { useOthersControlRoomStore } from '@/store/context-store/useOthersControlRoom.store'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 
-type PropsType = {}
+type PropsType = Record<string, never>
 
 const StatusInfo: FC<PropsType> = memo(() => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!

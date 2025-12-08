@@ -57,7 +57,9 @@ const WanglouTarget: React.FC<PropsType> = ({ data }) => {
             closeIcon: <></>,
             mask: true,
             onVisibleChange: (visible) => {
-              data.imageUrl && setOpen(visible)
+              if (data.imageUrl) {
+                setOpen(visible)
+              }
             },
           }}
         ></Image>

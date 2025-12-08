@@ -420,7 +420,7 @@ const AreaDetectModal: FC<PropsType> = memo(
           })
           targetActionId = resp.data.actionId
           shouldNavigate = true
-        } catch (error) {
+        } catch (_error) {
           msgApi.error('创建行动失败，请稍后重试')
           return
         }

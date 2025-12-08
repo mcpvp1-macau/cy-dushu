@@ -78,8 +78,10 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
 
     return () => {
       viewer?.scene.primitives.remove(areaPrimitiveRef.current)
-      handlerRef.current &&
-        (handlerRef.current.destroy(), (handlerRef.current = null))
+      if (handlerRef.current) {
+        handlerRef.current.destroy()
+        handlerRef.current = null
+      }
       quitRecontructionArea()
       updateDrawing(DrawType.None)
     }
@@ -141,7 +143,9 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
           setState('drawing')
           circleCenter.current = null
           endPoint.current = null
-          areaPrimitiveRef.current && (areaPrimitiveRef.current.positions = [])
+          if (areaPrimitiveRef.current) {
+            areaPrimitiveRef.current.positions = []
+          }
         } else if (
           areaPrimitiveRef.current!.radius < MIN_RADIUS ||
           areaPrimitiveRef.current?.area === 0
@@ -150,7 +154,9 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
           setState('drawing')
           circleCenter.current = null
           endPoint.current = null
-          areaPrimitiveRef.current && (areaPrimitiveRef.current.positions = [])
+          if (areaPrimitiveRef.current) {
+            areaPrimitiveRef.current.positions = []
+          }
         } else {
           setTrue()
           setIsDraw(false)
@@ -255,21 +261,24 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
         if (oid === overlayId) {
           setState('reconstruction_end')
           const areaLabel = areaPrimitiveRef.current?.getAreaLabel()
-          areaLabel &&
-            (areaLabel.text = t('mapLayer.reconstructionMap.task.completed'))
+          if (areaLabel) {
+            areaLabel.text = t('mapLayer.reconstructionMap.task.completed')
+          }
         }
       })
       // 任务成功，就退出绘制，并且保留结果
       setIsDraw(false)
       setState('reconstructing')
       quitRecontructionArea()
-    } catch (error) {
+    } catch (_error) {
       // 失败就清空结果重新绘制
       setState('drawing')
       setIsDraw(true)
       circleCenter.current = null
       endPoint.current = null
-      areaPrimitiveRef.current && (areaPrimitiveRef.current.positions = [])
+      if (areaPrimitiveRef.current) {
+        areaPrimitiveRef.current.positions = []
+      }
     } finally {
       setFalse()
     }
@@ -282,7 +291,9 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
         setFalse()
         circleCenter.current = null
         endPoint.current = null
-        areaPrimitiveRef.current && (areaPrimitiveRef.current.positions = [])
+        if (areaPrimitiveRef.current) {
+          areaPrimitiveRef.current.positions = []
+        }
         setIsDraw(true)
         setState('drawing')
       }}

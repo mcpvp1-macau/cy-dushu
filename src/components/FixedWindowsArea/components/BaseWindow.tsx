@@ -259,7 +259,6 @@ const BaseWindow = memo(
       window.addEventListener('touchmove', handleTouchMove)
       window.addEventListener('mouseup', handleEnd)
       window.addEventListener('touchend', handleEnd)
-      window.addEventListener
       window.document.body.style.userSelect = 'none'
       return () => {
         window.removeEventListener('mousemove', handleMouseMove)

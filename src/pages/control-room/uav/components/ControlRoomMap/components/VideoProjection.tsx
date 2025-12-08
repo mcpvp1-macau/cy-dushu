@@ -60,11 +60,13 @@ const VideoProjection: FC<PropsType> = memo((props) => {
         },
       })
 
-      return () => {
-        attempt(() => {
-          entityRef.current && viewer.entities.remove(entityRef.current)
-        })
-      }
+    return () => {
+      attempt(() => {
+        if (entityRef.current) {
+          viewer.entities.remove(entityRef.current)
+        }
+      })
+    }
     },
     [props.videoElement, viewer],
     { wait: 10, trailing: true },

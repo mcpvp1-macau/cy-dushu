@@ -89,7 +89,7 @@ export const useMouseStyle = (open: boolean = true) => {
       try {
         handler.destroy()
         viewer.scene.canvas.style.cursor = 'default'
-      } catch (error) {}
+      } catch (_error) {}
     }
   }, [open])
 }

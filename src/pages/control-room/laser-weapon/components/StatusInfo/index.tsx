@@ -10,7 +10,7 @@ import TrackingRadarStatusInfo from './TrackingRadarStatusInfo'
 import ElectroOpticalStatusInfo from './ElectroOpticalStatusInfo'
 import LaserStatusInfo from './LaserStatusInfo'
 
-type PropsType = {}
+type PropsType = Record<string, never>
 
 const StatusInfo: React.FC<PropsType> = () => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!

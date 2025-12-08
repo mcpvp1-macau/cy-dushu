@@ -230,15 +230,19 @@ const HoverDetail = ({ item, option, onClose }: Props) => {
     },
   )
 
-  useMount(() => {
-    viewer && viewer.scene.preRender.addEventListener(getPos)
-  })
+useMount(() => {
+  if (viewer) {
+    viewer.scene.preRender.addEventListener(getPos)
+  }
+})
 
-  useUnmount(() => {
-    try {
-      viewer && viewer.scene.preRender.removeEventListener(getPos)
-    } catch (e) {}
-  })
+useUnmount(() => {
+  try {
+    if (viewer) {
+      viewer.scene.preRender.removeEventListener(getPos)
+    }
+  } catch (_e) {}
+})
 
   if (!item) return null
 

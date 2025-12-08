@@ -17,7 +17,7 @@ import InfoItem, { I } from './InfoItem'
 //   )
 // }
 
-type PropsType = {}
+type PropsType = Record<string, never>
 
 const StatusInfo: FC<PropsType> = memo(() => {
   const { t } = useTranslation()

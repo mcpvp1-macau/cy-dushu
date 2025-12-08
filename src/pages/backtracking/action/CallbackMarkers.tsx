@@ -67,9 +67,11 @@ const CallbackMarkers: React.FC<PropsType> = memo(
 
     useFly(data?.[0])
 
-    useEffect(() => {
-      deviceIds.length && run()
-    }, [deviceIds, startTime, dataTime])
+  useEffect(() => {
+    if (deviceIds.length) {
+      run()
+    }
+  }, [deviceIds, startTime, dataTime])
 
 
     return (

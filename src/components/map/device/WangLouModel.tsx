@@ -57,7 +57,7 @@ const WangLouModel: React.FC<PropsType> = memo(({ data }) => {
     return () => {
       try {
         viewer.entities.remove(entity)
-      } catch (error) {}
+      } catch (_error) {}
     }
   }, [viewer])
   return null

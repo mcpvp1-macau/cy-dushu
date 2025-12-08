@@ -125,7 +125,7 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
       // 查找 XMP 数据块
       const text = new TextDecoder().decode(data)
       setUsePanorama(text.includes('GPano:UsePanoramaViewer="True"'))
-    } catch (e) {}
+    } catch (_e) {}
   }
 
   const pictureTypeOptions = useMemo(

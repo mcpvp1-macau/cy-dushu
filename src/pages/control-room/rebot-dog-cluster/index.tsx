@@ -64,10 +64,10 @@ const PageRebotDogCluster: FC<PropsType> = memo(() => {
         },
         detail.properties,
       )
-    } catch (error) {
-      msgApi?.error?.('加载机器狗信息失败')
-    }
-  })
+  } catch (_error) {
+    msgApi?.error?.('加载机器狗信息失败')
+  }
+})
 
   useEffect(() => {
     const currentDogs = new URLSearchParams(window.location.search)

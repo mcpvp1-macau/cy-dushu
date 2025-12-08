@@ -459,10 +459,14 @@ export class OverlayPolygonPrimitive {
         getPixelSizeInMeters(frameState)
     }
 
-    // @ts-ignore
-    this._polygon && this._polygon.update(frameState)
-    // @ts-ignore
-    this._polygonOutline && this._polygonOutline.update(frameState)
+    if (this._polygon) {
+      // @ts-ignore
+      this._polygon.update(frameState)
+    }
+    if (this._polygonOutline) {
+      // @ts-ignore
+      this._polygonOutline.update(frameState)
+    }
     // @ts-ignore
     this._label.update(frameState)
   }
@@ -639,10 +643,14 @@ export class OverlayCirclePrimitive {
         getPixelSizeInMeters(frameState)
     }
 
-    // @ts-ignore
-    this._circle && this._circle.update(frameState)
-    // @ts-ignore
-    this._circleOutline && this._circleOutline.update(frameState)
+    if (this._circle) {
+      // @ts-ignore
+      this._circle.update(frameState)
+    }
+    if (this._circleOutline) {
+      // @ts-ignore
+      this._circleOutline.update(frameState)
+    }
     if (this._label.length > 0) {
       // @ts-ignore
       this._label.update(frameState)
@@ -818,10 +826,14 @@ export class OverlayFanPrimitive {
         getPixelSizeInMeters(frameState)
     }
 
-    // @ts-ignore
-    this._fan && this._fan.update(frameState)
-    // @ts-ignore
-    this._fanOutline && this._fanOutline.update(frameState)
+    if (this._fan) {
+      // @ts-ignore
+      this._fan.update(frameState)
+    }
+    if (this._fanOutline) {
+      // @ts-ignore
+      this._fanOutline.update(frameState)
+    }
     // @ts-ignore
     this._label.update(frameState)
   }

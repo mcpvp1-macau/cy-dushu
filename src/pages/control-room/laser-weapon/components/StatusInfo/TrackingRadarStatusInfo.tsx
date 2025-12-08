@@ -1,6 +1,6 @@
 import {FC, memo} from 'react'
 
-type PropsType = {}
+type PropsType = Record<string, never>
 
 const TrackingRadarStatusInfo: FC<PropsType> = memo(() => {
   return (

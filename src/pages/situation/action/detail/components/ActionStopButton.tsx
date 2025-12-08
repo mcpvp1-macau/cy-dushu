@@ -44,7 +44,7 @@ const ActionStopButton: FC<Props> = ({ actionId }) => {
         setShowStopConfirm(true)
         return
       }
-    } catch (error) {
+    } catch (_error) {
       await handleEndAction()
       return
     } finally {

@@ -31,7 +31,7 @@ const AirPoint: FC<PropsType> = memo(({ positionIndex, lng, lat, alt }) => {
     return () => {
       try {
         viewer.entities.remove(entity)
-      } catch (e) {}
+      } catch (_e) {}
     }
   }, [positionIndex, lng, lat, alt])
   return null
