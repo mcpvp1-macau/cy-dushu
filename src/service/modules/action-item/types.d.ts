@@ -82,6 +82,14 @@ declare namespace API_ACTION_ITEM {
        * 子任务模版id
        */
       taskTplId?: string
+      /**
+       * 飞行高度
+       */
+      flightHeight?: number
+      /**
+       * 返航高度
+       */
+      returnHeight?: number
       [property: string]: any
     }
 

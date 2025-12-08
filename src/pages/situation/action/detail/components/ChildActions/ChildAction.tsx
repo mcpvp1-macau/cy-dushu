@@ -285,6 +285,16 @@ const ChildAction: FC<PropsType> = memo(
             )}
           </div>
           {globalConfig.useFlightReporting && (
+            <div className="flex gap-2">
+              <span>
+                飞行高度: {data.flightHeight ?? '-'}
+              </span>
+              <span>
+                返航高度: {data.returnHeight ?? '-'}
+              </span>
+            </div>
+          )}
+          {globalConfig.useFlightReporting && (
             <div className="flex gap-1">
               <span>报备状态:</span>
               {data.isPassed === 1 ? (
