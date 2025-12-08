@@ -61,15 +61,15 @@ export default class ReconstructionAreaPrimitive {
       }
       this._completed = false
     }
-    // @ts-ignore
     if (this._circle) {
+      // @ts-ignore Cesium typings omit the frameState argument
       this._circle.update(frameState)
     }
-    // @ts-ignore
     if (this._polyline) {
+      // @ts-ignore Cesium typings omit the frameState argument
       this._polyline.update(frameState)
     }
-    // @ts-ignore
+    // @ts-ignore Cesium typings omit the frameState argument
     this._labelCollection.update(frameState)
   }
 

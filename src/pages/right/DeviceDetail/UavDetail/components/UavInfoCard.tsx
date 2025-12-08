@@ -20,7 +20,7 @@ const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
   )
 }
 
-type PropsType = Record<string, never> & Partial<{
+type PropsType = Partial<{
   modelNumber: string
   onlineStatus: string
   signalStrength: number

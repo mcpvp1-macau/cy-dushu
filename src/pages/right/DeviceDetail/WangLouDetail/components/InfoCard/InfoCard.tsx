@@ -11,7 +11,7 @@ import IconButton from '@/components/ui/button/IconButton'
 type PropsType = {
   /** 详情数据 */
   data: API_DEVICE.domain.Device
-} & Record<string, never>
+}
 
 const InfoCard: FC<PropsType> = memo(({ data }) => {
   const { deviceName, deviceId, childDevice } = data

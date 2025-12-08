@@ -1,7 +1,8 @@
-import {FC, memo} from 'react'
+import { FC, memo } from 'react'
 
 import { useOthersControlRoomStore } from '@/store/context-store/useOthersControlRoom.store'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import InfoItem from './InfoItem'
 
 type PropsType = Record<string, never>
 

@@ -20,7 +20,7 @@ const speed = window.globalThis.wanglouSpeed || 1000
 type PropsType = {
   /** 详情数据 */
   data: API_DEVICE.domain.Device
-} & Record<string, never>
+}
 
 const Control: React.FC<PropsType> = (props) => {
   const { data } = props
