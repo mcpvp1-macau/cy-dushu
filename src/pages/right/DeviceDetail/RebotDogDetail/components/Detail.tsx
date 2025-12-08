@@ -58,7 +58,7 @@ const RebotDogDetailDetail: FC<unknown> = memo(() => {
           useVideoQualityCheck={{ open: true }}
         />
       </div>
-      <div className="m-3 space-y-2">
+      <div className="m-3 flex flex-col gap-3">
         <Link className="grow" to={`/control-room/rebot-dog/${deviceId}`}>
           <Button block className="h-7" icon={<IconControlRoom />}>
             {t('device.enterControlRoom.title')}

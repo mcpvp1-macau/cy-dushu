@@ -14,6 +14,8 @@ const RebotDogAsideButtons: FC<unknown> = memo(() => {
   const dogMode = useRebotDogControlRoomStore((s) => s.state.dogMode)
   const serviceHave = useDeviceDetailStore((s) => s.serviceHave)
 
+  const canChangePostureMode = !!serviceHave['changePostureMode']
+  const canChangeMoveMode = !!serviceHave['changeMoveMode']
   const canStopFire = !!serviceHave['stopFire']
   const canStartFire = !!serviceHave['startFire']
   const canStopSmoke = !!serviceHave['stopSmoke']
@@ -53,6 +55,26 @@ const RebotDogAsideButtons: FC<unknown> = memo(() => {
               }}
             >
               紧急停止
+            </Button>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <Button
+              disabled={!canChangePostureMode}
+              onClick={() => {
+                if (!canChangePostureMode) return
+                postDeviceService('changePostureMode')
+              }}
+            >
+              姿态模式
+            </Button>
+            <Button
+              disabled={!canChangeMoveMode}
+              onClick={() => {
+                if (!canChangeMoveMode) return
+                postDeviceService('changeMoveMode')
+              }}
+            >
+              运动模式
             </Button>
           </div>
           <div className="grid grid-cols-2 gap-2">
