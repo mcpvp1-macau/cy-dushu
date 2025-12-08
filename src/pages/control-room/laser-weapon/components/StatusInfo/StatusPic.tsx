@@ -1,5 +1,5 @@
 const StatusPic: React.FC = () => {
-  const { _t } = useTranslation()
+  const { t: _t } = useTranslation()
 
   const _render = (label, column, style) => {
     return (

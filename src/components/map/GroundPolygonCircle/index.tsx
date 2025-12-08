@@ -4,6 +4,7 @@ import {
   GroundPrimitiveCollection,
   useCesium,
 } from 'resium'
+import { useCallback } from 'react'
 import * as Cesium from 'cesium'
 import * as _ from 'lodash'
 import * as turf from '@turf/turf'

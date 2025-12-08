@@ -29,7 +29,7 @@ type PropsType = {
   device: API_DEVICE.domain.Device
 }
 
-const InfoCardItem: React.FC<PropsType> = memo(({ _deviceId, data, device }) => {
+const InfoCardItem: React.FC<PropsType> = memo(({ deviceId: _deviceId, data, device }) => {
   const values = data ? shouldJson(data) : {}
   const modelName =
     device.deviceTags?.find(

@@ -35,7 +35,7 @@ const ActionTanqi: FC<PropsType> = memo(() => {
   const actionId = useParams().actionId
   const groupName = username && actionId ? `ds-${username}-${actionId}` : ''
 
-  const { _t } = useTranslation()
+  const { t: _t } = useTranslation()
 
   const [searchParams, setSearchParams] = useSearchParams()
   const chatIdStr = searchParams.get('chat')

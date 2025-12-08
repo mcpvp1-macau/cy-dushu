@@ -14,7 +14,6 @@ export type TitleProps = AntdTitleProps & {
 
 const Title = ({
   bar = false,
-  _title,
   gap = 8,
   barStyle = {},
   children,

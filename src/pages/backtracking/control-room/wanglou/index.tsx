@@ -25,7 +25,7 @@ const BackTrackingWanglouControlRoom: React.FC = () => {
   const queryClient = useQueryClient()
   const updateDetail = useStore(store, (s) => s.updateDetail)
 
-  const { data, _isLoading } = useQuery(
+  const { data, isLoading: _isLoading } = useQuery(
     {
       queryKey: ['deviceDetail', deviceId],
       queryFn: () => getDeviceDetail(deviceId!),
