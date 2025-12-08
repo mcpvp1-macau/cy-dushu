@@ -86,7 +86,7 @@ export const useUavEntity = () => {
         viewer?.entities?.remove(bottomEntity)
         viewer?.entities?.remove(lineEntity)
         viewer.scene.globe.depthTestAgainstTerrain = false
-      } catch (error) {}
+      } catch (_error) {}
     }
   }, [])
 

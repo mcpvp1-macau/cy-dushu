@@ -3,7 +3,7 @@ import IconButton from '@/components/ui/button/IconButton'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
 
-type PropsType = {}
+type PropsType = Record<string, never>
 
 const CameraVideoProjection: FC<PropsType> = memo(() => {
   const [t] = useTranslation()

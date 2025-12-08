@@ -20,7 +20,7 @@ const OTAUpdateRender: React.FC<{
   }
   onUpdateDevice: () => Promise<void>
 }> = ({ otaInfo, onUpdateDevice }) => {
-  const [statusState, setStatusState] = useState(otaInfo?.status)
+  const [statusState, _setStatusState] = useState(otaInfo?.status)
 
   const currentStatus = statusState || otaInfo?.status
 

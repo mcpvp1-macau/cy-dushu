@@ -33,7 +33,7 @@ const StatusInfo: React.FC = memo(() => {
         }
       }) || []
 
-  const { t } = useTranslation()
+  const { _t } = useTranslation()
 
   return (
     <AppCollapse

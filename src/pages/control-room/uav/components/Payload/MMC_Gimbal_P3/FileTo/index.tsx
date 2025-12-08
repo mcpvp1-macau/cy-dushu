@@ -17,7 +17,7 @@ const FileTo: React.FC<Props> = (props) => {
   const deviceDetail = useDeviceDetailStore((m) => m.deviceDetail)
   const deviceId = deviceDetail?.deviceId || ''
   const productKey = deviceDetail?.deviceModel?.productKey || ''
-  const postDevice = usePostDeviceService(deviceId, productKey)
+  const _postDevice = usePostDeviceService(deviceId, productKey)
 
   const recordAudioFiles =
     useUavControlRoomStore((m) => m.state?.recordAudioFiles) || ''

@@ -8,7 +8,7 @@ import { useLatest } from 'ahooks'
 import PositionTooltip from '@/components/map/PositionTooltip'
 import { OverlayCirclePrimitive } from '@/utils/customPrimitive/OverlayPrimitive'
 
-type PropsType = {}
+type PropsType = Record<string, never>
 
 const DrawRangingCircle: FC<PropsType> = memo(() => {
   /** 圆心 */

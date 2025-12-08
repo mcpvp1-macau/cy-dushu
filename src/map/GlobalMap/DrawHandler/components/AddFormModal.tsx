@@ -59,7 +59,7 @@ const AddFormModal: FC<PropsType> = memo((props) => {
                 accept: 'image/*',
                 maxCount: 1,
                 listType: 'picture-card',
-                beforeUpload: (file: File) => {
+                beforeUpload: (_file: File) => {
                   return false // 阻止上传
                 },
               },

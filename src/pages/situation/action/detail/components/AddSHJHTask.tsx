@@ -250,7 +250,7 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
       <XModal
         title={t('action.detail.task.add.title')}
         open={open}
-        confirmTitle="申报"
+        confirmTitle="确定"
         confirmLoading={confirmLoading}
         centered
         width={400}

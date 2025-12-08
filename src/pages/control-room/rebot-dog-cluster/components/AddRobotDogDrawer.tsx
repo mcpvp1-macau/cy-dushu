@@ -73,21 +73,21 @@ const AddRobotDogDrawer: FC<PropsType> = memo(({ open, onClose }) => {
       const videoId =
         detail.properties?.videoList?.[0]?.videoId || detail.videos?.[0]?.videoId
 
-      addDog(
-        {
-          deviceId: device.deviceId,
-          deviceName: detail.deviceName || device.deviceName,
-          productKey,
+    addDog(
+      {
+        deviceId: device.deviceId,
+        deviceName: detail.deviceName || device.deviceName,
+        productKey,
           videoId,
         },
         detail.properties,
-      )
-      msgApi?.success?.('已加入驾驶舱')
-      onClose?.()
-    } catch (error) {
-      msgApi?.error?.('添加设备失败')
-    }
-  })
+    )
+    msgApi?.success?.('已加入驾驶舱')
+    onClose?.()
+  } catch (_error) {
+    msgApi?.error?.('添加设备失败')
+  }
+})
 
   const { run: debouncedSetName } = useDebounceFn(
     (value: string) => {

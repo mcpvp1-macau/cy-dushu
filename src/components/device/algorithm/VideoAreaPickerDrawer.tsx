@@ -75,7 +75,9 @@ const VideoAreaPickerDrawer: React.FC<Props> = (props) => {
   const onContextMenu = (e) => {
     e.preventDefault()
     e.stopPropagation()
-    positions1.length && setState((v) => [...v, positions1])
+    if (positions1.length) {
+      setState((v) => [...v, positions1])
+    }
     setIsDraw(false)
     drawingRef.current = false
     setPositions([])

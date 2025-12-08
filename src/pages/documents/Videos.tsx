@@ -7,7 +7,7 @@ import useUserStore from '@/store/useUser.store'
 import { deleteSystemTutorial } from '@/service/modules/system-config'
 import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
 
-type PropsType = {}
+type PropsType = Record<string, never>
 
 export const allowUsernames = [
   'admin',

@@ -221,7 +221,7 @@ const Board: React.FC<BoardProps> = (props) => {
   useUnmount(() => {
     try {
       map.scene.preRender.removeEventListener(getPos)
-    } catch (e) {}
+    } catch (_e) {}
   })
 
   return (

@@ -1,22 +1,22 @@
 import {
   getGlobalDeviceLocationRetrieval,
-  getTrackQueryMultiDeviceV2,
+  // getTrackQueryMultiDeviceV2,
 } from '@/service/modules/db-api'
 import { useBackTrackingStore } from '@/store/context-store/useBackTracking.store'
-import { useQuery } from '@tanstack/react-query'
-import { memo, useMemo, type FC } from 'react'
+
+import {memo, useMemo} from 'react'
 import {
-  Billboard,
-  BillboardCollection,
-  Label,
-  LabelCollection,
-  useCesium,
+  // Billboard,
+  // BillboardCollection,
+  // Label,
+  // LabelCollection,
+  // useCesium,
 } from 'resium'
-import { attempt } from 'lodash'
-import { deviceIconMap } from '@/map/GlobalMap/DeviceMarkers/OtherMarkers/OtherMarker'
+
+
 import useFly from '../hooks/useFly'
 import { useEffect } from 'react'
-import * as Cesium from 'cesium'
+// import * as Cesium from 'cesium'
 import CallbackMarker from './CallbackMarker'
 import { useRequest } from 'ahooks'
 
@@ -37,7 +37,7 @@ type DeviceBackItem = {
 }
 
 const CallbackMarkers: React.FC<PropsType> = memo(
-  ({ deviceId, deviceIds, onClick }) => {
+  ({ deviceId, deviceIds, onClick: _onClick }) => {
     const dataTime = useBackTrackingStore((s) =>
       s.currentTime.format('YYYY-MM-DD HH:mm:ss'),
     )
@@ -67,9 +67,11 @@ const CallbackMarkers: React.FC<PropsType> = memo(
 
     useFly(data?.[0])
 
-    useEffect(() => {
-      deviceIds.length && run()
-    }, [deviceIds, startTime, dataTime])
+  useEffect(() => {
+    if (deviceIds.length) {
+      run()
+    }
+  }, [deviceIds, startTime, dataTime])
 
 
     return (

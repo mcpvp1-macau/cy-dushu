@@ -110,8 +110,8 @@ const CyberPlayer = memo(
       try {
         await loadCyberPlayer()
         setLoaded(true)
-      } catch (e) {
-        console.error('load cyberplayer failed')
+    } catch (e) {
+      console.error('load cyberplayer failed', e)
       }
     }, [])
 

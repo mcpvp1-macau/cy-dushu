@@ -50,7 +50,7 @@ const useConfig = () => {
     return value !== 'ONLINE' && value !== '在线'
   }
 
-  const powerWarning = (value: number) => {
+  const _powerWarning = (value: number) => {
     return value < 20
   }
 

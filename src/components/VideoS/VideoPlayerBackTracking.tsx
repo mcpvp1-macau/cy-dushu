@@ -100,8 +100,10 @@ const VideoPlayer: FC<PropsType> = memo(
           handlePause()
         }
         try {
-          multiple && playerRef.current?.setPlaybackRate(multiple)
-        } catch (error) {}
+          if (multiple) {
+            playerRef.current?.setPlaybackRate(multiple)
+          }
+        } catch (_error) {}
       }
     }, [time])
 
@@ -109,7 +111,7 @@ const VideoPlayer: FC<PropsType> = memo(
       if (multiple) {
         try {
           playerRef.current?.setPlaybackRate(multiple)
-        } catch (error) {}
+        } catch (_error) {}
       }
     }, [multiple])
 

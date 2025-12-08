@@ -17,7 +17,6 @@ const Video: FC<PropsType> = ({ src }) => {
   const jessibucaRef = useRef<JessibucaPro | null>(null)
 
   const videoEncoderValue = useVideoEncoderStore((s) => s.videoEncoderValue)
-  videoEncoderValue
 
   // 创建播放器
   useEffect(() => {

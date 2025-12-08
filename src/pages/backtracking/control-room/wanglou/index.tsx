@@ -12,7 +12,7 @@ import BackTrackingVideo from '../../device/BackTrackingVideo'
 import { getDeviceDetail } from '@/service/modules/device'
 import { useStore } from 'zustand'
 import StatusInfo from './StatusInfo'
-import useBackTrackingInfo from '../../hooks/useBackTrackingInfo'
+
 import BackTrackingNotControl from '../../device/BackTrackingNotControl'
 import BacktrackingDetailData from '../../device/BacktrackingDetailData'
 import Header from '@/pages/control-room/wanglou/components/Header'
@@ -25,7 +25,7 @@ const BackTrackingWanglouControlRoom: React.FC = () => {
   const queryClient = useQueryClient()
   const updateDetail = useStore(store, (s) => s.updateDetail)
 
-  const { data, isLoading } = useQuery(
+  const { data, _isLoading } = useQuery(
     {
       queryKey: ['deviceDetail', deviceId],
       queryFn: () => getDeviceDetail(deviceId!),

@@ -45,7 +45,7 @@ const ShareVideo: React.FC = () => {
         streamId: `${productKey}/${deviceId}`,
       })
       deviceStreamListCache.current = res.data
-    } catch (error) {}
+    } catch (_error) {}
     return deviceStreamListCache.current
   }
 

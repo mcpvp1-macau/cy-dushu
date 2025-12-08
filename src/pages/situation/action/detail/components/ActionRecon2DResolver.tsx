@@ -1,4 +1,4 @@
-import useQueryHistoryReconstruction2DProcessedResult from '@/hooks/service/reconstruction/useQueryHistoryReconstruction2DProcessedResult'
+
 import { useListenRealProcessedResults } from '@/store/map/useReconstruction2DMap.store'
 
 type PropsType = {

@@ -5,6 +5,6 @@ export const shouldJson = <T = any>(content: any): T | undefined => {
   }
   try {
     return JSON.parse(content)
-  } catch (e) {}
+  } catch (_e) {}
   return undefined
 }

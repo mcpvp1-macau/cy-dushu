@@ -41,7 +41,7 @@ const PathLine: FC<PropsType> = memo(({ point1, point2 }) => {
     return () => {
       try {
         viewer?.entities?.remove(entity)
-      } catch (error) {}
+      } catch (_error) {}
     }
   }, [point1, point2])
 

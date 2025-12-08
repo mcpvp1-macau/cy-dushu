@@ -53,7 +53,9 @@ const SliderValue: React.FC<Props> = (props) => {
           <Button
             disabled={disabled}
             onClick={() => {
-              !disabled && onChange?.(value! - 1)
+              if (!disabled) {
+                onChange?.(value! - 1)
+              }
             }}
             size='small'
             style={{ padding: '0px 6px', marginTop: '6px',width:'20px', height:'20px' }}
@@ -69,7 +71,9 @@ const SliderValue: React.FC<Props> = (props) => {
           <Button
             disabled={disabled}
             onClick={() => {
-              !disabled && onChange?.(value! + 1)
+              if (!disabled) {
+                onChange?.(value! + 1)
+              }
             }}
             size='small'
             style={{ padding: '0px 6px', marginTop: '6px' ,width:'20px', height:'20px' }}

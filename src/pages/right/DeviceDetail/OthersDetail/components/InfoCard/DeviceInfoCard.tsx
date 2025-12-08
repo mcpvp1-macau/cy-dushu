@@ -61,14 +61,14 @@ const DeviceInfoCard: FC<PropsType> = memo(({ data, deviceId }) => {
       if (type === 'bool') {
         try {
           value = item.specs[value!]
-        } catch (error) {
+        } catch (_error) {
           value = item.dataType.specs[value!]
         }
       } else if (type === 'enum') {
         console.info(item, value)
         try {
           value = item.specs[value!]
-        } catch (error) {
+        } catch (_error) {
           value = item.dataType.specs[value!]
         }
       } else if (type === 'double' || type === 'float') {

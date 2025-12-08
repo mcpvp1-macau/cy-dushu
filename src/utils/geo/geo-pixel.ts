@@ -59,7 +59,7 @@ export function pixelToGps(
     [0.0, 1523.6, 706.4672],
     [0.0, 0.0, 1.0],
   ],
-  dist: number[] = [0.1863, -0.3458, 0.0, 0.0, 0.0],
+  _dist: number[] = [0.1863, -0.3458, 0.0, 0.0, 0.0],
 ): [number, number] {
   const pitch = cameraOrientation[1]
   const yaw = cameraOrientation[2]
@@ -83,7 +83,7 @@ export function pixelToGps(
 
   const X_c = (pixelX - cx) / fx
   const Y_c = (pixelY - cy) / fy
-  const Z_c = 1
+  const _Z_c = 1
   const K_val = A / tan(-pitch + Y_c)
   const R = sqrt(A ** 2 + K_val ** 2) as number
   const W = R * X_c
@@ -106,7 +106,7 @@ export function gpsToPixel(
   cameraFocalLength: number,
   sensorWidth: number,
   K: number[][],
-  dist: number,
+  _distParam: number,
 ): [number, number] {
   let fx, fy, cx, cy
   if (K[0][0] === 0) {
@@ -122,7 +122,7 @@ export function gpsToPixel(
     cy = K[1][2]
   }
 
-  const [roll, pitch, yaw] = cameraOrientation
+  const [_roll, pitch, yaw] = cameraOrientation
   const [CamX, CamY] = wgs84ToUtm(cameraGpsCoords[0], cameraGpsCoords[1])
   const A = cameraGpsCoords[2]
   const [TargetX, TargetY] = wgs84ToUtm(gpsLat, gpsLon)

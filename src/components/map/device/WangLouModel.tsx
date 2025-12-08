@@ -1,6 +1,6 @@
 import { useCesium } from 'resium'
-import { Cartesian3, HeadingPitchRoll, Quaternion, Transforms } from 'cesium'
-import { useLatest, useMemoizedFn } from 'ahooks'
+import {HeadingPitchRoll, Transforms} from 'cesium'
+import {useLatest} from 'ahooks'
 import * as Cesium from 'cesium'
 
 type PropsType = {
@@ -57,7 +57,7 @@ const WangLouModel: React.FC<PropsType> = memo(({ data }) => {
     return () => {
       try {
         viewer.entities.remove(entity)
-      } catch (error) {}
+      } catch (_error) {}
     }
   }, [viewer])
   return null

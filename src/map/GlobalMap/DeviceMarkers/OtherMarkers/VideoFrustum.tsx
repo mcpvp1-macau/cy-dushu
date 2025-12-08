@@ -25,7 +25,7 @@ const VideoFrustum: React.FC<PropsType> = ({ data }) => {
     latitude,
     properties,
     deviceId,
-    parentId = '34010000006051159000', // TODO 父设备id
+    parentId: _parentId = '34010000006051159000', // TODO 父设备id
     deviceType,
   } = data
   const { videoList, aspectRatio, fov, far } = properties || {}

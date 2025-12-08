@@ -89,7 +89,7 @@ const EditCircle: React.FC<Props> = (props) => {
     preLnglat.current = endLnglat
   })
 
-  const onLeftUp = useMemoizedFn((e: any) => {
+  const onLeftUp = useMemoizedFn((_e: any) => {
     handlerRef.current.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE)
     handlerRef.current.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_UP)
     viewer.scene.screenSpaceCameraController.enableRotate = true

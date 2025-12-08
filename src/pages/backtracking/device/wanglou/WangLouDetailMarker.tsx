@@ -9,7 +9,7 @@ import * as Cesium from 'cesium'
 import wanglou from '/images/marker/icon/wanglou.svg'
 import { useBackTrackingStore } from '@/store/context-store/useBackTracking.store'
 
-type PropsType = {}
+type PropsType = Record<string, never>
 
 type StateType =
   | (GetProps<typeof MapRealMarker>['data'] & {

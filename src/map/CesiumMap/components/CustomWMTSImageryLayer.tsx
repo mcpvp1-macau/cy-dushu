@@ -1,4 +1,4 @@
-import { ImageryLayer, useCesium } from 'resium'
+import {ImageryLayer} from 'resium'
 import { FC } from 'react'
 import * as Cesium from 'cesium'
 import { shouldJson } from '@/utils/json'

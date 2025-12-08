@@ -36,6 +36,13 @@ const TiffWMTSLoader4326: FC<PropsType> = memo((props) => {
 
     const imagery = viewer.imageryLayers.addImageryProvider(imageryProvider)
 
+    // 确保图层在最上层
+    setTimeout(() => {
+      attempt(() => {
+        viewer.imageryLayers.raiseToTop(imagery)
+      })
+    }, 500)
+
     return () => {
       attempt(() => {
         viewer.imageryLayers.remove(imagery)

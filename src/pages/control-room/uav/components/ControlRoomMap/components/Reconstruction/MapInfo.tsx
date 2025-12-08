@@ -1,4 +1,4 @@
-import { InfoCircleOutlined, InfoOutlined } from '@ant-design/icons'
+import {InfoCircleOutlined} from '@ant-design/icons'
 
 type PropsType = {
   state:

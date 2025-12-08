@@ -46,7 +46,7 @@ export interface Data {
   basic_info: BasicInfo
   recvmac: string
   system_info: SystemInfo
-  operator_info: {} // 可以根据实际情况定义 operator_info 的类型
+  operator_info: Record<string, unknown> // 可以根据实际情况定义 operator_info 的类型
   location_info: LocationInfo
   msgtype: number
   mac: string

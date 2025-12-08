@@ -11,7 +11,7 @@ type Props = {
 }
 
 const FileTo: React.FC<Props> = (props) => {
-  const { playing, onPlay } = props
+  const { _playing, onPlay } = props
   const recordAudioInfos = useUavControlRoomStore(
     (m) => m.state?.recordAudioInfos,
   ) || [

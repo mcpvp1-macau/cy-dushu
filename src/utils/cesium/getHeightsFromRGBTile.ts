@@ -114,7 +114,7 @@ const getHeightsFromRGBTile = async (
   // 保存每个坐标对应的瓦片信息
   const tileMap: Record<string, Tile> = {}
   const coordInTiles: string[] = []
-  for (let coordinate of coordinates) {
+  for (const coordinate of coordinates) {
     const mercatorCoordinate = toMercator(coordinate)
     const { x: tileX, y: tileY } = Tile.getTile(mercatorCoordinate, TILE_LEVEL)
     coordInTiles.push(`${tileX}-${tileY}`)
@@ -167,7 +167,7 @@ const getHeightsFromRGBTile = async (
     ctx.drawImage(image, 0, 0)
     const data = ctx.getImageData(pixelIndex.x, pixelIndex.y, 1, 1).data
 
-    const [r, g, b, a] = data
+    const [r, g, b] = data
 
     return -10000 + (r * 256 * 256 + g * 256 + b) * 0.1
   })

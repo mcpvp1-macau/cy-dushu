@@ -99,18 +99,18 @@ const Tanqi = memo(() => {
     }
     try {
       setSending(true)
-      const resp = await sendDialogMsg({
-        deviceId,
-        id: chatId,
-        prompt: message,
-      })
-      latestRequest.current = resp.data.requestId
-      setApendedRows((prev) => [...prev, resp.data])
-      setAiState(1)
-    } catch (e) {
-      setSending(false)
-    }
+    const resp = await sendDialogMsg({
+      deviceId,
+      id: chatId,
+      prompt: message,
+    })
+    latestRequest.current = resp.data.requestId
+    setApendedRows((prev) => [...prev, resp.data])
+    setAiState(1)
+  } catch (_e) {
+    setSending(false)
   }
+}
 
   // 停止对话
   const handleStop = async () => {
