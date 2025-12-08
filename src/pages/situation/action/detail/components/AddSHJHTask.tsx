@@ -324,47 +324,55 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
                   placeholder="100m"
                 />
               </Form.Item>
-              <Form.Item
-                label="目标经度"
-                name="uavTargetLongitude"
-                rules={[{ required: true, message: '请输入目标经度' }]}
-              >
-                <InputNumber
-                  className="w-full"
-                  precision={6}
-                  addonAfter={
-                    <IconButton
-                      className="mx-1"
-                      tippyProps={{ content: '地图选点' }}
-                      active={isPicking}
-                      onClick={handlePickPosition}
+              <Form.Item label="目标经纬度" required>
+                <div className="flex gap-2">
+                  <div className="flex-1">
+                    <Form.Item
+                      name="uavTargetLongitude"
+                      rules={[{ required: true, message: '请输入目标经度' }]}
+                      noStyle
                     >
-                      <AimOutlined />
-                    </IconButton>
-                  }
-                  placeholder="请输入或地图选点"
-                />
-              </Form.Item>
-              <Form.Item
-                label="目标纬度"
-                name="uavTargetLatitude"
-                rules={[{ required: true, message: '请输入目标纬度' }]}
-              >
-                <InputNumber
-                  className="w-full"
-                  precision={6}
-                  addonAfter={
-                    <IconButton
-                      className="mx-1"
-                      tippyProps={{ content: '地图选点' }}
-                      active={isPicking}
-                      onClick={handlePickPosition}
+                      <InputNumber
+                        className="w-full"
+                        precision={6}
+                        addonAfter={
+                          <IconButton
+                            className="mx-1"
+                            tippyProps={{ content: '地图选点' }}
+                            active={isPicking}
+                            onClick={handlePickPosition}
+                          >
+                            <AimOutlined />
+                          </IconButton>
+                        }
+                        placeholder="请输入或地图选点"
+                      />
+                    </Form.Item>
+                  </div>
+                  <div className="flex-1">
+                    <Form.Item
+                      name="uavTargetLatitude"
+                      rules={[{ required: true, message: '请输入目标纬度' }]}
+                      noStyle
                     >
-                      <AimOutlined />
-                    </IconButton>
-                  }
-                  placeholder="请输入或地图选点"
-                />
+                      <InputNumber
+                        className="w-full"
+                        precision={6}
+                        addonAfter={
+                          <IconButton
+                            className="mx-1"
+                            tippyProps={{ content: '地图选点' }}
+                            active={isPicking}
+                            onClick={handlePickPosition}
+                          >
+                            <AimOutlined />
+                          </IconButton>
+                        }
+                        placeholder="请输入或地图选点"
+                      />
+                    </Form.Item>
+                  </div>
+                </div>
               </Form.Item>
             </>
           ) : (
