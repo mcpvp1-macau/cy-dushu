@@ -82,6 +82,10 @@ export default mergeConfig(
           target: 'http://47.111.155.82:32680',
           changeOrigin: true,
         },
+        '/geoserver': {
+          target: 'http://172.22.219.30:31880',
+          changeOrigin: true,
+        },
       },
     },
     define: {
