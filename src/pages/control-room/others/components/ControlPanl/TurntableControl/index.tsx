@@ -1,11 +1,9 @@
-import Icon from '@/components/Icon'
-import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
-import useObjectTrack from '@/hooks/device/useObjectTrack'
+
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import Control from '@/pages/right/DeviceDetail/OthersDetail/components/Control'
 // import Control from '@/pages/right/DeviceDetail/WangLouDetail/components/Control'
-import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouControlRoom.store'
-import { Button } from 'antd'
+
+
 
 /**
  * 转台控制
@@ -13,7 +11,7 @@ import { Button } from 'antd'
  */
 const TurntableControl: React.FC = () => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)
-  const { deviceId, productKey } = deviceDetail || {}
+  const { _deviceId, _productKey } = deviceDetail || {}
   // const isCameraChangePosition = useWangLouControlRoomStore(
   //   (s) => s.isCameraChangePosition,
   // )

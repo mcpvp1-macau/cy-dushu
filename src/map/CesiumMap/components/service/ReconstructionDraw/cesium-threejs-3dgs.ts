@@ -22,7 +22,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import {
   Viewer as GSViewer,
   SceneRevealMode as GSSceneRevealMode,
-  SplatRenderMode,
+  _SplatRenderMode,
 } from '@mkkellogg/gaussian-splats-3d'
 
 type LoadOPtions = {
@@ -235,7 +235,7 @@ class CesiumThreeJS3DGS {
     height,
     headingPitchRoll,
     scale,
-    camera,
+    camera: _camera,
   }: LoadOPtions) {
     const gsViewer = this.addSplatViewer(layerAttr)
 

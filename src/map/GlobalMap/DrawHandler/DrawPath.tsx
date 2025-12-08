@@ -71,7 +71,7 @@ const DrawPath: FC<PropsType> = memo(({ onSuccess }) => {
 
     // 右键 结束绘制
 
-    handler.setInputAction((e) => {
+    handler.setInputAction((_e) => {
       if (latestPaths.current.length >= 2) {
         setTrue()
       } else {

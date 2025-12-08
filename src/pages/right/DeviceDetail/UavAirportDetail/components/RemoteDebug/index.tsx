@@ -254,7 +254,7 @@ type PropsType = {
 /** 远程调试 */
 const RemoteDebug: FC<PropsType> = ({
   state,
-  onClose,
+  onClose: _onClose,
   data,
   progress,
   className,

@@ -127,7 +127,7 @@ const PickEvent: FC<PropsType> = memo(() => {
     }
   }
 
-  const [rightMenuType, setRightMenuType] = useState<SelectOptionType | null>()
+  const [_rightMenuType, setRightMenuType] = useState<SelectOptionType | null>()
 
   useEffect(() => {
     if (!viewer?.scene) {

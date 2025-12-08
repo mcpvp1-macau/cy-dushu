@@ -44,7 +44,7 @@ const VideoPreview: FC<PropsType> = memo(
           }
         })
 
-        player.on('play', (e) => {
+        player.on('play', (_e) => {
           player.pause()
         })
 

@@ -104,7 +104,9 @@ const POISearch: FC<PropsType> = memo(() => {
         )}
         onClick={(e) => {
           e.stopPropagation()
-          !open && setOpen(true)
+          if (!open) {
+            setOpen(true)
+          }
         }}
         // 阻止冒泡: 为了防止传递到 驾驶舱 的键盘事件
         onKeyDown={(e) => e.stopPropagation()}

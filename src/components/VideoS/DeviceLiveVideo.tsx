@@ -135,7 +135,7 @@ const DeviceLiveVideo = memo(
             streamId: `${productKey}/${deviceId}`,
           })
           deviceStreamListCache.current = res.data
-        } catch (error) {}
+        } catch (_error) {}
         return deviceStreamListCache.current
       }
 

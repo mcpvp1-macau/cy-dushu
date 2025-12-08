@@ -62,15 +62,15 @@ const GroundPolygonCircle: React.FC<PropsType> = ({
     return () => {
       // circleScan.clear()
       try {
-        a && viewer?.entities.remove(a)
-      } catch (error) {}
+        if (a) {
+          viewer?.entities.remove(a)
+        }
+      } catch (_error) {}
     }
   }, [lng, lat, scope])
 
-  return null
-
   // 计算竖直扇形
-  function calculateSector(x1: number, y1: number, x2: number, y2: number) {
+  const calculateSector = useCallback((x1: number, y1: number, x2: number, y2: number) => {
     const positionArr: number[] = []
     positionArr.push(x1)
     positionArr.push(y1)
@@ -90,9 +90,10 @@ const GroundPolygonCircle: React.FC<PropsType> = ({
       positionArr.push(h)
     }
     return positionArr
-  }
+  }, [])
+
   // 计算平面扫描范围
-  function calculatePane(x1, y1, radius, heading) {
+  const calculatePane = useCallback((x1, y1, radius, heading) => {
     const m = Cesium.Transforms.eastNorthUpToFixedFrame(
       Cesium.Cartesian3.fromDegrees(x1, y1),
     )
@@ -108,7 +109,7 @@ const GroundPolygonCircle: React.FC<PropsType> = ({
     const x2 = Cesium.Math.toDegrees(c.longitude)
     const y2 = Cesium.Math.toDegrees(c.latitude)
     return calculateSector(x1, y1, x2, y2)
-  }
+  }, [calculateSector])
 
   useEffect(() => {
     const radar = viewer?.entities.add({
@@ -134,9 +135,11 @@ const GroundPolygonCircle: React.FC<PropsType> = ({
       },
     })
     return () => {
-      radar && viewer?.entities.remove(radar)
+      if (radar) {
+        viewer?.entities.remove(radar)
+      }
     }
-  }, [lng, lat, scope])
+  }, [lng, lat, scope, viewer, color, calculatePane])
 
   // return null
   return (

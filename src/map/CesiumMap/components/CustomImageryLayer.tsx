@@ -27,8 +27,10 @@ const TilesetLayer: FC<PropsType> = memo(({ url }) => {
       dynamicScreenSpaceErrorHeightFalloff: 0.25,
       maximumScreenSpaceError: 0.1, // 根据需要调整，以平衡加载时间和细节
     })
-    tileset && viewer?.scene.primitives.add(tileset)
-    tileset && viewer?.zoomTo(tileset)
+    if (tileset && viewer) {
+      viewer.scene.primitives.add(tileset)
+      viewer.zoomTo(tileset)
+    }
     tilesetRef.current = tileset
   }
 
@@ -45,10 +47,11 @@ const TilesetLayer: FC<PropsType> = memo(({ url }) => {
   useEffect(() => {
     return () => {
       try {
-        tilesetRef.current &&
+        if (tilesetRef.current) {
           viewer?.scene.primitives.remove(tilesetRef.current)
-        tilesetRef.current = null
-      } catch (error) {}
+          tilesetRef.current = null
+        }
+      } catch (_error) {}
     }
   }, [])
 

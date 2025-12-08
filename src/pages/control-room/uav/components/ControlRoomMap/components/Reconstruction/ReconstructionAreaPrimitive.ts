@@ -1,5 +1,6 @@
 import * as Cesium from 'cesium'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type RecursiveRequired<T> = {
   [P in keyof T]-?: T[P] extends object
   ? RecursiveRequired<T[P]>
@@ -55,21 +56,31 @@ export default class ReconstructionAreaPrimitive {
       this.updatePolyline()
       this.updateCircle()
       this.updateLabels()
-      this.onChange && this.onChange(this.area, this.radius)
+      if (this.onChange) {
+        this.onChange(this.area, this.radius)
+      }
       this._completed = false
     }
     // @ts-ignore
-    this._circle && this._circle.update(frameState)
+    if (this._circle) {
+      this._circle.update(frameState)
+    }
     // @ts-ignore
-    this._polyline && this._polyline.update(frameState)
+    if (this._polyline) {
+      this._polyline.update(frameState)
+    }
     // @ts-ignore
     this._labelCollection.update(frameState)
   }
 
   private destroy() {
     this._positions = []
-    this._circle && this._circle.destroy()
-    this._polyline && this._polyline.destroy()
+    if (this._circle) {
+      this._circle.destroy()
+    }
+    if (this._polyline) {
+      this._polyline.destroy()
+    }
     this._labelCollection.destroy()
   }
 

@@ -30,17 +30,17 @@ const ResetHomePointListener: FC<PropsType> = memo(() => {
         gohomeLongitude: lon,
         gohomeLatitude: lat,
       })
-      msgApi.open({
-        key: 'resetHomePoint',
-        type: 'success',
-        content: t(
-          'controlRoom.uav.flyParamsSetting.resetingHomePoint.success',
-        ),
-      })
-    } catch (error) {
-      msgApi.destroy('resetHomePoint')
-    }
-  })
+    msgApi.open({
+      key: 'resetHomePoint',
+      type: 'success',
+      content: t(
+        'controlRoom.uav.flyParamsSetting.resetingHomePoint.success',
+      ),
+    })
+  } catch (_error) {
+    msgApi.destroy('resetHomePoint')
+  }
+})
 
   const { viewer } = useCesium()
 

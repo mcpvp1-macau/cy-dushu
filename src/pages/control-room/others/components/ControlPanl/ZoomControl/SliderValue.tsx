@@ -33,14 +33,20 @@ const SliderValue: React.FC<Props> = (props) => {
             disabled={disabled}
             onMouseDown={() => {
               setValue(-1)
-              !disabled && onChange?.(-1)
+              if (!disabled) {
+                onChange?.(-1)
+              }
             }}
             onMouseLeave={() => {
-              if (value !== null) !disabled && onChange?.(null)
+              if (value !== null && !disabled) {
+                onChange?.(null)
+              }
               setValue(null)
             }}
             onMouseUp={() => {
-              if (value !== null) !disabled && onChange?.(null)
+              if (value !== null && !disabled) {
+                onChange?.(null)
+              }
               setValue(null)
             }}
             style={{ padding: '0px 6px', marginTop: '4px' }}
@@ -51,14 +57,20 @@ const SliderValue: React.FC<Props> = (props) => {
             disabled={disabled}
             onMouseDown={() => {
               setValue(1)
-              !disabled && onChange?.(1)
+              if (!disabled) {
+                onChange?.(1)
+              }
             }}
             onMouseLeave={() => {
-              if (value !== null) !disabled && onChange?.(null)
+              if (value !== null && !disabled) {
+                onChange?.(null)
+              }
               setValue(null)
             }}
             onMouseUp={() => {
-              if (value !== null) !disabled && onChange?.(null)
+              if (value !== null && !disabled) {
+                onChange?.(null)
+              }
               setValue(null)
             }}
             style={{ padding: '0px 6px', marginTop: '4px' }}

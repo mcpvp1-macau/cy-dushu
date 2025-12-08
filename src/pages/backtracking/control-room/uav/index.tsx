@@ -58,7 +58,7 @@ const BackTrackingUavControlRoom: React.FC = () => {
     [t],
   )
   const queryClient = useQueryClient()
-  const { data, isLoading } = useQuery(
+  const { data, _isLoading } = useQuery(
     {
       queryKey: ['deviceDetail', deviceId],
       queryFn: () => getDeviceDetail(deviceId!),

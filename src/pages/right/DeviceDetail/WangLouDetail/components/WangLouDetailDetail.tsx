@@ -1,5 +1,5 @@
-import { ComponentRef, memo, type FC } from 'react'
-import WangLouDetailInfoCard from './WangLouDetailInfoCard'
+import {memo, type FC} from 'react'
+
 import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
 import WangLouLiveVideo from './WangLouLiveVideo'
 import { Link } from 'react-router-dom'

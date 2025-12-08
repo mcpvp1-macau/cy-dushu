@@ -8,7 +8,7 @@ import { deleteFlightArea } from '@/service/modules/flightArea'
 import { LoadingOutlined } from '@ant-design/icons'
 import queryClient from '@/global/query-client'
 import { useFlightAreaConfigStore } from '@/store/map/useFlightArea.store'
-import LiqunTippy from '@/components/ui/LiqunTippy'
+
 import OverflowText from '@/components/ui/OverflowText'
 
 type PropsType = {

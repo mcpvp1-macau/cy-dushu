@@ -18,7 +18,9 @@ const ReconstructionDraw: FC<PropsType> = memo(
       cesium3dgsRef.current = new CesiumThreeJS3DGS(viewer)
 
       const renderThreeObj = () => {
-        cesium3dgsRef.current && cesium3dgsRef.current.renderThreeObj()
+        if (cesium3dgsRef.current) {
+          cesium3dgsRef.current.renderThreeObj()
+        }
       }
       viewer.scene.postRender.addEventListener(renderThreeObj)
 

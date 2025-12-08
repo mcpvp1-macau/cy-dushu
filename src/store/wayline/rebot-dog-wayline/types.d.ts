@@ -4,7 +4,7 @@ export type RebotDogWaylineConfigType = {
 
 export type TakePhotoActionType = {
   type: 'GET_PICTURE'
-  config: {}
+  config: Record<string, never>
 }
 
 export type RebotDogActionType = TakePhotoActionType

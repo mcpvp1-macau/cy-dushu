@@ -41,7 +41,9 @@ export const UploadAudio: React.FC<PropsType> = ({
         console.log(info.file, info.fileList)
       }
       if (info.file.status === 'done') {
-        msg && msgApi.success('上传成功')
+        if (msg) {
+          msgApi.success('上传成功')
+        }
         info.file.originFileObj?.arrayBuffer().then((buffer) => {
           const chunkArray = CryptoJS.lib.WordArray.create(buffer)
           const md5 = MD5(chunkArray).toString()
@@ -52,7 +54,9 @@ export const UploadAudio: React.FC<PropsType> = ({
           })
         })
       } else if (info.file.status === 'error') {
-        msg && msgApi.error('上传失败')
+        if (msg) {
+          msgApi.error('上传失败')
+        }
       }
     },
     beforeUpload: async (file) => {

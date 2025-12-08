@@ -3,7 +3,8 @@ import { useCesium } from 'resium'
 import HoverDetail from './HoverDetail'
 import useBoardObjStore from '@/store/map/useBoardObj.store'
 
-interface Props {}
+type Props = Record<string, never>
+
 const BoardCesium: React.FC<Props> = () => {
   const boardObj = useBoardObjStore((s) => s.boardObj)
   const boardOpenMap = useBoardObjStore((s) => s.boardOpenMap)

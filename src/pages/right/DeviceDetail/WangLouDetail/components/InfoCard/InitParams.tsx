@@ -139,7 +139,7 @@ const InitParams: React.FC<PropsType> = ({ open, setOpen, data }) => {
       }
     })
   }
-  const onValuesChange = (v, values) => {}
+  const onValuesChange = (_v, _values) => {}
   const formFields = [
     {
       label: t('device.setting.base'),

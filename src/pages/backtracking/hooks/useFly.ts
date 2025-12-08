@@ -37,8 +37,8 @@ const useFly = (curAttr) => {
           })
         }
       }
-    } catch (error) {}
-  }, [curAttr])
+  } catch (_error) {}
+}, [curAttr])
 }
 
 export default useFly

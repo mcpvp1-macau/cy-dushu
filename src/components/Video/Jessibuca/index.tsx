@@ -124,7 +124,7 @@ const Jessibuca: FC<PropsType> = memo(({ src, refreshKey, ...props }) => {
       let seiJson: any = {}
       try {
         seiJson = JSON.parse(sei)
-      } catch (error) {}
+      } catch (_error) {}
       if (seiJson.object_list?.length) {
         // dataRef.current.push({ ts: value.ts, data: seiJson });
         props.onSeiAIData?.({

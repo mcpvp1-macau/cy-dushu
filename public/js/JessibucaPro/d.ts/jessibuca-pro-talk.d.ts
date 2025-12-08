@@ -57,7 +57,7 @@ declare class JessibucaProTalk {
      * 获取语音音量
      * * 返回值是一个0-100的数字，表示当前语音音量
      */
-    getTalkVolume(): Promise<Number>;
+    getTalkVolume(): Promise<number>;
 
     /**
      * 设置语音音量

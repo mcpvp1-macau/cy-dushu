@@ -113,7 +113,7 @@ class OrderCesiumRenderController {
   private generatePostProcess() {
     let importPassColorTexture = ''
     let usePassColorTexture = ''
-    let uniforms: Record<string, Function> = {}
+    const uniforms: Record<string, Function> = {}
 
     for (let i = 0; i < this._frameBuffers.length; i++) {
       importPassColorTexture += `uniform sampler2D passColorTexture${i};\n`
@@ -188,7 +188,7 @@ class OrderCesiumRenderController {
     })
     frameState.tilesetPassState = renderTilesetPassState
 
-    let backgroundColor = scene.backgroundColor || Cesium.Color.BLACK
+    const backgroundColor = scene.backgroundColor || Cesium.Color.BLACK
     frameState.backgroundColor = backgroundColor
     frameState.atmosphere = scene.atmosphere
     us.update(frameState)

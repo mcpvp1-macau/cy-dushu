@@ -24,7 +24,7 @@ const HomePoint: FC<PropsType> = memo(({ lng, lat }) => {
     return () => {
       try {
         viewer.entities.remove(entity);
-      } catch (e) {}
+      } catch (_e) {}
     };
   }, [lng, lat]);
   return <></>;

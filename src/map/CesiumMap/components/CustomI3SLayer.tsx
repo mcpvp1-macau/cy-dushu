@@ -1,8 +1,7 @@
-import { ImageryLayer, useCesium } from 'resium'
-import { memo, useMemo, type FC } from 'react'
+import {useCesium} from 'resium'
+import {memo} from 'react'
 import * as Cesium from 'cesium'
 import { useAsyncEffect } from 'ahooks'
-import { re } from 'mathjs'
 
 type Props = {
   url: string

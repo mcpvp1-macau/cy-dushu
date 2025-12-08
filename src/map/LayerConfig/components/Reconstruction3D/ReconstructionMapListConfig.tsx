@@ -78,7 +78,9 @@ const ReconstructionMapListConfig: FC<PropsType> = memo((props) => {
 
     if (show) {
       layerListGroup[groupId]?.forEach((e) => {
-        e.status === 'FINISHED' && newShowLayerIds.add(e.overlayId)
+        if (e.status === 'FINISHED') {
+          newShowLayerIds.add(e.overlayId)
+        }
       })
     } else {
       layerListGroup[groupId]?.forEach((e) => {
@@ -176,7 +178,7 @@ const ReconstructionMapListConfig: FC<PropsType> = memo((props) => {
       msgApi.success(t('mapLayer.reconstructionMap.create.overlay.start'))
       setCreateOpen(false)
       setConfirmLoading(false)
-    } catch (error) {
+    } catch (_error) {
       msgApi.error(t('mapLayer.reconstructionMap.create.overlay.failed'))
       setCreateOpen(false)
       setConfirmLoading(false)

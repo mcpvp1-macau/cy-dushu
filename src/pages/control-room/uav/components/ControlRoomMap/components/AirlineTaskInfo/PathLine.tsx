@@ -31,7 +31,7 @@ const PathLine: FC<PropsType> = memo(({ from, to }) => {
     return () => {
       try {
         viewer.entities.remove(entity)
-      } catch (e) {}
+      } catch (_e) {}
     }
   }, [from, to])
   return null

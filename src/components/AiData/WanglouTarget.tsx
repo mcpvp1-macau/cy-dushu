@@ -21,10 +21,10 @@ const WanglouTarget: React.FC<PropsType> = ({ data }) => {
     bboxLeft,
     bboxTop,
     bboxWidth,
-    childDeviceId,
-    parentId,
+    childDeviceId: _childDeviceId,
+    parentId: _parentId,
     objectLabelName,
-    imageSource,
+    imageSource: _imageSource,
     deviceInfo,
   } = data
 
@@ -57,7 +57,9 @@ const WanglouTarget: React.FC<PropsType> = ({ data }) => {
             closeIcon: <></>,
             mask: true,
             onVisibleChange: (visible) => {
-              data.imageUrl && setOpen(visible)
+              if (data.imageUrl) {
+                setOpen(visible)
+              }
             },
           }}
         ></Image>

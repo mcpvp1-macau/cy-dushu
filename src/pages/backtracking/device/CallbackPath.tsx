@@ -19,7 +19,7 @@ const CallbackPath: React.FC<PropsType> = memo(({
   const { viewer } = useCesium()
   const primitiveRef = useRef<Cesium.Primitive>()
   const instanceRef = useRef<Cesium.GeometryInstance>()
-  const geometryRef = useRef<Cesium.PolylineGeometry>()
+  const _geometryRef = useRef<Cesium.PolylineGeometry>()
   
   const currentTime = useBackTrackingStore((state) => state.currentTime)
   const listRef = useLatest(value)

@@ -392,7 +392,7 @@ export function parseMapString(str: string) {
   let obj: any = {}
   try {
     obj = JSON.parse(str)
-  } catch (error) {}
+  } catch (_error) {}
 
   return obj
 }
@@ -473,7 +473,7 @@ export function infoFieldFormatter(config: {
           )
           .join(joinString)
       }
-    } catch (error) {}
+    } catch (_error) {}
   }
   return fieldHasValue(value)
     ? `${valueFormatter ? valueFormatter(value) : value}${unit}`

@@ -16,7 +16,7 @@ const speed = window.globalThis.wanglouSpeed || 50
 type PropsType = {
   /** 详情数据 */
   data: API_DEVICE.domain.Device
-} & Partial<{}>
+} & Record<string, never>
 
 const Control1: React.FC<PropsType> = () => {
 
