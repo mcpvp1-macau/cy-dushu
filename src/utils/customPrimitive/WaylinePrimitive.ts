@@ -317,8 +317,8 @@ class WalylinePrimitive {
       const fronPosition = state.front
       const rearPosition = state.rear
 
-      let nextFrontPosition = add(fronPosition, moveVector, new Cartesian3())
-      let nextRearPosition = add(rearPosition, moveVector, new Cartesian3())
+      const nextFrontPosition = add(fronPosition, moveVector, new Cartesian3())
+      const nextRearPosition = add(rearPosition, moveVector, new Cartesian3())
 
       const frontToEndVector = subtract(
         endPosition,

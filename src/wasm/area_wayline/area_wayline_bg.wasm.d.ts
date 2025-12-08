@@ -1,5 +1,4 @@
 /* tslint:disable */
-/* eslint-disable */
 export const memory: WebAssembly.Memory;
 export const get_polygon_area_wayline: (a: any, b: any, c: number, d: any) => any;
 export const main_js: () => void;

@@ -20,7 +20,7 @@ const CameraDetailData = lazy(() => import('./components/CameraDetailData'))
 type PropsType = BaseDeviceDetailProps
 
 const ErEfCarDetail: FC<PropsType> = memo(({ data, headerTools, onClose }) => {
-  const { t } = useTranslation()
+  const { _t } = useTranslation()
 
   const store = useCreateOthersControlRoomStore(
     data.productKey ?? data.deviceModel.productKey,

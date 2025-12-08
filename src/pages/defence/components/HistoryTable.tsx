@@ -1,4 +1,4 @@
-import { Input, Button, DatePicker, Pagination } from 'antd'
+import {Input, Pagination} from 'antd'
 import { getDefenseOverlayHistory } from '@/service/modules/layer_overlay'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import XTable from '@/components/ui/XTable'
@@ -14,7 +14,7 @@ type SourceTablesProp = {}
 
 const columnHelper = createColumnHelper<any>()
 
-const HistoryTable: React.FC<SourceTablesProp> = (props) => {
+const HistoryTable: React.FC<SourceTablesProp> = (_props) => {
   const queryClient = useQueryClient()
   const [searchParams] = useSearchParams()
   const page = Number(searchParams.get('page') ?? 1)

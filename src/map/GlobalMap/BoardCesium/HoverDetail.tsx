@@ -37,8 +37,8 @@ const HoverDetail = ({ item, option, onClose }: Props) => {
     targetLatitude: lat,
     targetLongitude: lng,
     targetId,
-    parentId,
-    deviceId,
+    _parentId,
+    _deviceId,
   } = item
   const elRef = useRef<HTMLDivElement>(null)
   const dragRef = useRef<HTMLDivElement>(null)

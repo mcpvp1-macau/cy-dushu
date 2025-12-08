@@ -37,7 +37,7 @@ const createInitialState = () => ({
 export const createBackTrackingStore = () => {
   return createStore<StateType & ActionsType & CustomerSenderType>()(
     devtools(
-      (set, get) => ({
+      (set, _get) => ({
         ...createInitialState(),
         resetState: () => {
           set(createInitialState(), false, 'resetState')

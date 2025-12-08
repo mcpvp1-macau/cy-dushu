@@ -15,7 +15,7 @@ const FC30PD1: React.FC = () => {
   )!
   const deviceId = useUavControlRoomStore((s) => s.deviceId)
   const postSerivce = usePostDeviceService(productKey, deviceId)
-  const value = useUavControlRoomStore((s) => s.state?.[valueName])
+  const _value = useUavControlRoomStore((s) => s.state?.[valueName])
 
   const getInputMethodField = (
     obj: API_DEVICE.domain.Service | undefined,

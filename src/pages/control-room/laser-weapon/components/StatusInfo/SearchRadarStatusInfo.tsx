@@ -1,6 +1,4 @@
-import { FC, memo, ReactNode } from 'react'
-
-import InfoItem, { I } from './InfoItem'
+import {FC, memo} from 'react'
 
 type PropsType = {}
 

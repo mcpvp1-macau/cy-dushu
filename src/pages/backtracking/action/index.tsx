@@ -2,7 +2,7 @@ import AppViewSuspense from '@/components/AppViewSuspense'
 import CesiumMap from '@/map/CesiumMap'
 import { memo, type FC } from 'react'
 // import { getDeviceDetail } from '@/service/modules/device'
-import AppSpin from '@/components/AppSpin'
+
 // import BackTrackWarpper from './BackTrackWarpper'
 import {
   useCreateBackTrackingStore,
@@ -28,7 +28,7 @@ const PageBackTrackingAction: FC<PropsType> = memo(() => {
 
   const store = useCreateBackTrackingStore()
 
-  const { data, isLoading } = useQuery(
+  const { data, _isLoading } = useQuery(
     {
       queryKey: ['action', actionId],
       queryFn: () => getAction({ actionId }),

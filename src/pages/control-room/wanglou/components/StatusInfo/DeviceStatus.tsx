@@ -15,7 +15,7 @@ type PropsType = {}
 const DeviceStatusInfo: React.FC<PropsType> = () => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
   const state = useWangLouControlRoomStore((s) => s.state)
-  const { deviceModel, childDevice, properties } = deviceDetail || {}
+  const { _deviceModel, childDevice, properties } = deviceDetail || {}
   const { wanglouDeviceInfo } = useConfig()
   const getChildDevice = useMemoizedFn((value: string) => {
     return childDevice?.find((item: any) => item.productKey === TypeMap[value])
@@ -32,21 +32,21 @@ const DeviceStatusInfo: React.FC<PropsType> = () => {
   const edgeComputeDevice = getChildDevice(Name.EdgeCompute)
   const edgeComputeDeviceStatus = edgeComputeDevice?.status
 
-  const [beidou, biedoup] = useDeviceState(deviceDetail, state, Name.BeiDou)
-  const [dianchi, dianchip] = useDeviceState(deviceDetail, state, Name.Battery)
-  const [zhuantai, zhuantaip] = useDeviceState(
+  const [_beidou, biedoup] = useDeviceState(deviceDetail, state, Name.BeiDou)
+  const [_dianchi, dianchip] = useDeviceState(deviceDetail, state, Name.Battery)
+  const [_zhuantai, _zhuantaip] = useDeviceState(
     deviceDetail,
     state,
     Name.Turntable,
   )
-  const [kejianguang, kejianguangp] = useDeviceState(
+  const [_kejianguang, _kejianguangp] = useDeviceState(
     deviceDetail,
     state,
     Name.VisibleLight,
   )
-  const [hongwai, hongwaip] = useDeviceState(deviceDetail, state, Name.Infrared)
-  const [leida, leidap] = useDeviceState(deviceDetail, state, Name.Radar)
-  const [zhendongyi, zhendongyip] = useDeviceState(
+  const [_hongwai, _hongwaip] = useDeviceState(deviceDetail, state, Name.Infrared)
+  const [_leida, _leidap] = useDeviceState(deviceDetail, state, Name.Radar)
+  const [_zhendongyi, _zhendongyip] = useDeviceState(
     deviceDetail,
     state,
     Name.Vibrator,

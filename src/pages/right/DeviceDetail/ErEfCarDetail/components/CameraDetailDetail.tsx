@@ -14,8 +14,8 @@ type PropsType = unknown
 const CameraDetailDetail: FC<PropsType> = memo(() => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
 
-  const deviceId = deviceDetail.deviceId
-  const productKey = (deviceDetail.productKey ||
+  const _deviceId = deviceDetail.deviceId
+  const _productKey = (deviceDetail.productKey ||
     deviceDetail.deviceModel?.productKey)!
 
   const modelName =

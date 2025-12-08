@@ -110,7 +110,7 @@ const XGFlvVideo = memo(
           type: 'play',
         })
       })
-      player.on(Events.TIME_UPDATE, (e: TimeUpdateEvent) => {
+      player.on(Events.TIME_UPDATE, (_e: TimeUpdateEvent) => {
         props.onTimeUpdate?.({
           position: player.currentTime,
           duration: player.duration,
@@ -119,7 +119,7 @@ const XGFlvVideo = memo(
       player.on(Events.PAUSE, (e: PauseOrBufferEvent) => {
         props.onPause?.(e)
       })
-      player.on(Events.PLAYING, (e: PauseOrBufferEvent) => {
+      player.on(Events.PLAYING, (_e: PauseOrBufferEvent) => {
         props.onBuffer?.({
           type: 'play',
         })
@@ -130,7 +130,7 @@ const XGFlvVideo = memo(
       //     type: 'buffer',
       //   })
       // })
-      player.on(Events.WAITING, (e: PauseOrBufferEvent) => {
+      player.on(Events.WAITING, (_e: PauseOrBufferEvent) => {
         props.onBuffer?.({
           type: 'buffer',
         })

@@ -1,7 +1,7 @@
 import DeviceOnlineStatus from '@/components/device/OnlineStatus'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
-import { FC, memo, ReactNode } from 'react'
+import {FC, memo} from 'react'
 import { useTranslation } from 'react-i18next'
 // import { pick } from 'lodash'
 // import { useShallow } from 'zustand/react/shallow'

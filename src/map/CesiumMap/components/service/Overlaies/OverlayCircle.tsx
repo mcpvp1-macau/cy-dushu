@@ -27,11 +27,10 @@ interface Props {
 
 /**用于渲染覆盖物圆形 */
 const OverlayCircle: FC<Props> = (props) => {
-  let {
+  const {
     data,
     primitives,
     center,
-    radius,
     asynchronous,
     isGround = true,
     primitiveType = 'OVERLAY',
@@ -45,6 +44,7 @@ const OverlayCircle: FC<Props> = (props) => {
     strokeWeight = 2,
   } = props
 
+  let { radius } = props
   radius = radius <= 1 ? 1 : radius
 
   const primitiveRef = useRef(

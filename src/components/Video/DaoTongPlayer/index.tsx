@@ -43,7 +43,7 @@ const DaoTongPlayer: React.FC<PropsType> = (props) => {
         serverUrl: '/_proxy/' + globalConfig.daotongServer,
         proxyPrefix: '/_proxy',
         // 播放失败的回调  errorcode 错误码  error 错误信息
-        onerror: (errorcode, error: any) => {},
+        onerror: (_errorcode, _error: any) => {},
         // 播放开始的回调
         onstart: () => {},
         // 播放成功的回调
@@ -57,7 +57,7 @@ const DaoTongPlayer: React.FC<PropsType> = (props) => {
           onVideoInfo?.({ ...videoInfo })
         },
         // 播放状态回调 status 链接状态 AConnectStatus    reason 原因
-        onstatus: (status, reason: string) => {},
+        onstatus: (_status, _reason: string) => {},
       })
 
       // 开始播放

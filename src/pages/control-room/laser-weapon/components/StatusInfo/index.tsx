@@ -4,7 +4,7 @@ import ChildDeviceStatus from './ChildDeviceStatus'
 import React from 'react'
 import StatusPic from './StatusPic'
 import StatusInfoCard from './StatusInfo'
-import ArtilleryStatusInfo from './ArtilleryStatusInfos'
+
 import SearchRadarStatusInfo from './SearchRadarStatusInfo'
 import TrackingRadarStatusInfo from './TrackingRadarStatusInfo'
 import ElectroOpticalStatusInfo from './ElectroOpticalStatusInfo'
@@ -15,7 +15,7 @@ type PropsType = {}
 const StatusInfo: React.FC<PropsType> = () => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
   const { childDevice } = deviceDetail || {}
-  const items =
+  const _items =
     childDevice?.map((item) => {
       return {
         label: item.deviceName || item.name,

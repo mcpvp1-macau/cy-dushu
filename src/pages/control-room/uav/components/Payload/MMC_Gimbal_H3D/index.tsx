@@ -4,11 +4,10 @@ import useWatch from '@/hooks/useWatch'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { useDebounceFn } from 'ahooks'
 import { Slider, Tabs, TabsProps } from 'antd'
-import PitchControl from './PitchControl'
+
 import TextTo from './TextTo'
 import FileTo from './FileTo'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
-
 
 const MMC_Gimbal_P3: React.FC = () => {
   const productKey = useDeviceDetailStore(
@@ -76,7 +75,7 @@ const MMC_Gimbal_P3: React.FC = () => {
   }
 
   // "audioPayloadControl"
-  const onClick = (value: number) => {
+  const _onClick = (value: number) => {
     postSerivce('audioPayloadControl', {
       pitch: (audioPayloadPitch || 0) + value,
     })

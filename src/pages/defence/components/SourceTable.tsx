@@ -1,5 +1,5 @@
-import { Input, Button, DatePicker, Pagination } from 'antd'
-import { getDefenseOverlay, undefence } from '@/service/modules/layer_overlay'
+import {Input, Button, Pagination} from 'antd'
+import {getDefenseOverlay} from '@/service/modules/layer_overlay'
 //   import AddDefence from '../AddDefence';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import XTable from '@/components/ui/XTable'
@@ -15,7 +15,7 @@ type SourceTablesProp = {}
 
 const columnHelper = createColumnHelper<any>()
 
-const SourceTable: React.FC<SourceTablesProp> = (props) => {
+const SourceTable: React.FC<SourceTablesProp> = (_props) => {
   const queryClient = useQueryClient()
   const [searchParams] = useSearchParams()
   const page = Number(searchParams.get('page') ?? 1)
@@ -46,7 +46,7 @@ const SourceTable: React.FC<SourceTablesProp> = (props) => {
     queryClient,
   )
 
-  const undefenceOverlay = (overlay) => {
+  const undefenceOverlay = (_overlay) => {
     //   setModalType('DelModal');
     //   setModalInfo({
     //     title: `撤防${overlay.overlayName}`,

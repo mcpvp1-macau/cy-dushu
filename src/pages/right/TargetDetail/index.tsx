@@ -64,7 +64,7 @@ const TargetDetail: React.FC = () => {
     queryClient,
   )
 
-  const { data: labelData, isLoading } = useQuery(
+  const { data: labelData, _isLoading } = useQuery(
     {
       queryKey: ['getProductFieldsByIdentifier', 'targetInfo'],
       queryFn: () =>

@@ -5,7 +5,7 @@ import {
   DeviceDetailStoreContext,
   useCreateDeviceDetailStore,
 } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
-import { useDeepCompareEffect, useLocalStorageState } from 'ahooks'
+import {useLocalStorageState} from 'ahooks'
 import React from 'react'
 import { useStore } from 'zustand'
 import useServerEventMsg from '../uav/hooks/useServerEventMsg'
@@ -89,7 +89,7 @@ const LaserWeaponControlRoom: React.FC = () => {
   // 子设备
   const childDevice = useStore(store, (s) => s.deviceDetail?.childDevice)
 
-  const childDeviceVideos = useMemo(() => {
+  const _childDeviceVideos = useMemo(() => {
     const arr: API_DEVICE.domain.Device[] = []
     childDevice?.forEach((item) => {
       if (item?.properties?.videoList?.length) arr.push(item)
@@ -97,7 +97,7 @@ const LaserWeaponControlRoom: React.FC = () => {
     return arr
   }, [childDevice])
 
-  const videoTabs: {
+  const _videoTabs: {
     type: 'tabs'
     activeKey?: string
     children: DynamicLayoutTabsType
@@ -122,7 +122,7 @@ const LaserWeaponControlRoom: React.FC = () => {
   /** 设备自身的视频 */
   for (let index = 0; index < videoList?.length; index++) {
     const item = videoList[index]
-    const key = `${item.name}-${item.videoId}-${deviceId}`
+    const _key = `${item.name}-${item.videoId}-${deviceId}`
     // videoTabs.push({
     //   type: 'tabs',
     //   size: 200,

@@ -1,5 +1,5 @@
-import { FC, memo, ReactNode } from 'react'
-import InfoItem, { I } from './InfoItem'
+import {FC, memo} from 'react'
+
 import { useOthersControlRoomStore } from '@/store/context-store/useOthersControlRoom.store'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 

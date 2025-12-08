@@ -1,5 +1,5 @@
 import { shouldJson } from '@/utils/json'
-import { useCesium } from 'resium'
+
 import OverlayPath from './OverlayPath'
 import { argbToHex } from '@/utils/color'
 import * as Cesium from 'cesium'

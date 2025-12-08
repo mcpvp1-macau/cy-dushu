@@ -1,5 +1,6 @@
 import * as Cesium from 'cesium'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type RecursiveRequired<T> = {
   [P in keyof T]-?: T[P] extends object
   ? RecursiveRequired<T[P]>
