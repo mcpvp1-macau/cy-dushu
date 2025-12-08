@@ -43,7 +43,9 @@ const PageActionDetailSub: FC<PropsType> = memo(
 
     const [enablePictureOnMap, setEnablePictureOnMap] = useState(false)
 
-    const TaskComponent = globalConfig.env === 'sh-jh' ? AddSHJHTask : AddTask
+    const TaskComponent = globalConfig.useFlightReporting
+      ? AddSHJHTask
+      : AddTask
 
     const items = useMemo(() => {
       if (!actionDetail?.type) {

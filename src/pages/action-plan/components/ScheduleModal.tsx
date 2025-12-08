@@ -4,8 +4,6 @@ import Select from '@/components/AntdOverride/Select'
 import XModal from '@/components/XModal'
 import { useWaylineAndDeviceFormOptions } from '@/hooks/device/useAirlineOptions'
 import { shouldJson } from '@/utils/json'
-import { parseLastWaypoint, parseMaxFlightAltitude } from '@/utils/wayline'
-import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import { InfoCircleOutlined, PlusCircleOutlined } from '@ant-design/icons'
 import { useUpdateEffect } from 'ahooks'
 import {
@@ -250,7 +248,7 @@ const ScheduleModal: FC<PropsType> = memo(
     const type = Form.useWatch('type', form) ?? data?.type
     const taskType =
       (Form.useWatch('taskType', form) || data?.taskType) ?? 'NORMAL'
-    const isShJhEnv = globalConfig.env === 'sh-jh'
+    const useFlightReporting = globalConfig.useFlightReporting
 
     const _actionTypeOptions = useDictOptions(DictEnum.ACTION_TYPE)
     const actionTypeOptions = useMemo(
@@ -309,7 +307,7 @@ const ScheduleModal: FC<PropsType> = memo(
           return getPilotTree()
         },
         select: (d: any) => d.data?.rows ?? [],
-        enabled: isShJhEnv && open,
+        enabled: useFlightReporting && open,
       },
       queryClient,
     )
@@ -487,56 +485,18 @@ const ScheduleModal: FC<PropsType> = memo(
           }
       }
 
-      if (isShJhEnv) {
+      if (useFlightReporting) {
         const pilotInfo = pilotMap.get(values.pilotCode as string)
         if (!pilotInfo) {
           msgApi.error('请选择飞手')
           return
         }
-
-        // 获取设备位置作为起飞位置
-        const uavStates = useMapDevicesStore.getState().uavStates
-        const realtimeState = device && uavStates?.[device.deviceId]
-        const flightLng =
-          realtimeState?.longitude ?? device?.properties?.longitude ?? null
-        const flightLat =
-          realtimeState?.latitude ?? device?.properties?.latitude ?? null
-
-        // 解析航线最后一个航点作为目标位置
-        const lastWaypoint = parseLastWaypoint(parameters)
-
-        // 解析航线中所有航点的最高飞行高度
-        const maxFlightAltitude = parseMaxFlightAltitude(parameters)
-
-        // 解析返航高度
-        const taskBasic = shouldJson(activeAirline.taskBasic)
-        const returnAltitude = taskBasic?.globalRTHHeight ?? null
-
         Object.assign(submitData, {
           pilotName: pilotInfo.pilotName,
           orgCode: pilotInfo.orgCode,
           orgName: pilotInfo.orgName,
           flightType: 2,
           actionType: values.actionType,
-          // 添加飞行高度（航线中最高点的高度）
-          ...(maxFlightAltitude != null && {
-            flightAltitude: maxFlightAltitude,
-          }),
-          // 添加返航高度
-          ...(returnAltitude != null && {
-            returnAltitude,
-          }),
-          // 添加起飞位置
-          ...(flightLng != null &&
-            flightLat != null && {
-              uavFlightLongitude: flightLng,
-              uavFlightLatitude: flightLat,
-            }),
-          // 添加目标位置（航线最后一个航点）
-          ...(lastWaypoint && {
-            uavTargetLongitude: lastWaypoint.lng,
-            uavTargetLatitude: lastWaypoint.lat,
-          }),
         })
       }
       onConfirm?.(submitData)
@@ -588,7 +548,7 @@ const ScheduleModal: FC<PropsType> = memo(
               >
                 <Input placeholder={t('common.form.pleaseInput')} />
               </Form.Item>
-              {isShJhEnv && (
+              {useFlightReporting && (
                 <Form.Item
                   label="行动类型"
                   name="actionType"
@@ -659,7 +619,7 @@ const ScheduleModal: FC<PropsType> = memo(
                 />
               </Form.Item>
 
-              {isShJhEnv && (
+              {useFlightReporting && (
                 <Form.Item
                   label="飞手"
                   name="pilotCode"

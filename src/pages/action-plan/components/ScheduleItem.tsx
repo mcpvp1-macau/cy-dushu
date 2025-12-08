@@ -133,7 +133,6 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
 
   const [expand, { toggle: toggleExpand }] = useBoolean(false)
   const [searchParams] = useSearchParams()
-  const isShJhEnv = globalConfig.env === 'sh-jh'
 
   return (
     <li
@@ -256,7 +255,7 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
               {t('wayline.title')}: {data.actionConfig?.templateName}
             </p>
           </div>
-          {isShJhEnv && (
+          {globalConfig.useFlightReporting && (
             <div className="mt-1 text-xs flex gap-1 items-center">
               <span>报备状态:</span>
               {data.isPassed === 1 ? (

@@ -16,7 +16,9 @@ const useFlightReporting = (deviceId?: string) => {
     queryClient,
   )
 
-  const isCanFly = globalConfig.useFlightReporting ? data?.isCanFly ?? true : true
+  const isCanFly = globalConfig.useFlightReporting
+    ? data?.isCanFly ?? true
+    : true
   const reason = globalConfig.useFlightReporting ? data?.reason : ''
   const flightAltitudeLimit = globalConfig.useFlightReporting
     ? data?.flightAltitude

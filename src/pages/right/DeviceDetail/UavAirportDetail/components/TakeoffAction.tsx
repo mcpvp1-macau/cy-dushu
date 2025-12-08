@@ -7,20 +7,30 @@ import FormModal from '@/components/XForm/Modal'
 import { useTranslation } from 'react-i18next'
 import useFlightReporting from '@/hooks/jinghang/useFlightReporting'
 import globalConfig from '@/global/config'
+import usePostDeviceService from '../../hooks/usePostDeviceService'
 
 interface TakeoffActionProps {
   childDeviceId?: string
   modeCode?: number
-  onConfirm: (values: any) => Promise<void>
 }
 
 const TakeoffAction: FC<TakeoffActionProps> = ({
   childDeviceId,
   modeCode = 0,
-  onConfirm,
 }) => {
   const { t } = useTranslation()
   const [open, { setTrue, setFalse }] = useBoolean(false)
+
+  const postDeviceService = usePostDeviceService()
+
+  const handleTakeoffOk = async (values: any) => {
+    await postDeviceService(
+      'takeoff',
+      values,
+      t('controlRoom.uav.service.takeoff.title'),
+    )
+    setFalse()
+  }
 
   const {
     isCanFly: canTakeoff,
@@ -112,7 +122,7 @@ const TakeoffAction: FC<TakeoffActionProps> = ({
           open={open}
           items={items}
           onClose={setFalse}
-          onConfirm={onConfirm}
+          onConfirm={handleTakeoffOk}
           confirmLoading={modeCode !== 0}
         />
       )}

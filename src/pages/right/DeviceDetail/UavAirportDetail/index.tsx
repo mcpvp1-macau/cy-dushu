@@ -142,13 +142,6 @@ const UavAirportDetail: FC<PropsType> = memo(
     const [openDebug, setOpenDebug] = useState(false)
 
     const postDeviceService = usePostDeviceService(productKey, deviceId)
-    const handleTakeoffOk = async (values: any) => {
-      await postDeviceService(
-        'takeoff',
-        values,
-        t('controlRoom.uav.service.takeoff.title'),
-      )
-    }
 
     const isRightDetail = useIsRightDetail()
 
@@ -246,7 +239,6 @@ const UavAirportDetail: FC<PropsType> = memo(
               <TakeoffAction
                 childDeviceId={childDeviceId}
                 modeCode={state.modeCode}
-                onConfirm={handleTakeoffOk}
               />
             </div>
 

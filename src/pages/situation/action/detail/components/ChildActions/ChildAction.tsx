@@ -284,7 +284,7 @@ const ChildAction: FC<PropsType> = memo(
               </>
             )}
           </div>
-          {globalConfig.env === 'sh-jh' && (
+          {globalConfig.useFlightReporting && (
             <div className="flex gap-1">
               <span>报备状态:</span>
               {data.isPassed === 1 ? (
