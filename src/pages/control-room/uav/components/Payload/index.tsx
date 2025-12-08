@@ -48,7 +48,7 @@ const labelMap: { [key in MountType]: string } = {
 }
 
 /** 无人机负载 */
-const UavPayload: FC<PropsType> = memo(({ _productKey }) => {
+const UavPayload: FC<PropsType> = memo(({ productKey: _productKey }) => {
   // TODO mock 挂载
   const mount: string[] = useUavControlRoomStore((s) => s.state.mounts) || []
   // || [

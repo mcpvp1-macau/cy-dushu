@@ -62,7 +62,7 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
   // webgl渲染是有视锥裁剪的，请求的数据也是在附近的，所以无需使用rTree
   // 但是overlay可能在全球各地，所以使用rTree查找附近的
 
-  const _updatePOIsRTree = useMixARStore((s) => s._updatePOIsRTree)
+  const _updatePOIsRTree = useMixARStore((s) => s.updatePOIsRTree)
   useEffect(() => {
     if (poiData) {
       // const rTree = RBush<GeoJSON.Point, GeoJSON.GeoJsonProperties>()
@@ -89,7 +89,7 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
     queryClient,
   )
 
-  const _updateAOIsRTree = useMixARStore((s) => s._updateAOIsRTree)
+  const _updateAOIsRTree = useMixARStore((s) => s.updateAOIsRTree)
 
   useEffect(() => {
     if (aoiData) {
@@ -117,7 +117,7 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
     queryClient,
   )
 
-  const _updateRoadsRTree = useMixARStore((s) => s._updateRoadsRTree)
+  const _updateRoadsRTree = useMixARStore((s) => s.updateRoadsRTree)
 
   useEffect(() => {
     if (roadData) {
@@ -153,7 +153,7 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
 
   const overlayList = useMapLayerAndOverlayStore((s) => s.overlayList)
   const flightAreaList = useFlightAreaStore((s) => s.flightAreaList)
-  const _updateOverlayRTree = useMixARStore((s) => s._updateOverlayRTree)
+  const _updateOverlayRTree = useMixARStore((s) => s.updateOverlayRTree)
   useEffect(() => {
     if (!range) {
       return

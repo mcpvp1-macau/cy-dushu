@@ -21,7 +21,7 @@ type PropsType = {
  * 检测数据
  * @returns
  */
-const AiData: React.FC<PropsType> = ({ deviceId, timeRange, _height = 500 }) => {
+const AiData: React.FC<PropsType> = ({ deviceId, timeRange, height: _height = 500 }) => {
   const queryClient = useQueryClient()
 
   const { data: filterData, refetch: _getTypes } = useQuery(

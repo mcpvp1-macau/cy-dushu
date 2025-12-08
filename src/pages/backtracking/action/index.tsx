@@ -28,7 +28,7 @@ const PageBackTrackingAction: FC<PropsType> = memo(() => {
 
   const store = useCreateBackTrackingStore()
 
-  const { data, _isLoading } = useQuery(
+  const { data, isLoading: _isLoading } = useQuery(
     {
       queryKey: ['action', actionId],
       queryFn: () => getAction({ actionId }),

@@ -15,7 +15,7 @@ type PropsType = Record<string, never>
 const DeviceStatusInfo: React.FC<PropsType> = () => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
   const state = useWangLouControlRoomStore((s) => s.state)
-  const { _deviceModel, childDevice, properties } = deviceDetail || {}
+  const { deviceModel: _deviceModel, childDevice, properties } = deviceDetail || {}
   const { wanglouDeviceInfo } = useConfig()
   const getChildDevice = useMemoizedFn((value: string) => {
     return childDevice?.find((item: any) => item.productKey === TypeMap[value])

@@ -1,4 +1,5 @@
-import {FC, memo} from 'react'
+import { FC, memo } from 'react'
+import InfoItem from './InfoItem'
 
 type PropsType = Record<string, never>
 

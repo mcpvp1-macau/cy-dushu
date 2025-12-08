@@ -11,7 +11,7 @@ import Control from '@/pages/right/DeviceDetail/OthersDetail/components/Control'
  */
 const TurntableControl: React.FC = () => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)
-  const { _deviceId, _productKey } = deviceDetail || {}
+  const { deviceId: _deviceId, productKey: _productKey } = deviceDetail || {}
   // const isCameraChangePosition = useWangLouControlRoomStore(
   //   (s) => s.isCameraChangePosition,
   // )

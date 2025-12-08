@@ -20,7 +20,7 @@ const TurntableControl: React.FC = () => {
   )
   const hasControlPower = useWangLouControlRoomStore((s) => s.hasControlPower)
 
-  const _enableSmartTrack = useWangLouControlRoomStore((s) => s._enableSmartTrack)
+  const _enableSmartTrack = useWangLouControlRoomStore((s) => s.enableSmartTrack)
   const _updateEnableSmartTrack = useWangLouControlRoomStore(
     (s) => s.updateEnableSmartTrack,
   )

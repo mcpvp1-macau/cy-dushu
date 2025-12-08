@@ -14,7 +14,7 @@ import { shouldJson } from '@/utils/json'
 const WanglouInfo: React.FC = memo(() => {
   const deviceDetail = useBackTrackingStore((s) => s.detail)!
   const currentAttribute = useBackTrackingStore((s) => s.currentAttribute) || {}
-  const { _deviceModel, childDevice, properties } = deviceDetail || {}
+  const { deviceModel: _deviceModel, childDevice, properties } = deviceDetail || {}
   const { wanglouDeviceInfo } = useConfig()
   const getChildDevice = useMemoizedFn((value: string) => {
     return childDevice?.find((item: any) => item.productKey === TypeMap[value])
