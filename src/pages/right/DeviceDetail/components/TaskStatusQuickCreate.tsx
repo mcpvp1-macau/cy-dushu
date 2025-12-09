@@ -22,6 +22,12 @@ interface TaskStatusQuickCreateProps {
   nameMaxWidthClassName?: string
 }
 
+/**
+ * 任务状态展示 + 快捷创建组件
+ * - 路由存在 actionId：直接使用当前行动创建任务
+ * - 无 actionId：先弹出行动表单创建行动，再创建任务；若有 deviceId 默认锁定该设备
+ * - 支持航管版（useFlightReporting）和默认任务表单的差异化入参
+ */
 const TaskStatusQuickCreate: FC<TaskStatusQuickCreateProps> = memo(
   ({ deviceId, className, nameMaxWidthClassName = 'max-w-[220px]' }) => {
     const { t, i18n } = useTranslation()
