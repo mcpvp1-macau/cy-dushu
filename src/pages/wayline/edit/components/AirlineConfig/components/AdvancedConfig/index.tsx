@@ -19,6 +19,18 @@ const AdvancedConfig: FC<PropsType> = () => {
 
   const { t } = useTranslation()
 
+  const displayFormItems = useMemo(() => {
+    if (globalConfig.env === 'xiaoshan') {
+      return moreFormItems.map((item) =>
+        item.key === 'finishAction'
+          ? { ...item, options: item.options.filter((option) => option.value === 'GO_HOME') }
+          : item,
+      )
+    }
+
+    return moreFormItems
+  }, [])
+
   return (
     <XCard
       className="w-full overflow-hidden"
@@ -29,7 +41,7 @@ const AdvancedConfig: FC<PropsType> = () => {
         className="overflow-hidden"
         style={{ marginTop: '8px', marginBottom: '-12px' }}
       >
-        {moreFormItems.map((item) => (
+        {displayFormItems.map((item) => (
           <div className="mb-3" key={item.key}>
             <p className="text-sm mb-2">
               {t(`wayline.advancedSetting.${item.key}.title`)}
