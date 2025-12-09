@@ -74,3 +74,8 @@
 - Keep imports minimal because of auto-import; most React hooks, `useQuery*`, `useTranslation`, `dayjs`, and `globalConfig` are already injected.
 - For map features, consider both 2D/3D paths, respect `globalConfig` toggles (terrain, regional layers), and reuse right-panel modes (`RightModeEnum`).
 - When dealing with uploads or media, ensure `bucketName`, `accessKeyId/secretAccessKey`, and proxy targets in `config.js` are correct; Jessibuca metrics toggle via `enableJessibucaMetrics`.
+
+## Lint and type checking
+
+- To check the code for any linting errors, use: `pnpm lint`
+- To perform a static type check with TypeScript, run: `pnpm ts`
