@@ -1,28 +1,16 @@
-import IconPlus from '@/assets/icons/jsx/IconPlus'
 import SignalStrength from '@/components/device/SignalStrength'
 import IconButton from '@/components/ui/button/IconButton'
 import OverflowText from '@/components/ui/OverflowText'
-import FormModal from '@/components/XForm/Modal'
 import { emtpyObject } from '@/constant/data'
 import { uavDisplayModeTransMap } from '@/constant/trans_map/uav_display_mode'
-import { DictEnum } from '@/enum/dict'
 import { StatusColorMap } from '@/enum/device'
-import { addAction, getAction } from '@/service/modules/action'
-import { getDeviceLatestActionItem } from '@/service/modules/action-item'
 import { useAppMsg } from '@/hooks/useAppMsg'
-import { createAddActionFormItems } from '@/pages/situation/action/components/AddAction'
-import AddSHJHTask from '@/pages/situation/action/detail/components/AddSHJHTask'
-import AddTask from '@/pages/situation/action/detail/components/AddTask'
-import { useDictOptions } from '@/store/useDict.store'
+import TaskStatusQuickCreate from '@/pages/right/DeviceDetail/components/TaskStatusQuickCreate'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { CopyOutlined } from '@ant-design/icons'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { pick, round } from 'lodash'
-import { useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
 import { useShallow } from 'zustand/react/shallow'
 import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
-import IconDetail from '@/assets/icons/jsx/IconDetail'
 
 const I: FC<{ l: ReactNode; v: ReactNode; isfull?: boolean }> = ({
   l,
@@ -69,38 +57,6 @@ const UavDetailInfoCard: FC<PropsType> = memo(
     deviceId,
   }) => {
     const { t, i18n } = useTranslation()
-    const { actionId: routeActionId } = useParams()
-    const queryClient = useQueryClient()
-    const [actionModalOpen, setActionModalOpen] = useState(false)
-    const [actionConfirmLoading, setActionConfirmLoading] = useState(false)
-    const [taskOpenKey, setTaskOpenKey] = useState<number>()
-    const [createdAction, setCreatedAction] = useState<{
-      actionId: string
-      actionType?: string
-    }>()
-    const actionTypeOptions = useDictOptions(DictEnum.ACTION_TYPE)
-    const actionFormItems = useMemo(
-      () => createAddActionFormItems(t, actionTypeOptions),
-      [t, i18n.language, actionTypeOptions],
-    )
-
-    const { data: actionDetail } = useQuery({
-      queryKey: ['action', routeActionId],
-      queryFn: () => getAction({ actionId: routeActionId }),
-      select: (resp) => resp.data,
-      enabled: !!routeActionId,
-    })
-
-    const { data: latestActionItem, isError: latestActionItemIsErr } = useQuery(
-      {
-        queryKey: ['action', 'item', 'device', 'latest', deviceId],
-        queryFn: () =>
-          getDeviceLatestActionItem(deviceId!).then((res) => res.data),
-        enabled: !!deviceId,
-        placeholderData: undefined,
-        gcTime: 0,
-      },
-    )
 
     const s = useUavControlRoomStore(
       useShallow((m) => {
@@ -125,42 +81,6 @@ const UavDetailInfoCard: FC<PropsType> = memo(
     )
 
     const msgApi = useAppMsg()
-    const taskActionId = routeActionId ?? createdAction?.actionId
-    const taskActionType = createdAction?.actionType ?? actionDetail?.type ?? ''
-    const handleCreateTask = () => {
-      if (routeActionId) {
-        setTaskOpenKey(Date.now())
-        return
-      }
-      setActionModalOpen(true)
-    }
-
-    // 任务创建成功回调
-    const handleTaskCreated = async () => {
-      await queryClient.invalidateQueries({
-        queryKey: ['action', 'item', 'device', 'latest', deviceId],
-      })
-    }
-
-    // 创建行动
-    const handleCreateAction = async (values: any) => {
-      setActionConfirmLoading(true)
-      try {
-        const resp = await addAction(values)
-        await queryClient.invalidateQueries({
-          queryKey: ['actionList'],
-          exact: false,
-        })
-        setCreatedAction({
-          actionId: `${resp.data.actionId}`,
-          actionType: values.type,
-        })
-        setActionModalOpen(false)
-        setTaskOpenKey(Date.now())
-      } finally {
-        setActionConfirmLoading(false)
-      }
-    }
 
     // 复制飞参信息
     const handleCopy = async () => {
@@ -259,62 +179,9 @@ const UavDetailInfoCard: FC<PropsType> = memo(
           <I
             isfull
             l={t('common.task')}
-            v={
-              latestActionItem && !latestActionItemIsErr ? (
-                <div className="w-full flex gap-1 items-center overflow-hidden">
-                  {
-                    <Link to={`/action/${latestActionItem?.actionId}`}>
-                      <IconButton>
-                        <IconDetail />
-                      </IconButton>
-                    </Link>
-                  }
-                  <OverflowText className="flex-1 truncate max-w-[220px]">
-                    {latestActionItem.actionItemName || '-'}
-                  </OverflowText>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <span>{t('common.noTask')}</span>
-                  <IconButton
-                    className="text-sm scale-95"
-                    onClick={handleCreateTask}
-                  >
-                    <IconPlus />
-                  </IconButton>
-                </div>
-              )
-            }
+            v={<TaskStatusQuickCreate deviceId={deviceId} />}
           />
         </ul>
-        {taskActionId && (
-          <div className="hidden">
-            {globalConfig.useFlightReporting ? (
-              <AddSHJHTask
-                actionId={taskActionId}
-                actionType={taskActionType}
-                openTriggerKey={taskOpenKey}
-                onSuccess={handleTaskCreated}
-                defaultDeviceId={deviceId}
-              />
-            ) : (
-              <AddTask
-                actionId={taskActionId}
-                openTriggerKey={taskOpenKey}
-                onSuccess={handleTaskCreated}
-                defaultDeviceId={deviceId}
-              />
-            )}
-          </div>
-        )}
-        <FormModal
-          open={actionModalOpen}
-          title={t('action.add.title')}
-          items={actionFormItems}
-          confirmLoading={actionConfirmLoading}
-          onClose={() => setActionModalOpen(false)}
-          onConfirm={handleCreateAction}
-        />
       </>
     )
   },

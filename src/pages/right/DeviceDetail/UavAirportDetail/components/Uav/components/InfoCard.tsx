@@ -1,4 +1,5 @@
 import { StatusColorMap } from '@/enum/device'
+import TaskStatusQuickCreate from '@/pages/right/DeviceDetail/components/TaskStatusQuickCreate'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
 
@@ -11,12 +12,8 @@ const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
   )
 }
 
-type PropsType = {
-  taskStatus?: string
-}
-
 /** 信息卡片 */
-const UavAirportUavDetailInfoCard: FC<PropsType> = memo(({ taskStatus }) => {
+const UavAirportUavDetailInfoCard: FC = memo(() => {
   const { t } = useTranslation()
 
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!
@@ -29,15 +26,6 @@ const UavAirportUavDetailInfoCard: FC<PropsType> = memo(({ taskStatus }) => {
   )
 
   const onlineStatus = useRealOnlineStatus(deviceDetail.deviceId)
-
-  const taskStatusText = useMemo(() => {
-    if (!taskStatus) {
-      return '-'
-    }
-    return taskStatus === 'RUNNING'
-      ? t('device.status.task.RUNNING')
-      : t('device.status.task.IDLE')
-  }, [taskStatus])
 
   const reportedStatus = useMemo(
     () =>
@@ -60,7 +48,10 @@ const UavAirportUavDetailInfoCard: FC<PropsType> = memo(({ taskStatus }) => {
           </span>
         }
       />
-      <I l={t('device.status.task.title')} v={taskStatusText} />
+      <I
+        l={t('device.status.task.title')}
+        v={<TaskStatusQuickCreate deviceId={deviceDetail.deviceId} />}
+      />
       <I l={t('device.status.reported.title')} v={reportedStatus} />
     </ul>
   )
