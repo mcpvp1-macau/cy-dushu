@@ -229,12 +229,5 @@ declare namespace API_ACTION_ITEM {
       rows: API_ACTION_ITEM.domain.PilotTree[]
       total: number
     }
-
-    interface ResultActionItemDetail {
-      code: string
-      message: string
-      data?: API_ACTION_ITEM.domain.ActionItemDetail
-      requestId: string
-    }
   }
 }

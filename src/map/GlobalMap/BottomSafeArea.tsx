@@ -20,7 +20,7 @@ const BottomSafeArea: FC<PropsType> = memo(() => {
       className={clsx(
         'absolute bottom-[20px] right-[56px] min-h-[114px] p-3 z-10',
         'flex items-end gap-3',
-        'overflow-hidden',
+        'overflow-hidden pointer-events-none',
       )}
       style={{
         left: `calc(${getLeft()})`,

@@ -593,6 +593,8 @@ common:
   options: Options
   export: Expert
   resolve: Resolve
+  task: Task
+  noTask: Idle
 events:
   search:
     placeholder: Please search by event name or ID

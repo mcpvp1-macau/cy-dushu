@@ -84,6 +84,9 @@ const OperatorBtns: FC<PropsType> = ({ data, noEdit }) => {
         queryKey: ['action', String(data.actionId), 'items'],
       })
       msgApi.success(t('api.success.msg'))
+      queryClient.invalidateQueries({
+        queryKey: ['action', 'item', 'device', 'latest', data.deviceId],
+      })
     } finally {
       setLoading(false)
     }
@@ -286,12 +289,8 @@ const ChildAction: FC<PropsType> = memo(
           </div>
           {globalConfig.useFlightReporting && (
             <div className="flex gap-2">
-              <span>
-                飞行高度: {data.flightHeight ?? '-'}
-              </span>
-              <span>
-                返航高度: {data.returnHeight ?? '-'}
-              </span>
+              <span>飞行高度: {data.flightHeight ?? '-'}</span>
+              <span>返航高度: {data.returnHeight ?? '-'}</span>
             </div>
           )}
           {globalConfig.useFlightReporting && (

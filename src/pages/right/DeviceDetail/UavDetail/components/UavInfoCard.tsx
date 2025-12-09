@@ -19,13 +19,23 @@ import { CopyOutlined } from '@ant-design/icons'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { pick, round } from 'lodash'
 import { useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { useShallow } from 'zustand/react/shallow'
 import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
+import IconDetail from '@/assets/icons/jsx/IconDetail'
 
-const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
+const I: FC<{ l: ReactNode; v: ReactNode; isfull?: boolean }> = ({
+  l,
+  v,
+  isfull = false,
+}) => {
   return (
-    <li className="w-1/2 flex gap-1 overflow-hidden">
+    <li
+      className={clsx(
+        'flex gap-1 overflow-hidden',
+        isfull ? 'w-full' : 'w-1/2',
+      )}
+    >
       <div className="whitespace-nowrap">{l}:</div>
       {v}
     </li>
@@ -73,18 +83,25 @@ const UavDetailInfoCard: FC<PropsType> = memo(
       () => createAddActionFormItems(t, actionTypeOptions),
       [t, i18n.language, actionTypeOptions],
     )
+
     const { data: actionDetail } = useQuery({
       queryKey: ['action', routeActionId],
       queryFn: () => getAction({ actionId: routeActionId }),
-      select: (resp) => resp.data?.data ?? resp.data,
+      select: (resp) => resp.data,
       enabled: !!routeActionId,
     })
-    const { data: latestActionItem } = useQuery({
-      queryKey: ['action', 'item', 'device', 'latest', deviceId],
-      queryFn: () =>
-        getDeviceLatestActionItem(deviceId!).then((res) => res.data?.data),
-      enabled: !!deviceId,
-    })
+
+    const { data: latestActionItem, isError: latestActionItemIsErr } = useQuery(
+      {
+        queryKey: ['action', 'item', 'device', 'latest', deviceId],
+        queryFn: () =>
+          getDeviceLatestActionItem(deviceId!).then((res) => res.data),
+        enabled: !!deviceId,
+        placeholderData: undefined,
+        gcTime: 0,
+      },
+    )
+
     const s = useUavControlRoomStore(
       useShallow((m) => {
         const s = m.state
@@ -109,8 +126,7 @@ const UavDetailInfoCard: FC<PropsType> = memo(
 
     const msgApi = useAppMsg()
     const taskActionId = routeActionId ?? createdAction?.actionId
-    const taskActionType =
-      createdAction?.actionType ?? actionDetail?.type ?? ''
+    const taskActionType = createdAction?.actionType ?? actionDetail?.type ?? ''
     const handleCreateTask = () => {
       if (routeActionId) {
         setTaskOpenKey(Date.now())
@@ -118,11 +134,15 @@ const UavDetailInfoCard: FC<PropsType> = memo(
       }
       setActionModalOpen(true)
     }
+
+    // 任务创建成功回调
     const handleTaskCreated = async () => {
       await queryClient.invalidateQueries({
         queryKey: ['action', 'item', 'device', 'latest', deviceId],
       })
     }
+
+    // 创建行动
     const handleCreateAction = async (values: any) => {
       setActionConfirmLoading(true)
       try {
@@ -141,6 +161,8 @@ const UavDetailInfoCard: FC<PropsType> = memo(
         setActionConfirmLoading(false)
       }
     }
+
+    // 复制飞参信息
     const handleCopy = async () => {
       const texts = [
         [
@@ -195,7 +217,9 @@ const UavDetailInfoCard: FC<PropsType> = memo(
             v={
               <p className="flex gap-2">
                 <span style={{ color: StatusColorMap[onlineStatus!] }}>
-                  {onlineStatus ? t(`device.status.online.${onlineStatus}`) : '-'}
+                  {onlineStatus
+                    ? t(`device.status.online.${onlineStatus}`)
+                    : '-'}
                 </span>
                 <SignalStrength value={signalStrength ?? 0} />
               </p>
@@ -210,23 +234,7 @@ const UavDetailInfoCard: FC<PropsType> = memo(
               </OverflowText>
             }
           />
-          <I
-            l="任务状态"
-            v={
-              latestActionItem ? (
-                <OverflowText className="flex-1 truncate">
-                  {latestActionItem.actionItemName || '-'}
-                </OverflowText>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <span>无任务</span>
-                  <IconButton onClick={handleCreateTask}>
-                    <IconPlus />
-                  </IconButton>
-                </div>
-              )
-            }
-          />
+
           <I l={t('common.electricity')} v={`${electricity || 0} %`} />
           <I l={t('common.longitude')} v={longitude?.toFixed(5) || '-'} />
           <I
@@ -247,6 +255,36 @@ const UavDetailInfoCard: FC<PropsType> = memo(
           <I
             l={t('common.speed')}
             v={`${horizontalSpeed?.toFixed(2) || 0} m/s`}
+          />
+          <I
+            isfull
+            l={t('common.task')}
+            v={
+              latestActionItem && !latestActionItemIsErr ? (
+                <div className="w-full flex gap-1 items-center overflow-hidden">
+                  {
+                    <Link to={`/action/${latestActionItem?.actionId}`}>
+                      <IconButton>
+                        <IconDetail />
+                      </IconButton>
+                    </Link>
+                  }
+                  <OverflowText className="flex-1 truncate max-w-[220px]">
+                    {latestActionItem.actionItemName || '-'}
+                  </OverflowText>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <span>{t('common.noTask')}</span>
+                  <IconButton
+                    className="text-sm scale-95"
+                    onClick={handleCreateTask}
+                  >
+                    <IconPlus />
+                  </IconButton>
+                </div>
+              )
+            }
           />
         </ul>
         {taskActionId && (
