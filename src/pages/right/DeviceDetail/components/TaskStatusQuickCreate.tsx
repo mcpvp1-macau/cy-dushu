@@ -44,10 +44,6 @@ const TaskStatusQuickCreate: FC<TaskStatusQuickCreateProps> = memo(
       [t, i18n.language, actionTypeOptions],
     )
 
-    const TaskComponent = globalConfig.useFlightReporting
-      ? AddSHJHTask
-      : AddTask
-
     const { data: actionDetail } = useQuery({
       queryKey: ['action', routeActionId],
       queryFn: () => getAction({ actionId: routeActionId }),
@@ -134,7 +130,7 @@ const TaskStatusQuickCreate: FC<TaskStatusQuickCreateProps> = memo(
         {taskActionId && (
           <div className="hidden">
             {globalConfig.useFlightReporting ? (
-              <TaskComponent
+              <AddSHJHTask
                 actionId={taskActionId}
                 actionType={taskActionType}
                 openTriggerKey={taskOpenKey}
@@ -142,7 +138,7 @@ const TaskStatusQuickCreate: FC<TaskStatusQuickCreateProps> = memo(
                 defaultDeviceId={deviceId}
               />
             ) : (
-              <TaskComponent
+              <AddTask
                 actionId={taskActionId}
                 openTriggerKey={taskOpenKey}
                 onSuccess={handleTaskCreated}
