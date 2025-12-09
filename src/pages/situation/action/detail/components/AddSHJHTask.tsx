@@ -27,10 +27,17 @@ type PropsType = {
   actionType: string
   openTriggerKey?: number
   onSuccess?: () => void
+  defaultDeviceId?: string
 }
 
 const AddSHJHTask: FC<PropsType> = memo(
-  ({ actionId, actionType, openTriggerKey, onSuccess }) => {
+  ({
+    actionId,
+    actionType,
+    openTriggerKey,
+    onSuccess,
+    defaultDeviceId,
+  }) => {
     const message = useAppMsg()
     const [open, setOpen] = useState(false)
     const [flightType, setFlightType] = useState<0 | 1>(0)
@@ -92,6 +99,20 @@ const AddSHJHTask: FC<PropsType> = memo(
     stopPicking()
   }
 
+  const deviceOptionsForForm = useMemo(() => {
+    if (!defaultDeviceId) {
+      return deviceOptions
+    }
+    const match = deviceOptions.find((e) => e.value === defaultDeviceId)
+    return [
+      match || {
+        label: defaultDeviceId,
+        value: defaultDeviceId,
+        deviceName: defaultDeviceId,
+      },
+    ]
+  }, [defaultDeviceId, deviceOptions])
+
   const handleClose = () => {
     setOpen(false)
     resetForm()
@@ -111,7 +132,11 @@ const AddSHJHTask: FC<PropsType> = memo(
     setFlightType(value)
     form.setFieldsValue({
       airlineIndex: undefined,
-      deviceIds: undefined,
+      deviceIds: defaultDeviceId
+        ? allowMultipleDevice
+          ? [defaultDeviceId]
+          : defaultDeviceId
+        : undefined,
     })
   }
 
@@ -249,6 +274,14 @@ const AddSHJHTask: FC<PropsType> = memo(
     }
   })
 
+  useEffect(() => {
+    if (!open || !defaultDeviceId) return
+    form.setFieldValue(
+      'deviceIds',
+      allowMultipleDevice ? [defaultDeviceId] : defaultDeviceId,
+    )
+  }, [allowMultipleDevice, defaultDeviceId, form, open])
+
   return (
     <div
       onClick={(e) => e.stopPropagation()}
@@ -304,10 +337,11 @@ const AddSHJHTask: FC<PropsType> = memo(
                 rules={[{ required: true, message: '请选择飞行设备' }]}
               >
                 <Select
-                  options={deviceOptions}
+                  options={deviceOptionsForForm}
                   placeholder="选择设备"
                   optionFilterProp="deviceName"
                   showSearch
+                  disabled={!!defaultDeviceId}
                 />
               </Form.Item>
               <Form.Item
@@ -397,7 +431,9 @@ const AddSHJHTask: FC<PropsType> = memo(
                   placeholder="选择航线"
                   optionFilterProp="name"
                   onChange={() => {
-                    form.setFieldValue('deviceIds', undefined)
+                    if (!defaultDeviceId) {
+                      form.setFieldValue('deviceIds', undefined)
+                    }
                   }}
                 />
               </Form.Item>
@@ -414,11 +450,12 @@ const AddSHJHTask: FC<PropsType> = memo(
                 ]}
               >
                 <Select
-                  options={deviceOptions}
+                  options={deviceOptionsForForm}
                   mode={allowMultipleDevice ? 'multiple' : undefined}
                   placeholder={t('action.detail.task.add.form.device.label')}
                   optionFilterProp="deviceName"
                   showSearch
+                  disabled={!!defaultDeviceId}
                 />
               </Form.Item>
             </>

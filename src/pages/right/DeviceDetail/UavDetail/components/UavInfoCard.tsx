@@ -7,7 +7,7 @@ import { emtpyObject } from '@/constant/data'
 import { uavDisplayModeTransMap } from '@/constant/trans_map/uav_display_mode'
 import { DictEnum } from '@/enum/dict'
 import { StatusColorMap } from '@/enum/device'
-import { addAction } from '@/service/modules/action'
+import { addAction, getAction } from '@/service/modules/action'
 import { getDeviceLatestActionItem } from '@/service/modules/action-item'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { createAddActionFormItems } from '@/pages/situation/action/components/AddAction'
@@ -73,6 +73,12 @@ const UavDetailInfoCard: FC<PropsType> = memo(
       () => createAddActionFormItems(t, actionTypeOptions),
       [t, i18n.language, actionTypeOptions],
     )
+    const { data: actionDetail } = useQuery({
+      queryKey: ['action', routeActionId],
+      queryFn: () => getAction({ actionId: routeActionId }),
+      select: (resp) => resp.data?.data ?? resp.data,
+      enabled: !!routeActionId,
+    })
     const { data: latestActionItem } = useQuery({
       queryKey: ['action', 'item', 'device', 'latest', deviceId],
       queryFn: () =>
@@ -103,7 +109,8 @@ const UavDetailInfoCard: FC<PropsType> = memo(
 
     const msgApi = useAppMsg()
     const taskActionId = routeActionId ?? createdAction?.actionId
-    const taskActionType = createdAction?.actionType ?? ''
+    const taskActionType =
+      createdAction?.actionType ?? actionDetail?.type ?? ''
     const handleCreateTask = () => {
       if (routeActionId) {
         setTaskOpenKey(Date.now())
@@ -250,12 +257,14 @@ const UavDetailInfoCard: FC<PropsType> = memo(
                 actionType={taskActionType}
                 openTriggerKey={taskOpenKey}
                 onSuccess={handleTaskCreated}
+                defaultDeviceId={deviceId}
               />
             ) : (
               <AddTask
                 actionId={taskActionId}
                 openTriggerKey={taskOpenKey}
                 onSuccess={handleTaskCreated}
+                defaultDeviceId={deviceId}
               />
             )}
           </div>
