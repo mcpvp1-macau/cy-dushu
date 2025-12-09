@@ -31,6 +31,18 @@ export const endActionItem = (actionId: number) => {
   })
 }
 
+/** 获取设备最新子任务 */
+export const getDeviceLatestActionItem = (deviceId: string) => {
+  return serverJingqi.get<API_ACTION_ITEM.domain.ActionItemDetail>(
+    `/action/item/device/latest/${deviceId}`,
+    {
+      xCustomConfig: {
+        autoShowMessageOnNotSuccess: false,
+      },
+    },
+  )
+}
+
 /** 创建子行动 */
 export const createActionItem = (
   data: any,

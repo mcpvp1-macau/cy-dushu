@@ -10,7 +10,7 @@ import usePositionPickerStore from '@/store/map/usePositionPicker.store'
 import { useMemoizedFn } from 'ahooks'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Form, Input, InputNumber, Radio, TreeSelect } from 'antd'
-import { useMemo, useState, memo } from 'react'
+import { useEffect, useMemo, useState, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { pick } from 'lodash'
 import Select from '@/components/AntdOverride/Select'
@@ -25,13 +25,29 @@ import { parseLastWaypoint, parseMaxFlightAltitude } from '@/utils/wayline'
 type PropsType = {
   actionId: string
   actionType: string
+  openTriggerKey?: number
+  onSuccess?: () => void
+  defaultDeviceId?: string
 }
 
-const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
-  const message = useAppMsg()
-  const [open, setOpen] = useState(false)
-  const [flightType, setFlightType] = useState<0 | 1>(0)
-  const [confirmLoading, setConfirmLoading] = useState(false)
+const AddSHJHTask: FC<PropsType> = memo(
+  ({
+    actionId,
+    actionType,
+    openTriggerKey,
+    onSuccess,
+    defaultDeviceId,
+  }) => {
+    const message = useAppMsg()
+    const [open, setOpen] = useState(false)
+    const [flightType, setFlightType] = useState<0 | 1>(0)
+    const [confirmLoading, setConfirmLoading] = useState(false)
+
+    useEffect(() => {
+      if (openTriggerKey) {
+        setOpen(true)
+      }
+    }, [openTriggerKey])
 
   const queryClient = useQueryClient()
   const { t } = useTranslation()
@@ -83,6 +99,20 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
     stopPicking()
   }
 
+  const deviceOptionsForForm = useMemo(() => {
+    if (!defaultDeviceId) {
+      return deviceOptions
+    }
+    const match = deviceOptions.find((e) => e.value === defaultDeviceId)
+    return [
+      match || {
+        label: defaultDeviceId,
+        value: defaultDeviceId,
+        deviceName: defaultDeviceId,
+      },
+    ]
+  }, [defaultDeviceId, deviceOptions])
+
   const handleClose = () => {
     setOpen(false)
     resetForm()
@@ -102,7 +132,11 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
     setFlightType(value)
     form.setFieldsValue({
       airlineIndex: undefined,
-      deviceIds: undefined,
+      deviceIds: defaultDeviceId
+        ? allowMultipleDevice
+          ? [defaultDeviceId]
+          : defaultDeviceId
+        : undefined,
     })
   }
 
@@ -234,10 +268,19 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
       await queryClient.invalidateQueries({
         queryKey: ['action', actionId, 'items'],
       })
+      onSuccess?.()
     } finally {
       setConfirmLoading(false)
     }
   })
+
+  useEffect(() => {
+    if (!open || !defaultDeviceId) return
+    form.setFieldValue(
+      'deviceIds',
+      allowMultipleDevice ? [defaultDeviceId] : defaultDeviceId,
+    )
+  }, [allowMultipleDevice, defaultDeviceId, form, open])
 
   return (
     <div
@@ -294,10 +337,11 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
                 rules={[{ required: true, message: '请选择飞行设备' }]}
               >
                 <Select
-                  options={deviceOptions}
+                  options={deviceOptionsForForm}
                   placeholder="选择设备"
                   optionFilterProp="deviceName"
                   showSearch
+                  disabled={!!defaultDeviceId}
                 />
               </Form.Item>
               <Form.Item
@@ -387,7 +431,9 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
                   placeholder="选择航线"
                   optionFilterProp="name"
                   onChange={() => {
-                    form.setFieldValue('deviceIds', undefined)
+                    if (!defaultDeviceId) {
+                      form.setFieldValue('deviceIds', undefined)
+                    }
                   }}
                 />
               </Form.Item>
@@ -404,11 +450,12 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
                 ]}
               >
                 <Select
-                  options={deviceOptions}
+                  options={deviceOptionsForForm}
                   mode={allowMultipleDevice ? 'multiple' : undefined}
                   placeholder={t('action.detail.task.add.form.device.label')}
                   optionFilterProp="deviceName"
                   showSearch
+                  disabled={!!defaultDeviceId}
                 />
               </Form.Item>
             </>
