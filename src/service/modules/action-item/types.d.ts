@@ -1,6 +1,32 @@
 declare namespace API_ACTION_ITEM {
   // ----------------- domain ----------------
   namespace domain {
+    interface TaskTemplateInfo {
+      smartTaskType?: string
+      defaultDeviceId?: string
+      defaultDeviceName?: string
+      taskBasic?: string
+      parameters?: Record<string, any>
+      takeOffSecurityHeight?: number
+      globalRTHHeight?: number
+    }
+
+    interface ActionItemDetail {
+      actionItemId?: number
+      taskId?: string
+      actionId?: number
+      deviceType?: string
+      deviceId?: string
+      taskTemplateInfo?: TaskTemplateInfo
+      actionItemName?: string
+      status?: string
+      startTime?: string
+      endTime?: string
+      templateId?: string
+      actionPlanId?: number
+      actionPlanName?: string
+    }
+
     interface ActionItem {
       /* 用户列表,多个用逗号分隔 */
       acceptUserIds?: string
@@ -202,6 +228,13 @@ declare namespace API_ACTION_ITEM {
     interface GetPilotTreeRes {
       rows: API_ACTION_ITEM.domain.PilotTree[]
       total: number
+    }
+
+    interface ResultActionItemDetail {
+      code: string
+      message: string
+      data?: API_ACTION_ITEM.domain.ActionItemDetail
+      requestId: string
     }
   }
 }

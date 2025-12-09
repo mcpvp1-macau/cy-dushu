@@ -6,11 +6,14 @@ import { DeviceEnum } from '@/enum/device'
 import { useWaylineAndDeviceFormOptions } from '@/hooks/device/useAirlineOptions'
 import { createActionItem } from '@/service/modules/action-item'
 import { Form, FormInstance } from 'antd'
+import { useEffect } from 'react'
 import { TFunction } from 'i18next'
 import { pick } from 'lodash'
 
 type PropsType = {
   actionId: string
+  openTriggerKey?: number
+  onSuccess?: () => void
 }
 
 type Option = {
@@ -69,8 +72,14 @@ const createTaskConfig = (
   ] as XFormItem[]
 
 /** 添加子任务 */
-const AddTask: FC<PropsType> = memo(({ actionId }) => {
+const AddTask: FC<PropsType> = memo(({ actionId, openTriggerKey, onSuccess }) => {
   const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    if (openTriggerKey) {
+      setOpen(true)
+    }
+  }, [openTriggerKey])
 
   const queryClient = useQueryClient()
   const { t, i18n } = useTranslation()
@@ -125,6 +134,7 @@ const AddTask: FC<PropsType> = memo(({ actionId }) => {
       await queryClient.invalidateQueries({
         queryKey: ['action', actionId, 'items'],
       })
+      onSuccess?.()
     } finally {
       setConfirmLoading(false)
     }

@@ -10,7 +10,7 @@ import usePositionPickerStore from '@/store/map/usePositionPicker.store'
 import { useMemoizedFn } from 'ahooks'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Form, Input, InputNumber, Radio, TreeSelect } from 'antd'
-import { useMemo, useState, memo } from 'react'
+import { useEffect, useMemo, useState, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { pick } from 'lodash'
 import Select from '@/components/AntdOverride/Select'
@@ -25,13 +25,22 @@ import { parseLastWaypoint, parseMaxFlightAltitude } from '@/utils/wayline'
 type PropsType = {
   actionId: string
   actionType: string
+  openTriggerKey?: number
+  onSuccess?: () => void
 }
 
-const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
-  const message = useAppMsg()
-  const [open, setOpen] = useState(false)
-  const [flightType, setFlightType] = useState<0 | 1>(0)
-  const [confirmLoading, setConfirmLoading] = useState(false)
+const AddSHJHTask: FC<PropsType> = memo(
+  ({ actionId, actionType, openTriggerKey, onSuccess }) => {
+    const message = useAppMsg()
+    const [open, setOpen] = useState(false)
+    const [flightType, setFlightType] = useState<0 | 1>(0)
+    const [confirmLoading, setConfirmLoading] = useState(false)
+
+    useEffect(() => {
+      if (openTriggerKey) {
+        setOpen(true)
+      }
+    }, [openTriggerKey])
 
   const queryClient = useQueryClient()
   const { t } = useTranslation()
@@ -234,6 +243,7 @@ const AddSHJHTask: FC<PropsType> = memo(({ actionId, actionType }) => {
       await queryClient.invalidateQueries({
         queryKey: ['action', actionId, 'items'],
       })
+      onSuccess?.()
     } finally {
       setConfirmLoading(false)
     }

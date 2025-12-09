@@ -1,15 +1,27 @@
+import IconPlus from '@/assets/icons/jsx/IconPlus'
 import SignalStrength from '@/components/device/SignalStrength'
 import IconButton from '@/components/ui/button/IconButton'
+import OverflowText from '@/components/ui/OverflowText'
+import FormModal from '@/components/XForm/Modal'
+import { emtpyObject } from '@/constant/data'
 import { uavDisplayModeTransMap } from '@/constant/trans_map/uav_display_mode'
+import { DictEnum } from '@/enum/dict'
 import { StatusColorMap } from '@/enum/device'
+import { addAction } from '@/service/modules/action'
+import { getDeviceLatestActionItem } from '@/service/modules/action-item'
 import { useAppMsg } from '@/hooks/useAppMsg'
+import { createAddActionFormItems } from '@/pages/situation/action/components/AddAction'
+import AddSHJHTask from '@/pages/situation/action/detail/components/AddSHJHTask'
+import AddTask from '@/pages/situation/action/detail/components/AddTask'
+import { useDictOptions } from '@/store/useDict.store'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { CopyOutlined } from '@ant-design/icons'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { pick, round } from 'lodash'
+import { useMemo, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { useShallow } from 'zustand/react/shallow'
 import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
-import { emtpyObject } from '@/constant/data'
-import OverflowText from '@/components/ui/OverflowText'
 
 const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
   return (
@@ -30,6 +42,7 @@ type PropsType = Partial<{
   latitude: number
   height: number
   horizontalSpeed: number
+  deviceId: string
 }>
 
 const UavDetailInfoCard: FC<PropsType> = memo(
@@ -43,8 +56,29 @@ const UavDetailInfoCard: FC<PropsType> = memo(
     latitude,
     height,
     horizontalSpeed,
+    deviceId,
   }) => {
     const { t, i18n } = useTranslation()
+    const { actionId: routeActionId } = useParams()
+    const queryClient = useQueryClient()
+    const [actionModalOpen, setActionModalOpen] = useState(false)
+    const [actionConfirmLoading, setActionConfirmLoading] = useState(false)
+    const [taskOpenKey, setTaskOpenKey] = useState<number>()
+    const [createdAction, setCreatedAction] = useState<{
+      actionId: string
+      actionType?: string
+    }>()
+    const actionTypeOptions = useDictOptions(DictEnum.ACTION_TYPE)
+    const actionFormItems = useMemo(
+      () => createAddActionFormItems(t, actionTypeOptions),
+      [t, i18n.language, actionTypeOptions],
+    )
+    const { data: latestActionItem } = useQuery({
+      queryKey: ['action', 'item', 'device', 'latest', deviceId],
+      queryFn: () =>
+        getDeviceLatestActionItem(deviceId!).then((res) => res.data?.data),
+      enabled: !!deviceId,
+    })
     const s = useUavControlRoomStore(
       useShallow((m) => {
         const s = m.state
@@ -68,6 +102,38 @@ const UavDetailInfoCard: FC<PropsType> = memo(
     )
 
     const msgApi = useAppMsg()
+    const taskActionId = routeActionId ?? createdAction?.actionId
+    const taskActionType = createdAction?.actionType ?? ''
+    const handleCreateTask = () => {
+      if (routeActionId) {
+        setTaskOpenKey(Date.now())
+        return
+      }
+      setActionModalOpen(true)
+    }
+    const handleTaskCreated = async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['action', 'item', 'device', 'latest', deviceId],
+      })
+    }
+    const handleCreateAction = async (values: any) => {
+      setActionConfirmLoading(true)
+      try {
+        const resp = await addAction(values)
+        await queryClient.invalidateQueries({
+          queryKey: ['actionList'],
+          exact: false,
+        })
+        setCreatedAction({
+          actionId: `${resp.data.actionId}`,
+          actionType: values.type,
+        })
+        setActionModalOpen(false)
+        setTaskOpenKey(Date.now())
+      } finally {
+        setActionConfirmLoading(false)
+      }
+    }
     const handleCopy = async () => {
       const texts = [
         [
@@ -114,50 +180,95 @@ const UavDetailInfoCard: FC<PropsType> = memo(
     }
 
     return (
-      <ul className="p-2 mx-3 mr-[9px] card-border text-sm flex flex-wrap overflow-hidden">
-        <I l={t('common.modelNumber')} v={modelNumber} />
-        <I
-          l={t('common.onlineStatus')}
-          v={
-            <p className="flex gap-2">
-              <span style={{ color: StatusColorMap[onlineStatus!] }}>
-                {onlineStatus ? t(`device.status.online.${onlineStatus}`) : '-'}
-              </span>
-              <SignalStrength value={signalStrength ?? 0} />
-            </p>
-          }
+      <>
+        <ul className="p-2 mx-3 mr-[9px] card-border text-sm flex flex-wrap overflow-hidden">
+          <I l={t('common.modelNumber')} v={modelNumber} />
+          <I
+            l={t('common.onlineStatus')}
+            v={
+              <p className="flex gap-2">
+                <span style={{ color: StatusColorMap[onlineStatus!] }}>
+                  {onlineStatus ? t(`device.status.online.${onlineStatus}`) : '-'}
+                </span>
+                <SignalStrength value={signalStrength ?? 0} />
+              </p>
+            }
+          />
+          <I
+            l={t('uav.displayMode.title')}
+            v={
+              <OverflowText className="flex-1 truncate">
+                {uavDisplayModeTransMap[displayMode || '']?.[i18n.language] ||
+                  displayMode}
+              </OverflowText>
+            }
+          />
+          <I
+            l="任务状态"
+            v={
+              latestActionItem ? (
+                <OverflowText className="flex-1 truncate">
+                  {latestActionItem.actionItemName || '-'}
+                </OverflowText>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <span>无任务</span>
+                  <IconButton onClick={handleCreateTask}>
+                    <IconPlus />
+                  </IconButton>
+                </div>
+              )
+            }
+          />
+          <I l={t('common.electricity')} v={`${electricity || 0} %`} />
+          <I l={t('common.longitude')} v={longitude?.toFixed(5) || '-'} />
+          <I
+            l={t('common.latitude')}
+            v={
+              <div className="flex items-center gap-1">
+                <span>{latitude?.toFixed(5) || '-'}</span>
+                <IconButton
+                  tippyProps={{ content: '复制飞参信息' }}
+                  onClick={handleCopy}
+                >
+                  <CopyOutlined />
+                </IconButton>
+              </div>
+            }
+          />
+          <I l={t('common.height')} v={`${height?.toFixed(2) || 0} m`} />
+          <I
+            l={t('common.speed')}
+            v={`${horizontalSpeed?.toFixed(2) || 0} m/s`}
+          />
+        </ul>
+        {taskActionId && (
+          <div className="hidden">
+            {globalConfig.useFlightReporting ? (
+              <AddSHJHTask
+                actionId={taskActionId}
+                actionType={taskActionType}
+                openTriggerKey={taskOpenKey}
+                onSuccess={handleTaskCreated}
+              />
+            ) : (
+              <AddTask
+                actionId={taskActionId}
+                openTriggerKey={taskOpenKey}
+                onSuccess={handleTaskCreated}
+              />
+            )}
+          </div>
+        )}
+        <FormModal
+          open={actionModalOpen}
+          title={t('action.add.title')}
+          items={actionFormItems}
+          confirmLoading={actionConfirmLoading}
+          onClose={() => setActionModalOpen(false)}
+          onConfirm={handleCreateAction}
         />
-        <I
-          l={t('uav.displayMode.title')}
-          v={
-            <OverflowText className="flex-1 truncate">
-              {uavDisplayModeTransMap[displayMode || '']?.[i18n.language] ||
-                displayMode}
-            </OverflowText>
-          }
-        />
-        <I l={t('common.electricity')} v={`${electricity || 0} %`} />
-        <I l={t('common.longitude')} v={longitude?.toFixed(5) || '-'} />
-        <I
-          l={t('common.latitude')}
-          v={
-            <div className="flex items-center gap-1">
-              <span>{latitude?.toFixed(5) || '-'}</span>
-              <IconButton
-                tippyProps={{ content: '复制飞参信息' }}
-                onClick={handleCopy}
-              >
-                <CopyOutlined />
-              </IconButton>
-            </div>
-          }
-        />
-        <I l={t('common.height')} v={`${height?.toFixed(2) || 0} m`} />
-        <I
-          l={t('common.speed')}
-          v={`${horizontalSpeed?.toFixed(2) || 0} m/s`}
-        />
-      </ul>
+      </>
     )
   },
 )
