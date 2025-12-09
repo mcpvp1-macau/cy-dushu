@@ -11,10 +11,7 @@ import { getDeviceLatestActionItem } from '@/service/modules/action-item'
 import { useDictOptions } from '@/store/useDict.store'
 import { DictEnum } from '@/enum/dict'
 import globalConfig from '@/global/config'
-import clsx from 'clsx'
-import { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 interface TaskStatusQuickCreateProps {
   deviceId?: string
