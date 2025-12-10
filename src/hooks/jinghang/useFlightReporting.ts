@@ -12,6 +12,7 @@ const useFlightReporting = (deviceId?: string) => {
       queryFn: () => checkDeviceCanFly({ deviceId: deviceId! }),
       select: (resp) => resp.data,
       enabled: !!deviceId && !!globalConfig.useFlightReporting,
+      refetchInterval: globalConfig.useFlightReporting ? 5000 : false,
     },
     queryClient,
   )
