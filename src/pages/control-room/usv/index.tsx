@@ -22,6 +22,8 @@ import AttitudePanel from './components/AttitudePanel'
 import OperationsPanel from './components/OperationsPanel'
 import useServerEventMsg from '../uav/hooks/useServerEventMsg'
 import { useListenDeviceLatestTask } from '@/store/useDeviceLatestTask.store'
+import ControlRoomUsvHeader from './components/ControlRoomUsvHeader'
+import UsvDetailData from '@/pages/right/DeviceDetail/UsvDetail/components/UsvDetailData'
 
 const initialLayout: DynamicLayoutType = {
   type: 'row',
@@ -140,7 +142,11 @@ const PageControlRoomUSV: FC = memo(() => {
       video: <UsvVideo />,
       attitude: <AttitudePanel />,
       operations: <OperationsPanel />,
-      'device-data': <div className="size-full" />,
+      'device-data': (
+        <div className="size-full overflow-auto">
+          <UsvDetailData />
+        </div>
+      ),
     }),
     [],
   )
@@ -149,6 +155,7 @@ const PageControlRoomUSV: FC = memo(() => {
     <DeviceDetailStoreContext.Provider value={store}>
       <UsvControlRoomStoreContext.Provider value={controlRoomStore}>
         <div className="page-full flex flex-col">
+          <ControlRoomUsvHeader />
           <main className="relative w-full grow overflow-hidden">
             <DynamicLayoutRoot
               layout={layout!}

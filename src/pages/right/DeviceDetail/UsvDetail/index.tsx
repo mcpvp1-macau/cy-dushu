@@ -7,6 +7,7 @@ import { DeviceEnum } from '@/enum/device'
 import { Segmented } from 'antd'
 import IconDetail from '@/assets/icons/jsx/IconDetail'
 import IconData from '@/assets/icons/jsx/IconData'
+import UsvDetailData from './components/UsvDetailData'
 
 const UsvDetail: FC<BaseDeviceDetailProps> = memo(
   ({ data, headerTools, headerProps, onClose }) => {
@@ -46,7 +47,7 @@ const UsvDetail: FC<BaseDeviceDetailProps> = memo(
               onChange={setTab}
             />
           </div>
-          <UsvDetailDetail />
+          {tab === 0 ? <UsvDetailDetail /> : <UsvDetailData />}
         </ScrollArea>
       </div>
     )
