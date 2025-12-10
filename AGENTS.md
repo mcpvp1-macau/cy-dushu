@@ -79,3 +79,7 @@
 
 - To check the code for any linting errors, use: `pnpm lint`
 - To perform a static type check with TypeScript, run: `pnpm ts`
+
+## How to test code
+
+- use `pnpm lint` and `pnpm ts` to check code.
