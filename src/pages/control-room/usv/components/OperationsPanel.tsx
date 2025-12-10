@@ -1,9 +1,22 @@
-import { Empty } from 'antd'
+import { Button } from 'antd'
+import { useUsvControlRoomStore } from '@/store/context-store/useUsvControlRoom.store'
 
 const OperationsPanel: FC = memo(() => {
+  const pointSailOpen = useUsvControlRoomStore((s) => s.pointSail.open)
+  const updatePointSail = useUsvControlRoomStore((s) => s.updatePointSail)
+
+  const togglePointSail = () => {
+    updatePointSail({
+      open: !pointSailOpen,
+      targetPosition: null,
+    })
+  }
+
   return (
-    <div className="flex size-full items-center justify-center">
-      <Empty description={'操作面板待配置'} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+    <div className="flex size-full items-center justify-start gap-3 px-4">
+      <Button type={pointSailOpen ? 'primary' : 'default'} onClick={togglePointSail}>
+        指点航行
+      </Button>
     </div>
   )
 })

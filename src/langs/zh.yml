@@ -1537,3 +1537,6 @@ timeRange:
   last365Days: 最近 1 年
   last100Years: 最近 100 年
 expertError: 导出失败
+usv:
+  pointSail:
+    confirmQuestion: 确认前往此航点？

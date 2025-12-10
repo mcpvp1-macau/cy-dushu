@@ -30,6 +30,12 @@ type StateType = {
   uuid?: string
   /** 是否有控制权 */
   hasControlPower: boolean
+  pointSail: {
+    /** 是否开启指点航行 */
+    open: boolean
+    /** 目标经纬度 */
+    targetPosition: [number, number] | null
+  }
 }
 
 type ActionsType = {
@@ -38,6 +44,7 @@ type ActionsType = {
   updateWsReadyState: (state: StateType['wsReadyState']) => void
   updateState: (state: StateType['latestState']) => void
   updateUUID: (uuid: string) => void
+  updatePointSail: (data: StateType['pointSail']) => void
 }
 
 type WsSendersType = {
@@ -57,6 +64,10 @@ const createInitialState = () =>
     latestState: {},
     uuid: localStorage?.getItem('UsvControlTag'),
     hasControlPower: false,
+    pointSail: {
+      open: false,
+      targetPosition: null,
+    },
   } as StateType)
 
 export const createUsvControlRoomStore = (senders: WsSendersType) => {
@@ -111,6 +122,9 @@ export const createUsvControlRoomStore = (senders: WsSendersType) => {
             false,
             'updateUUID',
           )
+        },
+        updatePointSail: (data) => {
+          set({ pointSail: data }, false, 'updatePointSail')
         },
       }),
       {
