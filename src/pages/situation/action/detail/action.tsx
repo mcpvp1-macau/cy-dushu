@@ -13,10 +13,12 @@ import ActionEventDetail from './components/ActionEventDetail'
 import ActionMediaPicture from './components/ActionMediaPicture'
 import IconButton from '@/components/ui/button/IconButton'
 import IconMap from '@/assets/icons/jsx/IconMap'
+import IconRefresh from '@/assets/icons/jsx/IconRefresh'
 import ZSKCYPModal from './components/kcyp/zhoushan/Modal'
 import ZSBIWUModal from './components/zhoushan_biwu/Modal'
 import { ActionEnum } from '@/constant/action/action_type'
 import AddEventResolveTask from './components/AddEventResolveTask'
+import { useQueryClient } from '@tanstack/react-query'
 
 const ChildActions = lazy(
   () => import('./components/ChildActions/ChildActions'),
@@ -40,6 +42,8 @@ const PageActionDetailSub: FC<PropsType> = memo(
     const actionDetail = detail || d
 
     const { t } = useTranslation()
+
+    const queryClient = useQueryClient()
 
     const [enablePictureOnMap, setEnablePictureOnMap] = useState(false)
 
@@ -78,6 +82,17 @@ const PageActionDetailSub: FC<PropsType> = memo(
         key: '2',
         extra: !isBacktracking && (
           <div className="flex gap-2">
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation()
+                if (!actionId) return
+                queryClient.invalidateQueries({
+                  queryKey: ['action', actionId, 'items'],
+                })
+              }}
+            >
+              <IconRefresh />
+            </IconButton>
             {actionDetail.eventId && (
               <AddEventResolveTask
                 actionId={Number(actionId!)}
