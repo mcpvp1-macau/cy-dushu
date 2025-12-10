@@ -1,0 +1,54 @@
+import PositionPickListener from '@/components/map/PositionPickListener'
+import { useUsvControlRoomStore } from '@/store/context-store/useUsvControlRoom.store'
+import UsvPointSailConfirm from './Confirm'
+import UsvPointSailTarget from './Target'
+
+const PointSail: FC = memo(() => {
+  const pointSail = useUsvControlRoomStore((s) => s.pointSail)
+  const updatePointSail = useUsvControlRoomStore((s) => s.updatePointSail)
+  const sendCommand = useUsvControlRoomStore((s) => s.sendCommand)
+
+  const handleClick = (longitude: number, latitude: number) => {
+    updatePointSail({
+      open: true,
+      targetPosition: [longitude, latitude],
+    })
+  }
+
+  const handleCancel = () => {
+    updatePointSail({
+      open: false,
+      targetPosition: null,
+    })
+  }
+
+  const handleConfirm = () => {
+    if (!pointSail.targetPosition) return
+
+    sendCommand('gotoPosition', {
+      longitude: pointSail.targetPosition[0],
+      latitude: pointSail.targetPosition[1],
+    })
+    handleCancel()
+  }
+
+  return (
+    <>
+      {pointSail.open && <PositionPickListener onClick={handleClick} />}
+      {pointSail.targetPosition && (
+        <>
+          <UsvPointSailTarget position={pointSail.targetPosition} />
+          <UsvPointSailConfirm
+            position={pointSail.targetPosition}
+            onCancel={handleCancel}
+            onConfirm={handleConfirm}
+          />
+        </>
+      )}
+    </>
+  )
+})
+
+PointSail.displayName = 'PointSail'
+
+export default PointSail

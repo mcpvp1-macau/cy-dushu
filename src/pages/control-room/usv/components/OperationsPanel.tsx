@@ -1,9 +1,29 @@
-import { Empty } from 'antd'
+import { Button, Tooltip } from 'antd'
+import { useUsvControlRoomStore } from '@/store/context-store/useUsvControlRoom.store'
 
 const OperationsPanel: FC = memo(() => {
+  const hasControlPower = useUsvControlRoomStore((s) => s.hasControlPower)
+  const pointSailOpen = useUsvControlRoomStore((s) => s.pointSail.open)
+  const updatePointSail = useUsvControlRoomStore((s) => s.updatePointSail)
+
+  const togglePointSail = () => {
+    updatePointSail({
+      open: !pointSailOpen,
+      targetPosition: null,
+    })
+  }
+
   return (
-    <div className="flex size-full items-center justify-center">
-      <Empty description={'操作面板待配置'} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+    <div className="flex size-full items-center justify-start gap-3 px-4">
+      <Tooltip title={hasControlPower ? undefined : '需要控制权'}>
+        <Button
+          type={pointSailOpen ? 'primary' : 'default'}
+          disabled={!hasControlPower}
+          onClick={togglePointSail}
+        >
+          指点航行
+        </Button>
+      </Tooltip>
     </div>
   )
 })
