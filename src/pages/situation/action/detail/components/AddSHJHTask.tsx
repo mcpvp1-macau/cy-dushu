@@ -352,6 +352,7 @@ const AddSHJHTask: FC<PropsType> = memo(
                 <InputNumber
                   className="w-full"
                   min={1}
+                  max={globalConfig.uavHeightLimit}
                   addonAfter={<span className="mx-1">m</span>}
                   placeholder="100m"
                 />
@@ -364,6 +365,7 @@ const AddSHJHTask: FC<PropsType> = memo(
                 <InputNumber
                   className="w-full"
                   min={1}
+                  max={globalConfig.uavHeightLimit}
                   addonAfter={<span className="mx-1">m</span>}
                   placeholder="100m"
                 />
