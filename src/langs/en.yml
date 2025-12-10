@@ -642,6 +642,11 @@ events:
 uav:
   displayMode:
     title: State
+usv:
+  attitude:
+    heading: Heading
+    pitch: Pitch
+    roll: Roll
   gimbal:
     title: Gimbal
     zoomMode:
