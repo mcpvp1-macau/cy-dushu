@@ -18,7 +18,7 @@ const UsvPointSailConfirm: FC<PropsType> = memo(
         alwayInViewport
       >
         <div className="p-2 flex flex-col gap-2 text-fore">
-          <p>确认前往此航点？</p>
+          <p>{t('usv.pointSail.confirmQuestion')}</p>
           <div className="flex justify-end gap-2">
             <Button size="small" onClick={onCancel}>
               {t('modal.cancel')}

@@ -1555,3 +1555,6 @@ timeRange:
   last365Days: Last 1 Year
   last100Years: Last 100 Years
 expertError: Export Error
+usv:
+  pointSail:
+    confirmQuestion: Confirm navigation to this waypoint?

@@ -25,7 +25,7 @@ const PointSail: FC = memo(() => {
   const handleConfirm = () => {
     if (!pointSail.targetPosition) return
 
-    sendCommand('gotoPosition', {
+    sendCommand('setMission', {
       longitude: pointSail.targetPosition[0],
       latitude: pointSail.targetPosition[1],
     })
