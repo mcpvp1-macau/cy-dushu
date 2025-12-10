@@ -1,6 +1,7 @@
 import compassArrowImg from '@/assets/imgs/control/compass-arrow.svg'
 import compassRingImg from '@/assets/imgs/control/compass-ring.png'
 import { useUsvControlRoomStore } from '@/store/context-store/useUsvControlRoom.store'
+import { Tooltip } from 'antd'
 
 const AttitudePanel: FC = memo(() => {
   const heading = useUsvControlRoomStore((s) => s.state.heading) ?? 0
@@ -9,7 +10,7 @@ const AttitudePanel: FC = memo(() => {
 
   return (
     <div className="flex h-full w-full items-center justify-center">
-      <div className="relative h-40 w-40 pointer-events-none">
+      <div className="relative h-32 w-32 pointer-events-none">
         <div className="absolute inset-5 overflow-hidden rounded-full">
           <div
             className="absolute inset-0 -left-80 -right-80 bg-gradient-to-b from-[#4c90f055] to-transparent"
@@ -29,24 +30,30 @@ const AttitudePanel: FC = memo(() => {
           <img src={compassArrowImg} className="scale-90" />
         </div>
 
-        <div
-          className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-full whitespace-nowrap text-green-500"
-          style={{ textShadow: '0 0 2px #000' }}
-        >
-          艏向 ψ {heading.toFixed(1)}°
-        </div>
-        <div
-          className="absolute bottom-0 left-0 translate-y-full whitespace-nowrap text-green-500"
-          style={{ textShadow: '0 0 2px #000' }}
-        >
-          纵摇 θ {pitch.toFixed(1)}°
-        </div>
-        <div
-          className="absolute bottom-0 right-0 translate-y-full whitespace-nowrap text-green-500"
-          style={{ textShadow: '0 0 2px #000' }}
-        >
-          横摇 ϕ {roll.toFixed(1)}°
-        </div>
+        <Tooltip className="pointer-events-auto" title="艏向">
+          <div
+            className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-full whitespace-nowrap text-green-500"
+            style={{ textShadow: '0 0 2px #000' }}
+          >
+            ψ {heading.toFixed(1)}°
+          </div>
+        </Tooltip>
+        <Tooltip className="pointer-events-auto" title="纵摇">
+          <div
+            className="absolute bottom-0 left-0 translate-y-full whitespace-nowrap text-green-500"
+            style={{ textShadow: '0 0 2px #000' }}
+          >
+            θ {pitch.toFixed(1)}°
+          </div>
+        </Tooltip>
+        <Tooltip className="pointer-events-auto" title="横摇">
+          <div
+            className="absolute bottom-0 right-0 translate-y-full whitespace-nowrap text-green-500"
+            style={{ textShadow: '0 0 2px #000' }}
+          >
+            ϕ {roll.toFixed(1)}°
+          </div>
+        </Tooltip>
       </div>
     </div>
   )
