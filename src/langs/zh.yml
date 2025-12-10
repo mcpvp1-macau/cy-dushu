@@ -631,6 +631,11 @@ events:
 uav:
   displayMode:
     title: 飞机状态
+usv:
+  attitude:
+    heading: 艏向
+    pitch: 纵摇
+    roll: 横摇
   gimbal:
     title: 云台
     zoomMode:
