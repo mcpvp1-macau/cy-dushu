@@ -130,7 +130,7 @@ const HomePoint: FC<PropsType> = () => {
       if (entityRef.current) {
         try {
           viewer?.entities?.remove(entityRef.current)
-        } catch (error) {}
+        } catch (_error) {}
       }
     }
   }, [takeOffRefPoint])

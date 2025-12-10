@@ -1,7 +1,7 @@
 import useAirlineConfigStore from '@/store/wayline/uav-airline/useAirlineConfig.store'
 import XCard from '@/components/ui/XCard'
 import IconTakeoff from '@/assets/icons/jsx/uav/IconTakeoff'
-import { Button, Tooltip } from 'antd'
+import {Button} from 'antd'
 import { round } from 'lodash'
 import HNumber from '../../../HNumber'
 import { InfoCircleOutlined, LinkOutlined } from '@ant-design/icons'

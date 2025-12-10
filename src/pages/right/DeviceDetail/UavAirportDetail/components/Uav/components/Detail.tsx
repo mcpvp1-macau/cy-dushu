@@ -27,7 +27,7 @@ const UavAirportUavDetailDetail: FC<PropsType> = memo(({ state }) => {
         />
       </section>
       <section className="mx-3 mt-3">
-        <UavAirportUavDetailInfoCard taskStatus={state.taskStatus} />
+        <UavAirportUavDetailInfoCard />
       </section>
       <section className="mx-3 mt-3 overflow-hidden">
         <UavDetailVideo

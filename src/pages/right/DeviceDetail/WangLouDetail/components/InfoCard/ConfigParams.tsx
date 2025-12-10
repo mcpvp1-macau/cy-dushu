@@ -6,7 +6,7 @@ type PropsType = {
   form: FormInstance
 }
 
-const ConfigParams: React.FC<PropsType> = ({ data, deviceId, form }) => {
+const ConfigParams: React.FC<PropsType> = ({ data, deviceId, form: _form }) => {
   const { name, deviceModel } = data
   const { productKey } = deviceModel!
   const { configs } = deviceModel || {}

@@ -9,16 +9,17 @@ const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
   )
 }
 
-type PropsType = {} & Partial<{
-  operator: string
-  signalStrength: number
-  displayMode: string
-  electricity: number
-  longitude: number
-  latitude: number
-  height: number
-  horizontalSpeed: number
-}>
+type PropsType = Record<string, any> &
+  Partial<{
+    operator: string
+    signalStrength: number
+    displayMode: string
+    electricity: number
+    longitude: number
+    latitude: number
+    height: number
+    horizontalSpeed: number
+  }>
 
 const UavDetailInfoCard: FC<PropsType> = memo(
   ({

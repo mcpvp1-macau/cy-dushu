@@ -1,7 +1,7 @@
 const StatusPic: React.FC = () => {
-  const { t } = useTranslation()
+  const { t: _t } = useTranslation()
 
-  const render = (label, column, style) => {
+  const _render = (label, column, style) => {
     return (
       <div
         className={clsx(

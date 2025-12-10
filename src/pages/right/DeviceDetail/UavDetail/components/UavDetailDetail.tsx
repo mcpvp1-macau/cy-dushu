@@ -64,6 +64,7 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
         latitude={state.latitude ?? data.latitude}
         height={state.height}
         horizontalSpeed={state.horizontalSpeed}
+        deviceId={deviceId}
       />
 
       <section className="m-3 overflow-hidden">

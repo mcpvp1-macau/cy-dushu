@@ -83,11 +83,12 @@ const TalkTo: React.FC<PropsType> = ({ onUpload, stopPlay }) => {
         const res = await uploadToMinio(file)
         if (res) {
           message.success('PCM音频上传成功')
-          onUpload &&
+          if (onUpload) {
             onUpload({
               ...res,
               md5,
             })
+          }
         }
       }
       recorder.start()
@@ -95,6 +96,7 @@ const TalkTo: React.FC<PropsType> = ({ onUpload, stopPlay }) => {
       setRecording(true)
     } catch (err) {
       message.error('无法访问麦克风')
+      console.error(err)
     }
   }
 

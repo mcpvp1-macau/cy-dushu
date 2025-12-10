@@ -26,18 +26,23 @@ type ActionsType = {
   resetState: () => void
 }
 
-type CustomerSenderType = {}
+type CustomerSenderType = Record<string, any>
 
-const createInitialState = () => ({
+const createInitialState = () =>
+  ({
     currentTime: dayjs(),
     timeRange: [dayjs().subtract(1, 'days'), dayjs()] as [Dayjs, Dayjs],
+    playing: false,
     multiple: 1,
-} as StateType)
+    childActions: [],
+    currentAttribute: {},
+    detail: null,
+  } as StateType)
 
 export const createBackTrackingStore = () => {
   return createStore<StateType & ActionsType & CustomerSenderType>()(
     devtools(
-      (set, get) => ({
+      (set, _get) => ({
         ...createInitialState(),
         resetState: () => {
           set(createInitialState(), false, 'resetState')

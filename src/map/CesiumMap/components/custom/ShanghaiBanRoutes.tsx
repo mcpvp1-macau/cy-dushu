@@ -107,9 +107,9 @@ const ShanghaiBanRoutes: FC<unknown> = memo(() => {
               viewer.entities.remove(entity)
             })
           })
-        } catch (error) {}
+        } catch (_error) {}
       }
-    } catch (error) {}
+    } catch (_error) {}
   }, [viewer])
 
   return <></>

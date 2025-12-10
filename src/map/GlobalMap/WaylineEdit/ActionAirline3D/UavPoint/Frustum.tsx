@@ -156,7 +156,7 @@ const Frustum: React.FC<Props> = (props) => {
       try {
         viewer.scene.primitives.remove(frustumPrimitive.current)
         viewer.scene.primitives.remove(outlinePrimitive.current)
-      } catch (error) {}
+      } catch (_error) {}
     }
   }
 

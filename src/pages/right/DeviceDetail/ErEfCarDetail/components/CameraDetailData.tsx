@@ -1,6 +1,6 @@
 import AppCollapse from '@/components/AppCollapse'
-import DeviceDetailMediaData, { MediaType } from '../../components/MediaData'
-import LinkSwitch from '@/components/LinkSwitch'
+import { MediaType } from '../../components/MediaData'
+
 import AiData from '@/components/AiData'
 import { FC, memo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -13,9 +13,9 @@ type PropsType = {
 }
 
 const CameraDetailData: FC<PropsType> = memo(({ deviceId, deviceType }) => {
-  const [mediaType, setMediaType] = useState<MediaType>('PICTURE')
+  const [_mediaType, _setMediaType] = useState<MediaType>('PICTURE')
 
-  const items = useRef([
+  const _items = useRef([
     {
       label: '图片',
       value: 'PICTURE',

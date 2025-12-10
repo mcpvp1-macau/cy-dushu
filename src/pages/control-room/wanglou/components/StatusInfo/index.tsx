@@ -5,7 +5,7 @@ import ChildDeviceStatus from './ChildDeviceStatus'
 import { WanglouDeviceProductMap } from './config'
 import useConfig from './useConfig'
 
-type PropsType = {}
+type PropsType = Record<string, never>
 
 const StatusInfo: React.FC<PropsType> = () => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)!

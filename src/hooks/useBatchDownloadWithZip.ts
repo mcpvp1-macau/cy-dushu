@@ -62,7 +62,7 @@ const useBatchDownloadWithZip = () => {
       a.click()
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
-    } catch (e) {
+    } catch (_e) {
       // 取消
       signals.current.values().forEach((s) => s.abort())
     } finally {

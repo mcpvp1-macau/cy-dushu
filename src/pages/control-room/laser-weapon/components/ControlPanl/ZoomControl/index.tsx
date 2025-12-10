@@ -56,7 +56,9 @@ const ZoomControl: React.FC<Props> = ({ item }) => {
         size="small"
         disabled={disabled}
         onClick={() => {
-          !disabled && run()
+          if (!disabled) {
+            run()
+          }
         }}
       >
         <Icon id="icon-suofnagzishiying" />

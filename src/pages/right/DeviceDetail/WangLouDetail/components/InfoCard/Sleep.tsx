@@ -6,7 +6,7 @@ import { useAppMsg } from '@/hooks/useAppMsg'
 import { getDeviceDetail, postDeviceService } from '@/service/modules/device'
 
 interface Props {
-  deviceId: String
+  deviceId: string
 }
 
 const Sleep: React.FC<Props> = (props) => {
@@ -45,7 +45,9 @@ const Sleep: React.FC<Props> = (props) => {
         //
         let timer: NodeJS.Timeout | null = setTimeout(() => {
           run(props.deviceId)
-          timer && clearTimeout(timer)
+          if (timer) {
+            clearTimeout(timer)
+          }
           timer = null
         }, 1000)
       } else {

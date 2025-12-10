@@ -109,7 +109,7 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
         // 查找 XMP 数据块
         const text = new TextDecoder().decode(data)
         setUsePanorama(text.includes('GPano:UsePanoramaViewer="True"'))
-      } catch (e) {}
+      } catch (_e) {}
     }
 
     return (

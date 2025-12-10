@@ -8,7 +8,7 @@ type PropsType = {
 
 const UavDetail: FC<PropsType> = memo(({ sn }) => {
   const [open, setOpen] = useState(false)
-  const { t } = useTranslation()
+  const { t: _t } = useTranslation()
 
   return (
     <div>

@@ -3,6 +3,7 @@ import { Ellipse, Leafer, Text } from 'leafer-ui'
 import React, { useMemo, useRef, useState } from 'react'
 import './index.less'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface RMark {
   label: string
   value: number

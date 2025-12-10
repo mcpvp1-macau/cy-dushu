@@ -318,7 +318,7 @@ const FlightAreaDetail: FC<PropsType> = memo(() => {
                   suffixIcon={<CaretDownFilled />}
                   maxTagCount="responsive"
                   popupMatchSelectWidth={false}
-                  onChange={(value) => {}}
+                  onChange={(_value) => {}}
                 />
               </p>
             </div>

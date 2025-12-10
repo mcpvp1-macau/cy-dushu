@@ -9,7 +9,7 @@ type PropsType = {
 
 const Logs: FC<PropsType> = memo(({ deviceId, deviceName }) => {
   const [open, setOpen] = useState(false)
-  const { t } = useTranslation()
+  const { t: _t } = useTranslation()
 
   return (
     <div>

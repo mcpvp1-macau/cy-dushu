@@ -42,7 +42,7 @@ const RadarFormModal: React.FC<PropsType> = ({
 
   const queryClient = useQueryClient()
 
-  const save = async (values) => {
+  const _save = async (values) => {
     const { code } = await setWanglouConfig(productKey, deviceId, values).catch(
       () => {
         return { code: 'ERROR' }
@@ -63,7 +63,7 @@ const RadarFormModal: React.FC<PropsType> = ({
     // setLoading(false)
   }
 
-  const setRadarRangeProfile = async (data, values, mapString) => {
+  const setRadarRangeProfile = async (data, _values, _mapString) => {
     const res = await setProperty(productKey, deviceId, {
       property: 'scanRangeProfile',
       data,

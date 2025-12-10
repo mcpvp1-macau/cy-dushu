@@ -17,9 +17,9 @@ async function initSentry() {
         if (message.code !== 'SUCCESS') {
           // return null
         }
-      } catch (error) {
-        console.log('beforeSend', (hint?.originalException as any)?.message)
-      }
+    } catch (error) {
+      console.log('beforeSend', (hint?.originalException as any)?.message, error)
+    }
       event.tags = {
         ...event.tags,
         'user.name': localStorage.getItem('username') || '',

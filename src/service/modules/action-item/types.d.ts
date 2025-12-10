@@ -1,6 +1,32 @@
 declare namespace API_ACTION_ITEM {
   // ----------------- domain ----------------
   namespace domain {
+    interface TaskTemplateInfo {
+      smartTaskType?: string
+      defaultDeviceId?: string
+      defaultDeviceName?: string
+      taskBasic?: string
+      parameters?: Record<string, any>
+      takeOffSecurityHeight?: number
+      globalRTHHeight?: number
+    }
+
+    interface ActionItemDetail {
+      actionItemId?: number
+      taskId?: string
+      actionId?: number
+      deviceType?: string
+      deviceId?: string
+      taskTemplateInfo?: TaskTemplateInfo
+      actionItemName?: string
+      status?: string
+      startTime?: string
+      endTime?: string
+      templateId?: string
+      actionPlanId?: number
+      actionPlanName?: string
+    }
+
     interface ActionItem {
       /* 用户列表,多个用逗号分隔 */
       acceptUserIds?: string
@@ -82,6 +108,14 @@ declare namespace API_ACTION_ITEM {
        * 子任务模版id
        */
       taskTplId?: string
+      /**
+       * 飞行高度
+       */
+      flightHeight?: number
+      /**
+       * 返航高度
+       */
+      returnHeight?: number
       [property: string]: any
     }
 

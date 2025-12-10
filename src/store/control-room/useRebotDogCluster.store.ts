@@ -94,9 +94,7 @@ export const useRebotDogClusterStore = create<ClusterState & ClusterActions>(
       }),
     removeDog: (deviceId) =>
       set((s) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { [deviceId]: _state, ...restState } = s.dogStates
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { [deviceId]: _store, ...restStores } = s.stores
         return {
           ...s,
@@ -121,7 +119,6 @@ export const useRebotDogClusterStore = create<ClusterState & ClusterActions>(
       })),
     unregisterStore: (deviceId) =>
       set((s) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { [deviceId]: _store, ...restStores } = s.stores
         return { ...s, stores: restStores }
       }),

@@ -7,13 +7,13 @@ import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.
 import useMixARStore from '@/store/control-room/useMixAR.store'
 import useFlightAreaStore from '@/store/map/useFlightArea.store'
 import useMapLayerAndOverlayStore from '@/store/map/useLayerAndOverlay.store'
-import { getOverlayColor } from '@/utils/color'
+
 import { shouldJson } from '@/utils/json'
 import * as turf from '@turf/turf'
 import RBush from 'geojson-rbush'
 import { useShallow } from 'zustand/react/shallow'
 import getHeightsFromRGBTile from '@/utils/cesium/getHeightsFromRGBTile'
-import { CotType } from '@/store/map/useDraw.store'
+
 
 type PropsType = unknown
 
@@ -62,7 +62,7 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
   // webgl渲染是有视锥裁剪的，请求的数据也是在附近的，所以无需使用rTree
   // 但是overlay可能在全球各地，所以使用rTree查找附近的
 
-  const updatePOIsRTree = useMixARStore((s) => s.updatePOIsRTree)
+  const _updatePOIsRTree = useMixARStore((s) => s.updatePOIsRTree)
   useEffect(() => {
     if (poiData) {
       // const rTree = RBush<GeoJSON.Point, GeoJSON.GeoJsonProperties>()
@@ -89,7 +89,7 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
     queryClient,
   )
 
-  const updateAOIsRTree = useMixARStore((s) => s.updateAOIsRTree)
+  const _updateAOIsRTree = useMixARStore((s) => s.updateAOIsRTree)
 
   useEffect(() => {
     if (aoiData) {
@@ -117,7 +117,7 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
     queryClient,
   )
 
-  const updateRoadsRTree = useMixARStore((s) => s.updateRoadsRTree)
+  const _updateRoadsRTree = useMixARStore((s) => s.updateRoadsRTree)
 
   useEffect(() => {
     if (roadData) {
@@ -153,7 +153,7 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
 
   const overlayList = useMapLayerAndOverlayStore((s) => s.overlayList)
   const flightAreaList = useFlightAreaStore((s) => s.flightAreaList)
-  const updateOverlayRTree = useMixARStore((s) => s.updateOverlayRTree)
+  const _updateOverlayRTree = useMixARStore((s) => s.updateOverlayRTree)
   useEffect(() => {
     if (!range) {
       return

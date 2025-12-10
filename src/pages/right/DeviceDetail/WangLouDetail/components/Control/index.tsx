@@ -7,7 +7,6 @@ import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouCont
 import { setDeviceProp } from '@/service/modules/device'
 import ControlBar from './ControlBar'
 import FormModal from '@/components/XForm/Modal'
-import { use } from 'i18next'
 
 export interface presetItem {
   presetPointId: string
@@ -21,7 +20,7 @@ const speed = window.globalThis.wanglouSpeed || 1000
 type PropsType = {
   /** 详情数据 */
   data: API_DEVICE.domain.Device
-} & Partial<{}>
+}
 
 const Control: React.FC<PropsType> = (props) => {
   const { data } = props

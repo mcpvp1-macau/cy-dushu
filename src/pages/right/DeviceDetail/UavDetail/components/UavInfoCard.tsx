@@ -1,26 +1,36 @@
 import SignalStrength from '@/components/device/SignalStrength'
 import IconButton from '@/components/ui/button/IconButton'
+import OverflowText from '@/components/ui/OverflowText'
+import { emtpyObject } from '@/constant/data'
 import { uavDisplayModeTransMap } from '@/constant/trans_map/uav_display_mode'
 import { StatusColorMap } from '@/enum/device'
 import { useAppMsg } from '@/hooks/useAppMsg'
+import TaskStatusQuickCreate from '@/pages/right/DeviceDetail/components/TaskStatusQuickCreate'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { CopyOutlined } from '@ant-design/icons'
 import { pick, round } from 'lodash'
 import { useShallow } from 'zustand/react/shallow'
 import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
-import { emtpyObject } from '@/constant/data'
-import OverflowText from '@/components/ui/OverflowText'
 
-const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
+const I: FC<{ l: ReactNode; v: ReactNode; isfull?: boolean }> = ({
+  l,
+  v,
+  isfull = false,
+}) => {
   return (
-    <li className="w-1/2 flex gap-1 overflow-hidden">
+    <li
+      className={clsx(
+        'flex gap-1 overflow-hidden',
+        isfull ? 'w-full' : 'w-1/2',
+      )}
+    >
       <div className="whitespace-nowrap">{l}:</div>
       {v}
     </li>
   )
 }
 
-type PropsType = {} & Partial<{
+type PropsType = Partial<{
   modelNumber: string
   onlineStatus: string
   signalStrength: number
@@ -30,6 +40,7 @@ type PropsType = {} & Partial<{
   latitude: number
   height: number
   horizontalSpeed: number
+  deviceId: string
 }>
 
 const UavDetailInfoCard: FC<PropsType> = memo(
@@ -43,8 +54,10 @@ const UavDetailInfoCard: FC<PropsType> = memo(
     latitude,
     height,
     horizontalSpeed,
+    deviceId,
   }) => {
     const { t, i18n } = useTranslation()
+
     const s = useUavControlRoomStore(
       useShallow((m) => {
         const s = m.state
@@ -68,6 +81,8 @@ const UavDetailInfoCard: FC<PropsType> = memo(
     )
 
     const msgApi = useAppMsg()
+
+    // 复制飞参信息
     const handleCopy = async () => {
       const texts = [
         [
@@ -114,50 +129,60 @@ const UavDetailInfoCard: FC<PropsType> = memo(
     }
 
     return (
-      <ul className="p-2 mx-3 mr-[9px] card-border text-sm flex flex-wrap overflow-hidden">
-        <I l={t('common.modelNumber')} v={modelNumber} />
-        <I
-          l={t('common.onlineStatus')}
-          v={
-            <p className="flex gap-2">
-              <span style={{ color: StatusColorMap[onlineStatus!] }}>
-                {onlineStatus ? t(`device.status.online.${onlineStatus}`) : '-'}
-              </span>
-              <SignalStrength value={signalStrength ?? 0} />
-            </p>
-          }
-        />
-        <I
-          l={t('uav.displayMode.title')}
-          v={
-            <OverflowText className="flex-1 truncate">
-              {uavDisplayModeTransMap[displayMode || '']?.[i18n.language] ||
-                displayMode}
-            </OverflowText>
-          }
-        />
-        <I l={t('common.electricity')} v={`${electricity || 0} %`} />
-        <I l={t('common.longitude')} v={longitude?.toFixed(5) || '-'} />
-        <I
-          l={t('common.latitude')}
-          v={
-            <div className="flex items-center gap-1">
-              <span>{latitude?.toFixed(5) || '-'}</span>
-              <IconButton
-                tippyProps={{ content: '复制飞参信息' }}
-                onClick={handleCopy}
-              >
-                <CopyOutlined />
-              </IconButton>
-            </div>
-          }
-        />
-        <I l={t('common.height')} v={`${height?.toFixed(2) || 0} m`} />
-        <I
-          l={t('common.speed')}
-          v={`${horizontalSpeed?.toFixed(2) || 0} m/s`}
-        />
-      </ul>
+      <>
+        <ul className="p-2 mx-3 mr-[9px] card-border text-sm flex flex-wrap overflow-hidden">
+          <I l={t('common.modelNumber')} v={modelNumber} />
+          <I
+            l={t('common.onlineStatus')}
+            v={
+              <p className="flex gap-2">
+                <span style={{ color: StatusColorMap[onlineStatus!] }}>
+                  {onlineStatus
+                    ? t(`device.status.online.${onlineStatus}`)
+                    : '-'}
+                </span>
+                <SignalStrength value={signalStrength ?? 0} />
+              </p>
+            }
+          />
+          <I
+            l={t('uav.displayMode.title')}
+            v={
+              <OverflowText className="flex-1 truncate">
+                {uavDisplayModeTransMap[displayMode || '']?.[i18n.language] ||
+                  displayMode}
+              </OverflowText>
+            }
+          />
+
+          <I l={t('common.electricity')} v={`${electricity || 0} %`} />
+          <I l={t('common.longitude')} v={longitude?.toFixed(5) || '-'} />
+          <I
+            l={t('common.latitude')}
+            v={
+              <div className="flex items-center gap-1">
+                <span>{latitude?.toFixed(5) || '-'}</span>
+                <IconButton
+                  tippyProps={{ content: '复制飞参信息' }}
+                  onClick={handleCopy}
+                >
+                  <CopyOutlined />
+                </IconButton>
+              </div>
+            }
+          />
+          <I l={t('common.height')} v={`${height?.toFixed(2) || 0} m`} />
+          <I
+            l={t('common.speed')}
+            v={`${horizontalSpeed?.toFixed(2) || 0} m/s`}
+          />
+          <I
+            isfull
+            l={t('common.task')}
+            v={<TaskStatusQuickCreate deviceId={deviceId} />}
+          />
+        </ul>
+      </>
     )
   },
 )

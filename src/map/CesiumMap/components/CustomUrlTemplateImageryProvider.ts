@@ -55,7 +55,7 @@ const getImageData = async (
         }
         await imageryStore.removeItem(url)
       }
-    } catch (e) {}
+    } catch (_e) {}
   }
 
   const abortController = new AbortController()

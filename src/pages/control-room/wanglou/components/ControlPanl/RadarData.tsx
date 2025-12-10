@@ -13,7 +13,7 @@ const RadarData: React.FC = () => {
   const detail = useDeviceDetailStore((s) => s.deviceDetail)
   const state = useWangLouControlRoomStore((s) => s.state)
   const { longitude, latitude } = detail || {}
-  const queryClient = useQueryClient()
+  const _queryClient = useQueryClient()
 
   const radar = detail?.childDevice?.find(
     (item: any) => item.deviceType === 'RADAR',

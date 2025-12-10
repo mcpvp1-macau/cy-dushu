@@ -1,8 +1,7 @@
-import { FC, memo, ReactNode } from 'react'
+import { FC, memo } from 'react'
+import InfoItem from './InfoItem'
 
-import InfoItem, { I } from './InfoItem'
-
-type PropsType = {}
+type PropsType = Record<string, never>
 
 const LaserStatusInfo: FC<PropsType> = memo(() => {
   return (

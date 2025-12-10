@@ -16,21 +16,18 @@ const speed = window.globalThis.wanglouSpeed || 50
 type PropsType = {
   /** 详情数据 */
   data: API_DEVICE.domain.Device
-} & Partial<{}>
+} & Record<string, any>
 
 const Control1: React.FC<PropsType> = () => {
-
   const [form] = Form.useForm()
   const [editField, setEditField] = useState<string>('')
 
   const { t } = useTranslation()
 
-
   const disable = false // useOthersControlRoomStore((s) => !s.hasControlPower)
   const pitch = useOthersControlRoomStore((s) => s.state.pitch)
   const yaw = useOthersControlRoomStore((s) => s.state.yaw)
   const sendCommand = useOthersControlRoomStore((s) => s.sendCommand)
-
 
   const setDownKey = useMemoizedFn((value) => {
     sendCommand(

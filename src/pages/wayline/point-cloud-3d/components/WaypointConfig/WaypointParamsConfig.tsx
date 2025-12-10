@@ -6,7 +6,7 @@ import { memo, type FC } from 'react'
 type PropsType = unknown
 
 const WaypointParamsConfig: FC<PropsType> = memo(() => {
-  const { t } = useTranslation()
+  const { t: _t } = useTranslation()
   const waypoint = usePointCloud3DWaylineStore(
     (s) => s.waypointsConfig[s.currentIndex],
   )

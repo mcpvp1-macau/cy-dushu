@@ -1,6 +1,5 @@
 import Icon from '@/components/Icon'
-import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
-import useObjectTrack from '@/hooks/device/useObjectTrack'
+
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import Control from '@/pages/right/DeviceDetail/WangLouDetail/components/Control'
 import { useWangLouControlRoomStore } from '@/store/context-store/useWangLouControlRoom.store'
@@ -21,8 +20,8 @@ const TurntableControl: React.FC = () => {
   )
   const hasControlPower = useWangLouControlRoomStore((s) => s.hasControlPower)
 
-  const enableSmartTrack = useWangLouControlRoomStore((s) => s.enableSmartTrack)
-  const updateEnableSmartTrack = useWangLouControlRoomStore(
+  const _enableSmartTrack = useWangLouControlRoomStore((s) => s.enableSmartTrack)
+  const _updateEnableSmartTrack = useWangLouControlRoomStore(
     (s) => s.updateEnableSmartTrack,
   )
   const { t } = useTranslation()

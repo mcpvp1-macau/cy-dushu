@@ -6,7 +6,6 @@ import dayjs from 'dayjs'
 import { useEffect, useRef, memo } from 'react'
 import UavDirectionImg from '@/assets/marker/UavDirection.png'
 import GimbalDirectionImg from '@/assets/marker/gimbalDirection.png'
-import { number } from 'mathjs'
 
 type PropsType = {
   value: API_DBAPI.res.GetTrackQueryRes

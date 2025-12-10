@@ -2,6 +2,7 @@ import IconDetail from '@/assets/icons/jsx/IconDetail'
 import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
 import IconVisible from '@/assets/icons/jsx/IconVisible'
 import IconButton from '@/components/ui/button/IconButton'
+import OverflowText from '@/components/ui/OverflowText'
 import RelayDeviceModal from '@/components/device/RelayDeviceModal'
 import { WaylineEnum } from '@/constant/uav/wayline'
 import { RightModeEnum } from '@/enum/right-mode'
@@ -56,7 +57,7 @@ export const taskStatusMap: Record<string, Record<string, string>> = {
 const statusColor: Record<string, string> = {
   PENDING: 'rgb(var(--fore-color))',
   PROCESSING: '#4C90F0',
-  FINISHED: '#15B371',
+  FINISHED: '#22c55e',
   PAUSE: '#C7D1DC',
 }
 
@@ -84,6 +85,9 @@ const OperatorBtns: FC<PropsType> = ({ data, noEdit }) => {
         queryKey: ['action', String(data.actionId), 'items'],
       })
       msgApi.success(t('api.success.msg'))
+      queryClient.invalidateQueries({
+        queryKey: ['action', 'item', 'device', 'latest', data.deviceId],
+      })
     } finally {
       setLoading(false)
     }
@@ -170,6 +174,7 @@ const ChildAction: FC<PropsType> = memo(
     const queryClient = useQueryClient()
     const [relayModalOpen, setRelayModalOpen] = useState(false)
     const breakPointId = data.breakPointId
+    const flightReportingEnabled = globalConfig.useFlightReporting
 
     const handleRelaySuccess = async () => {
       await queryClient.invalidateQueries({
@@ -178,16 +183,30 @@ const ChildAction: FC<PropsType> = memo(
     }
 
     // 执行人员
+    const pilotInfos = useMemo(() => {
+      const pilots = shouldJson(data.extra)
+      if (Array.isArray(pilots)) {
+        return pilots
+      }
+      return []
+    }, [data.extra])
+
     const pilotsStr = useMemo(() => {
       if (data.pilotName) {
         return data.pilotName
       }
-      const pilots = shouldJson(data.extra) || []
-      if (Array.isArray(pilots)) {
-        return pilots.map((p) => p.name).join(', ')
+      return pilotInfos.map((p) => p.name).join(', ')
+    }, [data.pilotName, pilotInfos])
+
+    const orgStr = useMemo(() => {
+      if (data.orgName) {
+        return data.orgName
       }
-      return ''
-    }, [data.extra])
+      return pilotInfos
+        .map((p) => p.orgName)
+        .filter(Boolean)
+        .join(', ')
+    }, [data.orgName, pilotInfos])
 
     const handleDetailClick = () => {
       useRightMode.getState().updateRightMode(RightModeEnum.DEVICE)
@@ -202,7 +221,7 @@ const ChildAction: FC<PropsType> = memo(
 
     return (
       <>
-        <div className="flex items-center justify-between mb-0.5">
+        <div className="flex items-center justify-between mb-1">
           <div className="flex gap-2 items-start">
             <IconButton
               disabled={
@@ -220,18 +239,108 @@ const ChildAction: FC<PropsType> = memo(
           <OperatorBtns data={data} noEdit={noEdit} />
         </div>
         <div className="flex flex-col gap-1 text-xs">
-          <div>
-            <span className="mr-1">
-              {t('action.detail.task.people.title')}:
-            </span>
-            <span>{pilotsStr || '-'}</span>
+          {flightReportingEnabled && (
+            <div className="flex gap-2 overflow-hidden">
+              <div className="basis-3/5 min-w-0">
+                <div className="flex items-center gap-1 overflow-hidden">
+                  <span className="text-nowrap">
+                    {t('action.detail.task.people.title')}:
+                  </span>
+                  <OverflowText className="min-w-0 flex-1 truncate">
+                    {pilotsStr || '-'}
+                  </OverflowText>
+                </div>
+              </div>
+              <div className="basis-2/5 min-w-0">
+                <div className="flex items-center gap-1 overflow-hidden">
+                  <span className="text-nowrap">组织:</span>
+                  <OverflowText className="min-w-0 flex-1 truncate">
+                    {orgStr || '-'}
+                  </OverflowText>
+                </div>
+              </div>
+            </div>
+          )}
+          {flightReportingEnabled && (
+            <div className="flex gap-2 overflow-hidden">
+              <div className="basis-3/5 min-w-0">
+                <div className="flex items-center gap-1 overflow-hidden">
+                  <span className="text-nowrap">飞行高度:</span>
+                  <OverflowText className="min-w-0 flex-1 truncate">
+                    {data.flightHeight ?? '-'} m
+                  </OverflowText>
+                </div>
+              </div>
+              <div className="basis-2/5 min-w-0">
+                <div className="flex items-center gap-1 overflow-hidden">
+                  <span className="text-nowrap">返航高度:</span>
+                  <OverflowText className="min-w-0 flex-1 truncate">
+                    {data.returnHeight ?? '-'} m
+                  </OverflowText>
+                </div>
+              </div>
+            </div>
+          )}
+          <div className="flex gap-2 overflow-hidden">
+            <div
+              className={`min-w-0 ${
+                flightReportingEnabled ? 'basis-3/5' : 'basis-full'
+              }`}
+            >
+              <div className="flex items-center gap-1 overflow-hidden">
+                <span className="text-nowrap">
+                  {t('action.detail.task.status.title')}:
+                </span>
+                <OverflowText className="min-w-0 flex-1 truncate">
+                  <span style={{ color: statusColor[data.status!] }}>
+                    {taskStatusMap[i18n.language][data.status!]}
+                  </span>
+                </OverflowText>
+              </div>
+            </div>
+            {flightReportingEnabled && (
+              <div className="basis-2/5 min-w-0">
+                <div className="flex items-center gap-1 overflow-hidden">
+                  <span className="text-nowrap">报备状态:</span>
+                  {data.isPassed === 1 ? (
+                    <div className="text-green-500 flex items-center gap-1 min-w-0">
+                      <CheckOutlined />
+                      <OverflowText className="min-w-0 flex-1 truncate">
+                        已报备
+                      </OverflowText>
+                    </div>
+                  ) : data.isPassed === 2 ? (
+                    <div className="text-orange-500 flex items-center gap-1 min-w-0">
+                      <ClockCircleOutlined />
+                      <OverflowText className="min-w-0 flex-1 truncate">
+                        待审批
+                      </OverflowText>
+                    </div>
+                  ) : data.isPassed === 0 ? (
+                    <div className="text-red-500 flex items-center gap-1 min-w-0">
+                      <CloseOutlined />
+                      <OverflowText className="min-w-0 flex-1 truncate">
+                        未通过
+                      </OverflowText>
+                    </div>
+                  ) : (
+                    <div className="text-fore flex items-center gap-1 min-w-0">
+                      <IconNotReported />
+                      <OverflowText className="min-w-0 flex-1 truncate">
+                        未报备
+                      </OverflowText>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
           <div className="flex gap-2 overflow-hidden">
-            <div className="grow flex overflow-hidden">
-              <span className="mr-1 text-nowrap">
-                {t('action.detail.task.device.title')}:
-              </span>
+            <div className="basis-full min-w-0">
               <div className="flex items-center gap-1 overflow-hidden">
+                <span className="text-nowrap">
+                  {t('action.detail.task.device.title')}:
+                </span>
                 {data.deviceId && (
                   <IconButton
                     tippyProps={{ content: t('common.detail') }}
@@ -240,72 +349,50 @@ const ChildAction: FC<PropsType> = memo(
                     <IconDetail />
                   </IconButton>
                 )}
-                <p className="flex-1 truncate">{data.deviceName || '-'}</p>
+                <OverflowText className="min-w-0 flex-1 truncate">
+                  {data.deviceName || '-'}
+                </OverflowText>
               </div>
             </div>
-            <p className="shrink-0">
-              <span className="mr-1 text-nowrap">
-                {t('action.detail.task.status.title')}:
-              </span>
-              <span style={{ color: statusColor[data.status!] }}>
-                {taskStatusMap[i18n.language][data.status!]}
-              </span>
-            </p>
           </div>
-          <div className="flex">
-            {data.taskTplId && (
-              <div>
-                <p>
-                  <span className="mr-1 text-nowrap">
-                    {t('wayline.title')}:{' '}
-                    {waylineNameMap?.[data.templateId] || '-'}
-                  </span>
-                </p>
-              </div>
-            )}
-            {breakPointId && (
-              <>
-                <IconButton
-                  tippyProps={{ content: '接力飞行' }}
-                  onClick={() => {
-                    setRelayModalOpen(true)
-                  }}
+          {(data.taskTplId || breakPointId) && (
+            <div className="flex gap-2 overflow-hidden">
+              {data.taskTplId && (
+                <div
+                  className={`${
+                    breakPointId ? 'basis-3/5' : 'basis-full'
+                  } min-w-0`}
                 >
-                  <IconRelayWayline />
-                </IconButton>
-                <RelayDeviceModal
-                  open={relayModalOpen}
-                  breakPointId={breakPointId}
-                  deviceName={data.deviceName}
-                  relayDeviceId={data.relayDeviceId}
-                  onSuccess={handleRelaySuccess}
-                  onClose={() => setRelayModalOpen(false)}
-                />
-              </>
-            )}
-          </div>
-          {globalConfig.useFlightReporting && (
-            <div className="flex gap-1">
-              <span>报备状态:</span>
-              {data.isPassed === 1 ? (
-                <div className="text-green-500 flex gap-1">
-                  <CheckOutlined />
-                  已报备
+                  <div className="flex items-center gap-1 overflow-hidden">
+                    <span className="text-nowrap">{t('wayline.title')}:</span>
+                    <OverflowText className="min-w-0 flex-1 truncate">
+                      {waylineNameMap?.[data.templateId] || '-'}
+                    </OverflowText>
+                  </div>
                 </div>
-              ) : data.isPassed === 2 ? (
-                <div className="text-orange-500 flex gap-1">
-                  <ClockCircleOutlined />
-                  待审批
-                </div>
-              ) : data.isPassed === 0 ? (
-                <div className="text-red-500 flex gap-1">
-                  <CloseOutlined />
-                  未通过
-                </div>
-              ) : (
-                <div className="text-fore flex gap-1">
-                  <IconNotReported />
-                  未报备
+              )}
+              {breakPointId && (
+                <div
+                  className={`${
+                    data.taskTplId ? 'basis-2/5' : 'basis-full'
+                  } min-w-0 flex justify-start`}
+                >
+                  <IconButton
+                    tippyProps={{ content: '接力飞行' }}
+                    onClick={() => {
+                      setRelayModalOpen(true)
+                    }}
+                  >
+                    <IconRelayWayline />
+                  </IconButton>
+                  <RelayDeviceModal
+                    open={relayModalOpen}
+                    breakPointId={breakPointId}
+                    deviceName={data.deviceName}
+                    relayDeviceId={data.relayDeviceId}
+                    onSuccess={handleRelaySuccess}
+                    onClose={() => setRelayModalOpen(false)}
+                  />
                 </div>
               )}
             </div>

@@ -13,7 +13,7 @@ const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
   )
 }
 
-const T: FC<{ l: ReactNode }> = ({ l }) => {
+const _T: FC<{ l: ReactNode }> = ({ l }) => {
   return (
     <li className="w-[100%] leading-5 text-[12px]">
       <Tooltip title={l}>
@@ -29,7 +29,7 @@ type PropsType = {
   device: API_DEVICE.domain.Device
 }
 
-const InfoCardItem: React.FC<PropsType> = memo(({ deviceId, data, device }) => {
+const InfoCardItem: React.FC<PropsType> = memo(({ deviceId: _deviceId, data, device }) => {
   const values = data ? shouldJson(data) : {}
   const modelName =
     device.deviceTags?.find(

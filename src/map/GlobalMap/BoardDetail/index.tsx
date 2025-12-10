@@ -23,7 +23,7 @@ interface Props {
     deviceId: string
     parentId: string
     imageUrl: string | null
-    deviceInfo: { deviceName: string; deviceId: string }[]
+    _deviceInfo: { deviceName: string; deviceId: string }[]
   }
   onClose?: () => void
 }
@@ -38,12 +38,12 @@ const BoardDetail: React.FC<Props> = ({ data, onClose }) => {
     altitude,
     longitude,
     latitude,
-    source,
-    sourceType,
-    deviceId,
-    parentId,
+    source: _source,
+    sourceType: _sourceType,
+    deviceId: _deviceId,
+    parentId: _parentId,
     imageUrl,
-    deviceInfo,
+    _deviceInfo,
   } = data
 
   const { t } = useTranslation()

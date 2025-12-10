@@ -26,7 +26,7 @@ const AliyunOSSUpload = ({
 
   const dataTimeRef = useRef(0)
   const signatureRef = useRef({})
-  const [progress, setProgress] = useState(0)
+  const [_progress, setProgress] = useState(0)
   const [count, setCount] = useState(0)
   const progressRef = useRef(0)
   const isCloseRef = useRef(false)
@@ -80,7 +80,7 @@ const AliyunOSSUpload = ({
     let files = e.target.files
     const value = getPath?.(files)
 
-    files = !!filesFilter ? filesFilter(files) : files
+    files = filesFilter ? filesFilter(files) : files
 
     if (!value) {
       return
