@@ -48,7 +48,7 @@ export enum DeviceEnum {
   /** 无人地面车辆 */
   UGV = 'UGV',
   /** 无人船 */
-  UB = 'UB',
+  USV = 'USV',
 
   'DUSHU-MB' = 'DUSHU-MB',
 }
@@ -88,7 +88,7 @@ export const deviceIconMap = {
   // 微波武器
   [DeviceEnum.MICROWAVE]: DeviceIconMC,
   [DeviceEnum.UGV]: DeviceIconUGV,
-  [DeviceEnum.UB]: IconUnmannedBoat,
+  [DeviceEnum.USV]: IconUnmannedBoat,
   ['DUSHU-MB']: DeviceIconRen,
 }
 
