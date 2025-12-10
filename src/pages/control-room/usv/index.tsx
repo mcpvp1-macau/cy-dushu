@@ -3,7 +3,9 @@ import IconDeviceData from '@/assets/icons/jsx/IconDeviceData'
 import IconMap from '@/assets/icons/jsx/IconMap'
 import IconControlParams from '@/assets/icons/jsx/IconControlParams'
 import IconControl from '@/assets/icons/jsx/IconControl'
-import DynamicLayoutRoot, { DynamicLayoutType } from '@/components/DynamicLayout'
+import DynamicLayoutRoot, {
+  DynamicLayoutType,
+} from '@/components/DynamicLayout'
 import {
   DeviceDetailStoreContext,
   useCreateDeviceDetailStore,
@@ -91,7 +93,8 @@ const PageControlRoomUSV: FC = memo(() => {
   const { store } = useCreateDeviceDetailStore(deviceId)
   const productKey = useStore(
     store,
-    (s) => (s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey)!,
+    (s) =>
+      (s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey)!,
   )
 
   const controlRoomStore = useCreateUsvControlRoomStore(
@@ -126,7 +129,7 @@ const PageControlRoomUSV: FC = memo(() => {
       video: t('common.video'),
       attitude: '姿态',
       operations: '操作',
-      'device-data': '设备数据',
+      'device-data': t('common.data'),
     }),
     [t],
   )
@@ -145,7 +148,7 @@ const PageControlRoomUSV: FC = memo(() => {
   return (
     <DeviceDetailStoreContext.Provider value={store}>
       <UsvControlRoomStoreContext.Provider value={controlRoomStore}>
-        <div className="flex size-full flex-col">
+        <div className="page-full flex flex-col">
           <main className="relative w-full grow overflow-hidden">
             <DynamicLayoutRoot
               layout={layout!}
