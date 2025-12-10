@@ -8,16 +8,23 @@ import { useTitle } from 'ahooks'
 import { HTMLAttributes } from 'react'
 import { createPortal } from 'react-dom'
 import IconBattery from '@/assets/icons/jsx/IconBattery'
-import { CompassOutlined, DashboardOutlined, EnvironmentOutlined } from '@ant-design/icons'
+import {
+  CompassOutlined,
+  DashboardOutlined,
+  EnvironmentOutlined,
+} from '@ant-design/icons'
 
 const HeaderItem: FC<
-  { icon: ReactNode; tooltip?: ReactNode; value: ReactNode } &
-    HTMLAttributes<HTMLLIElement>
+  {
+    icon: ReactNode
+    tooltip?: ReactNode
+    value: ReactNode
+  } & HTMLAttributes<HTMLLIElement>
 > = memo(({ icon, tooltip, value, ...props }) => {
   return (
     <li className="flex items-center gap-1 select-none" {...props}>
       <Tooltip title={tooltip} mouseEnterDelay={0.3}>
-        <span className="flex items-center text-base text-fore-2">{icon}</span>
+        <span className="flex items-center text-sm text-fore-2">{icon}</span>
       </Tooltip>
       <div className="text-sm text-fore">{value}</div>
     </li>
@@ -59,11 +66,11 @@ const ControlRoomUsvHeader: FC = memo(() => {
       ) : (
         <div />
       )}
-      <ScrollArea className="w-full h-full ml-3">
-        <div className="flex items-center gap-3">
+      <ScrollArea className="w-full h-full">
+        <div className="flex-1 flex items-center justify-center gap-3">
           <ul className="flex gap-4 whitespace-nowrap">
             <HeaderItem
-              icon={<IconBattery className="text-lg" />}
+              icon={<IconBattery />}
               tooltip={t('common.electricity')}
               value={
                 batteryPercentage !== undefined && batteryPercentage !== null
@@ -73,7 +80,7 @@ const ControlRoomUsvHeader: FC = memo(() => {
             />
             <HeaderItem
               icon={<CompassOutlined />}
-              tooltip={t('controlRoom.uav.header.heading.title')}
+              tooltip={'航向角'}
               value={
                 headingValue !== undefined && headingValue !== null
                   ? `${headingValue.toFixed(1)}°`
