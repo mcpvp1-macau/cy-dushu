@@ -8,6 +8,9 @@ import { heartbeat } from '@/constant/websocket'
 import { shouldJson } from '@/utils/json'
 import useDeviceWsURL from '@/hooks/device/useDeviceWsURL'
 import { ComponentRef } from 'react'
+import IconControlRoom from '@/assets/icons/jsx/IconControlRoom'
+import { Button } from 'antd'
+import { Link } from 'react-router-dom'
 
 const UsvDetailDetail: FC = memo(() => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)
@@ -35,6 +38,7 @@ const UsvDetailDetail: FC = memo(() => {
   const electricity = properties.batteryPercentage
 
   const wsUrl = useDeviceWsURL(productKey, deviceId)
+  const { t } = useTranslation()
 
   const handleMessage = useMemoizedFn(
     (evt: WebSocketEventMap['message']) => {
@@ -88,6 +92,13 @@ const UsvDetailDetail: FC = memo(() => {
           }
         />
       </div>
+      <section className="mx-3 mr-[9px] my-3 flex gap-2">
+        <Link className="grow" to={`/control-room/usv/${deviceId}`}>
+          <Button block className="h-7" icon={<IconControlRoom />}>
+            {t('device.enterControlRoom.title')}
+          </Button>
+        </Link>
+      </section>
     </div>
   )
 })
