@@ -19,7 +19,7 @@ type PropsType = Partial<{
   speed: number
 }>
 
-const UbInfoCard: FC<PropsType> = memo(
+const UsvInfoCard: FC<PropsType> = memo(
   ({ modelNumber, onlineStatus, electricity, longitude, latitude, heading, speed }) => {
     const { t } = useTranslation()
     const headingLabel = t('device.heading', { defaultValue: '艏向' })
@@ -50,6 +50,6 @@ const UbInfoCard: FC<PropsType> = memo(
   },
 )
 
-UbInfoCard.displayName = 'UbInfoCard'
+UsvInfoCard.displayName = 'UsvInfoCard'
 
-export default UbInfoCard
+export default UsvInfoCard

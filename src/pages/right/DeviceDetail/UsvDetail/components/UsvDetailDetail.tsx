@@ -1,5 +1,5 @@
 import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
-import UbInfoCard from './UbInfoCard'
+import UsvInfoCard from './UsvInfoCard'
 import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
 import VideoSnapshotBtn from '@/hooks/device/VideoSnapshot'
@@ -9,7 +9,7 @@ import { shouldJson } from '@/utils/json'
 import useDeviceWsURL from '@/hooks/device/useDeviceWsURL'
 import { ComponentRef } from 'react'
 
-const UbDetailDetail: FC = memo(() => {
+const UsvDetailDetail: FC = memo(() => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
   const productKey = useDeviceDetailStore((s) => s.productKey)
@@ -64,7 +64,7 @@ const UbDetailDetail: FC = memo(() => {
 
   return (
     <div>
-      <UbInfoCard
+      <UsvInfoCard
         modelNumber={modelNumber}
         onlineStatus={onlineStatus}
         electricity={electricity}
@@ -92,6 +92,6 @@ const UbDetailDetail: FC = memo(() => {
   )
 })
 
-UbDetailDetail.displayName = 'UbDetailDetail'
+UsvDetailDetail.displayName = 'UsvDetailDetail'
 
-export default UbDetailDetail
+export default UsvDetailDetail

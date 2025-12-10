@@ -2,13 +2,13 @@ import CloseableHeader from '../../components/CloseableHeader'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import DeviceIcon from '@/components/device/DeviceIcon'
 import { BaseDeviceDetailProps } from '../routes'
-import UbDetailDetail from './components/UbDetailDetail'
+import UsvDetailDetail from './components/UsvDetailDetail'
 import { DeviceEnum } from '@/enum/device'
 import { Segmented } from 'antd'
 import IconDetail from '@/assets/icons/jsx/IconDetail'
 import IconData from '@/assets/icons/jsx/IconData'
 
-const UbDetail: FC<BaseDeviceDetailProps> = memo(
+const UsvDetail: FC<BaseDeviceDetailProps> = memo(
   ({ data, headerTools, headerProps, onClose }) => {
     const { t } = useTranslation()
 
@@ -22,7 +22,7 @@ const UbDetail: FC<BaseDeviceDetailProps> = memo(
           {...headerProps}
         >
           <div className="flex gap-2 items-center">
-            <DeviceIcon type={DeviceEnum.UB} className="device-detail-icon" />
+            <DeviceIcon type={DeviceEnum.USV} className="device-detail-icon" />
             <h6 className="text-hightlight text-base">{data.deviceName}</h6>
           </div>
         </CloseableHeader>
@@ -46,13 +46,13 @@ const UbDetail: FC<BaseDeviceDetailProps> = memo(
               onChange={setTab}
             />
           </div>
-          <UbDetailDetail />
+          <UsvDetailDetail />
         </ScrollArea>
       </div>
     )
   },
 )
 
-UbDetail.displayName = 'UbDetail'
+UsvDetail.displayName = 'UsvDetail'
 
-export default UbDetail
+export default UsvDetail
