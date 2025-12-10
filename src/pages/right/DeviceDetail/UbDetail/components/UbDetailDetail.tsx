@@ -3,6 +3,10 @@ import UbInfoCard from './UbInfoCard'
 import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
 import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
 import VideoSnapshotBtn from '@/hooks/device/VideoSnapshot'
+import useWebSocket from 'react-use-websocket'
+import { heartbeat } from '@/constant/websocket'
+import { shouldJson } from '@/utils/json'
+import useDeviceWsURL from '@/hooks/device/useDeviceWsURL'
 import { ComponentRef } from 'react'
 
 const UbDetailDetail: FC = memo(() => {
@@ -10,15 +14,17 @@ const UbDetailDetail: FC = memo(() => {
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
   const productKey = useDeviceDetailStore((s) => s.productKey)
 
+  const videoRef = useRef<ComponentRef<typeof DeviceLiveVideo>>(null)
+  const [properties, setProperties] = useState<Record<string, any>>(
+    deviceDetail?.properties ?? {},
+  )
+
+  const videoId = properties.videoList?.[0]?.videoId ?? ''
+
   const modelNumber =
     deviceDetail?.deviceTags?.find(
       (item: { tagName: string }) => item.tagName === 'MODEL_NUMBER',
     )?.tagValue || '-'
-
-  const videoRef = useRef<ComponentRef<typeof DeviceLiveVideo>>(null)
-  const videoId = deviceDetail?.properties.videoList?.[0]?.videoId ?? ''
-
-  const properties = deviceDetail?.properties ?? {}
 
   const onlineStatus = useRealOnlineStatus(deviceId)
 
@@ -28,8 +34,36 @@ const UbDetailDetail: FC = memo(() => {
   const speed = properties.speed
   const electricity = properties.batteryPercentage
 
+  const wsUrl = useDeviceWsURL(productKey, deviceId)
+
+  const handleMessage = useMemoizedFn(
+    (evt: WebSocketEventMap['message']) => {
+      const wsData = shouldJson(evt.data)
+      if (!wsData) return
+      if (
+        ['event.property.post', 'properties.state'].includes(wsData.method) &&
+        wsData.deviceId === deviceId
+      ) {
+        setProperties((prev) => ({ ...prev, ...wsData.data }))
+      }
+    },
+  )
+
+  useWebSocket(wsUrl, {
+    heartbeat,
+    reconnectAttempts: 0x3f3f3f3f,
+    retryOnError: true,
+    reconnectInterval: 5_000,
+    shouldReconnect: () => true,
+    onMessage: handleMessage,
+  })
+
+  useEffect(() => {
+    setProperties(deviceDetail?.properties ?? {})
+  }, [deviceDetail?.properties])
+
   return (
-    <div className="pb-3">
+    <div>
       <UbInfoCard
         modelNumber={modelNumber}
         onlineStatus={onlineStatus}
