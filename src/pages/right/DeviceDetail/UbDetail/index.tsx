@@ -4,10 +4,15 @@ import DeviceIcon from '@/components/device/DeviceIcon'
 import { BaseDeviceDetailProps } from '../routes'
 import UbDetailDetail from './components/UbDetailDetail'
 import { DeviceEnum } from '@/enum/device'
+import { Segmented } from 'antd'
+import IconDetail from '@/assets/icons/jsx/IconDetail'
+import IconData from '@/assets/icons/jsx/IconData'
 
 const UbDetail: FC<BaseDeviceDetailProps> = memo(
   ({ data, headerTools, headerProps, onClose }) => {
     const { t } = useTranslation()
+
+    const [tab, setTab] = useState(0)
 
     return (
       <div className="overflow-y-hidden flex flex-col">
@@ -22,12 +27,26 @@ const UbDetail: FC<BaseDeviceDetailProps> = memo(
           </div>
         </CloseableHeader>
         <ScrollArea className="grow">
-          <div className="px-3 mt-2">
-            <h6 className="text-sm mb-2 text-fore-secondary">
-              {t('common.detail')}
-            </h6>
-            <UbDetailDetail />
+          <div className="px-3 mb-3">
+            <Segmented
+              block
+              value={tab}
+              options={[
+                {
+                  label: t('common.detail'),
+                  value: 0,
+                  icon: <IconDetail />,
+                },
+                {
+                  label: t('common.data'),
+                  value: 1,
+                  icon: <IconData />,
+                },
+              ]}
+              onChange={setTab}
+            />
           </div>
+          <UbDetailDetail />
         </ScrollArea>
       </div>
     )

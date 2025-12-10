@@ -22,7 +22,7 @@ const UbDetailDetail: FC = memo(() => {
   const electricity = properties.batteryPercentage
 
   return (
-    <div className="pt-3 pb-4">
+    <div className="pb-3">
       <UbInfoCard
         modelNumber={modelNumber}
         onlineStatus={onlineStatus}
