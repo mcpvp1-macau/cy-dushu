@@ -239,7 +239,7 @@ const ChildAction: FC<PropsType> = memo(
         <div className="flex flex-col gap-1 text-xs">
           {flightReportingEnabled && (
             <div className="flex gap-2 overflow-hidden">
-              <div className="basis-2/3 min-w-0">
+              <div className="basis-3/5 min-w-0">
                 <div className="flex items-center gap-1 overflow-hidden">
                   <span className="text-nowrap">
                     {t('action.detail.task.people.title')}:
@@ -249,7 +249,7 @@ const ChildAction: FC<PropsType> = memo(
                   </OverflowText>
                 </div>
               </div>
-              <div className="basis-1/3 min-w-0">
+              <div className="basis-2/5 min-w-0">
                 <div className="flex items-center gap-1 overflow-hidden">
                   <span className="text-nowrap">组织:</span>
                   <OverflowText className="min-w-0 flex-1 truncate">
@@ -261,7 +261,7 @@ const ChildAction: FC<PropsType> = memo(
           )}
           {flightReportingEnabled && (
             <div className="flex gap-2 overflow-hidden">
-              <div className="basis-2/3 min-w-0">
+              <div className="basis-3/5 min-w-0">
                 <div className="flex items-center gap-1 overflow-hidden">
                   <span className="text-nowrap">飞行高度:</span>
                   <OverflowText className="min-w-0 flex-1 truncate">
@@ -269,7 +269,7 @@ const ChildAction: FC<PropsType> = memo(
                   </OverflowText>
                 </div>
               </div>
-              <div className="basis-1/3 min-w-0">
+              <div className="basis-2/5 min-w-0">
                 <div className="flex items-center gap-1 overflow-hidden">
                   <span className="text-nowrap">返航高度:</span>
                   <OverflowText className="min-w-0 flex-1 truncate">
@@ -280,7 +280,7 @@ const ChildAction: FC<PropsType> = memo(
             </div>
           )}
           <div className="flex gap-2 overflow-hidden">
-            <div className={`min-w-0 ${flightReportingEnabled ? 'basis-2/3' : 'basis-full'}`}>
+            <div className={`min-w-0 ${flightReportingEnabled ? 'basis-3/5' : 'basis-full'}`}>
               <div className="flex items-center gap-1 overflow-hidden">
                 <span className="text-nowrap">
                   {t('action.detail.task.status.title')}:
@@ -293,7 +293,7 @@ const ChildAction: FC<PropsType> = memo(
               </div>
             </div>
             {flightReportingEnabled && (
-              <div className="basis-1/3 min-w-0">
+              <div className="basis-2/5 min-w-0">
                 <div className="flex items-center gap-1 overflow-hidden">
                   <span className="text-nowrap">报备状态:</span>
                   {data.isPassed === 1 ? (
@@ -352,7 +352,7 @@ const ChildAction: FC<PropsType> = memo(
           {(data.taskTplId || breakPointId) && (
             <div className="flex gap-2 overflow-hidden">
               {data.taskTplId && (
-                <div className={`${breakPointId ? 'basis-2/3' : 'basis-full'} min-w-0`}>
+                <div className={`${breakPointId ? 'basis-3/5' : 'basis-full'} min-w-0`}>
                   <div className="flex items-center gap-1 overflow-hidden">
                     <span className="text-nowrap">{t('wayline.title')}:</span>
                     <OverflowText className="min-w-0 flex-1 truncate">
@@ -362,7 +362,7 @@ const ChildAction: FC<PropsType> = memo(
                 </div>
               )}
               {breakPointId && (
-                <div className={`${data.taskTplId ? 'basis-1/3' : 'basis-full'} min-w-0 flex justify-start`}>
+                <div className={`${data.taskTplId ? 'basis-2/5' : 'basis-full'} min-w-0 flex justify-start`}>
                   <IconButton
                     tippyProps={{ content: '接力飞行' }}
                     onClick={() => {
