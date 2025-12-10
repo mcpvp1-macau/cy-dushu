@@ -12,6 +12,7 @@ import {
   CompassOutlined,
   DashboardOutlined,
   EnvironmentOutlined,
+  FlagOutlined,
 } from '@ant-design/icons'
 
 const HeaderItem: FC<
@@ -53,6 +54,8 @@ const ControlRoomUsvHeader: FC = memo(() => {
   const headingValue = course ?? heading
 
   const appHeader = document.getElementById('app-header-center')
+
+  const missionStatus = useUsvControlRoomStore((s) => s.state?.missionStatus)
 
   const header = (
     <header className="flex items-center justify-between px-3 py-2 text-sm">
@@ -111,6 +114,17 @@ const ControlRoomUsvHeader: FC = memo(() => {
               value={
                 latitude !== undefined && latitude !== null
                   ? latitude.toFixed(6)
+                  : '-'
+              }
+            />
+            <HeaderItem
+              icon={<FlagOutlined />}
+              tooltip={'工作状态'}
+              value={
+                missionStatus !== undefined && missionStatus !== null
+                  ? { 0: '停止', 1: '暂停', 2: '运行中', 3: '空闲' }[
+                      Number(missionStatus) as 0 | 1 | 2 | 3
+                    ] ?? missionStatus
                   : '-'
               }
             />
