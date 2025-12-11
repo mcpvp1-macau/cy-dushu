@@ -10,6 +10,7 @@ import useMapLayerAndOverlayStore from '@/store/map/useLayerAndOverlay.store'
 
 import { shouldJson } from '@/utils/json'
 import * as turf from '@turf/turf'
+import { attempt, isError } from 'lodash'
 import RBush from 'geojson-rbush'
 import { useShallow } from 'zustand/react/shallow'
 import getHeightsFromRGBTile from '@/utils/cesium/getHeightsFromRGBTile'
@@ -225,28 +226,57 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
     ]
     const features = rTree.search(turf.polygon([rangeRect]))
 
-    const coordinates: GeoJSON.Position[] = features.features.map((feature) => {
-      if (feature.geometry.type === 'Point') {
-        return feature.geometry.coordinates
-      } else if (feature.geometry.type === 'Polygon') {
-        return feature.geometry.coordinates[0][0]
-      }
-      return []
-    })
+    const featureCoordinates = features.features
+      .map((feature) => {
+        const coords = attempt(() => {
+          const geometry = turf.getGeom(feature as GeoJSON.Feature<GeoJSON.Geometry>)
 
-    getHeightsFromRGBTile(coordinates as [number, number][]).then((heights) => {
-      features.features.forEach((feature, index) => {
-        const overlay = feature.properties as API_LAYER_OVERLAY.domain.Overlay
-        const positions = shouldJson(overlay.overlayPositions) as number[][]
-        const height = heights[index]
+          if (geometry?.type === 'Point') {
+            return geometry.coordinates
+          }
+          if (geometry?.type === 'Polygon') {
+            return geometry.coordinates?.[0]?.[0]
+          }
+          if (geometry?.type === 'LineString') {
+            return geometry.coordinates?.[0]
+          }
+          if (geometry?.type === 'MultiPolygon') {
+            return geometry.coordinates?.[0]?.[0]?.[0]
+          }
+          if (geometry?.type === 'MultiLineString') {
+            return geometry.coordinates?.[0]?.[0]
+          }
 
-        positions.forEach((position) => {
-          position[2] = height
+          return turf.getCoord(feature as GeoJSON.Feature<GeoJSON.Point>)
         })
-        overlay.overlayPositions = JSON.stringify(positions)
+
+        if (isError(coords) || !coords?.length) {
+          return undefined
+        }
+
+        return { feature, coord: coords as GeoJSON.Position }
       })
-      useMixARStore.getState().updateOverlaies(features)
-    })
+      .filter(Boolean) as { feature: GeoJSON.Feature; coord: GeoJSON.Position }[]
+
+    if (!featureCoordinates.length) {
+      return
+    }
+
+    getHeightsFromRGBTile(featureCoordinates.map((item) => item.coord) as [number, number][]).then(
+      (heights) => {
+        featureCoordinates.forEach((item, index) => {
+          const overlay = item.feature.properties as API_LAYER_OVERLAY.domain.Overlay
+          const positions = shouldJson(overlay.overlayPositions) as number[][]
+          const height = heights[index]
+
+          positions.forEach((position) => {
+            position[2] = height
+          })
+          overlay.overlayPositions = JSON.stringify(positions)
+        })
+        useMixARStore.getState().updateOverlaies(features)
+      },
+    )
   }, [overlayList, flightAreaList, range])
 
   return null
