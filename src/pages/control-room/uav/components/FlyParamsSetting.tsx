@@ -128,6 +128,9 @@ const FlyParamsSetting: FC<PropsType> = memo(() => {
       <div className="p-3 pb-0">
         <ConfigProvider
           theme={{
+            cssVar: {
+              key: 'dushu',
+            },
             components: {
               Form: {
                 itemMarginBottom: 8,
