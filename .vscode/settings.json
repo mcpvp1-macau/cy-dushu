@@ -2,7 +2,9 @@
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {
-    "vite.config.ts": "tsconfig.json, tsconfig.*.json, vite-config/**, postcss.config.js, tailwind.config.js, .prettierrc, .prettier*, .eslintrc*, .eslintignore, auto-imports.d.ts, components.json",
-    "AGENTS.md": "GEMINI.md, Gemini.md, CLAUDE.md, Claude.md"
-  }
+    "vite.config.ts": "tsconfig.json, tsconfig.*.json, postcss.config.js, tailwind.config.js, .prettierrc, .prettier*, .eslintrc*, .eslintignore, auto-imports.d.ts, components.json",
+    "AGENTS.md": "GEMINI.md, Gemini.md, CLAUDE.md, Claude.md",
+    "Dockerfile": "Dockerfile, Dockerfile-arm, nginx.conf"
+  },
+  "i18n-ally.localesPaths": ["src/langs"]
 }
