@@ -1,3 +1,4 @@
+import OverflowText from '@/components/ui/OverflowText'
 import { dockDisplayModeTransMap } from '@/constant/trans_map/dock_display_mode'
 import { StatusColorMap } from '@/enum/device'
 
@@ -10,8 +11,8 @@ type PropsType = {
 
 const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
   return (
-    <li className="w-1/2 flex gap-1">
-      <div>{l}:</div>
+    <li className="flex gap-1 overflow-hidden">
+      <div className="whitespace-nowrap">{l}:</div>
       {v}
     </li>
   )
@@ -30,28 +31,42 @@ const UavAirportInfoCard: FC<PropsType> = memo((props) => {
   }, [props.stockStatus, t])
 
   return (
-    <ul className="card-border border-ground-5 p-2 flex flex-wrap whitespace-nowrap text-sm">
-      <I l={t('common.modelNumber')} v={props.modelNumber || '-'} />
+    <ul className="card-border border-ground-5 p-2 grid grid-cols-2 text-sm">
+      <I
+        l={t('common.modelNumber')}
+        v={
+          <OverflowText className="flex-1 truncate">
+            {props.modelNumber || '-'}
+          </OverflowText>
+        }
+      />
       <I
         l={t('common.onlineStatus')}
         v={
-          <span style={{ color: StatusColorMap[props.onlineStatus] }}>
-            {props.onlineStatus
-              ? t(`device.status.online.${props.onlineStatus}`)
-              : '-'}
-          </span>
+          <OverflowText className="truncate">
+            <span style={{ color: StatusColorMap[props.onlineStatus] }}>
+              {props.onlineStatus
+                ? t(`device.status.online.${props.onlineStatus}`)
+                : '-'}
+            </span>
+          </OverflowText>
         }
       />
       <I
         l={t('device.uavDock.status.modeDisplay.title')}
         v={
-          props.modeDisplay
-            ? dockDisplayModeTransMap[props.modeDisplay]?.[i18n.language] ||
-              props.modeDisplay
-            : '-'
+          <OverflowText className="flex-1 truncate">
+            {props.modeDisplay
+              ? dockDisplayModeTransMap[props.modeDisplay]?.[i18n.language] ||
+                props.modeDisplay
+              : '-'}
+          </OverflowText>
         }
       />
-      <I l={t('device.uavDock.status.dockStatus.title')} v={stockStatus} />
+      <I
+        l={t('device.uavDock.status.dockStatus.title')}
+        v={<OverflowText className="flex-1 truncate">{stockStatus}</OverflowText>}
+      />
     </ul>
   )
 })
