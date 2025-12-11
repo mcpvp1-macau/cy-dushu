@@ -99,17 +99,25 @@ const TaskStatusQuickCreate: FC<TaskStatusQuickCreateProps> = memo(
     }
 
     return (
-      <div className={clsx('flex flex-col gap-2', className)}>
-        <div className="flex items-center gap-2 overflow-hidden">
+      <div
+        className={clsx(
+          'flex-1 flex flex-col gap-2 overflow-hidden',
+          className,
+        )}
+      >
+        <div className="flex-1 flex items-center gap-2 overflow-hidden">
           {latestActionItem && !latestActionItemIsErr ? (
-            <div className="w-full flex gap-1 items-center overflow-hidden">
+            <div className="flex-1 flex gap-1 items-center overflow-hidden">
               <Link to={`/action/${latestActionItem.actionId}`}>
                 <IconButton>
                   <IconDetail />
                 </IconButton>
               </Link>
               <OverflowText
-                className={clsx('flex-1 truncate', nameMaxWidthClassName)}
+                className={clsx(
+                  'min-w-0 flex-1 truncate',
+                  nameMaxWidthClassName,
+                )}
               >
                 {latestActionItem.actionItemName || '-'}
               </OverflowText>

@@ -5,7 +5,7 @@ import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
 
 const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
   return (
-    <li className="w-1/2 flex gap-1 whitespace-nowrap">
+    <li className="w-1/2 flex gap-1 whitespace-nowrap overflow-hidden">
       <div>{l}:</div>
       {v}
     </li>
