@@ -5,6 +5,9 @@ const PageControlRoomUav = lazy(() => import('@/pages/control-room/uav'))
 const PageControlRoomWangLou = lazy(
   () => import('@/pages/control-room/wanglou'),
 )
+const PageControlRoomUSV = lazy(
+  () => import('@/pages/control-room/usv'),
+)
 const PageControlRoomOthers = lazy(() => import('@/pages/control-room/others'))
 const PageControlRoomRebotDog = lazy(
   () => import('@/pages/control-room/rebot-dog'),
@@ -50,6 +53,11 @@ export default {
       id: 'control-room/ugv',
       path: 'ugv/:deviceId',
       element: <PageControlRoomUGV />,
+    },
+    {
+      id: 'control-room/usv',
+      path: 'usv/:deviceId',
+      element: <PageControlRoomUSV />,
     },
     {
       id: 'control-room/others',

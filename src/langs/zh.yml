@@ -663,6 +663,13 @@ uav:
     title: 返程
   infoBoard:
     title: 无人机标牌
+usv:
+  attitude:
+    heading: 艏向
+    pitch: 纵摇
+    roll: 横摇
+  pointSail:
+    confirmQuestion: 确认前往此航点？
 actionRecord:
   title: 行动记录
   table:

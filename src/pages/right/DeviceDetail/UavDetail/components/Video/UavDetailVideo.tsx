@@ -33,7 +33,7 @@ const UavDetailVideo: FC<PropsType> = memo((props) => {
       value: 'fpv',
     },
     {
-      label: t('uav.gimbal.title'),
+      label: t('controlRoom.uav.btn.gimbal.title'),
       value: 'gimbal',
     },
   ]
