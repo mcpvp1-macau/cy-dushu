@@ -91,7 +91,7 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
       await stopActionPlan(data.id!)
     } else {
       if (globalConfig.env === 'sh-jh' && data.isPassed !== 1) {
-        msgApi.error('行动未报备审批通过，无法开启计划')
+        msgApi.error('行动未报备通过，无法开启计划')
         return
       }
       await startActionPlan(data.id!)
@@ -266,12 +266,12 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
               ) : data.isPassed === 2 ? (
                 <div className="text-orange-500 flex gap-1">
                   <ClockCircleOutlined />
-                  待审批
+                  报备中
                 </div>
               ) : data.isPassed === 0 ? (
                 <div className="text-red-500 flex gap-1">
                   <CloseOutlined />
-                  未通过
+                  报备失败
                 </div>
               ) : (
                 <div className="text-fore flex gap-1">
