@@ -83,3 +83,7 @@
 ## How to test code
 
 - use `pnpm lint` and `pnpm ts` to check code.
+
+## Null-Safe Data Handling
+
+- Must treat all backend fields as potentially null or undefined, and MUST use optional chaining (?.), null checks, default values (??), and type guards to ensure safe, robust access to API data.
