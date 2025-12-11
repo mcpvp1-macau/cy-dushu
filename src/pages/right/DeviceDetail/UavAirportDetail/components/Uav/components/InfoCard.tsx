@@ -1,3 +1,4 @@
+import OverflowText from '@/components/ui/OverflowText'
 import { StatusColorMap } from '@/enum/device'
 import TaskStatusQuickCreate from '@/pages/right/DeviceDetail/components/TaskStatusQuickCreate'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
@@ -5,8 +6,8 @@ import { useRealOnlineStatus } from '@/store/useGlobalWebSocket.store'
 
 const I: FC<{ l: ReactNode; v: ReactNode }> = ({ l, v }) => {
   return (
-    <li className="w-1/2 flex gap-1 whitespace-nowrap overflow-hidden">
-      <div>{l}:</div>
+    <li className="flex gap-1 overflow-hidden">
+      <div className="whitespace-nowrap">{l}:</div>
       {v}
     </li>
   )
@@ -38,21 +39,35 @@ const UavAirportUavDetailInfoCard: FC = memo(() => {
   )
 
   return (
-    <ul className="flex card-border p-2 flex-wrap text-sm">
-      <I l={t('common.modelNumber')} v={modelNumber || '-'} />
+    <ul className="card-border p-2 grid grid-cols-2 text-sm">
+      <I
+        l={t('common.modelNumber')}
+        v={
+          <OverflowText className="flex-1 truncate">
+            {modelNumber || '-'}
+          </OverflowText>
+        }
+      />
       <I
         l={t('common.onlineStatus')}
         v={
-          <span style={{ color: StatusColorMap[onlineStatus] }}>
-            {onlineStatus ? t(`device.status.online.${onlineStatus}`) : '-'}
-          </span>
+          <OverflowText className="truncate">
+            <span style={{ color: StatusColorMap[onlineStatus] }}>
+              {onlineStatus ? t(`device.status.online.${onlineStatus}`) : '-'}
+            </span>
+          </OverflowText>
         }
       />
       <I
         l={t('device.status.task.title')}
         v={<TaskStatusQuickCreate deviceId={deviceDetail.deviceId} />}
       />
-      <I l={t('device.status.reported.title')} v={reportedStatus} />
+      <I
+        l={t('device.status.reported.title')}
+        v={
+          <OverflowText className="flex-1 truncate">{reportedStatus}</OverflowText>
+        }
+      />
     </ul>
   )
 })

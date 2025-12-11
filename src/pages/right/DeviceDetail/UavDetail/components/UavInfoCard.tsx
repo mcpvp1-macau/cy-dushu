@@ -19,10 +19,7 @@ const I: FC<{ l: ReactNode; v: ReactNode; isfull?: boolean }> = ({
 }) => {
   return (
     <li
-      className={clsx(
-        'flex gap-1 overflow-hidden',
-        isfull ? 'w-full' : 'w-1/2',
-      )}
+      className={clsx('flex gap-1 overflow-hidden', isfull && 'col-span-2')}
     >
       <div className="whitespace-nowrap">{l}:</div>
       {v}
@@ -130,19 +127,24 @@ const UavDetailInfoCard: FC<PropsType> = memo(
 
     return (
       <>
-        <ul className="p-2 mx-3 mr-[9px] card-border text-sm flex flex-wrap overflow-hidden">
-          <I l={t('common.modelNumber')} v={modelNumber} />
+        <ul className="p-2 mx-3 mr-[9px] card-border text-sm grid grid-cols-2 overflow-hidden">
+          <I
+            l={t('common.modelNumber')}
+            v={<OverflowText className="flex-1 truncate">{modelNumber}</OverflowText>}
+          />
           <I
             l={t('common.onlineStatus')}
             v={
-              <p className="flex gap-2">
-                <span style={{ color: StatusColorMap[onlineStatus!] }}>
-                  {onlineStatus
-                    ? t(`device.status.online.${onlineStatus}`)
-                    : '-'}
-                </span>
+              <>
+                <OverflowText className="truncate">
+                  <span style={{ color: StatusColorMap[onlineStatus!] }}>
+                    {onlineStatus
+                      ? t(`device.status.online.${onlineStatus}`)
+                      : '-'}
+                  </span>
+                </OverflowText>
                 <SignalStrength value={signalStrength ?? 0} />
-              </p>
+              </>
             }
           />
           <I
@@ -155,13 +157,27 @@ const UavDetailInfoCard: FC<PropsType> = memo(
             }
           />
 
-          <I l={t('common.electricity')} v={`${electricity || 0} %`} />
-          <I l={t('common.longitude')} v={longitude?.toFixed(5) || '-'} />
+          <I
+            l={t('common.electricity')}
+            v={
+              <OverflowText className="flex-1 truncate">{`${electricity || 0} %`}</OverflowText>
+            }
+          />
+          <I
+            l={t('common.longitude')}
+            v={
+              <OverflowText className="flex-1 truncate">
+                {longitude?.toFixed(5) || '-'}
+              </OverflowText>
+            }
+          />
           <I
             l={t('common.latitude')}
             v={
-              <div className="flex items-center gap-1">
-                <span>{latitude?.toFixed(5) || '-'}</span>
+              <div className="flex-1 flex items-center gap-1 overflow-hidden">
+                <OverflowText className="truncate">
+                  {latitude?.toFixed(5) || '-'}
+                </OverflowText>
                 <IconButton
                   tippyProps={{ content: '复制飞参信息' }}
                   onClick={handleCopy}
@@ -171,10 +187,17 @@ const UavDetailInfoCard: FC<PropsType> = memo(
               </div>
             }
           />
-          <I l={t('common.height')} v={`${height?.toFixed(2) || 0} m`} />
+          <I
+            l={t('common.height')}
+            v={
+              <OverflowText className="flex-1 truncate">{`${height?.toFixed(2) || 0} m`}</OverflowText>
+            }
+          />
           <I
             l={t('common.speed')}
-            v={`${horizontalSpeed?.toFixed(2) || 0} m/s`}
+            v={
+              <OverflowText className="flex-1 truncate">{`${horizontalSpeed?.toFixed(2) || 0} m/s`}</OverflowText>
+            }
           />
           <I
             isfull
