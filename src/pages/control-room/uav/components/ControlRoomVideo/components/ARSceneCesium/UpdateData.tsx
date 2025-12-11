@@ -165,28 +165,50 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
       features: [],
     }
 
+    
     const combineOverlays = [...flightAreaList, ...overlayList]
 
+    const isValidPosition = (pos: unknown, minLength = 2): pos is number[] =>
+      Array.isArray(pos) && pos.length >= minLength && pos.every((n) => typeof n === 'number' && Number.isFinite(n))
+
     combineOverlays.forEach((e) => {
+      const parsedPositions = attempt(() => shouldJson(e.overlayPositions))
+
+      if (isError(parsedPositions)) {
+        return
+      }
+
       if (e.overlayType === 'POSITION') {
-        const position = shouldJson(e.overlayPositions)
+        const firstPosition = Array.isArray(parsedPositions) ? parsedPositions[0] : undefined
+
+        if (!isValidPosition(firstPosition)) {
+          return
+        }
+
         collection.features.push({
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: position?.[0],
+            coordinates: firstPosition,
           },
           id: `overlay-${e.overlayId}`,
           properties: { ...e },
         })
       } else if (e.overlayType === 'POLYGON') {
-        const positions = shouldJson(e.overlayPositions)
-        positions.push(positions[0])
+        const ring = Array.isArray(parsedPositions)
+          ? (parsedPositions.filter((pos) => isValidPosition(pos)) as number[][])
+          : []
+
+        if (ring.length < 3) {
+          return
+        }
+
+        ring.push([...ring[0]])
         collection.features.push({
           type: 'Feature',
           geometry: {
             type: 'Polygon',
-            coordinates: [positions],
+            coordinates: [ring],
           },
           id: e.overlayExtType
             ? `flightArea-${e.overlayId}`
@@ -194,15 +216,22 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
           properties: { ...e },
         })
       } else if (e.overlayType === 'CIRCULAR') {
-        const positions = shouldJson(e.overlayPositions)[0]
-        const f = turf.circle([positions[0], positions[1]], positions[3], {
+        const circlePosition = Array.isArray(parsedPositions) ? parsedPositions[0] : undefined
+
+        if (!isValidPosition(circlePosition, 4)) {
+          return
+        }
+
+        const [longitude, latitude, height, radius] = circlePosition
+
+        if (radius <= 0) {
+          return
+        }
+
+        const f = turf.circle([longitude, latitude], radius, {
           units: 'meters',
         })
-        f.geometry.coordinates[0] = f.geometry.coordinates[0].map((item) => [
-          item[0],
-          item[1],
-          positions[2],
-        ])
+        f.geometry.coordinates[0] = f.geometry.coordinates[0].map((item) => [item[0], item[1], height])
         f.id = e.overlayExtType
           ? `flightArea-${e.overlayId}`
           : `overlay-${e.overlayId}`
@@ -211,7 +240,6 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
         collection.features.push(f)
       }
     })
-
     const rTree = RBush()
     rTree.load(collection.features)
     // updateOverlayRTree(rTree)
