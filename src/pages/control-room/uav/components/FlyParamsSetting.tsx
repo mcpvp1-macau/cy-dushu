@@ -6,7 +6,7 @@ import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { setDeviceProp } from '@/service/modules/device'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import { useAsyncEffect, useDebounceEffect } from 'ahooks'
+import { useDebounceEffect } from 'ahooks'
 import { Button, ConfigProvider, Form, Input, InputNumber } from 'antd'
 import { FormInstance, useForm } from 'antd/es/form/Form'
 
@@ -91,17 +91,14 @@ const FlyParamsSetting: FC<PropsType> = memo(() => {
     mutate({ disconnectTime: v }),
   )
 
-  // 飞行速度
-  useAsyncEffect(async () => {
-    const value = (await local.getItem<number>('uavFlyParamsSpeed')) ?? 10
-    form.setFieldValue('flySpeed', value)
-    updateFlyParams({ ...flyParams, flySpeed: value })
-  }, [])
+  useEffect(() => {
+    form.setFieldValue('flySpeed', flyParams.flySpeed)
+  }, [flyParams.flySpeed])
   const flySpeed = Form.useWatch('flySpeed', form)
 
   useDebounceEffect(
     () => {
-      if (flySpeed) {
+      if (flySpeed != null) {
         local.setItem('uavFlyParamsSpeed', flySpeed)
         updateFlyParams({ ...flyParams, flySpeed })
       }
