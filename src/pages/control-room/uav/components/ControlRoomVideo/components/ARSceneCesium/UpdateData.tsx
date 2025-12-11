@@ -44,6 +44,7 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
 
   const queryClient = useQueryClient()
 
+  // 请求附近兴趣点（POI）数据
   const { data: poiData } = useQuery(
     {
       queryKey: ['geo-search', 'poi', range],
@@ -74,6 +75,7 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
   }, [poiData])
 
   // AOI ========================================
+  // 请求附近区域（AOI）数据
   const { data: aoiData } = useQuery(
     {
       queryKey: ['geo-search', 'aoi', range],
@@ -102,6 +104,7 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
   }, [aoiData])
 
   // 道路 ========================================
+  // 请求附近道路数据
   const { data: roadData } = useQuery(
     {
       queryKey: ['geo-search', 'road', range],
@@ -134,6 +137,7 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
       return
     }
     const to = turf.point([uav.longitude, uav.latitude])
+    // 仅当飞行器位移超过阈值时才触发新的范围计算，避免频繁请求
     if (lastCoordinates.current) {
       const from = turf.point(lastCoordinates.current)
       const distance = turf.distance(from, to, { units: 'meters' })
@@ -166,12 +170,15 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
     }
 
     
+    // 合并飞行区和自定义覆盖物，统一校验与处理
     const combineOverlays = [...flightAreaList, ...overlayList]
 
+    // 检查坐标数组是否合法，确保长度和数值类型正确
     const isValidPosition = (pos: unknown, minLength = 2): pos is number[] =>
       Array.isArray(pos) && pos.length >= minLength && pos.every((n) => typeof n === 'number' && Number.isFinite(n))
 
     combineOverlays.forEach((e) => {
+      // overlayPositions 可能为字符串或空值，使用 attempt 兜底解析
       const parsedPositions = attempt(() => shouldJson(e.overlayPositions))
 
       if (isError(parsedPositions)) {
@@ -179,6 +186,7 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
       }
 
       if (e.overlayType === 'POSITION') {
+        // 点覆盖物需至少包含一个合法坐标
         const firstPosition = Array.isArray(parsedPositions) ? parsedPositions[0] : undefined
 
         if (!isValidPosition(firstPosition)) {
@@ -195,6 +203,7 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
           properties: { ...e },
         })
       } else if (e.overlayType === 'POLYGON') {
+        // 多边形至少包含三个点，缺失的点直接过滤
         const ring = Array.isArray(parsedPositions)
           ? (parsedPositions.filter((pos) => isValidPosition(pos)) as number[][])
           : []
@@ -216,6 +225,7 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
           properties: { ...e },
         })
       } else if (e.overlayType === 'CIRCULAR') {
+        // 圆形数据需包含经纬高与正半径
         const circlePosition = Array.isArray(parsedPositions) ? parsedPositions[0] : undefined
 
         if (!isValidPosition(circlePosition, 4)) {
@@ -290,16 +300,25 @@ const ARSenceUpdateData: FC<PropsType> = memo(() => {
       return
     }
 
+    // 根据 RGB 高程瓦片获取覆盖物基准高度，防止直接使用 0 高度导致贴地异常
     getHeightsFromRGBTile(featureCoordinates.map((item) => item.coord) as [number, number][]).then(
       (heights) => {
+        if (!Array.isArray(heights) || !heights.length) {
+          return
+        }
+
         featureCoordinates.forEach((item, index) => {
           const overlay = item.feature.properties as API_LAYER_OVERLAY.domain.Overlay
           const positions = shouldJson(overlay.overlayPositions) as number[][]
           const height = heights[index]
 
-          positions.forEach((position) => {
-            position[2] = height
-          })
+          // 高程返回数量可能不足，超出部分不处理以避免越界
+          if (Array.isArray(positions) && typeof height === 'number' && Number.isFinite(height)) {
+            // 补齐覆盖物的高度字段，失败时保持原值
+            positions.forEach((position) => {
+              position[2] = height
+            })
+          }
           overlay.overlayPositions = JSON.stringify(positions)
         })
         useMixARStore.getState().updateOverlaies(features)
