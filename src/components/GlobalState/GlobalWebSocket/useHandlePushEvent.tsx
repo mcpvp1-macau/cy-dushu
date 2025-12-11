@@ -9,6 +9,8 @@ import { globalToastEmitter } from '../GlobalToast'
 import AlarmToast from './AlarmToast'
 import EventToast from './EventToast'
 
+const RIPPLE_FLASH_DURATION = 1000 * 60 // 1分钟
+
 const useHandlePushEvent = () => {
   const { refetch } = useEventData()
 
@@ -23,7 +25,9 @@ const useHandlePushEvent = () => {
   const audioContext = useRef<AudioContext | null>(null)
   const audioBuffer = useRef<AudioBuffer | null>(null)
   const isPlayingAudio = useRef(false)
-  const flashTimerRef = useRef<Record<string, ReturnType<typeof setTimeout>>>({})
+  const flashTimerRef = useRef<Record<string, ReturnType<typeof setTimeout>>>(
+    {},
+  )
 
   const setDeviceFlash = useMapDevicesStore((s) => s.setDeviceFlash)
 
@@ -43,7 +47,11 @@ const useHandlePushEvent = () => {
       audioBuffer.current = await audioContext.current.decodeAudioData(buffer)
     }
 
-    if (audioContext.current && audioBuffer.current && !isPlayingAudio.current) {
+    if (
+      audioContext.current &&
+      audioBuffer.current &&
+      !isPlayingAudio.current
+    ) {
       const source = audioContext.current.createBufferSource()
       source.buffer = audioBuffer.current
       source.connect(audioContext.current.destination)
@@ -56,6 +64,17 @@ const useHandlePushEvent = () => {
     }
   })
 
+  const updateDeviceFlash = (sourceDeviceId: string) => {
+    setDeviceFlash(sourceDeviceId, true)
+    if (flashTimerRef.current[sourceDeviceId]) {
+      clearTimeout(flashTimerRef.current[sourceDeviceId])
+    }
+    flashTimerRef.current[sourceDeviceId] = setTimeout(() => {
+      setDeviceFlash(sourceDeviceId, false)
+      delete flashTimerRef.current[sourceDeviceId]
+    }, RIPPLE_FLASH_DURATION)
+  }
+
   const handleEventPush = useMemoizedFn(async (message: any) => {
     run()
     updateNewEvent(message)
@@ -67,14 +86,7 @@ const useHandlePushEvent = () => {
         ? newEvent.source
         : newEvent?.source?.deviceId)
     if (sourceDeviceId) {
-      setDeviceFlash(sourceDeviceId, true)
-      if (flashTimerRef.current[sourceDeviceId]) {
-        clearTimeout(flashTimerRef.current[sourceDeviceId])
-      }
-      flashTimerRef.current[sourceDeviceId] = setTimeout(() => {
-        setDeviceFlash(sourceDeviceId, false)
-        delete flashTimerRef.current[sourceDeviceId]
-      }, 3000)
+      updateDeviceFlash(sourceDeviceId)
     }
     const isAllowEventNotification =
       useWarnningSettingStore.getState().isAllowEventNotification
@@ -102,12 +114,21 @@ const useHandlePushEvent = () => {
     }
 
     const alarmId =
-      alarm.alarm_id || alarm.alarmId || alarm.msg || alarm.device_name || alarm.deviceName
+      alarm.alarm_id ||
+      alarm.alarmId ||
+      alarm.msg ||
+      alarm.device_name ||
+      alarm.deviceName
 
     globalToastEmitter.emit('notifyCustom', {
       id: alarmId || `alarm-${Date.now()}`,
       element: <AlarmToast data={alarm} />,
     })
+
+    const sourceDeviceId = alarm.device_id || alarm.deviceId
+    if (sourceDeviceId) {
+      updateDeviceFlash(sourceDeviceId)
+    }
 
     await playWarningAudio()
   })

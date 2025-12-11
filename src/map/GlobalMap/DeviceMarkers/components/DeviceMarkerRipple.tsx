@@ -1,17 +1,25 @@
-import { EllipseGraphics, Entity } from 'resium'
+import { BillboardGraphics, Entity } from 'resium'
 import * as Cesium from 'cesium'
+import { memo, useMemo, useRef } from 'react'
 
 type PropsType = {
   position: Cesium.Cartesian3 | [number, number, number?]
-  /** ms */
+  /** 一个周期的时长，ms */
   durationMs?: number
+  /** 最大尺寸（像素），屏幕空间大小，与远近无关 */
   maxRadius?: number
-  color?: Cesium.Color
+  /** 波纹图片路径，可选 */
+  imageUrl?: string
 }
 
 const DeviceMarkerRipple: FC<PropsType> = memo(
-  ({ position, durationMs = 2000, maxRadius = 80, color }) => {
-    const startTimeRef = useRef(Cesium.JulianDate.now())
+  ({
+    position,
+    durationMs = 1000,
+    maxRadius = 100,
+    imageUrl = '/images/ripple.svg', // 自己换成实际波纹图片路径
+  }) => {
+    const startTimeRef = useRef(Date.now())
 
     const center = useMemo(() => {
       if (Array.isArray(position)) {
@@ -26,37 +34,26 @@ const DeviceMarkerRipple: FC<PropsType> = memo(
 
     const durationSeconds = useMemo(() => durationMs / 1000, [durationMs])
 
-    const radiusProperty = useMemo(() => {
+    // 进度计算封装一下，0 ~ 1
+    const getProgress = (time?: number) => {
       const startTime = startTimeRef.current
-      return new Cesium.CallbackProperty((time) => {
-        const currentTime = time ?? Cesium.JulianDate.now()
-        const elapsedSeconds =
-          (Cesium.JulianDate.secondsDifference(currentTime, startTime) % durationSeconds) +
-          durationSeconds
-        const progress = (elapsedSeconds % durationSeconds) / durationSeconds
-        return maxRadius * (0.3 + progress * 0.7)
+      const currentTime = time ?? Date.now()
+
+      const diff = (currentTime - startTime) / 1000 // 秒
+      // 处理负数，始终映射到 [0, durationSeconds)
+      const wrapped =
+        ((diff % durationSeconds) + durationSeconds) % durationSeconds
+      return wrapped / durationSeconds // 0~1
+    }
+
+    // 像素尺寸（宽高）属性：从 0.3 * maxRadius 放大到 maxRadius
+    const sizeProperty = useMemo(() => {
+      return new Cesium.CallbackProperty(() => {
+        const progress = getProgress(Date.now())
+        const size = maxRadius * (0.4 + progress * 0.6)
+        return size
       }, false)
-    }, [durationSeconds, maxRadius])
-
-    const material = useMemo(() => {
-      const baseColor = color ?? Cesium.Color.fromCssColorString('#32a8ff')
-      const startTime = startTimeRef.current
-      const scratchColor = new Cesium.Color()
-
-      return new Cesium.ColorMaterialProperty(
-        new Cesium.CallbackProperty((time) => {
-          const currentTime = time ?? Cesium.JulianDate.now()
-          const elapsedSeconds =
-            (Cesium.JulianDate.secondsDifference(currentTime, startTime) % durationSeconds) +
-            durationSeconds
-          const progress = (elapsedSeconds % durationSeconds) / durationSeconds
-          const alpha = 0.6 * (1 - progress)
-          Cesium.Color.clone(baseColor, scratchColor)
-          scratchColor.alpha = alpha
-          return scratchColor
-        }, false),
-      )
-    }, [color, durationSeconds])
+    }, [maxRadius, durationSeconds])
 
     if (!center) {
       return null
@@ -64,11 +61,18 @@ const DeviceMarkerRipple: FC<PropsType> = memo(
 
     return (
       <Entity position={center}>
-        <EllipseGraphics
-          semiMajorAxis={radiusProperty}
-          semiMinorAxis={radiusProperty}
-          heightReference={Cesium.HeightReference.NONE}
-          material={material}
+        <BillboardGraphics
+          image={imageUrl}
+          width={sizeProperty}
+          height={sizeProperty}
+          // 永远在最上层，不被遮挡
+          disableDepthTestDistance={Number.POSITIVE_INFINITY}
+          // 禁用按距离缩放，保持“屏幕像素”感觉
+          scaleByDistance={undefined}
+          pixelOffsetScaleByDistance={undefined}
+          // 居中对齐
+          verticalOrigin={Cesium.VerticalOrigin.CENTER}
+          horizontalOrigin={Cesium.HorizontalOrigin.CENTER}
         />
       </Entity>
     )
