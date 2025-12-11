@@ -127,19 +127,22 @@ const useUserStore = create<StateType & ActionsType>()(
         const data = resp.data
         try {
           const config = JSON.parse(data.config || '{}')
-        set(
-          { systemInfo: { ...resp.data, config } },
-          false,
-          'fetchSystemInfo',
-        )
-        globalConfig.merge(config)
-      } catch (error) {
-        console.error('parse system config failed', error)
-        set(
-          { systemInfo: { ...resp.data, config: {} } },
-          false,
-          'fetchSystemInfo',
-        )
+          set(
+            { systemInfo: { ...resp.data, config } },
+            false,
+            'fetchSystemInfo',
+          )
+          globalConfig.merge(config)
+          if (config.title) {
+            document.title = config.title
+          }
+        } catch (error) {
+          console.error('parse system config failed', error)
+          set(
+            { systemInfo: { ...resp.data, config: {} } },
+            false,
+            'fetchSystemInfo',
+          )
         }
       },
       fetchGroupDeviceTreeByType: async (type: string) => {
