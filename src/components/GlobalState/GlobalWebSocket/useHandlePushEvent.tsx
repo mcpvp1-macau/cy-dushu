@@ -4,6 +4,7 @@ import useWarnningSettingStore from '@/store/setting/useWarnningSetting.store'
 import { shouldJson } from '@/utils/json'
 import { useMemoizedFn, useThrottleFn } from 'ahooks'
 import { useRef } from 'react'
+import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import { globalToastEmitter } from '../GlobalToast'
 import AlarmToast from './AlarmToast'
 import EventToast from './EventToast'
@@ -22,6 +23,9 @@ const useHandlePushEvent = () => {
   const audioContext = useRef<AudioContext | null>(null)
   const audioBuffer = useRef<AudioBuffer | null>(null)
   const isPlayingAudio = useRef(false)
+  const flashTimerRef = useRef<Record<string, ReturnType<typeof setTimeout>>>({})
+
+  const setDeviceFlash = useMapDevicesStore((s) => s.setDeviceFlash)
 
   const playWarningAudio = useMemoizedFn(async () => {
     const isHaveAudio = useWarnningSettingStore.getState().isHaveAvdio
@@ -57,6 +61,21 @@ const useHandlePushEvent = () => {
     updateNewEvent(message)
 
     const newEvent = message
+    const sourceDeviceId =
+      newEvent?.deviceId ||
+      (typeof newEvent?.source === 'string'
+        ? newEvent.source
+        : newEvent?.source?.deviceId)
+    if (sourceDeviceId) {
+      setDeviceFlash(sourceDeviceId, true)
+      if (flashTimerRef.current[sourceDeviceId]) {
+        clearTimeout(flashTimerRef.current[sourceDeviceId])
+      }
+      flashTimerRef.current[sourceDeviceId] = setTimeout(() => {
+        setDeviceFlash(sourceDeviceId, false)
+        delete flashTimerRef.current[sourceDeviceId]
+      }, 3000)
+    }
     const isAllowEventNotification =
       useWarnningSettingStore.getState().isAllowEventNotification
     if (isAllowEventNotification) {
