@@ -631,11 +631,6 @@ events:
 uav:
   displayMode:
     title: 飞机状态
-usv:
-  attitude:
-    heading: 艏向
-    pitch: 纵摇
-    roll: 横摇
   gimbal:
     title: 云台
     zoomMode:
@@ -668,6 +663,11 @@ usv:
     title: 返程
   infoBoard:
     title: 无人机标牌
+usv:
+  attitude:
+    heading: 艏向
+    pitch: 纵摇
+    roll: 横摇
   pointSail:
     confirmQuestion: 确认前往此航点？
 actionRecord:

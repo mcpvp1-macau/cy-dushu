@@ -644,11 +644,6 @@ events:
 uav:
   displayMode:
     title: State
-usv:
-  attitude:
-    heading: Heading
-    pitch: Pitch
-    roll: Roll
   gimbal:
     title: Gimbal
     zoomMode:
@@ -681,6 +676,13 @@ usv:
     title: Go Home
   infoBoard:
     title: UAV Info Label
+usv:
+  attitude:
+    heading: Heading
+    pitch: Pitch
+    roll: Roll
+  pointSail:
+    confirmQuestion: Confirm navigation to this waypoint?
 actionRecord:
   title: Action Records
   table:
@@ -691,8 +693,6 @@ actionRecord:
   delete:
     confirmTitle: Delete Action
     confirmContent: Do you want to delete action "{{name}}"?
-  pointSail:
-    confirmQuestion: Confirm navigation to this waypoint?
 alarm:
   title: Alarms
   filters:
