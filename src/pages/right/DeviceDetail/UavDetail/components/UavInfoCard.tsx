@@ -135,7 +135,7 @@ const UavDetailInfoCard: FC<PropsType> = memo(
           <I
             l={t('common.onlineStatus')}
             v={
-              <p className="flex-1 flex gap-2 overflow-hidden">
+              <>
                 <OverflowText className="truncate">
                   <span style={{ color: StatusColorMap[onlineStatus!] }}>
                     {onlineStatus
@@ -144,7 +144,7 @@ const UavDetailInfoCard: FC<PropsType> = memo(
                   </span>
                 </OverflowText>
                 <SignalStrength value={signalStrength ?? 0} />
-              </p>
+              </>
             }
           />
           <I
