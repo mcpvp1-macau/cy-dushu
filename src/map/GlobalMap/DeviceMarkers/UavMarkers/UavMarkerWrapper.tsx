@@ -3,6 +3,7 @@ import UavDetailMarker from './UavDetailMarker'
 import UavMarker from './UavMarker'
 import { useCesium } from 'resium'
 import DeviceMarkerVideoFollow from '../components/DeviceMarkerVideoFollow'
+import DeviceMarkerRipple from '../components/DeviceMarkerRipple'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -23,9 +24,21 @@ const UavMarkerWrapper: FC<PropsType> = memo(({ data, isDetail }) => {
   const followedVideo = useMapDevicesStore(
     (s) => s.followedVideos[data.deviceId],
   )
+  const isFlashing = useMapDevicesStore((s) => s.deviceFlashes[deviceId])
+
+  const hasPosition = position.longitude != null && position.latitude != null
 
   return (
     <>
+      {isFlashing && hasPosition && (
+        <DeviceMarkerRipple
+          position={[
+            position.longitude ?? 0,
+            position.latitude ?? 0,
+            position.altitude ?? 0,
+          ]}
+        />
+      )}
       {isDetail ? (
         <UavDetailMarker
           deviceId={data.deviceId}

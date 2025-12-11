@@ -20,6 +20,8 @@ import DeviceLabel from '@/components/map/device/DeviceLabel'
 import useGroundHeight from '@/hooks/cesium/useGroundHeight'
 import Radar from '../WangLouMarkers/Radar'
 import { deviceStatusFilter } from '@/pages/situation/source/utils'
+import DeviceMarkerRipple from '../components/DeviceMarkerRipple'
+import useMapDevicesStore from '@/store/map/useMapDevices.store'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -48,6 +50,8 @@ export const deviceIconMap: any = {
 
 const OtherMarker: FC<PropsType> = memo(({ data }) => {
   const { deviceId, deviceType, properties } = data
+
+  const isFlashing = useMapDevicesStore((s) => s.deviceFlashes[deviceId])
 
   const realLon = useGlobalWsStore(
     (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.longitude,
@@ -92,6 +96,11 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
 
   return (
     <>
+      {isFlashing && (
+        <DeviceMarkerRipple
+          position={[lng, lat, altitude ?? groundHeight]}
+        />
+      )}
       <Billboard
         key={deviceId}
         id={`device--${deviceType}--${data.deviceName}--${deviceId}--${lng}--${lat}`}

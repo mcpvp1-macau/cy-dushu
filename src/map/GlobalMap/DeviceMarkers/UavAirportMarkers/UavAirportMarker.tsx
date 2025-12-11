@@ -10,6 +10,8 @@ import useDeviceFilterConfigStore from '@/store/useDeviceFilterConfig.store'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
 import useGroundHeight from '@/hooks/cesium/useGroundHeight'
 import DeviceOverlays from '../components/DeviceOverlays'
+import DeviceMarkerRipple from '../components/DeviceMarkerRipple'
+import useMapDevicesStore from '@/store/map/useMapDevices.store'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -17,6 +19,8 @@ type PropsType = {
 
 const UavAirportMarker: FC<PropsType> = memo(({ data }) => {
   const { deviceId } = data
+
+  const isFlashing = useMapDevicesStore((s) => s.deviceFlashes[deviceId])
 
   // 机库刷新经纬度频率很低，所以这里不用获取实时数据了~
   const lng = data.longitude ?? 0
@@ -51,6 +55,7 @@ const UavAirportMarker: FC<PropsType> = memo(({ data }) => {
 
   return (
     <>
+      {isFlashing && <DeviceMarkerRipple position={[lng, lat, groundHeight]} />}
       <Billboard
         key={deviceId}
         id={`device--${data.deviceType}--${data.deviceName}--${data.deviceId}--${lng}--${lat}`}

@@ -65,6 +65,8 @@ type StateType = {
   hiddenUavInfoBoard: Set<string>
   /** 摄像头详情页打开的 */
   cameraInDetail: Set<string>
+  /** 设备闪烁状态 */
+  deviceFlashes: Record<string, boolean>
 }
 
 type ActionsType = {
@@ -97,6 +99,8 @@ type ActionsType = {
   ) => void
   /** 更新摄像头详情页状态 */
   updateCameraInDetail: (cameraInDetail: StateType['cameraInDetail']) => void
+  /** 更新设备闪烁状态 */
+  setDeviceFlash: (deviceId: string, isFlashing: boolean) => void
 }
 
 const useMapDevicesStore = create<StateType & ActionsType>()(
@@ -121,6 +125,7 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       enableUavInfoBoard: false,
       hiddenUavInfoBoard: new Set(),
       cameraInDetail: new Set(),
+      deviceFlashes: {},
       updateDeviceMap: (deviceMap) => {
         set({ deviceMap }, false, 'updateDeviceMap')
       },
@@ -177,6 +182,15 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       },
       updateCameraInDetail: (cameraInDetail) => {
         set({ cameraInDetail }, false, 'updateCameraInDetail')
+      },
+      setDeviceFlash: (deviceId, isFlashing) => {
+        set(
+          (prev) => ({
+            deviceFlashes: { ...prev.deviceFlashes, [deviceId]: isFlashing },
+          }),
+          false,
+          'setDeviceFlash',
+        )
       },
     }),
     {
