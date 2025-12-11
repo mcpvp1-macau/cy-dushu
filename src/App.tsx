@@ -93,7 +93,7 @@ const App = () => {
               <div className="h-full flex overflow-hidden">
                 {!hideAppHeaderAndNavigator && <AppNavigator />}
                 <main className="flex-grow bg-ground-1 relative overflow-hidden z-10">
-                  <div className="absolute h-full z-20 overflow-hidden">
+                  <div className="absolute h-full z-20 overflow-hidden pointer-events-none">
                     <Suspense
                       fallback={
                         <AppSpin className="abs-center fixed" size="large" />
