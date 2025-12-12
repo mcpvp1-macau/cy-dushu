@@ -1,6 +1,5 @@
 import { GetProps, Tooltip, type TooltipProps } from 'antd'
 import type { ButtonHTMLAttributes, FC, ReactNode } from 'react'
-import styles from './index.module.less'
 import Tippy from '@tippyjs/react'
 
 type PropsType = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -18,6 +17,17 @@ const IconButton: FC<PropsType> = ({
   tippyProps,
   ...restProps
 }) => {
+  const buttonClassName = clsx(
+    'm-0 p-0 outline-none bg-transparent border-0 cursor-pointer text-[rgb(var(--fore-color))]',
+    'hover:text-[rgb(var(--primary-color))]',
+    'disabled:cursor-not-allowed disabled:text-[rgb(var(--fore-color))] disabled:opacity-50',
+    '[&>*]:transition-[color] [&>*]:duration-200 [&>*]:ease-linear',
+    restProps.className,
+    {
+      'text-[rgb(var(--primary-color))]': active,
+    },
+  )
+
   // 存在 toolTipProps 时，渲染带有 Tooltip 的按钮
   if (toolTipProps) {
     return (
@@ -25,9 +35,7 @@ const IconButton: FC<PropsType> = ({
         <button
           type="button"
           {...restProps}
-          className={clsx(styles.iconButton, restProps.className, {
-            [styles.active]: active,
-          })}
+          className={buttonClassName}
         >
           {children}
         </button>
@@ -44,9 +52,7 @@ const IconButton: FC<PropsType> = ({
         <button
           type="button"
           {...restProps}
-          className={clsx(styles.iconButton, restProps.className, {
-            [styles.active]: active,
-          })}
+          className={buttonClassName}
         >
           {children}
         </button>
@@ -57,9 +63,7 @@ const IconButton: FC<PropsType> = ({
     <button
       type="button"
       {...restProps}
-      className={clsx(styles.iconButton, restProps.className, {
-        [styles.active]: active,
-      })}
+      className={buttonClassName}
     >
       {children}
     </button>
