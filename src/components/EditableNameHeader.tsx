@@ -1,11 +1,12 @@
 import IconButton from './ui/button/IconButton'
 import IconBack from '@/assets/icons/jsx/IconBack'
-import { Form, Input, Popconfirm } from 'antd'
+import { Form, Input } from 'antd'
 import IconEdit from '@/assets/icons/jsx/IconEdit'
 import { LoadingOutlined } from '@ant-design/icons'
 import IconTick from '@/assets/icons/jsx/IconTick'
 import { ReactNode } from 'react'
 import { TooltipPlacement } from 'antd/es/tooltip'
+import LiqunPopConfirm from './ui/LiqunPopConfirm'
 
 type PropsType = {
   value: string
@@ -62,7 +63,7 @@ const EditableNameHeader: FC<PropsType> = memo(
       >
         <div>
           {backConfirm ? (
-            <Popconfirm
+            <LiqunPopConfirm
               title={backConfirm.content}
               placement={backConfirm.placement}
               onConfirm={onBackClick}
@@ -70,7 +71,7 @@ const EditableNameHeader: FC<PropsType> = memo(
               <IconButton tippyProps={{ content: t('common.back') }}>
                 <IconBack />
               </IconButton>
-            </Popconfirm>
+            </LiqunPopConfirm>
           ) : (
             <IconButton
               tippyProps={{ content: t('common.back') }}

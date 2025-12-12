@@ -7,9 +7,10 @@ import {
   deleteConversation,
   updateConversation,
 } from '@/service/modules/diting-tanqi'
-import { Input, Popconfirm, Spin } from 'antd'
+import { Input, Spin } from 'antd'
 import { ComponentRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import LiqunPopConfirm from '../ui/LiqunPopConfirm'
 
 type PropsType = {
   item: API_DITING_TANQI.domain.ConversationItem
@@ -97,14 +98,15 @@ const HistoryConversationItem: FC<PropsType> = memo(({ item, groupName }) => {
               <IconEdit />
             </IconButton>
           }
-          <Popconfirm
+          <LiqunPopConfirm
             title={t('tanqi.historyChats.delete.title')}
+            getPopupContainer={() => document.body}
             onConfirm={handleDelete}
           >
             <IconButton>
               <IconDelete />
             </IconButton>
-          </Popconfirm>
+          </LiqunPopConfirm>
         </div>
       </li>
     </Spin>
