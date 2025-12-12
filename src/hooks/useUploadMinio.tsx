@@ -44,7 +44,7 @@ export const useUploadMinio = (path = '') => {
       file,
       name: key || file.name,
       response: res,
-      url: `/storage/${globalConfig.bucketName || 'ja-media-storage'}/${
+      url: `/storage/${globalConfig.bucketName || 'ja-media-storage'}${path ? `/${path}` : ''}/${
         key || file.name
       }`,
     }
