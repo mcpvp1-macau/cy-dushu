@@ -1,6 +1,7 @@
 import { Button } from 'antd'
 import type { PopconfirmProps } from 'antd'
 import { ExclamationCircleFilled } from '@ant-design/icons'
+import { useControllableValue } from 'ahooks'
 import clsx from 'clsx'
 import type { ReactElement } from 'react'
 import { Children, isValidElement } from 'react'
@@ -27,49 +28,44 @@ const LiqunPopConfirm: FC<LiqunPopConfirmProps> = (props) => {
     overlayStyle,
     placement = 'top',
     trigger = 'click',
-    open,
-    defaultOpen,
+    open: _open,
+    defaultOpen: _defaultOpen,
     disabled,
     zIndex,
     arrow,
     getPopupContainer,
-    onOpenChange,
+    onOpenChange: _onOpenChange,
     ...restProps
   } = props
 
   const { t } = useTranslation()
-  const [innerOpen, setInnerOpen] = useState(defaultOpen ?? false)
-  const isControlled = open !== undefined
-  const isOpen = isControlled ? open : innerOpen
-
-  const handleOpenChange = useMemoizedFn((nextOpen: boolean) => {
-    if (!isControlled) {
-      setInnerOpen(nextOpen)
-    }
-    onOpenChange?.(nextOpen)
+  const [isOpen = false, setIsOpen] = useControllableValue<boolean>(props, {
+    valuePropName: 'open',
+    defaultValuePropName: 'defaultOpen',
+    trigger: 'onOpenChange',
   })
 
   const handleConfirm = useMemoizedFn(
     async (e: Parameters<NonNullable<PopconfirmProps['onConfirm']>>[0]) => {
       await onConfirm?.(e)
-      handleOpenChange(false)
+      setIsOpen(false)
     },
   )
 
   const handleCancel = useMemoizedFn(
     async (e: Parameters<NonNullable<PopconfirmProps['onCancel']>>[0]) => {
       onCancel?.(e)
-      handleOpenChange(false)
+      setIsOpen(false)
     },
   )
 
   const handleTrigger = useMemoizedFn(() => {
     if (disabled) return
-    handleOpenChange(!isOpen)
+    setIsOpen(!isOpen)
   })
 
   const handleClickOutside = useMemoizedFn(() => {
-    handleOpenChange(false)
+    setIsOpen(false)
   })
 
   const appendTo = useMemo(() => {
@@ -116,25 +112,28 @@ const LiqunPopConfirm: FC<LiqunPopConfirmProps> = (props) => {
   const content = (
     <div
       className={clsx(
-        'min-w-[240px] max-w-[360px] space-y-3',
-        'text-sm text-[rgb(var(--fore-color))]',
+        'min-w-[240px] max-w-[360px] space-y-2',
+        'text-sm text-[rgb(var(--fore-color))] p-1',
         overlayClassName,
       )}
       style={overlayStyle}
     >
       {(resolvedTitle ?? resolvedDescription) && (
-        <div className="flex items-start gap-2">
-          <span className="mt-0.5 text-yellow-500">
-            {icon ?? <ExclamationCircleFilled />}
-          </span>
-          <div className="flex-1 space-y-1">
-            {resolvedTitle ? (
-              <div className="font-semibold leading-5">{resolvedTitle}</div>
-            ) : null}
-            {resolvedDescription ? (
-              <div className="text-xs leading-5 text-gray-500">{resolvedDescription}</div>
-            ) : null}
+        <div className="flex flex-col gap-1">
+          <div className="flex gap-2">
+            {icon ?? <ExclamationCircleFilled className="text-yellow-500" />}
+            <div>
+              {resolvedTitle ? (
+                <div className="font-semibold leading-5 text-hightlight">
+                  {resolvedTitle}
+                </div>
+              ) : null}
+            </div>
           </div>
+
+          {resolvedDescription ? (
+            <div className="leading-5 text-fore">{resolvedDescription}</div>
+          ) : null}
         </div>
       )}
       <div className="flex justify-end gap-2">
