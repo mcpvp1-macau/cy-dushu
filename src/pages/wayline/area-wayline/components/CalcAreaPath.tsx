@@ -201,28 +201,25 @@ const CalcAreaPath: FC<PropsType> = memo(() => {
       const points = filter_points.map<AirlinePoint>((point, index) => ({
         positionIndex: index,
         positionName: `航点${index + 1}`,
-        actions: [],
+        actions: [
+          {
+            config: { y: -90 },
+            type: 'CAMERA_POSITION',
+            xid: v4(),
+          },
+          {
+            type: 'GET_PICTURE',
+            xid: v4(),
+            config: {
+              useGlobalPayloadLensIndex: 0,
+              payloadLensIndex: ['wide'],
+            },
+          },
+        ],
         pointX: point[0],
         pointY: point[1],
         pointZ: height,
       }))
-
-      points[0].actions.push({
-        config: { y: -90 },
-        type: 'CAMERA_POSITION',
-        xid: v4(),
-      })
-
-      for (const p of points) {
-        p.actions.push({
-          type: 'GET_PICTURE',
-          xid: v4(),
-          config: {
-            useGlobalPayloadLensIndex: 0,
-            payloadLensIndex: ['wide'],
-          },
-        })
-      }
 
       updateAirpointsConfig(points)
       updateFirstAirpoint(points[0])
