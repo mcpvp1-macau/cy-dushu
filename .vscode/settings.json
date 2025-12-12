@@ -6,5 +6,6 @@
     "AGENTS.md": "GEMINI.md, Gemini.md, CLAUDE.md, Claude.md",
     "Dockerfile": "Dockerfile, Dockerfile-arm, nginx.conf"
   },
-  "i18n-ally.localesPaths": ["src/langs"]
+  "i18n-ally.localesPaths": ["src/langs"],
+  "i18n-ally.keystyle": "nested"
 }

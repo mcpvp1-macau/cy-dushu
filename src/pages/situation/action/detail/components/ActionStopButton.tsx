@@ -58,8 +58,11 @@ const ActionStopButton: FC<Props> = ({ actionId }) => {
   return (
     <Popconfirm
       open={showStopConfirm}
-      title={t('action.detail.end.forceConfirm.title')}
-      description={t('action.detail.end.forceConfirm.description')}
+      title={t('action.stop.confirm.title')}
+      description={
+        t('action.detail.end.forceConfirm.title') +
+        t('action.detail.end.forceConfirm.description')
+      }
       onConfirm={handleEndAction}
       onCancel={() => setShowStopConfirm(false)}
     >
