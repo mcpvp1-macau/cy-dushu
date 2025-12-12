@@ -21,6 +21,33 @@ const RebotDogAsideButtons: FC<unknown> = memo(() => {
   const canStopSmoke = !!serviceHave['stopSmoke']
   const canStartSmoke = !!serviceHave['startSmoke']
 
+  const fireAndSmokeButtons = [
+    {
+      key: 'stopFire',
+      label: '停止喷火',
+      type: 'default' as const,
+      enabled: canStopFire,
+    },
+    {
+      key: 'startFire',
+      label: '开始喷火',
+      type: 'primary' as const,
+      enabled: canStartFire,
+    },
+    {
+      key: 'stopSmoke',
+      label: '停止发烟',
+      type: 'default' as const,
+      enabled: canStopSmoke,
+    },
+    {
+      key: 'startSmoke',
+      label: '开始发烟',
+      type: 'primary' as const,
+      enabled: canStartSmoke,
+    },
+  ].filter((item) => item.enabled)
+
   return (
     <div className="absolute inset-0 flex justify-center items-center">
       <div className="p-2 w-full max-w-[400px]">
@@ -77,46 +104,21 @@ const RebotDogAsideButtons: FC<unknown> = memo(() => {
               运动模式
             </Button>
           </div>
-          <div className="grid grid-cols-2 gap-2">
-            <Button
-              disabled={!canStopFire}
-              onClick={() => {
-                if (!canStopFire) return
-                postDeviceService('stopFire')
-              }}
-            >
-              停止喷火
-            </Button>
-            <Button
-              type="primary"
-              disabled={!canStartFire}
-              onClick={() => {
-                if (!canStartFire) return
-                postDeviceService('startFire')
-              }}
-            >
-              开始喷火
-            </Button>
-            <Button
-              disabled={!canStopSmoke}
-              onClick={() => {
-                if (!canStopSmoke) return
-                postDeviceService('stopSmoke')
-              }}
-            >
-              停止发烟
-            </Button>
-            <Button
-              type="primary"
-              disabled={!canStartSmoke}
-              onClick={() => {
-                if (!canStartSmoke) return
-                postDeviceService('startSmoke')
-              }}
-            >
-              开始发烟
-            </Button>
-          </div>
+          {fireAndSmokeButtons.length > 0 && (
+            <div className="grid grid-cols-2 gap-2">
+              {fireAndSmokeButtons.map((item) => (
+                <Button
+                  key={item.key}
+                  type={item.type}
+                  onClick={() => {
+                    postDeviceService(item.key)
+                  }}
+                >
+                  {item.label}
+                </Button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
