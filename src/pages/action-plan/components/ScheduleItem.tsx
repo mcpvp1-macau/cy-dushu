@@ -1,4 +1,4 @@
-import { Switch } from 'antd'
+import { MenuProps, Switch } from 'antd'
 import ScheduleModal from './ScheduleModal'
 import {
   deleteActionPlan,
@@ -57,6 +57,7 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
   const [loading, setLoading] = useState(false)
   const queryClient = useQueryClient()
   const msgApi = useAppMsg()
+  const needFlightReporting = !!globalConfig.useFlightReporting
 
   const actionPlanId = useParams().actionPlanId
 
@@ -133,6 +134,24 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
 
   const [expand, { toggle: toggleExpand }] = useBoolean(false)
   const [searchParams] = useSearchParams()
+  const menuItems = useMemo<MenuProps['items']>(
+    () =>
+      [
+        !needFlightReporting
+          ? {
+              key: 'edit',
+              label: t('common.edit'),
+              onClick: () => setOpen(true),
+            }
+          : null,
+        {
+          key: 'terminate',
+          label: t('common.terminate'),
+          onClick: handleTerminate,
+        },
+      ].filter(Boolean) as MenuProps['items'],
+    [handleTerminate, needFlightReporting, t],
+  )
 
   return (
     <li
@@ -172,18 +191,7 @@ const ScheduleListItem: FC<PropsType> = memo(({ data }) => {
                 >
                   <IconButtonWithDropDown
                     menu={{
-                      items: [
-                        {
-                          key: 'edit',
-                          label: t('common.edit'),
-                          onClick: () => setOpen(true),
-                        },
-                        {
-                          key: 'terminate',
-                          label: t('common.terminate'),
-                          onClick: handleTerminate,
-                        },
-                      ],
+                      items: menuItems,
                     }}
                     trigger={['click']}
                   >
