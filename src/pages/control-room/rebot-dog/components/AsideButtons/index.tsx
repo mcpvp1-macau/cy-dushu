@@ -16,37 +16,36 @@ const RebotDogAsideButtons: FC<unknown> = memo(() => {
 
   const canChangePostureMode = !!serviceHave['changePostureMode']
   const canChangeMoveMode = !!serviceHave['changeMoveMode']
-  const canStopFire = !!serviceHave['stopFire']
-  const canStartFire = !!serviceHave['startFire']
-  const canStopSmoke = !!serviceHave['stopSmoke']
-  const canStartSmoke = !!serviceHave['startSmoke']
-
-  const fireAndSmokeButtons = [
-    {
-      key: 'stopFire',
-      label: '停止喷火',
-      type: 'default' as const,
-      enabled: canStopFire,
-    },
-    {
-      key: 'startFire',
-      label: '开始喷火',
-      type: 'primary' as const,
-      enabled: canStartFire,
-    },
-    {
-      key: 'stopSmoke',
-      label: '停止发烟',
-      type: 'default' as const,
-      enabled: canStopSmoke,
-    },
-    {
-      key: 'startSmoke',
-      label: '开始发烟',
-      type: 'primary' as const,
-      enabled: canStartSmoke,
-    },
-  ].filter((item) => item.enabled)
+  const fireAndSmokeButtons = useMemo(
+    () =>
+      [
+        {
+          key: 'stopFire',
+          label: '停止喷火',
+          type: 'default' as const,
+          enabled: !!serviceHave['stopFire'],
+        },
+        {
+          key: 'startFire',
+          label: '开始喷火',
+          type: 'primary' as const,
+          enabled: !!serviceHave['startFire'],
+        },
+        {
+          key: 'stopSmoke',
+          label: '停止发烟',
+          type: 'default' as const,
+          enabled: !!serviceHave['stopSmoke'],
+        },
+        {
+          key: 'startSmoke',
+          label: '开始发烟',
+          type: 'primary' as const,
+          enabled: !!serviceHave['startSmoke'],
+        },
+      ].filter((item) => item.enabled),
+    [serviceHave],
+  )
 
   return (
     <div className="absolute inset-0 flex justify-center items-center">
