@@ -279,6 +279,7 @@ device:
 action:
   input:
     placeholder: Please search by action name
+  quickCreateWaylineAction: Quick create wayline action
   status:
     PENDING: Pending
     PROCESSING: Tasking
