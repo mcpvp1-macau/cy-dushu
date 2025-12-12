@@ -80,7 +80,7 @@ const MMC_Gimbal_P3: React.FC = () => {
   const onUpload = async (file: { name: string; md5: string }) => {
     await postSerivce('recordAudioFileUpload', {
       name: file.name,
-      url: `/storage/${globalConfig.bucketName || 'ja-media-storage'}/${
+      url: `/storage/${globalConfig.bucketName || 'ja-media-storage'}/speakerRecord/${
         file.name
       }`,
       md5: file.md5,
@@ -91,7 +91,7 @@ const MMC_Gimbal_P3: React.FC = () => {
   const onUploadTalk = async (file: { name: string; md5: string }) => {
     await postSerivce('recordAudioFilePlay', {
       name: file.name,
-      url: `/storage/${globalConfig.bucketName || 'ja-media-storage'}/${
+      url: `/storage/${globalConfig.bucketName || 'ja-media-storage'}/speakerRecord/${
         file.name
       }`,
       md5: file.md5,
