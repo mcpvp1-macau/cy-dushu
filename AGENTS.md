@@ -75,6 +75,10 @@
 - For map features, consider both 2D/3D paths, respect `globalConfig` toggles (terrain, regional layers), and reuse right-panel modes (`RightModeEnum`).
 - When dealing with uploads or media, ensure `bucketName`, `accessKeyId/secretAccessKey`, and proxy targets in `config.js` are correct; Jessibuca metrics toggle via `enableJessibucaMetrics`.
 
+## International
+
+- All user-facing strings must use `t('key', { defaultValue: 'default string' })` from `react-i18next`. Add new keys to `src/langs/zh.yml` and `src/langs/en.yml`. Avoid hardcoding strings in components.
+
 ## Lint and type checking
 
 - To check the code for any linting errors, use: `pnpm lint`
