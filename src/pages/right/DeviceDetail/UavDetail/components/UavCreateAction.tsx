@@ -3,7 +3,7 @@ import { LoadingOutlined } from '@ant-design/icons'
 import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
 import { getCameraByType } from '@/service/modules/airline'
-import IconAddAction from '@/assets/icons/jsx/IconAddAction'
+import IconQuickCreateWayline from '@/assets/icons/jsx/IconQuickCreateWayline'
 
 type PropsType = unknown
 
@@ -50,10 +50,14 @@ const UavCreateAction: FC<PropsType> = memo(() => {
   return (
     <IconButton
       className="text-sm"
-      tippyProps={{ content: t('action.add.title') }}
+      tippyProps={{
+        content: t('action.quickCreateWaylineAction', {
+          defaultValue: '快捷创建航线行动',
+        }),
+      }}
       onClick={createAction}
     >
-      {loading ? <LoadingOutlined /> : <IconAddAction />}
+      {loading ? <LoadingOutlined /> : <IconQuickCreateWayline />}
     </IconButton>
   )
 })
