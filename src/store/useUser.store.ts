@@ -11,6 +11,7 @@ export interface User {
   userId: number
   username: string
   name: string
+  groupName?: string
   phone: any
   idCard: any
   groupId: string
