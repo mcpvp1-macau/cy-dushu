@@ -1,4 +1,5 @@
-import { Button, Popconfirm } from 'antd'
+import { Button } from 'antd'
+import LiqunPopConfirm from '@/components/ui/LiqunPopConfirm'
 import { checkEndAction, endAction } from '@/service/modules/action'
 
 interface Props {
@@ -56,7 +57,7 @@ const ActionStopButton: FC<Props> = ({ actionId }) => {
   })
 
   return (
-    <Popconfirm
+    <LiqunPopConfirm
       open={showStopConfirm}
       title={t('action.stop.confirm.title')}
       description={
@@ -74,7 +75,7 @@ const ActionStopButton: FC<Props> = ({ actionId }) => {
       >
         {t('action.detail.end.title')}
       </Button>
-    </Popconfirm>
+    </LiqunPopConfirm>
   )
 }
 
