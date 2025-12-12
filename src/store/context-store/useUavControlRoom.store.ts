@@ -178,7 +178,7 @@ const createInitialState = () =>
   } as StateType)
 
 export const createUavControlRoomStore = (senders: WsSendersType) => {
-  return createStore<
+  const store = createStore<
     StateType & ActionsType & WsSendersType & CustomerSenderType
   >()(
     devtools(
@@ -355,6 +355,23 @@ export const createUavControlRoomStore = (senders: WsSendersType) => {
       },
     ),
   )
+
+  void local.getItem<number>('uavFlyParamsSpeed').then((value) => {
+    if (value == null) return
+
+    store.setState(
+      (state) => ({
+        flyParams: {
+          ...state.flyParams,
+          flySpeed: value,
+        },
+      }),
+      false,
+      'hydrateFlySpeed',
+    )
+  })
+
+  return store
 }
 
 export type UavControlRoomStoreType = ReturnType<

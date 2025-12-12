@@ -307,7 +307,7 @@ const ScheduleModal: FC<PropsType> = memo(
           return getPilotTree()
         },
         select: (d: any) => d.data?.rows ?? [],
-        enabled: useFlightReporting && open,
+        enabled: !!useFlightReporting && !!open,
       },
       queryClient,
     )

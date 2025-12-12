@@ -313,14 +313,14 @@ const ChildAction: FC<PropsType> = memo(
                     <div className="text-orange-500 flex items-center gap-1 min-w-0">
                       <ClockCircleOutlined />
                       <OverflowText className="min-w-0 flex-1 truncate">
-                        待审批
+                        报备中
                       </OverflowText>
                     </div>
                   ) : data.isPassed === 0 ? (
                     <div className="text-red-500 flex items-center gap-1 min-w-0">
                       <CloseOutlined />
                       <OverflowText className="min-w-0 flex-1 truncate">
-                        未通过
+                        报备失败
                       </OverflowText>
                     </div>
                   ) : (

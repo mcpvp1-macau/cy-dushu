@@ -23,7 +23,6 @@ const CollapsedPage: FC<PropsType> = memo(({ children }) => {
         'h-full overflow-y-hidden flex  transition-[transform,filter] duration-500 ease-in-out',
         {
           '-translate-x-[350px]': !open,
-          'pointer-events-auto': open,
         },
       )}
     >

@@ -4,7 +4,7 @@ import useUserStore from '@/store/useUser.store'
 
 /** 抢夺控制权: 需要满足上下文有 DeviceDetailStore */
 const useRobControlPower = (updateUUID: Function) => {
-  const username = useUserStore((s) => s.user?.username)
+  const user = useUserStore((s) => s.user)
 
   const { t } = useTranslation()
 
@@ -19,7 +19,9 @@ const useRobControlPower = (updateUUID: Function) => {
         deviceId,
         {
           controlTag: uuid,
-          operator: username,
+          operator: user?.username,
+          name: user?.name ?? '',
+          groupName: user?.groupName ?? user?.groupId ?? '',
         },
         { msgPrefix: t('controlRoom.service.robControlPowerError.msg') },
       ),

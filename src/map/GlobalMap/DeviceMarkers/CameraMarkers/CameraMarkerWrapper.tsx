@@ -4,6 +4,7 @@ import CameraDetailMarker from './CameraDetailMarker'
 import DeviceMarkerVideoFollow from '../components/DeviceMarkerVideoFollow'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import useCameraSettingStore from '@/store/setting/useCameraSetting.store'
+import DeviceMarkerRipple from '../components/DeviceMarkerRipple'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -22,6 +23,9 @@ const CameraMarkerWrapper: FC<PropsType> = memo((props) => {
   const followedVideo = useMapDevicesStore(
     (s) => s.followedVideos[props.data.deviceId],
   )
+  const isFlashing = useMapDevicesStore(
+    (s) => s.deviceFlashes[props.data.deviceId],
+  )
   const alt =
     useCameraSettingStore(
       (s) => s.deviceCameraConfig[props.data.deviceId]?.height,
@@ -29,6 +33,13 @@ const CameraMarkerWrapper: FC<PropsType> = memo((props) => {
 
   return (
     <>
+      {isFlashing &&
+        props.data.longitude != null &&
+        props.data.latitude != null && (
+          <DeviceMarkerRipple
+            position={[props.data.longitude, props.data.latitude, alt]}
+          />
+        )}
       {props.isDetail ? (
         <CameraDetailMarker data={props.data} />
       ) : (

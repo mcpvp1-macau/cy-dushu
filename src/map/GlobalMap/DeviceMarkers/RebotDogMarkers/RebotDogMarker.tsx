@@ -10,6 +10,8 @@ import { deviceStatusFilter } from '@/pages/situation/source/utils'
 import DeviceLabel from '@/components/map/device/DeviceLabel'
 import directionIcon from '/images/marker/icon/rebot_dog_direction.svg'
 import useGroundHeight from '@/hooks/cesium/useGroundHeight'
+import DeviceMarkerRipple from '../components/DeviceMarkerRipple'
+import useMapDevicesStore from '@/store/map/useMapDevices.store'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -18,6 +20,8 @@ type PropsType = {
 /** 机器狗图标 */
 const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
   const { deviceId } = data
+
+  const isFlashing = useMapDevicesStore((s) => s.deviceFlashes[deviceId])
 
   const realLon = useGlobalWsStore(
     (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.longitude,
@@ -58,6 +62,9 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
 
   return (
     <>
+      {isFlashing && (
+        <DeviceMarkerRipple position={[lng, lat, groundHeight]} />
+      )}
       <Billboard
         key={deviceId}
         id={`device--${data.deviceType}--${data.deviceName}--${data.deviceId}--${lng}--${lat}`}

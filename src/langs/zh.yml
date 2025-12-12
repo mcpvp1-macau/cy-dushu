@@ -266,6 +266,7 @@ device:
 action:
   input:
     placeholder: 请根据行动名称搜索
+  quickCreateWaylineAction: 快捷创建航线行动
   status:
     PENDING: 未开始
     PROCESSING: 进行中
@@ -375,6 +376,9 @@ action:
       empty:
         title: 暂无结果
     title: 行动详情
+  stop:
+    confirm:
+      title: 停止行动
 modal:
   cancel: 取消
   confirm: 确定
