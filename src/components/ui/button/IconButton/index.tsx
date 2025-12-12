@@ -18,13 +18,13 @@ const IconButton: FC<PropsType> = ({
   ...restProps
 }) => {
   const buttonClassName = clsx(
-    'm-0 p-0 outline-none bg-transparent border-0 cursor-pointer text-[rgb(var(--fore-color))]',
-    'hover:text-[rgb(var(--primary-color))]',
-    'disabled:cursor-not-allowed disabled:text-[rgb(var(--fore-color))] disabled:opacity-50',
+    'm-0 p-0 outline-none bg-transparent border-0 cursor-pointer text-fore',
+    'hover:text-primary',
+    'disabled:cursor-not-allowed disabled:text-fore disabled:opacity-50',
     '[&>*]:transition-[color] [&>*]:duration-200 [&>*]:ease-linear',
     restProps.className,
     {
-      'text-[rgb(var(--primary-color))]': active,
+      'text-primary': active,
     },
   )
 
