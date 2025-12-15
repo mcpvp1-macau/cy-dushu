@@ -158,7 +158,7 @@ const AddSHJHTask: FC<PropsType> = memo(
       ? values.deviceIds
       : [values.deviceIds].filter(Boolean)
 
-    const { deviceMap, uavStates } = useMapDevicesStore.getState()
+    const { deviceMap } = useMapDevicesStore.getState()
     const selectedDeviceId = selectedDeviceIds[0]
     const fallbackDevice = selectedDeviceId
       ? deviceMap[selectedDeviceId]
@@ -182,15 +182,11 @@ const AddSHJHTask: FC<PropsType> = memo(
     }
 
     if (flightType === 0) {
-      const realtimeState =
-        selectedDeviceId != null ? uavStates?.[selectedDeviceId] : undefined
       const longitude =
-        realtimeState?.longitude ??
         primaryDevice?.properties?.longitude ??
         fallbackDevice?.properties?.longitude ??
         null
       const latitude =
-        realtimeState?.latitude ??
         primaryDevice?.properties?.latitude ??
         fallbackDevice?.properties?.latitude ??
         null
@@ -231,15 +227,11 @@ const AddSHJHTask: FC<PropsType> = memo(
         const returnAltitude = taskBasic?.globalRTHHeight ?? null
 
         // 获取设备位置作为起飞位置
-        const realtimeState =
-          selectedDeviceId != null ? uavStates?.[selectedDeviceId] : undefined
         const flightLng =
-          realtimeState?.longitude ??
           primaryDevice?.properties?.longitude ??
           fallbackDevice?.properties?.longitude ??
           null
         const flightLat =
-          realtimeState?.latitude ??
           primaryDevice?.properties?.latitude ??
           fallbackDevice?.properties?.latitude ??
           null
