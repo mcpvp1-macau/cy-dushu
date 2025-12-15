@@ -730,6 +730,8 @@ alarm:
     processMsgPlaceholder: Please enter a handling note (up to 100 characters)
     processMsgRequired: Please enter a handling note
     success: Saved successfully
+  export:
+    failed: Export failed
 resource:
   title: Resources
   table:

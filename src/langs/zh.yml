@@ -719,6 +719,8 @@ alarm:
     processMsgPlaceholder: 请输入处理意见（最多100字）
     processMsgRequired: 请输入处理意见
     success: 保存成功
+  export:
+    failed: 导出失败
 resource:
   title: 资源
   table:

@@ -16,7 +16,9 @@ import {
   batchUpdateAlarms,
   queryAlarmList,
 } from '@/service/modules/db-api'
+import serverJingqi from '@/service/servers/serverJingqi'
 import useUserStore from '@/store/useUser.store'
+import { DownloadOutlined } from '@ant-design/icons'
 import { Checkbox, Input, Button, Pagination } from 'antd'
 import {
   createColumnHelper,
@@ -38,6 +40,7 @@ const PageAlarms: FC = memo(() => {
   const msgApi = useAppMsg()
   const queryClient = useQueryClient()
   const username = useUserStore((s) => s.user?.username ?? '')
+  const token = useUserStore((s) => s.token)
 
   const processStatus = searchParams.get('processStatus') || undefined
   const deviceName = searchParams.get('deviceName') || undefined
@@ -191,6 +194,60 @@ const PageAlarms: FC = memo(() => {
       })
     },
   )
+
+  const exportMutation = useMutation({
+    mutationFn: async () => {
+      const payload: API_DBAPI.req.AlarmQueryReq = {
+        startTime: rangeValue?.[0]?.format(dft),
+        endTime: rangeValue?.[1]?.format(dft),
+        processStatus:
+          processStatus as API_DBAPI.req.AlarmQueryReq['processStatus'],
+        deviceName: deviceName || undefined,
+        sn: sn || undefined,
+        pageNum,
+        pageSize,
+      }
+
+      const res = await fetch(
+        `${serverJingqi.baseURL}/action/alarm/list.xlsx`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token ? `Bearer ${token}` : '',
+          },
+          body: JSON.stringify(payload),
+        },
+      )
+
+      if (!res.ok) {
+        throw new Error(res.statusText)
+      }
+
+      if (res.headers.get('content-type')?.includes('application/json')) {
+        const json = await res.json()
+        if (json.code !== 'SUCCESS') {
+          throw new Error(json.message ?? t('common.error'))
+        }
+      }
+
+      const blob = await res.blob()
+      const objectURL = URL.createObjectURL(blob)
+      const anchor = document.createElement('a')
+      anchor.href = objectURL
+      const startLabel = payload.startTime ?? ''
+      const endLabel = payload.endTime ?? ''
+      anchor.download = `Alarms_${startLabel}_${endLabel}.xlsx`
+      anchor.click()
+      anchor.remove()
+      URL.revokeObjectURL(objectURL)
+    },
+    onError: (err: any) => {
+      msgApi.error(
+        err?.message || (err as Error)?.message || t('alarm.export.failed'),
+      )
+    },
+  })
 
   const columns = useMemo(
     () => [
@@ -371,6 +428,13 @@ const PageAlarms: FC = memo(() => {
           placeholder={t('alarm.filters.sn')}
           onChange={(e) => debouncedHandleValueChange('sn', e.target.value)}
         />
+        <Button
+          icon={<DownloadOutlined />}
+          loading={exportMutation.isPending}
+          onClick={() => exportMutation.mutate()}
+        >
+          {t('common.export')}
+        </Button>
         <Button
           type="primary"
           danger
