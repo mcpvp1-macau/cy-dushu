@@ -462,6 +462,7 @@ common:
   angle: Angle
   clockwise: Clockwise
   map: Map
+  map84: WGS84 Map
   layer: Layer
   upload: Upload
   preview: Preview

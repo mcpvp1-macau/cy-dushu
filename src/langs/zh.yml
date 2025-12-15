@@ -451,6 +451,7 @@ common:
   angle: 角度
   clockwise: 顺时针
   map: 地图
+  map84: WGS84地图
   layer: 图层
   upload: 上传
   preview: 预览

@@ -128,7 +128,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
   )
 
   const [layout, setLayout] = useLocalStorageState<DynamicLayoutType>(
-    'rebotDogControlRoomLayoutV3',
+    'rebotDogControlRoomLayoutV4',
     {
       defaultValue: initialLayout,
     },
@@ -151,7 +151,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
 
   const titleMap = useMemo(
     () => ({
-      map: t('common.map'),
+      map: t('common.map84'),
       'point-cloud-map': t('controlRoom.rebotDog.pointCloudMap', {
         defaultValue: '点云地图',
       }),
