@@ -12,7 +12,6 @@ import jiku from '@/assets/marker/wurenjiku.svg'
 import jiqigou from '@/assets/marker/jiqigou.png'
 import TTP from '@/assets/marker/TTP.png'
 import ren from '@/assets/marker/ren.png'
-// import wanglou from 'images/marker/wanglou.png'
 import car from '/images/marker/icon/car.svg'
 import wanglou from '/images/marker/icon/wanglou.svg'
 import GroundPolygonCircle from '@/components/map/GroundPolygonCircle'
@@ -26,7 +25,6 @@ import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import useRealTrack3D from '@/hooks/device/useRealTrack3D'
 import useDeviceTrackColorStore from '@/store/setting/useDeviceTrackColor.store'
 import DeviceTrackRenderer from '../components/DeviceTrackRenderer'
-import { shallow } from 'zustand/shallow'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -58,19 +56,13 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
 
   const isFlashing = useMapDevicesStore((s) => s.deviceFlashes[deviceId])
 
-  const { commonLongitude, commonLatitude, commonAltitude, commonHeight } =
-    useMapDevicesStore(
-      (s) => {
-        const state = s.commonStates[deviceId]
-        return {
-          commonLongitude: state?.longitude,
-          commonLatitude: state?.latitude,
-          commonAltitude: state?.altitude,
-          commonHeight: state?.height,
-        }
-      },
-      shallow,
-    )
+  const { commonLongitude, commonLatitude } = useMapDevicesStore((s) => {
+    const state = s.commonStates[deviceId]
+    return {
+      commonLongitude: state?.longitude,
+      commonLatitude: state?.latitude,
+    }
+  })
 
   const realLon = useGlobalWsStore(
     (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.longitude,
@@ -90,8 +82,7 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
   const groundHeight = useGroundHeight(lng, lat)
 
   const enableTrack = !isNil(commonLongitude) && !isNil(commonLatitude)
-  const trackAltitude =
-    commonAltitude ?? commonHeight ?? groundHeight ?? 0
+  const trackAltitude = 0
 
   const { historyTrack, realTrack, clear } = useRealTrack3D(
     enableTrack ? commonLongitude : undefined,
@@ -137,9 +128,7 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
   return (
     <>
       {isFlashing && (
-        <DeviceMarkerRipple
-          position={[lng, lat, altitude ?? groundHeight]}
-        />
+        <DeviceMarkerRipple position={[lng, lat, altitude ?? groundHeight]} />
       )}
       <Billboard
         key={deviceId}
@@ -177,6 +166,7 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
         realTrack={realTrack}
         color={color}
         materialType={materialType}
+        clampToGround
       />
     </>
   )

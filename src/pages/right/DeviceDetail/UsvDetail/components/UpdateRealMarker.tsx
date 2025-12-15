@@ -12,25 +12,16 @@ const UsvUpdateRealMarker: FC<PropsType> = memo(() => {
     detailDeviceId,
     longitude,
     latitude,
-    altitude,
-    height,
   } = useDeviceDetailStore(
     useShallow((s) => ({
       deviceId: s.deviceId ?? '',
       detailDeviceId: s.deviceDetail?.deviceId ?? '',
       longitude: s.deviceDetail?.longitude,
       latitude: s.deviceDetail?.latitude,
-      altitude: s.deviceDetail?.altitude,
-      height: s.deviceDetail?.properties?.height,
     })),
   )
 
-  const {
-    longitude: realLongitude,
-    latitude: realLatitude,
-    altitude: realAltitude,
-    height: realHeight,
-  } = useGlobalWsStore(
+  const { longitude: realLongitude, latitude: realLatitude } = useGlobalWsStore(
     useShallow((s) => {
       const properties =
         s.deviceRealtimeProperties[detailDeviceId || deviceDetailId]?.properties
@@ -38,8 +29,6 @@ const UsvUpdateRealMarker: FC<PropsType> = memo(() => {
       return {
         longitude: properties?.longitude,
         latitude: properties?.latitude,
-        altitude: properties?.altitude,
-        height: properties?.height,
       }
     }),
   )
@@ -57,21 +46,9 @@ const UsvUpdateRealMarker: FC<PropsType> = memo(() => {
     () => ({
       longitude: realLongitude ?? longitude,
       latitude: realLatitude ?? latitude,
-      altitude: realAltitude ?? altitude,
-      height: realHeight ?? height ?? 0,
       deviceId: targetDeviceId,
     }),
-    [
-      altitude,
-      height,
-      latitude,
-      longitude,
-      realAltitude,
-      realHeight,
-      realLatitude,
-      realLongitude,
-      targetDeviceId,
-    ],
+    [latitude, longitude, realLatitude, realLongitude, targetDeviceId],
   )
 
   useEffect(() => {

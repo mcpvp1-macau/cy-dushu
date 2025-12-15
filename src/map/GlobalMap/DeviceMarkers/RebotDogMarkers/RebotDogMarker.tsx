@@ -16,7 +16,6 @@ import useRealTrack3D from '@/hooks/device/useRealTrack3D'
 import useDeviceTrackColorStore from '@/store/setting/useDeviceTrackColor.store'
 import { isNil } from 'lodash'
 import DeviceTrackRenderer from '../components/DeviceTrackRenderer'
-import { shallow } from 'zustand/shallow'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -28,19 +27,13 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
 
   const isFlashing = useMapDevicesStore((s) => s.deviceFlashes[deviceId])
 
-  const { commonLongitude, commonLatitude, commonAltitude, commonHeight } =
-    useMapDevicesStore(
-      (s) => {
-        const state = s.commonStates[deviceId]
-        return {
-          commonLongitude: state?.longitude,
-          commonLatitude: state?.latitude,
-          commonAltitude: state?.altitude,
-          commonHeight: state?.height,
-        }
-      },
-      shallow,
-    )
+  const { commonLongitude, commonLatitude } = useMapDevicesStore((s) => {
+    const state = s.commonStates[deviceId]
+    return {
+      commonLongitude: state?.longitude,
+      commonLatitude: state?.latitude,
+    }
+  })
 
   const realLon = useGlobalWsStore(
     (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.longitude,
@@ -60,8 +53,7 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
 
   const groundHeight = useGroundHeight(lng, lat)
 
-  const trackAltitude =
-    commonAltitude ?? commonHeight ?? groundHeight ?? 0
+  const trackAltitude = 0
   const enableTrack = !isNil(commonLongitude) && !isNil(commonLatitude)
 
   const { historyTrack, realTrack, clear } = useRealTrack3D(
@@ -102,9 +94,7 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
 
   return (
     <>
-      {isFlashing && (
-        <DeviceMarkerRipple position={[lng, lat, groundHeight]} />
-      )}
+      {isFlashing && <DeviceMarkerRipple position={[lng, lat, groundHeight]} />}
       <Billboard
         key={deviceId}
         id={`device--${data.deviceType}--${data.deviceName}--${data.deviceId}--${lng}--${lat}`}
@@ -144,6 +134,7 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
         realTrack={realTrack}
         color={color}
         materialType={materialType}
+        clampToGround
       />
     </>
   )

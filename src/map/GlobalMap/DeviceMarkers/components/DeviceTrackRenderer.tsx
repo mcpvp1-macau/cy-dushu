@@ -8,10 +8,18 @@ type PropsType = {
   realTrack: Track
   color: string
   materialType: 'color' | 'outline' | 'glow'
+  clampToGround?: boolean
 }
 
 const DeviceTrackRenderer: FC<PropsType> = memo(
-  ({ enableTrack, historyTrack, realTrack, color, materialType }) => {
+  ({
+    enableTrack,
+    historyTrack,
+    realTrack,
+    color,
+    materialType,
+    clampToGround,
+  }) => {
     if (!enableTrack) return null
 
     return (
@@ -23,6 +31,7 @@ const DeviceTrackRenderer: FC<PropsType> = memo(
               value={track}
               color={color}
               materialType={materialType}
+              clampToGround={clampToGround}
             />
           ))}
         {realTrack.length > 1 && (
@@ -30,6 +39,7 @@ const DeviceTrackRenderer: FC<PropsType> = memo(
             value={realTrack}
             color={color}
             materialType={materialType}
+            clampToGround={clampToGround}
           />
         )}
       </>
