@@ -15,6 +15,7 @@ import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import useRealTrack3D from '@/hooks/device/useRealTrack3D'
 import HistoryTrack from '@/components/map/HistoryTrack'
 import useDeviceTrackColorStore from '@/store/setting/useDeviceTrackColor.store'
+import { isNil } from 'lodash'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -49,7 +50,7 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
   const trackAltitude =
     commonState?.altitude ?? commonState?.height ?? groundHeight ?? 0
   const enableTrack =
-    commonState?.longitude != null && commonState?.latitude != null
+    !isNil(commonState?.longitude) && !isNil(commonState?.latitude)
 
   const { historyTrack, realTrack, clear } = useRealTrack3D(
     enableTrack ? commonState?.longitude : undefined,

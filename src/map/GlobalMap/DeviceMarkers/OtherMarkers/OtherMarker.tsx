@@ -5,7 +5,8 @@ import useGlobalWsStore, {
 import { Billboard } from 'resium'
 import * as Cesium from 'cesium'
 import useDeviceFilterConfigStore from '@/store/useDeviceFilterConfig.store'
-import { DeviceEnum, DeviceStatusEnum } from '@/enum/device'
+import { DeviceStatusEnum } from '@/enum/device'
+import { isNil } from 'lodash'
 import uav from '/images/marker/icon/uav.png'
 import jiku from '@/assets/marker/wurenjiku.svg'
 import jiqigou from '@/assets/marker/jiqigou.png'
@@ -76,9 +77,7 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
   const groundHeight = useGroundHeight(lng, lat)
 
   const enableTrack =
-    deviceType === DeviceEnum.USV &&
-    commonState?.longitude != null &&
-    commonState?.latitude != null
+    !isNil(commonState?.longitude) && !isNil(commonState?.latitude)
   const trackAltitude =
     commonState?.altitude ?? commonState?.height ?? groundHeight ?? 0
 
