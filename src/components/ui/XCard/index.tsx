@@ -31,7 +31,7 @@ const XCard: FC<PropsType> = ({
     <div
       {...otherProps}
       className={clsx(
-        'bg-[rgb(var(--ground-color-1))] border border-[rgb(var(--ground-color-5))] rounded-[3px] text-sm',
+        'bg-ground-1 border border-ground-5 rounded-[3px] text-sm',
         otherProps.className,
       )}
       style={{ padding }}
@@ -47,7 +47,7 @@ const XCard: FC<PropsType> = ({
                 {titleIcon}
               </div>
             )}
-            <h4 className="m-0 flex-1 truncate p-0 text-left text-[rgb(var(--highlight-color))]">{title}</h4>
+            <h4 className="m-0 flex-1 truncate p-0 text-left text-hightlight">{title}</h4>
           </div>
           <div className="flex items-center">
             {topRight}
