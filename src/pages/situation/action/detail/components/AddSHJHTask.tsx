@@ -158,11 +158,14 @@ const AddSHJHTask: FC<PropsType> = memo(
       ? values.deviceIds
       : [values.deviceIds].filter(Boolean)
 
-    const primaryDevice = allDevices.find(
-      (e) => e.deviceId === selectedDeviceIds[0],
-    )
+    const { deviceMap, uavStates } = useMapDevicesStore.getState()
+    const selectedDeviceId = selectedDeviceIds[0]
+    const fallbackDevice = selectedDeviceId
+      ? deviceMap[selectedDeviceId]
+      : undefined
+    const primaryDevice =
+      allDevices.find((e) => e.deviceId === selectedDeviceId) || fallbackDevice
     const deviceType = primaryDevice?.deviceType ?? DeviceEnum.UAV
-    const uavStates = useMapDevicesStore.getState().uavStates
 
     const commonData: any = {
       ...pick(values, ['actionItemName']),
@@ -179,11 +182,18 @@ const AddSHJHTask: FC<PropsType> = memo(
     }
 
     if (flightType === 0) {
-      const realtimeState = primaryDevice && uavStates?.[primaryDevice.deviceId]
+      const realtimeState =
+        selectedDeviceId != null ? uavStates?.[selectedDeviceId] : undefined
       const longitude =
-        realtimeState?.longitude ?? primaryDevice?.properties?.longitude ?? null
+        realtimeState?.longitude ??
+        primaryDevice?.properties?.longitude ??
+        fallbackDevice?.properties?.longitude ??
+        null
       const latitude =
-        realtimeState?.latitude ?? primaryDevice?.properties?.latitude ?? null
+        realtimeState?.latitude ??
+        primaryDevice?.properties?.latitude ??
+        fallbackDevice?.properties?.latitude ??
+        null
 
       if (!longitude || !latitude) {
         message.error('所选设备缺少经纬度')
@@ -222,13 +232,17 @@ const AddSHJHTask: FC<PropsType> = memo(
 
         // 获取设备位置作为起飞位置
         const realtimeState =
-          primaryDevice && uavStates?.[primaryDevice.deviceId]
+          selectedDeviceId != null ? uavStates?.[selectedDeviceId] : undefined
         const flightLng =
           realtimeState?.longitude ??
           primaryDevice?.properties?.longitude ??
+          fallbackDevice?.properties?.longitude ??
           null
         const flightLat =
-          realtimeState?.latitude ?? primaryDevice?.properties?.latitude ?? null
+          realtimeState?.latitude ??
+          primaryDevice?.properties?.latitude ??
+          fallbackDevice?.properties?.latitude ??
+          null
 
         Object.assign(commonData, {
           templateId: airline.templateId,
