@@ -51,7 +51,7 @@ const Recon2DListItem: FC<PropsType> = memo(
     const [isLoading, setIsLoading] = useState(false)
     const msgApi = useAppMsg()
 
-    const hideVisibleToggle = globalConfig.hideReconstruction2DVisibleToggle
+    const hideRebuildAction = globalConfig.hideReconstruction2DRebuild
     const hideDeleteAction = globalConfig.hideReconstruction2DDelete
 
     const queryClient = useQueryClient()
@@ -76,28 +76,27 @@ const Recon2DListItem: FC<PropsType> = memo(
               </OverflowText>
             </div>
             <div className="flex items-center gap-2">
-              {!hideVisibleToggle && (
-                <IconButton
-                  tippyProps={{
-                    content: hiddenSet.has(data.id)
-                      ? t('common.show')
-                      : t('common.hide'),
-                  }}
-                  onClick={() => {
-                    const newSet = new Set(hiddenSet)
-                    if (newSet.has(data.id)) {
-                      newSet.delete(data.id)
-                    } else {
-                      newSet.add(data.id)
-                    }
-                    useReconstruction2DMapStore
-                      .getState()
-                      .updateHiddenReconstruction2DSet(newSet)
-                  }}
-                >
-                  {hiddenSet.has(data.id) ? <IconNotVisible /> : <IconVisible />}
-                </IconButton>
-              )}
+              <IconButton
+                tippyProps={{
+                  content: hiddenSet.has(data.id)
+                    ? t('common.show')
+                    : t('common.hide'),
+                }}
+                onClick={() => {
+                  const newSet = new Set(hiddenSet)
+                  if (newSet.has(data.id)) {
+                    newSet.delete(data.id)
+                  } else {
+                    newSet.add(data.id)
+                  }
+                  useReconstruction2DMapStore
+                    .getState()
+                    .updateHiddenReconstruction2DSet(newSet)
+                }}
+              >
+                {hiddenSet.has(data.id) ? <IconNotVisible /> : <IconVisible />}
+              </IconButton>
+
               {isLoading ? (
                 <LoadingOutlined />
               ) : (
@@ -122,21 +121,23 @@ const Recon2DListItem: FC<PropsType> = memo(
                         <IconToLocation />
                       </IconButton>
                     )}
-                  <IconButton
-                    className="scale-90"
-                    tippyProps={{ content: t('common.restart') }}
-                    onClick={async () => {
-                      setIsLoading(true)
-                      try {
-                        await restartReconstruction2D(data.id)
-                        handleSuccess()
-                      } finally {
-                        setIsLoading(false)
-                      }
-                    }}
-                  >
-                    <IconRestart />
-                  </IconButton>
+                  {!hideRebuildAction && (
+                    <IconButton
+                      className="scale-90"
+                      tippyProps={{ content: t('common.restart') }}
+                      onClick={async () => {
+                        setIsLoading(true)
+                        try {
+                          await restartReconstruction2D(data.id)
+                          handleSuccess()
+                        } finally {
+                          setIsLoading(false)
+                        }
+                      }}
+                    >
+                      <IconRestart />
+                    </IconButton>
+                  )}
                   <IconButton
                     className="scale-90"
                     tippyProps={{ content: t('common.edit') }}
