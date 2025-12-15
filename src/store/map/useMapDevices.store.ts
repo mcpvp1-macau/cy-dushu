@@ -67,6 +67,15 @@ type StateType = {
   cameraInDetail: Set<string>
   /** 设备闪烁状态 */
   deviceFlashes: Record<string, boolean>
+  /** 通用实时状态 */
+  commonStates: {
+    [deviceId: string]: Partial<{
+      longitude: number
+      latitude: number
+      altitude: number
+      height: number
+    }>
+  }
 }
 
 type ActionsType = {
@@ -101,6 +110,8 @@ type ActionsType = {
   updateCameraInDetail: (cameraInDetail: StateType['cameraInDetail']) => void
   /** 更新设备闪烁状态 */
   setDeviceFlash: (deviceId: string, isFlashing: boolean) => void
+  /** 更新通用实时状态 */
+  updateCommonStates: (commonStates: StateType['commonStates']) => void
 }
 
 const useMapDevicesStore = create<StateType & ActionsType>()(
@@ -126,6 +137,7 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       hiddenUavInfoBoard: new Set(),
       cameraInDetail: new Set(),
       deviceFlashes: {},
+      commonStates: {},
       updateDeviceMap: (deviceMap) => {
         set({ deviceMap }, false, 'updateDeviceMap')
       },
@@ -191,6 +203,9 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
           false,
           'setDeviceFlash',
         )
+      },
+      updateCommonStates: (commonStates) => {
+        set({ commonStates }, false, 'updateCommonStates')
       },
     }),
     {

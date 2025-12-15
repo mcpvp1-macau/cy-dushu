@@ -5,7 +5,7 @@ import useGlobalWsStore, {
 import { Billboard } from 'resium'
 import * as Cesium from 'cesium'
 import useDeviceFilterConfigStore from '@/store/useDeviceFilterConfig.store'
-import { DeviceStatusEnum } from '@/enum/device'
+import { DeviceEnum, DeviceStatusEnum } from '@/enum/device'
 import uav from '/images/marker/icon/uav.png'
 import jiku from '@/assets/marker/wurenjiku.svg'
 import jiqigou from '@/assets/marker/jiqigou.png'
@@ -22,6 +22,9 @@ import Radar from '../WangLouMarkers/Radar'
 import { deviceStatusFilter } from '@/pages/situation/source/utils'
 import DeviceMarkerRipple from '../components/DeviceMarkerRipple'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
+import useRealTrack3D from '@/hooks/device/useRealTrack3D'
+import HistoryTrack from '@/components/map/HistoryTrack'
+import useDeviceTrackColorStore from '@/store/setting/useDeviceTrackColor.store'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -53,6 +56,8 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
 
   const isFlashing = useMapDevicesStore((s) => s.deviceFlashes[deviceId])
 
+  const commonState = useMapDevicesStore((s) => s.commonStates[deviceId])
+
   const realLon = useGlobalWsStore(
     (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.longitude,
   )
@@ -70,6 +75,23 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
 
   const groundHeight = useGroundHeight(lng, lat)
 
+  const enableTrack =
+    deviceType === DeviceEnum.USV &&
+    commonState?.longitude != null &&
+    commonState?.latitude != null
+  const trackAltitude =
+    commonState?.altitude ?? commonState?.height ?? groundHeight ?? 0
+
+  const { historyTrack, realTrack, clear } = useRealTrack3D(
+    enableTrack ? commonState?.longitude : undefined,
+    enableTrack ? commonState?.latitude : undefined,
+    enableTrack ? trackAltitude : undefined,
+  )
+
+  useEffect(() => {
+    clear(true)
+  }, [deviceId])
+
   const isOnline = useDeviceFilterConfigStore((s) => s.isOnline)
   const isHidden = useDeviceFilterConfigStore(
     (s) => s.hiddenDeviceIds[deviceId],
@@ -80,6 +102,13 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
 
   const isTask = useDeviceFilterConfigStore((s) => s.isTask)
   const isNotTask = useDeviceFilterConfigStore((s) => s.isNotTask)
+
+  const color = useDeviceTrackColorStore(
+    (s) => s.colorMap[deviceId] || '#d42422',
+  )
+  const materialType = useDeviceTrackColorStore(
+    (s) => s.materialType[deviceId] || 'glow',
+  )
 
   if (
     isHidden || // 隐藏
@@ -131,6 +160,22 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
         </>
       ) : null}
       {properties?.videoList?.length ? <VideoFrustum data={data} /> : null}
+      {enableTrack && historyTrack.length > 0 &&
+        historyTrack.map((track, index) => (
+          <HistoryTrack
+            key={index}
+            value={track}
+            color={color}
+            materialType={materialType}
+          />
+        ))}
+      {enableTrack && realTrack.length > 1 && (
+        <HistoryTrack
+          value={realTrack}
+          color={color}
+          materialType={materialType}
+        />
+      )}
     </>
   )
 })

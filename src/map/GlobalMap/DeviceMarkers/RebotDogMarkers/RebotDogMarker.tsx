@@ -12,6 +12,9 @@ import directionIcon from '/images/marker/icon/rebot_dog_direction.svg'
 import useGroundHeight from '@/hooks/cesium/useGroundHeight'
 import DeviceMarkerRipple from '../components/DeviceMarkerRipple'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
+import useRealTrack3D from '@/hooks/device/useRealTrack3D'
+import HistoryTrack from '@/components/map/HistoryTrack'
+import useDeviceTrackColorStore from '@/store/setting/useDeviceTrackColor.store'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -22,6 +25,8 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
   const { deviceId } = data
 
   const isFlashing = useMapDevicesStore((s) => s.deviceFlashes[deviceId])
+
+  const commonState = useMapDevicesStore((s) => s.commonStates[deviceId])
 
   const realLon = useGlobalWsStore(
     (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.longitude,
@@ -41,6 +46,21 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
 
   const groundHeight = useGroundHeight(lng, lat)
 
+  const trackAltitude =
+    commonState?.altitude ?? commonState?.height ?? groundHeight ?? 0
+  const enableTrack =
+    commonState?.longitude != null && commonState?.latitude != null
+
+  const { historyTrack, realTrack, clear } = useRealTrack3D(
+    enableTrack ? commonState?.longitude : undefined,
+    enableTrack ? commonState?.latitude : undefined,
+    enableTrack ? trackAltitude : undefined,
+  )
+
+  useEffect(() => {
+    clear(true)
+  }, [deviceId])
+
   const isOnline = useDeviceFilterConfigStore((s) => s.isOnline)
   const isTask = useDeviceFilterConfigStore((s) => s.isTask)
   const isNotTask = useDeviceFilterConfigStore((s) => s.isNotTask)
@@ -50,6 +70,13 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
 
   const status = useRealOnlineStatus(deviceId)
   const taskStatus = useRealTaskStatus(deviceId)
+
+  const color = useDeviceTrackColorStore(
+    (s) => s.colorMap[deviceId] || '#d42422',
+  )
+  const materialType = useDeviceTrackColorStore(
+    (s) => s.materialType[deviceId] || 'glow',
+  )
 
   if (
     isHidden || // 隐藏
@@ -98,6 +125,22 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
         position={position}
         heightReference={Cesium.HeightReference.NONE}
       />
+      {enableTrack && historyTrack.length > 0 &&
+        historyTrack.map((track, index) => (
+          <HistoryTrack
+            key={index}
+            value={track}
+            color={color}
+            materialType={materialType}
+          />
+        ))}
+      {enableTrack && realTrack.length > 1 && (
+        <HistoryTrack
+          value={realTrack}
+          color={color}
+          materialType={materialType}
+        />
+      )}
     </>
   )
 })
