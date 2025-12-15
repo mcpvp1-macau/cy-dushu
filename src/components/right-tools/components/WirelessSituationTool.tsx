@@ -17,18 +17,19 @@ import BottomSafeAreaPortal from '@/components/map/BottomSafeAreaPortal'
 
 type PropsType = ButtonHTMLAttributes<HTMLButtonElement>
 
-const splitValues = '50-80-100-120-140-160-180-200-250-300-350-400'
-const lines = splitValues.split('-').length - 1
+const fakerValues = '-100-50-80-100-120-140-160-180-200-250-300-350-400'
+  .split('-')
+  .map(Number)
 const linesWidth = 100
-const high = lines * linesWidth
+const lines = fakerValues.length - 1
+const sliderMin = fakerValues[0]
+const sliderMax = sliderMin + lines * linesWidth
 
 /** 伪造数据, 目的是为了将 marks 能平均分布 */
-const faker = '50-80-100-120-140-160-180-200-250-300-350-400'
-  .split('-')
-  .map((v, i) => [Number(i * linesWidth), Number(v)])
+const faker = fakerValues.map((v, i) => [sliderMin + i * linesWidth, v] as const)
 
 const marks: SliderSingleProps['marks'] = Object.fromEntries(
-  faker.map((v, i) => [Number(i * linesWidth), `${v[1]}m`]),
+  faker.map(([position, value]) => [position, `${value}m`]),
 )
 
 /** 计算真值 */
@@ -177,8 +178,8 @@ const WirelessSituationTool: FC<PropsType> = memo((props) => {
                   },
                 }}
                 style={{ height: 300 }}
-                min={-100}
-                max={high}
+                min={sliderMin}
+                max={sliderMax}
                 value={range}
                 onChange={([l, h]) => updateRange(l, h)}
               />
