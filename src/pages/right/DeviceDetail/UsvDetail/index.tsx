@@ -8,6 +8,7 @@ import { Segmented } from 'antd'
 import IconDetail from '@/assets/icons/jsx/IconDetail'
 import IconData from '@/assets/icons/jsx/IconData'
 import UsvDetailData from './components/UsvDetailData'
+import UsvUpdateRealMarker from './components/UpdateRealMarker'
 
 const UsvDetail: FC<BaseDeviceDetailProps> = memo(
   ({ data, headerTools, headerProps, onClose }) => {
@@ -49,6 +50,7 @@ const UsvDetail: FC<BaseDeviceDetailProps> = memo(
           </div>
           {tab === 0 ? <UsvDetailDetail /> : <UsvDetailData />}
         </ScrollArea>
+        <UsvUpdateRealMarker />
       </div>
     )
   },

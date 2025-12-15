@@ -3,6 +3,13 @@ import { devtools } from 'zustand/middleware'
 
 type Track = { lng: number; lat: number; alt: number }
 
+export type DeviceRealtimeState = {
+  longitude?: number
+  latitude?: number
+  altitude?: number
+  height?: number
+}
+
 type StateType = {
   /** 设备映射 deivceId -> deviceDetail 如果要用实时的请用 GlobalWebsocket 的 */
   deviceMap: { [deviceId: string]: API_DEVICE.domain.Device }
@@ -67,6 +74,10 @@ type StateType = {
   cameraInDetail: Set<string>
   /** 设备闪烁状态 */
   deviceFlashes: Record<string, boolean>
+  /** 通用实时状态 */
+  commonStates: {
+    [deviceId: string]: Partial<DeviceRealtimeState>
+  }
 }
 
 type ActionsType = {
@@ -101,6 +112,12 @@ type ActionsType = {
   updateCameraInDetail: (cameraInDetail: StateType['cameraInDetail']) => void
   /** 更新设备闪烁状态 */
   setDeviceFlash: (deviceId: string, isFlashing: boolean) => void
+  /** 更新通用实时状态 */
+  updateCommonStates: (commonStates: StateType['commonStates']) => void
+  /** 设置单个设备通用实时状态 */
+  setCommonState: (deviceId: string, state: Partial<DeviceRealtimeState>) => void
+  /** 删除单个设备通用实时状态 */
+  removeCommonState: (deviceId: string) => void
 }
 
 const useMapDevicesStore = create<StateType & ActionsType>()(
@@ -126,6 +143,7 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
       hiddenUavInfoBoard: new Set(),
       cameraInDetail: new Set(),
       deviceFlashes: {},
+      commonStates: {},
       updateDeviceMap: (deviceMap) => {
         set({ deviceMap }, false, 'updateDeviceMap')
       },
@@ -190,6 +208,33 @@ const useMapDevicesStore = create<StateType & ActionsType>()(
           }),
           false,
           'setDeviceFlash',
+        )
+      },
+      updateCommonStates: (commonStates) => {
+        set({ commonStates }, false, 'updateCommonStates')
+      },
+      setCommonState: (deviceId, state) => {
+        set(
+          (prev) => ({
+            commonStates: {
+              ...prev.commonStates,
+              [deviceId]: { ...prev.commonStates[deviceId], ...state },
+            },
+          }),
+          false,
+          'setCommonState',
+        )
+      },
+      removeCommonState: (deviceId) => {
+        set(
+          (prev) => {
+            const nextCommonStates = { ...prev.commonStates }
+            delete nextCommonStates[deviceId]
+
+            return { commonStates: nextCommonStates }
+          },
+          false,
+          'removeCommonState',
         )
       },
     }),

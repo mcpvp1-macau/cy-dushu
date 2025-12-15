@@ -12,6 +12,7 @@ import {
   useCreateRebotDogControlRoomStore,
 } from '@/store/context-store/useRebotDogControlRoom.store'
 import { DeviceEnum } from '@/enum/device'
+import RebotDogUpdateRealMarker from './components/UpdateRealMarker'
 
 const RobotDogDetail: FC<BaseDeviceDetailProps> = memo(
   ({ data, headerTools, headerProps, onClose }) => {
@@ -61,6 +62,7 @@ const RobotDogDetail: FC<BaseDeviceDetailProps> = memo(
           <ScrollArea className="grow">
             {tab === 0 ? <RebotDogDetailDetail /> : <RebotDogDetailData />}
           </ScrollArea>
+          <RebotDogUpdateRealMarker />
         </div>
       </RebotDogControlRoomStoreContext.Provider>
     )
