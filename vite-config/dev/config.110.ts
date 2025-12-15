@@ -60,9 +60,16 @@ export default mergeConfig(
           changeOrigin: true,
         },
         '/data': {
-          target: 'https://135.100.11.110:32713',
+          target: 'https://172.21.30.201:32713',
           secure: false,
         },
+        '/_ws_proxy': {
+          target: 'wss://135.100.11.122:10445',
+          ws: true,
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace('/_ws_proxy/wss://135.100.11.122:10445', ''),
+        }
       },
     },
     define: {
@@ -83,6 +90,7 @@ export default mergeConfig(
           },
         ],
         env: 'sh-jh',
+        videoProxy: true,
       },
     },
   }),

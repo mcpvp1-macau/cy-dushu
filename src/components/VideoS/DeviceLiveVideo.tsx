@@ -141,7 +141,11 @@ const DeviceLiveVideo = memo(
 
       // 重新拉流的时间戳
       const [fetchTime, setFetchTime] = useState(0)
-      const { data, refetch } = useQuery(
+      const {
+        data,
+        refetch: fetchA,
+        isFetching,
+      } = useQuery(
         {
           queryKey: ['getVideoUrl', { productKey, deviceId, videoId }],
           enabled: !!deviceId,
@@ -167,6 +171,7 @@ const DeviceLiveVideo = memo(
                 LastUrlRef.current = url
                 setFetchTime(Date.now())
               }
+            
               if (!url) {
                 return data
               }
@@ -193,6 +198,12 @@ const DeviceLiveVideo = memo(
         },
         queryClient,
       )
+
+      const refetch = useMemoizedFn(async () => {
+        if (isFetching) return
+        const res = await fetchA()
+        return res
+      })
 
       const [jessibucaKey, setJessibucaKey] = useState(0)
       const playUrl = data?.url
