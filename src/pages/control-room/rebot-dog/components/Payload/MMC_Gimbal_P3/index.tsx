@@ -67,6 +67,12 @@ const MMC_Gimbal_P3: React.FC<PropsType> = ({ noFile }) => {
     })
   }
 
+  const handleDelete = async (fileName: string) => {
+    await postSerivce('recordAudioFileDelete', {
+      fileName,
+    })
+  }
+
   const onChangeMode = async (mode: string, showMsg = true) => {
     await postSerivce(
       'ttsMode',
@@ -111,7 +117,11 @@ const MMC_Gimbal_P3: React.FC<PropsType> = ({ noFile }) => {
       disabled: noFile,
       children: (
         <>
-          <FileTo onPlay={handlePlay} playing={status === '录音音乐播报中'} />
+          <FileTo
+            onPlay={handlePlay}
+            onDelete={handleDelete}
+            playing={status === '录音音乐播报中'}
+          />
         </>
       ),
     },
