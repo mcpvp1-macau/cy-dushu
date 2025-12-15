@@ -8,11 +8,41 @@ type PropsType = unknown
 
 /** 更新机器狗实时坐标 */
 const RebotDogUpdateRealMarker: FC<PropsType> = memo(() => {
-  const deviceId = useDeviceDetailStore((s) => s.deviceId) ?? ''
-  const data = useDeviceDetailStore((s) => s.deviceDetail)
+  const {
+    deviceId: deviceDetailId,
+    detailDeviceId,
+    longitude,
+    latitude,
+    altitude,
+    height,
+  } = useDeviceDetailStore(
+    useShallow((s) => ({
+      deviceId: s.deviceId ?? '',
+      detailDeviceId: s.deviceDetail?.deviceId ?? '',
+      longitude: s.deviceDetail?.longitude,
+      latitude: s.deviceDetail?.latitude,
+      altitude: s.deviceDetail?.altitude,
+      height: s.deviceDetail?.properties?.height,
+    })),
+  )
 
-  const realProperties = useGlobalWsStore(
-    (s) => s.deviceRealtimeProperties[deviceId]?.properties ?? {},
+  const {
+    longitude: realLongitude,
+    latitude: realLatitude,
+    altitude: realAltitude,
+    height: realHeight,
+  } = useGlobalWsStore(
+    useShallow((s) => {
+      const properties =
+        s.deviceRealtimeProperties[detailDeviceId || deviceDetailId]?.properties
+
+      return {
+        longitude: properties?.longitude,
+        latitude: properties?.latitude,
+        altitude: properties?.altitude,
+        height: properties?.height,
+      }
+    }),
   )
 
   const wsState = useRebotDogControlRoomStore(
@@ -24,32 +54,50 @@ const RebotDogUpdateRealMarker: FC<PropsType> = memo(() => {
     })),
   )
 
-  const state = useMemo(() => {
-    return {
-      longitude: wsState.longitude ?? realProperties.longitude ?? data?.longitude,
-      latitude: wsState.latitude ?? realProperties.latitude ?? data?.latitude,
-      altitude: wsState.altitude ?? realProperties.altitude ?? data?.altitude,
+  const { setCommonState, removeCommonState } = useMapDevicesStore(
+    useShallow((s) => ({
+      setCommonState: s.setCommonState,
+      removeCommonState: s.removeCommonState,
+    })),
+  )
+
+  const targetDeviceId = detailDeviceId || deviceDetailId
+
+  const state = useMemo(
+    () => ({
+      longitude: wsState.longitude ?? realLongitude ?? longitude,
+      latitude: wsState.latitude ?? realLatitude ?? latitude,
+      altitude: wsState.altitude ?? realAltitude ?? altitude,
       height:
-        wsState.height ?? realProperties.height ?? data?.properties?.height ?? 0,
-      deviceId: data?.deviceId ?? deviceId,
-    }
-  }, [data, deviceId, realProperties, wsState])
+        wsState.height ?? realHeight ?? height ?? 0,
+      deviceId: targetDeviceId,
+    }),
+    [
+      altitude,
+      height,
+      latitude,
+      longitude,
+      realAltitude,
+      realHeight,
+      realLatitude,
+      realLongitude,
+      targetDeviceId,
+      wsState.altitude,
+      wsState.height,
+      wsState.latitude,
+      wsState.longitude,
+    ],
+  )
 
   useEffect(() => {
     if (!state.deviceId) return
-    const next = { ...useMapDevicesStore.getState().commonStates }
-    next[state.deviceId] = state
-    useMapDevicesStore.getState().updateCommonStates(next)
-  }, [state])
 
-  useEffect(() => {
+    setCommonState(state.deviceId, state)
+
     return () => {
-      if (!state.deviceId) return
-      const next = { ...useMapDevicesStore.getState().commonStates }
-      delete next[state.deviceId]
-      useMapDevicesStore.getState().updateCommonStates(next)
+      removeCommonState(state.deviceId)
     }
-  }, [state.deviceId])
+  }, [removeCommonState, setCommonState, state])
 
   return null
 })

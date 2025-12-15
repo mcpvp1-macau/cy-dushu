@@ -24,8 +24,9 @@ import { deviceStatusFilter } from '@/pages/situation/source/utils'
 import DeviceMarkerRipple from '../components/DeviceMarkerRipple'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
 import useRealTrack3D from '@/hooks/device/useRealTrack3D'
-import HistoryTrack from '@/components/map/HistoryTrack'
 import useDeviceTrackColorStore from '@/store/setting/useDeviceTrackColor.store'
+import DeviceTrackRenderer from '../components/DeviceTrackRenderer'
+import { shallow } from 'zustand/shallow'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -57,7 +58,19 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
 
   const isFlashing = useMapDevicesStore((s) => s.deviceFlashes[deviceId])
 
-  const commonState = useMapDevicesStore((s) => s.commonStates[deviceId])
+  const { commonLongitude, commonLatitude, commonAltitude, commonHeight } =
+    useMapDevicesStore(
+      (s) => {
+        const state = s.commonStates[deviceId]
+        return {
+          commonLongitude: state?.longitude,
+          commonLatitude: state?.latitude,
+          commonAltitude: state?.altitude,
+          commonHeight: state?.height,
+        }
+      },
+      shallow,
+    )
 
   const realLon = useGlobalWsStore(
     (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.longitude,
@@ -76,14 +89,13 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
 
   const groundHeight = useGroundHeight(lng, lat)
 
-  const enableTrack =
-    !isNil(commonState?.longitude) && !isNil(commonState?.latitude)
+  const enableTrack = !isNil(commonLongitude) && !isNil(commonLatitude)
   const trackAltitude =
-    commonState?.altitude ?? commonState?.height ?? groundHeight ?? 0
+    commonAltitude ?? commonHeight ?? groundHeight ?? 0
 
   const { historyTrack, realTrack, clear } = useRealTrack3D(
-    enableTrack ? commonState?.longitude : undefined,
-    enableTrack ? commonState?.latitude : undefined,
+    enableTrack ? commonLongitude : undefined,
+    enableTrack ? commonLatitude : undefined,
     enableTrack ? trackAltitude : undefined,
   )
 
@@ -159,22 +171,13 @@ const OtherMarker: FC<PropsType> = memo(({ data }) => {
         </>
       ) : null}
       {properties?.videoList?.length ? <VideoFrustum data={data} /> : null}
-      {enableTrack && historyTrack.length > 0 &&
-        historyTrack.map((track, index) => (
-          <HistoryTrack
-            key={index}
-            value={track}
-            color={color}
-            materialType={materialType}
-          />
-        ))}
-      {enableTrack && realTrack.length > 1 && (
-        <HistoryTrack
-          value={realTrack}
-          color={color}
-          materialType={materialType}
-        />
-      )}
+      <DeviceTrackRenderer
+        enableTrack={enableTrack}
+        historyTrack={historyTrack}
+        realTrack={realTrack}
+        color={color}
+        materialType={materialType}
+      />
     </>
   )
 })
