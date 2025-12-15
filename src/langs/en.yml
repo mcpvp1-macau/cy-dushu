@@ -462,6 +462,7 @@ common:
   angle: Angle
   clockwise: Clockwise
   map: Map
+  map84: WGS84 Map
   layer: Layer
   upload: Upload
   preview: Preview
@@ -1485,6 +1486,7 @@ controlRoom:
     robControlPowerError:
       msg: Failed to gain control
   rebotDog:
+    pointCloudMap: Point Cloud Map
     dogRoll:
       title: RebotDog Roll
     dogPitch:

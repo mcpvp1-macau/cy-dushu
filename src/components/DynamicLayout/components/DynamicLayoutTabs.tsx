@@ -109,7 +109,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
                 {/* Tab 标签 */}
                 <li
                   className={clsx(
-                    'cursor-pointer font-medium hover:bg-ground-5 rounded flex flex-shrink-0 gap-1 items-center text-highlight group/item',
+                    'cursor-pointer font-medium hover:bg-ground-5 rounded flex flex-shrink-0 gap-1 items-center text-highlight group/item text-hightlight',
                     isVertical ? 'px-0.5 py-1.5' : 'px-1.5 py-0.5',
                     {
                       'flex-col': isVertical,

@@ -451,6 +451,7 @@ common:
   angle: 角度
   clockwise: 顺时针
   map: 地图
+  map84: WGS84地图
   layer: 图层
   upload: 上传
   preview: 预览
@@ -1462,6 +1463,7 @@ controlRoom:
     robControlPowerError:
       msg: 获取控制权失败
   rebotDog:
+    pointCloudMap: 点云地图
     dogRoll:
       title: 机器狗横滚角
     dogPitch:
