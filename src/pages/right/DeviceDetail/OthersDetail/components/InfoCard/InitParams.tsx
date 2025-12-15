@@ -1,7 +1,6 @@
 import XModal from '@/components/XModal'
 import { Form, InputNumber } from 'antd'
 import { msgMitt } from '@/hooks/useAppMsg'
-import Title from '@/components/Title'
 import { useAsyncEffect } from 'ahooks'
 import {
   getDeviceDetail,
@@ -10,6 +9,7 @@ import {
 } from '@/service/modules/device'
 import { objectToMapString, parseMapString } from '@/utils/other/utils'
 import useRadarMap from '@/utils/map/useRadarMap'
+import SegmentTitle from '@/components/ui/SegmentTitle'
 
 type PropsType = {
   open: boolean
@@ -328,9 +328,7 @@ const InitParams: React.FC<PropsType> = ({ open, setOpen, data }) => {
                 key={item.name}
                 style={{ width: '100%', marginTop: 10 }}
               >
-                <Title bar level={5}>
-                  {item.label}
-                </Title>
+                <SegmentTitle title={item.label} />
               </Form.Item>
             )
           } else {

@@ -79,7 +79,7 @@ const Filter = ({
         })
       }}
       initialValues={initValues}
-      className="mt-[10px]"
+      className="mt-3"
     >
       {renderItems.map((item) => (
         <Form.Item
