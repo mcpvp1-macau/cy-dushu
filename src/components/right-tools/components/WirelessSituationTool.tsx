@@ -34,6 +34,9 @@ const marks: SliderSingleProps['marks'] = Object.fromEntries(
 /** 计算真值 */
 const calcTruthValue = (v: number) => {
   const idx = sortSearchFn(faker, (e) => v >= e[0])
+  if (idx <= 0) {
+    return faker[0][1]
+  }
   if (idx + 1 === faker.length) {
     return faker[idx][1]
   }
@@ -174,7 +177,7 @@ const WirelessSituationTool: FC<PropsType> = memo((props) => {
                   },
                 }}
                 style={{ height: 300 }}
-                min={0}
+                min={-100}
                 max={high}
                 value={range}
                 onChange={([l, h]) => updateRange(l, h)}

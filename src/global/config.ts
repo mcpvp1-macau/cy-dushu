@@ -120,6 +120,12 @@ class GlobalConfig {
   /** 禁飞区显示样式: 'default' 为默认样式(红色填充), 'fence' 为电子围栏样式 */
   noFlyZoneDisplayStyle?: 'default' | 'fence'
 
+  /** 是否隐藏 2D 重建隐藏操作 */
+  hideReconstruction2DVisibleToggle?: boolean
+
+  /** 是否隐藏 2D 重建删除操作 */
+  hideReconstruction2DDelete?: boolean
+
   constructor(def: ConfigType) {
     Object.assign(this, def)
   }
