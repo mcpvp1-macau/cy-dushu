@@ -118,6 +118,18 @@ const AddSHJHTask: FC<PropsType> = memo(
     resetForm()
   }
 
+  const allDeviceMap = useMemo(
+    () =>
+      allDevices.reduce<Record<string, (typeof allDevices)[number]>>(
+        (acc, cur) => {
+          acc[cur.deviceId] = cur
+          return acc
+        },
+        {},
+      ),
+    [allDevices],
+  )
+
   // 地图选点处理函数
   const handlePickPosition = useMemoizedFn(() => {
     startPicking((lng: number, lat: number) => {
@@ -163,8 +175,9 @@ const AddSHJHTask: FC<PropsType> = memo(
     const fallbackDevice = selectedDeviceId
       ? deviceMap[selectedDeviceId]
       : undefined
-    const primaryDevice =
-      allDevices.find((e) => e.deviceId === selectedDeviceId) || fallbackDevice
+    const primaryDevice = selectedDeviceId
+      ? allDeviceMap[selectedDeviceId] ?? fallbackDevice
+      : fallbackDevice
     const deviceType = primaryDevice?.deviceType ?? DeviceEnum.UAV
 
     const commonData: any = {
