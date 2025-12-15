@@ -2,9 +2,9 @@ import { Checkbox, Form, FormProps, Radio } from 'antd'
 import React, { ComponentProps } from 'react'
 // import FilterIcon from '../../Icon/FilterIcon';
 import { FilterPopoverFormType, Group, GroupType } from './interface'
-import Title from '../../Title'
 import IconButtonWithDropDownDialog from '@/components/ui/button/IconButtonWithDropDownDialog'
 import IconFilter from '@/assets/icons/jsx/IconFilter'
+import SegmentTitle from '@/components/ui/SegmentTitle'
 
 type DialogProps = Omit<
   ComponentProps<typeof IconButtonWithDropDownDialog>,
@@ -49,7 +49,7 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
         <Form.Item
           key={group.name}
           name={group.name}
-          label={<Title bar>{group.label}</Title>}
+          label={<SegmentTitle title={group.label} />}
           labelCol={{ span: 24 }}
         >
           {renderGroupItem(group)}
@@ -64,7 +64,7 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
       trigger={props?.trigger ?? ['click']}
       {...props}
       popupRender={() => (
-        <div className="w-[300px] p-3">
+        <div className="w-[300px] p-2">
           {type === FilterPopoverFormType.Independent && (
             <Form {...formProps}>{renderGroups()}</Form>
           )}

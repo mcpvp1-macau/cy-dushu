@@ -21,7 +21,11 @@ type PropsType = {
  * 检测数据
  * @returns
  */
-const AiData: React.FC<PropsType> = ({ deviceId, timeRange, height: _height = 500 }) => {
+const AiData: React.FC<PropsType> = ({
+  deviceId,
+  timeRange,
+  height: _height = 500,
+}) => {
   const queryClient = useQueryClient()
 
   const { data: filterData, refetch: _getTypes } = useQuery(
@@ -101,7 +105,7 @@ const AiData: React.FC<PropsType> = ({ deviceId, timeRange, height: _height = 50
 
   return (
     <Flex vertical gap={12}>
-      <div className="pl-3">
+      <div className="px-3">
         <Filter
           onChange={onChange}
           items={[
