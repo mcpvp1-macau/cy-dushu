@@ -118,6 +118,18 @@ const AddSHJHTask: FC<PropsType> = memo(
     resetForm()
   }
 
+  const allDeviceMap = useMemo(
+    () =>
+      allDevices.reduce<Record<string, (typeof allDevices)[number]>>(
+        (acc, cur) => {
+          acc[cur.deviceId] = cur
+          return acc
+        },
+        {},
+      ),
+    [allDevices],
+  )
+
   // 地图选点处理函数
   const handlePickPosition = useMemoizedFn(() => {
     startPicking((lng: number, lat: number) => {
@@ -158,11 +170,15 @@ const AddSHJHTask: FC<PropsType> = memo(
       ? values.deviceIds
       : [values.deviceIds].filter(Boolean)
 
-    const primaryDevice = allDevices.find(
-      (e) => e.deviceId === selectedDeviceIds[0],
-    )
+    const { deviceMap } = useMapDevicesStore.getState()
+    const selectedDeviceId = selectedDeviceIds[0]
+    const fallbackDevice = selectedDeviceId
+      ? deviceMap[selectedDeviceId]
+      : undefined
+    const primaryDevice = selectedDeviceId
+      ? allDeviceMap[selectedDeviceId] ?? fallbackDevice
+      : fallbackDevice
     const deviceType = primaryDevice?.deviceType ?? DeviceEnum.UAV
-    const uavStates = useMapDevicesStore.getState().uavStates
 
     const commonData: any = {
       ...pick(values, ['actionItemName']),
@@ -179,11 +195,8 @@ const AddSHJHTask: FC<PropsType> = memo(
     }
 
     if (flightType === 0) {
-      const realtimeState = primaryDevice && uavStates?.[primaryDevice.deviceId]
-      const longitude =
-        realtimeState?.longitude ?? primaryDevice?.properties?.longitude ?? null
-      const latitude =
-        realtimeState?.latitude ?? primaryDevice?.properties?.latitude ?? null
+      const longitude = primaryDevice?.properties?.longitude ?? null
+      const latitude = primaryDevice?.properties?.latitude ?? null
 
       if (!longitude || !latitude) {
         message.error('所选设备缺少经纬度')
@@ -221,14 +234,8 @@ const AddSHJHTask: FC<PropsType> = memo(
         const returnAltitude = taskBasic?.globalRTHHeight ?? null
 
         // 获取设备位置作为起飞位置
-        const realtimeState =
-          primaryDevice && uavStates?.[primaryDevice.deviceId]
-        const flightLng =
-          realtimeState?.longitude ??
-          primaryDevice?.properties?.longitude ??
-          null
-        const flightLat =
-          realtimeState?.latitude ?? primaryDevice?.properties?.latitude ?? null
+        const flightLng = primaryDevice?.properties?.longitude ?? null
+        const flightLat = primaryDevice?.properties?.latitude ?? null
 
         Object.assign(commonData, {
           templateId: airline.templateId,
