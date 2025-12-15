@@ -1485,6 +1485,7 @@ controlRoom:
     robControlPowerError:
       msg: Failed to gain control
   rebotDog:
+    pointCloudMap: Point Cloud Map
     dogRoll:
       title: RebotDog Roll
     dogPitch:

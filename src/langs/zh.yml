@@ -1462,6 +1462,7 @@ controlRoom:
     robControlPowerError:
       msg: 获取控制权失败
   rebotDog:
+    pointCloudMap: 点云地图
     dogRoll:
       title: 机器狗横滚角
     dogPitch:
