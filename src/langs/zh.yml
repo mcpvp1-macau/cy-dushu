@@ -1472,6 +1472,36 @@ controlRoom:
       title: 机器狗俯仰角
     dogYaw:
       title: 机器狗偏航角
+    cluster:
+      selectedCount: 已选 {{count}} 台，按键/鼠标可同步控制
+      speedAbbr: SPD
+      speedUnit: m/s
+      altitudePlaceholder: '-'
+      altitudeAbbr: ALT
+      altitudeUnit: m
+      params:
+        speed: 移动速度
+        attitude: 姿态弧度
+      controls:
+        turnLeft: 左转
+        forward: 前进
+        turnRight: 右转
+        moveLeft: 左移
+        back: 后退
+        moveRight: 右移
+        headLeft: 左转头
+        headUp: 抬头
+        headRight: 右转头
+        headTiltLeft: 左歪头
+        headDown: 低头
+        headTiltRight: 右歪头
+      actions:
+        sitDown: 坐下
+        layDown: 趴下
+        standUp: 站立
+      mode:
+        posture: 姿态模式
+        move: 运动模式
 dynamicLayout:
   exit:
     title: 退出
