@@ -42,6 +42,11 @@ const initialLayout: DynamicLayoutType = {
       children: [
         {
           key: 'map',
+          keeyRenderOnHidden: false,
+        },
+        {
+          key: 'point-cloud-map',
+          keeyRenderOnHidden: false,
         },
       ],
     },
@@ -123,7 +128,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
   )
 
   const [layout, setLayout] = useLocalStorageState<DynamicLayoutType>(
-    'rebotDogControlRoomLayoutV3',
+    'rebotDogControlRoomLayoutV4',
     {
       defaultValue: initialLayout,
     },
@@ -132,6 +137,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
   const iconMap = useMemo(
     () => ({
       map: <IconMap className="text-blue-500" />,
+      'point-cloud-map': <IconMap className="text-blue-500" />,
       video: <IconCameraVideo className="text-blue-500" />,
       control: <IconFlightOperation className="text-orange-500" />,
       buttons: <IconControl className="text-purple-500" />,
@@ -145,26 +151,27 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
 
   const titleMap = useMemo(
     () => ({
-      map: t('common.map'),
+      map: t('common.map84'),
+      'point-cloud-map': t('controlRoom.rebotDog.pointCloudMap', {
+        defaultValue: '点云地图',
+      }),
       video: t('common.video'),
       control: t('controlRoom.uav.flyParams.title'),
       buttons: t('controlRoom.uav.flyButtons.title'),
       ['device-data']: t('controlRoom.uav.deviceData.title'),
       params: t('common.params'),
       payload: t('controlRoom.uav.payload.title'),
-      'point-cloud-map-manager': '地图',
+      'point-cloud-map-manager': t('controlRoom.rebotDog.pointCloudMap', {
+        defaultValue: '点云地图',
+      }),
     }),
     [t],
   )
 
   const componentMap = useMemo(
     () => ({
-      map:
-        globalConfig.robotDogMap === 'wgs84' ? (
-          <RebotDogMapWGS84 />
-        ) : (
-          <RebotDogMap />
-        ),
+      map: <RebotDogMapWGS84 />,
+      'point-cloud-map': <RebotDogMap />,
       // map: <div>123</div>,
       video: <RebotDogVideo />,
       control: (

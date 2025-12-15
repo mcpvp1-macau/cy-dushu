@@ -12,6 +12,10 @@ import directionIcon from '/images/marker/icon/rebot_dog_direction.svg'
 import useGroundHeight from '@/hooks/cesium/useGroundHeight'
 import DeviceMarkerRipple from '../components/DeviceMarkerRipple'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
+import useRealTrack3D from '@/hooks/device/useRealTrack3D'
+import useDeviceTrackColorStore from '@/store/setting/useDeviceTrackColor.store'
+import { isNil } from 'lodash'
+import DeviceTrackRenderer from '../components/DeviceTrackRenderer'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -22,6 +26,14 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
   const { deviceId } = data
 
   const isFlashing = useMapDevicesStore((s) => s.deviceFlashes[deviceId])
+
+  const { commonLongitude, commonLatitude } = useMapDevicesStore((s) => {
+    const state = s.commonStates[deviceId]
+    return {
+      commonLongitude: state?.longitude,
+      commonLatitude: state?.latitude,
+    }
+  })
 
   const realLon = useGlobalWsStore(
     (s) => s.deviceRealtimeProperties[data.deviceId]?.properties?.longitude,
@@ -41,6 +53,19 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
 
   const groundHeight = useGroundHeight(lng, lat)
 
+  const trackAltitude = 0
+  const enableTrack = !isNil(commonLongitude) && !isNil(commonLatitude)
+
+  const { historyTrack, realTrack, clear } = useRealTrack3D(
+    enableTrack ? commonLongitude : undefined,
+    enableTrack ? commonLatitude : undefined,
+    enableTrack ? trackAltitude : undefined,
+  )
+
+  useEffect(() => {
+    clear(true)
+  }, [deviceId])
+
   const isOnline = useDeviceFilterConfigStore((s) => s.isOnline)
   const isTask = useDeviceFilterConfigStore((s) => s.isTask)
   const isNotTask = useDeviceFilterConfigStore((s) => s.isNotTask)
@@ -50,6 +75,13 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
 
   const status = useRealOnlineStatus(deviceId)
   const taskStatus = useRealTaskStatus(deviceId)
+
+  const color = useDeviceTrackColorStore(
+    (s) => s.colorMap[deviceId] || '#d42422',
+  )
+  const materialType = useDeviceTrackColorStore(
+    (s) => s.materialType[deviceId] || 'glow',
+  )
 
   if (
     isHidden || // 隐藏
@@ -62,9 +94,7 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
 
   return (
     <>
-      {isFlashing && (
-        <DeviceMarkerRipple position={[lng, lat, groundHeight]} />
-      )}
+      {isFlashing && <DeviceMarkerRipple position={[lng, lat, groundHeight]} />}
       <Billboard
         key={deviceId}
         id={`device--${data.deviceType}--${data.deviceName}--${data.deviceId}--${lng}--${lat}`}
@@ -97,6 +127,14 @@ const RebotDogMarker: FC<PropsType> = memo(({ data }) => {
         id={deviceId}
         position={position}
         heightReference={Cesium.HeightReference.NONE}
+      />
+      <DeviceTrackRenderer
+        enableTrack={enableTrack}
+        historyTrack={historyTrack}
+        realTrack={realTrack}
+        color={color}
+        materialType={materialType}
+        clampToGround
       />
     </>
   )

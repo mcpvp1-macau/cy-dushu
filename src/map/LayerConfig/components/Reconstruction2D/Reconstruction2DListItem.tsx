@@ -8,6 +8,7 @@ import IconVisible from '@/assets/icons/jsx/IconVisible'
 import IconButton from '@/components/ui/button/IconButton'
 import TagItemV2 from '@/components/ui/TagItemV2'
 import FormModal from '@/components/XForm/Modal'
+import globalConfig from '@/global/config'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { bigFlyEmitter } from '@/map/GlobalMap/BigFlyListener'
 import {
@@ -49,6 +50,9 @@ const Recon2DListItem: FC<PropsType> = memo(
   ({ data, hiddenSet, statusMap }) => {
     const [isLoading, setIsLoading] = useState(false)
     const msgApi = useAppMsg()
+
+    const hideRebuildAction = globalConfig.hideReconstruction2DRebuild
+    const hideDeleteAction = globalConfig.hideReconstruction2DDelete
 
     const queryClient = useQueryClient()
     const handleSuccess = () => {
@@ -92,6 +96,7 @@ const Recon2DListItem: FC<PropsType> = memo(
               >
                 {hiddenSet.has(data.id) ? <IconNotVisible /> : <IconVisible />}
               </IconButton>
+
               {isLoading ? (
                 <LoadingOutlined />
               ) : (
@@ -116,21 +121,23 @@ const Recon2DListItem: FC<PropsType> = memo(
                         <IconToLocation />
                       </IconButton>
                     )}
-                  <IconButton
-                    className="scale-90"
-                    tippyProps={{ content: t('common.restart') }}
-                    onClick={async () => {
-                      setIsLoading(true)
-                      try {
-                        await restartReconstruction2D(data.id)
-                        handleSuccess()
-                      } finally {
-                        setIsLoading(false)
-                      }
-                    }}
-                  >
-                    <IconRestart />
-                  </IconButton>
+                  {!hideRebuildAction && (
+                    <IconButton
+                      className="scale-90"
+                      tippyProps={{ content: t('common.restart') }}
+                      onClick={async () => {
+                        setIsLoading(true)
+                        try {
+                          await restartReconstruction2D(data.id)
+                          handleSuccess()
+                        } finally {
+                          setIsLoading(false)
+                        }
+                      }}
+                    >
+                      <IconRestart />
+                    </IconButton>
+                  )}
                   <IconButton
                     className="scale-90"
                     tippyProps={{ content: t('common.edit') }}
@@ -138,33 +145,35 @@ const Recon2DListItem: FC<PropsType> = memo(
                   >
                     <IconEdit />
                   </IconButton>
-                  <IconButton
-                    className="scale-90"
-                    tippyProps={{ content: t('common.delete') }}
-                    onClick={async () => {
-                      setIsLoading(true)
-                      try {
-                        await deleteReconstruction2D(data.id)
+                  {!hideDeleteAction && (
+                    <IconButton
+                      className="scale-90"
+                      tippyProps={{ content: t('common.delete') }}
+                      onClick={async () => {
+                        setIsLoading(true)
+                        try {
+                          await deleteReconstruction2D(data.id)
 
-                        // 移除过程中的结果
-                        const processedResults =
-                          useReconstruction2DMapStore.getState()
-                        const newList =
-                          processedResults.reconstruction2DList.filter(
-                            (item) => item.actionId !== data.actionId,
-                          )
-                        useReconstruction2DMapStore
-                          .getState()
-                          .updateReconstruction2DList(newList)
+                          // 移除过程中的结果
+                          const processedResults =
+                            useReconstruction2DMapStore.getState()
+                          const newList =
+                            processedResults.reconstruction2DList.filter(
+                              (item) => item.actionId !== data.actionId,
+                            )
+                          useReconstruction2DMapStore
+                            .getState()
+                            .updateReconstruction2DList(newList)
 
-                        handleSuccess()
-                      } finally {
-                        setIsLoading(false)
-                      }
-                    }}
-                  >
-                    <IconDelete />
-                  </IconButton>
+                          handleSuccess()
+                        } finally {
+                          setIsLoading(false)
+                        }
+                      }}
+                    >
+                      <IconDelete />
+                    </IconButton>
+                  )}
                 </>
               )}
             </div>
