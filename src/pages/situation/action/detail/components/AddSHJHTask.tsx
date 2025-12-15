@@ -195,14 +195,8 @@ const AddSHJHTask: FC<PropsType> = memo(
     }
 
     if (flightType === 0) {
-      const longitude =
-        primaryDevice?.properties?.longitude ??
-        fallbackDevice?.properties?.longitude ??
-        null
-      const latitude =
-        primaryDevice?.properties?.latitude ??
-        fallbackDevice?.properties?.latitude ??
-        null
+      const longitude = primaryDevice?.properties?.longitude ?? null
+      const latitude = primaryDevice?.properties?.latitude ?? null
 
       if (!longitude || !latitude) {
         message.error('所选设备缺少经纬度')
@@ -240,14 +234,8 @@ const AddSHJHTask: FC<PropsType> = memo(
         const returnAltitude = taskBasic?.globalRTHHeight ?? null
 
         // 获取设备位置作为起飞位置
-        const flightLng =
-          primaryDevice?.properties?.longitude ??
-          fallbackDevice?.properties?.longitude ??
-          null
-        const flightLat =
-          primaryDevice?.properties?.latitude ??
-          fallbackDevice?.properties?.latitude ??
-          null
+        const flightLng = primaryDevice?.properties?.longitude ?? null
+        const flightLat = primaryDevice?.properties?.latitude ?? null
 
         Object.assign(commonData, {
           templateId: airline.templateId,
