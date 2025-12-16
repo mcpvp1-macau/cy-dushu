@@ -275,6 +275,7 @@ device:
     flightArea:
       title: Flight Area
 action:
+  noun: Action
   input:
     placeholder: Please search by action name
   quickCreateWaylineAction: Quick create wayline action

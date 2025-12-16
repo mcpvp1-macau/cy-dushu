@@ -264,6 +264,7 @@ device:
     flightArea:
       title: 飞行区域
 action:
+  noun: 行动
   input:
     placeholder: 请根据行动名称搜索
   quickCreateWaylineAction: 快捷创建航线行动
