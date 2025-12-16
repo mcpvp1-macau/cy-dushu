@@ -140,14 +140,16 @@ const PageRebotDogCluster: FC<PropsType> = memo(() => {
               <ClusterMap />
               <div className="absolute left-0 right-0 bottom-4 px-4 z-10">
                 <div className="mx-auto flex max-w-[1400px] flex-wrap items-end justify-between gap-3">
-                  <ClusterModeButtons side="left" />
+                  <div className="flex flex-col gap-2 bg-ground-1/80 backdrop-blur rounded border border-ground-5 px-3 py-2 shadow">
+                    <ClusterModeButtons side="left" />
+                    <ClusterModeButtons side="right" />
+                  </div>
                   <div className="flex flex-1 min-w-[300px] flex-col items-center gap-3 md:flex-row md:items-end md:justify-center">
                     <div className="bg-ground-1/80 backdrop-blur rounded border border-ground-5 px-3 py-2 shadow">
                       <ClusterControlButtons />
                     </div>
                     <ClusterParams />
                   </div>
-                  <ClusterModeButtons side="right" />
                 </div>
               </div>
             </div>

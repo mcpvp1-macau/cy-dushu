@@ -542,49 +542,48 @@ export const ClusterModeButtons: FC<{ side: 'left' | 'right' }> = memo(
     )
 
     const modeButtons = useMemo(
-      () =>
-        [
-          {
-            key: 'changePostureMode',
-            label: t('controlRoom.rebotDog.mode.posture', {
-              defaultValue: '姿态模式',
-            }),
-            onClick: () => handleServiceCall('changePostureMode'),
-          },
-          {
-            key: 'changeMoveMode',
-            label: t('controlRoom.rebotDog.mode.move', {
-              defaultValue: '运动模式',
-            }),
-            onClick: () => handleServiceCall('changeMoveMode'),
-          },
-          {
-            key: 'enterReinforcement',
-            label: t('controlRoom.rebotDog.mode.enterReinforcement', {
-              defaultValue: '进入强化模式',
-            }),
-            onClick: () => handleServiceCall('switchToLMode', { isLMode: true }),
-          },
-          {
-            key: 'exitReinforcement',
-            label: t('controlRoom.rebotDog.mode.exitReinforcement', {
-              defaultValue: '退出强化模式',
-            }),
-            onClick: () => handleServiceCall('switchToLMode', { isLMode: false }),
-          },
-        ],
+      () => [
+        {
+          key: 'changePostureMode',
+          label: t('controlRoom.rebotDog.mode.posture', {
+            defaultValue: '姿态模式',
+          }),
+          onClick: () => handleServiceCall('changePostureMode'),
+        },
+        {
+          key: 'changeMoveMode',
+          label: t('controlRoom.rebotDog.mode.move', {
+            defaultValue: '运动模式',
+          }),
+          onClick: () => handleServiceCall('changeMoveMode'),
+        },
+        {
+          key: 'enterReinforcement',
+          label: t('controlRoom.rebotDog.mode.enterReinforcement', {
+            defaultValue: '进入强化模式',
+          }),
+          onClick: () => handleServiceCall('switchToLMode', { isLMode: true }),
+        },
+        {
+          key: 'exitReinforcement',
+          label: t('controlRoom.rebotDog.mode.exitReinforcement', {
+            defaultValue: '退出强化模式',
+          }),
+          onClick: () => handleServiceCall('switchToLMode', { isLMode: false }),
+        },
+      ],
       [handleServiceCall, t],
     )
 
     const disabled = selectedDogs.length === 0
-    const buttonsToRender = side === 'left'
-      ? modeButtons.slice(0, 2)
-      : modeButtons.slice(2)
+    const buttonsToRender =
+      side === 'left' ? modeButtons.slice(0, 2) : modeButtons.slice(2)
 
     return (
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2 w-full">
         {buttonsToRender.map((btn) => (
           <Button
+            className="flex-1"
             key={btn.key}
             disabled={disabled}
             onClick={btn.onClick}
