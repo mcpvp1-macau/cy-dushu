@@ -46,7 +46,7 @@ export const useGlobalWsMessageRouter = () => {
   const handlers: Record<WsType, (message: unknown) => void> = useMemo(
     () => ({
       DEVICE_STATUS: () => {},
-      NEW_DEVICE_STATUS: handleNewDeviceStatus,
+      NEW_DEVICE_STATUS: (message) => handleNewDeviceStatus((message ?? '') as any),
       EVENT_STATUS: () => {},
       EVENT_PUSH: handleEventPush,
       ALARMS: handleAlarmPush,
@@ -59,8 +59,8 @@ export const useGlobalWsMessageRouter = () => {
         handleFlightAreaMessage(message, 'NO_FLY_ZONE_WARN'),
       ELECTRONIC_FENCE_WARN: (message) =>
         handleFlightAreaMessage(message, 'ELECTRONIC_FENCE_WARN'),
-      TWO_DIMENSION_RESULT: handle2DResult,
-      ACTION_RELAY_EVENT: handleRelayEvent,
+      TWO_DIMENSION_RESULT: (message) => handle2DResult(message as any),
+      ACTION_RELAY_EVENT: (message) => handleRelayEvent(message as any),
       SHJH_PILOT_APPROVAL: handleShjhApproval,
       OVERLAY_SHARE: handleOverlayShare,
     }),
@@ -82,7 +82,12 @@ export const useGlobalWsMessageRouter = () => {
   )
 
   return useMemoizedFn((event: WebSocketEventMap['message']) => {
-    const { type, message } = shouldJson<{ type?: WsType; message: unknown }>(event.data) ?? {}
+    const parsed = shouldJson<unknown>(event.data)
+    if (!parsed || typeof parsed !== 'object') {
+      return
+    }
+
+    const { type, message } = parsed as { type?: WsType; message?: unknown }
     if (!type) {
       return
     }

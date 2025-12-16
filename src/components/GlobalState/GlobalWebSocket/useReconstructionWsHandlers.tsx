@@ -35,9 +35,21 @@ export const useReconstructionWsHandlers = () => {
     (s) => s.requestAndUpdateLayerList,
   )
 
-  const handleReconstructionTaskEnd = useMemoizedFn((message) => {
+  const handleReconstructionTaskEnd = useMemoizedFn((message: unknown) => {
     requestAndUpdateLayerList()
-    reconstructionMitt.emit('reconstructionTaskEnd', message.overlayId)
+    const overlayIdRaw =
+      typeof message === 'object' && message
+        ? (message as { overlayId?: string | number | null })?.overlayId ?? undefined
+        : undefined
+    const overlayId =
+      typeof overlayIdRaw === 'number'
+        ? overlayIdRaw
+        : typeof overlayIdRaw === 'string'
+          ? Number(overlayIdRaw)
+          : undefined
+    if (typeof overlayId === 'number' && !Number.isNaN(overlayId)) {
+      reconstructionMitt.emit('reconstructionTaskEnd', overlayId)
+    }
     notificationApi.success({
       message: t('mapLayer.reconstructionMap.create.success'),
       duration: 0,

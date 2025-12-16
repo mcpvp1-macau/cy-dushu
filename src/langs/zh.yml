@@ -1580,3 +1580,6 @@ timeRange:
   last365Days: 最近 1 年
   last100Years: 最近 100 年
 expertError: 导出失败
+globalWs:
+  overlayShare:
+    received: 收到{{senderUserId}}分享的覆盖物{{overlayName}}
