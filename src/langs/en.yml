@@ -1499,8 +1499,8 @@ controlRoom:
     mode:
       posture: Posture mode
       move: Move mode
-      enterReinforcement: Enter reinforcement learning mode
-      exitReinforcement: Exit reinforcement learning mode
+      enterReinforcement: Enter reinforcement mode
+      exitReinforcement: Exit reinforcement mode
     cluster:
       selectedCount: Selected {{count}} device(s); keyboard/mouse can control them together
       speedAbbr: SPD
@@ -1531,8 +1531,8 @@ controlRoom:
       mode:
         posture: Posture mode
         move: Move mode
-        enterReinforcement: Enter reinforcement learning mode
-        exitReinforcement: Exit reinforcement learning mode
+        enterReinforcement: Enter reinforcement mode
+        exitReinforcement: Exit reinforcement mode
 dynamicLayout:
   maximize:
     title: Maximize

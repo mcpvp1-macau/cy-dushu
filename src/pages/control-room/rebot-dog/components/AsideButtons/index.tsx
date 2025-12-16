@@ -112,7 +112,7 @@ const RebotDogAsideButtons: FC<unknown> = memo(() => {
               }}
             >
               {t('controlRoom.rebotDog.mode.enterReinforcement', {
-                defaultValue: '进入强化学习模式',
+                defaultValue: '进入强化模式',
               })}
             </Button>
             <Button
@@ -123,7 +123,7 @@ const RebotDogAsideButtons: FC<unknown> = memo(() => {
               }}
             >
               {t('controlRoom.rebotDog.mode.exitReinforcement', {
-                defaultValue: '退出强化学习模式',
+                defaultValue: '退出强化模式',
               })}
             </Button>
           </div>

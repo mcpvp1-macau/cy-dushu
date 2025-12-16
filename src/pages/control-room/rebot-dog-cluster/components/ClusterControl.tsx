@@ -565,12 +565,12 @@ const ClusterModeService: FC<{ disabled?: boolean }> = memo(({ disabled }) => {
       </Button>
       <Button disabled={disabled} onClick={() => handleSwitchLMode(true)}>
         {t('controlRoom.rebotDog.cluster.mode.enterReinforcement', {
-          defaultValue: '进入强化学习模式',
+          defaultValue: '进入强化模式',
         })}
       </Button>
       <Button disabled={disabled} onClick={() => handleSwitchLMode(false)}>
         {t('controlRoom.rebotDog.cluster.mode.exitReinforcement', {
-          defaultValue: '退出强化学习模式',
+          defaultValue: '退出强化模式',
         })}
       </Button>
     </div>
