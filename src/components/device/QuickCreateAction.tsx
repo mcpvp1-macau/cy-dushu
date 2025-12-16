@@ -9,6 +9,8 @@ import { XFormItem } from '@/components/XForm/types'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import useStartActionItem from '@/hooks/service/action/useStartActionItem'
 import { startActionItem as startActionItemRequest } from '@/service/modules/action-item'
+import { Form } from 'antd'
+import { generateDefaultActionName } from '@/utils/action'
 
 type PropsType = {
   deviceId: string
@@ -23,6 +25,7 @@ const QuickCreateAction: FC<PropsType> = memo(({ deviceId, deviceType }) => {
   const queryClient = useQueryClient()
   const { startActionItem: startActionItemWithConfirm, stopModalHolder } =
     useStartActionItem(true)
+  const [form] = Form.useForm()
 
   const actionTypeOptions = useDictOptions(DictEnum.ACTION_TYPE)
   const formItems = useMemo<XFormItem[]>(
@@ -81,6 +84,15 @@ const QuickCreateAction: FC<PropsType> = memo(({ deviceId, deviceType }) => {
     }
   }
 
+  useEffect(() => {
+    if (!open) return
+
+    form.resetFields()
+    form.setFieldsValue({
+      name: generateDefaultActionName(),
+    })
+  }, [form, open])
+
   return (
     <>
       <IconButton
@@ -94,6 +106,7 @@ const QuickCreateAction: FC<PropsType> = memo(({ deviceId, deviceType }) => {
           title="快捷创建行动任务"
           open={open}
           items={formItems}
+          form={form}
           confirmLoading={confirmLoading}
           onClose={() => setOpen(false)}
           onConfirm={handleQuickCreate}

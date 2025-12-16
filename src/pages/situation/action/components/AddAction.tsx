@@ -1,11 +1,12 @@
 import FormModal from '@/components/XForm/Modal'
-import { Button } from 'antd'
+import { Button, Form } from 'antd'
 // import { createAddActionFormItems } from '../constant'
 import { useDictOptions } from '@/store/useDict.store'
 import { DictEnum } from '@/enum/dict'
 import { addAction } from '@/service/modules/action'
 import { XFormItem } from '@/components/XForm/types'
 import { TFunctionNonStrict } from 'i18next'
+import { generateDefaultActionName } from '@/utils/action'
 
 export const createAddActionFormItems = (
   t: TFunctionNonStrict<'transition', undefined>,
@@ -44,6 +45,7 @@ const AddAction: FC<PropsType> = memo(({ extra }) => {
   const { t, i18n } = useTranslation()
   const [open, setOpen] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
+  const [form] = Form.useForm()
 
   const actionTypeOptions = useDictOptions(DictEnum.ACTION_TYPE)
   const formItems = useMemo(
@@ -52,6 +54,15 @@ const AddAction: FC<PropsType> = memo(({ extra }) => {
   )
   const queryClient = useQueryClient()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!open) return
+
+    form.resetFields()
+    form.setFieldsValue({
+      name: generateDefaultActionName(),
+    })
+  }, [form, open])
 
   const handleAddAction = async (data: any) => {
     setConfirmLoading(true)
@@ -77,6 +88,7 @@ const AddAction: FC<PropsType> = memo(({ extra }) => {
         title={t('action.add.title')}
         open={open}
         items={formItems}
+        form={form}
         confirmLoading={confirmLoading}
         onClose={() => setOpen(false)}
         onConfirm={handleAddAction}
