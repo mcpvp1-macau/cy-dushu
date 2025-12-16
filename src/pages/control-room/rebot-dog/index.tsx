@@ -191,7 +191,7 @@ const PageControlRoomRebotDog: FC<unknown> = memo(() => {
   useListenDeviceLatestTask(deviceId)
 
   return (
-    <DeviceDetailStoreContext.Provider value={store}>
+    <DeviceDetailStoreContext.Provider key={deviceId} value={store}>
       <RebotDogControlRoomStoreContext.Provider value={controlRoomStore}>
         <div className="flex flex-col page-full">
           <ControlRoomRebotDogHeader />
