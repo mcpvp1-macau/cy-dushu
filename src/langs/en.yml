@@ -1528,11 +1528,6 @@ controlRoom:
         sitDown: Sit down
         layDown: Lay down
         standUp: Stand up
-      mode:
-        posture: Posture mode
-        move: Move mode
-        enterReinforcement: Enter reinforcement mode
-        exitReinforcement: Exit reinforcement mode
 dynamicLayout:
   maximize:
     title: Maximize
