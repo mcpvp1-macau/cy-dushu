@@ -1603,3 +1603,6 @@ timeRange:
   last365Days: Last 1 Year
   last100Years: Last 100 Years
 expertError: Export Error
+globalWs:
+  overlayShare:
+    received: Received overlay {{overlayName}} shared by {{senderUserId}}
