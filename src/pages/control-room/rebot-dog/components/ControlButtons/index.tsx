@@ -150,7 +150,7 @@ const RebotDogControlButtons: FC = memo(() => {
           }),
         },
       ] as Btn[],
-    [params],
+    [params, t],
   )
 
   const dogControlInfo = useRebotDogControlRoomStore((s) => s.dogControlInfo)
