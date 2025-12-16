@@ -1473,6 +1473,11 @@ controlRoom:
       title: 机器狗俯仰角
     dogYaw:
       title: 机器狗偏航角
+    mode:
+      posture: 姿态模式
+      move: 运动模式
+      enterReinforcement: 进入强化学习模式
+      exitReinforcement: 退出强化学习模式
     cluster:
       selectedCount: 已选 {{count}} 台，按键/鼠标可同步控制
       speedAbbr: SPD
@@ -1503,6 +1508,8 @@ controlRoom:
       mode:
         posture: 姿态模式
         move: 运动模式
+        enterReinforcement: 进入强化学习模式
+        exitReinforcement: 退出强化学习模式
 dynamicLayout:
   exit:
     title: 退出

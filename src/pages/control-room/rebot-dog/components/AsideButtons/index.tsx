@@ -13,9 +13,11 @@ const RebotDogAsideButtons: FC<unknown> = memo(() => {
 
   const dogMode = useRebotDogControlRoomStore((s) => s.state.dogMode)
   const serviceHave = useDeviceDetailStore((s) => s.serviceHave)
+  const { t } = useTranslation()
 
   const canChangePostureMode = !!serviceHave['changePostureMode']
   const canChangeMoveMode = !!serviceHave['changeMoveMode']
+  const canSwitchLMode = !!serviceHave['switchToLMode']
   const fireAndSmokeButtons = useMemo(
     () =>
       [
@@ -91,7 +93,7 @@ const RebotDogAsideButtons: FC<unknown> = memo(() => {
                 postDeviceService('changePostureMode')
               }}
             >
-              姿态模式
+              {t('controlRoom.rebotDog.mode.posture', { defaultValue: '姿态模式' })}
             </Button>
             <Button
               disabled={!canChangeMoveMode}
@@ -100,7 +102,29 @@ const RebotDogAsideButtons: FC<unknown> = memo(() => {
                 postDeviceService('changeMoveMode')
               }}
             >
-              运动模式
+              {t('controlRoom.rebotDog.mode.move', { defaultValue: '运动模式' })}
+            </Button>
+            <Button
+              disabled={!canSwitchLMode}
+              onClick={() => {
+                if (!canSwitchLMode) return
+                postDeviceService('switchToLMode', { isLMode: true })
+              }}
+            >
+              {t('controlRoom.rebotDog.mode.enterReinforcement', {
+                defaultValue: '进入强化学习模式',
+              })}
+            </Button>
+            <Button
+              disabled={!canSwitchLMode}
+              onClick={() => {
+                if (!canSwitchLMode) return
+                postDeviceService('switchToLMode', { isLMode: false })
+              }}
+            >
+              {t('controlRoom.rebotDog.mode.exitReinforcement', {
+                defaultValue: '退出强化学习模式',
+              })}
             </Button>
           </div>
           {fireAndSmokeButtons.length > 0 && (
