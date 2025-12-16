@@ -5,12 +5,14 @@ import { Dropdown, Tooltip } from 'antd'
 import SitDown from './assets/sitDown.svg'
 import LayDown from './assets/layDown.svg'
 import StandUp from './assets/standUp.svg'
+import { useTranslation } from 'react-i18next'
 
 type PropsType = unknown
 
 /** 动作服务 */
 const ActionService: FC<PropsType> = memo(() => {
   const postService = usePostDeviceService()
+  const { t } = useTranslation()
 
   const handleClick = useMemoizedFn(({ key }) => postService(key))
 
@@ -23,7 +25,12 @@ const ActionService: FC<PropsType> = memo(() => {
           {
             key: 'actionSit',
             label: (
-              <Tooltip title="坐下" placement="left">
+              <Tooltip
+                title={t('controlRoom.rebotDog.actions.sitDown', {
+                  defaultValue: '坐下',
+                })}
+                placement="left"
+              >
                 <img className="size-5" src={SitDown} />
               </Tooltip>
             ),
@@ -31,7 +38,12 @@ const ActionService: FC<PropsType> = memo(() => {
           {
             key: 'actionGetDown',
             label: (
-              <Tooltip title="趴下" placement="left">
+              <Tooltip
+                title={t('controlRoom.rebotDog.actions.layDown', {
+                  defaultValue: '趴下',
+                })}
+                placement="left"
+              >
                 <img className="size-5" src={LayDown} />
               </Tooltip>
             ),
@@ -39,7 +51,12 @@ const ActionService: FC<PropsType> = memo(() => {
           {
             key: 'actionStandUp',
             label: (
-              <Tooltip title="站立" placement="left">
+              <Tooltip
+                title={t('controlRoom.rebotDog.actions.standUp', {
+                  defaultValue: '站立',
+                })}
+                placement="left"
+              >
                 <img className="size-5" src={StandUp} />
               </Tooltip>
             ),

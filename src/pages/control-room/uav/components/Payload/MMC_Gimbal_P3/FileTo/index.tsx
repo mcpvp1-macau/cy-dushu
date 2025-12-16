@@ -1,6 +1,6 @@
 import Icon from '@/components/Icon'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import { Modal, Tooltip } from 'antd'
+import { Tooltip } from 'antd'
 import React from 'react'
 import { UploadAudio } from './UploadAudio'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'

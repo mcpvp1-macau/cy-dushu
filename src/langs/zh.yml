@@ -1467,6 +1467,28 @@ controlRoom:
       msg: 获取控制权失败
   rebotDog:
     pointCloudMap: 点云地图
+    speedAbbr: SPD
+    speedUnit: m/s
+    altitudePlaceholder: '-'
+    altitudeAbbr: ALT
+    altitudeUnit: m
+    controls:
+      turnLeft: 左转
+      forward: 前进
+      turnRight: 右转
+      moveLeft: 左移
+      back: 后退
+      moveRight: 右移
+      headLeft: 左转头
+      headUp: 抬头
+      headRight: 右转头
+      headTiltLeft: 左歪头
+      headDown: 低头
+      headTiltRight: 右歪头
+    actions:
+      sitDown: 坐下
+      layDown: 趴下
+      standUp: 站立
     dogRoll:
       title: 机器狗横滚角
     dogPitch:
@@ -1480,31 +1502,9 @@ controlRoom:
       exitReinforcement: 退出强化模式
     cluster:
       selectedCount: 已选 {{count}} 台，按键/鼠标可同步控制
-      speedAbbr: SPD
-      speedUnit: m/s
-      altitudePlaceholder: '-'
-      altitudeAbbr: ALT
-      altitudeUnit: m
       params:
         speed: 移动速度
         attitude: 姿态弧度
-      controls:
-        turnLeft: 左转
-        forward: 前进
-        turnRight: 右转
-        moveLeft: 左移
-        back: 后退
-        moveRight: 右移
-        headLeft: 左转头
-        headUp: 抬头
-        headRight: 右转头
-        headTiltLeft: 左歪头
-        headDown: 低头
-        headTiltRight: 右歪头
-      actions:
-        sitDown: 坐下
-        layDown: 趴下
-        standUp: 站立
 dynamicLayout:
   exit:
     title: 退出
