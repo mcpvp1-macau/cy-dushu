@@ -15,6 +15,7 @@ import IconTurnRight2 from '@/assets/icons/jsx/IconTurnRight2'
 import IconTurnDown from '@/assets/icons/jsx/IconTurnDown'
 import IconTurnLeft2 from '@/assets/icons/jsx/IconTurnLeft2'
 import IconTurnOn from '@/assets/icons/jsx/IconTurnOn'
+import { useTranslation } from 'react-i18next'
 
 import IconTurnLeft3 from '@/assets/icons/jsx/IconTurnLeft'
 import IconTurnRight3 from '@/assets/icons/jsx/IconTurnRight'
@@ -23,6 +24,7 @@ const keyFilter = ['q', 'w', 'e', 'a', 's', 'd', 'u', 'i', 'o', 'j', 'k', 'l']
 
 const RebotDogControlButtons: FC = memo(() => {
   const params = useRebotDogControlRoomStore((s) => s.params)
+  const { t } = useTranslation()
 
   const buttons = useMemo(
     () =>
@@ -33,7 +35,9 @@ const RebotDogControlButtons: FC = memo(() => {
           identifier: 'yawSpeed',
           icon: <IconTurnLeft />,
           method: 'service.moveDog.post',
-          label: '左转',
+          label: t('controlRoom.rebotDog.controls.turnLeft', {
+            defaultValue: '左转',
+          }),
         },
         {
           value: { xSpeed: params.speed },
@@ -41,7 +45,9 @@ const RebotDogControlButtons: FC = memo(() => {
           identifier: 'xSpeed',
           icon: <IconUp />,
           method: 'service.moveDog.post',
-          label: '前进',
+          label: t('controlRoom.rebotDog.controls.forward', {
+            defaultValue: '前进',
+          }),
         },
         {
           value: { yawSpeed: -params.speed },
@@ -49,7 +55,9 @@ const RebotDogControlButtons: FC = memo(() => {
           identifier: 'yawSpeed',
           icon: <IconTurnRight />,
           method: 'service.moveDog.post',
-          label: '右转',
+          label: t('controlRoom.rebotDog.controls.turnRight', {
+            defaultValue: '右转',
+          }),
         },
         {
           value: { ySpeed: params.speed },
@@ -57,7 +65,9 @@ const RebotDogControlButtons: FC = memo(() => {
           identifier: 'ySpeed',
           icon: <IconLeft />,
           method: 'service.moveDog.post',
-          label: '左移',
+          label: t('controlRoom.rebotDog.controls.moveLeft', {
+            defaultValue: '左移',
+          }),
         },
         {
           value: { xSpeed: -params.speed },
@@ -65,7 +75,9 @@ const RebotDogControlButtons: FC = memo(() => {
           identifier: 'xSpeed',
           icon: <IconDown />,
           method: 'service.moveDog.post',
-          label: '后退',
+          label: t('controlRoom.rebotDog.controls.back', {
+            defaultValue: '后退',
+          }),
         },
         {
           value: { ySpeed: -params.speed },
@@ -73,7 +85,9 @@ const RebotDogControlButtons: FC = memo(() => {
           identifier: 'ySpeed',
           icon: <IconRight />,
           method: 'service.moveDog.post',
-          label: '右移',
+          label: t('controlRoom.rebotDog.controls.moveRight', {
+            defaultValue: '右移',
+          }),
         },
         {
           value: { yaw: params.attitude },
@@ -81,7 +95,9 @@ const RebotDogControlButtons: FC = memo(() => {
           identifier: 'yaw',
           icon: <IconTurnLeft3 />,
           method: 'service.moveDog.post',
-          label: '左转头',
+          label: t('controlRoom.rebotDog.controls.headLeft', {
+            defaultValue: '左转头',
+          }),
         },
         {
           value: { pitch: -params.attitude },
@@ -89,7 +105,9 @@ const RebotDogControlButtons: FC = memo(() => {
           identifier: 'pitch',
           icon: <IconTurnOn />,
           method: 'service.moveDog.post',
-          label: '抬头',
+          label: t('controlRoom.rebotDog.controls.headUp', {
+            defaultValue: '抬头',
+          }),
         },
         {
           value: { yaw: -params.attitude },
@@ -97,7 +115,9 @@ const RebotDogControlButtons: FC = memo(() => {
           identifier: 'yaw',
           icon: <IconTurnRight3 />,
           method: 'service.moveDog.post',
-          label: '右转头',
+          label: t('controlRoom.rebotDog.controls.headRight', {
+            defaultValue: '右转头',
+          }),
         },
         {
           value: { roll: -params.attitude },
@@ -105,7 +125,9 @@ const RebotDogControlButtons: FC = memo(() => {
           identifier: 'roll',
           icon: <IconTurnLeft2 />,
           method: 'service.moveDog.post',
-          label: '左歪头',
+          label: t('controlRoom.rebotDog.controls.headTiltLeft', {
+            defaultValue: '左歪头',
+          }),
         },
         {
           value: { pitch: params.attitude },
@@ -113,7 +135,9 @@ const RebotDogControlButtons: FC = memo(() => {
           identifier: 'pitch',
           icon: <IconTurnDown />,
           method: 'service.moveDog.post',
-          label: '低头',
+          label: t('controlRoom.rebotDog.controls.headDown', {
+            defaultValue: '低头',
+          }),
         },
         {
           value: { roll: params.attitude },
@@ -121,7 +145,9 @@ const RebotDogControlButtons: FC = memo(() => {
           identifier: 'roll',
           icon: <IconTurnRight2 />,
           method: 'service.moveDog.post',
-          label: '右歪头',
+          label: t('controlRoom.rebotDog.controls.headTiltRight', {
+            defaultValue: '右歪头',
+          }),
         },
       ] as Btn[],
     [params],
@@ -199,9 +225,9 @@ const RebotDogControlButtons: FC = memo(() => {
         </div>
         <div className="flex justify-center gap-2 items-center text-green-500 text-shadow pointer-events-none">
           <span className="text-sm">
-            SPD
+            {t('controlRoom.rebotDog.speedAbbr', { defaultValue: 'SPD' })}
             <br />
-            m/s
+            {t('controlRoom.rebotDog.speedUnit', { defaultValue: 'm/s' })}
           </span>
           <span className="text-lg">{speed}</span>
         </div>
@@ -251,10 +277,13 @@ const RebotDogControlButtons: FC = memo(() => {
           ))}
         </div>
         <div className="flex justify-center gap-2 items-center text-green-500 text-shadow pointer-events-none">
-          <span className="text-lg">{'-'}</span>
+          <span className="text-lg">
+            {t('controlRoom.rebotDog.altitudePlaceholder', { defaultValue: '-' })}
+          </span>
           <span className="text-sm">
-            ALT
-            <br />m
+            {t('controlRoom.rebotDog.altitudeAbbr', { defaultValue: 'ALT' })}
+            <br />
+            {t('controlRoom.rebotDog.altitudeUnit', { defaultValue: 'm' })}
           </span>
         </div>
         <div className="flex gap-3">

@@ -1490,6 +1490,28 @@ controlRoom:
       msg: Failed to gain control
   rebotDog:
     pointCloudMap: Point Cloud Map
+    speedAbbr: SPD
+    speedUnit: m/s
+    altitudePlaceholder: '-'
+    altitudeAbbr: ALT
+    altitudeUnit: m
+    controls:
+      turnLeft: Turn left
+      forward: Forward
+      turnRight: Turn right
+      moveLeft: Move left
+      back: Backward
+      moveRight: Move right
+      headLeft: Head left
+      headUp: Head up
+      headRight: Head right
+      headTiltLeft: Tilt left
+      headDown: Head down
+      headTiltRight: Tilt right
+    actions:
+      sitDown: Sit down
+      layDown: Lay down
+      standUp: Stand up
     dogRoll:
       title: RebotDog Roll
     dogPitch:
@@ -1503,31 +1525,9 @@ controlRoom:
       exitReinforcement: Exit reinforcement mode
     cluster:
       selectedCount: Selected {{count}} device(s); keyboard/mouse can control them together
-      speedAbbr: SPD
-      speedUnit: m/s
-      altitudePlaceholder: '-'
-      altitudeAbbr: ALT
-      altitudeUnit: m
       params:
         speed: Move speed
         attitude: Attitude radians
-      controls:
-        turnLeft: Turn left
-        forward: Forward
-        turnRight: Turn right
-        moveLeft: Move left
-        back: Backward
-        moveRight: Move right
-        headLeft: Head left
-        headUp: Head up
-        headRight: Head right
-        headTiltLeft: Tilt left
-        headDown: Head down
-        headTiltRight: Tilt right
-      actions:
-        sitDown: Sit down
-        layDown: Lay down
-        standUp: Stand up
 dynamicLayout:
   maximize:
     title: Maximize
