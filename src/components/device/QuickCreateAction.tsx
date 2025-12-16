@@ -89,9 +89,9 @@ const QuickCreateAction: FC<PropsType> = memo(({ deviceId, deviceType }) => {
 
     form.resetFields()
     form.setFieldsValue({
-      name: generateDefaultActionName(),
+      name: generateDefaultActionName(t('action.noun', '行动')),
     })
-  }, [form, open])
+  }, [form, open, t])
 
   return (
     <>

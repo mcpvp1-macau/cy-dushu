@@ -60,9 +60,9 @@ const AddAction: FC<PropsType> = memo(({ extra }) => {
 
     form.resetFields()
     form.setFieldsValue({
-      name: generateDefaultActionName(),
+      name: generateDefaultActionName(t('action.noun', '行动')),
     })
-  }, [form, open])
+  }, [form, open, t])
 
   const handleAddAction = async (data: any) => {
     setConfirmLoading(true)
