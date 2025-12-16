@@ -346,7 +346,6 @@ export const ClusterControlButtons: FC = memo(() => {
           </div>
         </div>
       </div>
-      <ClusterModeService disabled={disabled} />
     </div>
   )
 })
@@ -520,64 +519,84 @@ const ClusterActionService: FC<{ disabled?: boolean }> = memo(
 
 ClusterActionService.displayName = 'ClusterActionService'
 
-const ClusterModeService: FC<{ disabled?: boolean }> = memo(({ disabled }) => {
-  const postService = usePostDeviceServiceHandler()
-  const selectedDogs = useRebotDogClusterStore((s) =>
-    s.dogs.filter((d) => s.selectedIds.includes(d.deviceId)),
-  )
-  const { t } = useTranslation()
+export const ClusterModeButtons: FC<{ side: 'left' | 'right' }> = memo(
+  ({ side }) => {
+    const postService = usePostDeviceServiceHandler()
+    const selectedDogs = useRebotDogClusterStore((s) =>
+      s.dogs.filter((d) => s.selectedIds.includes(d.deviceId)),
+    )
+    const { t } = useTranslation()
 
-  const handleServiceCall = useMemoizedFn(
-    (identifier: string, data?: Record<string, unknown>) => {
-      selectedDogs.forEach((dog) =>
-        postService(
-          dog.productKey,
-          dog.deviceId,
-          identifier,
-          data,
-          dog.deviceName,
-        ),
-      )
-    },
-  )
+    const handleServiceCall = useMemoizedFn(
+      (identifier: string, data?: Record<string, unknown>) => {
+        selectedDogs.forEach((dog) =>
+          postService(
+            dog.productKey,
+            dog.deviceId,
+            identifier,
+            data,
+            dog.deviceName,
+          ),
+        )
+      },
+    )
 
-  const handleSwitchLMode = useMemoizedFn((isLMode: boolean) => {
-    handleServiceCall('switchToLMode', { isLMode })
-  })
+    const modeButtons = useMemo(
+      () => [
+        {
+          key: 'changePostureMode',
+          label: t('controlRoom.rebotDog.mode.posture', {
+            defaultValue: '姿态模式',
+          }),
+          onClick: () => handleServiceCall('changePostureMode'),
+        },
+        {
+          key: 'changeMoveMode',
+          label: t('controlRoom.rebotDog.mode.move', {
+            defaultValue: '运动模式',
+          }),
+          onClick: () => handleServiceCall('changeMoveMode'),
+        },
+        {
+          key: 'enterReinforcement',
+          label: t('controlRoom.rebotDog.mode.enterReinforcement', {
+            defaultValue: '进入强化模式',
+          }),
+          onClick: () => handleServiceCall('switchToLMode', { isLMode: true }),
+        },
+        {
+          key: 'exitReinforcement',
+          label: t('controlRoom.rebotDog.mode.exitReinforcement', {
+            defaultValue: '退出强化模式',
+          }),
+          onClick: () => handleServiceCall('switchToLMode', { isLMode: false }),
+        },
+      ],
+      [handleServiceCall, t],
+    )
 
-  return (
-    <div className="grid grid-cols-2 gap-2">
-      <Button
-        disabled={disabled}
-        onClick={() => handleServiceCall('changePostureMode')}
-      >
-        {t('controlRoom.rebotDog.cluster.mode.posture', {
-          defaultValue: '姿态模式',
-        })}
-      </Button>
-      <Button
-        disabled={disabled}
-        onClick={() => handleServiceCall('changeMoveMode')}
-      >
-        {t('controlRoom.rebotDog.cluster.mode.move', {
-          defaultValue: '运动模式',
-        })}
-      </Button>
-      <Button disabled={disabled} onClick={() => handleSwitchLMode(true)}>
-        {t('controlRoom.rebotDog.cluster.mode.enterReinforcement', {
-          defaultValue: '进入强化模式',
-        })}
-      </Button>
-      <Button disabled={disabled} onClick={() => handleSwitchLMode(false)}>
-        {t('controlRoom.rebotDog.cluster.mode.exitReinforcement', {
-          defaultValue: '退出强化模式',
-        })}
-      </Button>
-    </div>
-  )
-})
+    const disabled = selectedDogs.length === 0
+    const buttonsToRender =
+      side === 'left' ? modeButtons.slice(0, 2) : modeButtons.slice(2)
 
-ClusterModeService.displayName = 'ClusterModeService'
+    return (
+      <div className="flex flex-wrap items-center gap-2 w-full">
+        {buttonsToRender.map((btn) => (
+          <Button
+            className="flex-1"
+            key={btn.key}
+            disabled={disabled}
+            onClick={btn.onClick}
+          >
+            {btn.label}
+          </Button>
+        ))}
+      </div>
+    )
+  },
+)
+
+ClusterModeButtons.displayName = 'ClusterModeButtons'
 
 const ControlButton: FC<
   ButtonHTMLAttributes<HTMLButtonElement> & {

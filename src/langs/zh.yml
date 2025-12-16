@@ -1505,11 +1505,6 @@ controlRoom:
         sitDown: 坐下
         layDown: 趴下
         standUp: 站立
-      mode:
-        posture: 姿态模式
-        move: 运动模式
-        enterReinforcement: 进入强化模式
-        exitReinforcement: 退出强化模式
 dynamicLayout:
   exit:
     title: 退出
