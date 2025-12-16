@@ -52,8 +52,8 @@ const FlightAreaItemConfig: FC<PropsType> = memo((props) => {
   )
 
   const overlayRectangle = useMemo(
-    () => getRectangleFromPositions(data.overlayPositions),
-    [data.overlayPositions],
+    () => getRectangleFromPositions(data.overlayPositions, data.overlayType),
+    [data.overlayPositions, data.overlayType],
   )
 
   return (

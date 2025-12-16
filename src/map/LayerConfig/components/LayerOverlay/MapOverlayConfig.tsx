@@ -56,8 +56,8 @@ const MapOverlayConfig: FC<PropsType> = memo(({ data }) => {
   )
 
   const overlayRectangle = useMemo(
-    () => getRectangleFromPositions(data.overlayPositions),
-    [data.overlayPositions],
+    () => getRectangleFromPositions(data.overlayPositions, data.overlayType),
+    [data.overlayPositions, data.overlayType],
   )
 
   return (
