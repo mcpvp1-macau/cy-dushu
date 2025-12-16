@@ -527,16 +527,22 @@ const ClusterModeService: FC<{ disabled?: boolean }> = memo(({ disabled }) => {
   )
   const { t } = useTranslation()
 
-  const handleServiceCall = useMemoizedFn((identifier: string) => {
-    selectedDogs.forEach((dog) =>
-      postService(
-        dog.productKey,
-        dog.deviceId,
-        identifier,
-        undefined,
-        dog.deviceName,
-      ),
-    )
+  const handleServiceCall = useMemoizedFn(
+    (identifier: string, data?: Record<string, unknown>) => {
+      selectedDogs.forEach((dog) =>
+        postService(
+          dog.productKey,
+          dog.deviceId,
+          identifier,
+          data,
+          dog.deviceName,
+        ),
+      )
+    },
+  )
+
+  const handleSwitchLMode = useMemoizedFn((isLMode: boolean) => {
+    handleServiceCall('switchToLMode', { isLMode })
   })
 
   return (
@@ -555,6 +561,16 @@ const ClusterModeService: FC<{ disabled?: boolean }> = memo(({ disabled }) => {
       >
         {t('controlRoom.rebotDog.cluster.mode.move', {
           defaultValue: '运动模式',
+        })}
+      </Button>
+      <Button disabled={disabled} onClick={() => handleSwitchLMode(true)}>
+        {t('controlRoom.rebotDog.cluster.mode.enterReinforcement', {
+          defaultValue: '进入强化模式',
+        })}
+      </Button>
+      <Button disabled={disabled} onClick={() => handleSwitchLMode(false)}>
+        {t('controlRoom.rebotDog.cluster.mode.exitReinforcement', {
+          defaultValue: '退出强化模式',
         })}
       </Button>
     </div>
