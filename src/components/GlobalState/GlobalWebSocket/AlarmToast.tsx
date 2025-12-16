@@ -1,5 +1,6 @@
 import { WarningOutlined } from '@ant-design/icons'
 import OverflowText from '@/components/ui/OverflowText'
+import DeviceSourceLink from './DeviceSourceLink'
 
 type PropsType = {
   data: Record<string, any>
@@ -8,6 +9,7 @@ type PropsType = {
 /** 告警通知 */
 const AlarmToast: FC<PropsType> = memo(({ data }) => {
   const source = data.device_name || data.deviceName || data.sn || '未知设备'
+  const sourceDeviceId = data.device_id || data.deviceId
   const time = data.time || data.update_time
   const level = data.alarm_level || data.alarmLevel
   const message = data.msg || '收到告警'
@@ -33,9 +35,7 @@ const AlarmToast: FC<PropsType> = memo(({ data }) => {
             <WarningOutlined className="text-red-500" />
             <OverflowText className="truncate">{message}</OverflowText>
           </div>
-          <div className="mt-1 text-sm truncate" title={source}>
-            {`来源: [${source}]`}
-          </div>
+          <DeviceSourceLink label={source} deviceId={sourceDeviceId} />
           {(level || time) && (
             <div className="mt-1 text-xs text-ground-11 flex gap-3">
               {level && (

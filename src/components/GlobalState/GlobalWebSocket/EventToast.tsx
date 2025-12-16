@@ -3,6 +3,7 @@ import { actionTanqiEmitter } from '@/pages/right/ActionTanqi/ActionTanqi'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { CaretDownOutlined, WarningOutlined } from '@ant-design/icons'
 import { Button, Dropdown } from 'antd'
+import DeviceSourceLink from './DeviceSourceLink'
 
 type PropsType = {
   data: API_EVENTS.domain.Event
@@ -27,7 +28,11 @@ const EventToast: FC<PropsType> = memo(({ data }) => {
             <WarningOutlined className="text-yellow-500" />
             <p className="truncate">{data.eventName}</p>
           </div>
-          <div className="mt-1 text-sm">{`来源: [${data.deviceName}]`}</div>
+          <DeviceSourceLink
+            label={data.deviceName ?? '未知设备'}
+            deviceId={data.deviceId}
+            title={data.deviceName}
+          />
         </div>
       </div>
       <div>
