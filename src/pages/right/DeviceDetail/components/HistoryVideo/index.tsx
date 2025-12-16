@@ -7,6 +7,7 @@ import { Dayjs } from 'dayjs'
 import useVideoList from '../../hooks/useVideoList'
 import Select from '@/components/AntdOverride/Select'
 import { handleStorageURL } from '@/pages/events/components/EventDetail'
+import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
 
 type PropsType = {
   deviceList: API_DEVICE.domain.Device[]
@@ -16,6 +17,19 @@ type PropsType = {
 
 const HistoryVideo: React.FC<PropsType> = memo(
   ({ timeRange, deviceList, deviceType }) => {
+    const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>(() =>
+      timeRange ?? [
+        dayjs().startOf('day').startOf('minute'),
+        dayjs().endOf('day').endOf('minute'),
+      ],
+    )
+
+    useEffect(() => {
+      if (timeRange) {
+        setDateRange(timeRange)
+      }
+    }, [timeRange])
+
     const [type, setType] = useState<'platform' | 'device'>('platform')
     const [activeVideo, setActiveVideo] = useState<{
       isDevice?: boolean
@@ -46,11 +60,30 @@ const HistoryVideo: React.FC<PropsType> = memo(
       deviceType,
       type,
       videoId!,
-      timeRange ?? ([dayjs().subtract(1, 'day'), dayjs()] as const),
+      dateRange ?? ([dayjs().startOf('day'), dayjs().endOf('day')] as const),
     )
 
     return (
       <div>
+        <div className="px-3 pt-3">
+          <DateRangePicker
+            className="w-full"
+            showTime={{
+              showSecond: false,
+            }}
+            value={dateRange}
+            onChange={(s) => {
+              if (!s) {
+                setDateRange(null)
+                return
+              }
+              setDateRange([
+                s[0]!.startOf('minute'),
+                s[1]!.endOf('day').endOf('minute'),
+              ])
+            }}
+          />
+        </div>
         <section className="m-3 flex gap-2">
           <div className="flex-1">
             <Select

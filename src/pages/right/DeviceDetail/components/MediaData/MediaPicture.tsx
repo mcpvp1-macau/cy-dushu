@@ -12,6 +12,7 @@ import { makePanormaToolbarRender, makeToolbarRender } from '@/utils/antd/image'
 import { Col, Image, Pagination, Row, Spin } from 'antd'
 import { Dayjs } from 'dayjs'
 import { v4 } from 'uuid'
+import DateRangePicker from '@/components/AntdOverride/DateRangePicker'
 
 type PropsType = {
   deviceList: API_DEVICE.domain.Device[]
@@ -21,6 +22,19 @@ type PropsType = {
 
 const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
   ({ deviceList, timeRange, enablePictureOnMap }) => {
+    const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>(() =>
+      timeRange ?? [
+        dayjs().startOf('day').startOf('minute'),
+        dayjs().endOf('day').endOf('minute'),
+      ],
+    )
+
+    useEffect(() => {
+      if (timeRange) {
+        setDateRange(timeRange)
+      }
+    }, [timeRange])
+
     const [mode, setMode] = useState('ALL')
 
     const deviceOptions = useMemo(
@@ -46,7 +60,8 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
           'PICTURE',
           deviceId,
           mode,
-          'today',
+          dateRange?.[0]?.toISOString(),
+          dateRange?.[1]?.toISOString(),
           page,
           pageSize,
         ],
@@ -55,10 +70,8 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
             deviceId,
             type: 'PICTURE',
             sourceId: mode,
-            startTime: (timeRange?.[0] || dayjs().subtract(1, 'day')).format(
-              dft,
-            ),
-            endTime: (timeRange?.[1] || dayjs()).format(dft),
+            startTime: (dateRange?.[0] || dayjs().startOf('day')).format(dft),
+            endTime: (dateRange?.[1] || dayjs().endOf('day')).format(dft),
             page,
             pageSize,
           }),
@@ -114,6 +127,25 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
 
     return (
       <div>
+        <div className="px-3 pt-3">
+          <DateRangePicker
+            className="w-full"
+            showTime={{
+              showSecond: false,
+            }}
+            value={dateRange}
+            onChange={(s) => {
+              if (!s) {
+                setDateRange(null)
+                return
+              }
+              setDateRange([
+                s[0]!.startOf('minute'),
+                s[1]!.endOf('day').endOf('minute'),
+              ])
+            }}
+          />
+        </div>
         <section className="m-3 flex gap-2">
           <div className="flex-1">
             <Select
