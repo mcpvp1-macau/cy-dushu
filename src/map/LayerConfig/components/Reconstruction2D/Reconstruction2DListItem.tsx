@@ -27,6 +27,7 @@ import {
 import { t } from 'i18next'
 import * as Cesium from 'cesium'
 import OverflowText from '@/components/ui/OverflowText'
+import { FLY_TO_DURATION_SECONDS, RECTANGLE_PADDING_DEGREES } from '@/utils/mapUtils'
 
 type PropsType = {
   data: API_RECONSTRUCTION.Reconstruction2DListItem
@@ -109,12 +110,12 @@ const Recon2DListItem: FC<PropsType> = memo(
                         onClick={() => {
                           bigFlyEmitter.emit('flyTo', {
                             destination: Cesium.Rectangle.fromDegrees(
-                              Number(data.bboxMinX) - 0.001,
-                              Number(data.bboxMinY) - 0.001,
-                              Number(data.bboxMaxX) + 0.001,
-                              Number(data.bboxMaxY) + 0.001,
+                              Number(data.bboxMinX) - RECTANGLE_PADDING_DEGREES,
+                              Number(data.bboxMinY) - RECTANGLE_PADDING_DEGREES,
+                              Number(data.bboxMaxX) + RECTANGLE_PADDING_DEGREES,
+                              Number(data.bboxMaxY) + RECTANGLE_PADDING_DEGREES,
                             ),
-                            duration: 1,
+                            duration: FLY_TO_DURATION_SECONDS,
                           })
                         }}
                       >

@@ -2,12 +2,15 @@ import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconVisible from '@/assets/icons/jsx/IconVisible'
 import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
 import IconFlightArea from '@/assets/icons/jsx/IconFlightArea'
+import IconToLocation from '@/assets/icons/jsx/IconToLocation'
 import IconButton from '@/components/ui/button/IconButton'
 import { useAppMsg } from '@/hooks/useAppMsg'
+import { bigFlyEmitter } from '@/map/GlobalMap/BigFlyListener'
 import { deleteFlightArea } from '@/service/modules/flightArea'
 import { LoadingOutlined } from '@ant-design/icons'
 import queryClient from '@/global/query-client'
 import { useFlightAreaConfigStore } from '@/store/map/useFlightArea.store'
+import { FLY_TO_DURATION_SECONDS, getRectangleFromPositions } from '@/utils/mapUtils'
 
 import OverflowText from '@/components/ui/OverflowText'
 
@@ -48,6 +51,11 @@ const FlightAreaItemConfig: FC<PropsType> = memo((props) => {
     (s) => s.updateHiddenOverlayIds,
   )
 
+  const overlayRectangle = useMemo(
+    () => getRectangleFromPositions(data.overlayPositions, data.overlayType),
+    [data.overlayPositions, data.overlayType],
+  )
+
   return (
     <li>
       <div className="flex justify-between">
@@ -78,6 +86,19 @@ const FlightAreaItemConfig: FC<PropsType> = memo((props) => {
                   <IconVisible />
                 )}
               </IconButton>
+
+              {overlayRectangle && (
+                <IconButton
+                  onClick={() =>
+                    bigFlyEmitter.emit('flyTo', {
+                      destination: overlayRectangle,
+                      duration: FLY_TO_DURATION_SECONDS,
+                    })
+                  }
+                >
+                  <IconToLocation />
+                </IconButton>
+              )}
 
               {data.layerId !== -1 && (
                 <IconButton

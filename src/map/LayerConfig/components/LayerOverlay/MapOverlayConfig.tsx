@@ -3,13 +3,16 @@ import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
 import IconVisible from '@/assets/icons/jsx/IconVisible'
 import IconAddMark from '@/assets/icons/jsx/right-tools/IconAddMark'
 import IconDrawArea from '@/assets/icons/jsx/right-tools/IconDrawArea'
+import IconToLocation from '@/assets/icons/jsx/IconToLocation'
 import IconButton from '@/components/ui/button/IconButton'
 import { RightModeEnum } from '@/enum/right-mode'
 import { useAppMsg } from '@/hooks/useAppMsg'
+import { bigFlyEmitter } from '@/map/GlobalMap/BigFlyListener'
 import { deleteOverlaies } from '@/service/modules/layer_overlay'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { CotType } from '@/store/map/useDraw.store'
 import { useMapLayerAndOverlayConfigStore } from '@/store/map/useLayerAndOverlay.store'
+import { FLY_TO_DURATION_SECONDS, getRectangleFromPositions } from '@/utils/mapUtils'
 import { LoadingOutlined } from '@ant-design/icons'
 
 type PropsType = {
@@ -52,6 +55,11 @@ const MapOverlayConfig: FC<PropsType> = memo(({ data }) => {
     (s) => s.updateHiddenOverlayIds,
   )
 
+  const overlayRectangle = useMemo(
+    () => getRectangleFromPositions(data.overlayPositions, data.overlayType),
+    [data.overlayPositions, data.overlayType],
+  )
+
   return (
     <li key={data.overlayId} className="flex justify-between">
       <div className="flex gap-2">
@@ -83,6 +91,18 @@ const MapOverlayConfig: FC<PropsType> = memo(({ data }) => {
                 <IconVisible />
               )}
             </IconButton>
+            {overlayRectangle && (
+              <IconButton
+                onClick={() =>
+                  bigFlyEmitter.emit('flyTo', {
+                    destination: overlayRectangle,
+                    duration: FLY_TO_DURATION_SECONDS,
+                  })
+                }
+              >
+                <IconToLocation />
+              </IconButton>
+            )}
             {/* <IconButton className="scale-90" onClick={() => setOpen(true)}>
               <IconShare />
             </IconButton> */}
