@@ -39,10 +39,10 @@ const FileTo: React.FC<Props> = (props) => {
   const render = (item: string, index: number) => {
     return (
       <div className="flex mb-[8px] pl-[10px] pt-[10px] pr-[12px]">
-        <div className='w-2/3 overflow-hidden text-ellipsis whitespace-nowrap'>
+        <div className='flex-1 overflow-hidden text-ellipsis whitespace-nowrap'>
           {index + 1} {item}
         </div>
-        <div className="w-1/3 flex items-center">
+        <div className="w-[60px] flex items-center">
           {playing && currentSelectedRecordAudioFile === item ? (
             <Tooltip title={'停止播放'}>
               <Icon
