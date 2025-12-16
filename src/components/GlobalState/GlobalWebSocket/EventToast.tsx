@@ -3,6 +3,7 @@ import { actionTanqiEmitter } from '@/pages/right/ActionTanqi/ActionTanqi'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { CaretDownOutlined, WarningOutlined } from '@ant-design/icons'
 import { Button, Dropdown } from 'antd'
+import TextButton from '@/components/ui/button/TextButton'
 
 type PropsType = {
   data: API_EVENTS.domain.Event
@@ -19,6 +20,15 @@ const EventToast: FC<PropsType> = memo(({ data }) => {
 
   const rightOuterMode = useRightMode((s) => s.rightOuterMode)
 
+  const handleDeviceClick = useMemoizedFn(() => {
+    if (!data.deviceId) {
+      return
+    }
+    updateRightMode(RightModeEnum.DEVICE)
+    updateDetailId(data.deviceId)
+    navigate('/')
+  })
+
   return (
     <div className="flex rounded bg-ground-1/90 ring-1 ring-ground-5 w-[350px] backdrop-blur-sm items-center p-3 gap-3 z-10">
       <div className="flex flex-1 items-center">
@@ -27,7 +37,17 @@ const EventToast: FC<PropsType> = memo(({ data }) => {
             <WarningOutlined className="text-yellow-500" />
             <p className="truncate">{data.eventName}</p>
           </div>
-          <div className="mt-1 text-sm">{`来源: [${data.deviceName}]`}</div>
+          <div className="mt-1 text-sm truncate" title={data.deviceName}>
+            来源: [
+            <TextButton
+              className="truncate align-middle"
+              onClick={handleDeviceClick}
+              disabled={!data.deviceId}
+            >
+              {data.deviceName}
+            </TextButton>
+            ]
+          </div>
         </div>
       </div>
       <div>
