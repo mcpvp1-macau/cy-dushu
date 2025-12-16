@@ -5,6 +5,8 @@ import React from 'react'
 import { UploadAudio } from './UploadAudio'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
+import IconDelete from '@/assets/icons/jsx/IconDelete'
+import XModal from '@/components/XModal'
 
 type Props = {
   playing: boolean
@@ -20,6 +22,8 @@ const FileTo: React.FC<Props> = (props) => {
   const productKey = deviceDetail?.deviceModel?.productKey || ''
   const _postDevice = usePostDeviceService(deviceId, productKey)
 
+  const [current, setCurrent] = React.useState<string>('')
+
   const recordAudioFiles =
     useUavControlRoomStore((m) => m.state?.recordAudioFiles) || ''
 
@@ -34,26 +38,18 @@ const FileTo: React.FC<Props> = (props) => {
   const pause = (item: string) => {
     onPlay(item, 'pause')
   }
-  
+
   const handleDelete = (item: string) => {
-    Modal.confirm({
-      title: '确认删除',
-      content: `确定要删除音频文件 "${item}" 吗？`,
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => {
-        onDelete(item)
-      },
-    })
+    setCurrent(item)
   }
 
   const render = (item: string, index: number) => {
     return (
-      <div className="flex justify-between mb-[8px] pl-[10px] pt-[10px] pr-[12px]">
-        <div>
+      <div className="w-full flex mb-[8px] pl-[10px] pt-[10px] pr-[12px]">
+        <div className='flex-1 overflow-hidden text-ellipsis whitespace-nowrap'>
           {index + 1} {item}
         </div>
-        <div className="flex items-center">
+        <div className="w-[60px] flex items-center">
           {playing && currentSelectedRecordAudioFile === item ? (
             <Tooltip title={'停止播放'}>
               <Icon
@@ -72,8 +68,7 @@ const FileTo: React.FC<Props> = (props) => {
             </Tooltip>
           )}
           <Tooltip title={'删除'}>
-            <Icon
-              id="icon-delete"
+            <IconDelete
               className="ml-[10px] text-[#C7D1DC] hover:text-[#FF4D4F] cursor-pointer"
               onClick={() => handleDelete(item)}
             />
@@ -88,6 +83,17 @@ const FileTo: React.FC<Props> = (props) => {
       {globalConfig.usePayloadP3Upload ? (
         <UploadAudio onUpload={onUpload} accept=".pcm" />
       ) : null}
+      <XModal
+        open={!!current}
+        title={`请再次确认`}
+        onConfirm={() => {
+          onDelete(current)
+          setCurrent('')
+        }}
+        onClose={() => setCurrent('')}
+      >
+        确定要删除音频文件 {current} 吗？
+      </XModal>
     </div>
   )
 }

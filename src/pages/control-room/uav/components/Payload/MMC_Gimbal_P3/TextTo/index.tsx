@@ -46,7 +46,7 @@ const TextTo: React.FC<Props> = (props) => {
   }
   return (
     <div className="flex space-x-[10px] pt-[10px]">
-      <div className="w-[270px] h-[140px]">
+      <div className="h-[140px]">
         <TextArea
           rows={6}
           maxLength={1000}
