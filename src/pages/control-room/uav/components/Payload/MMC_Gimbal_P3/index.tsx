@@ -88,6 +88,12 @@ const MMC_Gimbal_P3: React.FC = () => {
     })
   }
 
+  const onDelete = async (fileName: string) => {
+    await postSerivce('recordAudioFileDelete', {
+      fileName,
+    })
+  }
+
   const onUploadTalk = async (file: { name: string; md5: string }) => {
     await postSerivce('recordAudioFilePlay', {
       name: file.name,
@@ -138,6 +144,7 @@ const MMC_Gimbal_P3: React.FC = () => {
           <FileTo
             onUpload={onUpload}
             onPlay={handlePlay}
+            onDelete={onDelete}
             playing={status === '录音音乐播报中'}
           />
         </>
@@ -145,7 +152,7 @@ const MMC_Gimbal_P3: React.FC = () => {
     },
   ]
   return (
-    <div className="p-[12px]">
+    <div className="w-full p-[12px]">
       <div className="flex space-x-2 mb-[10px]">
         <PitchControl onClick={onClick} value={audioPayloadPitch} />
         <div className="flex leading-[32px] space-x-2 w-full pt-[12px]">
