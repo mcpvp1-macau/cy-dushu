@@ -2,12 +2,16 @@ import IconDelete from '@/assets/icons/jsx/IconDelete'
 import IconVisible from '@/assets/icons/jsx/IconVisible'
 import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
 import IconFlightArea from '@/assets/icons/jsx/IconFlightArea'
+import IconToLocation from '@/assets/icons/jsx/IconToLocation'
 import IconButton from '@/components/ui/button/IconButton'
 import { useAppMsg } from '@/hooks/useAppMsg'
+import { bigFlyEmitter } from '@/map/GlobalMap/BigFlyListener'
 import { deleteFlightArea } from '@/service/modules/flightArea'
 import { LoadingOutlined } from '@ant-design/icons'
 import queryClient from '@/global/query-client'
 import { useFlightAreaConfigStore } from '@/store/map/useFlightArea.store'
+import { shouldJson } from '@/utils/json'
+import * as Cesium from 'cesium'
 
 import OverflowText from '@/components/ui/OverflowText'
 
@@ -48,6 +52,62 @@ const FlightAreaItemConfig: FC<PropsType> = memo((props) => {
     (s) => s.updateHiddenOverlayIds,
   )
 
+  const overlayRectangle = useMemo(() => {
+    const positions = shouldJson<any>(data.overlayPositions)
+    if (!positions) {
+      return undefined
+    }
+
+    const coords: [number, number][] = []
+    const collectCoords = (value: any) => {
+      if (Array.isArray(value)) {
+        if (
+          value.length >= 2 &&
+          Number.isFinite(Number(value[0])) &&
+          Number.isFinite(Number(value[1]))
+        ) {
+          coords.push([Number(value[0]), Number(value[1])])
+        }
+        value.forEach(collectCoords)
+        return
+      }
+
+      if (value && typeof value === 'object') {
+        const lng = (value as any).lng ?? (value as any).lon ?? value.longitude
+        const lat = (value as any).lat ?? value.latitude
+
+        if (Number.isFinite(Number(lng)) && Number.isFinite(Number(lat))) {
+          coords.push([Number(lng), Number(lat)])
+        }
+
+        Object.values(value).forEach(collectCoords)
+      }
+    }
+
+    collectCoords(positions)
+
+    if (!coords.length) {
+      return undefined
+    }
+
+    const lngs = coords.map(([lng]) => lng)
+    const lats = coords.map(([, lat]) => lat)
+
+    const minLng = Math.min(...lngs)
+    const maxLng = Math.max(...lngs)
+    const minLat = Math.min(...lats)
+    const maxLat = Math.max(...lats)
+
+    const padding = 0.001
+
+    return Cesium.Rectangle.fromDegrees(
+      minLng - padding,
+      minLat - padding,
+      maxLng + padding,
+      maxLat + padding,
+    )
+  }, [data.overlayPositions])
+
   return (
     <li>
       <div className="flex justify-between">
@@ -78,6 +138,19 @@ const FlightAreaItemConfig: FC<PropsType> = memo((props) => {
                   <IconVisible />
                 )}
               </IconButton>
+
+              {overlayRectangle && (
+                <IconButton
+                  onClick={() =>
+                    bigFlyEmitter.emit('flyTo', {
+                      destination: overlayRectangle,
+                      duration: 1,
+                    })
+                  }
+                >
+                  <IconToLocation />
+                </IconButton>
+              )}
 
               {data.layerId !== -1 && (
                 <IconButton
