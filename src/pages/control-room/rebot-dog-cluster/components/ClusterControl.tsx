@@ -50,7 +50,7 @@ export const ClusterControlButtons: FC = memo(() => {
           identifier: 'yawSpeed',
           icon: <IconTurnLeft />,
           method: 'service.moveDog.post',
-          label: t('rebotDog.cluster.controls.turnLeft', {
+          label: t('controlRoom.rebotDog.cluster.controls.turnLeft', {
             defaultValue: '左转',
           }),
         },
@@ -60,7 +60,7 @@ export const ClusterControlButtons: FC = memo(() => {
           identifier: 'xSpeed',
           icon: <IconUp />,
           method: 'service.moveDog.post',
-          label: t('rebotDog.cluster.controls.forward', {
+          label: t('controlRoom.rebotDog.cluster.controls.forward', {
             defaultValue: '前进',
           }),
         },
@@ -70,7 +70,7 @@ export const ClusterControlButtons: FC = memo(() => {
           identifier: 'yawSpeed',
           icon: <IconTurnRight />,
           method: 'service.moveDog.post',
-          label: t('rebotDog.cluster.controls.turnRight', {
+          label: t('controlRoom.rebotDog.cluster.controls.turnRight', {
             defaultValue: '右转',
           }),
         },
@@ -80,7 +80,7 @@ export const ClusterControlButtons: FC = memo(() => {
           identifier: 'ySpeed',
           icon: <IconLeft />,
           method: 'service.moveDog.post',
-          label: t('rebotDog.cluster.controls.moveLeft', {
+          label: t('controlRoom.rebotDog.cluster.controls.moveLeft', {
             defaultValue: '左移',
           }),
         },
@@ -90,7 +90,7 @@ export const ClusterControlButtons: FC = memo(() => {
           identifier: 'xSpeed',
           icon: <IconDown />,
           method: 'service.moveDog.post',
-          label: t('rebotDog.cluster.controls.back', {
+          label: t('controlRoom.rebotDog.cluster.controls.back', {
             defaultValue: '后退',
           }),
         },
@@ -100,7 +100,7 @@ export const ClusterControlButtons: FC = memo(() => {
           identifier: 'ySpeed',
           icon: <IconRight />,
           method: 'service.moveDog.post',
-          label: t('rebotDog.cluster.controls.moveRight', {
+          label: t('controlRoom.rebotDog.cluster.controls.moveRight', {
             defaultValue: '右移',
           }),
         },
@@ -110,7 +110,7 @@ export const ClusterControlButtons: FC = memo(() => {
           identifier: 'yaw',
           icon: <IconTurnLeft3 />,
           method: 'service.moveDog.post',
-          label: t('rebotDog.cluster.controls.headLeft', {
+          label: t('controlRoom.rebotDog.cluster.controls.headLeft', {
             defaultValue: '左转头',
           }),
         },
@@ -120,7 +120,7 @@ export const ClusterControlButtons: FC = memo(() => {
           identifier: 'pitch',
           icon: <IconTurnOn />,
           method: 'service.moveDog.post',
-          label: t('rebotDog.cluster.controls.headUp', {
+          label: t('controlRoom.rebotDog.cluster.controls.headUp', {
             defaultValue: '抬头',
           }),
         },
@@ -130,7 +130,7 @@ export const ClusterControlButtons: FC = memo(() => {
           identifier: 'yaw',
           icon: <IconTurnRight3 />,
           method: 'service.moveDog.post',
-          label: t('rebotDog.cluster.controls.headRight', {
+          label: t('controlRoom.rebotDog.cluster.controls.headRight', {
             defaultValue: '右转头',
           }),
         },
@@ -140,7 +140,7 @@ export const ClusterControlButtons: FC = memo(() => {
           identifier: 'roll',
           icon: <IconTurnLeft2 />,
           method: 'service.moveDog.post',
-          label: t('rebotDog.cluster.controls.headTiltLeft', {
+          label: t('controlRoom.rebotDog.cluster.controls.headTiltLeft', {
             defaultValue: '左歪头',
           }),
         },
@@ -150,7 +150,7 @@ export const ClusterControlButtons: FC = memo(() => {
           identifier: 'pitch',
           icon: <IconTurnDown />,
           method: 'service.moveDog.post',
-          label: t('rebotDog.cluster.controls.headDown', {
+          label: t('controlRoom.rebotDog.cluster.controls.headDown', {
             defaultValue: '低头',
           }),
         },
@@ -160,7 +160,7 @@ export const ClusterControlButtons: FC = memo(() => {
           identifier: 'roll',
           icon: <IconTurnRight2 />,
           method: 'service.moveDog.post',
-          label: t('rebotDog.cluster.controls.headTiltRight', {
+          label: t('controlRoom.rebotDog.cluster.controls.headTiltRight', {
             defaultValue: '右歪头',
           }),
         },
@@ -215,7 +215,7 @@ export const ClusterControlButtons: FC = memo(() => {
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="text-xs text-fore/70">
-        {t('rebotDog.cluster.selectedCount', {
+        {t('controlRoom.rebotDog.cluster.selectedCount', {
           count: selectedCount,
           defaultValue: '已选 {{count}} 台，按键/鼠标可同步控制',
         })}
@@ -250,9 +250,13 @@ export const ClusterControlButtons: FC = memo(() => {
           </div>
           <div className="flex justify-center gap-2 items-center text-green-500 text-shadow pointer-events-none">
             <span className="text-sm">
-              {t('rebotDog.cluster.speedAbbr', { defaultValue: 'SPD' })}
+              {t('controlRoom.rebotDog.cluster.speedAbbr', {
+                defaultValue: 'SPD',
+              })}
               <br />
-              {t('rebotDog.cluster.speedUnit', { defaultValue: 'm/s' })}
+              {t('controlRoom.rebotDog.cluster.speedUnit', {
+                defaultValue: 'm/s',
+              })}
             </span>
             <span className="text-lg">{speedText}</span>
           </div>
@@ -280,7 +284,6 @@ export const ClusterControlButtons: FC = memo(() => {
         </div>
         <div className="flex flex-col items-center gap-2">
           <ClusterActionService disabled={disabled} />
-          <ClusterModeService disabled={disabled} />
         </div>
         <div className="flex flex-col gap-1">
           <div className="border border-solid rounded bg-ground-1 border-ground-5 flex overflow-hidden">
@@ -306,12 +309,18 @@ export const ClusterControlButtons: FC = memo(() => {
           </div>
           <div className="flex justify-center gap-2 items-center text-green-500 text-shadow pointer-events-none">
             <span className="text-lg">
-              {t('rebotDog.cluster.altitudePlaceholder', { defaultValue: '-' })}
+              {t('controlRoom.rebotDog.cluster.altitudePlaceholder', {
+                defaultValue: '-',
+              })}
             </span>
             <span className="text-sm">
-              {t('rebotDog.cluster.altitudeAbbr', { defaultValue: 'ALT' })}
+              {t('controlRoom.rebotDog.cluster.altitudeAbbr', {
+                defaultValue: 'ALT',
+              })}
               <br />
-              {t('rebotDog.cluster.altitudeUnit', { defaultValue: 'm' })}
+              {t('controlRoom.rebotDog.cluster.altitudeUnit', {
+                defaultValue: 'm',
+              })}
             </span>
           </div>
           <div className="border border-solid rounded bg-ground-1 border-ground-5 flex overflow-hidden">
@@ -337,6 +346,7 @@ export const ClusterControlButtons: FC = memo(() => {
           </div>
         </div>
       </div>
+      <ClusterModeService disabled={disabled} />
     </div>
   )
 })
@@ -399,7 +409,7 @@ export const ClusterParams: FC = memo(() => {
         }}
         items={[
           {
-            label: t('rebotDog.cluster.params.speed', {
+            label: t('controlRoom.rebotDog.cluster.params.speed', {
               defaultValue: '移动速度',
             }),
             name: 'speed',
@@ -411,7 +421,7 @@ export const ClusterParams: FC = memo(() => {
             },
           },
           {
-            label: t('rebotDog.cluster.params.attitude', {
+            label: t('controlRoom.rebotDog.cluster.params.attitude', {
               defaultValue: '姿态弧度',
             }),
             name: 'attitude',
@@ -462,7 +472,7 @@ const ClusterActionService: FC<{ disabled?: boolean }> = memo(
               key: 'actionSit',
               label: (
                 <Tooltip
-                  title={t('rebotDog.cluster.actions.sitDown', {
+                  title={t('controlRoom.rebotDog.cluster.actions.sitDown', {
                     defaultValue: '坐下',
                   })}
                   placement="left"
@@ -475,7 +485,7 @@ const ClusterActionService: FC<{ disabled?: boolean }> = memo(
               key: 'actionGetDown',
               label: (
                 <Tooltip
-                  title={t('rebotDog.cluster.actions.layDown', {
+                  title={t('controlRoom.rebotDog.cluster.actions.layDown', {
                     defaultValue: '趴下',
                   })}
                   placement="left"
@@ -488,7 +498,7 @@ const ClusterActionService: FC<{ disabled?: boolean }> = memo(
               key: 'actionStandUp',
               label: (
                 <Tooltip
-                  title={t('rebotDog.cluster.actions.standUp', {
+                  title={t('controlRoom.rebotDog.cluster.actions.standUp', {
                     defaultValue: '站立',
                   })}
                   placement="left"
@@ -512,47 +522,40 @@ ClusterActionService.displayName = 'ClusterActionService'
 
 const ClusterModeService: FC<{ disabled?: boolean }> = memo(({ disabled }) => {
   const postService = usePostDeviceServiceHandler()
-  const dogStates = useRebotDogClusterStore((s) => s.dogStates)
   const selectedDogs = useRebotDogClusterStore((s) =>
     s.dogs.filter((d) => s.selectedIds.includes(d.deviceId)),
   )
   const { t } = useTranslation()
 
-  const { canChangePostureMode, canChangeMoveMode } = useMemo(() => {
-    let posture = false
-    let move = false
-
-    selectedDogs.forEach((dog) => {
-      const serviceHave = dogStates?.[dog.deviceId]?.serviceHave as
-        | Record<string, unknown>
-        | undefined
-
-      posture ||= !!serviceHave?.['changePostureMode']
-      move ||= !!serviceHave?.['changeMoveMode']
-    })
-
-    return { canChangePostureMode: posture, canChangeMoveMode: move }
-  }, [dogStates, selectedDogs])
-
   const handleServiceCall = useMemoizedFn((identifier: string) => {
     selectedDogs.forEach((dog) =>
-      postService(dog.productKey, dog.deviceId, identifier, undefined, dog.deviceName),
+      postService(
+        dog.productKey,
+        dog.deviceId,
+        identifier,
+        undefined,
+        dog.deviceName,
+      ),
     )
   })
 
   return (
     <div className="grid grid-cols-2 gap-2">
       <Button
-        disabled={disabled || !canChangePostureMode}
+        disabled={disabled}
         onClick={() => handleServiceCall('changePostureMode')}
       >
-        {t('rebotDog.cluster.mode.posture', { defaultValue: '姿态模式' })}
+        {t('controlRoom.rebotDog.cluster.mode.posture', {
+          defaultValue: '姿态模式',
+        })}
       </Button>
       <Button
-        disabled={disabled || !canChangeMoveMode}
+        disabled={disabled}
         onClick={() => handleServiceCall('changeMoveMode')}
       >
-        {t('rebotDog.cluster.mode.move', { defaultValue: '运动模式' })}
+        {t('controlRoom.rebotDog.cluster.mode.move', {
+          defaultValue: '运动模式',
+        })}
       </Button>
     </div>
   )
