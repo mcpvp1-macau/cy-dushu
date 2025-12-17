@@ -78,7 +78,7 @@ window.config = {
   // robotDogMap: 'wgs84',
   // 是否开启喊话器音频上传功能
   usePayloadP3Upload: true,
-  useFlightReporting: true,
+  useFlightReporting: false,
   // 禁飞区显示样式: 'default' 为默认样式(红色填充), 'fence' 为电子围栏样式
   noFlyZoneDisplayStyle: 'fence',
 }
