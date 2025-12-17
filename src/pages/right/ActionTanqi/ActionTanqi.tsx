@@ -35,8 +35,6 @@ const ActionTanqi: FC<PropsType> = memo(() => {
   const actionId = useParams().actionId
   const groupName = username && actionId ? `ds-${username}-${actionId}` : ''
 
-  const { t: _t } = useTranslation()
-
   const [searchParams, setSearchParams] = useSearchParams()
   const chatIdStr = searchParams.get('chat')
   const chatId = chatIdStr ? Number(chatIdStr) : undefined
@@ -79,7 +77,12 @@ const ActionTanqi: FC<PropsType> = memo(() => {
     }
   }
 
-  const { replyingContent, currentToolCalls, sendMessage } = useSendMessage({
+  const {
+    replyingContent,
+    currentToolCalls,
+    sendMessage,
+    clearCurrentToolCalls,
+  } = useSendMessage({
     onStartReply: () => {
       setAiState(APState.Replying)
     },
@@ -93,9 +96,6 @@ const ActionTanqi: FC<PropsType> = memo(() => {
           created_at: dayjs().format(),
         },
       ])
-      setTimeout(() => {
-        refetch()
-      })
     },
   })
 
@@ -155,11 +155,7 @@ const ActionTanqi: FC<PropsType> = memo(() => {
   })
 
   const [appendedRows, setApendedRows] = useState<any[]>([])
-  const {
-    data: chatDetail,
-    isLoading,
-    refetch,
-  } = useQuery({
+  const { data: chatDetail, isLoading } = useQuery({
     queryKey: ['chatDetail', chatId],
     queryFn: async () => {
       const res = await getChats(chatId!)
@@ -186,11 +182,14 @@ const ActionTanqi: FC<PropsType> = memo(() => {
 
   useEffect(() => {
     setApendedRows([])
+  }, [chatId])
+
+  useEffect(() => {
     if (willSendMessage.current) {
       handleSubmit(willSendMessage.current)
       willSendMessage.current = ''
     }
-  }, [chatId, chatDetail])
+  }, [chatDetail])
 
   // 显示的内容
   const conversationDetailData = useMemo(() => {
@@ -211,7 +210,10 @@ const ActionTanqi: FC<PropsType> = memo(() => {
             <div>
               <div>{replyingContent}</div>
               {humanInTheLoopFn && (
-                <HumanInLoopDialog humanInTheLoopPayload={humanInTheLoopFn} />
+                <HumanInLoopDialog
+                  humanInTheLoopPayload={humanInTheLoopFn}
+                  onFinish={clearCurrentToolCalls}
+                />
               )}
             </div>
           )

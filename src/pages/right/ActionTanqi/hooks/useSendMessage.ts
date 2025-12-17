@@ -26,6 +26,10 @@ const useSendMessage = (options?: {
   const [done, setDone] = useState(false)
   const [currentToolCalls, setCurrentToolCalls] = useState<any[]>([])
 
+  const clearCurrentToolCalls = useMemoizedFn(() => {
+    setCurrentToolCalls(emtpyArray)
+  })
+
   const userInfo = useUserStore((s) => s.user)
   const { actionId } = useParams()
 
@@ -91,7 +95,6 @@ const useSendMessage = (options?: {
           setCurrentToolCalls(emtpyArray)
           if (choice0.role === 'tool_calls') {
             const tool_calls: any[] | undefined = shouldJson(choice0.content)
-            console.log('tool_calls', tool_calls)
             if (tool_calls && tool_calls.length > 0) {
               setCurrentToolCalls(tool_calls)
               if (!replayStart) {
@@ -136,6 +139,7 @@ const useSendMessage = (options?: {
     currentToolCalls,
     replyingContent,
     done,
+    clearCurrentToolCalls,
     sendMessage,
   }
 }
