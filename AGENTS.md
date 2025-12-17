@@ -62,32 +62,30 @@
 - Sentry initializes in `src/instrument.ts` if `globalConfig.sentryDsn` is set, with username/token tags and replay enabled.
 - Auth: `init-token.ts` reads `?token` to localforage and strips it from the URL; `useUserStore.logout` redirects to `loginUrl?systemName=...&fallback=...`. 4A APIs live under `/proxyApi`.
 
-## UX chrome
-
-- Header (`src/components/Header`) hosts POI search, theme switch, language toggle, fullscreen, optional vendor back link (from `backurl` param), settings, user menu. Navigator (`src/components/Navigator`) filters menu icons based on `menus`/`menuMap` from 4A. `Update` modal shows release notes when `globalConfig.version` changes. Context menu on the page is disabled in `index.html`.
-
-## Adding/changing code
-
-- Prefer using existing stores/query keys; invalidate caches instead of manual refetch loops.
-- If adding routes that should hide the Cesium map, include the route ID in `hidenSet` in `src/App.tsx`.
-- New API clients should reuse `LiqunAxios` servers or add new ones with interceptors. Remember to update dev proxy configs for new backends.
-- Keep imports minimal because of auto-import; most React hooks, `useQuery*`, `useTranslation`, `dayjs`, and `globalConfig` are already injected.
-- For map features, consider both 2D/3D paths, respect `globalConfig` toggles (terrain, regional layers), and reuse right-panel modes (`RightModeEnum`).
-- When dealing with uploads or media, ensure `bucketName`, `accessKeyId/secretAccessKey`, and proxy targets in `config.js` are correct; Jessibuca metrics toggle via `enableJessibucaMetrics`.
-
 ## International
 
 - All user-facing strings must use `t('key', { defaultValue: 'default string' })` from `react-i18next`. Add new keys to `src/langs/zh.yml` and `src/langs/en.yml`. Avoid hardcoding strings in components.
 
-## Lint and type checking
-
-- To check the code for any linting errors, use: `pnpm lint`
-- To perform a static type check with TypeScript, run: `pnpm ts`
-
-## How to test code
-
-- use `pnpm lint` and `pnpm ts` to check code.
-
 ## Null-Safe Data Handling
 
 - Must treat all backend fields as potentially null or undefined, and MUST use optional chaining (?.), null checks, default values (??), and type guards to ensure safe, robust access to API data.
+
+## Auto Import Rules
+
+This project uses automatic imports configured in `plugins/auto-import.ts`.
+
+Before adding or modifying imports:
+
+- Check `plugins/auto-import.ts`.
+- Any identifiers declared there MUST NOT be manually imported.
+
+Do NOT add explicit import statements for symbols that are already auto-imported.
+
+## Verification Checklist (Required)
+
+Before finishing the task, you MUST:
+
+1. Run `pnpm ts` and fix all TypeScript errors.
+2. Run `pnpm lint` and fix all lint issues.
+
+Only after both commands pass successfully may you provide the final answer.
