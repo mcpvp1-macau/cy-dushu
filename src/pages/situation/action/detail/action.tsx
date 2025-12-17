@@ -7,7 +7,7 @@ import useActionDetail from './context'
 import AppSpin from '@/components/AppSpin'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import KCYPPanel from './components/kcyp/Panel'
-import { lazy } from 'react'
+import { Suspense, lazy } from 'react'
 import ActionEventDetail from './components/ActionEventDetail'
 import ActionMediaPicture from './components/ActionMediaPicture'
 import IconButton from '@/components/ui/button/IconButton'
@@ -18,16 +18,14 @@ import { ActionEnum } from '@/constant/action/action_type'
 import AddEventResolveTask from './components/AddEventResolveTask'
 import { useQueryClient } from '@tanstack/react-query'
 
-import ZSKCYPModal from './components/kcyp/zhoushan/Modal'
-import ZSBIWUModal from './components/zhoushan_biwu/Modal'
-import XSKCYPModal from './components/kcyp/xiaoshan/Modal'
-import SHJHKCYPModal from './components/kcyp/shanghai/Modal'
+import { LoadingOutlined } from '@ant-design/icons'
 
 const ChildActions = lazy(
   () => import('./components/ChildActions/ChildActions'),
 )
 const ActionLogList = lazy(() => import('./components/ActionLogList'))
 const AIResult = lazy(() => import('./components/AIResult'))
+const KCYPModal = lazy(() => import('./components/kcyp/KCYPModal'))
 
 type PropsType = {
   detail?: API_ACTION.domain.ActionDetail
@@ -142,39 +140,16 @@ const PageActionDetailSub: FC<PropsType> = memo(
       const aiResult = {
         label: t('action.detail.ai_result.title'),
         key: '3',
-        extra:
-          [
-            'kcyp_action',
-            'xiaoshan_kcyp_action',
-            'zs_kcyp_action',
-            'biwu_action',
-          ].includes(actionDetail.type) &&
-          !isBacktracking &&
-          (actionDetail.type === 'zs_kcyp_action' ? (
-            <ZSKCYPModal
+        extra: (
+          <Suspense fallback={<LoadingOutlined />}>
+            <KCYPModal
               actionId={actionId!}
               actionType={actionDetail.type}
               detail={actionDetail}
+              isBacktracking={isBacktracking}
             />
-          ) : actionDetail.type === 'biwu_action' ? (
-            <ZSBIWUModal
-              actionId={actionId!}
-              actionType={actionDetail.type}
-              detail={actionDetail}
-            />
-          ) : actionDetail.type === ActionEnum.KCYP ? (
-            <SHJHKCYPModal
-              actionId={actionId!}
-              actionType={actionDetail.type}
-              detail={actionDetail}
-            />
-          ) : actionDetail.type === ActionEnum.KCYPXS ? (
-            <XSKCYPModal
-              actionId={actionId!}
-              actionType={actionDetail.type}
-              detail={actionDetail}
-            />
-          ) : null),
+          </Suspense>
+        ),
         children: (
           <AppViewSuspense>
             <AIResult
