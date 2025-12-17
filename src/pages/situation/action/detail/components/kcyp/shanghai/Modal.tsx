@@ -1,7 +1,7 @@
 import IconEdit from '@/assets/icons/jsx/IconEdit'
 import IconButton from '@/components/ui/button/IconButton'
 import XModal from '@/components/XModal'
-import useActionDetail from '../../context'
+import useActionDetail from '../../../context'
 import { delAIResult } from '@/service/modules/action'
 import AppEmpty from '@/components/AppEmpty'
 import { useSize } from 'ahooks'
@@ -18,14 +18,14 @@ import {
 import { ProcessStatusEnum } from '@/service/modules/action/kcyp/enum'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { ActionEnum } from '@/constant/action/action_type'
-import { lazy, Suspense } from 'react'
 import { LoadingOutlined } from '@ant-design/icons'
-import AIResultItem from './AIResultItem'
+import AIResultItem from '../AIResultItem'
 import { shouldJson } from '@/utils/json'
 import IconAsyncButton from '@/components/ui/button/IconButton/IconAsyncButton'
 import { uniqWith } from 'lodash'
-import useSaveOrderState from './common/useSaveOrderState'
-import { useAIResult } from '../AIResult'
+import useSaveOrderState from '../common/useSaveOrderState'
+import { useAIResult } from '../../AIResult'
+import NormalVerificationModal from './NormalVerificationModal'
 
 type PropsType = {
   actionId: string
@@ -34,15 +34,9 @@ type PropsType = {
   isBacktracking?: boolean
 }
 
-const NormalVerificationModal = lazy(
-  () => import('./shanghai/NormalVerificationModal'),
-)
-const XSVerificationModal = lazy(() => import('./xiaoshan/VerificationModal'))
-
 /** 快处易赔选择 对话框 */
-const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
-  const orderKey =
-    actionType === ActionEnum.KCYP ? 'getKCYPOrder' : 'getXSKCYPOrder'
+const SHJHKCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
+  const orderKey = 'getKCYPOrder'
   const [open, setOpen] = useState(false)
   const msgApi = useAppMsg()
 
@@ -206,33 +200,22 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
                         全选
                       </Checkbox>
 
-                      <Suspense fallback={<LoadingOutlined />}>
-                        <IconButton
-                          tippyProps={{ content: '校验' }}
-                          onClick={handleVerificationClick}
-                        >
-                          <IconKCCheck />
-                        </IconButton>
-                        {shareOpen &&
-                          (actionType === ActionEnum.KCYP ? (
-                            <NormalVerificationModal
-                              actionId={actionId}
-                              open={shareOpen}
-                              orderData={orderData}
-                              aiResultData={data}
-                              checkResultIds={checkIds}
-                              onClose={() => setShareOpen(false)}
-                            />
-                          ) : actionType === ActionEnum.KCYPXS ? (
-                            <XSVerificationModal
-                              open={shareOpen}
-                              orderData={orderData}
-                              aiResultData={data}
-                              checkResultIds={checkIds}
-                              onClose={() => setShareOpen(false)}
-                            />
-                          ) : null)}
-                      </Suspense>
+                      <IconButton
+                        tippyProps={{ content: '校验' }}
+                        onClick={handleVerificationClick}
+                      >
+                        <IconKCCheck />
+                      </IconButton>
+                      {shareOpen && (
+                        <NormalVerificationModal
+                          actionId={actionId}
+                          open={shareOpen}
+                          orderData={orderData}
+                          aiResultData={data}
+                          checkResultIds={checkIds}
+                          onClose={() => setShareOpen(false)}
+                        />
+                      )}
 
                       <IconAsyncButton
                         tippyProps={{ content: '删除' }}
@@ -275,6 +258,6 @@ const KCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
   )
 })
 
-KCYPModal.displayName = 'KCYPNormalModal'
+SHJHKCYPModal.displayName = 'KCYPNormalModal'
 
-export default KCYPModal
+export default SHJHKCYPModal

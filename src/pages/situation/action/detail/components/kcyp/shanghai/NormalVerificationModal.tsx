@@ -72,7 +72,7 @@ type PropsType = {
 }
 
 /** 快处易赔 校验信息 */
-const KCYPNormalVerificationModal: FC<PropsType> = memo(
+const KCYPSHJHVerificationModal: FC<PropsType> = memo(
   ({ open, orderData, aiResultData, checkResultIds, actionId, onClose }) => {
     const [form] = Form.useForm()
 
@@ -487,6 +487,6 @@ const KCYPNormalVerificationModal: FC<PropsType> = memo(
   },
 )
 
-KCYPNormalVerificationModal.displayName = 'NormalVerificationModal'
+KCYPSHJHVerificationModal.displayName = 'NormalVerificationModal'
 
-export default KCYPNormalVerificationModal
+export default KCYPSHJHVerificationModal

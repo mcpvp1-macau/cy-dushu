@@ -3,7 +3,6 @@ import AppViewSuspense from '@/components/AppViewSuspense'
 import AppCollapse from '@/components/AppCollapse'
 import AddTask from './components/AddTask'
 import AddSHJHTask from './components/AddSHJHTask'
-import KCYPModal from './components/kcyp/Modal'
 import useActionDetail from './context'
 import AppSpin from '@/components/AppSpin'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -14,11 +13,15 @@ import ActionMediaPicture from './components/ActionMediaPicture'
 import IconButton from '@/components/ui/button/IconButton'
 import IconMap from '@/assets/icons/jsx/IconMap'
 import IconRefresh from '@/assets/icons/jsx/IconRefresh'
-import ZSKCYPModal from './components/kcyp/zhoushan/Modal'
-import ZSBIWUModal from './components/zhoushan_biwu/Modal'
+
 import { ActionEnum } from '@/constant/action/action_type'
 import AddEventResolveTask from './components/AddEventResolveTask'
 import { useQueryClient } from '@tanstack/react-query'
+
+import ZSKCYPModal from './components/kcyp/zhoushan/Modal'
+import ZSBIWUModal from './components/zhoushan_biwu/Modal'
+import XSKCYPModal from './components/kcyp/xiaoshan/Modal'
+import SHJHKCYPModal from './components/kcyp/shanghai/Modal'
 
 const ChildActions = lazy(
   () => import('./components/ChildActions/ChildActions'),
@@ -139,33 +142,39 @@ const PageActionDetailSub: FC<PropsType> = memo(
       const aiResult = {
         label: t('action.detail.ai_result.title'),
         key: '3',
-        extra: [
-          'kcyp_action',
-          'xiaoshan_kcyp_action',
-          'zs_kcyp_action',
-          'biwu_action',
-        ].includes(actionDetail.type)
-          ? !isBacktracking &&
-            (actionDetail.type === 'zs_kcyp_action' ? (
-              <ZSKCYPModal
-                actionId={actionId!}
-                actionType={actionDetail.type}
-                detail={actionDetail}
-              />
-            ) : actionDetail.type === 'biwu_action' ? (
-              <ZSBIWUModal
-                actionId={actionId!}
-                actionType={actionDetail.type}
-                detail={actionDetail}
-              />
-            ) : (
-              <KCYPModal
-                actionId={actionId!}
-                actionType={actionDetail.type}
-                detail={actionDetail}
-              />
-            ))
-          : null,
+        extra:
+          [
+            'kcyp_action',
+            'xiaoshan_kcyp_action',
+            'zs_kcyp_action',
+            'biwu_action',
+          ].includes(actionDetail.type) &&
+          !isBacktracking &&
+          (actionDetail.type === 'zs_kcyp_action' ? (
+            <ZSKCYPModal
+              actionId={actionId!}
+              actionType={actionDetail.type}
+              detail={actionDetail}
+            />
+          ) : actionDetail.type === 'biwu_action' ? (
+            <ZSBIWUModal
+              actionId={actionId!}
+              actionType={actionDetail.type}
+              detail={actionDetail}
+            />
+          ) : actionDetail.type === ActionEnum.KCYP ? (
+            <SHJHKCYPModal
+              actionId={actionId!}
+              actionType={actionDetail.type}
+              detail={actionDetail}
+            />
+          ) : actionDetail.type === ActionEnum.KCYPXS ? (
+            <XSKCYPModal
+              actionId={actionId!}
+              actionType={actionDetail.type}
+              detail={actionDetail}
+            />
+          ) : null),
         children: (
           <AppViewSuspense>
             <AIResult
