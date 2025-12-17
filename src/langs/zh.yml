@@ -1157,6 +1157,12 @@ signalSituation:
       title: 信噪比
     altitude:
       title: 高度
+map:
+  renderError:
+    title: 地图渲染出错
+    description: 地图渲染出现问题，请重试。如果问题持续，请联系管理员。
+    detail: 错误详情
+    retry: 重试
 mapLayer:
   setting:
     title: 图层设置
