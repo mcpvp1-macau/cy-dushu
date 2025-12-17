@@ -1,13 +1,5 @@
 import { Scene, Viewer } from 'resium'
-import {
-  Component,
-  lazy,
-  memo,
-  ReactNode,
-  Suspense,
-  type FC,
-  type ErrorInfo,
-} from 'react'
+import { Component, lazy, ReactNode, Suspense, type ErrorInfo } from 'react'
 import * as Cesium from 'cesium'
 import DefaultImageryLayer from './components/DefaultImageryLayer'
 import CesiumDefaultConfig from './components/CesiumDefaultConfig'
@@ -26,7 +18,6 @@ import Reconstruction3D from '../LayerConfig/components/Reconstruction3D/Reconst
 import FlightAreaConfig from '../LayerConfig/components/FlightArea/FlightArea'
 import FloatIconButtonGroup from '@/components/ui/button/FloatIconButton/FloatIconButtonGroup'
 import Reconstruction2D from '../LayerConfig/components/Reconstruction2D/Reconstruction2D'
-import { useTranslation } from 'react-i18next'
 
 const HangzhouBanAreas = lazy(
   () => import('./components/custom/HangzhouBanAreas'),
@@ -127,7 +118,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
     [webgl1],
   )
 
-  const [renderError, setRenderError] = useState<unknown>()
+  const [renderError, setRenderError] = useState<any>()
   const [retryKey, setRetryKey] = useState(0)
 
   const errorDetail = useMemo(() => {
@@ -151,14 +142,14 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
     }
   }, [renderError])
 
-  const handleRenderError = useCallback((error: unknown) => {
+  const handleRenderError = useMemoizedFn((error: unknown) => {
     setRenderError(error ?? new Error('Cesium render error'))
-  }, [])
+  })
 
-  const handleRetry = useCallback(() => {
+  const handleRetry = useMemoizedFn(() => {
     setRetryKey((prev) => prev + 1)
     setRenderError(undefined)
-  }, [])
+  })
 
   return (
     <div className="relative h-full w-full">
@@ -259,7 +250,9 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
             {errorDetail && (
               <div className="w-full max-h-40 overflow-auto bg-black/50 text-xs text-red-100 border border-white/10 rounded-lg px-3 py-2 whitespace-pre-wrap break-words">
                 <div className="font-medium mb-1 text-white/70">
-                  {t('map.renderError.detail', { defaultValue: 'Error detail' })}
+                  {t('map.renderError.detail', {
+                    defaultValue: 'Error detail',
+                  })}
                 </div>
                 <div>{errorDetail}</div>
               </div>
