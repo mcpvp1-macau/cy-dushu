@@ -16,7 +16,7 @@ globalConfig.loginUrl ??= `${globalConfig.loginHttps ? 'https' : 'http'}://${
 globalConfig.uavHeightLimit ??= 1000
 
 globalConfig.mcps ??= {}
-globalConfig.enableJessibucaMetrics ??= true
+globalConfig.enableJessibucaMetrics ??= false
 globalConfig.defaultTheme ??= 'dark'
 globalConfig.env ??= 'default'
 

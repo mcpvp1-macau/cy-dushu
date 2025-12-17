@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import cesium from 'vite-plugin-cesium'
 import AutoImport from '../plugins/auto-import'
 import path from 'path'
-import legacy from '@vitejs/plugin-legacy'
+// import legacy from '@vitejs/plugin-legacy'
 import ViteYaml from '@modyfi/vite-plugin-yaml'
 import wasm from 'vite-plugin-wasm'
 import topLevelAwait from 'vite-plugin-top-level-await'
@@ -14,9 +14,9 @@ export default defineConfig({
     wasm(),
     react(),
     cesium(),
-    legacy({
-      targets: ['defaults', 'not IE 11'],
-    }),
+    // legacy({
+    //   targets: ['defaults', 'not IE 11'],
+    // }),
     ViteYaml(),
     AutoImport,
     topLevelAwait(),
