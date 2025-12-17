@@ -7,4 +7,6 @@ export enum ActionEnum {
   KCYPXS = 'xiaoshan_kcyp_action',
   /** 舟山 浙里快出易赔行动 */
   KCYPZS = 'zs_kcyp_action',
+  /** 舟山 碧五行动 */
+  BIWU = 'biwu_action',
 }
