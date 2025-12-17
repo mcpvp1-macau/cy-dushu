@@ -8,7 +8,7 @@ export default mergeConfig(
       host: '0.0.0.0',
       proxy: {
         '/humanLoopServer': {
-          target: 'http://47.99.132.132:36009',
+          target: 'http://172.23.208.93:36009',
           rewrite: (path) => path.replace(/^\/humanLoopServer/, ''),
           changeOrigin: true,
         },
