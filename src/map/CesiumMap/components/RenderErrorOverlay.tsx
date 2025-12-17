@@ -44,19 +44,13 @@ const RenderErrorOverlay: FC<Props> = ({ error, onRetry }) => {
   const [gpuInfo, setGpuInfo] = useState('')
 
   useEffect(() => {
-    let mounted = true
-
     try {
       const canvas = document.createElement('canvas')
       const gl =
-        (canvas.getContext('webgl', { preserveDrawingBuffer: false }) as
-          | WebGLRenderingContext
-          | null) ||
-        (canvas.getContext('experimental-webgl', { preserveDrawingBuffer: false }) as
-          | WebGLRenderingContext
-          | null)
+        canvas.getContext('webgl', { preserveDrawingBuffer: false }) ||
+        canvas.getContext('experimental-webgl', { preserveDrawingBuffer: false })
 
-      if (!gl) {
+      if (!gl || !(gl instanceof WebGLRenderingContext)) {
         return
       }
 
@@ -67,15 +61,9 @@ const RenderErrorOverlay: FC<Props> = ({ error, onRetry }) => {
         : gl.getParameter(gl.RENDERER)
       const info = [vendor, renderer].filter(Boolean).join(' ')
 
-      if (mounted) {
-        setGpuInfo(info || '')
-      }
+      setGpuInfo(info)
     } catch (gpuError) {
       console.error('Failed to get GPU info', gpuError)
-    }
-
-    return () => {
-      mounted = false
     }
   }, [])
 
