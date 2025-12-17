@@ -18,64 +18,39 @@ type Props = {
 
 const KCYPModal: FC<Props> = memo(
   ({ actionId, actionType, detail, isBacktracking = false }) => {
+    const validActionTypes = new Set<ActionEnum>([
+      ActionEnum.KCYP,
+      ActionEnum.KCYPXS,
+      ActionEnum.KCYPZS,
+      ActionEnum.BIWU,
+    ])
+
     if (
       !actionType ||
       isBacktracking ||
-      ![
-        'kcyp_action',
-        'xiaoshan_kcyp_action',
-        'zs_kcyp_action',
-        'biwu_action',
-      ].includes(actionType)
+      !validActionTypes.has(actionType as ActionEnum)
     ) {
       return null
     }
 
-    const renderModal = () => {
-      if (actionType === 'zs_kcyp_action') {
-        return (
-          <ZSKCYPModal
-            actionId={actionId}
-            actionType={actionType}
-            detail={detail}
-          />
-        )
+    const typedActionType = actionType as ActionEnum
+
+    const modalProps = { actionId, actionType: typedActionType, detail }
+
+    const modal = (() => {
+      switch (typedActionType) {
+        case ActionEnum.KCYPZS:
+          return <ZSKCYPModal {...modalProps} />
+        case ActionEnum.BIWU:
+          return <ZSBIWUModal {...modalProps} />
+        case ActionEnum.KCYP:
+          return <SHJHKCYPModal {...modalProps} />
+        case ActionEnum.KCYPXS:
+          return <XSKCYPModal {...modalProps} />
+        default:
+          return null
       }
-
-      if (actionType === 'biwu_action') {
-        return (
-          <ZSBIWUModal
-            actionId={actionId}
-            actionType={actionType}
-            detail={detail}
-          />
-        )
-      }
-
-      if (actionType === ActionEnum.KCYP) {
-        return (
-          <SHJHKCYPModal
-            actionId={actionId}
-            actionType={actionType}
-            detail={detail}
-          />
-        )
-      }
-
-      if (actionType === ActionEnum.KCYPXS) {
-        return (
-          <XSKCYPModal
-            actionId={actionId}
-            actionType={actionType}
-            detail={detail}
-          />
-        )
-      }
-
-      return null
-    }
-
-    const modal = renderModal()
+    })()
 
     if (!modal) {
       return null
