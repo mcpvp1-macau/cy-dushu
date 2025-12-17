@@ -1185,6 +1185,11 @@ map:
     description: Something went wrong while rendering the map. Please try again.
     detail: Error detail
     retry: Retry
+    environment: Environment information
+    browser: Browser
+    gpu: Graphics card
+    browserInfoUnknown: Unknown browser information
+    gpuInfoUnknown: Unknown graphics device
 mapLayer:
   setting:
     title: Layer Setting

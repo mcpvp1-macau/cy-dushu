@@ -11,13 +11,13 @@ import IconLoading from '@/assets/icons/jsx/IconLoading'
 import BottomBar from './components/BottomBar'
 import FuzhouJiefangBridge from './components/custom/FuzhouJiefangBridge'
 import ErrorListener from './components/ErrorListener'
-import { Button } from 'antd'
 import MapSpace from '../LayerConfig/components/MapSpace/MapSpace'
 import LayerOverlay from '../LayerConfig/components/LayerOverlay/LayerOverlay'
 import Reconstruction3D from '../LayerConfig/components/Reconstruction3D/Reconstruction3D'
 import FlightAreaConfig from '../LayerConfig/components/FlightArea/FlightArea'
 import FloatIconButtonGroup from '@/components/ui/button/FloatIconButton/FloatIconButtonGroup'
 import Reconstruction2D from '../LayerConfig/components/Reconstruction2D/Reconstruction2D'
+import RenderErrorOverlay from './components/RenderErrorOverlay'
 
 const HangzhouBanAreas = lazy(
   () => import('./components/custom/HangzhouBanAreas'),
@@ -107,7 +107,6 @@ class CesiumRenderErrorBoundary extends Component<
 Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ACCESS_TOKEN
 
 const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
-  const { t } = useTranslation()
   const [is2D, { toggle }] = useBoolean(false)
 
   const webgl1 = useMapSettingStore((s) => s.webgl1)
@@ -120,27 +119,6 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
 
   const [renderError, setRenderError] = useState<any>()
   const [retryKey, setRetryKey] = useState(0)
-
-  const errorDetail = useMemo(() => {
-    if (!renderError) {
-      return ''
-    }
-
-    if (renderError instanceof Error) {
-      return renderError.message || renderError.stack || renderError.toString()
-    }
-
-    if (typeof renderError === 'string') {
-      return renderError
-    }
-
-    try {
-      return JSON.stringify(renderError)
-    } catch (error) {
-      console.error('Failed to stringify render error', error)
-      return ''
-    }
-  }, [renderError])
 
   const handleRenderError = useMemoizedFn((error: unknown) => {
     setRenderError(error ?? new Error('Cesium render error'))
@@ -234,34 +212,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
         </Viewer>
       </CesiumRenderErrorBoundary>
       {renderError && (
-        <div className="absolute inset-0 z-10 bg-black/50 backdrop-blur flex justify-center items-center px-4">
-          <div className="flex flex-col gap-3 items-center bg-black/70 border border-white/10 rounded-xl px-6 py-5 max-w-2xl w-full text-white">
-            <div className="text-lg font-semibold">
-              {t('map.renderError.title', {
-                defaultValue: 'Map rendering failed',
-              })}
-            </div>
-            <div className="text-sm text-white/80 text-center">
-              {t('map.renderError.description', {
-                defaultValue:
-                  'Something went wrong while rendering the map. Please try again.',
-              })}
-            </div>
-            {errorDetail && (
-              <div className="w-full max-h-40 overflow-auto bg-black/50 text-xs text-red-100 border border-white/10 rounded-lg px-3 py-2 whitespace-pre-wrap break-words">
-                <div className="font-medium mb-1 text-white/70">
-                  {t('map.renderError.detail', {
-                    defaultValue: 'Error detail',
-                  })}
-                </div>
-                <div>{errorDetail}</div>
-              </div>
-            )}
-            <Button type="primary" onClick={handleRetry}>
-              {t('map.renderError.retry', { defaultValue: 'Retry' })}
-            </Button>
-          </div>
-        </div>
+        <RenderErrorOverlay error={renderError} onRetry={handleRetry} />
       )}
     </div>
   )
