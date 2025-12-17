@@ -1163,6 +1163,11 @@ map:
     description: 地图渲染出现问题，请重试。如果问题持续，请联系管理员。
     detail: 错误详情
     retry: 重试
+    environment: 运行环境信息
+    browser: 浏览器版本
+    gpu: 显卡信息
+    browserInfoUnknown: 未能获取浏览器信息
+    gpuInfoUnknown: 未能获取显卡信息
 mapLayer:
   setting:
     title: 图层设置
