@@ -1,17 +1,14 @@
-import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { Form, Select, Switch, Slider } from 'antd'
-import { useEffect, useState } from 'react'
 const { Option } = Select
 
 type Props = {
-  // deviceModel: API_DEVICE.domain.DeviceModel
   serviceName: string
   label: string
   paramName?: string
   valueName: string
-  // postDevice?: (identifier: string, values: any) => void
   type?: 'select' | 'switch' | 'slider'
 }
 
@@ -29,14 +26,7 @@ const ControlItem: React.FC<Props> = (props) => {
   const form = Form.useFormInstance()
   const deviceModel = useDeviceDetailStore((s) => s.deviceDetail?.deviceModel)
 
-  // const productKey = useUavControlRoomStore((s) => s.productKey)
-  const productKey = useDeviceDetailStore(
-    (s) =>
-      s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey,
-  )!
-  const deviceId = useUavControlRoomStore((s) => s.deviceId)
-  const postSerivce = usePostDeviceService(productKey, deviceId)
-  // const value = useModel('detailUav', (m) => m.state?.[valueName]);
+  const postSerivce = usePostDeviceService()
   const value = useUavControlRoomStore((s) => s.state?.[valueName])
 
   const getInputMethodField = (
