@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import * as Cesium from 'cesium'
 import { useCesium } from 'resium'
 import { useDebounceFn } from 'ahooks'
@@ -17,7 +16,7 @@ const UavViewCombackResolver: FC<PropsType> = memo(() => {
   const lat = useUavControlRoomStore((s) => s.state.latitude)
   const mapViewLocked = useUavControlRoomStore((s) => s.lockUavMapView)
 
-  const bigFly = useCallback(() => {
+  const bigFly = useMemoizedFn(() => {
     if (
       !viewer?.scene ||
       !mapViewLocked ||
@@ -38,7 +37,7 @@ const UavViewCombackResolver: FC<PropsType> = memo(() => {
         pitch: Cesium.Math.toRadians(-90),
       },
     })
-  }, [lat, lng, mapViewLocked, viewer])
+  })
 
   const { run: comeBack } = useDebounceFn(
     () => {
@@ -47,7 +46,7 @@ const UavViewCombackResolver: FC<PropsType> = memo(() => {
     },
     {
       leading: false,
-      wait: 15_000,
+      wait: 5_000,
     },
   )
 
