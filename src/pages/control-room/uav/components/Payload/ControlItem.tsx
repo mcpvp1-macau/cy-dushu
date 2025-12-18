@@ -3,7 +3,6 @@ import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDevice
 import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { Form, Switch, Slider } from 'antd'
-const { Option } = Select
 
 type Props = {
   serviceName: string
@@ -100,11 +99,14 @@ const ControlItem: React.FC<Props> = (props) => {
       )
     }
     return (
-      <Select placeholder={label} onChange={onChange}>
-        {Object.entries(specs).map(([key, label]) => (
-          <Option key={key}>{label as string}</Option>
-        ))}
-      </Select>
+      <Select
+        placeholder={label}
+        options={Object.entries(specs).map(([key, label]) => ({
+          label: label as string,
+          value: key,
+        }))}
+        onChange={onChange}
+      ></Select>
     )
   }
 

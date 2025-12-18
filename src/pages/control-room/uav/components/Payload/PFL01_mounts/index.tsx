@@ -8,7 +8,6 @@ import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 
 const serviceName = 'searchLightValueSet'
-const { Option } = Select
 
 const PFL01Mounts: React.FC = () => {
   const [form] = Form.useForm()
@@ -17,6 +16,7 @@ const PFL01Mounts: React.FC = () => {
     () => deviceModel?.services?.[serviceName],
     [deviceModel?.services],
   )
+
   const getInputMethodField = useCallback(
     (identifier?: string) => {
       if (!identifier) {
@@ -36,10 +36,9 @@ const PFL01Mounts: React.FC = () => {
       )
     )
   }, [service?.inputMethodFields])
-  const lightStatusField = useMemo(
-    () => getInputMethodField('lightStatus'),
-    [getInputMethodField],
-  )
+  const lightStatusField = useMemo(() => {
+    return getInputMethodField('lightStatus')
+  }, [getInputMethodField])
   const lightStrengthField = useMemo(
     () => getInputMethodField('lightStrength'),
     [getInputMethodField],
@@ -55,6 +54,7 @@ const PFL01Mounts: React.FC = () => {
     string,
     string
   >
+
   const lightStrengthSpecs = lightStrengthField?.dataType?.specs as
     | { min?: number; max?: number; step?: number }
     | undefined
@@ -115,12 +115,7 @@ const PFL01Mounts: React.FC = () => {
       form.setFieldValue(lightStrengthFormName, normalized)
       setLightStrengthValue(normalized)
     }
-  }, [
-    form,
-    lightStrength,
-    lightStrengthFormName,
-    lightStrengthIdentifier,
-  ])
+  }, [form, lightStrength, lightStrengthFormName, lightStrengthIdentifier])
 
   const onChangeLightStatus = (value: string | number) => {
     if (!lightStatusIdentifier) return
@@ -168,14 +163,14 @@ const PFL01Mounts: React.FC = () => {
               <Select
                 placeholder="灯光"
                 value={lightStatus}
+                options={Object.entries(lightStatusSpecs).map(
+                  ([key, value]) => ({
+                    label: value,
+                    value: key,
+                  }),
+                )}
                 onChange={onChangeLightStatus}
-              >
-                {Object.entries(lightStatusSpecs).map(([key, value]) => (
-                  <Option key={key} value={key}>
-                    {value}
-                  </Option>
-                ))}
-              </Select>
+              />
             </Form.Item>
           </Col>
           <Col span={24}>
