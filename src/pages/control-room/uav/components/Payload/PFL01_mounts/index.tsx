@@ -59,6 +59,15 @@ const PFL01Mounts: React.FC = () => {
     | { min?: number; max?: number; step?: number }
     | undefined
 
+  const lightStatusOptions = useMemo(
+    () =>
+      Object.entries(lightStatusSpecs).map(([key, value]) => ({
+        label: value,
+        value: key,
+      })),
+    [lightStatusSpecs],
+  )
+
   const productKey = useDeviceDetailStore(
     (s) =>
       s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey,
@@ -163,12 +172,7 @@ const PFL01Mounts: React.FC = () => {
               <Select
                 placeholder="灯光"
                 value={lightStatus}
-                options={Object.entries(lightStatusSpecs).map(
-                  ([key, value]) => ({
-                    label: value,
-                    value: key,
-                  }),
-                )}
+                options={lightStatusOptions}
                 onChange={onChangeLightStatus}
               />
             </Form.Item>
