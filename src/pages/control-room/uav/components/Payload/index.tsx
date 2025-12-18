@@ -8,6 +8,7 @@ import { CollapseProps } from 'antd'
 import { lazy } from 'react'
 import Scorpion from './Scorpion'
 import FC30PD1 from './FC30PD1'
+import { uniq } from 'lodash'
 
 const MMC_Gimbal_P3 = lazy(() => import('./MMC_Gimbal_P3'))
 const MMC_Gimbal_D4 = lazy(() => import('./MMC_Gimbal_D4'))
@@ -49,32 +50,14 @@ const labelMap: { [key in MountType]: string } = {
 
 /** 无人机负载 */
 const UavPayload: FC<PropsType> = memo(({ productKey: _productKey }) => {
-  // TODO mock 挂载
   const mount: string[] = useUavControlRoomStore((s) => s.state.mounts) || []
-  // || [
-  //   'PARACHUTE',
-  //   'MMC_Gimbal_P3',
-  //   'MMC_Gimbal_Z60R',
-  //   'MMC_Gimbal_Z30Pro',
-  //   'MMC_Gimbal_LP12_1',
-  //   'MMC_Gimbal_LP12_2',
-  //   'MMC_Gimbal_D4',
-  // ]
-
-
-  console.log('====',mount)
 
   const mounts = useMemo(() => {
-    const arr: MountType[] = []
-    mount.forEach((element: string) => {
-      if (element === 'MMC_Gimbal_LP12') {
-        arr.push('MMC_Gimbal_LP12_1')
-        arr.push('MMC_Gimbal_LP12_2')
-      } else {
-        arr.push(element as MountType)
-      }
-    })
-    return arr
+    return uniq(mount)
+      .flatMap((item) =>
+        item === 'MMC_Gimbal_LP12' ? ['MMC_Gimbal_LP12_1', 'MMC_Gimbal_LP12_2'] : [item],
+      )
+      .filter((item): item is MountType => item in labelMap)
   }, [mount])
 
   const MountsChildren: {
@@ -92,25 +75,14 @@ const UavPayload: FC<PropsType> = memo(({ productKey: _productKey }) => {
     FC30PD1: <FC30PD1 />,
   }
 
-  // const hasThrowAt = useDeviceDetailStore((s) => s.serviceHave['throwAt'])
-  const collapseItems = useMemo(() => {
-    const res: CollapseProps['items'] = []
-    mounts?.forEach((item: MountType) => {
-      res.push({
+  const collapseItems = useMemo<NonNullable<CollapseProps['items']>>(() => {
+    return (
+      mounts?.map((item) => ({
         key: item,
         label: labelMap[item],
         children: <AppViewSuspense>{MountsChildren[item]}</AppViewSuspense>,
-      })
-    })
-
-    // if (hasThrowAt) {
-    //   res.push({
-    //     key: 'throwAt',
-    //     label: '抛投器',
-    //     children: <AppViewSuspense>{<Scorpion />}</AppViewSuspense>,
-    //   })
-    // }
-    return res
+      })) ?? []
+    )
   }, [mounts])
 
   return (

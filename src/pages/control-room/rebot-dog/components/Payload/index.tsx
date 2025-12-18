@@ -5,9 +5,9 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useRebotDogControlRoomStore } from '@/store/context-store/useRebotDogControlRoom.store'
 import { CollapseProps } from 'antd'
-import _ from 'lodash'
 import { lazy } from 'react'
 import Scorpion from './Scorpion'
+import { uniq } from 'lodash'
 
 const MMC_Gimbal_P3 = lazy(() => import('./MMC_Gimbal_P3'))
 const MMC_Gimbal_D4 = lazy(() => import('./MMC_Gimbal_D4'))
@@ -42,30 +42,18 @@ const labelMap: { [key in MountType]: string } = {
 
 /** 机器狗负载 */
 const RebotDogPayload: FC<PropsType> = memo(() => {
-  // TODO mock 挂载
-  const mount: string[] = useRebotDogControlRoomStore((s) => s.state.mounts) || []
-  // || [
-  //   'PARACHUTE',
-  //   'MMC_Gimbal_P3',
-  //   'MMC_Gimbal_Z60R',
-  //   'MMC_Gimbal_Z30Pro',
-  //   'MMC_Gimbal_LP12_1',
-  //   'MMC_Gimbal_LP12_2',
-  //   'MMC_Gimbal_D4',
-  // ]
+  const mount: string[] =
+    useRebotDogControlRoomStore((s) => s.state.mounts) || []
 
-  const mounts = useMemo(() => {
-    const arr: MountType[] = []
-    _.uniq(mount).forEach((element: string) => {
-      if (element === 'MMC_Gimbal_LP12') {
-        arr.push('MMC_Gimbal_LP12_1')
-        arr.push('MMC_Gimbal_LP12_2')
-      } else {
-        arr.push(element as MountType)
-      }
-    })
-    return arr
-  }, [mount])
+  const mounts = useMemo(
+    () =>
+      uniq(mount).flatMap((item) =>
+        item === 'MMC_Gimbal_LP12'
+          ? ['MMC_Gimbal_LP12_1', 'MMC_Gimbal_LP12_2']
+          : item,
+      ) as MountType[],
+    [mount],
+  )
 
   const MountsChildren: {
     [key in MountType]: React.ReactNode
