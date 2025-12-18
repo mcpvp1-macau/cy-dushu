@@ -1,4 +1,3 @@
-import { memo, type FC } from 'react'
 import * as Cesium from 'cesium'
 import { useCesium } from 'resium'
 import { useDebounceFn } from 'ahooks'
@@ -15,9 +14,16 @@ const UavViewCombackResolver: FC<PropsType> = memo(() => {
 
   const lng = useUavControlRoomStore((s) => s.state.longitude)
   const lat = useUavControlRoomStore((s) => s.state.latitude)
+  const mapViewLocked = useUavControlRoomStore((s) => s.lockUavMapView)
 
-  const bigFly = () => {
-    if (!viewer?.scene || !canFly.current || isNil(lng) || isNil(lat)) {
+  const bigFly = useMemoizedFn(() => {
+    if (
+      !viewer?.scene ||
+      !mapViewLocked ||
+      !canFly.current ||
+      isNil(lng) ||
+      isNil(lat)
+    ) {
       return
     }
     viewer.scene.camera.setView({
@@ -31,7 +37,7 @@ const UavViewCombackResolver: FC<PropsType> = memo(() => {
         pitch: Cesium.Math.toRadians(-90),
       },
     })
-  }
+  })
 
   const { run: comeBack } = useDebounceFn(
     () => {
@@ -40,12 +46,12 @@ const UavViewCombackResolver: FC<PropsType> = memo(() => {
     },
     {
       leading: false,
-      wait: 15_000,
+      wait: 5_000,
     },
   )
 
   useEffect(() => {
-    if (!viewer?.scene) return
+    if (!viewer?.scene || !mapViewLocked) return
 
     const handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
     let isDrag = false
@@ -74,11 +80,24 @@ const UavViewCombackResolver: FC<PropsType> = memo(() => {
         handler.destroy()
       })
     }
-  }, [])
+  }, [comeBack, mapViewLocked, viewer])
 
   useEffect(() => {
+    if (!mapViewLocked) return
+
     bigFly()
-  }, [lng, lat])
+  }, [bigFly, lng, lat, mapViewLocked])
+
+  const prevLockedRef = useRef(mapViewLocked)
+
+  useEffect(() => {
+    if (mapViewLocked && !prevLockedRef.current) {
+      canFly.current = true
+      bigFly()
+    }
+
+    prevLockedRef.current = mapViewLocked
+  }, [bigFly, mapViewLocked])
 
   return null
 })

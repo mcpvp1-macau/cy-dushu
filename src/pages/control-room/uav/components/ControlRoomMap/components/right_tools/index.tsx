@@ -11,6 +11,7 @@ import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.
 import useMapDrawStore from '@/store/map/useDraw.store'
 import IconCreateFlightArea from '@/assets/icons/jsx/IconCreateFlightArea'
 import DensityExpirationSetting from './components/DensityExpirationSetting'
+import MapViewLockToggle from './components/MapViewLockToggle'
 
 type PropsType = unknown
 
@@ -86,6 +87,7 @@ const RightTools: FC<PropsType> = memo(() => {
           </>
         </FloatIconButtonGroup>
         <WirelessSituationTool />
+        <MapViewLockToggle />
         <FloatIconButton
           tippyProps={{
             content: t('common.videoProjection'),
