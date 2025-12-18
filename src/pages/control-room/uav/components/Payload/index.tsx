@@ -8,6 +8,8 @@ import { lazy } from 'react'
 import Scorpion from './Scorpion'
 import FC30PD1 from './FC30PD1'
 import { uniq } from 'lodash'
+import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
+import { emtpyArray } from '@/constant/data'
 
 const MMC_Gimbal_P3 = lazy(() => import('./MMC_Gimbal_P3'))
 const MMC_Gimbal_D4 = lazy(() => import('./MMC_Gimbal_D4'))
@@ -52,8 +54,9 @@ const labelMap: { [key in MountType]: string } = {
 
 /** 无人机负载 */
 const UavPayload: FC<PropsType> = memo(({ productKey: _productKey }) => {
-  // const mount: string[] = useUavControlRoomStore((s) => s.state.mounts) || []
-  const mount: string[] = ['PFL01-mounts']
+  const mount: string[] = useUavControlRoomStore(
+    (s) => s.state.mounts ?? emtpyArray,
+  )
 
   const mounts = useMemo(() => {
     return uniq(mount)
