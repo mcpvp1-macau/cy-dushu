@@ -29,26 +29,27 @@ const ControlItem: React.FC<Props> = (props) => {
   const postSerivce = usePostDeviceService()
   const value = useUavControlRoomStore((s) => s.state?.[valueName])
 
-  const getInputMethodField = (
-    obj: API_DEVICE.domain.Service | undefined,
-    identifier: string,
-  ) => {
-    if (!identifier) {
-      return obj?.inputMethodFields?.[0]
-    }
-    return obj?.inputMethodFields?.find(
-      (item) => item.identifier === identifier,
-    )
-  }
-
-  const getSpecs = (serviceName: string, paramName?: string) => {
+  const inputField = useMemo(() => {
     const service = deviceModel?.services?.[serviceName]
-    const param = getInputMethodField(service, paramName || '')
-    const specs = param?.dataType?.specs || {}
-    return { specs, name: param?.identifier }
-  }
+    if (!paramName) return service?.inputMethodFields?.[0]
+    return service?.inputMethodFields?.find(
+      (item) => item.identifier === paramName,
+    )
+  }, [deviceModel?.services, paramName, serviceName])
 
-  const { specs, name } = getSpecs(serviceName, paramName)
+  const { specs, name } = useMemo(() => {
+    const inputSpecs = inputField?.dataType?.specs || {}
+    return { specs: inputSpecs, name: inputField?.identifier }
+  }, [inputField])
+
+  const selectOptions = useMemo(
+    () =>
+      Object.entries(specs).map(([key, label]) => ({
+        label: label as string,
+        value: key,
+      })),
+    [specs],
+  )
 
   const onChange = (value: any) => {
     if (!name) return
@@ -68,15 +69,17 @@ const ControlItem: React.FC<Props> = (props) => {
   }
 
   useEffect(() => {
+    if (!name) return
+    const formName = `${serviceName}-${name}`
     if (type === 'select') {
-      form.setFieldValue(serviceName + '-' + name, value)
+      form.setFieldValue(formName, value)
     } else if (type === 'slider') {
-      form.setFieldValue(serviceName + '-' + name, value)
+      form.setFieldValue(formName, value)
       setSliderValue(value)
     } else {
-      form.setFieldValue(serviceName + '-' + name, !!Number(value || 0))
+      form.setFieldValue(formName, !!Number(value || 0))
     }
-  }, [value])
+  }, [form, name, serviceName, type, value])
 
   const render = () => {
     if (type === 'switch') {
@@ -101,10 +104,7 @@ const ControlItem: React.FC<Props> = (props) => {
     return (
       <Select
         placeholder={label}
-        options={Object.entries(specs).map(([key, label]) => ({
-          label: label as string,
-          value: key,
-        }))}
+        options={selectOptions}
         onChange={onChange}
       ></Select>
     )
