@@ -3,7 +3,6 @@ import AppEmpty from '@/components/AppEmpty'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
-import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { CollapseProps } from 'antd'
 import { lazy } from 'react'
 import Scorpion from './Scorpion'
@@ -53,12 +52,15 @@ const labelMap: { [key in MountType]: string } = {
 
 /** 无人机负载 */
 const UavPayload: FC<PropsType> = memo(({ productKey: _productKey }) => {
-  const mount: string[] = useUavControlRoomStore((s) => s.state.mounts) || []
+  // const mount: string[] = useUavControlRoomStore((s) => s.state.mounts) || []
+  const mount: string[] = ['PFL01-mounts']
 
   const mounts = useMemo(() => {
     return uniq(mount)
       .flatMap((item) =>
-        item === 'MMC_Gimbal_LP12' ? ['MMC_Gimbal_LP12_1', 'MMC_Gimbal_LP12_2'] : [item],
+        item === 'MMC_Gimbal_LP12'
+          ? ['MMC_Gimbal_LP12_1', 'MMC_Gimbal_LP12_2']
+          : [item],
       )
       .filter((item): item is MountType => item in labelMap)
   }, [mount])

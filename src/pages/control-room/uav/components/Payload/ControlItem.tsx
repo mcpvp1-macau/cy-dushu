@@ -1,7 +1,8 @@
+import Select from '@/components/AntdOverride/Select'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
-import { Form, Select, Switch, Slider } from 'antd'
+import { Form, Switch, Slider } from 'antd'
 const { Option } = Select
 
 type Props = {

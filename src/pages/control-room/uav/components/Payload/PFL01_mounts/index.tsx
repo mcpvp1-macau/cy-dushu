@@ -15,7 +15,9 @@ const PFL01Mounts: React.FC = () => {
     const service = deviceModel?.services?.[serviceName]
     return (
       service?.inputMethodFields?.find((item) => item.identifier === 'pitch') ??
-      service?.inputMethodFields?.find((item) => item.identifier === 'lightPitch')
+      service?.inputMethodFields?.find(
+        (item) => item.identifier === 'lightPitch',
+      )
     )
   }, [deviceModel])
 
@@ -42,8 +44,7 @@ const PFL01Mounts: React.FC = () => {
     const step = typeof pitchSpecs?.step === 'number' ? pitchSpecs.step : null
 
     const next = clamp(currentPitch + value, min, max)
-    const normalize =
-      step && step > 0 ? Math.round(next / step) * step : next
+    const normalize = step && step > 0 ? Math.round(next / step) * step : next
 
     postSerivce(serviceName, {
       [pitchIdentifier]: Number.isFinite(normalize) ? normalize : next,
@@ -52,14 +53,12 @@ const PFL01Mounts: React.FC = () => {
 
   return (
     <div className="pl-[12px] pr-[12px] pt-[12px] space-y-3">
-      {pitchIdentifier ? (
-        <div className="flex justify-center">
-          <PitchControl
-            onClick={onChangePitch}
-            value={Number(lightPitch ?? 0)}
-          />
-        </div>
-      ) : null}
+      <div className="flex justify-center">
+        <PitchControl
+          onChange={onChangePitch}
+          value={Number(lightPitch ?? 0)}
+        />
+      </div>
       <Form
         name="xxx"
         labelCol={{ span: 10 }}
@@ -69,7 +68,7 @@ const PFL01Mounts: React.FC = () => {
         form={form}
       >
         <Row gutter={10}>
-          <Col span={12}>
+          <Col span={24}>
             <ControlItem
               serviceName={serviceName}
               label="灯光"
