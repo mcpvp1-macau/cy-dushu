@@ -21,8 +21,9 @@ const ConversationDetail: FC<PropsType> = memo(({ data, aiState }) => {
   const items = useMemo(() => {
     const list: {
       role: 'user' | 'ai'
-      content: ReactNode
+      content: ReactNode | null
       key: string
+      isLoading?: boolean
     }[] = []
 
     data.forEach((e, index) => {
@@ -30,62 +31,26 @@ const ConversationDetail: FC<PropsType> = memo(({ data, aiState }) => {
         list.push({
           role: 'user',
           key: `user-${e.id ?? index}`,
-          content: (
-            <div className="bg-primary bg-opacity-30 px-3 py-2 rounded-lg text-fore">
-              {e.content ?? ''}
-            </div>
-          ),
+          content: e.content ?? '',
         })
         return
       }
 
       const parsedContent = shouldJson(e.content) ?? e.content
-      let content: ReactNode | null = null
 
-      if (typeof parsedContent === 'string') {
-        content = (
-          <div
-            className="markdown-body"
-            dangerouslySetInnerHTML={{ __html: md.render(parsedContent) }}
-          />
-        )
-      } else if (parsedContent?.images?.length) {
-        content = (
-          <div>
-            <Image.PreviewGroup
-              items={parsedContent?.images?.map(
-                (img: { image_url: string; alt?: string }) => ({
-                  src: handleImageUrl(img?.image_url),
-                  alt: img?.alt || 'image',
-                }),
-              )}
-            >
-              <Image
-                className="rounded overflow-hidden max-w-[200px]"
-                src={handleImageUrl(parsedContent?.images?.[0]?.image_url)}
-              />
-            </Image.PreviewGroup>
-          </div>
-        )
-      } else if (React.isValidElement(parsedContent)) {
-        // 判断是否为 JSX.Element
-        content = parsedContent
-      }
-
-      if (content) {
-        list.push({
-          role: 'ai',
-          key: `ai-${e.id ?? index}`,
-          content,
-        })
-      }
+      list.push({
+        role: 'ai',
+        key: `ai-${e.id ?? index}`,
+        content: renderAiContent(parsedContent),
+      })
     })
 
     if (aiState === 1) {
       list.push({
         role: 'ai',
         key: 'ai-loading',
-        content: <IconLoading className="text-fore scale-150 translate-y-1" />,
+        content: null,
+        isLoading: true,
       })
     }
 
@@ -108,24 +73,17 @@ const ConversationDetail: FC<PropsType> = memo(({ data, aiState }) => {
       className="tanqi-chat flex-1 overflow-hidden pl-3 pr-2 pt-2 pb-9"
     >
       <div className="flex flex-col gap-3 pr-1">
-        {items.map((item) => (
-          <div
-            key={item.key}
-            className={
-              item.role === 'user' ? 'flex w-full justify-end' : 'flex w-full'
-            }
-          >
-            <div
-              className={
-                item.role === 'user'
-                  ? 'max-w-full flex flex-col items-end text-right'
-                  : 'w-full max-w-full flex flex-col items-start text-left'
-              }
-            >
-              {item.content}
-            </div>
-          </div>
-        ))}
+        {items.map((item) =>
+          item.role === 'user' ? (
+            <UserMessage key={item.key} content={item.content as string} />
+          ) : (
+            <AiMessage
+              key={item.key}
+              content={item.content}
+              isLoading={item.isLoading}
+            />
+          ),
+        )}
       </div>
     </ScrollArea>
   )
@@ -134,6 +92,74 @@ const ConversationDetail: FC<PropsType> = memo(({ data, aiState }) => {
 ConversationDetail.displayName = 'ConversationDetail'
 
 export default ConversationDetail
+
+const UserMessage: FC<{ content?: string }> = ({ content }) => (
+  <div className="flex w-full justify-end">
+    <div className="max-w-full flex flex-col items-end text-right">
+      <div className="bg-primary bg-opacity-30 px-3 py-2 rounded-lg text-fore">
+        {content ?? ''}
+      </div>
+    </div>
+  </div>
+)
+
+const AiMessage: FC<{ content: ReactNode | null; isLoading?: boolean }> = ({
+  content,
+  isLoading,
+}) => {
+  if (!content && !isLoading) {
+    return null
+  }
+
+  return (
+    <div className="flex w-full">
+      <div className="w-full max-w-full flex flex-col items-start text-left">
+        {isLoading ? (
+          <IconLoading className="text-fore scale-150 translate-y-1" />
+        ) : (
+          content
+        )}
+      </div>
+    </div>
+  )
+}
+
+const renderAiContent = (parsedContent: unknown): ReactNode | null => {
+  if (typeof parsedContent === 'string') {
+    return (
+      <div
+        className="markdown-body"
+        dangerouslySetInnerHTML={{ __html: md.render(parsedContent) }}
+      />
+    )
+  }
+
+  if ((parsedContent as { images?: { image_url: string; alt?: string }[] })?.images?.length) {
+    const images = (parsedContent as { images?: { image_url: string; alt?: string }[] })?.images ?? []
+
+    return (
+      <div>
+        <Image.PreviewGroup
+          items={images.map((img) => ({
+            src: handleImageUrl(img?.image_url),
+            alt: img?.alt || 'image',
+          }))}
+        >
+          <Image
+            className="rounded overflow-hidden max-w-[200px]"
+            src={handleImageUrl(images?.[0]?.image_url)}
+          />
+        </Image.PreviewGroup>
+      </div>
+    )
+  }
+
+  if (React.isValidElement(parsedContent)) {
+    return parsedContent
+  }
+
+  return null
+}
 
 const handleImageUrl = (url: string) => {
   if (url.startsWith('http')) {
