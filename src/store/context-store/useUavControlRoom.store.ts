@@ -77,6 +77,8 @@ type StateType = {
   enableSmartTrack: boolean
   /**是否开启三维重建 */
   enableReconstruction: boolean
+  /** 地图视角是否跟随无人机 */
+  lockUavMapView: boolean
   /** 双链路 */
   links: API_DEVICE.domain.DeviceLink[]
   videoElement: HTMLVideoElement | null
@@ -117,6 +119,8 @@ type ActionsType = {
   updateEnableSmartTrack: (enable?: boolean) => void
   /**更新三维重建 */
   updateEnableReconstruction: (enable: boolean) => void
+  /** 更新地图视角跟随 */
+  updateLockUavMapView: (enable: boolean) => void
   /** 更新双链路 */
   updateLinks: (links: StateType['links']) => void
   /** 更新视频元素 */
@@ -170,6 +174,7 @@ const createInitialState = () =>
     enableAutoTrack: false,
     enableSmartTrack: false,
     enableReconstruction: false,
+    lockUavMapView: true,
     links: [],
     videoElement: null,
     openVideoProjection: false,
@@ -335,6 +340,9 @@ export const createUavControlRoomStore = (senders: WsSendersType) => {
             false,
             'updateEnableReconstruction',
           )
+        },
+        updateLockUavMapView: (enable) => {
+          set({ lockUavMapView: enable }, false, 'updateLockUavMapView')
         },
         updateLinks: (links) => {
           set({ links }, false, 'updateLinks')

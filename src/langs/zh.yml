@@ -661,6 +661,8 @@ uav:
     title: 云台控制
   flightControl:
     title: 飞行控制
+  mapViewLock:
+    title: 地图视角锁定
   takeOff:
     title: 起飞
   land:
