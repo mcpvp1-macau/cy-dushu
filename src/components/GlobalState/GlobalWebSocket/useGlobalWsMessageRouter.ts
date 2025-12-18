@@ -8,6 +8,7 @@ import { useFlightAreaWsHandlers } from './useFlightAreaWsHandlers'
 import { useMiscWsHandlers } from './useMiscWsHandlers'
 import useHandlePushEvent from './useHandlePushEvent'
 import { useQueryClient } from '@tanstack/react-query'
+import { useAgentRiskEventHandler } from './useAgentRiskEventHandler'
 
 type WsType =
   | 'DEVICE_STATUS'
@@ -42,6 +43,7 @@ export const useGlobalWsMessageRouter = () => {
     useReconstructionWsHandlers()
   const { handleFlightAreaMessage } = useFlightAreaWsHandlers()
   const { handleOverlayShare, handleShjhApproval } = useMiscWsHandlers(queryClient)
+  const handleAgentRiskEvent = useAgentRiskEventHandler()
 
   const handlers: Record<WsType, (message: unknown) => void> = useMemo(
     () => ({
@@ -83,6 +85,7 @@ export const useGlobalWsMessageRouter = () => {
 
   return useMemoizedFn((event: WebSocketEventMap['message']) => {
     const parsed = shouldJson<unknown>(event.data)
+    handleAgentRiskEvent(parsed)
     if (!parsed || typeof parsed !== 'object') {
       return
     }
