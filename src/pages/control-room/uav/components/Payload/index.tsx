@@ -18,6 +18,7 @@ const MMC_Gimbal_Z30Pro = lazy(() => import('./MMC_Gimbal_Z30Pro'))
 const MMC_Gimbal_Z60R = lazy(() => import('./MMC_Gimbal_Z60R'))
 const PARACHUTE = lazy(() => import('./PARACHUTE'))
 const MMC_Gimbal_H3D = lazy(() => import('./MMC_Gimbal_H3D'))
+const PFL01Mounts = lazy(() => import('./PFL01_mounts'))
 
 type PropsType = {
   productKey: string
@@ -34,6 +35,7 @@ type MountType =
   | 'H3DSpeaker'
   | 'Th4Thrower'
   | 'FC30PD1'
+  | 'PFL01-mounts'
 
 const labelMap: { [key in MountType]: string } = {
   PARACHUTE: '降落伞',
@@ -46,6 +48,7 @@ const labelMap: { [key in MountType]: string } = {
   H3DSpeaker: '喊话器 H3D',
   Th4Thrower: '抛投器 Th4',
   FC30PD1: '抛投器',
+  'PFL01-mounts': '探照灯 PFL01',
 }
 
 /** 无人机负载 */
@@ -73,6 +76,7 @@ const UavPayload: FC<PropsType> = memo(({ productKey: _productKey }) => {
     H3DSpeaker: <MMC_Gimbal_H3D />,
     Th4Thrower: <Scorpion />,
     FC30PD1: <FC30PD1 />,
+    'PFL01-mounts': <PFL01Mounts />,
   }
 
   const collapseItems = useMemo<NonNullable<CollapseProps['items']>>(() => {
