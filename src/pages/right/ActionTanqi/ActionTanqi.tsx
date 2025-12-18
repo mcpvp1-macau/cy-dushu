@@ -207,7 +207,7 @@ const ActionTanqi: FC<PropsType> = memo(() => {
       const getDisplayContent = () => {
         if (humanInTheLoopFn) {
           return (
-            <div>
+            <div className="w-full">
               <div>{replyingContent}</div>
               {humanInTheLoopFn && (
                 <HumanInLoopDialog

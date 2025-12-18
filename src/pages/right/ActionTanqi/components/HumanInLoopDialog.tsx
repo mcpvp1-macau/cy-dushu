@@ -26,7 +26,7 @@ const HumanInLoopDialog: FC<PropsType> = memo(
     const [isLoading, setIsLoading] = useState(false)
 
     return (
-      <div className="rounded overflow-hidden bg-ground-3 border border-ground-5">
+      <div className="w-full rounded overflow-hidden bg-ground-3 border border-ground-5">
         <div className="bg-ground-4 px-2 py-1 border-b border-ground-5 flex items-center gap-2">
           <IconRobot /> 等待答复
         </div>

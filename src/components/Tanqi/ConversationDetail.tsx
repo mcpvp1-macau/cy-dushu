@@ -53,10 +53,12 @@ const ConversationDetail: FC<PropsType> = memo(({ data, aiState }) => {
         content = (
           <div>
             <Image.PreviewGroup
-              items={parsedContent?.images?.map((img: { image_url: string; alt?: string }) => ({
-                src: handleImageUrl(img?.image_url),
-                alt: img?.alt || 'image',
-              }))}
+              items={parsedContent?.images?.map(
+                (img: { image_url: string; alt?: string }) => ({
+                  src: handleImageUrl(img?.image_url),
+                  alt: img?.alt || 'image',
+                }),
+              )}
             >
               <Image
                 className="rounded overflow-hidden max-w-[200px]"
@@ -109,24 +111,18 @@ const ConversationDetail: FC<PropsType> = memo(({ data, aiState }) => {
         {items.map((item) => (
           <div
             key={item.key}
-            className={item.role === 'user' ? 'flex w-full justify-end' : 'flex w-full'}
+            className={
+              item.role === 'user' ? 'flex w-full justify-end' : 'flex w-full'
+            }
           >
             <div
               className={
                 item.role === 'user'
                   ? 'max-w-full flex flex-col items-end text-right'
-                  : 'max-w-full flex flex-col items-start text-left'
+                  : 'w-full max-w-full flex flex-col items-start text-left'
               }
             >
-              <div
-                className={
-                  item.role === 'user'
-                    ? 'rounded-lg px-3 py-2 bg-primary bg-opacity-30'
-                    : 'rounded-lg px-3 py-2 bg-ground-2'
-                }
-              >
-                {item.content}
-              </div>
+              {item.content}
             </div>
           </div>
         ))}
