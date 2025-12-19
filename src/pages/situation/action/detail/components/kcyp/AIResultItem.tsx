@@ -4,7 +4,11 @@ import { useDebounceFn } from 'ahooks'
 import { Checkbox, Form, Input } from 'antd'
 import { useDictOptions } from '@/store/useDict.store'
 import { DictEnum } from '@/enum/dict'
-import { checkCarNo, getSipCascadePicture } from '@/service/modules/action/kcyp'
+import {
+  checkCarNo,
+  checkLicensePlate,
+  getSipCascadePicture,
+} from '@/service/modules/action/kcyp'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { ActionEnum } from '@/constant/action/action_type'
 import { LoadingOutlined, PictureFilled } from '@ant-design/icons'
@@ -104,6 +108,19 @@ const AIResultItem: FC<{
     }
   }
 
+  const handleCheckLicensePlate = async () => {
+    await checkLicensePlate({
+      actionId: data.actionId,
+      actionItemId: data.actionItemId,
+      actionItemRecordId: data.actionItemRecordId,
+      actionRecordId: data.actionRecordId,
+      plateNo: form.getFieldValue('plateNo') || data.plateNo,
+      plateColor: form.getFieldValue('plateColor') || data.plateColor,
+      plateType: form.getFieldValue('plateType') || data.plateType,
+    })
+    msgApi.success('车牌检测请求已发送')
+  }
+
   return (
     <div className="flex gap-2">
       <div className="w-[212px] h-[155px] relative border border-solid border-ground-5 box-content bg-ground-1">
@@ -201,7 +218,7 @@ const AIResultItem: FC<{
         </Form>
       </div>
       <div>
-        {ActionEnum.KCYP === actionType && (
+        {ActionEnum.KCYP === actionType ? (
           <IconAsyncButton
             disabled={!data.plateNo || !data.plateColor || !data.plateType}
             toolTipProps={
@@ -225,7 +242,18 @@ const AIResultItem: FC<{
           >
             <IconKCCheck />
           </IconAsyncButton>
-        )}
+        ) : null}
+        {ActionEnum.KCYPXS === actionType ? (
+          <IconAsyncButton
+            toolTipProps={{
+              title: '车牌检测',
+            }}
+            successMsg=""
+            onClick={handleCheckLicensePlate}
+          >
+            <IconKCCheck />
+          </IconAsyncButton>
+        ) : null}
       </div>
     </div>
   )

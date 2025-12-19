@@ -46,6 +46,23 @@ export const commitXiaoshanKCYP = (data: any) => {
   return serverJingqi.post('/xiaoshan/kcyp/commit', data)
 }
 
+/** 萧山车牌检测 */
+export const checkLicensePlate = (
+  data: Pick<
+    API_ACTION.domain.AIResultRecord,
+    |
+      'actionId'
+      | 'actionItemId'
+      | 'actionItemRecordId'
+      | 'actionRecordId'
+      | 'plateNo'
+      | 'plateColor'
+      | 'plateType'
+  >,
+) => {
+  return serverJingqi.post('/xiaoshan/kcyp/checkLicensePlate', data)
+}
+
 /** 获取萧山大华卡口图片 */
 export const getSipCascadePicture = (
   data: API_KCYP.req.GetSipCascadePictureReq,
