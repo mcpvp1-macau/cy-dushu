@@ -152,19 +152,39 @@ const DeviceLiveVideo = memo(
           queryFn: async () => {
             try {
               // 同时获取视频直播地址和流列表
-              const [liveData, streamList] = await Promise.all([
+              // 并行获取直播地址与可选流列表，保证上次流选择的记忆化逻辑仍可生效
+              const [liveResult, streamListResult] = await Promise.allSettled([
                 live(productKey, deviceId, { videoId }),
                 fetchDeviceStreamList(), // 为了保证第一次拉流时, 能记住上一次选择的视频流, 所以一起请求
               ])
 
+              if (liveResult.status === 'rejected') {
+                throw liveResult.reason
+              }
+
+              const liveData = liveResult.value
+              const streamList =
+                streamListResult.status === 'fulfilled'
+                  ? streamListResult.value
+                  : null
+
               let url = (liveData.data.playUrl as string) || ''
 
               // 记忆化获取上次的流
+              // 优先使用上次记忆的流地址（若存在）
               const last = sessionStorage.getItem(deviceId + '-videoURL')
               if (last) {
                 const find = streamList?.find((e) => e.playUrl === last)
                 if (find) {
                   url = find.playUrl
+                }
+              }
+
+              if (!last && Array.isArray(streamList) && streamList.length > 1) {
+                // 无历史流且存在多路流时，从末尾开始回退选择可用流地址
+                const reverseStream = [...streamList].reverse().find((e) => e.playUrl)
+                if (reverseStream?.playUrl) {
+                  url = reverseStream.playUrl
                 }
               }
               if (LastUrlRef.current !== url) {
