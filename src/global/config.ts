@@ -126,6 +126,9 @@ class GlobalConfig {
   /** 是否隐藏 2D 重建删除操作 */
   hideReconstruction2DDelete?: boolean
 
+  /** 是否开启蛙跳任务 */
+  enableFrogLeapTask = false
+
   constructor(def: ConfigType) {
     Object.assign(this, def)
   }
