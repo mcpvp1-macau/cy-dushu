@@ -61,31 +61,28 @@ const BaseWindow = memo(
         return
       }
 
-      const otherWindows = windows.filter((w) => w.id !== props.id)
-      const orderedOtherWindows = otherWindows.map((window, index) => ({
+      if (currentWindow.zIndex === windows.length && windows.length > 0) {
+        useFixedWindowsStore.setState({ activeWindowId: props.id })
+        return
+      }
+
+      const otherWindowsSorted = windows
+        .filter((w) => w.id !== props.id)
+        .sort((a, b) => a.zIndex - b.zIndex)
+
+      const updatedWindows = otherWindowsSorted.map((window, index) => ({
         ...window,
         zIndex: index + 1,
       }))
-      const maxZIndex = orderedOtherWindows.length + 1
 
-      const windowsWithOrder = windows.map((window) => {
-        if (window.id === props.id) {
-          return {
-            ...window,
-            zIndex: maxZIndex,
-          }
-        }
-
-        const orderedWindow = orderedOtherWindows.find(
-          (item) => item.id === window.id,
-        )
-
-        return orderedWindow ?? window
+      updatedWindows.push({
+        ...currentWindow,
+        zIndex: windows.length,
       })
 
       useFixedWindowsStore.setState({
-        windows: windowsWithOrder,
-        maxZIndex,
+        windows: updatedWindows,
+        maxZIndex: windows.length,
         activeWindowId: props.id,
       })
     }

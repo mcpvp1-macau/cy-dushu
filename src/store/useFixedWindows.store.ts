@@ -78,11 +78,16 @@ const useFixedWindowsStore = create<StateType & ActionsType>()((set, get) => ({
   },
   removeWindow: (id) => {
     set((state) => {
-      const windows = state.windows.filter((w) => w.id !== id)
+      const remainingWindows = state.windows.filter((w) => w.id !== id)
+      const reIndexedWindows = remainingWindows
+        .sort((a, b) => a.zIndex - b.zIndex)
+        .map((w, index) => ({ ...w, zIndex: index + 1 }))
+
       return {
-        windows,
-        maxZIndex: windows.length,
-        activeWindowId: state.activeWindowId === id ? null : state.activeWindowId,
+        windows: reIndexedWindows,
+        maxZIndex: reIndexedWindows.length,
+        activeWindowId:
+          state.activeWindowId === id ? null : state.activeWindowId,
       }
     })
   },
