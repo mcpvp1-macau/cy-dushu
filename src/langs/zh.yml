@@ -1170,6 +1170,8 @@ map:
     gpu: 显卡信息
     browserInfoUnknown: 未能获取浏览器信息
     gpuInfoUnknown: 未能获取显卡信息
+  compass:
+    reset: 重置朝北
 mapLayer:
   setting:
     title: 图层设置
