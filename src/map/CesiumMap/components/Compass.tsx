@@ -1,72 +1,122 @@
 import { useCesium } from 'resium'
-import { twMerge } from 'tailwind-merge'
+import * as Cesium from 'cesium'
+import FloatIconButton from '@/components/ui/button/FloatIconButton'
 
-const Compass: FC<{ className?: string }> = memo(({ className }) => {
+const Compass: FC = memo(() => {
   const { viewer } = useCesium()
   const { t } = useTranslation()
-  const [heading, setHeading] = useState(0)
+
+  const [headingDeg, setHeadingDeg] = useState(0)
+  const headingRef = useRef(0)
+  const percentageChangedRef = useRef<number | null>(null)
 
   const updateHeading = useMemoizedFn(() => {
-    if (!viewer) {
+    const heading = viewer?.camera?.heading
+    if (heading === undefined || heading === null || Number.isNaN(heading)) {
       return
     }
 
-    setHeading(viewer.camera?.heading ?? 0)
+    const normalized = Cesium.Math.zeroToTwoPi(heading)
+    const nextDeg = Cesium.Math.toDegrees(normalized)
+    const diff = Math.abs(nextDeg - headingRef.current)
+    const wrappedDiff = Math.min(diff, 360 - diff)
+    if (wrappedDiff < 0.1) {
+      return
+    }
+
+    headingRef.current = nextDeg
+    setHeadingDeg(nextDeg)
   })
 
   useEffect(() => {
-    if (!viewer) {
+    if (!viewer?.camera) {
       return
     }
 
+    if (percentageChangedRef.current === null) {
+      percentageChangedRef.current = viewer.camera.percentageChanged
+    }
+    viewer.camera.percentageChanged = 0.05
+
     updateHeading()
-
-    viewer.camera.changed.addEventListener(updateHeading)
-
+    const handleChange = () => updateHeading()
+    viewer.camera.changed.addEventListener(handleChange)
     return () => {
-      viewer.camera.changed.removeEventListener(updateHeading)
+      viewer.camera.changed.removeEventListener(handleChange)
+      if (percentageChangedRef.current !== null) {
+        viewer.camera.percentageChanged = percentageChangedRef.current
+      }
     }
   }, [updateHeading, viewer])
 
   const handleResetNorth = useMemoizedFn(() => {
-    if (!viewer) {
+    if (!viewer?.camera) {
       return
     }
 
-    const camera = viewer.camera
-    const destination = camera.positionWC?.clone?.() ?? camera.position?.clone?.()
+    const destination = viewer.camera.positionWC ?? viewer.camera.position
+    if (!destination) {
+      return
+    }
 
-    camera.setView({
+    viewer.camera.setView({
       destination,
       orientation: {
         heading: 0,
-        pitch: camera.pitch,
-        roll: camera.roll,
+        pitch: viewer.camera.pitch ?? 0,
+        roll: viewer.camera.roll ?? 0,
       },
     })
-    viewer.scene?.requestRender?.()
   })
 
+  const rotationStyle = useMemo(
+    () => ({
+      transform: `rotate(${-headingDeg}deg)`,
+    }),
+    [headingDeg],
+  )
+
+  const resetLabel = t('map.compass.reset', { defaultValue: 'Reset to north' })
+  const northLabel = 'N'
+
   return (
-    <button
-      type="button"
-      className={twMerge(
-        'relative w-12 h-12 rounded-full border border-ground-4 bg-ground-1/90 backdrop-blur-sm shadow-lg flex items-center justify-center overflow-hidden transition hover:bg-ground-2',
-        className,
-      )}
+    <FloatIconButton
+      className="size-8 rounded-full border border-solid border-ground-4/70 shadow-md translate-x-[2px]"
+      tippyProps={{
+        content: resetLabel,
+        placement: 'left',
+      }}
       onClick={handleResetNorth}
-      title={t('map.compass.reset', { defaultValue: '重置朝北' })}
-      aria-label={t('map.compass.reset', { defaultValue: '重置朝北' })}
+      aria-label={resetLabel}
     >
-      <div className="absolute inset-[6px] rounded-full border border-ground-4" />
-      <div
-        className="relative w-8 h-8"
-        style={{ transform: `rotate(${-heading}rad)` }}
-      >
-        <div className="absolute left-1/2 top-0 -translate-x-1/2 w-0 h-0 border-l-[6px] border-r-[6px] border-b-[12px] border-b-brand-6" />
-        <div className="absolute left-1/2 bottom-0 -translate-x-1/2 w-0 h-0 border-l-[6px] border-r-[6px] border-t-[12px] border-t-ground-4/70" />
+      <div className="relative size-full">
+        <div className="absolute inset-[6px] rounded-full border border-ground-4/50" />
+        <div
+          className="absolute inset-0 flex items-center justify-center transition-transform duration-150"
+          style={rotationStyle}
+        >
+          <svg viewBox="0 0 100 100" className="size-8 text-fore">
+            <polygon
+              points="50,10 62,50 50,44 38,50"
+              className="fill-current text-primary"
+            />
+            <polygon
+              points="50,90 62,50 50,56 38,50"
+              className="fill-current text-fore/40"
+            />
+            <text
+              x="50"
+              y="16"
+              textAnchor="middle"
+              dominantBaseline="middle"
+              className="fill-current text-fore text-[20px] font-semibold"
+            >
+              {northLabel}
+            </text>
+          </svg>
+        </div>
       </div>
-    </button>
+    </FloatIconButton>
   )
 })
 
