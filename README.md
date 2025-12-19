@@ -1,63 +1,63 @@
 # ja-dushu-front
 
-A React 18 + TypeScript + Vite single-page application that serves as a command-and-control console for UAVs, robots, and related devices. The UI combines Ant Design and Tailwind, integrates Cesium/Mapbox for geospatial views, and relies on Zustand and React Query for state and data management.
+一款基于 React 18、TypeScript 与 Vite 的单页应用，用作无人机、机器人等设备的指挥调度控制台。UI 采用 Ant Design + Tailwind，集成 Cesium/Mapbox 地图，并通过 Zustand 与 React Query 管理状态和数据。
 
-## Getting started
+## 快速开始
 
-### Prerequisites
-- Node.js (project uses `pnpm`; `pnpm-lock.yaml` is authoritative)
-- pnpm installed globally
+### 前置条件
+- Node.js（推荐使用 `pnpm`，以 `pnpm-lock.yaml` 为准）
+- 全局安装 pnpm
 
-### Installation
+### 安装依赖
 ```bash
 pnpm install
 ```
 
-### Development servers
-Development configs live under `vite-config/dev`. Each script loads a different proxy target and optional `__DEV_MERGE_CONFIG__`:
+### 开发调试
+开发配置位于 `vite-config/dev`，不同脚本指向不同代理目标并可合并 `__DEV_MERGE_CONFIG__`：
 
-- `pnpm dev` or `pnpm dev:82` (default backend)
-- Other options: `dev:47`, `dev:103`, `dev:110`, `dev:105`, `dev:201`, `dev:240`, `dev:216`, `dev:235`, `dev:231`, `dev:idc`, `dev:yz`, `dev:wanglou`, `dev:zhongshan`, `dev:xiaoshan`, `dev:taixin`, `dev:changzhou`
+- `pnpm dev` 或 `pnpm dev:82`（默认后端）
+- 其他选项：`dev:47`、`dev:103`、`dev:110`、`dev:105`、`dev:201`、`dev:240`、`dev:216`、`dev:235`、`dev:231`、`dev:idc`、`dev:yz`、`dev:wanglou`、`dev:zhongshan`、`dev:xiaoshan`、`dev:taixin`、`dev:changzhou`
 
-### Building and checks
-- Type-check: `pnpm ts`
-- Lint: `pnpm lint`
-- Production build: `pnpm build`
-- Preview build (uses config.82): `pnpm preview --config ./vite-config/dev/config.82.ts`
+### 构建与检查
+- 类型检查：`pnpm ts`
+- 代码规范：`pnpm lint`
+- 生产构建：`pnpm build`
+- 预览构建（使用 config.82）：`pnpm preview --config ./vite-config/dev/config.82.ts`
 
-## Runtime configuration
-- `public/js/config.js` defines `window.config`; development merges with `__DEV_MERGE_CONFIG__` in `src/global/config.ts`.
-- Common flags include `systemName`, `title`, `globalWs`, login URLs, imagery/terrain toggles, regional overlays, S3 credentials, and Sentry settings. Cesium requires `VITE_CESIUM_ACCESS_TOKEN`.
-- Required static assets: `public/iconfonts`, `public/js/JessibucaPro`, `public/js/daotong`.
+## 运行时配置
+- `public/js/config.js` 定义 `window.config`；开发模式会与 `src/global/config.ts` 中的 `__DEV_MERGE_CONFIG__` 合并。
+- 常见字段包括 `systemName`、`title`、`globalWs`、登录地址、影像/地形开关、区域覆盖、S3 凭据、Sentry 设置等。Cesium 需要 `VITE_CESIUM_ACCESS_TOKEN`。
+- 必需静态资源：`public/iconfonts`、`public/js/JessibucaPro`、`public/js/daotong`。
 
-## Project structure
-Key paths to explore:
+## 项目结构
+重点目录：
 
-- `src/main.tsx`: Bootstraps Sentry (`instrument.ts`), i18n, global styles, and the main router. Handles token initialization and share-video entry.
-- `src/App.tsx`: Provides theming, global message/notification context, `GlobalState` side effects (websockets, overlays, toast relay), and layout composition.
-- `src/router/`: Route declarations for situation awareness, events, action records, sources, organization, wayline editors, schedules, defence, alarms, documents, backtracking, control-room variants, and share views.
-- `src/map/`: Cesium/Mapbox composition, overlay management, flight areas, reconstruction layers, density maps, and global map interactions.
-- `src/pages/right/`: Right-side panels driven by `useRightMode` for device detail, measurement, events, radar, reconstruction, and Tanqi outer panel.
-- `src/service/servers`: Axios clients with interceptors for auth, internationalization, and error handling. Main bases: control center, Jingqi, 4A, OTA, video, VOD, Diting/Tanqi, MCP, geo search, etc.
-- `src/store/`: Zustand stores for user/session, websockets, map devices, overlays, flight areas, reconstruction, density maps, right-panel mode, theme, and toasts.
-- `src/langs/`: i18n resources (`zh.yml`, `en.yml`).
-- `src/worker/`: Comlink-wrapped workers for area wayline solutions and watermarking.
-- `public/`: Static assets and configuration expected at runtime.
+- `src/main.tsx`：初始化 Sentry（`instrument.ts`）、i18n、全局样式与路由，负责 token 处理及分享视频入口。
+- `src/App.tsx`：提供主题、全局消息/通知上下文，挂载 `GlobalState`（WebSocket、覆盖物、toast 转发等）与整体布局。
+- `src/router/`：路由声明，覆盖态势、事件、行动记录、资源、组织、航线编辑、排班、防御、告警、文档、回溯、控制室及分享视图。
+- `src/map/`：Cesium/Mapbox 组合，管理覆盖物、飞行区、重建层、密度图及全局地图交互。
+- `src/pages/right/`：右侧面板，基于 `useRightMode` 展示设备详情、测量、事件、雷达、重建及 Tanqi 外层面板。
+- `src/service/servers`：封装带拦截器的 Axios 客户端，涵盖控制中心、警企、4A、OTA、视频、VOD、Diting/Tanqi、MCP、地理搜索等服务。
+- `src/store/`：Zustand 状态，覆盖用户/会话、WebSocket、地图设备、覆盖物、飞行区、重建、密度图、右侧模式、主题与 toast。
+- `src/langs/`：国际化资源（`zh.yml`、`en.yml`）。
+- `src/worker/`：Comlink 封装的 worker，用于面积航线求解与图片水印。
+- `public/`：运行时需要的静态资源与配置。
 
-## Conventions
-- Internationalization: All user-facing strings must use `t('key', { defaultValue })` and be added to both `src/langs/zh.yml` and `src/langs/en.yml`.
-- Null-safety: Treat backend fields as nullable; use optional chaining, default values, and type guards.
-- Auto-imports: `plugins/auto-import.ts` injects common hooks/utilities. Do not manually import identifiers already auto-imported.
-- Networking: Dev proxies route `/proxyApi`, `/proxy4aApi`, `/proxyWsApi`, `/ws`, `/v3`, `/storage`, `/upload`, `/ja-map`, `/raster`, `/asr`, `/geoserver`, and Diting/Tanqi endpoints. Adjust when adding services.
+## 开发规范
+- 国际化：所有用户可见文案须使用 `t('key', { defaultValue })`，并同步新增到 `src/langs/zh.yml` 与 `src/langs/en.yml`。
+- 空值安全：后端字段默认可空，使用可选链、默认值、类型守卫进行防御式访问。
+- 自动导入：`plugins/auto-import.ts` 已注入常用 hooks/工具，不得重复手动导入已自动注入的标识符。
+- 网络代理：开发代理覆盖 `/proxyApi`、`/proxy4aApi`、`/proxyWsApi`、`/ws`、`/v3`、`/storage`、`/upload`、`/ja-map`、`/raster`、`/asr`、`/geoserver` 及 Diting/Tanqi 端点；新增服务时需同步调整。
 
-## Deployment
-Docker targets exist for AMD64 and ARM64 builds, pushing to private or Ali registries:
+## 部署
+提供 AMD64 与 ARM64 的 Docker 目标，可推送至私有或阿里镜像仓库：
 
 - `build:docker-amd` / `push:amd`
 - `build:docker-arm` / `push:arm`
 - `build:docker-public` / `push:public`
 - `build:docker-public-arm` / `push:public-arm`
 
-## Additional notes
-- `pnpm ts` and `pnpm lint` must pass before completing work.
-- Keep required files (`public/js/config.js`, icon fonts, JessibucaPro, Daotong assets) available at runtime to avoid build/runtime errors.
+## 其他说明
+- 完成交付前必须通过 `pnpm ts` 与 `pnpm lint`。
+- 运行时需确保 `public/js/config.js`、图标字体、JessibucaPro 与 Daotong 资源可用，以避免构建/运行错误。
