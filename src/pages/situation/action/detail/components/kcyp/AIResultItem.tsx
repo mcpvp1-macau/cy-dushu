@@ -118,7 +118,7 @@ const AIResultItem: FC<{
       plateColor: form.getFieldValue('plateColor') || data.plateColor,
       plateType: form.getFieldValue('plateType') || data.plateType,
     })
-    msgApi.success('车牌检测请求已发送')
+    msgApi.success('车牌校验成功')
   }
 
   return (
