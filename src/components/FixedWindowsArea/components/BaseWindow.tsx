@@ -53,6 +53,42 @@ const BaseWindow = memo(
     })
     const [mouseAction, setMouseAction] = useState(MouseActionType.None)
 
+    // 重排 zIndex
+    const resetZIndex = () => {
+      const { windows } = useFixedWindowsStore.getState()
+      const currentWindow = windows.find((w) => w.id === props.id)
+
+      if (!currentWindow) {
+        return
+      }
+
+      // 如果已经是最上层，则不处理
+      if (currentWindow.zIndex === windows.length && windows.length > 0) {
+        useFixedWindowsStore.setState({ activeWindowId: props.id })
+        return
+      }
+
+      const otherWindowsSorted = windows
+        .filter((w) => w.id !== props.id)
+        .sort((a, b) => a.zIndex - b.zIndex)
+
+      const updatedWindows = otherWindowsSorted.map((window, index) => ({
+        ...window,
+        zIndex: index + 1,
+      }))
+
+      updatedWindows.push({
+        ...currentWindow,
+        zIndex: windows.length,
+      })
+
+      useFixedWindowsStore.setState({
+        windows: updatedWindows,
+        maxZIndex: windows.length,
+        activeWindowId: props.id,
+      })
+    }
+
     // 处理开始拖拽
     const handleStart = (x: number, y: number) => {
       startPosition.current = {
@@ -70,6 +106,7 @@ const BaseWindow = memo(
     }
     const handleMouseDown = (e: React.MouseEvent) => {
       e.stopPropagation()
+      resetZIndex()
       handleStart(e.clientX, e.clientY)
     }
 
@@ -78,6 +115,7 @@ const BaseWindow = memo(
       if (e.touches.length !== 1) {
         return
       }
+      resetZIndex()
       const x = e.touches[0].clientX
       const y = e.touches[0].clientY
       handleStart(x, y)
@@ -290,6 +328,7 @@ const BaseWindow = memo(
         style={{
           width: props.width,
           height: props.height,
+          zIndex: props.zIndex,
           transform: `translate(${props.x}px, ${props.y}px)`,
         }}
       >
