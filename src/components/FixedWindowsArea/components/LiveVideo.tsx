@@ -27,6 +27,7 @@ const FixedWindowLiveVideo: FC<PropsType> = memo(({ data }) => {
   return (
     <BaseWindow
       id={data.id}
+      zIndex={data.zIndex}
       {...data.layout}
       title={
         isLoading || !detail ? <LoadingOutlined /> : `${detail.data.deviceName}`

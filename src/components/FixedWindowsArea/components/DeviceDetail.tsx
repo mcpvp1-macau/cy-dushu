@@ -33,6 +33,7 @@ const FixedWindowDeviceDetail: FC<PropsType> = memo(({ data }) => {
     <BaseWindow
       ref={windowRef}
       id={data.id}
+      zIndex={data.zIndex}
       noHeader
       noBorder
       resizeAbleX={false}

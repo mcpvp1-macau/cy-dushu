@@ -50,10 +50,11 @@ const useFixedWindowsStore = create<StateType & ActionsType>()((set, get) => ({
   activeWindowId: null,
   addWindow: (e) => {
     const id = v4()
+    const newZIndex = get().maxZIndex + 1
     const newItem = {
       ...e,
       id,
-      zIndex: get().maxZIndex + 1,
+      zIndex: newZIndex,
       layout: {
         x: 0,
         y: 0,
@@ -64,6 +65,7 @@ const useFixedWindowsStore = create<StateType & ActionsType>()((set, get) => ({
     } as WindowType
     set((state) => ({
       windows: [...state.windows, newItem],
+      maxZIndex: newZIndex,
     }))
     return id
   },
@@ -75,12 +77,14 @@ const useFixedWindowsStore = create<StateType & ActionsType>()((set, get) => ({
     }))
   },
   removeWindow: (id) => {
-    console.log('remove', id)
-    console.log(
-      'first',
-      get().windows.filter((w) => w.id !== id),
-    )
-    set((state) => ({ windows: state.windows.filter((w) => w.id !== id) }))
+    set((state) => {
+      const windows = state.windows.filter((w) => w.id !== id)
+      return {
+        windows,
+        maxZIndex: windows.length,
+        activeWindowId: state.activeWindowId === id ? null : state.activeWindowId,
+      }
+    })
   },
   updateActiveWindow: (id) => set({ activeWindowId: id }),
 }))
