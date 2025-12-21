@@ -81,4 +81,7 @@ window.config = {
   useFlightReporting: false,
   // 禁飞区显示样式: 'default' 为默认样式(红色填充), 'fence' 为电子围栏样式
   noFlyZoneDisplayStyle: 'fence',
+  32717: {
+    title: '测试名称',
+  },
 }

@@ -127,13 +127,20 @@ const useUserStore = create<StateType & ActionsType>()(
         const resp = await getSystemInfo(globalConfig.systemName)
         const data = resp.data
         try {
-          const config = JSON.parse(data.config || '{}')
+          let config = JSON.parse(data.config || '{}')
+
+          // 根据端口合并配置
+          const port = location.port
+          if (config[port]) {
+            config = { ...config, ...config[port] }
+          }
           set(
             { systemInfo: { ...resp.data, config } },
             false,
             'fetchSystemInfo',
           )
           globalConfig.merge(config)
+
           if (config.title) {
             document.title = config.title
           }

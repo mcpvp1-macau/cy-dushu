@@ -3,7 +3,13 @@ export type ConfigType = GlobalConfig
 type WindowType = Window & { config: ConfigType }
 
 /** 全局配置 window.config */
-const globalConfig = (window as unknown as WindowType).config
+let globalConfig = (window as unknown as WindowType).config
+
+// 根据端口合并配置
+const port = location.port;
+if (globalConfig[port]) {
+  globalConfig = { ...globalConfig, ...globalConfig[port] };
+}
 
 if (import.meta.env.DEV && __DEV_MERGE_CONFIG__) {
   Object.assign(globalConfig, __DEV_MERGE_CONFIG__)
