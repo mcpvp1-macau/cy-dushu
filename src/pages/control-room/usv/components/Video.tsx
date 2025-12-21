@@ -5,9 +5,9 @@ const UsvVideo: FC = memo(() => {
   const deviceDetail = useDeviceDetailStore((s) => s.deviceDetail)
 
   const deviceId = deviceDetail?.deviceId
-  const productKey = deviceDetail?.productKey || deviceDetail?.deviceModel?.productKey
+  const productKey =
+    deviceDetail?.productKey || deviceDetail?.deviceModel?.productKey
   const videoId = deviceDetail?.properties.videoList?.[0]?.videoId
-  const sn = deviceDetail?.sn
 
   if (!deviceId || !productKey || !videoId) {
     return (
@@ -23,7 +23,6 @@ const UsvVideo: FC = memo(() => {
         deviceId={deviceId}
         productKey={productKey}
         videoId={videoId}
-        sn={sn}
         useDing={false}
         useVideoQualityCheck={{ open: true }}
       />

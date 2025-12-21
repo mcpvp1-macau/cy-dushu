@@ -18,6 +18,7 @@ import FlightAreaConfig from '../LayerConfig/components/FlightArea/FlightArea'
 import FloatIconButtonGroup from '@/components/ui/button/FloatIconButton/FloatIconButtonGroup'
 import Reconstruction2D from '../LayerConfig/components/Reconstruction2D/Reconstruction2D'
 import RenderErrorOverlay from './components/RenderErrorOverlay'
+import Compass from './components/Compass'
 
 const HangzhouBanAreas = lazy(
   () => import('./components/custom/HangzhouBanAreas'),
@@ -177,8 +178,8 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
           >
             {children}
           </Suspense>
-          {useToolBar && (
-            <div className="absolute right-3 bottom-8 flex flex-col gap-3 z-10">
+            {useToolBar && (
+            <div className="absolute right-3 bottom-8 flex flex-col gap-3 z-10 items-end">
               <FloatIconButtonGroup mode="vertical">
                 <MapSpace />
                 <LayerOverlay />
@@ -191,6 +192,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
               <FloatIconButton onClick={toggle}>
                 {is2D ? '2D' : '3D'}
               </FloatIconButton>
+              <Compass />
             </div>
           )}
           <Suspense fallback={null}>

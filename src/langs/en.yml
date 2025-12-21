@@ -1192,6 +1192,8 @@ map:
     gpu: Graphics card
     browserInfoUnknown: Unknown browser information
     gpuInfoUnknown: Unknown graphics device
+  compass:
+    reset: Reset heading to north
 mapLayer:
   setting:
     title: Layer Setting

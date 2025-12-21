@@ -249,6 +249,7 @@ const ScheduleModal: FC<PropsType> = memo(
     const taskType =
       (Form.useWatch('taskType', form) || data?.taskType) ?? 'NORMAL'
     const useFlightReporting = globalConfig.useFlightReporting
+    const enableFrogLeapTask = globalConfig.enableFrogLeapTask
 
     const _actionTypeOptions = useDictOptions(DictEnum.ACTION_TYPE)
     const actionTypeOptions = useMemo(
@@ -561,33 +562,35 @@ const ScheduleModal: FC<PropsType> = memo(
                   />
                 </Form.Item>
               )}
-              {/* <Form.Item
-                label={t('schedule.form.taskType.title')}
-                name="taskType"
-                required
-                rules={[{ required: true }]}
-              >
-                <Radio.Group
-                  optionType="button"
-                  buttonStyle="solid"
-                  className="w-full flex gap-[1px]"
-                  onChange={(e) => {
-                    const taskType = e.target.value
-                    if (taskType === 'MULTI' && type === 'REPEAT') {
-                      form.setFieldValue('type', 'SINGLE')
-                    }
-                    form.setFieldValue('airlineIndex', undefined)
-                    form.setFieldValue('deviceIds', undefined)
-                  }}
+              {enableFrogLeapTask && (
+                <Form.Item
+                  label={t('schedule.form.taskType.title')}
+                  name="taskType"
+                  required
+                  rules={[{ required: true }]}
                 >
-                  <Radio.Button className="flex-1 text-center" value="NORMAL">
-                    {t('schedule.taskType.NORMAL.title')}
-                  </Radio.Button>
-                  <Radio.Button className="flex-1 text-center" value="MULTI">
-                    {t('schedule.taskType.MULTI.title')}
-                  </Radio.Button>
-                </Radio.Group>
-              </Form.Item> */}
+                  <Radio.Group
+                    optionType="button"
+                    buttonStyle="solid"
+                    className="w-full flex gap-[1px]"
+                    onChange={(e) => {
+                      const taskType = e.target.value
+                      if (taskType === 'MULTI' && type === 'REPEAT') {
+                        form.setFieldValue('type', 'SINGLE')
+                      }
+                      form.setFieldValue('airlineIndex', undefined)
+                      form.setFieldValue('deviceIds', undefined)
+                    }}
+                  >
+                    <Radio.Button className="flex-1 text-center" value="NORMAL">
+                      {t('schedule.taskType.NORMAL.title')}
+                    </Radio.Button>
+                    <Radio.Button className="flex-1 text-center" value="MULTI">
+                      {t('schedule.taskType.MULTI.title')}
+                    </Radio.Button>
+                  </Radio.Group>
+                </Form.Item>
+              )}
               <Form.Item
                 label={t('schedule.form.wayline.title')}
                 name="airlineIndex"

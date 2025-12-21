@@ -3,61 +3,23 @@ import IconTurnLeft from '@/assets/icons/jsx/uav/IconTurnLeft'
 type Props = {
   fov?: number
   value?: number
-  onChange?: (angle: number) => void
+  onLeftClick?: () => void
+  onRightClick?: () => void
 }
 
-const PitchControl: React.FC<Props> = ({ value, fov = 60, onChange }) => {
-  const [angle, setAngle] = useState(value ?? 0)
-
-  const [isRotating, setIsRotating] = useState<'left' | 'right' | null>(null)
-
-  const requestRef = useRef<number | undefined>(undefined)
-  const lastTimeRef = useRef<number | undefined>(undefined)
-
-  const ROTATION_SPEED = 0.25
-
-  const normalizeAngle = (a: number) => {
-    let newAngle = a % 360
-    if (newAngle < 0) newAngle += 360
-    return newAngle
+const PitchControl: React.FC<Props> = ({
+  value = 0,
+  fov = 60,
+  onLeftClick,
+  onRightClick,
+}) => {
+  const handleLeft = () => {
+    onLeftClick?.()
   }
 
-  const animate = useMemoizedFn((time: number) => {
-    if (lastTimeRef.current !== undefined && isRotating) {
-      const deltaTime = time - lastTimeRef.current
-
-      setAngle((prevAngle) => {
-        let delta = 0
-        if (isRotating === 'left') delta = ROTATION_SPEED * deltaTime
-        if (isRotating === 'right') delta = -ROTATION_SPEED * deltaTime
-
-        const newAngle = normalizeAngle(prevAngle + delta)
-        return newAngle
-      })
-    }
-    lastTimeRef.current = time
-    requestRef.current = requestAnimationFrame(animate)
-  })
-
-  useEffect(() => {
-    if (isRotating) {
-      requestRef.current = requestAnimationFrame(animate)
-    } else {
-      lastTimeRef.current = undefined
-      if (requestRef.current) cancelAnimationFrame(requestRef.current)
-    }
-    return () => {
-      if (requestRef.current) cancelAnimationFrame(requestRef.current)
-    }
-  }, [isRotating, animate])
-
-  useEffect(() => {
-    onChange?.(angle)
-  }, [angle, onChange])
-
-  const startLeft = () => setIsRotating('left')
-  const startRight = () => setIsRotating('right')
-  const stopRotation = () => setIsRotating(null)
+  const handleRight = () => {
+    onRightClick?.()
+  }
 
   const getSectorPath = (
     x: number,
@@ -96,7 +58,7 @@ const PitchControl: React.FC<Props> = ({ value, fov = 60, onChange }) => {
   }
 
   const visualAngleOffset = 0
-  const displayAngle = angle + visualAngleOffset
+  const displayAngle = value + visualAngleOffset
   const startAngle = displayAngle - fov / 2
   const endAngle = displayAngle + fov / 2
 
@@ -117,11 +79,8 @@ const PitchControl: React.FC<Props> = ({ value, fov = 60, onChange }) => {
             boxShadow:
               'inset 0 1px 1px rgba(255,255,255,0.05), 0 2px 4px rgba(0,0,0,0.5)',
           }}
-          onMouseDown={startLeft}
-          onMouseUp={stopRotation}
-          onMouseLeave={stopRotation}
-          onTouchStart={startLeft}
-          onTouchEnd={stopRotation}
+          onClick={handleLeft}
+          onTouchStart={handleLeft}
           aria-label="Rotate Left"
         >
           <IconTurnLeft className="absolute left-2 -rotate-90" />
@@ -192,11 +151,8 @@ const PitchControl: React.FC<Props> = ({ value, fov = 60, onChange }) => {
             boxShadow:
               'inset 0 1px 1px rgba(255,255,255,0.05), 0 2px 4px rgba(0,0,0,0.5)',
           }}
-          onMouseDown={startRight}
-          onMouseUp={stopRotation}
-          onMouseLeave={stopRotation}
-          onTouchStart={startRight}
-          onTouchEnd={stopRotation}
+          onClick={handleRight}
+          onTouchStart={handleRight}
           aria-label="Rotate Right"
         >
           <IconTurnLeft className="absolute right-1.5 rotate-90" />

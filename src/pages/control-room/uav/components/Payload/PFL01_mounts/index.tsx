@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Col, Form, Row, Slider } from 'antd'
-import { clamp } from 'lodash'
 import Select from '@/components/AntdOverride/Select'
 import PitchControl from './PitchControl'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
@@ -28,14 +27,6 @@ const PFL01Mounts: React.FC = () => {
     },
     [service?.inputMethodFields],
   )
-  const pitchField = useMemo(() => {
-    return (
-      service?.inputMethodFields?.find((item) => item.identifier === 'pitch') ??
-      service?.inputMethodFields?.find(
-        (item) => item.identifier === 'lightPitch',
-      )
-    )
-  }, [service?.inputMethodFields])
   const lightStatusField = useMemo(() => {
     return getInputMethodField('lightStatus')
   }, [getInputMethodField])
@@ -44,10 +35,6 @@ const PFL01Mounts: React.FC = () => {
     [getInputMethodField],
   )
 
-  const pitchIdentifier = pitchField?.identifier
-  const pitchSpecs = pitchField?.dataType?.specs as
-    | { min?: number; max?: number; step?: number }
-    | undefined
   const lightStatusIdentifier = lightStatusField?.identifier
   const lightStrengthIdentifier = lightStrengthField?.identifier
   const lightStatusSpecs = (lightStatusField?.dataType?.specs || {}) as Record<
@@ -74,8 +61,8 @@ const PFL01Mounts: React.FC = () => {
   )!
   const deviceId = useUavControlRoomStore((s) => s.deviceId)
   const postSerivce = usePostDeviceService(productKey, deviceId)
-  const lightPitch = useUavControlRoomStore((s) =>
-    pitchIdentifier ? s.state?.[pitchIdentifier] : undefined,
+  const audioPayloadPitch = useUavControlRoomStore(
+    (s) => s.state.audioPayloadPitch,
   )
   const lightStatus = useUavControlRoomStore((s) =>
     lightStatusIdentifier ? s.state?.[lightStatusIdentifier] : undefined,
@@ -96,21 +83,6 @@ const PFL01Mounts: React.FC = () => {
     () => `${serviceName}-${lightStrengthIdentifier ?? 'lightStrength'}`,
     [lightStrengthIdentifier],
   )
-
-  const onChangePitch = (value: number) => {
-    if (!pitchIdentifier) return
-    const currentPitch = Number(lightPitch ?? 0)
-    const min = typeof pitchSpecs?.min === 'number' ? pitchSpecs.min : -Infinity
-    const max = typeof pitchSpecs?.max === 'number' ? pitchSpecs.max : Infinity
-    const step = typeof pitchSpecs?.step === 'number' ? pitchSpecs.step : null
-
-    const next = clamp(currentPitch + value, min, max)
-    const normalize = step && step > 0 ? Math.round(next / step) * step : next
-
-    postSerivce(serviceName, {
-      [pitchIdentifier]: Number.isFinite(normalize) ? normalize : next,
-    })
-  }
 
   useEffect(() => {
     if (lightStatusIdentifier) {
@@ -149,8 +121,9 @@ const PFL01Mounts: React.FC = () => {
     <div className="pl-[12px] pr-[12px] pt-[12px] space-y-3">
       <div className="flex justify-center">
         <PitchControl
-          onChange={onChangePitch}
-          value={Number(lightPitch ?? 0)}
+          value={Number(audioPayloadPitch ?? 0)}
+          onLeftClick={() => postSerivce('audioPayloadControl', { pitch: -5 })}
+          onRightClick={() => postSerivce('audioPayloadControl', { pitch: 5 })}
         />
       </div>
       <Form
