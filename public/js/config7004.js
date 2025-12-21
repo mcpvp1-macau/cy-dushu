@@ -1,0 +1,84 @@
+window.config = {
+  title: '牍术·无人装备智能引擎',
+  systemName: 'jingqi-v3', // 应用名称
+  version: 'v3.13.0',
+  loginUrl: 'http://test.4a.jing-an.com:32712/login',
+  globalWs: 'wss', // 全局
+  useShanghaiBanRoutes: false, // 使用上海禁飞航线
+  isBinzhou: true,
+  defaultImageries: [
+    {
+      url: '/data/maptiler-satellite-lowres/{z}/{x}/{y}.jpg',
+      min: 0,
+      max: 5,
+      cacheOption: {
+        ver: 0,
+      },
+    },
+    {
+      url: '/data/maptiler-satellite/{z}/{x}/{y}.webp',
+      min: 6,
+      max: 12,
+      cacheOption: {
+        ver: 0,
+      },
+    },
+    {
+      url: 'https://server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png',
+      min: 13,
+      max: 18,
+      cacheOption: {
+        ver: 0,
+      },
+    },
+    {
+      url: 'http://47.111.155.82:32650/styles/dark/{z}/{x}/{y}@3x.png',
+      min: 0,
+      max: 18,
+      cacheOption: {
+        ver: 0,
+      },
+    },
+    // {
+    //   url: 'https://api.map.baidu.com/api_tile/v1/png?qt=vtile&x={x}&y={y}&z={z}&styles=sl&scaler=2&udt=20250410&showtext=1&manufacturer=didi&ak=lAsOZvyB3LuDw8scMpR9LRN8DjqXDDaq',
+    //   crs: 'baidu',
+    //   min: 1,
+    //   max: 18,
+    // },
+  ],
+  videoBuffer: 0,
+  videoBufferDelay: 0.2,
+  daotongServer: 'http://135.100.11.130:28080',
+  controlRoom: {
+    uav: {
+      particularHeader: false,
+    },
+  },
+  isHaveBacktracking: true,
+  useTerrain: true,
+  // useGuizhouProjects: true,
+  // terrainUrl: '/ja-map/terrain/{z}/{x}/{y}.png',
+  intelligentPhotographVersion: 3,
+  intelligentPhotographV1Filter: ['M350 RTK', 'M300'],
+  // 是否使用一机一档
+  useUavAirportDoc: true,
+  // 是否使用一机一档上传
+  useUavAirportDocUpload: false,
+  // 是否使用无人机日志
+  useUavLogs: true,
+  // 访问密钥(必须在这里配置，4a上配置无效)
+  accessKeyId: 'qgckfetkfojcsgur',
+  // 访问密钥(必须在这里配置，4a上配置无效)
+  secretAccessKey: 'K2AqfD1wl+ZfeJnTBWgQ4g==',
+  enableJessibucaMetrics: false,
+  useTanqi: true,
+  sentryDsn: '8a3f2951493342c6803439364cbd9dfa',
+  sentryProjectId: '2',
+  useFlight3D: true,
+  // robotDogMap: 'wgs84',
+  // 是否开启喊话器音频上传功能
+  usePayloadP3Upload: true,
+  useFlightReporting: false,
+  // 禁飞区显示样式: 'default' 为默认样式(红色填充), 'fence' 为电子围栏样式
+  noFlyZoneDisplayStyle: 'fence',
+}
