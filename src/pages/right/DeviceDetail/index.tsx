@@ -44,6 +44,7 @@ const RightDeviceDetail: FC<PropsType> = memo(() => {
         deviceDetail.longitude,
         deviceDetail.latitude,
       )
+      const cameraHeight = camera.positionCartographic?.height ?? 0
       const cullingVolume = camera.frustum?.computeCullingVolume(
         camera.position,
         camera.direction,
@@ -53,8 +54,9 @@ const RightDeviceDetail: FC<PropsType> = memo(() => {
         new Cesium.BoundingSphere(cartesian),
       )
       if (
-        visibility === Cesium.Intersect.INSIDE ||
-        visibility === Cesium.Intersect.INTERSECTING
+        cameraHeight <= 4000 &&
+        (visibility === Cesium.Intersect.INSIDE ||
+          visibility === Cesium.Intersect.INTERSECTING)
       ) {
         return
       }
