@@ -12,6 +12,8 @@ import { getDeviceDetailComponent } from './routes'
 import IconButton from '@/components/ui/button/IconButton'
 import IconDing from '@/assets/icons/jsx/IconDing'
 import useFixedWindowsStore from '@/store/useFixedWindows.store'
+import * as Cesium from 'cesium'
+import { useGlobalCesium } from '@/store/map/useGlobalMap.store'
 
 type PropsType = unknown
 
@@ -25,19 +27,44 @@ const RightDeviceDetail: FC<PropsType> = memo(() => {
   const { store: deviceDetailStore, isLoading } =
     useCreateDeviceDetailStore(detailId)
   const deviceDetail = useStore(deviceDetailStore, (s) => s.deviceDetail)
+  const viewer = useGlobalCesium()
 
   // big fly
   useEffect(() => {
     if (!deviceDetail) {
       return
     }
-    if (deviceDetail.longitude && deviceDetail.latitude) {
-      bigFlyEmitter.emit('bigFly', {
-        lng: deviceDetail.longitude,
-        lat: deviceDetail.latitude,
-      })
+    if (!deviceDetail.longitude || !deviceDetail.latitude) {
+      return
     }
-  }, [deviceDetail])
+
+    const camera = viewer?.camera
+    if (camera) {
+      const cartesian = Cesium.Cartesian3.fromDegrees(
+        deviceDetail.longitude,
+        deviceDetail.latitude,
+      )
+      const cullingVolume = camera.frustum?.computeCullingVolume(
+        camera.position,
+        camera.direction,
+        camera.up,
+      )
+      const visibility = cullingVolume?.computeVisibility?.(
+        new Cesium.BoundingSphere(cartesian),
+      )
+      if (
+        visibility === Cesium.Intersect.INSIDE ||
+        visibility === Cesium.Intersect.INTERSECTING
+      ) {
+        return
+      }
+    }
+
+    bigFlyEmitter.emit('bigFly', {
+      lng: deviceDetail.longitude,
+      lat: deviceDetail.latitude,
+    })
+  }, [deviceDetail, viewer])
 
   const addWindow = useFixedWindowsStore((s) => s.addWindow)
 
