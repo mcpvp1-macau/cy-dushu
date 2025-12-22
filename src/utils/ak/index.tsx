@@ -26,6 +26,36 @@ const createSign = (params) => {
   }
 }
 
+export const createSignWithKeys = (
+  params: Record<string, any>,
+  accessKeyId: string,
+  secretAccessKey: string,
+) => {
+  const newParams = { ...params, AccessKeyId: accessKeyId }
+  const keys = Object.keys(newParams).sort()
+
+  const paramsStr = keys
+    .map((key) => {
+      const value = newParams[key]
+      const str = `${encodeURIComponent(key)}=${encodeURIComponent(
+        typeof value === 'object' ? JSON.stringify(value) : value,
+      )}`
+        .replace(/\+/g, '%20')
+        .replace(/\*/g, '%2A')
+        .replace(/%27/g, "'")
+        .replace(/%7e/g, '~')
+
+      return str
+    })
+    .join('&')
+  const words = CryptoJS.HmacSHA1(secretAccessKey, paramsStr)
+  const sign = CryptoJS.enc.Base64.stringify(words)
+  return {
+    AccessKeyId: accessKeyId,
+    Signature: sign,
+  }
+}
+
 export const createToken = (param) => {
   const d = Date.now()
   const params = {

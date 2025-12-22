@@ -36,3 +36,11 @@ export const getCustomListByGroup = () => {
     {},
   )
 }
+
+/**获取访问密钥 GET /accessKey/getAk */
+export const getAccessKey = () => {
+  return server4A.get<{
+    accessKeyId: string
+    secretAccessKey: string
+  }>('/accessKey/getAk')
+}
