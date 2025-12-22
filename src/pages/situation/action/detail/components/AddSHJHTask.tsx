@@ -59,13 +59,13 @@ const AddSHJHTask: FC<PropsType> = memo(
   const isPicking = usePositionPickerStore((s) => s.isPicking)
 
   const {
-    airlineOptions,
+    waylineOptions,
     deviceOptions,
     allDevices,
     allowMultipleDevice,
     holder,
-    activeAirline,
-    findAirlineByWaylineTemplateId,
+    activeWayline,
+    findWaylineByTemplateId,
   } = useWaylineAndDeviceFormOptions(form)
 
   const actionTypeOptions = useDictOptions(DictEnum.ACTION_TYPE)
@@ -220,11 +220,11 @@ const AddSHJHTask: FC<PropsType> = memo(
         uavTargetLatitude: targetLat,
       })
     } else {
-      const airline =
-        activeAirline || findAirlineByWaylineTemplateId(values.waylineTemplateId)
-      if (airline) {
-        const parameters = shouldJson(airline.parameters)
-        const taskBasic = shouldJson(airline.taskBasic)
+      const wayline =
+        activeWayline || findWaylineByTemplateId(values.waylineTemplateId)
+      if (wayline) {
+        const parameters = shouldJson(wayline.parameters)
+        const taskBasic = shouldJson(wayline.taskBasic)
 
         // 解析航线最后一个航点作为目标位置
         const lastWaypoint = parseLastWaypoint(parameters)
@@ -240,10 +240,10 @@ const AddSHJHTask: FC<PropsType> = memo(
         const flightLat = primaryDevice?.properties?.latitude ?? null
 
         Object.assign(commonData, {
-          templateId: airline.templateId,
-          waylineTemplateId: airline.waylineTemplateId,
+          templateId: wayline.templateId,
+          waylineTemplateId: wayline.waylineTemplateId,
           taskTemplateInfo: {
-            taskBasic: airline.taskBasic,
+            taskBasic: wayline.taskBasic,
             defaultDeviceId: values.deviceIds,
             parameters: parameters,
           },
@@ -438,7 +438,7 @@ const AddSHJHTask: FC<PropsType> = memo(
                 rules={[{ required: true, message: '请选择航线' }]}
               >
                 <Select
-                  options={airlineOptions}
+                  options={waylineOptions}
                   placeholder="选择航线"
                   optionFilterProp="name"
                   onChange={() => {

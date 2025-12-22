@@ -262,25 +262,25 @@ const ScheduleModal: FC<PropsType> = memo(
     )
 
     const {
-      airlineOptions,
+      waylineOptions,
       deviceOptions,
       allDevices,
       allowMultipleDevice,
       holder,
-      activeAirline,
-      resolveAirlineByTemplateId,
+      activeWayline,
+      resolveWaylineByTemplateId,
     } = useWaylineAndDeviceFormOptions(form)
 
-    const filteredAirlineOptions = useMemo(() => {
+    const filteredWaylineOptions = useMemo(() => {
       if (taskType === 'MULTI') {
-        return airlineOptions.filter((e) =>
+        return waylineOptions.filter((e) =>
           [WaylineEnum.AreaWayline, WaylineEnum.PointWayline].includes(
             e.type as WaylineEnum,
           ),
         )
       }
-      return airlineOptions
-    }, [taskType, airlineOptions])
+      return waylineOptions
+    }, [taskType, waylineOptions])
 
     const queryClient = useQueryClient()
     const { data: dockList } = useQuery(
@@ -357,7 +357,7 @@ const ScheduleModal: FC<PropsType> = memo(
           actionType: data.actionType,
           pilotCode: data.pilotCode,
           landDeviceId: data.actionConfig?.landDeviceId,
-          waylineTemplateId: resolveAirlineByTemplateId(
+          waylineTemplateId: resolveWaylineByTemplateId(
             data.actionConfig?.waylineTemplateId,
             data.actionConfig?.templateId,
           )?.waylineTemplateId,
@@ -414,14 +414,14 @@ const ScheduleModal: FC<PropsType> = memo(
     const handleConfirm = async () => {
       await form.validateFields()
       const values = form.getFieldsValue()
-      if (!activeAirline) {
+      if (!activeWayline) {
         msgApi.error(
           t('schedule.errors.selectWayline.msg', { defaultValue: '请选择航线' }),
         )
         return
       }
 
-      const parameters = shouldJson(activeAirline.parameters)
+      const parameters = shouldJson(activeWayline.parameters)
 
       // 获取设备类型
       let device: API_DEVICE.domain.Device | undefined
@@ -446,11 +446,11 @@ const ScheduleModal: FC<PropsType> = memo(
           deviceType: device?.deviceType,
           taskTemplateInfo: {
             parameters,
-            taskBasic: activeAirline.taskBasic,
+            taskBasic: activeWayline.taskBasic,
           },
-          templateId: activeAirline.templateId,
-          waylineTemplateId: activeAirline.waylineTemplateId,
-          templateName: activeAirline.taskName,
+          templateId: activeWayline.templateId,
+          waylineTemplateId: activeWayline.waylineTemplateId,
+          templateName: activeWayline.taskName,
         },
         breakPointEnable: values.breakPointEnable ? 'YES' : 'NO',
         type: values.type,
@@ -607,7 +607,7 @@ const ScheduleModal: FC<PropsType> = memo(
                   placeholder={t('common.form.pleaseSelect')}
                   showSearch
                   optionFilterProp="name"
-                  options={filteredAirlineOptions}
+                  options={filteredWaylineOptions}
                   onChange={() => {
                     form.setFieldValue('deviceIds', undefined)
                   }}
