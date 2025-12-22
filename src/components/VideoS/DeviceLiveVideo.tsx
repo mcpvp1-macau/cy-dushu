@@ -182,7 +182,9 @@ const DeviceLiveVideo = memo(
 
               if (!last && Array.isArray(streamList) && streamList.length > 1) {
                 // 无历史流且存在多路流时，从末尾开始回退选择可用流地址
-                const reverseStream = [...streamList].reverse().find((e) => e.playUrl)
+                const reverseStream = [...streamList]
+                  .reverse()
+                  .find((e) => e.playUrl)
                 if (reverseStream?.playUrl) {
                   url = reverseStream.playUrl
                 }
@@ -191,7 +193,7 @@ const DeviceLiveVideo = memo(
                 LastUrlRef.current = url
                 setFetchTime(Date.now())
               }
-            
+
               if (!url) {
                 return data
               }
@@ -539,7 +541,7 @@ const DeviceLiveVideo = memo(
                     >
                       <IconRefresh />
                     </IconButton>
-                    {/* {location.hostname.includes('jing-an.com') ? ( */}
+                    {location.hostname.includes('jing-an.com') ? (
                       <IconButton
                         tippyProps={{
                           content: (
@@ -563,9 +565,9 @@ const DeviceLiveVideo = memo(
                       >
                         <ShareAltOutlined />
                       </IconButton>
-                    {/* ) : (
+                    ) : (
                       <></>
-                    )} */}
+                    )}
 
                     {globalConfig.enableElectricScale && (
                       <IconButton
