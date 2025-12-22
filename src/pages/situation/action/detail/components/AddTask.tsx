@@ -45,7 +45,7 @@ const createTaskConfig = (
     },
     {
       label: t('action.detail.task.add.form.airline.label'),
-      name: 'airlineIndex',
+      name: 'waylineTemplateId',
       type: 'select',
       options: airlineTemplateOptions,
       otherProps: {
@@ -126,7 +126,9 @@ const AddTask: FC<PropsType> = memo(
 
     const [confirmLoading, setConfirmLoading] = useState(false)
     const handleConfirm = useMemoizedFn(async (val: any) => {
-      const airline = airlineTemplateList?.[val.airlineIndex]
+      const airline = airlineTemplateList?.find(
+        (e) => `${e.waylineTemplateId}` === `${val.waylineTemplateId ?? ''}`,
+      )
       // 获取设备类型
       let deviceType = DeviceEnum.UAV
       if (Array.isArray(val.deviceIds)) {

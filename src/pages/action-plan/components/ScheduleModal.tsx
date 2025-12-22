@@ -206,7 +206,7 @@ const REPEATFormItems = memo(() => {
 type FormValuesType = {
   name: string
   deviceIds: string
-  airlineIndex: number
+  waylineTemplateId: string | number
   timeRange: Dayjs[]
   breakPointEnable?: boolean
   landDeviceId?: string
@@ -356,11 +356,11 @@ const ScheduleModal: FC<PropsType> = memo(
           actionType: data.actionType,
           pilotCode: data.pilotCode,
           landDeviceId: data.actionConfig?.landDeviceId,
-          airlineIndex: airlineTemplateList?.findIndex(
+          waylineTemplateId: airlineTemplateList?.find(
             (e) =>
               e.waylineTemplateId === data.actionConfig?.waylineTemplateId ||
               e.templateId === data.actionConfig?.templateId,
-          ),
+          )?.waylineTemplateId,
           type: data.type as any,
           taskType: (data.taskType || 'NORMAL') as any,
           timeRange: [dayjs(data.startTime), dayjs(data.endTime)],
@@ -414,8 +414,18 @@ const ScheduleModal: FC<PropsType> = memo(
     const handleConfirm = async () => {
       await form.validateFields()
       const values = form.getFieldsValue()
-      const activeAirline = airlineTemplateList!.at(values.airlineIndex)!
-      const parameters = shouldJson(activeAirline!.parameters)
+      const activeAirline = airlineTemplateList?.find(
+        (e) => `${e.waylineTemplateId}` === `${values.waylineTemplateId ?? ''}`,
+      )
+
+      if (!activeAirline) {
+        msgApi.error(
+          t('schedule.errors.selectWayline.msg', { defaultValue: '请选择航线' }),
+        )
+        return
+      }
+
+      const parameters = shouldJson(activeAirline.parameters)
 
       // 获取设备类型
       let device: API_DEVICE.domain.Device | undefined
@@ -578,7 +588,7 @@ const ScheduleModal: FC<PropsType> = memo(
                       if (taskType === 'MULTI' && type === 'REPEAT') {
                         form.setFieldValue('type', 'SINGLE')
                       }
-                      form.setFieldValue('airlineIndex', undefined)
+                      form.setFieldValue('waylineTemplateId', undefined)
                       form.setFieldValue('deviceIds', undefined)
                     }}
                   >
@@ -593,7 +603,7 @@ const ScheduleModal: FC<PropsType> = memo(
               )}
               <Form.Item
                 label={t('schedule.form.wayline.title')}
-                name="airlineIndex"
+                name="waylineTemplateId"
                 required
                 rules={[{ required: true }]}
               >

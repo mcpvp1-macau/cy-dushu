@@ -143,7 +143,7 @@ const AddSHJHTask: FC<PropsType> = memo(
   const handleFlightTypeChange = (value: 0 | 1) => {
     setFlightType(value)
     form.setFieldsValue({
-      airlineIndex: undefined,
+      waylineTemplateId: undefined,
       deviceIds: defaultDeviceId
         ? allowMultipleDevice
           ? [defaultDeviceId]
@@ -219,7 +219,9 @@ const AddSHJHTask: FC<PropsType> = memo(
         uavTargetLatitude: targetLat,
       })
     } else {
-      const airline = airlineTemplateList?.[values.airlineIndex]
+      const airline = airlineTemplateList?.find(
+        (e) => `${e.waylineTemplateId}` === `${values.waylineTemplateId ?? ''}`,
+      )
       if (airline) {
         const parameters = shouldJson(airline.parameters)
         const taskBasic = shouldJson(airline.taskBasic)
@@ -432,7 +434,7 @@ const AddSHJHTask: FC<PropsType> = memo(
             <>
               <Form.Item
                 label="选择航线"
-                name="airlineIndex"
+                name="waylineTemplateId"
                 rules={[{ required: true, message: '请选择航线' }]}
               >
                 <Select

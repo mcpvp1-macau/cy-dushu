@@ -31,7 +31,7 @@ const useWaylineOptions = () => {
 
   const airlineOptions = useMemo(
     () =>
-      airlineTemplateList?.map((e, i) => ({
+      airlineTemplateList?.map((e) => ({
         label: (
           <div className="flex justify-between">
             <div className="flex gap-2">
@@ -58,11 +58,11 @@ const useWaylineOptions = () => {
             )}
           </div>
         ),
-        value: i,
+        value: e.waylineTemplateId,
         name: e.taskName,
         type: e.taskType,
       })) ?? emtpyArray,
-    [airlineTemplateList],
+    [airlineTemplateList, handlePreview, t],
   )
 
   return {
@@ -75,9 +75,16 @@ const useWaylineOptions = () => {
 export const useWaylineAndDeviceFormOptions = (form: FormInstance<any>) => {
   const { airlineOptions, airlineTemplateList, holder } = useWaylineOptions()
 
-  const airlineIndex = Form.useWatch('airlineIndex', form)
+  const waylineTemplateId = Form.useWatch('waylineTemplateId', form)
+  const activeAirline = useMemo(
+    () =>
+      airlineTemplateList?.find(
+        (e) => `${e.waylineTemplateId}` === `${waylineTemplateId ?? ''}`,
+      ),
+    [airlineTemplateList, waylineTemplateId],
+  )
 
-  const taskType = airlineTemplateList?.[airlineIndex]?.taskType
+  const taskType = activeAirline?.taskType
 
   const allDevices = useMapDevicesStore((s) => s.allDevices)
 
@@ -124,8 +131,9 @@ export const useWaylineAndDeviceFormOptions = (form: FormInstance<any>) => {
     airlineOptions,
     deviceOptions,
     holder,
-    airlineIndex,
+    waylineTemplateId,
     allowMultipleDevice,
+    activeAirline,
   }
 }
 
