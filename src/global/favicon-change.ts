@@ -15,3 +15,17 @@ setFavicon(mediaQuery.matches ? 'dark' : 'light')
 mediaQuery.addEventListener('change', (e) => {
   setFavicon(e.matches ? 'dark' : 'light')
 })
+
+export const faviconChange = () => {
+  setFavicon(mediaQuery.matches ? 'dark' : 'light')
+}
+
+export const getFavicon = () => {
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+  const theme = mediaQuery.matches ? 'dark' : 'light'
+  if (theme === 'dark') {
+    return (window as any)?.config?.logo ?? '/favicon-dark.svg'
+  } else {
+    return (window as any)?.config?.logo ?? '/favicon.svg'
+  }
+}

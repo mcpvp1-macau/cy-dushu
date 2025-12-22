@@ -9,6 +9,7 @@ let globalConfig = (window as unknown as WindowType).config
 const port = location.port;
 if (globalConfig[port]) {
   globalConfig = { ...globalConfig, ...globalConfig[port] };
+  (window as unknown as WindowType).config = globalConfig;
 }
 
 if (import.meta.env.DEV && __DEV_MERGE_CONFIG__) {

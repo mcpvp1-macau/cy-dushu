@@ -24,5 +24,22 @@ declare namespace API_USER {
       systemName: string
       systemUrl: string | null
     }
+    interface CustomListByGroupRes {
+      rows: Array<{
+        id: 1
+        groupId: string
+        customItem: string
+        customItemName: string
+        customItemType: 'image' | 'words'
+        customItemMode: string
+        customItemValue: string
+        group: {
+          groupId: string
+          groupParentId: string |null
+          groupName: string
+          groupOrder: number | null
+        }
+      }>
+    }
   }
 }

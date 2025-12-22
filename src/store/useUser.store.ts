@@ -1,4 +1,5 @@
 import {
+  getCustomListByGroup,
   getSystemInfo,
   getSystemRoleMenu,
   getUserByToken,
@@ -65,6 +66,7 @@ type StateType = {
   /** 组织设备树 */
   groupDeviceTree: GroupDeviceTree[]
   vendorBackUrl: string | null
+  logo: string | null
 }
 
 type ActionsType = {
@@ -93,6 +95,7 @@ const useUserStore = create<StateType & ActionsType>()(
       menuMap: null,
       systemInfo: null,
       groupDeviceTree: [],
+      logo: null,
       /** 第三方返回地址 */
       vendorBackUrl: null,
       // 登出
@@ -126,6 +129,8 @@ const useUserStore = create<StateType & ActionsType>()(
       fetchSystemInfo: async () => {
         const resp = await getSystemInfo(globalConfig.systemName)
         const data = resp.data
+        let logo = globalConfig.logo
+
         try {
           let config = JSON.parse(data.config || '{}')
 
@@ -134,16 +139,40 @@ const useUserStore = create<StateType & ActionsType>()(
           if (config[port]) {
             config = { ...config, ...config[port] }
           }
-          set(
-            { systemInfo: { ...resp.data, config } },
-            false,
-            'fetchSystemInfo',
-          )
+
           globalConfig.merge(config)
 
           if (config.title) {
             document.title = config.title
           }
+
+          if (config.logo) {
+            globalConfig.logo = config.logo
+            logo = config.logo
+            // @ts-ignore
+            window.config.logo = config.logo
+          }
+
+          const customs = await getCustomListByGroup()
+          customs.data.rows.forEach((item) => {
+            if (item.customItem === 'dushu-logo') {
+              globalConfig.logo = item.customItemValue
+              logo = item.customItemValue
+              // @ts-ignore
+              window.config.logo = item.customItemValue
+            } else if (item.customItem === 'dushu-title') {
+              globalConfig.title = item.customItemValue
+              document.title = item.customItemValue
+              // @ts-ignore
+              window.config.title = item.customItemValue
+            }
+          })
+
+          set(
+            { systemInfo: { ...resp.data, config }, logo },
+            false,
+            'fetchSystemInfo',
+          )
         } catch (error) {
           console.error('parse system config failed', error)
           set(

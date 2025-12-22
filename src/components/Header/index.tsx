@@ -13,12 +13,17 @@ import { Link } from 'react-router-dom'
 import JALogo from '@/assets/svg_jsx/JALogo'
 import ThemeSwitcher from './ThemeSwitcher'
 import LiqunTippy from '../ui/LiqunTippy'
+import { useFavicon } from 'ahooks'
+import { getFavicon } from '@/global/favicon-change'
 
 type PropsType = unknown
 
 const Header: FC<PropsType> = memo(() => {
   const user = useUserStore((s) => s.user)
   const vendorBackUrl = useUserStore((s) => s.vendorBackUrl)
+  const logo = useUserStore((s) => s.logo)
+
+  useFavicon(logo || globalConfig.logo || getFavicon());
 
   const { i18n } = useTranslation()
   return (
@@ -26,9 +31,9 @@ const Header: FC<PropsType> = memo(() => {
       {/* 左边 */}
       <div className="pl-1 flex items-center gap-3">
         <div className="w-[30px] max-w-[30px] h-[30px] max-h-[30px] p-1.5 bg-ground-3 text-fore text-center flex items-center justify-center rounded">
-          {globalConfig.logo ? (
+          {logo ? (
             <img
-              src={globalConfig.logo}
+              src={logo}
               className="w-full h-full object-contain select-none"
             />
           ) : (
