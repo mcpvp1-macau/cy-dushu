@@ -27,7 +27,7 @@ export const getSystemRoleMenu = (params: any) => {
 }
 
 export const getSystemInfo = (systemName: string) => {
-  return server4A.post('/system/getSystemByName', { systemName })
+  return server4A.post('/system/getSystemConfigByName', { systemName })
 }
 
 export const getCustomListByGroup = () => {
@@ -39,7 +39,7 @@ export const getCustomListByGroup = () => {
 
 /**获取访问密钥 GET /accessKey/getAk */
 export const getAccessKey = () => {
-  return server4A.get<{
+  return server4A.post<{
     accessKeyId: string
     secretAccessKey: string
   }>('/accessKey/getAk')
