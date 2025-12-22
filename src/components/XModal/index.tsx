@@ -14,6 +14,8 @@ type PropsType = GetProps<typeof Modal> & {
   noPadding?: boolean
   confirmTitle?: string
   confirmDisable?: boolean
+  noClose?: boolean
+  noCancel?: boolean
 }
 
 const XModal: FC<PropsType> = ({
@@ -25,6 +27,8 @@ const XModal: FC<PropsType> = ({
   titleRight,
   confirmTitle,
   confirmDisable,
+  noCancel,
+  noClose,
   onClose,
   onConfirm,
   ...restProps
@@ -104,9 +108,11 @@ const XModal: FC<PropsType> = ({
             <div className="title">{title}</div>
             <div className="flex gap-1 items-center">
               {titleRight}
-              <IconButton className="text-xl" onClick={onClose}>
-                <IconClose />
-              </IconButton>
+              {!noClose && (
+                <IconButton className="text-xl" onClick={onClose}>
+                  <IconClose />
+                </IconButton>
+              )}
             </div>
           </div>
           <div
@@ -122,14 +128,16 @@ const XModal: FC<PropsType> = ({
           </div>
           {footer ? (
             <div className="footer">
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onClose?.()
-                }}
-              >
-                {restProps.cancelText ?? t('modal.cancel')}
-              </Button>
+              {!noCancel && (
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onClose?.()
+                  }}
+                >
+                  {restProps.cancelText ?? t('modal.cancel')}
+                </Button>
+              )}
               <Button
                 loading={confirmLoading}
                 type="primary"

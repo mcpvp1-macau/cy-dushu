@@ -40,6 +40,7 @@ import { lazy } from 'react'
 import ParentVideoAlert from './components/ParentVideoAlert'
 import { useListenDeviceLatestTask } from '@/store/useDeviceLatestTask.store'
 import useTrickMessage from './useTrickMessage'
+import ReturnHomeConfirm from './components/ReturnHomeConfirm'
 
 const ControlRoomUavMap = lazy(() => import('./components/ControlRoomMap'))
 const DitingTanqi = lazy(() => import('./components/DitingTanqi/DitingTanqi'))
@@ -196,6 +197,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
       <UavControlRoomStoreContext.Provider value={controlRoomStore}>
         <StateResolver />
         <InitialPointFly />
+        <ReturnHomeConfirm />
         <div
           className={clsx(
             'flex flex-col',

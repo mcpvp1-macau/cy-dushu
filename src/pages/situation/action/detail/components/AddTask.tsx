@@ -25,7 +25,7 @@ type Option = {
 
 const createTaskConfig = (
   t: TFunction,
-  airlineTemplateOptions: Option[],
+  waylineTemplateOptions: Option[],
   deviceOptions: Option[],
   allowMultipleDevice: boolean,
   form: FormInstance<{ deviceIds: string | string[] }>,
@@ -45,9 +45,9 @@ const createTaskConfig = (
     },
     {
       label: t('action.detail.task.add.form.airline.label'),
-      name: 'airlineIndex',
+      name: 'waylineTemplateId',
       type: 'select',
-      options: airlineTemplateOptions,
+      options: waylineTemplateOptions,
       otherProps: {
         optionFilterProp: 'name',
         allowClear: true,
@@ -94,12 +94,13 @@ const AddTask: FC<PropsType> = memo(
     const [form] = Form.useForm()
 
     const {
-      airlineOptions,
+      waylineOptions,
       deviceOptions,
-      airlineTemplateList,
       allDevices,
       allowMultipleDevice,
       holder,
+      activeWayline,
+      findWaylineByTemplateId,
     } = useWaylineAndDeviceFormOptions(form)
 
     const deviceOptionsForForm = useMemo(() => {
@@ -126,7 +127,8 @@ const AddTask: FC<PropsType> = memo(
 
     const [confirmLoading, setConfirmLoading] = useState(false)
     const handleConfirm = useMemoizedFn(async (val: any) => {
-      const airline = airlineTemplateList?.[val.airlineIndex]
+      const wayline =
+        activeWayline || findWaylineByTemplateId(val.waylineTemplateId)
       // 获取设备类型
       let deviceType = DeviceEnum.UAV
       if (Array.isArray(val.deviceIds)) {
@@ -147,13 +149,13 @@ const AddTask: FC<PropsType> = memo(
         actionId,
         deviceType,
       }
-      if (airline) {
-        data['templateId'] = airline.templateId
-        data['waylineTemplateId'] = airline.waylineTemplateId
+      if (wayline) {
+        data['templateId'] = wayline.templateId
+        data['waylineTemplateId'] = wayline.waylineTemplateId
         data['taskTemplateInfo'] = {
-          taskBasic: airline.taskBasic,
+          taskBasic: wayline.taskBasic,
           defaultDeviceId: val.deviceIds,
-          parameters: JSON.parse(airline.parameters),
+          parameters: JSON.parse(wayline.parameters),
         }
       }
       setConfirmLoading(true)
@@ -173,7 +175,7 @@ const AddTask: FC<PropsType> = memo(
       () =>
         createTaskConfig(
           t,
-          airlineOptions,
+          waylineOptions,
           deviceOptionsForForm,
           allowMultipleDevice,
           form,
@@ -181,7 +183,7 @@ const AddTask: FC<PropsType> = memo(
         ),
       [
         i18n.language,
-        airlineOptions,
+        waylineOptions,
         deviceOptionsForForm,
         allowMultipleDevice,
         form,
