@@ -4,7 +4,7 @@
   "version": "v3.22.3",
   "type": "module",
   "scripts": {
-    "ts": "tsgo --noEmit --project tsconfig.json",
+    "ts": "npx tsgo --project tsconfig.json",
     "dev": "vite --config ./vite-config/dev/config.82.ts",
     "dev:82": "vite --config ./vite-config/dev/config.82.ts",
     "dev:47": "vite --config ./vite-config/dev/config.47.ts",
@@ -23,7 +23,7 @@
     "dev:xiaoshan": "vite --config ./vite-config/dev/config.xiaoshan.ts",
     "dev:taixin": "vite --config ./vite-config/dev/config.taixin.ts",
     "dev:changzhou": "vite --config ./vite-config/dev/config.changzhou.ts",
-    "build": "tsgo && vite build",
+    "build": "npx tsgo && vite build",
     "skip-check-build": "vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview --config ./vite-config/dev/config.82.ts",

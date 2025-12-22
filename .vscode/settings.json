@@ -8,5 +8,5 @@
   },
   "i18n-ally.localesPaths": ["src/langs"],
   "i18n-ally.keystyle": "nested",
-  "typescript.experimental.useTsgo": true
+  "typescript.experimental.useTsgo": false
 }
