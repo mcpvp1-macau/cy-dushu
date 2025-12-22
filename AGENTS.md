@@ -6,14 +6,6 @@
 - UI stack: Ant Design (plus `@ant-design/x`), Tailwind (CSS vars in `src/assets/style/theme/root.less`), Zustand for state, React Query for data, i18n (zh/en), Cesium/Mapbox for geospatial, Sonner for toasts, Sentry for telemetry.
 - Version markers: version of `package.json`.
 
-## Runbook
-
-- Install deps with pnpm (lockfiles for pnpm and npm exist; prefer pnpm): `pnpm install`.
-- Dev servers map to different backends: `pnpm dev:82` (default), `dev:47`, `dev:103`, `dev:110`, `dev:105`, `dev:201`, `dev:240`, `dev:216`, `dev:235`, `dev:231`, `dev:idc`, `dev:yz`, `dev:wanglou`, `dev:zhongshan`, `dev:xiaoshan`, `dev:taixin`, `dev:changzhou`. Each loads a `vite-config/dev/config.*.ts` with proxy targets and optional `__DEV_MERGE_CONFIG__`.
-- Build/type/lint: `pnpm build` (tsc then Vite), `pnpm skip-check-build` (no tsc), `pnpm ts`, `pnpm lint`. Preview: `pnpm preview --config ./vite-config/dev/config.82.ts`.
-- Docker: `build:docker-*`/`push:*` tags to `registry.jingan.com:32008/ja` or Ali registry.
-- Required runtime files: `public/js/config.js` (defines `window.config`), `public/iconfonts`, `public/js/JessibucaPro`, `public/js/daotong`. Cesium needs `VITE_CESIUM_ACCESS_TOKEN`.
-
 ## Configuration model
 
 - `public/js/config.js` sets `window.config`; merged with `__DEV_MERGE_CONFIG__` from Vite dev configs inside `src/global/config.ts`. Key flags: `systemName`, `title`, `globalWs`, `loginUrl/loginHttps`, `defaultImageries`, `useTerrain`, `useHangzhouBanAreas`, `useGuizhouFarm`, `useGuizhouProjects`, `is72`, `isBinzhou`, `isXiaoshan`, `useUavAirportDoc/Upload/Logs`, `useFlightReporting`, `useTanqi`, `useFlight3D`, `robotDogMap`, `enableJessibucaMetrics`, `defaultTheme`, `uavHeightLimit`, `noFlyZoneDisplayStyle`, `usePayloadP3Upload`, `useRelayDevice`, `useMaintenanceStatusSwitch`, `accessKeyId/secretAccessKey`, `sentryDsn/sentryProjectId`, `bucketName`, etc.
@@ -57,11 +49,6 @@
 - Video: `pages/share-video` streams via `Jessibuca`/`xgplayer` using AK tokens (`verifyToken`); share route refreshes stream on stale TS. Device media upload via `useUploadMinio` to `/upload/{bucket}` (needs `globalConfig.bucketName` or defaults).
 - Workers/WASM: `src/worker/area_wayline_solution.ts` wraps `wasm/area_wayline` for polygon area waylines (Comlink); `worker/watermark_image.ts` adds watermark text. Top-level await + wasm handled in Vite config.
 
-## Observability & auth
-
-- Sentry initializes in `src/instrument.ts` if `globalConfig.sentryDsn` is set, with username/token tags and replay enabled.
-- Auth: `init-token.ts` reads `?token` to localforage and strips it from the URL; `useUserStore.logout` redirects to `loginUrl?systemName=...&fallback=...`. 4A APIs live under `/proxyApi`.
-
 ## International
 
 - All user-facing strings must use `t('key', { defaultValue: 'default string' })` from `react-i18next`. Add new keys to `src/langs/zh.yml` and `src/langs/en.yml`. Avoid hardcoding strings in components.
@@ -80,6 +67,18 @@ Before adding or modifying imports:
 - Any identifiers declared there MUST NOT be manually imported.
 
 Do NOT add explicit import statements for symbols that are already auto-imported.
+
+## Code Style
+
+## Code tidying requirements:
+
+- Group related statements into logical blocks and separate blocks with blank lines.
+- Ensure naming and early returns make the flow clear.
+- Add concise Chinese comments for: business rules, edge cases, and any non-trivial reasoning.
+
+### React Hooks
+
+- Do not use `useCallback`. Use `useMemoizedFn` from `ahooks` instead.
 
 ## Verification Checklist (Required)
 

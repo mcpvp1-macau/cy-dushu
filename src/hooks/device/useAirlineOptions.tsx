@@ -1,3 +1,4 @@
+import { useMemoizedFn } from 'ahooks'
 import { getAirlineTemplateList } from '@/service/modules/airline'
 import useWaylinePreview from '../wayline/useWaylinePreview'
 import { WaylineIcon } from '@/pages/wayline/components/AirlineTemplateListItem'
@@ -13,7 +14,7 @@ import DeviceIcon from '@/components/device/DeviceIcon'
 /** 获取所有航线和选项 */
 const useWaylineOptions = () => {
   const queryClient = useQueryClient()
-  const { data: airlineTemplateList } = useQuery(
+  const { data: waylineTemplateList } = useQuery(
     {
       queryKey: ['getAllAirlines'],
       queryFn: () =>
@@ -29,9 +30,9 @@ const useWaylineOptions = () => {
   const { holder, handlePreview } = useWaylinePreview()
   const { t } = useTranslation()
 
-  const airlineOptions = useMemo(
+  const waylineOptions = useMemo(
     () =>
-      airlineTemplateList?.map((e, i) => ({
+      waylineTemplateList?.map((e) => ({
         label: (
           <div className="flex justify-between">
             <div className="flex gap-2">
@@ -58,26 +59,59 @@ const useWaylineOptions = () => {
             )}
           </div>
         ),
-        value: i,
+        value: e.waylineTemplateId,
         name: e.taskName,
         type: e.taskType,
       })) ?? emtpyArray,
-    [airlineTemplateList],
+    [handlePreview, t, waylineTemplateList],
   )
 
   return {
-    airlineTemplateList,
-    airlineOptions,
+    waylineTemplateList,
+    waylineOptions,
     holder,
   }
 }
 
 export const useWaylineAndDeviceFormOptions = (form: FormInstance<any>) => {
-  const { airlineOptions, airlineTemplateList, holder } = useWaylineOptions()
+  const { waylineOptions, waylineTemplateList, holder } = useWaylineOptions()
 
-  const airlineIndex = Form.useWatch('airlineIndex', form)
+  const waylineTemplateId = Form.useWatch('waylineTemplateId', form)
+  // 根据航线模板 ID 定位航线，避免组件层重复查找
+  const findWaylineByTemplateId = useMemoizedFn(
+    (targetWaylineTemplateId?: string | number | null) => {
+      if (targetWaylineTemplateId == null) return undefined
+      return waylineTemplateList?.find(
+        (e) =>
+          e.waylineTemplateId != null &&
+          String(e.waylineTemplateId) === String(targetWaylineTemplateId),
+      )
+    },
+  )
 
-  const taskType = airlineTemplateList?.[airlineIndex]?.taskType
+  // 兼容老数据：优先用航线模板 ID 查找，缺失时回退 templateId
+  const resolveWaylineByTemplateId = useMemoizedFn(
+    (
+      targetWaylineTemplateId?: string | number | null,
+      templateId?: string | number | null,
+    ) => {
+      const matchedByWaylineId = findWaylineByTemplateId(targetWaylineTemplateId)
+      if (matchedByWaylineId) return matchedByWaylineId
+
+      if (templateId == null) return undefined
+
+      return waylineTemplateList?.find(
+        (e) => e.templateId != null && String(e.templateId) === String(templateId),
+      )
+    },
+  )
+
+  const activeWayline = useMemo(
+    () => findWaylineByTemplateId(waylineTemplateId),
+    [findWaylineByTemplateId, waylineTemplateId],
+  )
+
+  const taskType = activeWayline?.taskType
 
   const allDevices = useMapDevicesStore((s) => s.allDevices)
 
@@ -119,13 +153,17 @@ export const useWaylineAndDeviceFormOptions = (form: FormInstance<any>) => {
   const allowMultipleDevice = taskType === WaylineEnum.SwarmWayline
 
   return {
-    airlineTemplateList,
+    waylineTemplateList,
     allDevices,
-    airlineOptions,
+    waylineOptions,
     deviceOptions,
     holder,
-    airlineIndex,
+    waylineTemplateId,
     allowMultipleDevice,
+    activeWayline,
+    activeWaylineTemplate: activeWayline,
+    findWaylineByTemplateId,
+    resolveWaylineByTemplateId,
   }
 }
 
