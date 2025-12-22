@@ -5,11 +5,11 @@ import { useDictOptions } from '@/store/useDict.store'
 import { DictEnum } from '@/enum/dict'
 import { addAction } from '@/service/modules/action'
 import { XFormItem } from '@/components/XForm/types'
-import { TFunctionNonStrict } from 'i18next'
+import { TFunction } from 'i18next'
 import { generateDefaultActionName } from '@/utils/action'
 
 export const createAddActionFormItems = (
-  t: TFunctionNonStrict<'transition', undefined>,
+  t: TFunction<'translation', undefined>,
   typeOptions: { label: ReactNode; value: any }[],
 ): XFormItem[] => [
   {
