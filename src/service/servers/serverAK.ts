@@ -5,7 +5,6 @@ import {
   withToken,
 } from './interceptors'
 import LiqunAxios from './liqunAxios'
-import createSign from '@/utils/ak'
 
 const serverAK = new LiqunAxios<'common'>({
   baseURL: '/proxy4aApi/TTPService',
@@ -14,18 +13,7 @@ const serverAK = new LiqunAxios<'common'>({
 
 serverAK.interceptors.request.use(withToken)
 serverAK.interceptors.request.use(withInternational)
-serverAK.interceptors.request.use((config) => {
-  const { AccessKeyId, Signature } = createSign({
-    ...(config.params || {}),
-    ...(config.data || {}),
-  })
-  config.params = {
-    ...(config.params || {}),
-    AccessKeyId,
-    Signature,
-  }
-  return config
-})
+
 
 serverAK.interceptors.response.use(unAuthorized, unAuthorized)
 

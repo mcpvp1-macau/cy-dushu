@@ -24,8 +24,6 @@ const ShareVideo: React.FC = () => {
   const params = useParams()
   const { productKey, deviceId, videoId, token } = params
 
-  const tokenRef = useLatest(token)
-
   const queryClient = useQueryClient()
 
   const [errMsg, setErrMsg] = useState('')
