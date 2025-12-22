@@ -10,7 +10,6 @@ type PropsType = unknown
 const UavViewCombackResolver: FC<PropsType> = memo(() => {
   const { viewer } = useCesium()
   const canFly = useRef(true)
-  const ref = useRef(0)
 
   const lng = useUavControlRoomStore((s) => s.state.longitude)
   const lat = useUavControlRoomStore((s) => s.state.latitude)
@@ -26,12 +25,13 @@ const UavViewCombackResolver: FC<PropsType> = memo(() => {
     ) {
       return
     }
+    const currentHeight = viewer.camera?.positionCartographic?.height
+    if (isNil(currentHeight)) {
+      return
+    }
+
     viewer.scene.camera.setView({
-      destination: Cesium.Cartesian3.fromDegrees(
-        lng,
-        lat,
-        ref.current === 0 ? 1500 : viewer.camera.positionCartographic.height,
-      ),
+      destination: Cesium.Cartesian3.fromDegrees(lng, lat, currentHeight),
       orientation: {
         heading: Cesium.Math.toRadians(0),
         pitch: Cesium.Math.toRadians(-90),
