@@ -24,6 +24,7 @@ import useGroupName from './hooks/useGroupName'
 import useMCPStream from './hooks/useMCPStream'
 import useMCPTools from './hooks/useMCPTools'
 import useSendMessage from './hooks/useSendMessage'
+import IconRefresh from '@/assets/icons/jsx/IconRefresh'
 
 type PropsType = unknown
 
@@ -131,6 +132,7 @@ const DitingTanqi: FC<PropsType> = memo(() => {
     },
     // 结束时
     onEndReply: (content) => {
+      currentMessageRef.current = ''
       setApendedRows((prev) => [
         ...prev,
         {
@@ -155,6 +157,7 @@ const DitingTanqi: FC<PropsType> = memo(() => {
   }
 
   const willSendMessage = useRef('')
+  const currentMessageRef = useRef('')
 
   // 发送消息
   const handleSubmit = useMemoizedFn(async (message: string) => {
@@ -170,6 +173,7 @@ const DitingTanqi: FC<PropsType> = memo(() => {
       }
       appendUserMsg(message)
       setAiState(APState.Thinking)
+      currentMessageRef.current = message
       await sendMessage(cId, message)
     } finally {
       setAiState(APState.Idle)
@@ -185,7 +189,7 @@ const DitingTanqi: FC<PropsType> = memo(() => {
   })
 
   const [appendedRows, setApendedRows] = useState<any[]>([])
-  const { data: chatDetail, isLoading } = useQuery({
+  const { data: chatDetail, isLoading, refetch } = useQuery({
     queryKey: ['chatDetail', chatId],
     queryFn: async () => {
       const res = await getChats(chatId!)
@@ -275,6 +279,24 @@ const DitingTanqi: FC<PropsType> = memo(() => {
           >
             <div></div>
             <div className="flex gap-2 items-center pointer-events-auto">
+              {chatId && (
+                <IconButton
+                  tippyProps={{ content: t('tanqi.refreshChat') }}
+                  onClick={async () => {
+                    await refetch()
+                    setApendedRows([
+                      {
+                        id: `refresh-${Date.now()}`,
+                        role: 'user',
+                        content: currentMessageRef.current,
+                        created_at: dayjs().format(),
+                      },
+                    ])
+                  }}
+                >
+                  <IconRefresh className="scale-90" />
+                </IconButton>
+              )}
               {chatId && (
                 <IconButton
                   className="text-sm"
