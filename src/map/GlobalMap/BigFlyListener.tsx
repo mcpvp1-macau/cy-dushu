@@ -36,7 +36,8 @@ const BigFlyListener: FC<PropsType> = memo(() => {
     }
     const cameraHeight =
       Math.round(viewer.camera.positionCartographic?.height ?? 0)
-    const targetHeight = alt === undefined ? cameraHeight || 4000 : alt
+    const targetHeightRaw = alt === undefined ? cameraHeight || 4000 : alt
+    const targetHeight = Math.min(targetHeightRaw, 4000)
 
     const destination = Cesium.Cartesian3.fromDegrees(
       lng,
