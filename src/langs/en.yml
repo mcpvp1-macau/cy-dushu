@@ -1402,6 +1402,9 @@ controlRoom:
         title: Home Point
       reset:
         msg: Reset home point (click on the map to set)
+    returnHomeConfirm:
+      title: Return-to-home confirmation
+      content: The UAV is returning. Please keep monitoring flight status and surroundings until it lands safely.
     avoidDistance:
       title: Avoid Distance
     loseAction:

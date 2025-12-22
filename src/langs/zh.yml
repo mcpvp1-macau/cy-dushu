@@ -1378,6 +1378,9 @@ controlRoom:
         title: 返航点
       reset:
         msg: 重置返航点(在地图上点击设置)
+    returnHomeConfirm:
+      title: 返航确认
+      content: 无人机返航，请全程关注飞行状态与周边环境，直至安全回舱。
     avoidDistance:
       title: 避障
     loseAction:
