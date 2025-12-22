@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useMemoizedFn } from 'ahooks'
 import { getAirlineTemplateList } from '@/service/modules/airline'
 import useWaylinePreview from '../wayline/useWaylinePreview'
 import { WaylineIcon } from '@/pages/wayline/components/AirlineTemplateListItem'
@@ -77,7 +77,7 @@ export const useWaylineAndDeviceFormOptions = (form: FormInstance<any>) => {
   const { airlineOptions, airlineTemplateList, holder } = useWaylineOptions()
 
   const waylineTemplateId = Form.useWatch('waylineTemplateId', form)
-  const findAirlineByWaylineTemplateId = useCallback(
+  const findAirlineByWaylineTemplateId = useMemoizedFn(
     (targetWaylineTemplateId?: string | number | null) => {
       if (targetWaylineTemplateId == null) return undefined
       return airlineTemplateList?.find(
@@ -86,10 +86,9 @@ export const useWaylineAndDeviceFormOptions = (form: FormInstance<any>) => {
           String(e.waylineTemplateId) === String(targetWaylineTemplateId),
       )
     },
-    [airlineTemplateList],
   )
 
-  const resolveAirlineByTemplateId = useCallback(
+  const resolveAirlineByTemplateId = useMemoizedFn(
     (
       targetWaylineTemplateId?: string | number | null,
       templateId?: string | number | null,
@@ -105,7 +104,6 @@ export const useWaylineAndDeviceFormOptions = (form: FormInstance<any>) => {
         (e) => e.templateId != null && String(e.templateId) === String(templateId),
       )
     },
-    [airlineTemplateList, findAirlineByWaylineTemplateId],
   )
 
   const activeAirline = useMemo(
