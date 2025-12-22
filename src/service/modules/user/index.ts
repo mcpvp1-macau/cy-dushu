@@ -27,7 +27,10 @@ export const getSystemRoleMenu = (params: any) => {
 }
 
 export const getSystemInfo = (systemName: string) => {
-  return server4A.post('/system/getSystemConfigByName', { systemName })
+  if (globalConfig.isNewSystemConfig) {
+    return server4A.post('/system/getSystemConfigByName', { systemName })
+  }
+  return server4A.post('/system/getSystemByName', { systemName })
 }
 
 export const getCustomListByGroup = () => {

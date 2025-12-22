@@ -136,6 +136,9 @@ class GlobalConfig {
   /** 是否开启蛙跳任务 */
   enableFrogLeapTask = false
 
+  /** 是否为新系统配置 */
+  isNewSystemConfig: boolean = false
+
   constructor(def: ConfigType) {
     Object.assign(this, def)
   }

@@ -66,10 +66,6 @@ window.config = {
   useUavAirportDocUpload: false,
   // 是否使用无人机日志
   useUavLogs: true,
-  // 访问密钥(必须在这里配置，4a上配置无效)
-  accessKeyId: 'qgckfetkfojcsgur',
-  // 访问密钥(必须在这里配置，4a上配置无效)
-  secretAccessKey: 'K2AqfD1wl+ZfeJnTBWgQ4g==',
   enableJessibucaMetrics: false,
   useTanqi: true,
   sentryDsn: '8a3f2951493342c6803439364cbd9dfa',
@@ -81,6 +77,7 @@ window.config = {
   useFlightReporting: false,
   // 禁飞区显示样式: 'default' 为默认样式(红色填充), 'fence' 为电子围栏样式
   noFlyZoneDisplayStyle: 'fence',
+  isNewSystemConfig: true,
   32717: {
     title: '测试名称',
   },
