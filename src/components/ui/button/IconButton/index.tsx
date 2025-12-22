@@ -1,6 +1,7 @@
 import { GetProps, Tooltip, type TooltipProps } from 'antd'
 import type { ButtonHTMLAttributes, FC, ReactNode } from 'react'
 import Tippy from '@tippyjs/react'
+import { twMerge } from 'tailwind-merge'
 
 type PropsType = ButtonHTMLAttributes<HTMLButtonElement> & {
   active?: boolean
@@ -17,26 +18,24 @@ const IconButton: FC<PropsType> = ({
   tippyProps,
   ...restProps
 }) => {
-  const buttonClassName = clsx(
-    'm-0 p-0 outline-none bg-transparent border-0 cursor-pointer text-fore',
-    'hover:text-primary',
-    'disabled:cursor-not-allowed disabled:text-fore disabled:opacity-50',
-    '[&>*]:transition-[color] [&>*]:duration-200 [&>*]:ease-linear',
-    restProps.className,
-    {
-      'text-primary': active,
-    },
+  const buttonClassName = twMerge(
+    clsx(
+      'm-0 p-0 outline-none bg-transparent border-0 cursor-pointer text-fore',
+      'hover:text-primary',
+      'disabled:cursor-not-allowed disabled:text-fore disabled:opacity-50',
+      '[&>*]:transition-[color] [&>*]:duration-200 [&>*]:ease-linear',
+      restProps.className,
+      {
+        'text-primary': active,
+      },
+    ),
   )
 
   // 存在 toolTipProps 时，渲染带有 Tooltip 的按钮
   if (toolTipProps) {
     return (
       <Tooltip {...toolTipProps}>
-        <button
-          type="button"
-          {...restProps}
-          className={buttonClassName}
-        >
+        <button type="button" {...restProps} className={buttonClassName}>
           {children}
         </button>
       </Tooltip>
@@ -49,22 +48,14 @@ const IconButton: FC<PropsType> = ({
         {...tippyProps}
         content={<div className="p-1.5">{tippyProps.content}</div>}
       >
-        <button
-          type="button"
-          {...restProps}
-          className={buttonClassName}
-        >
+        <button type="button" {...restProps} className={buttonClassName}>
           {children}
         </button>
       </Tippy>
     )
   }
   return (
-    <button
-      type="button"
-      {...restProps}
-      className={buttonClassName}
-    >
+    <button type="button" {...restProps} className={buttonClassName}>
       {children}
     </button>
   )

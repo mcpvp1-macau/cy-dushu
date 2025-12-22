@@ -110,6 +110,7 @@ const KCYPXSPanel: FC<PropsType> = memo(({ actionId }) => {
             labelFontSize: 12,
             itemMarginBottom: 0,
           }}
+          autoComplete={process.env.NODE_ENV === 'production' ? 'off' : 'on'}
           onValuesChange={handleValuesChange}
         />
       </div>

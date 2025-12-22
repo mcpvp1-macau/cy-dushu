@@ -85,6 +85,9 @@ const useSendMessage = (options?: {
 
         let content_acc = ''
         for await (const chunk of chunkBuffer(reader)) {
+          if (chunk === ':heartbeat') {
+            continue
+          }
           const eventData = parseEvent(chunk)
           const data = eventData.data
 

@@ -124,6 +124,7 @@ const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
           layout="vertical"
           rowsProps={{ gutter: 8 }}
           themeKey="dushu-kcyp"
+          autoComplete={process.env.NODE_ENV === 'production' ? 'off' : 'on'}
           themeConfig={{
             verticalLabelPadding: 4,
             labelFontSize: 12,

@@ -104,6 +104,7 @@ const KCYPZSPanel: FC<PropsType> = memo(({ actionId }) => {
           colsProps={{ span: 12 }}
           rowsProps={{ gutter: 12 }}
           themeKey="dushu-kcyp"
+          autoComplete={process.env.NODE_ENV === 'production' ? 'off' : 'on'}
           themeConfig={{
             verticalLabelPadding: 4,
             labelFontSize: 12,
