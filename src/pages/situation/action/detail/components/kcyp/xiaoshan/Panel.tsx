@@ -63,7 +63,7 @@ const KCYPXSPanel: FC<PropsType> = memo(({ actionId }) => {
       await form.validateFields()
       const { caseHapTime } = values
       const caseHapTimeFormat = dayjs(caseHapTime).valueOf()
-      saveXSKCYPOrder({
+      await saveXSKCYPOrder({
         ...data,
         ...values,
         caseHapTime: caseHapTimeFormat,
