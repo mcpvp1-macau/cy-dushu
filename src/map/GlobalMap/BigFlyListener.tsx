@@ -30,18 +30,20 @@ const BigFlyListener: FC<PropsType> = memo(() => {
     viewer.camera.flyTo(option)
   })
 
-  const bigFly = useMemoizedFn(({ lng, lat, alt = 4000 }: BigFlyOption) => {
+  const bigFly = useMemoizedFn(({ lng, lat, alt }: BigFlyOption) => {
     if (!viewer?.camera) {
       return
     }
     const cameraHeight =
-      Math.round(viewer?.camera?.positionCartographic?.height) || alt
-    let targetHeight = cameraHeight
-    if (cameraHeight > (globalConfig?.disableZoomHeight || 2000)) {
-      targetHeight = alt
-    }
+      Math.round(viewer.camera.positionCartographic?.height ?? 0)
+    const targetHeightRaw = alt === undefined ? cameraHeight || 4000 : alt
+    const targetHeight = Math.min(targetHeightRaw, 4000)
 
-    const destination = Cesium.Cartesian3.fromDegrees(lng, lat, targetHeight)
+    const destination = Cesium.Cartesian3.fromDegrees(
+      lng,
+      lat,
+      targetHeight,
+    )
     attempt(() => {
       viewer.camera?.flyTo({
         destination, //相机飞入点
