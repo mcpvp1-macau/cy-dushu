@@ -59,13 +59,15 @@ const Compass: FC = memo(() => {
       return
     }
 
-    viewer.camera.setView({
+    viewer.camera.flyTo({
       destination,
       orientation: {
         heading: 0,
         pitch: viewer.camera.pitch ?? 0,
         roll: viewer.camera.roll ?? 0,
       },
+      duration: 0.4,
+      easingFunction: Cesium.EasingFunction.QUADRATIC_OUT,
     })
   })
 
