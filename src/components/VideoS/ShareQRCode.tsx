@@ -2,7 +2,6 @@ import { createToken, createSignWithKeys } from '@/utils/ak'
 import { getAccessKey } from '@/service/modules/user'
 import { Typography, Spin } from 'antd'
 import { QRCode } from 'qrcode-react-next'
-import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 
 type PropsType = {
@@ -16,18 +15,49 @@ const ShareQRCode: React.FC<PropsType> = ({
   deviceId,
   videoId,
 }) => {
-  const { data: keysData, isLoading } = useQuery({
-    queryKey: ['accessKey'],
-    queryFn: async () => {
-      const res = await getAccessKey()
-      return res.data
-    },
-    staleTime: 5 * 60 * 1000, // 5 分钟缓存
-  })
+  // const { data: keysData, isLoading } = useQuery({
+  //   queryKey: ['accessKey'],
+  //   queryFn: async () => {
+  //     const res = await getAccessKey()
+  //     console.log('accessKey res', res)
+  //     return res
+  //   },
+  // })
+
+  const [keysData, setKeysData] = useState<{
+    accessKeyId: string
+    secretAccessKey: string
+  } | null>(null)
+
+  useEffect(() => {
+    const fetchKeys = async () => {
+      try {
+        const res = await getAccessKey()
+        setKeysData(
+          res as unknown as {
+            accessKeyId: string
+            secretAccessKey: string
+          },
+        )
+      } catch (error) {
+        console.log('accessKey res', error)
+        // @ts-ignore
+        if (error.accessKeyId) {
+          setKeysData(
+            error as unknown as {
+              accessKeyId: string
+              secretAccessKey: string
+            },
+          )
+        }
+      }
+    }
+    fetchKeys()
+  }, [])
 
   const shareUrl = useMemo(() => {
+    console.log('keysData', keysData)
     if (!keysData) return ''
-
     const { accessKeyId, secretAccessKey } = keysData
 
     // 预签名 liveAK 请求的参数
@@ -39,7 +69,11 @@ const ShareQRCode: React.FC<PropsType> = ({
       proxy: globalConfig.videoProxy || false,
       videoId,
     }
-    const liveSign = createSignWithKeys(liveParams, accessKeyId, secretAccessKey)
+    const liveSign = createSignWithKeys(
+      liveParams,
+      accessKeyId,
+      secretAccessKey,
+    )
 
     // 预签名 getDeviceStreamList 请求的参数
     const streamListParams = {
@@ -70,7 +104,9 @@ const ShareQRCode: React.FC<PropsType> = ({
     )}`
   }, [keysData, productKey, deviceId, videoId])
 
-  if (isLoading || !shareUrl) {
+  // console.log('shareUrl', isLoading, shareUrl, keysData)
+
+  if (!shareUrl) {
     return (
       <div className="flex items-center justify-center p-4">
         <Spin />

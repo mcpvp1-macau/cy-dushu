@@ -539,7 +539,7 @@ const DeviceLiveVideo = memo(
                     >
                       <IconRefresh />
                     </IconButton>
-                    {location.hostname.includes('jing-an.com') ? (
+                    {/* {location.hostname.includes('jing-an.com') ? ( */}
                       <IconButton
                         tippyProps={{
                           content: (
@@ -563,9 +563,9 @@ const DeviceLiveVideo = memo(
                       >
                         <ShareAltOutlined />
                       </IconButton>
-                    ) : (
+                    {/* ) : (
                       <></>
-                    )}
+                    )} */}
 
                     {globalConfig.enableElectricScale && (
                       <IconButton

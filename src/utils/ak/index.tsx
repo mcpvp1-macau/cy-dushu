@@ -1,7 +1,5 @@
 import CryptoJS from 'crypto-js'
 
-
-
 export const createSignWithKeys = (
   params: Record<string, any>,
   accessKeyId: string,
@@ -24,8 +22,8 @@ export const createSignWithKeys = (
       return str
     })
     .join('&')
-  const words = CryptoJS.HmacSHA1(secretAccessKey, paramsStr)
-  const sign = CryptoJS.enc.Base64.stringify(words)
+  const words = CryptoJS.HmacSHA1(secretAccessKey || '', paramsStr || '')
+  const sign = CryptoJS.enc.Base64.stringify(words || '')
   return {
     AccessKeyId: accessKeyId,
     Signature: sign,
@@ -39,12 +37,12 @@ export const createToken = (param) => {
     ...param,
   }
   const s = JSON.stringify(params)
-  const encrypted = CryptoJS.AES.encrypt(s, 'jingansi')
+  const encrypted = CryptoJS.AES.encrypt(s || '', 'jingansi')
   return encrypted.toString()
 }
 
 export const verifyToken = (token) => {
-  const encrypted = CryptoJS.AES.decrypt(token, 'jingansi')
+  const encrypted = CryptoJS.AES.decrypt(token || '', 'jingansi')
 
   return encrypted.toString(CryptoJS.enc.Utf8)
 }
