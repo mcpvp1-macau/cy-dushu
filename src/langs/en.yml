@@ -1595,6 +1595,7 @@ tanqi:
     title: Command Control
   sender:
     placeholder: How can Tanqi help you?
+  refreshChat: Refresh Chat History
 dayOfWeek:
   sunday: Sunday
   monday: Monday

@@ -17,6 +17,7 @@ import useSendMessage from './hooks/useSendMessage'
 import useUserStore from '@/store/useUser.store'
 import mitt from 'mitt'
 import HumanInLoopDialog from './components/HumanInLoopDialog'
+import IconRefresh from '@/assets/icons/jsx/IconRefresh'
 
 type PropsType = unknown
 
@@ -31,6 +32,7 @@ export const actionTanqiEmitter = mitt<{
 }>()
 
 const ActionTanqi: FC<PropsType> = memo(() => {
+  const [t] = useTranslation()
   const username = useUserStore((s) => s.user?.username)
   const actionId = useParams().actionId
   const groupName = username && actionId ? `ds-${username}-${actionId}` : ''
@@ -88,6 +90,7 @@ const ActionTanqi: FC<PropsType> = memo(() => {
     },
     // 结束时
     onEndReply: (content) => {
+      currentMessageRef.current = ''
       setApendedRows((prev) => [
         ...prev,
         {
@@ -104,6 +107,7 @@ const ActionTanqi: FC<PropsType> = memo(() => {
     setApendedRows((prev) => [
       ...prev,
       {
+        id: `refresh-${Date.now()}`,
         role: 'user',
         content: message,
         created_at: dayjs().format(),
@@ -113,6 +117,7 @@ const ActionTanqi: FC<PropsType> = memo(() => {
 
   const willSendMessage = useRef('')
 
+  const currentMessageRef = useRef('')
   // 发送消息
   const handleSubmit = useMemoizedFn(
     async (message: string, metadata: Record<string, any> = {}) => {
@@ -128,6 +133,7 @@ const ActionTanqi: FC<PropsType> = memo(() => {
         }
         appendUserMsg(message)
         setAiState(APState.Thinking)
+        currentMessageRef.current = message
         await sendMessage(cId, message, metadata)
       } finally {
         setAiState(APState.Idle)
@@ -155,7 +161,11 @@ const ActionTanqi: FC<PropsType> = memo(() => {
   })
 
   const [appendedRows, setApendedRows] = useState<any[]>([])
-  const { data: chatDetail, isLoading } = useQuery({
+  const {
+    data: chatDetail,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ['chatDetail', chatId],
     queryFn: async () => {
       const res = await getChats(chatId!)
@@ -253,6 +263,24 @@ const ActionTanqi: FC<PropsType> = memo(() => {
           >
             <div></div>
             <div className="flex gap-2 items-center pointer-events-auto">
+              {chatId && (
+                <IconButton
+                  tippyProps={{ content: t('tanqi.refreshChat') }}
+                  onClick={async () => {
+                    await refetch()
+                    setApendedRows([
+                      {
+                        id: `refresh-${Date.now()}`,
+                        role: 'user',
+                        content: currentMessageRef.current,
+                        created_at: dayjs().format(),
+                      },
+                    ])
+                  }}
+                >
+                  <IconRefresh className="scale-90" />
+                </IconButton>
+              )}
               {chatId && (
                 <IconButton
                   className="text-sm"

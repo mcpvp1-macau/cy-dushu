@@ -1572,6 +1572,7 @@ tanqi:
     title: 指令控制
   sender:
     placeholder: 檀棋可以帮助你什么?
+  refreshChat: 刷新聊天记录
 dayOfWeek:
   sunday: 周日
   monday: 周一
