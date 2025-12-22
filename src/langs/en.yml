@@ -601,6 +601,7 @@ common:
   resolve: Resolve
   task: Task
   noTask: Idle
+  accept: Accepted
 events:
   search:
     placeholder: Please search by event name or ID
@@ -1404,7 +1405,9 @@ controlRoom:
         msg: Reset home point (click on the map to set)
     returnHomeConfirm:
       title: Return-to-home confirmation
-      content: The UAV is returning. Please keep monitoring flight status and surroundings until it lands safely.
+      content: >-
+        The UAV is returning. Please keep monitoring flight status and
+        surroundings until it lands safely.
     avoidDistance:
       title: Avoid Distance
     loseAction:

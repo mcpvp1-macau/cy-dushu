@@ -1,5 +1,7 @@
 import XModal from '@/components/XModal'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
+import { WarningOutlined } from '@ant-design/icons'
+import { Button } from 'antd'
 
 const ReturnHomeConfirm: FC = memo(() => {
   const { t } = useTranslation()
@@ -7,22 +9,17 @@ const ReturnHomeConfirm: FC = memo(() => {
   const displayMode = useUavControlRoomStore((s) => s.state?.displayMode)
 
   const [open, setOpen] = useState(false)
-  const lastReturnModeRef = useRef<string>()
+
+  const hasReturnHint = useMemo(
+    () => displayMode?.includes?.('返航'),
+    [displayMode],
+  )
 
   useEffect(() => {
-    const hasReturnHint = displayMode?.includes?.('返航')
-
     if (hasReturnHint) {
-      if (displayMode !== lastReturnModeRef.current) {
-        setOpen(true)
-        lastReturnModeRef.current = displayMode
-      }
-      return
+      setOpen(true)
     }
-
-    setOpen(false)
-    lastReturnModeRef.current = undefined
-  }, [displayMode])
+  }, [hasReturnHint])
 
   return (
     <XModal
@@ -30,11 +27,17 @@ const ReturnHomeConfirm: FC = memo(() => {
       centered
       open={open}
       title={t('controlRoom.uav.returnHomeConfirm.title')}
+      footer={false}
+      width={300}
+      mask
+      noClose
       onClose={() => setOpen(false)}
       onConfirm={() => setOpen(false)}
     >
-      <div className="p-4 text-base leading-6">
+      <div className="p-3 flex flex-col items-center gap-2 text-center">
+        <WarningOutlined className="text-yellow-400 text-3xl animate-pulse" />
         {t('controlRoom.uav.returnHomeConfirm.content')}
+        <Button onClick={() => setOpen(false)}>{t('common.accept')}</Button>
       </div>
     </XModal>
   )
