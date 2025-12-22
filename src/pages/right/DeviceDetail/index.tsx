@@ -54,7 +54,7 @@ const RightDeviceDetail: FC<PropsType> = memo(() => {
         new Cesium.BoundingSphere(cartesian),
       )
       if (
-        cameraHeight <= 4000 &&
+        cameraHeight <= 8000 &&
         (visibility === Cesium.Intersect.INSIDE ||
           visibility === Cesium.Intersect.INTERSECTING)
       ) {
