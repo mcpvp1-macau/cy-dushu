@@ -662,7 +662,7 @@ uav:
   flightControl:
     title: 飞行控制
   mapViewLock:
-    title: 地图视角锁定
+    title: 无人机地图跟随
   takeOff:
     title: 起飞
   land:

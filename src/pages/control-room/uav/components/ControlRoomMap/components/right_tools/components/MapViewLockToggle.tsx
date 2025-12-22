@@ -1,6 +1,6 @@
-import { LockOutlined, UnlockOutlined } from '@ant-design/icons'
 import FloatIconButton from '@/components/ui/button/FloatIconButton'
 import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
+import IconUavMapFollow from '@/assets/icons/jsx/IconUavMapFollow'
 
 const MapViewLockToggle: FC = memo(() => {
   const { t } = useTranslation()
@@ -13,14 +13,14 @@ const MapViewLockToggle: FC = memo(() => {
     <FloatIconButton
       tippyProps={{
         content: t('uav.mapViewLock.title', {
-          defaultValue: 'Lock UAV map view',
+          defaultValue: 'UAV map follow',
         }),
         placement: 'left',
       }}
       active={mapViewLocked}
       onClick={() => updateMapViewLocked(!mapViewLocked)}
     >
-      {mapViewLocked ? <LockOutlined /> : <UnlockOutlined />}
+      <IconUavMapFollow />
     </FloatIconButton>
   )
 })

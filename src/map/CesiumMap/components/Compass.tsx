@@ -1,6 +1,7 @@
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import FloatIconButton from '@/components/ui/button/FloatIconButton'
+import { attempt } from 'lodash'
 
 const Compass: FC = memo(() => {
   const { viewer } = useCesium()
@@ -42,10 +43,12 @@ const Compass: FC = memo(() => {
     const handleChange = () => updateHeading()
     viewer.camera.changed.addEventListener(handleChange)
     return () => {
-      viewer.camera.changed.removeEventListener(handleChange)
-      if (percentageChangedRef.current !== null) {
-        viewer.camera.percentageChanged = percentageChangedRef.current
-      }
+      attempt(() => {
+        viewer.camera.changed.removeEventListener(handleChange)
+        if (percentageChangedRef.current !== null) {
+          viewer.camera.percentageChanged = percentageChangedRef.current
+        }
+      })
     }
   }, [updateHeading, viewer])
 
@@ -59,13 +62,15 @@ const Compass: FC = memo(() => {
       return
     }
 
-    viewer.camera.setView({
+    viewer.camera.flyTo({
       destination,
       orientation: {
         heading: 0,
         pitch: viewer.camera.pitch ?? 0,
         roll: viewer.camera.roll ?? 0,
       },
+      duration: 0.4,
+      easingFunction: Cesium.EasingFunction.QUADRATIC_OUT,
     })
   })
 
