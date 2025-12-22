@@ -1,8 +1,8 @@
 import Jessibuca from '@/components/Video/Jessibuca'
 import {
-  getDeviceStreamListAK,
-  liveAK,
-} from '@/service/modules/device/device-video'
+  liveShare,
+  getDeviceStreamListShare,
+} from '@/service/modules/device/device-video-share'
 import { Responses } from '@/service/servers/liqunAxios'
 import { verifyToken } from '@/utils/ak'
 import { shouldJson } from '@/utils/json'
@@ -30,19 +30,38 @@ const ShareVideo: React.FC = () => {
 
   const [errMsg, setErrMsg] = useState('')
 
+  // 解析 token 获取预签名参数
+  const tokenData = useMemo(() => {
+    if (!token) return null
+    try {
+      const paramsStr = verifyToken(token)
+      const params = shouldJson(paramsStr)
+      if (!params) return null
+      return params
+    } catch (error) {
+      console.error('Token 解析失败:', error)
+      return null
+    }
+  }, [token])
+
   const LastUrlRef = useRef('')
   // 获取设备视频流列表
   const deviceStreamListCache = useRef<
-    Awaited<ReturnType<typeof getDeviceStreamListAK>>['data'] | null
+    Awaited<ReturnType<typeof getDeviceStreamListShare>>['data'] | null
   >(null)
 
-  const fetchDeviceStreamListAK = async () => {
+  const fetchDeviceStreamListShare = async () => {
     if (deviceStreamListCache.current) {
       return deviceStreamListCache.current
     }
+    if (!tokenData?.streamListSign) {
+      return null
+    }
     try {
-      const res = await getDeviceStreamListAK({
+      const res = await getDeviceStreamListShare({
         streamId: `${productKey}/${deviceId}`,
+        AccessKeyId: tokenData.streamListSign.AccessKeyId,
+        Signature: tokenData.streamListSign.Signature,
       })
       deviceStreamListCache.current = res.data
     } catch (_error) {}
@@ -55,16 +74,20 @@ const ShareVideo: React.FC = () => {
   const { data, refetch } = useQuery(
     {
       queryKey: ['getVideoUrl', { productKey, deviceId, videoId }],
-      enabled: !!deviceId && !!productKey,
+      enabled: !!deviceId && !!productKey && !!tokenData,
       queryFn: async () => {
-        if (!productKey || !deviceId || !videoId) {
+        if (!productKey || !deviceId || !videoId || !tokenData) {
           return { url: '', streamList: [] }
         }
         try {
           // 同时获取视频直播地址和流列表
           const [liveData, streamList] = await Promise.all([
-            liveAK(productKey, deviceId, { videoId }),
-            fetchDeviceStreamListAK(), // 为了保证第一次拉流时, 能记住上一次选择的视频流, 所以一起请求
+            liveShare(productKey, deviceId, {
+              videoId,
+              AccessKeyId: tokenData.liveSign.AccessKeyId,
+              Signature: tokenData.liveSign.Signature,
+            }),
+            fetchDeviceStreamListShare(), // 为了保证第一次拉流时, 能记住上一次选择的视频流, 所以一起请求
           ])
 
           let url = (liveData.data.playUrl as string) || ''
@@ -164,25 +187,23 @@ const ShareVideo: React.FC = () => {
   const [isExpire, setIsExpire] = useState('')
 
   const getExpireTime = () => {
-    const paramsStr = verifyToken(tokenRef.current)
-    const params = shouldJson(paramsStr)
-    if (!params) {
+    if (!tokenData) {
       setIsExpire('分享异常')
       return
     }
-    if (params.productKey !== productKey) {
+    if (tokenData.productKey !== productKey) {
       setIsExpire('分享异常')
       return
     }
-    if (params.deviceId !== deviceId) {
+    if (tokenData.deviceId !== deviceId) {
       setIsExpire('分享异常')
       return
     }
-    if (params.videoId !== videoId) {
+    if (tokenData.videoId !== videoId) {
       setIsExpire('分享异常')
       return
     }
-    const diff = Date.now() - params.time
+    const diff = Date.now() - tokenData.time
     if (diff > 24 * 60 * 60 * 1000) {
       // token 过期
       setIsExpire('分享已过期')
