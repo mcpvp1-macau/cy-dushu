@@ -264,10 +264,11 @@ const ScheduleModal: FC<PropsType> = memo(
     const {
       airlineOptions,
       deviceOptions,
-      airlineTemplateList,
       allDevices,
       allowMultipleDevice,
       holder,
+      activeAirline,
+      resolveAirlineByTemplateId,
     } = useWaylineAndDeviceFormOptions(form)
 
     const filteredAirlineOptions = useMemo(() => {
@@ -356,10 +357,9 @@ const ScheduleModal: FC<PropsType> = memo(
           actionType: data.actionType,
           pilotCode: data.pilotCode,
           landDeviceId: data.actionConfig?.landDeviceId,
-          waylineTemplateId: airlineTemplateList?.find(
-            (e) =>
-              e.waylineTemplateId === data.actionConfig?.waylineTemplateId ||
-              e.templateId === data.actionConfig?.templateId,
+          waylineTemplateId: resolveAirlineByTemplateId(
+            data.actionConfig?.waylineTemplateId,
+            data.actionConfig?.templateId,
           )?.waylineTemplateId,
           type: data.type as any,
           taskType: (data.taskType || 'NORMAL') as any,
@@ -414,10 +414,6 @@ const ScheduleModal: FC<PropsType> = memo(
     const handleConfirm = async () => {
       await form.validateFields()
       const values = form.getFieldsValue()
-      const activeAirline = airlineTemplateList?.find(
-        (e) => `${e.waylineTemplateId}` === `${values.waylineTemplateId ?? ''}`,
-      )
-
       if (!activeAirline) {
         msgApi.error(
           t('schedule.errors.selectWayline.msg', { defaultValue: '请选择航线' }),

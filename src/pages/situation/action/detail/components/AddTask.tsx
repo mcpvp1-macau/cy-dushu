@@ -96,10 +96,11 @@ const AddTask: FC<PropsType> = memo(
     const {
       airlineOptions,
       deviceOptions,
-      airlineTemplateList,
       allDevices,
       allowMultipleDevice,
       holder,
+      activeAirline,
+      findAirlineByWaylineTemplateId,
     } = useWaylineAndDeviceFormOptions(form)
 
     const deviceOptionsForForm = useMemo(() => {
@@ -126,9 +127,8 @@ const AddTask: FC<PropsType> = memo(
 
     const [confirmLoading, setConfirmLoading] = useState(false)
     const handleConfirm = useMemoizedFn(async (val: any) => {
-      const airline = airlineTemplateList?.find(
-        (e) => `${e.waylineTemplateId}` === `${val.waylineTemplateId ?? ''}`,
-      )
+      const airline =
+        activeAirline || findAirlineByWaylineTemplateId(val.waylineTemplateId)
       // 获取设备类型
       let deviceType = DeviceEnum.UAV
       if (Array.isArray(val.deviceIds)) {

@@ -61,10 +61,11 @@ const AddSHJHTask: FC<PropsType> = memo(
   const {
     airlineOptions,
     deviceOptions,
-    airlineTemplateList,
     allDevices,
     allowMultipleDevice,
     holder,
+    activeAirline,
+    findAirlineByWaylineTemplateId,
   } = useWaylineAndDeviceFormOptions(form)
 
   const actionTypeOptions = useDictOptions(DictEnum.ACTION_TYPE)
@@ -219,9 +220,8 @@ const AddSHJHTask: FC<PropsType> = memo(
         uavTargetLatitude: targetLat,
       })
     } else {
-      const airline = airlineTemplateList?.find(
-        (e) => `${e.waylineTemplateId}` === `${values.waylineTemplateId ?? ''}`,
-      )
+      const airline =
+        activeAirline || findAirlineByWaylineTemplateId(values.waylineTemplateId)
       if (airline) {
         const parameters = shouldJson(airline.parameters)
         const taskBasic = shouldJson(airline.taskBasic)

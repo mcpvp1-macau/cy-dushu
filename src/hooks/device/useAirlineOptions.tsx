@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { getAirlineTemplateList } from '@/service/modules/airline'
 import useWaylinePreview from '../wayline/useWaylinePreview'
 import { WaylineIcon } from '@/pages/wayline/components/AirlineTemplateListItem'
@@ -76,12 +77,40 @@ export const useWaylineAndDeviceFormOptions = (form: FormInstance<any>) => {
   const { airlineOptions, airlineTemplateList, holder } = useWaylineOptions()
 
   const waylineTemplateId = Form.useWatch('waylineTemplateId', form)
+  const findAirlineByWaylineTemplateId = useCallback(
+    (targetWaylineTemplateId?: string | number | null) => {
+      if (targetWaylineTemplateId == null) return undefined
+      return airlineTemplateList?.find(
+        (e) =>
+          e.waylineTemplateId != null &&
+          String(e.waylineTemplateId) === String(targetWaylineTemplateId),
+      )
+    },
+    [airlineTemplateList],
+  )
+
+  const resolveAirlineByTemplateId = useCallback(
+    (
+      targetWaylineTemplateId?: string | number | null,
+      templateId?: string | number | null,
+    ) => {
+      const matchedByWaylineId = findAirlineByWaylineTemplateId(
+        targetWaylineTemplateId,
+      )
+      if (matchedByWaylineId) return matchedByWaylineId
+
+      if (templateId == null) return undefined
+
+      return airlineTemplateList?.find(
+        (e) => e.templateId != null && String(e.templateId) === String(templateId),
+      )
+    },
+    [airlineTemplateList, findAirlineByWaylineTemplateId],
+  )
+
   const activeAirline = useMemo(
-    () =>
-      airlineTemplateList?.find(
-        (e) => `${e.waylineTemplateId}` === `${waylineTemplateId ?? ''}`,
-      ),
-    [airlineTemplateList, waylineTemplateId],
+    () => findAirlineByWaylineTemplateId(waylineTemplateId),
+    [findAirlineByWaylineTemplateId, waylineTemplateId],
   )
 
   const taskType = activeAirline?.taskType
@@ -134,6 +163,9 @@ export const useWaylineAndDeviceFormOptions = (form: FormInstance<any>) => {
     waylineTemplateId,
     allowMultipleDevice,
     activeAirline,
+    activeWaylineTemplate: activeAirline,
+    findAirlineByWaylineTemplateId,
+    resolveAirlineByTemplateId,
   }
 }
 
