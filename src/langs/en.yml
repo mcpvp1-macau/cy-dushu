@@ -673,7 +673,7 @@ uav:
   flightControl:
     title: Flight Control
   mapViewLock:
-    title: Lock UAV Map View
+    title: UAV Map Follow
   takeOff:
     title: Take Off
   land:
