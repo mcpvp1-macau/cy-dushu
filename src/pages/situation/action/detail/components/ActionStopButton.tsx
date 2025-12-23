@@ -19,7 +19,7 @@ const ActionStopButton: FC<Props> = ({ actionId }) => {
     setShowStopConfirm(false)
     setEndActionLoading(true)
     try {
-      await endAction(String(actionId))
+      await endAction(actionId)
       await queryClient.invalidateQueries({
         queryKey: ['actionList'],
         exact: false,
@@ -39,7 +39,7 @@ const ActionStopButton: FC<Props> = ({ actionId }) => {
     setEndActionLoading(true)
     let needConfirm = false
     try {
-      const res = await checkEndAction(String(actionId))
+      const res = await checkEndAction(actionId)
       if (res.data === true) {
         needConfirm = true
         setShowStopConfirm(true)
