@@ -79,7 +79,7 @@ const PageActionRecord: FC<PropsType> = memo(() => {
   )
 
   const deleteMutation = useMutation({
-    mutationFn: (actionId: string | number) => deleteAction(actionId),
+    mutationFn: (actionId: number) => deleteAction(actionId),
     onSuccess: () => {
       msgApi.success(t('api.success.msg'))
       queryClient.invalidateQueries({ queryKey: ['getActionRecordList'] })
@@ -88,7 +88,7 @@ const PageActionRecord: FC<PropsType> = memo(() => {
 
   const handleDeleteAction = useMemoizedFn(
     (record: API_ACTION.domain.ActionRecord) =>
-      deleteMutation.mutateAsync(record.actionId),
+      deleteMutation.mutateAsync(Number(record.actionId)),
   )
 
   const columns = useMemo(

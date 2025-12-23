@@ -25,6 +25,10 @@ const ActionStopButton: FC<Props> = ({ actionId }) => {
         exact: false,
         type: 'all',
       })
+      await queryClient.invalidateQueries({
+        queryKey: ['action', 'item', 'device', 'latest'],
+        exact: false,
+      })
       navigate('/action', { replace: true })
     } finally {
       setEndActionLoading(false)
