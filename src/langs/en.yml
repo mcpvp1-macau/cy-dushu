@@ -691,7 +691,12 @@ usv:
     pitch: Pitch
     roll: Roll
   pointSail:
+    title: Point Navigation
     confirmQuestion: Confirm navigation to this waypoint?
+  operations:
+    startMission: Start Mission
+    pauseMission: Pause Mission
+    stopMission: Stop Mission
 actionRecord:
   title: Action Records
   table:
