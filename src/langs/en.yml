@@ -684,6 +684,8 @@ uav:
   infoBoard:
     title: UAV Info Label
 usv:
+  mapViewLock:
+    title: USV Map Follow
   attitude:
     heading: Heading
     pitch: Pitch
