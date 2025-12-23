@@ -85,9 +85,12 @@ const OperatorBtns: FC<PropsType> = ({ data, noEdit }) => {
         queryKey: ['action', String(data.actionId), 'items'],
       })
       msgApi.success(t('api.success.msg'))
-      queryClient.invalidateQueries({
-        queryKey: ['action', 'item', 'device', 'latest', data.deviceId],
-      })
+      if (action === 'end') {
+        queryClient.invalidateQueries({
+          queryKey: ['action', 'item', 'device', 'latest'],
+          exact: false,
+        })
+      }
     } finally {
       setLoading(false)
     }

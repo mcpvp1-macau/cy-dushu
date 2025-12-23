@@ -10,7 +10,7 @@ const SHJHKCYPModal = lazy(() => import('./shanghai/Modal'))
 const XSKCYPModal = lazy(() => import('./xiaoshan/Modal'))
 
 type Props = {
-  actionId: string
+  actionId: number
   actionType?: API_ACTION.domain.ActionDetail['type']
   detail?: API_ACTION.domain.ActionDetail
   isBacktracking?: boolean

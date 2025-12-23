@@ -37,7 +37,8 @@ type PropsType = {
 
 const PageActionDetailSub: FC<PropsType> = memo(
   ({ detail, isBacktracking = false }) => {
-    const { actionId } = useParams()
+    const { actionId: actionIdParam } = useParams()
+    const actionId = Number(actionIdParam)
 
     const d = useActionDetail()
     const actionDetail = detail || d
@@ -75,7 +76,7 @@ const PageActionDetailSub: FC<PropsType> = memo(
         label: t('action.detail.kcyp.title'),
         key: '1',
         children: (
-          <KCYPPanel actionId={actionId!} actionType={actionDetail.type} />
+          <KCYPPanel actionId={actionId} actionType={actionDetail.type} />
         ),
       }
       const task = {
@@ -86,7 +87,7 @@ const PageActionDetailSub: FC<PropsType> = memo(
             <IconButton
               onClick={(e) => {
                 e.stopPropagation()
-                if (!actionId) return
+                if (!Number.isFinite(actionId)) return
                 queryClient.invalidateQueries({
                   queryKey: ['action', actionId, 'items'],
                 })
@@ -96,20 +97,17 @@ const PageActionDetailSub: FC<PropsType> = memo(
             </IconButton>
             {actionDetail.eventId && (
               <AddEventResolveTask
-                actionId={Number(actionId!)}
+                actionId={actionId}
                 eventId={actionDetail.eventId}
               />
             )}
-            <TaskComponent
-              actionId={actionId!}
-              actionType={actionDetail.type}
-            />
+            <TaskComponent actionId={actionId} actionType={actionDetail.type} />
           </div>
         ),
         children: (
           <AppViewSuspense>
             <ChildActions
-              actionId={actionId!}
+              actionId={actionId}
               isBacktracking={isBacktracking}
             />
           </AppViewSuspense>
@@ -131,7 +129,7 @@ const PageActionDetailSub: FC<PropsType> = memo(
         ),
         children: (
           <ActionMediaPicture
-            actionId={actionId!}
+            actionId={actionId}
             enablePictureOnMap={enablePictureOnMap}
           />
         ),
@@ -143,7 +141,7 @@ const PageActionDetailSub: FC<PropsType> = memo(
         extra: (
           <Suspense fallback={<LoadingOutlined />}>
             <KCYPModal
-              actionId={actionId!}
+              actionId={actionId}
               actionType={actionDetail.type}
               detail={actionDetail}
               isBacktracking={isBacktracking}
@@ -153,7 +151,7 @@ const PageActionDetailSub: FC<PropsType> = memo(
         children: (
           <AppViewSuspense>
             <AIResult
-              actionId={actionId!}
+              actionId={actionId}
               isBacktracking={isBacktracking}
               detail={actionDetail}
             />
@@ -165,7 +163,7 @@ const PageActionDetailSub: FC<PropsType> = memo(
         key: '4',
         children: (
           <AppViewSuspense>
-            <ActionLogList actionId={actionId!} />
+            <ActionLogList actionId={actionId} />
           </AppViewSuspense>
         ),
       }
@@ -192,7 +190,7 @@ const PageActionDetailSub: FC<PropsType> = memo(
         )}
         {!isBacktracking && (
           <div className="text-center p-3">
-            <ActionStopButton actionId={actionId!} />
+            <ActionStopButton actionId={actionId} />
           </div>
         )}
       </div>

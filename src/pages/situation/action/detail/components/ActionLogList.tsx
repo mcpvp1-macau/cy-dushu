@@ -1,7 +1,7 @@
 import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
 import { getActionLogList } from '@/service/modules/action'
-import {Timeline} from 'antd'
+import { Timeline } from 'antd'
 import dayjs from 'dayjs'
 import { memo, type FC } from 'react'
 import styles from './ActionLogList.module.less'
@@ -9,7 +9,7 @@ import { timeOnly } from '@/constant/time-fmt'
 import OverflowText from '@/components/ui/OverflowText'
 
 type PropsType = {
-  actionId: string
+  actionId: number
 }
 
 const ActionLogList: FC<PropsType> = memo(({ actionId }) => {

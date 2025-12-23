@@ -70,7 +70,7 @@ Do NOT add explicit import statements for symbols that are already auto-imported
 
 ## Code Style
 
-## Code tidying requirements:
+### Code tidying requirements:
 
 - Group related statements into logical blocks and separate blocks with blank lines.
 - Ensure naming and early returns make the flow clear.

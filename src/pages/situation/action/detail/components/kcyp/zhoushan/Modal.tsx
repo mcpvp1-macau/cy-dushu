@@ -21,7 +21,7 @@ import { useAIResult } from '../../AIResult'
 import KCYPZSVerificationModal from './VerificationModal'
 
 type PropsType = {
-  actionId: string
+  actionId: number
   actionType: string
   detail?: API_ACTION.domain.ActionDetail
   isBacktracking?: boolean
@@ -67,8 +67,8 @@ const ZSKCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
   const { data: orderData, isLoading: orderLoading } = useQuery(
     {
       queryKey: ['getZSKCYPOrder', actionId],
-      queryFn: () => getZSKCYPOrder({ caseId: actionId }),
-      enabled: !!actionId,
+      queryFn: () => getZSKCYPOrder({ caseId: String(actionId) }),
+      enabled: Number.isFinite(actionId),
       select: (d) => d.data,
       staleTime: 1000 * 60 * 2,
     },
@@ -166,7 +166,7 @@ const ZSKCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
                         tippyProps={{ content: '删除' }}
                         disabled={checkIds.length === 0}
                         onClick={async () => {
-                          await delAIResult(actionId, checkIds)
+                          await delAIResult(String(actionId), checkIds)
                           await refetch()
                           setCheckIds([])
                         }}

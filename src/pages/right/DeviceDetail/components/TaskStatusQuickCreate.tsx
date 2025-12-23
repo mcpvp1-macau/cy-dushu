@@ -29,12 +29,14 @@ const TaskStatusQuickCreate: FC<TaskStatusQuickCreateProps> = memo(
   ({ deviceId, className, nameMaxWidthClassName = 'max-w-[220px]' }) => {
     const { t, i18n } = useTranslation()
     const { actionId: routeActionId } = useParams()
+    const actionId = routeActionId ? Number(routeActionId) : undefined
+
     const queryClient = useQueryClient()
     const [actionModalOpen, setActionModalOpen] = useState(false)
     const [actionConfirmLoading, setActionConfirmLoading] = useState(false)
     const [taskOpenKey, setTaskOpenKey] = useState<number>()
     const [createdAction, setCreatedAction] = useState<{
-      actionId: string
+      actionId: number
       actionType?: string
     }>()
 
@@ -46,7 +48,7 @@ const TaskStatusQuickCreate: FC<TaskStatusQuickCreateProps> = memo(
 
     const { data: actionDetail } = useQuery({
       queryKey: ['action', routeActionId],
-      queryFn: () => getAction({ actionId: routeActionId }),
+      queryFn: () => getAction({ actionId }),
       select: (resp) => resp.data,
       enabled: !!routeActionId,
     })
@@ -62,11 +64,13 @@ const TaskStatusQuickCreate: FC<TaskStatusQuickCreateProps> = memo(
       },
     )
 
-    const taskActionId = routeActionId ?? createdAction?.actionId
+    const taskActionId = routeActionId
+      ? Number(routeActionId)
+      : createdAction?.actionId
     const taskActionType = createdAction?.actionType ?? actionDetail?.type ?? ''
 
     const handleCreateTask = () => {
-      if (routeActionId) {
+      if (actionId) {
         setTaskOpenKey(Date.now())
         return
       }
@@ -88,7 +92,7 @@ const TaskStatusQuickCreate: FC<TaskStatusQuickCreateProps> = memo(
           exact: false,
         })
         setCreatedAction({
-          actionId: `${resp.data.actionId}`,
+          actionId: Number(resp.data.actionId),
           actionType: values.type,
         })
         setActionModalOpen(false)

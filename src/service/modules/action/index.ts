@@ -16,7 +16,7 @@ export const getActionRecordList = (
 }
 
 /** 获取大行动任务信息 */
-export const getAction = (params: { actionId?: string; eventId?: string }) => {
+export const getAction = (params: { actionId?: number; eventId?: string }) => {
   return serverJingqi.get<API_ACTION.res.ActionDetailRes>('/action/get', {
     params,
   })
@@ -36,14 +36,14 @@ export const fastAddAction = (data: API_ACTION.req.FastAddActionReq) => {
 }
 
 /** 结束行动 */
-export const endAction = (actionId: string) => {
+export const endAction = (actionId: number) => {
   return serverJingqi.get('/action/stop', {
     params: { actionId },
   })
 }
 
 /** 行动终止前检查 */
-export const checkEndAction = (actionId: string) => {
+export const checkEndAction = (actionId: number) => {
   return serverJingqi.get('/action/stop/check', {
     params: { actionId },
   })
@@ -89,6 +89,6 @@ export const delAIResult = (actionId: string, ids: string[]) => {
 }
 
 /** 删除行动 */
-export const deleteAction = (actionId: string | number) => {
+export const deleteAction = (actionId: number) => {
   return serverJingqi.post(`/action/delete/${actionId}`)
 }

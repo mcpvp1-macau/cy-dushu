@@ -3,7 +3,7 @@ import LiqunPopConfirm from '@/components/ui/LiqunPopConfirm'
 import { checkEndAction, endAction } from '@/service/modules/action'
 
 interface Props {
-  actionId: string
+  actionId: number
 }
 
 const ActionStopButton: FC<Props> = ({ actionId }) => {
@@ -24,6 +24,10 @@ const ActionStopButton: FC<Props> = ({ actionId }) => {
         queryKey: ['actionList'],
         exact: false,
         type: 'all',
+      })
+      queryClient.invalidateQueries({
+        queryKey: ['action', 'item', 'device', 'latest'],
+        exact: false,
       })
       navigate('/action', { replace: true })
     } finally {

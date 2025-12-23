@@ -63,7 +63,7 @@ const typeMap = new Map<string, string>([
 ])
 
 type PropsType = {
-  actionId: string
+  actionId: number
   open: boolean
   orderData: API_KCYP.domain.OrderRecord
   aiResultData: API_ACTION.domain.AIResultRecord[]
