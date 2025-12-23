@@ -4,6 +4,7 @@ import {
   createColumnHelper,
   getCoreRowModel,
   getFilteredRowModel,
+  type ColumnDef,
   type ColumnFiltersState,
   useReactTable,
   VisibilityState,
@@ -21,7 +22,6 @@ import UavDetail from './UavDetail'
 import Logs from './Logs'
 import UploadDetail from './UavDetail/UploadDetail'
 import { useDebounceFn, useLocalStorageState } from 'ahooks'
-import TTPBOXSnEditor from './TTPBOXSnEditor'
 
 type PropsType = unknown
 
@@ -52,15 +52,14 @@ const SourceTable: FC<PropsType> = memo(() => {
     useLocalStorageState<VisibilityState>('source-columnVisibility', {
       defaultValue: {
         deviceName: true,
-        username: true,
         deviceModel: true,
-        otaInfo: true,
         sn: true,
         deviceId: true,
         status: true,
         remainingPower: true,
         actions: true,
-        otaUpgrade: true,
+        'djiOtaInfo.firmwareVersion': true,
+        djiOtaInfo: true,
       },
     })
 
@@ -137,7 +136,9 @@ const SourceTable: FC<PropsType> = memo(() => {
   }, [uavDocSnList])
 
   const columns = useMemo(() => {
-    const columns = [
+    const isUavType = type === 'UAV' || type === 'UAV_AIRPORT'
+
+    const columns: (ColumnDef<API_DEVICE.domain.DeviceOTAItem, any> | null)[] = [
       columnHelper.accessor('deviceName', {
         header: t('resource.table.deviceName.title'),
         cell: (cell) => (
@@ -210,82 +211,51 @@ const SourceTable: FC<PropsType> = memo(() => {
         },
         enableColumnFilter: false,
       }),
-      ...(type === 'UAV' || type === 'UAV_AIRPORT'
-        ? [
-            columnHelper.accessor('djiOtaInfo.firmwareVersion', {
-              header: t('resource.table.otaInfo.title'),
-              cell: (cell) =>
-                cell?.row.original.djiOtaInfo?.firmwareVersion || '-',
-            }),
-            columnHelper.accessor('djiOtaInfo', {
-              header: '固件升级',
-              cell: (cell) => (
-                <OTAUpdateColumn
-                  data={cell?.row.original}
-                  type="DJI"
-                  onRefresh={() => {
-                    // queryClient.invalidateQueries({
-                    //   queryKey: ['getAllDeviceListTable'],
-                    // })
-                    setRefreshKey((v) => v + 1)
-                  }}
-                />
-              ),
-              enableColumnFilter: true,
-              meta: {
-                filterRender: (column) => {
-                  return (
-                    <Radio.Group
-                      onChange={(e) => {
-                        column.setFilterValue(e.target.value)
-                        setDjiOtaInfoFilter(e.target.value)
-                      }}
-                      value={djiOtaInfoFilter ?? 'ALL'}
-                      className="flex flex-col gap-2"
-                    >
-                      <Radio value="ALL">全部</Radio>
-                      <Radio value="UPGRADE">需升级</Radio>
-                      <Radio value="NO_UPGRADE">无需升级</Radio>
-                    </Radio.Group>
-                  )
-                },
+      isUavType
+        ? columnHelper.accessor('djiOtaInfo.firmwareVersion', {
+            header: t('resource.table.otaInfo.title'),
+            cell: (cell) =>
+              cell?.row.original.djiOtaInfo?.firmwareVersion
+                ? cell?.row.original.djiOtaInfo?.firmwareVersion
+                : '-',
+          })
+        : null,
+      isUavType
+        ? columnHelper.accessor('djiOtaInfo', {
+            header: '固件升级',
+            cell: (cell) => (
+              <OTAUpdateColumn
+                data={cell?.row.original}
+                type="DJI"
+                onRefresh={() => {
+                  // queryClient.invalidateQueries({
+                  //   queryKey: ['getAllDeviceListTable'],
+                  // })
+                  setRefreshKey((v) => v + 1)
+                }}
+              />
+            ),
+            enableColumnFilter: true,
+            meta: {
+              filterRender: (column) => {
+                return (
+                  <Radio.Group
+                    onChange={(e) => {
+                      column.setFilterValue(e.target.value)
+                      setDjiOtaInfoFilter(e.target.value)
+                    }}
+                    value={djiOtaInfoFilter ?? 'ALL'}
+                    className="flex flex-col gap-2"
+                  >
+                    <Radio value="ALL">全部</Radio>
+                    <Radio value="UPGRADE">需升级</Radio>
+                    <Radio value="NO_UPGRADE">无需升级</Radio>
+                  </Radio.Group>
+                )
               },
-            }),
-          ]
-        : []),
-      columnHelper.accessor('ttpBoxSn', {
-        header: '盒子序列号',
-        cell: (cell) => (
-          <TTPBOXSnEditor
-            cell={cell}
-            onRefresh={() => {
-              // queryClient.invalidateQueries({
-              //   queryKey: ['getAllDeviceListTable'],
-              // })
-              setRefreshKey((v) => v + 1)
-            }}
-          />
-        ),
-      }),
-      columnHelper.accessor('otaInfo.artifactName', {
-        header: '盒子固件版本',
-        cell: (cell) => cell?.row.original.otaInfo?.artifactName || '-',
-      }),
-      columnHelper.accessor('otaInfo', {
-        header: '盒子固件升级',
-        cell: (cell) => (
-          <OTAUpdateColumn
-            data={cell?.row.original}
-            type="BOX"
-            onRefresh={() => {
-              // queryClient.invalidateQueries({
-              //   queryKey: ['getAllDeviceListTable'],
-              // })
-              setRefreshKey((v) => v + 1)
-            }}
-          />
-        ),
-      }),
+            },
+          })
+        : null,
       columnHelper.display({
         id: 'actions',
         header: t('common.operation'),
@@ -320,7 +290,7 @@ const SourceTable: FC<PropsType> = memo(() => {
         },
       }),
     ]
-    return columns
+    return columns.filter(Boolean) as ColumnDef<API_DEVICE.domain.DeviceOTAItem, any>[]
   }, [
     i18n.language,
     searchParams.get('type'),
