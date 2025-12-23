@@ -30,7 +30,7 @@ const PageSituationActionDetail: FC<PropsType> = memo(() => {
   const { data, isLoading } = useQuery(
     {
       queryKey: ['action', actionId],
-      queryFn: () => getAction({ actionId: String(actionId) }),
+      queryFn: () => getAction({ actionId }),
       enabled: Number.isFinite(actionId),
       select: (data) => data.data,
     },
