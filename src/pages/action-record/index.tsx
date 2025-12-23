@@ -86,8 +86,9 @@ const PageActionRecord: FC<PropsType> = memo(() => {
     },
   })
 
-  const handleDeleteAction = useMemoizedFn((record: API_ACTION.domain.ActionRecord) =>
-    deleteMutation.mutateAsync(record.actionId),
+  const handleDeleteAction = useMemoizedFn(
+    (record: API_ACTION.domain.ActionRecord) =>
+      deleteMutation.mutateAsync(record.actionId),
   )
 
   const columns = useMemo(
@@ -239,7 +240,7 @@ const PageActionRecord: FC<PropsType> = memo(() => {
 
   return (
     <div className="page-full p-3 bg-ground-2 flex flex-col overflow-y-hidden">
-      <h2 className="text-white">{t('actionRecord.title')}</h2>
+      <h2 className="text-hightlight">{t('actionRecord.title')}</h2>
       <section className="mt-3 flex gap-2">
         <Input
           defaultValue={kw}
