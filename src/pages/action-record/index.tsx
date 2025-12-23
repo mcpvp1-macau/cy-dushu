@@ -86,9 +86,8 @@ const PageActionRecord: FC<PropsType> = memo(() => {
     },
   })
 
-  const handleDeleteAction = useMemoizedFn(
-    (record: API_ACTION.domain.ActionRecord) =>
-      deleteMutation.mutateAsync(Number(record.actionId)),
+  const handleDeleteAction = useMemoizedFn((record: API_ACTION.domain.ActionRecord) =>
+    deleteMutation.mutateAsync(record.actionId),
   )
 
   const columns = useMemo(

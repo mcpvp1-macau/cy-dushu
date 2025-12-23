@@ -25,7 +25,7 @@ const ActionStopButton: FC<Props> = ({ actionId }) => {
         exact: false,
         type: 'all',
       })
-      await queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: ['action', 'item', 'device', 'latest'],
         exact: false,
       })
