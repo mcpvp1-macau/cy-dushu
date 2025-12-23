@@ -26,12 +26,15 @@ const PageBackTrackingAction: FC<PropsType> = memo(() => {
   const startTime = useParams().startTime
   const endTime = useParams().endTime
 
+  const numericActionId = actionId ? Number(actionId) : undefined
+
   const store = useCreateBackTrackingStore()
 
   const { data, isLoading: _isLoading } = useQuery(
     {
-      queryKey: ['action', actionId],
-      queryFn: () => getAction({ actionId }),
+      queryKey: ['action', numericActionId],
+      queryFn: () => getAction({ actionId: numericActionId }),
+      enabled: typeof numericActionId === 'number',
       select: (data) => data.data,
     },
     queryClient,
