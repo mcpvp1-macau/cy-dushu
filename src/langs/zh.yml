@@ -680,7 +680,12 @@ usv:
     pitch: 纵摇
     roll: 横摇
   pointSail:
+    title: 指点航行
     confirmQuestion: 确认前往此航点？
+  operations:
+    startMission: 开始任务
+    pauseMission: 暂停任务
+    stopMission: 结束任务
 actionRecord:
   title: 行动记录
   table:
