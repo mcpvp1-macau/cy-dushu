@@ -61,7 +61,7 @@ const PageBackTrackingDevice: FC<PropsType> = memo(() => {
               )}
             </AppViewSuspense>
           </div>
-          <div className="absolute bottom-3 left-3 right-14 z-50">
+          <div className="absolute bottom-8 left-3 right-14 z-50">
             <TimelineWarpper />
           </div>
           <TargetBacktracking deviceId={deviceId!} />
