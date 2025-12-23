@@ -10,7 +10,7 @@ import {
   VisibilityState,
 } from '@tanstack/react-table'
 import { Badge, Input, Pagination, Radio } from 'antd'
-import { Link, NavLink, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import OTAUpdateColumn from './OTAUpdateColumn'
 import DeviceData from './DeviceData'
 import XTable from '@/components/ui/XTable.tsx'
