@@ -1,4 +1,7 @@
 import IconBack from '@/assets/icons/jsx/IconBack'
+import IconBattery from '@/assets/icons/jsx/IconBattery'
+import IconLatitude from '@/assets/jsx/IconLatitude'
+import IconLongitude from '@/assets/jsx/IconLongitude'
 import IconButton from '@/components/ui/button/IconButton'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
@@ -7,11 +10,9 @@ import { Tooltip } from 'antd'
 import { useTitle } from 'ahooks'
 import { HTMLAttributes } from 'react'
 import { createPortal } from 'react-dom'
-import IconBattery from '@/assets/icons/jsx/IconBattery'
 import {
   CompassOutlined,
   DashboardOutlined,
-  EnvironmentOutlined,
   FlagOutlined,
 } from '@ant-design/icons'
 
@@ -100,7 +101,7 @@ const ControlRoomUsvHeader: FC = memo(() => {
               }
             />
             <HeaderItem
-              icon={<EnvironmentOutlined />}
+              icon={<IconLongitude />}
               tooltip={t('common.longitude')}
               value={
                 longitude !== undefined && longitude !== null
@@ -109,7 +110,7 @@ const ControlRoomUsvHeader: FC = memo(() => {
               }
             />
             <HeaderItem
-              icon={<EnvironmentOutlined />}
+              icon={<IconLatitude />}
               tooltip={t('common.latitude')}
               value={
                 latitude !== undefined && latitude !== null
