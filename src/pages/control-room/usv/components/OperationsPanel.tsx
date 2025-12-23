@@ -38,18 +38,34 @@ const OperationsPanel: FC = memo(() => {
   }
 
   return (
-    <div className="flex size-full items-center justify-start gap-3 px-4">
-      <Button type="primary" onClick={handleStartMission} disabled={!serviceHave?.startMission}>
-        {t('controlRoom.usv.operations.startMission', { defaultValue: '开始任务' })}
+    <div className="flex size-full items-center justify-center gap-3 px-4">
+      <Button
+        type={pointSailOpen ? 'primary' : 'default'}
+        onClick={togglePointSail}
+      >
+        {t('usv.pointSail.title', { defaultValue: '指点航行' })}
       </Button>
-      <Button onClick={handlePauseMission} disabled={!serviceHave?.pauseMission}>
-        {t('controlRoom.usv.operations.pauseMission', { defaultValue: '暂停任务' })}
+      <Button
+        type="primary"
+        onClick={handleStartMission}
+        disabled={!serviceHave?.startMission}
+      >
+        {t('usv.operations.startMission', {
+          defaultValue: '开始任务',
+        })}
       </Button>
-      <Button danger onClick={handleStopMission} disabled={!serviceHave?.stopMission}>
-        {t('controlRoom.usv.operations.stopMission', { defaultValue: '结束任务' })}
+      <Button
+        onClick={handlePauseMission}
+        disabled={!serviceHave?.pauseMission}
+      >
+        {t('usv.operations.pauseMission', {
+          defaultValue: '暂停任务',
+        })}
       </Button>
-      <Button type={pointSailOpen ? 'primary' : 'default'} onClick={togglePointSail}>
-        {t('controlRoom.usv.pointSail.title', { defaultValue: '指点航行' })}
+      <Button onClick={handleStopMission} disabled={!serviceHave?.stopMission}>
+        {t('usv.operations.stopMission', {
+          defaultValue: '结束任务',
+        })}
       </Button>
     </div>
   )
