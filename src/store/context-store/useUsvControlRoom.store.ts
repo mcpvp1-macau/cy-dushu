@@ -30,6 +30,8 @@ type StateType = {
   uuid?: string
   /** 是否有控制权 */
   hasControlPower: boolean
+  /** 地图视角是否跟随无人船 */
+  lockUsvMapView: boolean
   pointSail: {
     /** 是否开启指点航行 */
     open: boolean
@@ -44,6 +46,8 @@ type ActionsType = {
   updateWsReadyState: (state: StateType['wsReadyState']) => void
   updateState: (state: StateType['latestState']) => void
   updateUUID: (uuid: string) => void
+  /** 更新地图视角跟随 */
+  updateLockUsvMapView: (enable: boolean) => void
   updatePointSail: (data: StateType['pointSail']) => void
 }
 
@@ -64,6 +68,7 @@ const createInitialState = () =>
     latestState: {},
     uuid: localStorage?.getItem('UsvControlTag'),
     hasControlPower: false,
+    lockUsvMapView: true,
     pointSail: {
       open: false,
       targetPosition: null,
@@ -122,6 +127,9 @@ export const createUsvControlRoomStore = (senders: WsSendersType) => {
             false,
             'updateUUID',
           )
+        },
+        updateLockUsvMapView: (enable) => {
+          set({ lockUsvMapView: enable }, false, 'updateLockUsvMapView')
         },
         updatePointSail: (data) => {
           set({ pointSail: data }, false, 'updatePointSail')

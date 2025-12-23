@@ -673,6 +673,8 @@ uav:
   infoBoard:
     title: 无人机标牌
 usv:
+  mapViewLock:
+    title: 无人船地图跟随
   attitude:
     heading: 艏向
     pitch: 纵摇
