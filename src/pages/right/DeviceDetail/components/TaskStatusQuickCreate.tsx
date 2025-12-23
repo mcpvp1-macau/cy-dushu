@@ -34,7 +34,7 @@ const TaskStatusQuickCreate: FC<TaskStatusQuickCreateProps> = memo(
     const [actionConfirmLoading, setActionConfirmLoading] = useState(false)
     const [taskOpenKey, setTaskOpenKey] = useState<number>()
     const [createdAction, setCreatedAction] = useState<{
-      actionId: string
+      actionId: number
       actionType?: string
     }>()
 
@@ -62,7 +62,9 @@ const TaskStatusQuickCreate: FC<TaskStatusQuickCreateProps> = memo(
       },
     )
 
-    const taskActionId = routeActionId ?? createdAction?.actionId
+    const taskActionId = routeActionId
+      ? Number(routeActionId)
+      : createdAction?.actionId
     const taskActionType = createdAction?.actionType ?? actionDetail?.type ?? ''
 
     const handleCreateTask = () => {
@@ -88,7 +90,7 @@ const TaskStatusQuickCreate: FC<TaskStatusQuickCreateProps> = memo(
           exact: false,
         })
         setCreatedAction({
-          actionId: `${resp.data.actionId}`,
+          actionId: Number(resp.data.actionId),
           actionType: values.type,
         })
         setActionModalOpen(false)

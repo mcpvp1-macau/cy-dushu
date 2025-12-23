@@ -23,7 +23,7 @@ import { shouldJson } from '@/utils/json'
 import { parseLastWaypoint, parseMaxFlightAltitude } from '@/utils/wayline'
 
 type PropsType = {
-  actionId: string
+  actionId: number
   actionType: string
   openTriggerKey?: number
   onSuccess?: () => void

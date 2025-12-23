@@ -15,9 +15,11 @@ import { useSearchParams } from 'react-router-dom'
 type PropsType = unknown
 
 const PageSituationActionDetail: FC<PropsType> = memo(() => {
-  const { actionId } = useParams()
+  const { actionId: actionIdParam } = useParams()
   const location = useLocation()
   const { t } = useTranslation()
+
+  const actionId = Number(actionIdParam)
 
   const queryClient = useQueryClient()
 
@@ -28,7 +30,8 @@ const PageSituationActionDetail: FC<PropsType> = memo(() => {
   const { data, isLoading } = useQuery(
     {
       queryKey: ['action', actionId],
-      queryFn: () => getAction({ actionId }),
+      queryFn: () => getAction({ actionId: String(actionId) }),
+      enabled: Number.isFinite(actionId),
       select: (data) => data.data,
     },
     queryClient,

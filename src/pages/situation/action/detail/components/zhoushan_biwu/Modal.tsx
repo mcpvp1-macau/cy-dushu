@@ -15,7 +15,7 @@ import AIResultItem from './AIResultItem'
 import { ComponentRef } from 'react'
 
 type PropsType = {
-  actionId: string
+  actionId: number
   actionType: string
   detail?: API_ACTION.domain.ActionDetail
   isBacktracking?: boolean
@@ -103,7 +103,7 @@ const ZSBIWUModal: FC<PropsType> = memo(({ actionId }) => {
                         tippyProps={{ content: '删除' }}
                         disabled={checkIds.length === 0}
                         onClick={async () => {
-                          await delAIResult(actionId, checkIds)
+                          await delAIResult(String(actionId), checkIds)
                           await refetch()
                           setCheckIds([])
                         }}
