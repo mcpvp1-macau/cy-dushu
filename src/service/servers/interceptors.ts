@@ -22,11 +22,10 @@ export const withInternational = (config: InternalAxiosRequestConfig<any>) => {
 
 /** token 携带 */
 export const withToken = (config: InternalAxiosRequestConfig<any>) => {
-  const { token, user } = useUserStore.getState()
+  const { token } = useUserStore.getState()
   config.headers['_origin_target_host'] = location.host
   if (token) {
     config.headers['Authorization'] = `Bearer ${token}`
-    config.headers['username'] = user?.username
   }
   return config
 }
