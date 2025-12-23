@@ -42,9 +42,6 @@ const XTable: FC<PropsType> = ({ table, loading }) => {
                     'p-3 whitespace-nowrap font-normal text-highlight text-left',
                     'border-b border-r border-solid border-ground-3',
                     'first:rounded-tl last:border-r-0',
-                    (header.id === 'actions' ||
-                      header.column.columnDef.enableColumnFilter) &&
-                      'flex items-center justify-between',
                   )}
                 >
                   {header.isPlaceholder
@@ -55,14 +52,12 @@ const XTable: FC<PropsType> = ({ table, loading }) => {
                       )}
 
                   {header.column.columnDef.enableColumnFilter ? (
-                    <div className="ml-3">
+                    <div className="ml-2 inline-block">
                       <Popover
-                        // title={header.column.columnDef.header + '筛选'}
                         placement="bottomRight"
                         trigger={['click']}
                         styles={{
                           body: {
-                            backgroundColor: '#16202b',
                             padding: 0,
                           },
                         }}
@@ -113,7 +108,7 @@ const XTable: FC<PropsType> = ({ table, loading }) => {
                         </div>
                       )}
                     >
-                      <IconSetting className="cursor-pointer hover:text-primary-color-4" />
+                      <IconSetting className="ml-2" />
                     </IconButtonWithDropDownDialog>
                   )}
                 </th>

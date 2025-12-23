@@ -4,12 +4,13 @@ import {
   createColumnHelper,
   getCoreRowModel,
   getFilteredRowModel,
+  type ColumnDef,
   type ColumnFiltersState,
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table'
 import { Badge, Input, Pagination, Radio } from 'antd'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, NavLink, useSearchParams } from 'react-router-dom'
 import OTAUpdateColumn from './OTAUpdateColumn'
 import DeviceData from './DeviceData'
 import XTable from '@/components/ui/XTable.tsx'
@@ -21,7 +22,6 @@ import UavDetail from './UavDetail'
 import Logs from './Logs'
 import UploadDetail from './UavDetail/UploadDetail'
 import { useDebounceFn, useLocalStorageState } from 'ahooks'
-import TTPBOXSnEditor from './TTPBOXSnEditor'
 
 type PropsType = unknown
 
@@ -52,15 +52,14 @@ const SourceTable: FC<PropsType> = memo(() => {
     useLocalStorageState<VisibilityState>('source-columnVisibility', {
       defaultValue: {
         deviceName: true,
-        username: true,
         deviceModel: true,
-        otaInfo: true,
         sn: true,
         deviceId: true,
         status: true,
         remainingPower: true,
         actions: true,
-        otaUpgrade: true,
+        'djiOtaInfo.firmwareVersion': true,
+        djiOtaInfo: true,
       },
     })
 
@@ -137,87 +136,93 @@ const SourceTable: FC<PropsType> = memo(() => {
   }, [uavDocSnList])
 
   const columns = useMemo(() => {
-    const columns = [
-      columnHelper.accessor('deviceName', {
-        header: t('resource.table.deviceName.title'),
-        cell: (cell) => (
-          <div className="flex gap-2">
-            <DeviceIcon
-              type={cell?.row.original.deviceType}
-              className="text-primary"
-            />
-            {cell?.getValue()}
-          </div>
-        ),
-        enableHiding: false,
-      }),
-      // columnHelper.accessor('username', {
-      //   header: t('resource.table.username.title'),
-      //   cell: (cell) => cell?.getValue() || '-',
-      // }),
-      columnHelper.accessor('deviceModel', {
-        header: t('resource.table.deviceModel.title'),
-      }),
+    const isUavType = type === 'UAV' || type === 'UAV_AIRPORT'
 
-      columnHelper.accessor('sn', {
-        header: t('resource.table.sn.title'),
-      }),
-      columnHelper.accessor('deviceId', {
-        header: t('resource.table.deviceId.title'),
-      }),
-      columnHelper.accessor('status', {
-        header: t('common.onlineStatus'),
-        cell: (cell) => {
-          return (
-            <Badge
-              color={StatusColorMap[cell.getValue()]}
-              text={
-                <span className="text-hightlight">
-                  {/* {StatusMap[cell?.getValue()]} */}
-                  {cell?.getValue()
-                    ? t(`device.status.online.${cell?.getValue()}`)
-                    : '-'}
-                </span>
-              }
-            />
-          )
-        },
-        enableColumnFilter: true,
-        meta: {
-          filterRender: (column) => {
+    const columns: (ColumnDef<API_DEVICE.domain.DeviceOTAItem, any> | null)[] =
+      [
+        columnHelper.accessor('deviceName', {
+          header: t('resource.table.deviceName.title'),
+          cell: (cell) => (
+            <div className="flex gap-2">
+              <DeviceIcon
+                type={cell?.row.original.deviceType}
+                className="text-primary"
+              />
+              {cell?.getValue()}
+            </div>
+          ),
+          enableHiding: false,
+        }),
+        // columnHelper.accessor('username', {
+        //   header: t('resource.table.username.title'),
+        //   cell: (cell) => cell?.getValue() || '-',
+        // }),
+        columnHelper.accessor('deviceModel', {
+          header: t('resource.table.deviceModel.title'),
+        }),
+
+        columnHelper.accessor('sn', {
+          header: t('resource.table.sn.title'),
+        }),
+        columnHelper.accessor('deviceId', {
+          header: t('resource.table.deviceId.title'),
+        }),
+        columnHelper.accessor('status', {
+          header: t('common.onlineStatus'),
+          cell: (cell) => {
             return (
-              <Radio.Group
-                onChange={(e) => {
-                  column.setFilterValue(e.target.value)
-                  setStatusFilter(e.target.value)
-                }}
-                // value={column.getFilterValue() ?? undefined}
-                value={statusFilter ?? undefined}
-                className="flex flex-col gap-2"
-              >
-                <Radio value={undefined}>全部</Radio>
-                <Radio value="ONLINE">在线</Radio>
-                <Radio value="OFFLINE">离线</Radio>
-              </Radio.Group>
+              <Badge
+                color={StatusColorMap[cell.getValue()]}
+                text={
+                  <span className="text-hightlight">
+                    {/* {StatusMap[cell?.getValue()]} */}
+                    {cell?.getValue()
+                      ? t(`device.status.online.${cell?.getValue()}`)
+                      : '-'}
+                  </span>
+                }
+              />
             )
           },
-        },
-      }),
-      columnHelper.accessor('remainingPower', {
-        header: t('common.electricity'),
-        cell: (cell) => {
-          return <span>{cell?.getValue()}%</span>
-        },
-        enableColumnFilter: false,
-      }),
-      ...(type === 'UAV' || type === 'UAV_AIRPORT'
-        ? [
-            columnHelper.accessor('djiOtaInfo.firmwareVersion', {
+          enableColumnFilter: true,
+          meta: {
+            filterRender: (column) => {
+              return (
+                <Radio.Group
+                  onChange={(e) => {
+                    column.setFilterValue(e.target.value)
+                    setStatusFilter(e.target.value)
+                  }}
+                  // value={column.getFilterValue() ?? undefined}
+                  value={statusFilter ?? undefined}
+                  className="flex flex-col gap-2"
+                >
+                  <Radio value={undefined}>全部</Radio>
+                  <Radio value="ONLINE">在线</Radio>
+                  <Radio value="OFFLINE">离线</Radio>
+                </Radio.Group>
+              )
+            },
+          },
+        }),
+        columnHelper.accessor('remainingPower', {
+          header: t('common.electricity'),
+          cell: (cell) => {
+            return <span>{cell?.getValue()}%</span>
+          },
+          enableColumnFilter: false,
+        }),
+        isUavType
+          ? columnHelper.accessor('djiOtaInfo.firmwareVersion', {
               header: t('resource.table.otaInfo.title'),
               cell: (cell) =>
-                cell?.row.original.djiOtaInfo?.firmwareVersion || '-',
-            }),
-            columnHelper.accessor('djiOtaInfo', {
+                cell?.row.original.djiOtaInfo?.firmwareVersion
+                  ? cell?.row.original.djiOtaInfo?.firmwareVersion
+                  : '-',
+            })
+          : null,
+        isUavType
+          ? columnHelper.accessor('djiOtaInfo', {
               header: '固件升级',
               cell: (cell) => (
                 <OTAUpdateColumn
@@ -250,77 +255,51 @@ const SourceTable: FC<PropsType> = memo(() => {
                   )
                 },
               },
-            }),
-          ]
-        : []),
-      columnHelper.accessor('ttpBoxSn', {
-        header: '盒子序列号',
-        cell: (cell) => (
-          <TTPBOXSnEditor
-            cell={cell}
-            onRefresh={() => {
-              // queryClient.invalidateQueries({
-              //   queryKey: ['getAllDeviceListTable'],
-              // })
-              setRefreshKey((v) => v + 1)
-            }}
-          />
-        ),
-      }),
-      columnHelper.accessor('otaInfo.artifactName', {
-        header: '盒子固件版本',
-        cell: (cell) => cell?.row.original.otaInfo?.artifactName || '-',
-      }),
-      columnHelper.accessor('otaInfo', {
-        header: '盒子固件升级',
-        cell: (cell) => (
-          <OTAUpdateColumn
-            data={cell?.row.original}
-            type="BOX"
-            onRefresh={() => {
-              // queryClient.invalidateQueries({
-              //   queryKey: ['getAllDeviceListTable'],
-              // })
-              setRefreshKey((v) => v + 1)
-            }}
-          />
-        ),
-      }),
-      columnHelper.display({
-        id: 'actions',
-        header: t('common.operation'),
-        cell: (cell) => {
-          const data = cell.row.original
-          return (
-            <div className="flex gap-3">
-              <DeviceData deviceData={cell?.row.original} />
-              {globalConfig.isHaveBacktracking ? (
-                <>
-                  {backtrackingDeviceType.includes(data.deviceType) && (
-                    <Link to={`/backtracking/device/${data.deviceId}`}>
-                      <TextButton>{t('common.backTracking')}</TextButton>
-                    </Link>
+            })
+          : null,
+        columnHelper.display({
+          id: 'actions',
+          header: t('common.operation'),
+          cell: (cell) => {
+            const data = cell.row.original
+            return (
+              <div className="flex gap-3">
+                <DeviceData deviceData={cell?.row.original} />
+                {globalConfig.isHaveBacktracking ? (
+                  <>
+                    {backtrackingDeviceType.includes(data.deviceType) && (
+                      <Link to={`/backtracking/device/${data.deviceId}`}>
+                        <div className="text-fore">
+                          <TextButton>{t('common.backTracking')}</TextButton>
+                        </div>
+                      </Link>
+                    )}
+                  </>
+                ) : null}
+                {(data.deviceType === 'UAV' ||
+                  data.deviceType === 'UAV_AIRPORT') &&
+                  // 如果配置了使用一机一档, 则显示一机一档详情, 否则不显示
+                  uavDocSnSet.has(data.sn) &&
+                  // 如果配置了使用一机一档, 则显示一机一档详情, 否则不显示
+                  globalConfig.useUavAirportDoc && <UavDetail sn={data.sn} />}
+                {/* 日志 */}
+                {(data.deviceType === 'UAV' ||
+                  data.deviceType === 'UAV_AIRPORT') &&
+                  globalConfig.useUavLogs && (
+                    <Logs
+                      deviceId={data.deviceId}
+                      deviceName={data.deviceName}
+                    />
                   )}
-                </>
-              ) : null}
-              {(data.deviceType === 'UAV' ||
-                data.deviceType === 'UAV_AIRPORT') &&
-                // 如果配置了使用一机一档, 则显示一机一档详情, 否则不显示
-                uavDocSnSet.has(data.sn) &&
-                // 如果配置了使用一机一档, 则显示一机一档详情, 否则不显示
-                globalConfig.useUavAirportDoc && <UavDetail sn={data.sn} />}
-              {/* 日志 */}
-              {(data.deviceType === 'UAV' ||
-                data.deviceType === 'UAV_AIRPORT') &&
-                globalConfig.useUavLogs && (
-                  <Logs deviceId={data.deviceId} deviceName={data.deviceName} />
-                )}
-            </div>
-          )
-        },
-      }),
-    ]
-    return columns
+              </div>
+            )
+          },
+        }),
+      ]
+    return columns.filter(Boolean) as ColumnDef<
+      API_DEVICE.domain.DeviceOTAItem,
+      any
+    >[]
   }, [
     i18n.language,
     searchParams.get('type'),
