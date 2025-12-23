@@ -80,6 +80,28 @@ Do NOT add explicit import statements for symbols that are already auto-imported
 
 - Do not use `useCallback`. Use `useMemoizedFn` from `ahooks` instead.
 
+### Icon Usage
+
+#### Allowed Icons
+
+Icons must only be used from:
+
+- Local JSX SVG icons in src/assets/jsx
+
+- @ant-design/icons
+
+Using inline SVGs, external icon libraries, or icons from other sources is not allowed.
+
+#### New SVG Icons
+
+- New SVG icons must be placed in src/assets/jsx
+
+- Icons must be exported as React JSX components
+
+- Use PascalCase naming and prefix with "Icon", e.g., IconMyNewIcon.tsx
+
+- Use currentColor; do not hardcode colors or sizes
+
 ## Verification Checklist (Required)
 
 Before finishing the task, you MUST:
