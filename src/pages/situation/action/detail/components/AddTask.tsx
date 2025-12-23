@@ -12,7 +12,7 @@ import { TFunction } from 'i18next'
 import { pick } from 'lodash'
 
 type PropsType = {
-  actionId: string
+  actionId: number
   openTriggerKey?: number
   onSuccess?: () => void
   defaultDeviceId?: string

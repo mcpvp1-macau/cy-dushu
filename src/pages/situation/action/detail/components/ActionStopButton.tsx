@@ -3,7 +3,7 @@ import LiqunPopConfirm from '@/components/ui/LiqunPopConfirm'
 import { checkEndAction, endAction } from '@/service/modules/action'
 
 interface Props {
-  actionId: string
+  actionId: number
 }
 
 const ActionStopButton: FC<Props> = ({ actionId }) => {
@@ -19,7 +19,7 @@ const ActionStopButton: FC<Props> = ({ actionId }) => {
     setShowStopConfirm(false)
     setEndActionLoading(true)
     try {
-      await endAction(actionId)
+      await endAction(String(actionId))
       await queryClient.invalidateQueries({
         queryKey: ['actionList'],
         exact: false,
@@ -39,7 +39,7 @@ const ActionStopButton: FC<Props> = ({ actionId }) => {
     setEndActionLoading(true)
     let needConfirm = false
     try {
-      const res = await checkEndAction(actionId)
+      const res = await checkEndAction(String(actionId))
       if (res.data === true) {
         needConfirm = true
         setShowStopConfirm(true)

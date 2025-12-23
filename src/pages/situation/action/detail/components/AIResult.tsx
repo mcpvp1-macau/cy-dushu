@@ -11,12 +11,12 @@ import { DictEnum } from '@/enum/dict'
 import ImageContainBoxPreviewGroup from '@/components/ui/ImageContainBoxPreviewGroup'
 
 type PropsType = {
-  actionId: string
+  actionId: number
   isBacktracking?: boolean
   detail?: API_ACTION.domain.ActionDetail
 }
 
-export const useAIResult = (actionId: string, actionRecordId?: number) => {
+export const useAIResult = (actionId: number, actionRecordId?: number) => {
   const queryClient = useQueryClient()
   const refreshTemporary = useGlobalWsStore((s) => s.refreshTemporary)
   const { data, isLoading, isRefetching, refetch } = useQuery(
@@ -24,7 +24,7 @@ export const useAIResult = (actionId: string, actionRecordId?: number) => {
       queryKey: ['action', actionId, 'aiResult'],
       queryFn: () =>
         getAIResultList({
-          actionId,
+          actionId: String(actionId),
           actionRecordId: actionRecordId,
         }),
       select: (data) => data?.data.rows,

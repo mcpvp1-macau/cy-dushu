@@ -7,7 +7,7 @@ const KCYPXSPanel = lazy(() => import('./xiaoshan/Panel'))
 const KCYPZSPanel = lazy(() => import('./zhoushan/Panel'))
 
 type PropsType = {
-  actionId: string
+  actionId: number
   actionType: string
 }
 

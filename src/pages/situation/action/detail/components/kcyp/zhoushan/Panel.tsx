@@ -9,7 +9,7 @@ import dayjs from 'dayjs'
 import useSaveOrderState from '../common/useSaveOrderState'
 import { zhoushanStatusColorMap } from '../shanghai/normal.constant'
 
-type PropsType = { actionId: string }
+type PropsType = { actionId: number }
 
 /** 舟山 快处易赔 基础面板 */
 const KCYPZSPanel: FC<PropsType> = memo(({ actionId }) => {
@@ -19,8 +19,8 @@ const KCYPZSPanel: FC<PropsType> = memo(({ actionId }) => {
   const { data, isLoading } = useQuery(
     {
       queryKey: ['getZSKCYPOrder', actionId],
-      queryFn: () => getZSKCYPOrder({ caseId: actionId }),
-      enabled: !!actionId,
+      queryFn: () => getZSKCYPOrder({ caseId: String(actionId) }),
+      enabled: Number.isFinite(actionId),
       select: (d) => d.data,
       staleTime: 1000 * 60 * 2,
     },

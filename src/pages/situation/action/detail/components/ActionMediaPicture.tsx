@@ -11,7 +11,7 @@ import { Pagination, Spin, Image, Row, Col } from 'antd'
 import { v4 } from 'uuid'
 
 type PropsType = {
-  actionId: string
+  actionId: number
   enablePictureOnMap?: boolean
 }
 
@@ -26,7 +26,7 @@ const ActionMediaPicture: FC<PropsType> = memo(
         queryKey: ['actionMediaPicture', actionId, page, pageSize],
         queryFn: () =>
           getPlatformCapture({
-            actionId,
+            actionId: String(actionId),
             type: 'PICTURE',
             isPage: true,
             page,

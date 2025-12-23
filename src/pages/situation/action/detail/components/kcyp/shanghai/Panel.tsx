@@ -10,7 +10,7 @@ import useWatch from '@/hooks/useWatch'
 import dayjs from 'dayjs'
 import useSaveOrderState from '../common/useSaveOrderState'
 
-type PropsType = { actionId: string }
+type PropsType = { actionId: number }
 
 /** 快处易赔 基础面板 */
 const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
@@ -20,8 +20,8 @@ const KCYPNormalPanel: FC<PropsType> = memo(({ actionId }) => {
   const { data, isLoading } = useQuery(
     {
       queryKey: ['getKCYPOrder', actionId],
-      queryFn: () => getKCYPOrder({ caseId: actionId }),
-      enabled: !!actionId,
+      queryFn: () => getKCYPOrder({ caseId: String(actionId) }),
+      enabled: Number.isFinite(actionId),
       select: (d) => d.data,
       staleTime: 1000 * 60 * 2,
     },

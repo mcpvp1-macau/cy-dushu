@@ -28,7 +28,7 @@ import { useAIResult } from '../../AIResult'
 import NormalVerificationModal from './NormalVerificationModal'
 
 type PropsType = {
-  actionId: string
+  actionId: number
   actionType: string
   detail?: API_ACTION.domain.ActionDetail
   isBacktracking?: boolean
@@ -114,13 +114,13 @@ const SHJHKCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
       queryKey: [orderKey, actionId],
       queryFn: () => {
         if (actionType === ActionEnum.KCYP) {
-          return getKCYPOrder({ caseId: actionId })
+          return getKCYPOrder({ caseId: String(actionId) })
         } else if (actionType === ActionEnum.KCYPXS) {
-          return getXSKCYPOrder({ caseId: actionId })
+          return getXSKCYPOrder({ caseId: String(actionId) })
         }
         return Promise.reject('Unknown action type')
       },
-      enabled: !!actionId,
+      enabled: Number.isFinite(actionId),
       select: (d) => d.data,
       staleTime: 1000 * 60 * 2,
     },
@@ -217,14 +217,14 @@ const SHJHKCYPModal: FC<PropsType> = memo(({ actionId, actionType }) => {
                         />
                       )}
 
-                      <IconAsyncButton
-                        tippyProps={{ content: '删除' }}
-                        disabled={checkIds.length === 0}
-                        onClick={async () => {
-                          await delAIResult(actionId, checkIds)
-                          await refetch()
-                          setCheckIds([])
-                        }}
+                          <IconAsyncButton
+                            tippyProps={{ content: '删除' }}
+                            disabled={checkIds.length === 0}
+                            onClick={async () => {
+                              await delAIResult(String(actionId), checkIds)
+                              await refetch()
+                              setCheckIds([])
+                            }}
                       >
                         <IconDelete />
                       </IconAsyncButton>

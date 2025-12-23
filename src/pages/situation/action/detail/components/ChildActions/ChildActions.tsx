@@ -15,7 +15,7 @@ import {
 import { Spin } from 'antd'
 
 type PropsType = {
-  actionId: string
+  actionId: number
   isBacktracking?: boolean
 }
 
@@ -30,7 +30,7 @@ const ChildActions: FC<PropsType> = memo(({ actionId, isBacktracking }) => {
     {
       queryKey: ['action', actionId, 'items'],
       queryFn: async () => {
-        const d = await getActionItemList({ actionId })
+        const d = await getActionItemList({ actionId: String(actionId) })
         if (!Array.isArray(d.data.rows)) {
           return []
         }
@@ -117,7 +117,7 @@ const ChildActions: FC<PropsType> = memo(({ actionId, isBacktracking }) => {
     return set
   }, [data])
 
-  useGetDensityStatistics({ actionId: Number(actionId ?? 0) })
+  useGetDensityStatistics({ actionId })
   useListenRealDensityMap((deviceId) => runningDeviceIds.has(deviceId))
 
   return (

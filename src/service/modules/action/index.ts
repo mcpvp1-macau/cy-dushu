@@ -16,7 +16,7 @@ export const getActionRecordList = (
 }
 
 /** 获取大行动任务信息 */
-export const getAction = (params: { actionId?: string; eventId?: string }) => {
+export const getAction = (params: { actionId?: number; eventId?: string }) => {
   return serverJingqi.get<API_ACTION.res.ActionDetailRes>('/action/get', {
     params,
   })
