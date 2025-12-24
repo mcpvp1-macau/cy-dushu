@@ -82,7 +82,7 @@ const OperatorBtns: FC<PropsType> = ({ data, noEdit }) => {
         end: () => endActionItem(data.id),
       }[action]()
       await queryClient.invalidateQueries({
-        queryKey: ['action', String(data.actionId), 'items'],
+        queryKey: ['action', data.actionId, 'items'],
       })
       msgApi.success(t('api.success.msg'))
       if (action === 'end') {
