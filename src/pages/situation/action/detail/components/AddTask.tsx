@@ -207,6 +207,7 @@ const AddTask: FC<PropsType> = memo(
           confirmLoading={confirmLoading}
           onClose={() => {
             setOpen(false)
+            form.resetFields()
           }}
           onConfirm={handleConfirm}
         />
