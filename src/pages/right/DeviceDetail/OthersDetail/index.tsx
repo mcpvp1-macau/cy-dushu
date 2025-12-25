@@ -1,4 +1,3 @@
-// import DeviceIconCamera from '@/assets/icons/jsx/device/DeviceIconCamera'
 import IconData from '@/assets/icons/jsx/IconData'
 import IconDetail from '@/assets/icons/jsx/IconDetail'
 import useServerEventMsg from '@/pages/control-room/uav/hooks/useServerEventMsg'
@@ -13,6 +12,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import AppViewSuspense from '@/components/AppViewSuspense'
 import { BaseDeviceDetailProps } from '../routes'
 import DeviceIcon from '@/components/device/DeviceIcon'
+import UpdateRealMarker from './components/UpdateRealMarker'
 
 const OthersDetailDetail = lazy(() => import('./components/OthersDetailDetail'))
 const OthersDetailData = lazy(() => import('./components/OthersDetailData'))
@@ -73,7 +73,6 @@ const OthersDetail: FC<PropsType> = memo(
               onChange={setTab}
             />
           </div>
-          {/* <div className="flex-1 overflow-y-auto"> */}
           <ScrollArea className="grow">
             <AppViewSuspense>
               {tab === 0 ? (
@@ -83,9 +82,8 @@ const OthersDetail: FC<PropsType> = memo(
               )}
             </AppViewSuspense>
           </ScrollArea>
-          {/* </div> */}
         </div>
-        {/* <WanglouUpdateRealMarker /> */}
+        <UpdateRealMarker />
       </OthersControlRoomStoreContext.Provider>
     )
   },
