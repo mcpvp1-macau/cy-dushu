@@ -8,7 +8,12 @@ import { usePostDeviceServiceHandler } from '@/hooks/device/usePostDeviceService
 import { useAppMsg } from '@/hooks/useAppMsg'
 import DeviceItem from '@/pages/situation/source/components/DeviceItem'
 import SourceTree from '@/pages/situation/source/components/SourceTree'
-import { getDeviceTree, getRecommendDeviceList } from '@/service/modules/device'
+import SourceTreeV4 from '@/pages/situation/source/components/SourceTreeV4'
+import {
+  getDeviceTree,
+  getDeviceTreeV4,
+  getRecommendDeviceList,
+} from '@/service/modules/device'
 import { getSpaceDistance } from '@/utils/geo-math'
 import { Button, Checkbox, Form, Input, InputNumber, Segmented } from 'antd'
 import { useForm } from 'antd/es/form/Form'
@@ -19,6 +24,11 @@ type PropsType = {
   /** 经纬度 */
   position: number[]
   onClose: () => void
+}
+type DeviceTreeResponse = {
+  code: string
+  message: string
+  data: API_DEVICE.res.DeviceTreeRes | API_DEVICE.res.DeviceTreeV4Res
 }
 
 const fmtDistance = (distance: number) => {
@@ -32,6 +42,7 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
   const [name, setName] = useState('')
+  const useDeviceTreeV4 = globalConfig.useDeviceTreeV4
 
   // 0 推荐, 1 手动
   const [method, setMethod] = useState(0)
@@ -47,13 +58,23 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
   })
 
   // 设备树
-  const { data, isLoading, isRefetching } = useQuery(
+  const { data, isLoading, isRefetching } = useQuery<
+    DeviceTreeResponse,
+    Error,
+    DeviceTreeResponse['data']
+  >(
     {
-      queryKey: ['deviceTreeList', 'ALL', name],
-      queryFn: () =>
-        getDeviceTree({
+      queryKey: ['deviceTreeList', 'ALL', name, useDeviceTreeV4 ? 'v4' : 'v3'],
+      queryFn: () => {
+        const payload = {
           name: name || undefined,
-        }),
+        }
+
+        // 业务规则：根据配置切换设备树版本
+        return (useDeviceTreeV4
+          ? getDeviceTreeV4(payload)
+          : getDeviceTree(payload)) as Promise<DeviceTreeResponse>
+      },
       enabled: method === 1,
       select: (data) => data?.data,
     },
@@ -63,24 +84,41 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
   // 设备 [deviceId] -> [Device] 映射
   const deviceMap = useMemo(() => {
     const map = new Map<string, API_DEVICE.domain.Device>()
-    if (data) {
-      const dfs = (data: API_DEVICE.domain.DeviceTreeItem) => {
-        data.devices.forEach((e) => {
-          map.set(e.deviceId, e)
-        })
-        data.children.forEach((e) => {
-          dfs(e)
-        })
+    const appendDevice = (device?: API_DEVICE.domain.Device) => {
+      if (!device?.deviceId) {
+        return
       }
-      dfs(data)
+      map.set(device.deviceId, device)
+    }
+
+    if (data) {
+      if (useDeviceTreeV4) {
+        // 业务规则：V4 设备树以 roots 列表返回，需要展开所有分组
+        const roots =
+          (data as API_DEVICE.res.DeviceTreeV4Res)?.roots ?? []
+        const dfs = (group: API_DEVICE.domain.DeviceTreeV4Item) => {
+          group?.devices?.forEach((device) => appendDevice(device))
+          group?.children?.forEach((child) => {
+            dfs(child)
+          })
+        }
+
+        roots.forEach((root) => dfs(root))
+      } else {
+        const dfs = (node: API_DEVICE.domain.DeviceTreeItem) => {
+          node?.devices?.forEach((device) => appendDevice(device))
+          node?.children?.forEach((child) => {
+            dfs(child)
+          })
+        }
+        dfs(data as API_DEVICE.domain.DeviceTreeItem)
+      }
     }
     if (recommendData) {
-      recommendData.forEach((e) => {
-        map.set(e.deviceId, e)
-      })
+      recommendData.forEach((device) => appendDevice(device))
     }
     return map
-  }, [data, recommendData])
+  }, [data, recommendData, useDeviceTreeV4])
 
   const [flyModalOpen, setFlyModalOpen] = useState(false)
 
@@ -176,6 +214,36 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
     },
   )
 
+  const commonTreeProps = {
+    isLoading: isRefetching,
+    compareFn,
+    deviceItemPrefix: (device: API_DEVICE.domain.Device) => (
+      <Checkbox value={device.deviceId} />
+    ),
+    deviceItemSuffix: (device: API_DEVICE.domain.Device) => (
+      <Button
+        size="small"
+        className="mr-2 text-xs"
+        onClick={() => {
+          setCheckDevices([device.deviceId])
+          handleDispatchClick([device.deviceId])
+        }}
+      >
+        派遣
+      </Button>
+    ),
+    deviceItemBottom: (device: API_DEVICE.domain.Device) =>
+      device.longitude &&
+      device.latitude && (
+        <div className="text-green-500 mr-6 whitespace-nowrap">
+          距{' '}
+          {fmtDistance(
+            getSpaceDistance([position, [device.longitude, device.latitude]]),
+          )}
+        </div>
+      ),
+  }
+
   return (
     <>
       <XModal
@@ -203,38 +271,17 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
                     value={checkedDevices}
                     onChange={setCheckDevices}
                   >
-                    <SourceTree
-                      data={data}
-                      isLoading={isRefetching}
-                      compareFn={compareFn}
-                      deviceItemPrefix={(e) => <Checkbox value={e.deviceId} />}
-                      deviceItemSuffix={(e) => (
-                        <Button
-                          size="small"
-                          className="mr-2 text-xs"
-                          onClick={() => {
-                            setCheckDevices([e.deviceId])
-                            handleDispatchClick([e.deviceId])
-                          }}
-                        >
-                          派遣
-                        </Button>
-                      )}
-                      deviceItemBottom={(e) =>
-                        e.longitude &&
-                        e.latitude && (
-                          <div className="text-green-500 mr-6 whitespace-nowrap">
-                            距{' '}
-                            {fmtDistance(
-                              getSpaceDistance([
-                                position,
-                                [e.longitude, e.latitude],
-                              ]),
-                            )}
-                          </div>
-                        )
-                      }
-                    />
+                    {useDeviceTreeV4 ? (
+                      <SourceTreeV4
+                        data={data as API_DEVICE.res.DeviceTreeV4Res}
+                        {...commonTreeProps}
+                      />
+                    ) : (
+                      <SourceTree
+                        data={data as API_DEVICE.domain.DeviceTreeItem}
+                        {...commonTreeProps}
+                      />
+                    )}
                   </Checkbox.Group>
                 )}
               </ScrollArea>

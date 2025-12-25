@@ -26,6 +26,7 @@ globalConfig.mcps ??= {}
 globalConfig.enableJessibucaMetrics ??= false
 globalConfig.defaultTheme ??= 'dark'
 globalConfig.env ??= 'default'
+globalConfig.useDeviceTreeV4 ??= false
 
 class GlobalConfig {
   systemName = 'jingqi'
@@ -116,6 +117,8 @@ class GlobalConfig {
   robotDogMap?: 'point-cloud' | 'wgs84'
   /** 默认主题色 */
   defaultTheme: string = 'dark'
+  /** 是否使用 V4 设备树接口 */
+  useDeviceTreeV4?: boolean
 
   // 是否开启喊话器音频上传功能
   usePayloadP3Upload: boolean = false
