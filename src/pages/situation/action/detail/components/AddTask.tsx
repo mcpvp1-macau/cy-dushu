@@ -165,6 +165,7 @@ const AddTask: FC<PropsType> = memo(
         await queryClient.invalidateQueries({
           queryKey: ['action', actionId, 'items'],
         })
+        form.resetFields()
         onSuccess?.()
       } finally {
         setConfirmLoading(false)
