@@ -214,6 +214,36 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
     },
   )
 
+  const commonTreeProps = {
+    isLoading: isRefetching,
+    compareFn,
+    deviceItemPrefix: (device: API_DEVICE.domain.Device) => (
+      <Checkbox value={device.deviceId} />
+    ),
+    deviceItemSuffix: (device: API_DEVICE.domain.Device) => (
+      <Button
+        size="small"
+        className="mr-2 text-xs"
+        onClick={() => {
+          setCheckDevices([device.deviceId])
+          handleDispatchClick([device.deviceId])
+        }}
+      >
+        派遣
+      </Button>
+    ),
+    deviceItemBottom: (device: API_DEVICE.domain.Device) =>
+      device.longitude &&
+      device.latitude && (
+        <div className="text-green-500 mr-6 whitespace-nowrap">
+          距{' '}
+          {fmtDistance(
+            getSpaceDistance([position, [device.longitude, device.latitude]]),
+          )}
+        </div>
+      ),
+  }
+
   return (
     <>
       <XModal
@@ -244,72 +274,12 @@ const DispatchModal: FC<PropsType> = memo(({ open, position, onClose }) => {
                     {useDeviceTreeV4 ? (
                       <SourceTreeV4
                         data={data as API_DEVICE.res.DeviceTreeV4Res}
-                        isLoading={isRefetching}
-                        compareFn={compareFn}
-                        deviceItemPrefix={(e) => (
-                          <Checkbox value={e.deviceId} />
-                        )}
-                        deviceItemSuffix={(e) => (
-                          <Button
-                            size="small"
-                            className="mr-2 text-xs"
-                            onClick={() => {
-                              setCheckDevices([e.deviceId])
-                              handleDispatchClick([e.deviceId])
-                            }}
-                          >
-                            派遣
-                          </Button>
-                        )}
-                        deviceItemBottom={(e) =>
-                          e.longitude &&
-                          e.latitude && (
-                            <div className="text-green-500 mr-6 whitespace-nowrap">
-                              距{' '}
-                              {fmtDistance(
-                                getSpaceDistance([
-                                  position,
-                                  [e.longitude, e.latitude],
-                                ]),
-                              )}
-                            </div>
-                          )
-                        }
+                        {...commonTreeProps}
                       />
                     ) : (
                       <SourceTree
                         data={data as API_DEVICE.domain.DeviceTreeItem}
-                        isLoading={isRefetching}
-                        compareFn={compareFn}
-                        deviceItemPrefix={(e) => (
-                          <Checkbox value={e.deviceId} />
-                        )}
-                        deviceItemSuffix={(e) => (
-                          <Button
-                            size="small"
-                            className="mr-2 text-xs"
-                            onClick={() => {
-                              setCheckDevices([e.deviceId])
-                              handleDispatchClick([e.deviceId])
-                            }}
-                          >
-                            派遣
-                          </Button>
-                        )}
-                        deviceItemBottom={(e) =>
-                          e.longitude &&
-                          e.latitude && (
-                            <div className="text-green-500 mr-6 whitespace-nowrap">
-                              距{' '}
-                              {fmtDistance(
-                                getSpaceDistance([
-                                  position,
-                                  [e.longitude, e.latitude],
-                                ]),
-                              )}
-                            </div>
-                          )
-                        }
+                        {...commonTreeProps}
                       />
                     )}
                   </Checkbox.Group>
