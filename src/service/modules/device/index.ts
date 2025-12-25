@@ -18,6 +18,14 @@ export const getDeviceTree = (data: API_DEVICE.req.GetDeviceTreeReq) => {
   )
 }
 
+/** 获取设备 tree v4 */
+export const getDeviceTreeV4 = (data: API_DEVICE.req.GetDeviceTreeV4Req) => {
+  return serverControlCenter.post<API_DEVICE.res.DeviceTreeV4Res>(
+    '/device/list/tree/v4',
+    data,
+  )
+}
+
 /** 获取目标点的推荐设备列表 */
 export const getRecommendDeviceList = (data: {
   longitude: number
