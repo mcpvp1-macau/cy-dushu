@@ -30,6 +30,8 @@ import { isNil } from 'lodash'
 import IconRelayWayline from '@/assets/icons/jsx/IconRelayWayline'
 import globalConfig from '@/global/config'
 import IconNotReported from '@/assets/icons/jsx/IconNotReported'
+import IconDing from '@/assets/icons/jsx/IconDing'
+import useFixedWindowsStore from '@/store/useFixedWindows.store'
 
 type PropsType = {
   data: API_ACTION_ITEM.domain.ActionItem
@@ -178,6 +180,7 @@ const ChildAction: FC<PropsType> = memo(
     const [relayModalOpen, setRelayModalOpen] = useState(false)
     const breakPointId = data.breakPointId
     const flightReportingEnabled = globalConfig.useFlightReporting
+    const addWindow = useFixedWindowsStore((s) => s.addWindow)
 
     const handleRelaySuccess = async () => {
       await queryClient.invalidateQueries({
@@ -215,6 +218,26 @@ const ChildAction: FC<PropsType> = memo(
       useRightMode.getState().updateRightMode(RightModeEnum.DEVICE)
       useRightMode.getState().updateDetailId(data.deviceId!)
     }
+
+    const handlePinClick = useMemoizedFn(() => {
+      if (!data.deviceId) {
+        return
+      }
+
+      // 业务规则：只有存在设备 ID 时才允许钉出详情窗口
+      addWindow({
+        params: {
+          type: 'device-detail',
+          deviceId: data.deviceId,
+        },
+        layout: {
+          x: document.body.clientWidth / 2 - 176,
+          y: 52,
+          width: 352,
+          height: 600,
+        },
+      })
+    })
 
     const waylineType = useMemo(
       () =>
@@ -345,12 +368,20 @@ const ChildAction: FC<PropsType> = memo(
                   {t('action.detail.task.device.title')}:
                 </span>
                 {data.deviceId && (
-                  <IconButton
-                    tippyProps={{ content: t('common.detail') }}
-                    onClick={handleDetailClick}
-                  >
-                    <IconDetail />
-                  </IconButton>
+                  <>
+                    <IconButton
+                      tippyProps={{ content: t('common.detail') }}
+                      onClick={handleDetailClick}
+                    >
+                      <IconDetail />
+                    </IconButton>
+                    <IconButton
+                      tippyProps={{ content: t('common.fixedOut') }}
+                      onClick={handlePinClick}
+                    >
+                      <IconDing className="scale-90" />
+                    </IconButton>
+                  </>
                 )}
                 <OverflowText className="min-w-0 flex-1 truncate">
                   {data.deviceName || '-'}
