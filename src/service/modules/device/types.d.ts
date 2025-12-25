@@ -315,6 +315,83 @@ declare namespace API_DEVICE {
       devices: Device[]
       children: DeviceTreeItem[]
     }
+    interface DeviceTreeV4DeviceAbility {
+      ability: string
+      deviceAbilityItems: string[]
+    }
+    interface DeviceTreeV4DeviceTag {
+      tagName: string
+      tagValue: string
+    }
+    interface DeviceTreeV4OtaInfo {
+      deviceId: string
+      otaDeviceId: string
+      mac: string
+      newVersion: boolean
+      artifactName: string
+      newVersionName: string
+      status: string
+      deploymentId: string
+      deviceType: string
+      otaBackend: string
+    }
+    interface DeviceTreeV4DjiOtaInfo {
+      deviceSn: string
+      deviceName: string
+      deviceId: string
+      firmwareVersion: string
+      latestFirmwareVersion: string
+      djiOtaStatus: string
+    }
+    interface DeviceTreeV4ChildDevice {
+      name: string
+      productKey: string
+      deviceId: string
+      videos: Record<string, any>[]
+      deviceType: string
+      properties: Record<string, any>
+      otaInfo?: DeviceTreeV4OtaInfo
+      djiOtaInfo?: DeviceTreeV4DjiOtaInfo
+    }
+    interface DeviceTreeV4Device {
+      username: string
+      name: string
+      productKey: string
+      deviceId: string
+      deviceName: string
+      longitude?: number
+      latitude?: number
+      deviceAvailable?: boolean
+      status: string
+      altitude?: number
+      taskStatus?: string
+      sn?: string
+      remainingPower?: number
+      createTime?: number
+      deviceModel?: string
+      deviceType: string
+      spaceId?: string
+      deviceRegisterVersion?: string
+      abilities?: DeviceTreeV4DeviceAbility[]
+      deviceTags?: DeviceTreeV4DeviceTag[]
+      properties?: Record<string, any>
+      childrenDevices?: DeviceTreeV4ChildDevice[]
+      parentId?: string
+      ttpBoxSn?: string
+      otaInfo?: DeviceTreeV4OtaInfo
+      djiOtaInfo?: DeviceTreeV4DjiOtaInfo
+      orgCode?: string
+    }
+    interface DeviceTreeV4Item {
+      groupId: string
+      groupName: string
+      devices: DeviceTreeV4Device[]
+      children: DeviceTreeV4Item[]
+      orderId?: number
+    }
+    interface DeviceTreeV4Wrapper {
+      roots: DeviceTreeV4Item[]
+    }
     interface OTAInfo {
       newVersion: boolean
       artifactName: string
@@ -510,6 +587,20 @@ declare namespace API_DEVICE {
       name: string
       type: string
     }>
+    type GetDeviceTreeV4Req = Partial<{
+      requestId: string
+      operation: string
+      isPage: boolean
+      page: number
+      size: number
+      type: string
+      spaceId: string
+      name: string
+      organizationId: string
+      deviceRegisterVersion: string
+      username: string
+      orgCodes: string[]
+    }>
     type GetDeviceListReq = API_COMMON.PageParam &
       Partial<{
         otaInfo: boolean
@@ -525,6 +616,7 @@ declare namespace API_DEVICE {
       total: number
     }
     type DeviceTreeRes = API_DEVICE.domain.DeviceTreeItem
+    type DeviceTreeV4Res = API_DEVICE.domain.DeviceTreeV4Wrapper
     type AllDeviceListRes = API_COMMON.PageRes<API_DEVICE.domain.DeviceListItem>
     type AllDeviceListV3Res = API_COMMON.PageRes<API_DEVICE.domain.Device>
     type DeviceDetailRes = API_DEVICE.domain.Device
