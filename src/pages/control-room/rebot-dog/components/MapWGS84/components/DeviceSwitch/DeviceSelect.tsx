@@ -1,8 +1,9 @@
 import IconButton from '@/components/ui/button/IconButton'
 import IconClose from '@/assets/icons/jsx/IconClose'
 import { DeviceEnum } from '@/enum/device'
-import { getDeviceTree } from '@/service/modules/device'
+import { getDeviceTree, getDeviceTreeV4 } from '@/service/modules/device'
 import SourceTree from '@/pages/situation/source/components/SourceTree'
+import SourceTreeV4 from '@/pages/situation/source/components/SourceTreeV4'
 import AppSpin from '@/components/AppSpin'
 import { Input } from 'antd'
 import SourceStatusCheckGroup from '@/pages/situation/source/components/SourceStatusCheckGroup'
@@ -11,21 +12,42 @@ import { useDebounceFn } from 'ahooks'
 type PropsType = {
   onClose?: () => void
 }
+type DeviceTreeResponse = {
+  code: string
+  message: string
+  data: API_DEVICE.res.DeviceTreeRes | API_DEVICE.res.DeviceTreeV4Res
+}
 
 const DeviceSelect: FC<PropsType> = memo(({ onClose }) => {
   const { t } = useTranslation()
 
   const [name, setName] = useState('')
+  const useDeviceTreeV4 = globalConfig.useDeviceTreeV4
 
   const qc = useQueryClient()
-  const { data, isLoading, isRefetching } = useQuery(
+  const { data, isLoading, isRefetching } = useQuery<
+    DeviceTreeResponse,
+    Error,
+    DeviceTreeResponse['data']
+  >(
     {
-      queryKey: ['deviceTreeList', DeviceEnum.ROBOT_DOG, name],
-      queryFn: () =>
-        getDeviceTree({
+      queryKey: [
+        'deviceTreeList',
+        DeviceEnum.ROBOT_DOG,
+        name,
+        useDeviceTreeV4 ? 'v4' : 'v3',
+      ],
+      queryFn: () => {
+        const payload = {
           type: DeviceEnum.ROBOT_DOG,
           name: name || undefined,
-        }),
+        }
+
+        // 业务规则：根据配置切换 V4 设备树接口
+        return (useDeviceTreeV4
+          ? getDeviceTreeV4(payload)
+          : getDeviceTree(payload)) as Promise<DeviceTreeResponse>
+      },
       select: (data) => data?.data,
     },
     qc,
@@ -62,11 +84,19 @@ const DeviceSelect: FC<PropsType> = memo(({ onClose }) => {
       <SourceStatusCheckGroup className="px-3 my-2" />
       <div className="flex-1 overflow-hidden">
         {data ? (
-          <SourceTree
-            isLoading={isLoading || isRefetching}
-            data={data}
-            onDeviceItemClick={handleClick}
-          />
+          useDeviceTreeV4 ? (
+            <SourceTreeV4
+              isLoading={isLoading || isRefetching}
+              data={data as API_DEVICE.res.DeviceTreeV4Res}
+              onDeviceItemClick={handleClick}
+            />
+          ) : (
+            <SourceTree
+              isLoading={isLoading || isRefetching}
+              data={data as API_DEVICE.domain.DeviceTreeItem}
+              onDeviceItemClick={handleClick}
+            />
+          )
         ) : (
           <AppSpin />
         )}
