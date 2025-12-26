@@ -28,16 +28,12 @@ const ChildActionQuickPin: FC<PropsType> = memo(({ actionItems }) => {
       return
     }
 
-    const deviceIdSet = new Set<string>()
-    actionItems
-      .filter((item) => item.deviceId)
-      .forEach((item) => {
-        item.deviceId
-          ?.split(',')
-          .map((deviceId) => deviceId.trim())
-          .filter(Boolean)
-          .forEach((deviceId) => deviceIdSet.add(deviceId))
-      })
+    const deviceIdSet = new Set(
+      actionItems
+        .flatMap((item) => item.deviceId?.split(',') ?? [])
+        .map((deviceId) => deviceId.trim())
+        .filter(Boolean),
+    )
 
     if (!deviceIdSet.size) {
       msgApi.warning(
@@ -55,62 +51,67 @@ const ChildActionQuickPin: FC<PropsType> = memo(({ actionItems }) => {
 
       // 业务规则：逐个拉取设备详情，避免并发过多导致接口抖动
       for (const deviceId of deviceIdSet) {
-        const resp = await getDeviceDetail(deviceId)
-        const deviceDetail = resp?.data
-        if (!deviceDetail) {
-          continue
-        }
-
-        const isCamera = cameraDeviceTypes.has(deviceDetail.deviceType ?? '')
-        if (isCamera) {
-          const detailDeviceId = deviceDetail.deviceId
-          const productKey =
-            deviceDetail.productKey || deviceDetail.deviceModel?.productKey
-          const videoId = deviceDetail?.properties?.videoList?.[0]?.videoId
-
-          // 业务规则：摄像头优先钉出视频，缺失关键参数时跳过
-          if (!detailDeviceId || !productKey || !videoId) {
-            hasVideoMissing = true
+        try {
+          const resp = await getDeviceDetail(deviceId)
+          const deviceDetail = resp?.data
+          if (!deviceDetail) {
             continue
           }
 
+          const isCamera = cameraDeviceTypes.has(deviceDetail.deviceType ?? '')
+          if (isCamera) {
+            const detailDeviceId = deviceDetail.deviceId
+            const productKey =
+              deviceDetail.productKey || deviceDetail.deviceModel?.productKey
+            const videoId = deviceDetail?.properties?.videoList?.[0]?.videoId
+
+            // 业务规则：摄像头优先钉出视频，缺失关键参数时跳过
+            if (!detailDeviceId || !productKey || !videoId) {
+              hasVideoMissing = true
+              continue
+            }
+
+            addWindow({
+              params: {
+                type: 'live-video',
+                productKey,
+                deviceId: detailDeviceId,
+                videoId,
+              },
+              allowScale: true,
+              layout: {
+                x: document.body.clientWidth / 2 - 200,
+                y: document.body.clientHeight / 2 - 150,
+                width: 320 + 2,
+                height: 320 * (9 / 16) + 32 + 2,
+              },
+            })
+            pinnedCount += 1
+            continue
+          }
+
+          if (!deviceDetail.deviceId) {
+            continue
+          }
+
+          // 业务规则：非摄像头统一钉出设备详情
           addWindow({
             params: {
-              type: 'live-video',
-              productKey,
-              deviceId: detailDeviceId,
-              videoId,
+              type: 'device-detail',
+              deviceId: deviceDetail.deviceId,
             },
-            allowScale: true,
             layout: {
-              x: document.body.clientWidth / 2 - 200,
-              y: document.body.clientHeight / 2 - 150,
-              width: 320 + 2,
-              height: 320 * (9 / 16) + 32 + 2,
+              x: document.body.clientWidth / 2 - 176,
+              y: 52,
+              width: 352,
+              height: 600,
             },
           })
           pinnedCount += 1
-          continue
+        } catch (error) {
+          // 边界情况：单个设备异常不影响其他设备继续钉出
+          console.warn('Quick pin device failed', deviceId, error)
         }
-
-        if (!deviceDetail.deviceId) {
-          continue
-        }
-
-        // 业务规则：非摄像头统一钉出设备详情
-        addWindow({
-          params: {
-            type: 'device-detail',
-            deviceId: deviceDetail.deviceId,
-          },
-          layout: {
-            x: document.body.clientWidth / 2 - 176,
-            y: 52,
-            width: 352,
-            height: 600,
-          },
-        })
-        pinnedCount += 1
       }
 
       if (pinnedCount === 0) {
