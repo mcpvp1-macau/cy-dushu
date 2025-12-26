@@ -5,6 +5,7 @@ import { useAppMsg } from '@/hooks/useAppMsg'
 import { getDeviceDetail } from '@/service/modules/device'
 import useFixedWindowsStore from '@/store/useFixedWindows.store'
 import { LoadingOutlined } from '@ant-design/icons'
+import { Button } from 'antd'
 
 type PropsType = {
   actionItems: API_ACTION_ITEM.domain.ActionItem[]
@@ -17,9 +18,9 @@ const cameraDeviceTypes = new Set<string>([
 ])
 
 const layoutBase = {
-  x: 377,
-  y: 12,
-  gap: 12,
+  x: 415,
+  y: 50,
+  gap: 8,
 }
 
 const cameraLayoutSize = {
@@ -29,7 +30,7 @@ const cameraLayoutSize = {
 
 const deviceLayoutSize = {
   width: 352,
-  height: 600,
+  height: 420,
 }
 
 const ChildActionQuickPin: FC<PropsType> = memo(({ actionItems }) => {
@@ -139,8 +140,7 @@ const ChildActionQuickPin: FC<PropsType> = memo(({ actionItems }) => {
         for (const item of pinQueue) {
           const nextBottom = currentY + item.layoutSize.height
           // 边界情况：当前列高度不足时换列
-          const shouldWrap =
-            nextBottom > maxHeight && currentY !== layoutBase.y
+          const shouldWrap = nextBottom > maxHeight && currentY !== layoutBase.y
 
           if (shouldWrap) {
             currentX += columnWidth + layoutBase.gap
@@ -187,9 +187,7 @@ const ChildActionQuickPin: FC<PropsType> = memo(({ actionItems }) => {
         const messageKey = hasVideoMissing
           ? 'action.detail.task.quickPinVideoEmpty'
           : 'action.detail.task.quickPinNoDevice'
-        const defaultValue = hasVideoMissing
-          ? '暂无可用视频'
-          : '暂无可钉出设备'
+        const defaultValue = hasVideoMissing ? '暂无可用视频' : '暂无可钉出设备'
         msgApi.warning(t(messageKey, { defaultValue }))
       }
     } finally {
@@ -198,17 +196,17 @@ const ChildActionQuickPin: FC<PropsType> = memo(({ actionItems }) => {
   })
 
   return (
-    <IconButton
+    <Button
       disabled={loading}
-      tippyProps={{
-        content: t('action.detail.task.quickPin', {
-          defaultValue: '一键钉出',
-        }),
-      }}
       onClick={handlePin}
+      loading={loading}
+      icon={<IconDing />}
+      block
     >
-      {loading ? <LoadingOutlined /> : <IconDing className="scale-90" />}
-    </IconButton>
+      {t('action.detail.task.quickPin', {
+        defaultValue: '一键钉出',
+      })}
+    </Button>
   )
 })
 
