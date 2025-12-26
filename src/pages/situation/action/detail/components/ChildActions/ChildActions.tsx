@@ -13,6 +13,7 @@ import {
   useListenRealDensityMap,
 } from '@/store/map/useDensityMap.store'
 import { Spin } from 'antd'
+import ChildActionQuickPin from './ChildActionQuickPin'
 
 type PropsType = {
   actionId: number
@@ -130,7 +131,10 @@ const ChildActions: FC<PropsType> = memo(({ actionId, isBacktracking }) => {
         ) : (
           <ScrollArea className="max-h-[45vh]">
             <Spin spinning={isRefetching}>
-              <ul className="flex flex-col gap-3 p-3">
+              <div className="flex justify-end px-3 pt-3">
+                <ChildActionQuickPin actionItems={data} />
+              </div>
+              <ul className="flex flex-col gap-3 p-3 pt-2">
                 {data2.map((item) => (
                   <li
                     key={String(item.id)}
