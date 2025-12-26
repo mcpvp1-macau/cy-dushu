@@ -352,6 +352,9 @@ action:
         title: Finish
       continue:
         title: Continue
+      quickPin: Quick Pin
+      quickPinNoDevice: No devices to pin
+      quickPinVideoEmpty: No video available
       people:
         title: Pilot
       device:
