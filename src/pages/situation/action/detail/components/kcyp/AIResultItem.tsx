@@ -35,7 +35,7 @@ const AIResultItem: FC<{
   const { run } = useDebounceFn(
     () => {
       queryClient.invalidateQueries({
-        queryKey: ['action', String(data.actionId), 'aiResult'],
+        queryKey: ['action', data.actionId, 'aiResult'],
       })
     },
     { wait: 2_000 },
