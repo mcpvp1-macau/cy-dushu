@@ -29,8 +29,8 @@ const VideoDing: FC<PropsType> = memo((props) => {
           layout: {
             x: document.body.clientWidth / 2 - 200,
             y: document.body.clientHeight / 2 - 150,
-            width: 400,
-            height: 300,
+            width: 320 + 2,
+            height: 320 * (9 / 16) + 32 + 2,
           },
         })
       }}
