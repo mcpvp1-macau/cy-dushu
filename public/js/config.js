@@ -83,4 +83,5 @@ window.config = {
   32717: {
     title: '测试名称',
   },
+  useDeviceTreeV4: true,
 }

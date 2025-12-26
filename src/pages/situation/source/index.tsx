@@ -7,6 +7,7 @@ import SourceTreeV4 from './components/SourceTreeV4'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { RightModeEnum } from '@/enum/right-mode'
 import { useDebounceFn } from 'ahooks'
+import { WarningOutlined } from '@ant-design/icons'
 
 type PropsType = unknown
 type DeviceTreeResponse = {
@@ -23,7 +24,7 @@ const PageSituationSource: FC<PropsType> = memo(() => {
   const params = useParams()
   const { sourceType } = params
 
-  const { data, isLoading, isRefetching } = useQuery<
+  const { data, isLoading, isRefetching, error } = useQuery<
     DeviceTreeResponse,
     Error,
     DeviceTreeResponse['data']
@@ -42,9 +43,9 @@ const PageSituationSource: FC<PropsType> = memo(() => {
         }
 
         // 业务规则：根据配置切换设备树版本
-        return (useDeviceTreeV4
-          ? getDeviceTreeV4(payload)
-          : getDeviceTree(payload)) as Promise<DeviceTreeResponse>
+        return (
+          useDeviceTreeV4 ? getDeviceTreeV4(payload) : getDeviceTree(payload)
+        ) as Promise<DeviceTreeResponse>
       },
       select: (data) => data?.data,
     },
@@ -79,22 +80,25 @@ const PageSituationSource: FC<PropsType> = memo(() => {
       </div>
       <SourceStatusCheckGroup className="px-3 my-2" />
       <div className="flex-grow overflow-hidden">
-        {isLoading || !data ? (
+        {isLoading ? (
           <AppSpin />
+        ) : error ? (
+          <div className="h-full flex flex-col items-center justify-center gap-1">
+            <WarningOutlined className="text-xl" />
+            <span className="text-sm">{error.message}</span>
+          </div>
+        ) : useDeviceTreeV4 ? (
+          <SourceTreeV4
+            data={data as API_DEVICE.res.DeviceTreeV4Res}
+            isLoading={isRefetching}
+            onDeviceItemClick={handleClick}
+          />
         ) : (
-          useDeviceTreeV4 ? (
-            <SourceTreeV4
-              data={data as API_DEVICE.res.DeviceTreeV4Res}
-              isLoading={isRefetching}
-              onDeviceItemClick={handleClick}
-            />
-          ) : (
-            <SourceTree
-              data={data as API_DEVICE.domain.DeviceTreeItem}
-              isLoading={isRefetching}
-              onDeviceItemClick={handleClick}
-            />
-          )
+          <SourceTree
+            data={data as API_DEVICE.domain.DeviceTreeItem}
+            isLoading={isRefetching}
+            onDeviceItemClick={handleClick}
+          />
         )}
       </div>
     </div>
