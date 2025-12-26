@@ -2,7 +2,7 @@ import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
 import VideoPreview from '@/components/VideoPreview'
 import VideoViewModal from '@/pages/sources/components/DeviceData/VideoViewModal'
-import { Col, Row } from 'antd'
+import { Col, Pagination, Row } from 'antd'
 import { Dayjs } from 'dayjs'
 import useVideoList from '../../hooks/useVideoList'
 import Select from '@/components/AntdOverride/Select'
@@ -31,6 +31,8 @@ const HistoryVideo: React.FC<PropsType> = memo(
     }, [timeRange])
 
     const [type, setType] = useState<'platform' | 'device'>('platform')
+    const [page, setPage] = useState(1)
+    const [pageSize, setPageSize] = useState(9)
     const [activeVideo, setActiveVideo] = useState<{
       isDevice?: boolean
       playUrl: string
@@ -62,6 +64,19 @@ const HistoryVideo: React.FC<PropsType> = memo(
       videoId!,
       dateRange ?? ([dayjs().startOf('day'), dayjs().endOf('day')] as const),
     )
+
+    // Reset page to 1 when filters change
+    useEffect(() => {
+      setPage(1)
+    }, [type, deviceId, dateRange])
+
+    // Calculate paginated data
+    const paginatedVideoList = useMemo(() => {
+      if (!videoList || videoList.length === 0) return []
+      const startIndex = (page - 1) * pageSize
+      const endIndex = startIndex + pageSize
+      return videoList.slice(startIndex, endIndex)
+    }, [videoList, page, pageSize])
 
     return (
       <div>
@@ -113,7 +128,7 @@ const HistoryVideo: React.FC<PropsType> = memo(
           <div className="m-3 overflow-x-hidden overflow-y-auto">
             <Row gutter={[8, 8]}>
               {type === 'platform'
-                ? videoList.map((e) => (
+                ? paginatedVideoList.map((e) => (
                     <Col span={8} key={e.playUrl}>
                       <VideoPreview
                         size="small"
@@ -141,7 +156,7 @@ const HistoryVideo: React.FC<PropsType> = memo(
                       />
                     </Col>
                   ))
-                : videoList.map((e) => (
+                : paginatedVideoList.map((e) => (
                     <Col span={8} key={e.id}>
                       <VideoPreview
                         size="small"
@@ -166,6 +181,24 @@ const HistoryVideo: React.FC<PropsType> = memo(
                     </Col>
                   ))}
             </Row>
+            {videoList.length > 0 && (
+              <div className="mt-1 flex justify-center">
+                <Pagination
+                  size="small"
+                  current={page}
+                  pageSize={pageSize}
+                  total={videoList.length}
+                  pageSizeOptions={Array.from(
+                    { length: 8 },
+                    (_, i) => (i + 1) * 9,
+                  )}
+                  onChange={(page, pageSize) => {
+                    setPage(page)
+                    setPageSize(pageSize)
+                  }}
+                />
+              </div>
+            )}
           </div>
         )}
         {activeVideo && (
