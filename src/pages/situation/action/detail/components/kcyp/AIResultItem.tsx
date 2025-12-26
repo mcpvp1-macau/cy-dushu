@@ -66,6 +66,13 @@ const AIResultItem: FC<{
     }[actionType as ActionEnum],
   )
 
+  const carColorOptions = useDictOptions(
+    {
+      [ActionEnum.KCYP]: DictEnum.KCYP_CAR_COLOR_TYPE,
+      [ActionEnum.KCYPXS]: DictEnum.XIAOSHAN_KCYP_CAR_COLOR_TYPE,
+    }[actionType as ActionEnum],
+  )
+
   const msgApi = useAppMsg()
   const { mutate: handleGetSipCascadePicture, isPending } = useMutation(
     {
@@ -200,6 +207,20 @@ const AIResultItem: FC<{
                 />
               </Form.Item>
             </li>
+            {[ActionEnum.KCYP, ActionEnum.KCYPXS].includes(
+              actionType as ActionEnum,
+            ) && (
+              <li className="flex gap-1 whitespace-nowrap">
+                <span className="text-white">颜色:</span>
+                <Form.Item name="plateColor" noStyle>
+                  <Select
+                    size="small"
+                    className="w-full"
+                    options={carColorOptions}
+                  />
+                </Form.Item>
+              </li>
+            )}
             <li className="flex gap-1 whitespace-nowrap">
               <span className="text-hightlight">时间:</span>
               <span>{dayjs(data.resultTime).format('MM/DD HH:mm:ss')}</span>
