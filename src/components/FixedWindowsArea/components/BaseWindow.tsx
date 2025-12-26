@@ -345,7 +345,10 @@ const BaseWindow = memo(
             }}
           >
             <div className="text-sm select-none">{props.title}</div>
-            <IconButton onClick={handleClose}>
+            <IconButton
+              onMouseDown={(e) => e.stopPropagation()}
+              onClick={handleClose}
+            >
               <IconClose className="scale-125" />
             </IconButton>
           </div>

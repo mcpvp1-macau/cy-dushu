@@ -40,7 +40,11 @@ const CloseableHeader: FC<PropsType> = memo(
         <div className="flex items-center gap-2">
           {rightTools}
           {onClose ? (
-            <IconButton className="text-xl" onClick={onClose}>
+            <IconButton
+              className="text-xl"
+              onMouseDown={(e) => e.stopPropagation()}
+              onClick={onClose}
+            >
               <IconClose />
             </IconButton>
           ) : (
