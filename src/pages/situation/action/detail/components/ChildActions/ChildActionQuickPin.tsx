@@ -73,20 +73,27 @@ const ChildActionQuickPin: FC<PropsType> = memo(({ actionItems }) => {
       const deviceItems: { deviceId: string }[] = []
       const fixedWindowState = useFixedWindowsStore.getState()
       const existingWindows = fixedWindowState?.windows ?? []
-      const existingVideoKeys = new Set<string>()
-      const existingDeviceKeys = new Set<string>()
 
-      for (const window of existingWindows) {
-        if (window.params?.type === 'live-video') {
-          const key = `${window.params.deviceId}-${window.params.videoId}`
-          existingVideoKeys.add(key)
-          continue
-        }
+      const { existingVideoKeys, existingDeviceKeys } = existingWindows.reduce(
+        (acc, window) => {
+          if (window.params?.type === 'live-video') {
+            acc.existingVideoKeys.add(
+              `${window.params.deviceId}-${window.params.videoId}`,
+            )
+            return acc
+          }
 
-        if (window.params?.type === 'device-detail') {
-          existingDeviceKeys.add(window.params.deviceId)
-        }
-      }
+          if (window.params?.type === 'device-detail') {
+            acc.existingDeviceKeys.add(window.params.deviceId)
+          }
+
+          return acc
+        },
+        {
+          existingVideoKeys: new Set<string>(),
+          existingDeviceKeys: new Set<string>(),
+        },
+      )
 
       // 业务规则：逐个拉取设备详情，避免并发过多导致接口抖动
       for (const deviceId of deviceIdSet) {
@@ -110,8 +117,10 @@ const ChildActionQuickPin: FC<PropsType> = memo(({ actionItems }) => {
               continue
             }
 
+            const videoKey = `${detailDeviceId}-${videoId}`
+
             // 业务规则：已钉出的设备不重复钉出
-            if (existingVideoKeys.has(`${detailDeviceId}-${videoId}`)) {
+            if (existingVideoKeys.has(videoKey)) {
               continue
             }
 
@@ -120,7 +129,7 @@ const ChildActionQuickPin: FC<PropsType> = memo(({ actionItems }) => {
               productKey,
               videoId,
             })
-            existingVideoKeys.add(`${detailDeviceId}-${videoId}`)
+            existingVideoKeys.add(videoKey)
             continue
           }
 
