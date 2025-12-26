@@ -37,7 +37,7 @@ const useVideoList = (
           type: 'VIDEO',
           sourceId: 'ALL',
           page: 1,
-          pageSize: 100,
+          pageSize: 9999,
           startTime,
           endTime,
           sort: 'asc',
