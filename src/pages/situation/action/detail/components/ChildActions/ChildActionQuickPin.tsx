@@ -5,6 +5,7 @@ import { useAppMsg } from '@/hooks/useAppMsg'
 import { getDeviceDetail } from '@/service/modules/device'
 import useFixedWindowsStore from '@/store/useFixedWindows.store'
 import { LoadingOutlined } from '@ant-design/icons'
+import { Button } from 'antd'
 
 type PropsType = {
   actionItems: API_ACTION_ITEM.domain.ActionItem[]
@@ -15,6 +16,22 @@ const cameraDeviceTypes = new Set<string>([
   DeviceEnum.VISIBLE_LIGHT_CAMERA,
   DeviceEnum.INFRARED_CAMERA,
 ])
+
+const layoutBase = {
+  x: 415,
+  y: 50,
+  gap: 8,
+}
+
+const cameraLayoutSize = {
+  width: 320 + 2,
+  height: 320 * (9 / 16) + 32 + 2,
+}
+
+const deviceLayoutSize = {
+  width: 352,
+  height: 420,
+}
 
 const ChildActionQuickPin: FC<PropsType> = memo(({ actionItems }) => {
   const { t } = useTranslation()
@@ -48,6 +65,12 @@ const ChildActionQuickPin: FC<PropsType> = memo(({ actionItems }) => {
     try {
       let pinnedCount = 0
       let hasVideoMissing = false
+      const cameraItems: {
+        deviceId: string
+        productKey: string
+        videoId: string
+      }[] = []
+      const deviceItems: { deviceId: string }[] = []
 
       // 业务规则：逐个拉取设备详情，避免并发过多导致接口抖动
       for (const deviceId of deviceIdSet) {
@@ -71,22 +94,11 @@ const ChildActionQuickPin: FC<PropsType> = memo(({ actionItems }) => {
               continue
             }
 
-            addWindow({
-              params: {
-                type: 'live-video',
-                productKey,
-                deviceId: detailDeviceId,
-                videoId,
-              },
-              allowScale: true,
-              layout: {
-                x: document.body.clientWidth / 2 - 200,
-                y: document.body.clientHeight / 2 - 150,
-                width: 320 + 2,
-                height: 320 * (9 / 16) + 32 + 2,
-              },
+            cameraItems.push({
+              deviceId: detailDeviceId,
+              productKey,
+              videoId,
             })
-            pinnedCount += 1
             continue
           }
 
@@ -95,22 +107,79 @@ const ChildActionQuickPin: FC<PropsType> = memo(({ actionItems }) => {
           }
 
           // 业务规则：非摄像头统一钉出设备详情
-          addWindow({
-            params: {
-              type: 'device-detail',
-              deviceId: deviceDetail.deviceId,
-            },
-            layout: {
-              x: document.body.clientWidth / 2 - 176,
-              y: 52,
-              width: 352,
-              height: 600,
-            },
-          })
-          pinnedCount += 1
+          deviceItems.push({ deviceId: deviceDetail.deviceId })
         } catch (error) {
           // 边界情况：单个设备异常不影响其他设备继续钉出
           console.warn('Quick pin device failed', deviceId, error)
+        }
+      }
+
+      // 业务规则：摄像头类优先钉出，其次才是其他设备
+      const pinQueue = [
+        ...cameraItems.map((item) => ({
+          key: item.deviceId,
+          type: 'camera' as const,
+          payload: item,
+          layoutSize: cameraLayoutSize,
+        })),
+        ...deviceItems.map((item) => ({
+          key: item.deviceId,
+          type: 'device' as const,
+          payload: item,
+          layoutSize: deviceLayoutSize,
+        })),
+      ]
+
+      if (pinQueue.length > 0) {
+        let currentX = layoutBase.x
+        let currentY = layoutBase.y
+        let columnWidth = 0
+
+        const maxHeight = window.innerHeight - layoutBase.gap
+
+        for (const item of pinQueue) {
+          const nextBottom = currentY + item.layoutSize.height
+          // 边界情况：当前列高度不足时换列
+          const shouldWrap = nextBottom > maxHeight && currentY !== layoutBase.y
+
+          if (shouldWrap) {
+            currentX += columnWidth + layoutBase.gap
+            currentY = layoutBase.y
+            columnWidth = 0
+          }
+
+          if (item.type === 'camera') {
+            addWindow({
+              params: {
+                type: 'live-video',
+                productKey: item.payload.productKey,
+                deviceId: item.payload.deviceId,
+                videoId: item.payload.videoId,
+              },
+              allowScale: true,
+              layout: {
+                x: currentX,
+                y: currentY,
+                ...item.layoutSize,
+              },
+            })
+          } else {
+            addWindow({
+              params: {
+                type: 'device-detail',
+                deviceId: item.payload.deviceId,
+              },
+              layout: {
+                x: currentX,
+                y: currentY,
+                ...item.layoutSize,
+              },
+            })
+          }
+
+          pinnedCount += 1
+          currentY += item.layoutSize.height + layoutBase.gap
+          columnWidth = Math.max(columnWidth, item.layoutSize.width)
         }
       }
 
@@ -118,9 +187,7 @@ const ChildActionQuickPin: FC<PropsType> = memo(({ actionItems }) => {
         const messageKey = hasVideoMissing
           ? 'action.detail.task.quickPinVideoEmpty'
           : 'action.detail.task.quickPinNoDevice'
-        const defaultValue = hasVideoMissing
-          ? '暂无可用视频'
-          : '暂无可钉出设备'
+        const defaultValue = hasVideoMissing ? '暂无可用视频' : '暂无可钉出设备'
         msgApi.warning(t(messageKey, { defaultValue }))
       }
     } finally {
@@ -129,17 +196,17 @@ const ChildActionQuickPin: FC<PropsType> = memo(({ actionItems }) => {
   })
 
   return (
-    <IconButton
+    <Button
       disabled={loading}
-      tippyProps={{
-        content: t('action.detail.task.quickPin', {
-          defaultValue: '一键钉出',
-        }),
-      }}
       onClick={handlePin}
+      loading={loading}
+      icon={<IconDing />}
+      block
     >
-      {loading ? <LoadingOutlined /> : <IconDing className="scale-90" />}
-    </IconButton>
+      {t('action.detail.task.quickPin', {
+        defaultValue: '一键钉出',
+      })}
+    </Button>
   )
 })
 
