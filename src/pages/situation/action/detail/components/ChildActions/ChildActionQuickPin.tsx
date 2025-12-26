@@ -1,10 +1,8 @@
 import IconDing from '@/assets/icons/jsx/IconDing'
-import IconButton from '@/components/ui/button/IconButton'
 import { DeviceEnum } from '@/enum/device'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { getDeviceDetail } from '@/service/modules/device'
 import useFixedWindowsStore from '@/store/useFixedWindows.store'
-import { LoadingOutlined } from '@ant-design/icons'
 import { Button } from 'antd'
 
 type PropsType = {
@@ -15,6 +13,8 @@ const cameraDeviceTypes = new Set<string>([
   DeviceEnum.CAMERA,
   DeviceEnum.VISIBLE_LIGHT_CAMERA,
   DeviceEnum.INFRARED_CAMERA,
+  DeviceEnum.SITE_ENFORCEMENT_RECORDER,
+  DeviceEnum.ROBOT_DOG,
 ])
 
 const layoutBase = {
@@ -71,6 +71,22 @@ const ChildActionQuickPin: FC<PropsType> = memo(({ actionItems }) => {
         videoId: string
       }[] = []
       const deviceItems: { deviceId: string }[] = []
+      const fixedWindowState = useFixedWindowsStore.getState()
+      const existingWindows = fixedWindowState?.windows ?? []
+      const existingVideoKeys = new Set<string>()
+      const existingDeviceKeys = new Set<string>()
+
+      for (const window of existingWindows) {
+        if (window.params?.type === 'live-video') {
+          const key = `${window.params.deviceId}-${window.params.videoId}`
+          existingVideoKeys.add(key)
+          continue
+        }
+
+        if (window.params?.type === 'device-detail') {
+          existingDeviceKeys.add(window.params.deviceId)
+        }
+      }
 
       // 业务规则：逐个拉取设备详情，避免并发过多导致接口抖动
       for (const deviceId of deviceIdSet) {
@@ -94,11 +110,17 @@ const ChildActionQuickPin: FC<PropsType> = memo(({ actionItems }) => {
               continue
             }
 
+            // 业务规则：已钉出的设备不重复钉出
+            if (existingVideoKeys.has(`${detailDeviceId}-${videoId}`)) {
+              continue
+            }
+
             cameraItems.push({
               deviceId: detailDeviceId,
               productKey,
               videoId,
             })
+            existingVideoKeys.add(`${detailDeviceId}-${videoId}`)
             continue
           }
 
@@ -106,8 +128,14 @@ const ChildActionQuickPin: FC<PropsType> = memo(({ actionItems }) => {
             continue
           }
 
+          // 业务规则：已钉出的设备不重复钉出
+          if (existingDeviceKeys.has(deviceDetail.deviceId)) {
+            continue
+          }
+
           // 业务规则：非摄像头统一钉出设备详情
           deviceItems.push({ deviceId: deviceDetail.deviceId })
+          existingDeviceKeys.add(deviceDetail.deviceId)
         } catch (error) {
           // 边界情况：单个设备异常不影响其他设备继续钉出
           console.warn('Quick pin device failed', deviceId, error)
