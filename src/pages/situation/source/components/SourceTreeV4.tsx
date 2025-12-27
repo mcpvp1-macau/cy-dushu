@@ -48,6 +48,7 @@ const SourceTreeV4: FC<PropsType> = memo(
       const children = group?.children ?? []
       const devices = group?.devices ?? []
 
+      console.log('devices', devices)
       const childrenDevice = devices.filter((e) =>
         deviceStatusFilter(e, isOnline, isTask, isNotTask),
       )

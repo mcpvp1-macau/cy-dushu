@@ -16,6 +16,8 @@ const MMC_Gimbal_LP12_2 = lazy(() => import('./MMC_Gimbal_LP12_2'))
 const MMC_Gimbal_Z30Pro = lazy(() => import('./MMC_Gimbal_Z30Pro'))
 const MMC_Gimbal_Z60R = lazy(() => import('./MMC_Gimbal_Z60R'))
 const PARACHUTE = lazy(() => import('./PARACHUTE'))
+const MMC_Gimbal_H3D = lazy(() => import('./MMC_Gimbal_H3D'))
+
 
 type PropsType = unknown
 
@@ -28,6 +30,7 @@ type MountType =
   | 'MMC_Gimbal_LP12_2' // 探照灯
   | 'MMC_Gimbal_D4'
   | 'MMC_Gimbal_LP12_NOFile' // 喊话器
+  | 'H3DSpeaker'
 
 const labelMap: { [key in MountType]: string } = {
   PARACHUTE: '降落伞',
@@ -38,6 +41,7 @@ const labelMap: { [key in MountType]: string } = {
   MMC_Gimbal_LP12_1: '喊话器',
   MMC_Gimbal_LP12_2: '探照灯',
   MMC_Gimbal_LP12_NOFile: '喊话器',
+  H3DSpeaker: '喊话器 H3D',
 }
 
 /** 机器狗负载 */
@@ -66,6 +70,7 @@ const RebotDogPayload: FC<PropsType> = memo(() => {
     MMC_Gimbal_LP12_1: <MMC_Gimbal_LP12_1 />,
     MMC_Gimbal_LP12_2: <MMC_Gimbal_LP12_2 />,
     MMC_Gimbal_LP12_NOFile: <MMC_Gimbal_P3 noFile />,
+    H3DSpeaker: <MMC_Gimbal_H3D />,
   }
 
   const hasThrowAt = useDeviceDetailStore((s) => s.serviceHave['throwAt'])
