@@ -12,7 +12,6 @@ export const useAirpointEntity = (
   const { viewer } = useCesium()
 
   const entityRef = useRef<Cesium.Entity | null>(null)
-  const lineRef = useRef<Cesium.Entity | null>(null)
   const bottomRef = useRef<Cesium.Entity | null>(null)
   const idx = point.positionIndex ?? 0
 
@@ -61,27 +60,6 @@ export const useAirpointEntity = (
         heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
       },
     })
-    const dashPostions = new Cesium.CallbackProperty((_, result) => {
-      const positions = [position, bottomPosition]
-      if (Cesium.defined(result)) {
-        result.length = 0 // 清空现有数组
-        result.push(...positions)
-      }
-      return positions
-    }, false)
-    // 航点与地形点之间的虚线
-    lineRef.current = viewer.entities.add({
-      polyline: {
-        positions: dashPostions,
-        width: 2,
-        material: new Cesium.PolylineDashMaterialProperty({
-          color: Cesium.Color.fromCssColorString(
-            idx === currentIndex ? '#FFF67F' : '#fff',
-          ),
-          dashLength: 8,
-        }),
-      },
-    })
 
     return () => {
       attempt(() => {
@@ -91,12 +69,53 @@ export const useAirpointEntity = (
         if (bottomRef.current) {
           viewer?.entities?.remove(bottomRef.current)
         }
-        if (lineRef.current) {
-          viewer?.entities?.remove(lineRef.current)
-        }
       })
     }
-  }, [point, currentIndex, deltaHeight])
+  }, [currentIndex, deltaHeight, idx, point, viewer])
+
+  useEffect(() => {
+    if (!viewer?.scene) return
+
+    const primitives = viewer.scene.primitives
+    const { pointX, pointY, pointZ } = point
+    const cartographic = Cesium.Cartographic.fromDegrees(pointX, pointY)
+    const groundHeight = viewer.scene.globe.getHeight(cartographic) ?? 0
+    const lineColor = idx === currentIndex ? '#FFF67F' : '#fff'
+
+    // 航点与地形点之间的虚线使用 Primitive 绘制，减少实体更新开销
+    const instances = new Cesium.GeometryInstance({
+      geometry: new Cesium.PolylineGeometry({
+        positions: Cesium.Cartesian3.fromDegreesArrayHeights([
+          pointX,
+          pointY,
+          groundHeight,
+          pointX,
+          pointY,
+          pointZ + deltaHeight,
+        ]),
+        width: 2,
+      }),
+    })
+
+    const linePrimitive = new Cesium.Primitive({
+      geometryInstances: instances,
+      appearance: new Cesium.PolylineMaterialAppearance({
+        material: Cesium.Material.fromType('PolylineDash', {
+          color: Cesium.Color.fromCssColorString(lineColor),
+          dashLength: 8,
+        }),
+      }),
+      asynchronous: false,
+    })
+
+    primitives.add(linePrimitive)
+
+    return () => {
+      attempt(() => {
+        primitives.remove(linePrimitive)
+      })
+    }
+  }, [currentIndex, deltaHeight, idx, point, viewer])
 
   return entityRef
 }
