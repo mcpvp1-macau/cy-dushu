@@ -12,7 +12,6 @@ export const useAirpointEntity = (
   const { viewer } = useCesium()
 
   const entityRef = useRef<Cesium.Entity | null>(null)
-  const lineRef = useRef<Cesium.Entity | null>(null)
   const bottomRef = useRef<Cesium.Entity | null>(null)
   const idx = point.positionIndex ?? 0
 
@@ -61,27 +60,6 @@ export const useAirpointEntity = (
         heightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
       },
     })
-    const dashPostions = new Cesium.CallbackProperty((_, result) => {
-      const positions = [position, bottomPosition]
-      if (Cesium.defined(result)) {
-        result.length = 0 // 清空现有数组
-        result.push(...positions)
-      }
-      return positions
-    }, false)
-    // 航点与地形点之间的虚线
-    lineRef.current = viewer.entities.add({
-      polyline: {
-        positions: dashPostions,
-        width: 2,
-        material: new Cesium.PolylineDashMaterialProperty({
-          color: Cesium.Color.fromCssColorString(
-            idx === currentIndex ? '#FFF67F' : '#fff',
-          ),
-          dashLength: 8,
-        }),
-      },
-    })
 
     return () => {
       attempt(() => {
@@ -91,12 +69,9 @@ export const useAirpointEntity = (
         if (bottomRef.current) {
           viewer?.entities?.remove(bottomRef.current)
         }
-        if (lineRef.current) {
-          viewer?.entities?.remove(lineRef.current)
-        }
       })
     }
-  }, [point, currentIndex, deltaHeight])
+  }, [currentIndex, deltaHeight, idx, point, viewer])
 
   return entityRef
 }
