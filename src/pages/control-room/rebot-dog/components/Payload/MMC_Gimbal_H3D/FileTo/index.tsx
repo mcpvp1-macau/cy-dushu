@@ -1,7 +1,7 @@
 import Icon from '@/components/Icon'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
-import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
+import { useRebotDogControlRoomStore } from '@/store/context-store/useRebotDogControlRoom.store'
 import { Input, Tooltip } from 'antd'
 import React, { useState } from 'react'
 
@@ -12,7 +12,7 @@ type Props = {
 
 const FileTo: React.FC<Props> = (props) => {
   const { playing: _playing, onPlay } = props
-  const recordAudioInfos = useUavControlRoomStore(
+  const recordAudioInfos = useRebotDogControlRoomStore(
     (m) => m.state?.recordAudioInfos,
   ) || [
     { id: '5', name: '5' },
@@ -20,7 +20,7 @@ const FileTo: React.FC<Props> = (props) => {
   ]
 
   const currentSelectedRecordAudioFile =
-    useUavControlRoomStore((m) => m.state?.currentSelectedRecordAudioFile) || ''
+    useRebotDogControlRoomStore((m) => m.state?.currentSelectedRecordAudioFile) || ''
 
     console.log('====', currentSelectedRecordAudioFile, recordAudioInfos)
 

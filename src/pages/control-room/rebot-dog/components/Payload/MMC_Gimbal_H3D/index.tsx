@@ -1,13 +1,13 @@
 import Icon from '@/components/Icon'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import useWatch from '@/hooks/useWatch'
-import { useUavControlRoomStore } from '@/store/context-store/useUavControlRoom.store'
 import { useDebounceFn } from 'ahooks'
 import { Slider, Tabs, TabsProps } from 'antd'
 
 import TextTo from './TextTo'
 import FileTo from './FileTo'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import { useRebotDogControlRoomStore } from '@/store/context-store/useRebotDogControlRoom.store'
 
 const MMC_Gimbal_P3: React.FC = () => {
   const productKey = useDeviceDetailStore(
@@ -15,13 +15,13 @@ const MMC_Gimbal_P3: React.FC = () => {
       s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey,
   )!
 
-  const deviceId = useUavControlRoomStore((s) => s.deviceId)
+  const deviceId = useRebotDogControlRoomStore((s) => s.deviceId)
   const postSerivce = usePostDeviceService(productKey, deviceId)
-  const status: string | undefined = useUavControlRoomStore(
+  const status: string | undefined = useRebotDogControlRoomStore(
     (s) => s.state.megaphoneStatus,
   )
-  const systemVolume = useUavControlRoomStore((s) => s.state.systemVolume)
-  const audioPayloadPitch = useUavControlRoomStore(
+  const systemVolume = useRebotDogControlRoomStore((s) => s.state.systemVolume)
+  const audioPayloadPitch = useRebotDogControlRoomStore(
     (s) => s.state.audioPayloadPitch,
   )
 
