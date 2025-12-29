@@ -74,45 +74,57 @@ export const useAirpointEntity = (
   }, [currentIndex, deltaHeight, idx, point, viewer])
 
   useEffect(() => {
-    if (!viewer?.scene) return
+    if (!viewer?.scene || !viewer.terrainProvider) return
 
     const primitives = viewer.scene.primitives
     const { pointX, pointY, pointZ } = point
     const cartographic = Cesium.Cartographic.fromDegrees(pointX, pointY)
-    const groundHeight = viewer.scene.globe.getHeight(cartographic) ?? 0
     const lineColor = idx === currentIndex ? '#FFF67F' : '#fff'
 
-    // 航点与地形点之间的虚线使用 Primitive 绘制，减少实体更新开销
-    const instances = new Cesium.GeometryInstance({
-      geometry: new Cesium.PolylineGeometry({
-        positions: Cesium.Cartesian3.fromDegreesArrayHeights([
-          pointX,
-          pointY,
-          groundHeight,
-          pointX,
-          pointY,
-          pointZ + deltaHeight,
-        ]),
-        width: 2,
-      }),
-    })
+    let linePrimitive: Cesium.Primitive | null = null
+    let isCancelled = false
 
-    const linePrimitive = new Cesium.Primitive({
-      geometryInstances: instances,
-      appearance: new Cesium.PolylineMaterialAppearance({
-        material: Cesium.Material.fromType('PolylineDash', {
-          color: Cesium.Color.fromCssColorString(lineColor),
-          dashLength: 8,
-        }),
-      }),
-      asynchronous: false,
-    })
+    // 使用最精细地形采样，确保虚线与地形贴合
+    Cesium.sampleTerrainMostDetailed(viewer.terrainProvider, [cartographic]).then(
+      (updatedCartographics) => {
+        if (isCancelled) return
 
-    primitives.add(linePrimitive)
+        const groundHeight = updatedCartographics[0]?.height ?? 0
+        const instances = new Cesium.GeometryInstance({
+          geometry: new Cesium.PolylineGeometry({
+            positions: Cesium.Cartesian3.fromDegreesArrayHeights([
+              pointX,
+              pointY,
+              groundHeight,
+              pointX,
+              pointY,
+              pointZ + deltaHeight,
+            ]),
+            width: 2,
+          }),
+        })
+
+        linePrimitive = new Cesium.Primitive({
+          geometryInstances: instances,
+          appearance: new Cesium.PolylineMaterialAppearance({
+            material: Cesium.Material.fromType('PolylineDash', {
+              color: Cesium.Color.fromCssColorString(lineColor),
+              dashLength: 8,
+            }),
+          }),
+          asynchronous: false,
+        })
+
+        primitives.add(linePrimitive)
+      },
+    )
 
     return () => {
+      isCancelled = true
       attempt(() => {
-        primitives.remove(linePrimitive)
+        if (linePrimitive) {
+          primitives.remove(linePrimitive)
+        }
       })
     }
   }, [currentIndex, deltaHeight, idx, point, viewer])
