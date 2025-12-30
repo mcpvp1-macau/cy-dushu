@@ -4,9 +4,13 @@ import DeviceIcon from '@/components/device/DeviceIcon'
 import { BaseDeviceDetailProps } from '../routes'
 import SmartCarInfoCard from './components/SmartCarInfoCard'
 import SmartCarVideo from './components/SmartCarVideo'
+import IconControlRoom from '@/assets/icons/jsx/IconControlRoom'
+import { Button } from 'antd'
+import { Link } from 'react-router-dom'
 
 const SmartCarDetail: FC<BaseDeviceDetailProps> = memo(
   ({ data, headerTools, headerProps, onClose }) => {
+    const deviceId = data.deviceId ?? ''
     return (
       <div className="overflow-y-hidden flex flex-col">
         <CloseableHeader
@@ -31,6 +35,25 @@ const SmartCarDetail: FC<BaseDeviceDetailProps> = memo(
           <div className="mb-3">
             <SmartCarVideo dataDetail={data} />
           </div>
+          <section className="mx-3 mr-[9px] my-3 flex gap-2">
+            {/* 边界情况：缺少 deviceId 时禁用跳转按钮。 */}
+            {deviceId ? (
+              <Link className="grow" to={`/control-room/smart-car/${deviceId}`}>
+                <Button block className="h-7" icon={<IconControlRoom />}>
+                  进入驾驶舱
+                </Button>
+              </Link>
+            ) : (
+              <Button
+                block
+                className="h-7"
+                icon={<IconControlRoom />}
+                disabled
+              >
+                进入驾驶舱
+              </Button>
+            )}
+          </section>
         </ScrollArea>
       </div>
     )
