@@ -14,14 +14,17 @@ const SmartCarDetail: FC<BaseDeviceDetailProps> = memo(
           {...headerProps}
         >
           <div className="flex gap-2 items-center">
-            <DeviceIcon type={data.deviceType ?? ''} className="device-detail-icon" />
+            <DeviceIcon
+              type={data.deviceType ?? ''}
+              className="device-detail-icon"
+            />
             <h6 className="text-hightlight text-base">
               {data.deviceName ?? '-'}
             </h6>
           </div>
         </CloseableHeader>
         <ScrollArea className="grow">
-          <div className="my-3">
+          <div className="mb-3">
             <SmartCarInfoCard />
           </div>
         </ScrollArea>

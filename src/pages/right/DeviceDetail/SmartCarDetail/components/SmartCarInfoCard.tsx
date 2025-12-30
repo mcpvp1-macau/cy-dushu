@@ -80,7 +80,7 @@ const SmartCarInfoCard: FC = memo(() => {
   )
 
   return (
-    <ul className="p-2 mx-3 mr-[9px] card-border text-sm grid grid-cols-2 overflow-hidden gap-y-1">
+    <ul className="p-2 mx-3 card-border text-sm grid grid-cols-2 overflow-hidden gap-y-1">
       {infoItems.map((item) => (
         <InfoItemRow
           key={item.label}
