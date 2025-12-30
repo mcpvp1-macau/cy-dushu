@@ -86,11 +86,12 @@ type PropsType = {
   componentMap?: Record<string, ReactNode>
   iconMap?: Record<string, ReactNode>
   titleMap?: Record<string, ReactNode>
+  toolsMap?: Record<string, ReactNode>
 }
 
 /** 动态布局 */
 const DynamicLayoutRoot: FC<PropsType> = memo(
-  ({ layout, iconMap, componentMap, titleMap, onLayoutChange }) => {
+  ({ layout, iconMap, componentMap, titleMap, toolsMap, onLayoutChange }) => {
     const store = useRef<DynamicLayoutStore | null>(null)
 
     if (!store.current) {
@@ -108,6 +109,12 @@ const DynamicLayoutRoot: FC<PropsType> = memo(
         store.current?.getState().updateTitleMap(titleMap || {})
       }
     }, [titleMap])
+
+    useLayoutEffect(() => {
+      if (toolsMap) {
+        store.current?.getState().updateToolsMap(toolsMap)
+      }
+    }, [toolsMap])
 
     // 计算全屏 Tabs 的路径
     const fullTabsPath = useMemo(() => {

@@ -49,6 +49,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
 
   const iconMap = useDynamicLayoutStore((s) => s.iconMap)
   const titleMap = useDynamicLayoutStore((s) => s.titleMap)
+  const toolsMap = useDynamicLayoutStore((s) => s.toolsMap)
 
   // 更新该渲染组件的边界
   const updateMergeBounds = useDynamicLayoutStore((s) => s.updateMergeBounds)
@@ -77,6 +78,11 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
   }, [w, h])
 
   const activeKey = layout.activeKey ?? layout.children[0]?.key
+  // 根据当前激活的 Tab 动态渲染工具栏
+  const activeTools = activeKey ? toolsMap?.[activeKey] : null
+  // 业务规则：仅基础操作按钮在悬浮时显示，工具栏保持可见
+  const hoverToggleClass =
+    'hidden group-hover:flex animate-in fade-in duration-500'
 
   return (
     <div className={clsx('size-full flex flex-col group')}>
@@ -183,7 +189,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
         {/* 右侧的按钮们 */}
         <div
           className={clsx(
-            'text-sm hidden group-hover:flex gap-2 animate-in fade-in duration-500 items-center text-ground-5',
+            'text-sm flex gap-2 items-center text-ground-5',
             isVertical ? 'pb-2' : 'pr-2',
             {
               'flex-col w-full': isVertical,
@@ -191,7 +197,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
           )}
         >
           <IconButton
-            className="text-sm"
+            className={clsx('text-sm', hoverToggleClass)}
             tippyProps={{
               content: layout.isFull
                 ? t('dynamicLayout.exit.title')
@@ -204,6 +210,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
             <IconFullscreen2 className="scale-90" />
           </IconButton>
           <IconButton
+            className={hoverToggleClass}
             tippyProps={{
               content: layout.isCollapsed
                 ? t('dynamicLayout.unfold.title')
@@ -217,6 +224,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
               <IconRight className="scale-[85%] translate-y-[0.5px]" />
             )}
           </IconButton>
+          {activeTools}
         </div>
       </div>
 
