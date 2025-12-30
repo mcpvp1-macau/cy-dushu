@@ -19,6 +19,9 @@ const PageControlRoomLaserWeapon = lazy(
   () => import('@/pages/control-room/laser-weapon/LaserWeaponControlRoom'),
 )
 const PageControlRoomUGV = lazy(() => import('@/pages/control-room/ugv/UGV'))
+const PageControlRoomSmartCar = lazy(
+  () => import('@/pages/control-room/smart-car'),
+)
 
 export default {
   id: 'control-room',
@@ -58,6 +61,11 @@ export default {
       id: 'control-room/usv',
       path: 'usv/:deviceId',
       element: <PageControlRoomUSV />,
+    },
+    {
+      id: 'control-room/smart-car',
+      path: 'smart-car/:deviceId',
+      element: <PageControlRoomSmartCar />,
     },
     {
       id: 'control-room/others',
