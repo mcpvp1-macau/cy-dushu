@@ -138,19 +138,24 @@ const PageControlRoomSmartCar: FC = memo(() => {
 
     return {
       video: (
-        <Select
-          mode="multiple"
-          size="small"
-          value={selectedVideoIds}
-          allowClear
-          maxTagCount="responsive"
-          className="min-w-[220px]"
-          placeholder="选择视频"
-          options={options}
-          disabled={options.length === 0}
-          // 业务规则：仅支持多选视频源，不自动排序用户选择顺序。
-          onChange={(next) => setSelectedVideoIds(next)}
-        />
+        <div
+          onClick={(e) => e.stopPropagation()}
+          onDoubleClick={(e) => e.stopPropagation()}
+        >
+          <Select
+            mode="multiple"
+            size="small"
+            value={selectedVideoIds}
+            allowClear
+            maxTagCount="responsive"
+            className="min-w-[220px]"
+            placeholder="选择视频"
+            options={options}
+            disabled={options.length === 0}
+            // 业务规则：仅支持多选视频源，不自动排序用户选择顺序。
+            onChange={(next) => setSelectedVideoIds(next)}
+          />
+        </div>
       ),
     }
   }, [selectedVideoIds, videoItems])
