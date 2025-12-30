@@ -15,6 +15,7 @@ import DeviceIconMC from '@/assets/icons/jsx/device/DeviceIconMC'
 import DeviceIconUGV from '@/assets/icons/jsx/device/DeviceIcon UGV'
 import DeviceIconRen from '@/assets/icons/jsx/device/DeviceIconRen'
 import IconUSV from '@/assets/icons/jsx/IconUSV'
+import IconPoliceCar from '@/assets/icons/jsx/IconPoliceCar'
 
 export enum DeviceEnum {
   UAV = 'UAV',
@@ -49,6 +50,8 @@ export enum DeviceEnum {
   UGV = 'UGV',
   /** 无人船 */
   USV = 'USV',
+  /** 智慧警车 */
+  SMART_CAR = 'SMART_CAR',
 
   'DUSHU-MB' = 'DUSHU-MB',
 }
@@ -89,6 +92,7 @@ export const deviceIconMap = {
   [DeviceEnum.MICROWAVE]: DeviceIconMC,
   [DeviceEnum.UGV]: DeviceIconUGV,
   [DeviceEnum.USV]: IconUSV,
+  [DeviceEnum.SMART_CAR]: IconPoliceCar,
   ['DUSHU-MB']: DeviceIconRen,
 }
 
