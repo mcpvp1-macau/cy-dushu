@@ -1,5 +1,5 @@
+import Select from '@/components/AntdOverride/Select'
 import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
-import { Select } from 'antd'
 
 type SmartCarVideoItem = {
   id: string
@@ -19,7 +19,7 @@ const SmartCarVideo: FC<PropsType> = memo(({ dataDetail }) => {
     // 业务规则：仅展示子设备中有视频源的摄像头。
     const items = dataDetail?.childDevice
       ?.map((item) => {
-        const videoId = item?.properties?.videoList?.[0]?.videoId
+        const videoId = item?.properties?.videoList?.[0]?.videoId ?? 'live'
         const productKey = item?.productKey ?? item?.deviceModel?.productKey
         const deviceId = item?.deviceId
 
@@ -53,6 +53,7 @@ const SmartCarVideo: FC<PropsType> = memo(({ dataDetail }) => {
   }, [activeId, videoItems])
 
   const activeVideo = useMemo(() => {
+    // 优先从用户选择的 activeId 查找视频，如果找不到（比如列表变更后旧 id 失效），则自动回退到列表的第一个视频。
     return (
       videoItems.find((item) => item.id === activeId) ?? videoItems[0] ?? null
     )
@@ -72,7 +73,7 @@ const SmartCarVideo: FC<PropsType> = memo(({ dataDetail }) => {
   }
 
   return (
-    <section className="mx-3 mb-3">
+    <section className="mx-3 mb-3 rounded overflow-hidden">
       <DeviceLiveVideo
         deviceId={activeVideo.deviceId}
         productKey={activeVideo.productKey}
@@ -83,7 +84,9 @@ const SmartCarVideo: FC<PropsType> = memo(({ dataDetail }) => {
               size="small"
               value={activeId}
               options={switchItems}
-              className="w-40"
+              className="[&_.ant-select-selector]:!pl-0"
+              variant="borderless"
+              popupMatchSelectWidth={false}
               // 业务规则：切换下拉仅用于切换视频源。
               onChange={setActiveId}
             />
