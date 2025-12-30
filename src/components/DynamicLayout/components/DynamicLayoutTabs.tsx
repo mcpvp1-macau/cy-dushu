@@ -49,6 +49,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
 
   const iconMap = useDynamicLayoutStore((s) => s.iconMap)
   const titleMap = useDynamicLayoutStore((s) => s.titleMap)
+  const toolsMap = useDynamicLayoutStore((s) => s.toolsMap)
 
   // 更新该渲染组件的边界
   const updateMergeBounds = useDynamicLayoutStore((s) => s.updateMergeBounds)
@@ -77,6 +78,8 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
   }, [w, h])
 
   const activeKey = layout.activeKey ?? layout.children[0]?.key
+  // 根据当前激活的 Tab 动态渲染工具栏
+  const activeTools = activeKey ? toolsMap?.[activeKey] : null
 
   return (
     <div className={clsx('size-full flex flex-col group')}>
@@ -217,6 +220,7 @@ const DynamicLayoutTabs: FC<PropsType> = memo(({ layout, onLayoutChange }) => {
               <IconRight className="scale-[85%] translate-y-[0.5px]" />
             )}
           </IconButton>
+          {activeTools}
         </div>
       </div>
 
