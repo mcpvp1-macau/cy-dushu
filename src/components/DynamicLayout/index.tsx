@@ -112,7 +112,7 @@ const DynamicLayoutRoot: FC<PropsType> = memo(
 
     useLayoutEffect(() => {
       if (toolsMap) {
-        store.current?.getState().updateToolsMap(toolsMap || {})
+        store.current?.getState().updateToolsMap(toolsMap)
       }
     }, [toolsMap])
 
