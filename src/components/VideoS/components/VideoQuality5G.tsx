@@ -36,9 +36,7 @@ const VideoQuality5G: FC<PropsType> = memo(({ value, onChange }) => {
       options={options}
       value={value}
       onChange={onChange}
-      getPopupContainer={() =>
-        (document.fullscreenElement as HTMLElement) ?? document.body
-      }
+      getPopupContainer={(e) => e.parentElement}
     />
   )
 })
