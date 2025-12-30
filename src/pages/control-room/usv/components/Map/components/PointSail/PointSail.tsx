@@ -27,8 +27,8 @@ const PointSail: FC = memo(() => {
     if (!pointSail.targetPosition) return
 
     await postDeviceService('setMission', {
-      longitude: pointSail.targetPosition[0],
-      latitude: pointSail.targetPosition[1],
+      targetLongitude: pointSail.targetPosition[0],
+      targetLatitude: pointSail.targetPosition[1],
     })
     handleCancel()
   }
