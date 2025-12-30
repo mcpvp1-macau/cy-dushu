@@ -11,7 +11,10 @@ import { useLocalStorageState } from 'ahooks'
 import { useStore } from 'zustand'
 import SmartCarControlRoomHeader from './components/SmartCarControlRoomHeader'
 import SmartCarMap from './components/SmartCarMap'
-import SmartCarVideo from '@/pages/right/DeviceDetail/SmartCarDetail/components/SmartCarVideo'
+import Select from '@/components/AntdOverride/Select'
+import SmartCarVideoWall, {
+  type SmartCarVideoItem,
+} from './components/SmartCarVideoWall'
 
 const initialLayout: DynamicLayoutType = {
   type: 'row',
@@ -44,6 +47,45 @@ const PageControlRoomSmartCar: FC = memo(() => {
   const { store } = useCreateDeviceDetailStore(deviceId)
   const deviceDetail = useStore(store, (s) => s.deviceDetail)
 
+  const videoItems = useMemo<SmartCarVideoItem[]>(() => {
+    // 业务规则：仅展示子设备中有视频源的摄像头。
+    const items = deviceDetail?.childDevice
+      ?.map((item) => {
+        const videoId = item?.properties?.videoList?.[0]?.videoId ?? 'live'
+        const productKey = item?.productKey ?? item?.deviceModel?.productKey
+        const deviceId = item?.deviceId
+
+        if (!videoId || !productKey || !deviceId) {
+          return null
+        }
+
+        return {
+          id: `${deviceId}-${videoId}`,
+          label: item?.name || item?.deviceName || deviceId,
+          deviceId,
+          productKey,
+          videoId,
+        }
+      })
+      .filter(Boolean)
+
+    return (items ?? []) as SmartCarVideoItem[]
+  }, [deviceDetail?.childDevice])
+
+  const [selectedVideoIds, setSelectedVideoIds] = useState<string[]>([])
+
+  useEffect(() => {
+    const availableIds = videoItems.map((item) => item.id)
+    setSelectedVideoIds((prev) => {
+      const next = prev.filter((id) => availableIds.includes(id))
+      if (next.length > 0) {
+        return next
+      }
+      // 边界情况：首次进入或视频列表变化时，自动补齐默认选择。
+      return availableIds.length > 0 ? [availableIds[0]] : []
+    })
+  }, [videoItems])
+
   const [layout, setLayout] = useLocalStorageState<DynamicLayoutType>(
     'smartCarControlRoomLayout',
     {
@@ -74,15 +116,49 @@ const PageControlRoomSmartCar: FC = memo(() => {
         <div className="size-full overflow-auto">
           {/* 边界情况：设备详情未就绪时隐藏视频区域内容。 */}
           {deviceDetail ? (
-            <SmartCarVideo dataDetail={deviceDetail} />
+            <SmartCarVideoWall
+              videoItems={videoItems}
+              selectedIds={selectedVideoIds}
+              onSelectedChange={setSelectedVideoIds}
+            />
           ) : (
             <div className="p-3 text-sm text-fore-2">暂无视频</div>
           )}
         </div>
       ),
     }),
-    [deviceDetail],
+    [deviceDetail, selectedVideoIds, videoItems],
   )
+
+  const toolsMap = useMemo(() => {
+    const options = videoItems.map((item) => ({
+      label: item.label,
+      value: item.id,
+    }))
+
+    return {
+      video: (
+        <div
+          onClick={(e) => e.stopPropagation()}
+          onDoubleClick={(e) => e.stopPropagation()}
+        >
+          <Select
+            mode="multiple"
+            size="small"
+            value={selectedVideoIds}
+            allowClear
+            maxTagCount="responsive"
+            className="min-w-[220px]"
+            placeholder="选择视频"
+            options={options}
+            disabled={options.length === 0}
+            // 业务规则：仅支持多选视频源，不自动排序用户选择顺序。
+            onChange={(next) => setSelectedVideoIds(next)}
+          />
+        </div>
+      ),
+    }
+  }, [selectedVideoIds, videoItems])
 
   return (
     <DeviceDetailStoreContext.Provider value={store}>
@@ -94,6 +170,7 @@ const PageControlRoomSmartCar: FC = memo(() => {
             onLayoutChange={setLayout}
             iconMap={iconMap}
             titleMap={titleMap}
+            toolsMap={toolsMap}
             componentMap={componentMap}
           />
         </main>
