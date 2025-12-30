@@ -72,10 +72,12 @@ const PageControlRoomSmartCar: FC = memo(() => {
       map: <SmartCarMap />,
       video: (
         <div className="size-full overflow-auto">
-          {/* 边界情况：设备详情未就绪时传空对象避免子组件报错。 */}
-          <SmartCarVideo
-            dataDetail={(deviceDetail ?? {}) as API_DEVICE.domain.Device}
-          />
+          {/* 边界情况：设备详情未就绪时隐藏视频区域内容。 */}
+          {deviceDetail ? (
+            <SmartCarVideo dataDetail={deviceDetail} />
+          ) : (
+            <div className="p-3 text-sm text-fore-2">暂无视频</div>
+          )}
         </div>
       ),
     }),

@@ -44,7 +44,10 @@ const SmartCarControlRoomHeader: FC = memo(() => {
     [],
   )
 
-  const appHeader = document.getElementById('app-header-center')
+  const appHeader = useMemo(
+    () => document.getElementById('app-header-center'),
+    [],
+  )
 
   const header = (
     <header className="flex items-center justify-between px-3 py-2 text-sm">
