@@ -10,6 +10,7 @@ const RobotDogDetail = lazy(() => import('./RebotDogDetail'))
 const ErEfCarDetail = lazy(() => import('./ErEfCarDetail/ErEfCarDetail'))
 const LaserWeaponDetail = lazy(() => import('./LaserWeaponDetail/LaserWeaponDetail'))
 const UsvDetail = lazy(() => import('./UsvDetail'))
+const SmartCarDetail = lazy(() => import('./SmartCarDetail'))
 
 /** 设备详情组件路由（需要实现 BaseDeviceDetailProps 类型） */
 const route = {
@@ -21,6 +22,7 @@ const route = {
   [DeviceEnum.ER_EF_CAR]: ErEfCarDetail,
   [DeviceEnum.LASER_WEAPON]: LaserWeaponDetail,
   [DeviceEnum.USV]: UsvDetail,
+  [DeviceEnum.SMART_CAR]: SmartCarDetail,
 } as const
 
 /** 设备详情组件基础类型 */
