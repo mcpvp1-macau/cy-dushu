@@ -3,6 +3,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import DeviceIcon from '@/components/device/DeviceIcon'
 import { BaseDeviceDetailProps } from '../routes'
 import SmartCarInfoCard from './components/SmartCarInfoCard'
+import SmartCarVideo from './components/SmartCarVideo'
 
 const SmartCarDetail: FC<BaseDeviceDetailProps> = memo(
   ({ data, headerTools, headerProps, onClose }) => {
@@ -26,6 +27,9 @@ const SmartCarDetail: FC<BaseDeviceDetailProps> = memo(
         <ScrollArea className="grow">
           <div className="mb-3">
             <SmartCarInfoCard />
+          </div>
+          <div className="mb-3">
+            <SmartCarVideo dataDetail={data} />
           </div>
         </ScrollArea>
       </div>
