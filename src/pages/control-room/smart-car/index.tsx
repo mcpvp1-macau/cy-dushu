@@ -119,6 +119,7 @@ const PageControlRoomSmartCar: FC = memo(() => {
             <SmartCarVideoWall
               videoItems={videoItems}
               selectedIds={selectedVideoIds}
+              onSelectedChange={setSelectedVideoIds}
             />
           ) : (
             <div className="p-3 text-sm text-fore-2">暂无视频</div>
