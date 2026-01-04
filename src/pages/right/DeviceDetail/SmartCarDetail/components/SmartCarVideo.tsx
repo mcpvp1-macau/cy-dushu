@@ -2,7 +2,6 @@ import IconCameraVideo from '@/assets/icons/jsx/IconCameraVideo'
 import Select from '@/components/AntdOverride/Select'
 import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
-import { Badge } from 'antd'
 
 type SmartCarVideoItem = {
   id: string
@@ -76,13 +75,15 @@ const SmartCarVideo: FC<PropsType> = memo(({ dataDetail }) => {
         return {
           label: (
             <div className="flex items-center gap-2">
-              <Badge
-                dot
-                offset={[0, 12]}
-                color={isOnline ? 'rgb(21, 179, 113)' : '#E45951'}
-              >
-                <IconCameraVideo className="text-[14px]" />
-              </Badge>
+              <div className="relative">
+                <IconCameraVideo />
+                <div
+                  className={clsx(
+                    'absolute -right-1.5 bottom-0.5 size-1.5 rounded-full',
+                    isOnline ? 'bg-green-500' : 'bg-red-500',
+                  )}
+                />
+              </div>
               <span>{item.label}</span>
             </div>
           ),
