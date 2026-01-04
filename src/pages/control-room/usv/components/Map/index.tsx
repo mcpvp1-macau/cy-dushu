@@ -3,6 +3,7 @@ import UsvMarker from './components/UsvMarker'
 import PointSail from './components/PointSail/PointSail'
 import RightTools from './components/right_tools'
 import UsvViewCombackResolver from './components/CombackResolver'
+import UsvRealTrack from './components/RealTrack'
 
 const UsvMap: FC = memo(() => {
   return (
@@ -10,6 +11,7 @@ const UsvMap: FC = memo(() => {
       <RightTools />
       <UsvViewCombackResolver />
       <UsvMarker />
+      <UsvRealTrack />
       <PointSail />
     </CesiumMap>
   )
