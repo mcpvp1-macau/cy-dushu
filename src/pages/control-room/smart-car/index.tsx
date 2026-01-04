@@ -1,17 +1,21 @@
 import IconCameraVideo from '@/assets/icons/jsx/IconCameraVideo'
 import IconMap from '@/assets/icons/jsx/IconMap'
+import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
+import IconVisible from '@/assets/icons/jsx/IconVisible'
 import DynamicLayoutRoot, {
   type DynamicLayoutType,
 } from '@/components/DynamicLayout'
+import IconButton from '@/components/ui/button/IconButton'
 import {
   DeviceDetailStoreContext,
   useCreateDeviceDetailStore,
 } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
+import { Dropdown, type MenuProps } from 'antd'
 import { useLocalStorageState } from 'ahooks'
 import { useStore } from 'zustand'
 import SmartCarControlRoomHeader from './components/SmartCarControlRoomHeader'
 import SmartCarMap from './components/SmartCarMap'
-import Select from '@/components/AntdOverride/Select'
 import SmartCarVideoWall, {
   type SmartCarVideoItem,
 } from './components/SmartCarVideoWall'
@@ -46,6 +50,9 @@ const PageControlRoomSmartCar: FC = memo(() => {
 
   const { store } = useCreateDeviceDetailStore(deviceId)
   const deviceDetail = useStore(store, (s) => s.deviceDetail)
+  const deviceRealtimeProperties = useGlobalWsStore(
+    (state) => state.deviceRealtimeProperties,
+  )
 
   const videoItems = useMemo<SmartCarVideoItem[]>(() => {
     // 业务规则：仅展示子设备中有视频源的摄像头。
@@ -73,6 +80,7 @@ const PageControlRoomSmartCar: FC = memo(() => {
   }, [deviceDetail?.childDevice])
 
   const [selectedVideoIds, setSelectedVideoIds] = useState<string[]>([])
+  const [isVideoMenuOpen, setIsVideoMenuOpen] = useState(false)
 
   useEffect(() => {
     const availableIds = videoItems.map((item) => item.id)
@@ -130,11 +138,59 @@ const PageControlRoomSmartCar: FC = memo(() => {
     [deviceDetail, selectedVideoIds, videoItems],
   )
 
+  const toggleVideoSelection = useMemoizedFn((videoId: string) => {
+    setSelectedVideoIds((prev) => {
+      if (prev.includes(videoId)) {
+        return prev.filter((id) => id !== videoId)
+      }
+      // 业务规则：按用户选择顺序追加，避免自动排序。
+      return [...prev, videoId]
+    })
+  })
+
+  const handleVideoMenuOpenChange = useMemoizedFn(
+    (open: boolean, info?: { source?: 'trigger' | 'menu' }) => {
+      if (info?.source === 'menu' && !open) {
+        // 边界情况：点击菜单项会触发关闭，这里保持展开，直到点击外部区域。
+        setIsVideoMenuOpen(true)
+        return
+      }
+
+      setIsVideoMenuOpen(open)
+    },
+  )
+
   const toolsMap = useMemo(() => {
-    const options = videoItems.map((item) => ({
-      label: item.label,
-      value: item.id,
-    }))
+    const menuItems: MenuProps['items'] = videoItems.map((item) => {
+      // 业务规则：下拉项展示视频图标，并用徽标提示设备在线状态。
+      const deviceStatus =
+        deviceRealtimeProperties?.[item.deviceId]?.deviceStatus
+      const isOnline = deviceStatus === 'ONLINE'
+      const isSelected = selectedVideoIds.includes(item.id)
+
+      return {
+        key: item.id,
+        label: (
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <IconCameraVideo />
+                <div
+                  className={clsx(
+                    'absolute -right-1.5 bottom-0.5 size-1.5 rounded-full',
+                    isOnline ? 'bg-green-500' : 'bg-red-500',
+                  )}
+                />
+              </div>
+              <span>{item.label}</span>
+            </div>
+            {isSelected ? <IconVisible /> : <IconNotVisible />}
+          </div>
+        ),
+        // 业务规则：通过点击菜单项切换选中状态。
+        onClick: () => toggleVideoSelection(item.id),
+      }
+    })
 
     return {
       video: (
@@ -142,23 +198,30 @@ const PageControlRoomSmartCar: FC = memo(() => {
           onClick={(e) => e.stopPropagation()}
           onDoubleClick={(e) => e.stopPropagation()}
         >
-          <Select
-            mode="multiple"
-            size="small"
-            value={selectedVideoIds}
-            allowClear
-            maxTagCount="responsive"
-            className="min-w-[220px]"
-            placeholder="选择视频"
-            options={options}
-            disabled={options.length === 0}
-            // 业务规则：仅支持多选视频源，不自动排序用户选择顺序。
-            onChange={(next) => setSelectedVideoIds(next)}
-          />
+          <Dropdown
+            trigger={['click']}
+            disabled={menuItems.length === 0}
+            open={isVideoMenuOpen}
+            onOpenChange={handleVideoMenuOpenChange}
+            menu={{
+              items: menuItems,
+            }}
+          >
+            <IconButton className="text-blue-500">
+              <IconCameraVideo />
+            </IconButton>
+          </Dropdown>
         </div>
       ),
     }
-  }, [selectedVideoIds, videoItems])
+  }, [
+    deviceRealtimeProperties,
+    handleVideoMenuOpenChange,
+    isVideoMenuOpen,
+    selectedVideoIds,
+    toggleVideoSelection,
+    videoItems,
+  ])
 
   return (
     <DeviceDetailStoreContext.Provider value={store}>
