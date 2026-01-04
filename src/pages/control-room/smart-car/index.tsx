@@ -137,18 +137,14 @@ const PageControlRoomSmartCar: FC = memo(() => {
     [deviceDetail, selectedVideoIds, videoItems],
   )
 
-  const handleVideoSelect = useMemoizedFn((info: { key: string }) => {
+  const toggleVideoSelection = useMemoizedFn((videoId: string) => {
     setSelectedVideoIds((prev) => {
-      if (prev.includes(info.key)) {
-        return prev
+      if (prev.includes(videoId)) {
+        return prev.filter((id) => id !== videoId)
       }
       // 业务规则：按用户选择顺序追加，避免自动排序。
-      return [...prev, info.key]
+      return [...prev, videoId]
     })
-  })
-
-  const handleVideoDeselect = useMemoizedFn((info: { key: string }) => {
-    setSelectedVideoIds((prev) => prev.filter((id) => id !== info.key))
   })
 
   const toolsMap = useMemo(() => {
@@ -178,6 +174,8 @@ const PageControlRoomSmartCar: FC = memo(() => {
             {isSelected ? <IconVisible /> : <IconNotVisible />}
           </div>
         ),
+        // 业务规则：通过点击菜单项切换选中状态。
+        onClick: () => toggleVideoSelection(item.id),
       }
     })
 
@@ -192,10 +190,6 @@ const PageControlRoomSmartCar: FC = memo(() => {
             disabled={menuItems.length === 0}
             menu={{
               items: menuItems,
-              selectable: true,
-              multiple: true,
-              onSelect: handleVideoSelect,
-              onDeselect: handleVideoDeselect,
             }}
           >
             <IconButton className="text-blue-500">
@@ -207,9 +201,8 @@ const PageControlRoomSmartCar: FC = memo(() => {
     }
   }, [
     deviceRealtimeProperties,
-    handleVideoDeselect,
-    handleVideoSelect,
     selectedVideoIds,
+    toggleVideoSelection,
     videoItems,
   ])
 
