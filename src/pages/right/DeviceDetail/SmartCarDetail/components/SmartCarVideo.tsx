@@ -17,9 +17,24 @@ type PropsType = {
 
 /** 智慧警车视频 */
 const SmartCarVideo: FC<PropsType> = memo(({ dataDetail }) => {
+  const sortedChildDevices = useMemo(() => {
+    const childDevices = dataDetail?.childDevice ?? []
+    // 业务规则：云台设备需要排在子设备列表最前面，确保优先展示。
+    return [...childDevices].sort((prev, next) => {
+      const isPrevGimbal = prev?.deviceType === 'SMART_CAR_GIMBAL'
+      const isNextGimbal = next?.deviceType === 'SMART_CAR_GIMBAL'
+
+      if (isPrevGimbal === isNextGimbal) {
+        return 0
+      }
+
+      return isPrevGimbal ? -1 : 1
+    })
+  }, [dataDetail?.childDevice])
+
   const videoItems = useMemo<SmartCarVideoItem[]>(() => {
     // 业务规则：仅展示子设备中有视频源的摄像头。
-    const items = dataDetail?.childDevice
+    const items = sortedChildDevices
       ?.map((item) => {
         const videoId = item?.properties?.videoList?.[0]?.videoId ?? 'live'
         const productKey = item?.productKey ?? item?.deviceModel?.productKey
@@ -40,7 +55,7 @@ const SmartCarVideo: FC<PropsType> = memo(({ dataDetail }) => {
       .filter(Boolean)
 
     return (items ?? []) as SmartCarVideoItem[]
-  }, [dataDetail?.childDevice])
+  }, [sortedChildDevices])
 
   const [activeId, setActiveId] = useState('')
   const deviceRealtimeProperties = useGlobalWsStore(
