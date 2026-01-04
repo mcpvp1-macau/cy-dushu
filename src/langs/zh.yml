@@ -685,6 +685,13 @@ usv:
   pointSail:
     title: 指点航行
     confirmQuestion: 确认前往此航点？
+  pointSailForecast:
+    distance:
+      title: 距离
+    time:
+      title: 预计时间
+      ready: 准备中
+      arriving: 即将到达
   operations:
     startMission: 开始任务
     pauseMission: 暂停任务

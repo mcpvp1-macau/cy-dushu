@@ -696,6 +696,13 @@ usv:
   pointSail:
     title: Point Navigation
     confirmQuestion: Confirm navigation to this waypoint?
+  pointSailForecast:
+    distance:
+      title: Distance
+    time:
+      title: ETA
+      ready: Preparing
+      arriving: Arriving soon
   operations:
     startMission: Start Mission
     pauseMission: Pause Mission
