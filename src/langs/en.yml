@@ -589,6 +589,7 @@ common:
   batchDownload: Batch Download
   downloadedPictureCount: '{{count}} pictures have been downloaded'
   copySuccess: Copy Successfully
+  copyCoordinates: Copy coordinates
   restart: Restart
   show: Show
   hide: Hide
@@ -696,6 +697,13 @@ usv:
   pointSail:
     title: Point Navigation
     confirmQuestion: Confirm navigation to this waypoint?
+  pointSailForecast:
+    distance:
+      title: Distance
+    time:
+      title: ETA
+      ready: Preparing
+      arriving: Arriving soon
   operations:
     startMission: Start Mission
     pauseMission: Pause Mission

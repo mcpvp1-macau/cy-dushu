@@ -578,6 +578,7 @@ common:
   batchDownload: 批量下载
   downloadedPictureCount: 已下载 {{count}} 张图片
   copySuccess: 复制成功
+  copyCoordinates: 复制坐标
   restart: 重启
   show: 显示
   hide: 隐藏
@@ -685,6 +686,13 @@ usv:
   pointSail:
     title: 指点航行
     confirmQuestion: 确认前往此航点？
+  pointSailForecast:
+    distance:
+      title: 距离
+    time:
+      title: 预计时间
+      ready: 准备中
+      arriving: 即将到达
   operations:
     startMission: 开始任务
     pauseMission: 暂停任务
