@@ -706,6 +706,7 @@ usv:
       arriving: Arriving soon
   operations:
     startMission: Start Mission
+    continueMission: Resume Mission
     pauseMission: Pause Mission
     stopMission: Stop Mission
 actionRecord:
