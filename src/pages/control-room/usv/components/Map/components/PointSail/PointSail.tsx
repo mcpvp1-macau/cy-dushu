@@ -48,7 +48,8 @@ const PointSail: FC = memo(() => {
           />
         </>
       )}
-      {displayMode?.includes('指点航行') && <UsvPointSailForecast />}
+      {(displayMode?.includes('指点航线') ||
+        displayMode?.includes('指点航行')) && <UsvPointSailForecast />}
     </>
   )
 })
