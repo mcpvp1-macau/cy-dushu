@@ -39,36 +39,45 @@ const OperationsPanel: FC = memo(() => {
   })
 
   return (
-    <div className="flex size-full items-center justify-center gap-3 px-4">
+    <div className="size-full flex flex-col p-3 gap-3 justify-center">
       <ControlPower />
-      <Button
-        type={pointSailOpen ? 'primary' : 'default'}
-        onClick={togglePointSail}
-      >
-        {t('usv.pointSail.title', { defaultValue: '指点航行' })}
-      </Button>
-      <Button
-        type="primary"
-        onClick={handleStartMission}
-        disabled={!serviceHave?.startMission}
-      >
-        {t('usv.operations.startMission', {
-          defaultValue: '开始任务',
-        })}
-      </Button>
-      <Button
-        onClick={handlePauseMission}
-        disabled={!serviceHave?.pauseMission}
-      >
-        {t('usv.operations.pauseMission', {
-          defaultValue: '暂停任务',
-        })}
-      </Button>
-      <Button onClick={handleStopMission} disabled={!serviceHave?.stopMission}>
-        {t('usv.operations.stopMission', {
-          defaultValue: '结束任务',
-        })}
-      </Button>
+      <div className="flex items-center justify-center gap-3 w-full">
+        <Button
+          className="flex-1"
+          type={pointSailOpen ? 'primary' : 'default'}
+          onClick={togglePointSail}
+        >
+          {t('usv.pointSail.title', { defaultValue: '指点航行' })}
+        </Button>
+        <Button
+          className="flex-1"
+          type="primary"
+          onClick={handleStartMission}
+          disabled={!serviceHave?.startMission}
+        >
+          {t('usv.operations.startMission', {
+            defaultValue: '开始任务',
+          })}
+        </Button>
+        <Button
+          className="flex-1"
+          onClick={handlePauseMission}
+          disabled={!serviceHave?.pauseMission}
+        >
+          {t('usv.operations.pauseMission', {
+            defaultValue: '暂停任务',
+          })}
+        </Button>
+        <Button
+          className="flex-1"
+          onClick={handleStopMission}
+          disabled={!serviceHave?.stopMission}
+        >
+          {t('usv.operations.stopMission', {
+            defaultValue: '结束任务',
+          })}
+        </Button>
+      </div>
     </div>
   )
 })
