@@ -22,26 +22,32 @@ const UsvRealTrack: FC<PropsType> = memo(() => {
     (s) => s.materialType[deviceId] || 'glow',
   )
 
+  const tracks = useMemo(() => {
+    const mergedTracks = [...historyTrack]
+    if (realTrack.length > 1) {
+      mergedTracks.push(realTrack)
+    }
+
+    return mergedTracks
+  }, [historyTrack, realTrack])
+
   return (
     <>
       {/* 业务规则：无人船轨迹需要贴地展示 */}
-      {historyTrack.map((track, index) => (
-        <HistoryTrack
-          key={index}
-          value={track}
-          color={color}
-          materialType={materialType}
-          clampToGround
-        />
-      ))}
-      {realTrack.length > 1 && (
-        <HistoryTrack
-          value={realTrack}
-          color={color}
-          materialType={materialType}
-          clampToGround
-        />
-      )}
+      {tracks.map((track, index) => {
+        const start = track.at(0)
+        const key = start ? `${start.lng}-${start.lat}-${index}` : `${index}`
+
+        return (
+          <HistoryTrack
+            key={key}
+            value={track}
+            color={color}
+            materialType={materialType}
+            clampToGround
+          />
+        )
+      })}
     </>
   )
 })
