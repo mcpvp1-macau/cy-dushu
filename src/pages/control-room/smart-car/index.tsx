@@ -1,5 +1,7 @@
 import IconCameraVideo from '@/assets/icons/jsx/IconCameraVideo'
 import IconMap from '@/assets/icons/jsx/IconMap'
+import IconNotVisible from '@/assets/icons/jsx/IconNotVisible'
+import IconVisible from '@/assets/icons/jsx/IconVisible'
 import DynamicLayoutRoot, {
   type DynamicLayoutType,
 } from '@/components/DynamicLayout'
@@ -155,21 +157,25 @@ const PageControlRoomSmartCar: FC = memo(() => {
       const deviceStatus =
         deviceRealtimeProperties?.[item.deviceId]?.deviceStatus
       const isOnline = deviceStatus === 'ONLINE'
+      const isSelected = selectedVideoIds.includes(item.id)
 
       return {
         key: item.id,
         label: (
-          <div className="flex items-center gap-2">
-            <div className="relative">
-              <IconCameraVideo />
-              <div
-                className={clsx(
-                  'absolute -right-1.5 bottom-0.5 size-1.5 rounded-full',
-                  isOnline ? 'bg-green-500' : 'bg-red-500',
-                )}
-              />
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <IconCameraVideo />
+                <div
+                  className={clsx(
+                    'absolute -right-1.5 bottom-0.5 size-1.5 rounded-full',
+                    isOnline ? 'bg-green-500' : 'bg-red-500',
+                  )}
+                />
+              </div>
+              <span>{item.label}</span>
             </div>
-            <span>{item.label}</span>
+            {isSelected ? <IconVisible /> : <IconNotVisible />}
           </div>
         ),
       }
@@ -188,7 +194,6 @@ const PageControlRoomSmartCar: FC = memo(() => {
               items: menuItems,
               selectable: true,
               multiple: true,
-              selectedKeys: selectedVideoIds,
               onSelect: handleVideoSelect,
               onDeselect: handleVideoDeselect,
             }}
