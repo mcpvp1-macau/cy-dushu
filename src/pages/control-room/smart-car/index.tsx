@@ -80,6 +80,7 @@ const PageControlRoomSmartCar: FC = memo(() => {
   }, [deviceDetail?.childDevice])
 
   const [selectedVideoIds, setSelectedVideoIds] = useState<string[]>([])
+  const [isVideoMenuOpen, setIsVideoMenuOpen] = useState(false)
 
   useEffect(() => {
     const availableIds = videoItems.map((item) => item.id)
@@ -147,6 +148,18 @@ const PageControlRoomSmartCar: FC = memo(() => {
     })
   })
 
+  const handleVideoMenuOpenChange = useMemoizedFn(
+    (open: boolean, info?: { source?: 'trigger' | 'menu' }) => {
+      if (info?.source === 'menu' && !open) {
+        // 边界情况：点击菜单项会触发关闭，这里保持展开，直到点击外部区域。
+        setIsVideoMenuOpen(true)
+        return
+      }
+
+      setIsVideoMenuOpen(open)
+    },
+  )
+
   const toolsMap = useMemo(() => {
     const menuItems: MenuProps['items'] = videoItems.map((item) => {
       // 业务规则：下拉项展示视频图标，并用徽标提示设备在线状态。
@@ -188,6 +201,8 @@ const PageControlRoomSmartCar: FC = memo(() => {
           <Dropdown
             trigger={['click']}
             disabled={menuItems.length === 0}
+            open={isVideoMenuOpen}
+            onOpenChange={handleVideoMenuOpenChange}
             menu={{
               items: menuItems,
             }}
@@ -201,6 +216,8 @@ const PageControlRoomSmartCar: FC = memo(() => {
     }
   }, [
     deviceRealtimeProperties,
+    handleVideoMenuOpenChange,
+    isVideoMenuOpen,
     selectedVideoIds,
     toggleVideoSelection,
     videoItems,
