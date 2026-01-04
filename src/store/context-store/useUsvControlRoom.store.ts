@@ -107,11 +107,13 @@ export const createUsvControlRoomStore = (senders: WsSendersType) => {
           set({ wsReadyState: state }, false, 'updateWsReadyState')
         },
         updateState: (state: StateType['latestState']) => {
+          // 业务规则：控制权字段可能不随每次状态上报，缺失时保持上一次控制权
+          const controlTag = state?.controlTag ?? get().state?.controlTag
           set(
             {
               latestState: state,
               state: { ...get().state, ...state },
-              hasControlPower: !!(get().uuid && get().uuid === state?.controlTag),
+              hasControlPower: !!(get().uuid && get().uuid === controlTag),
             },
             false,
             'updateState',
