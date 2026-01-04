@@ -3,11 +3,13 @@ import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDevice
 import { useUsvControlRoomStore } from '@/store/context-store/useUsvControlRoom.store'
 import UsvPointSailConfirm from './Confirm'
 import UsvPointSailTarget from './Target'
+import UsvPointSailForecast from './Forecast'
 
 const PointSail: FC = memo(() => {
   const pointSail = useUsvControlRoomStore((s) => s.pointSail)
   const updatePointSail = useUsvControlRoomStore((s) => s.updatePointSail)
   const postDeviceService = usePostDeviceService()
+  const displayMode = useUsvControlRoomStore((s) => s.state.displayMode)
 
   const handleClick = (longitude: number, latitude: number) => {
     updatePointSail({
@@ -46,6 +48,8 @@ const PointSail: FC = memo(() => {
           />
         </>
       )}
+      {(displayMode?.includes('指点航线') ||
+        displayMode?.includes('指点航行')) && <UsvPointSailForecast />}
     </>
   )
 })
