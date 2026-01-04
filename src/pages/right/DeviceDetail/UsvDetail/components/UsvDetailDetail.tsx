@@ -76,6 +76,7 @@ const UsvDetailDetail: FC = memo(() => {
         latitude={latitude}
         heading={heading}
         speed={speed}
+        deviceId={deviceId}
       />
       <div className="m-3">
         <DeviceLiveVideo

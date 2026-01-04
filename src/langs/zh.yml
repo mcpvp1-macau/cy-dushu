@@ -578,6 +578,7 @@ common:
   batchDownload: 批量下载
   downloadedPictureCount: 已下载 {{count}} 张图片
   copySuccess: 复制成功
+  copyCoordinates: 复制坐标
   restart: 重启
   show: 显示
   hide: 隐藏

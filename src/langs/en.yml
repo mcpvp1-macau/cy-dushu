@@ -589,6 +589,7 @@ common:
   batchDownload: Batch Download
   downloadedPictureCount: '{{count}} pictures have been downloaded'
   copySuccess: Copy Successfully
+  copyCoordinates: Copy coordinates
   restart: Restart
   show: Show
   hide: Hide
