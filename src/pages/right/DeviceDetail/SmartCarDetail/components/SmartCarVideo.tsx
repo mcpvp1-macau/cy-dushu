@@ -1,5 +1,8 @@
+import IconCameraVideo from '@/assets/icons/jsx/IconCameraVideo'
 import Select from '@/components/AntdOverride/Select'
 import DeviceLiveVideo from '@/components/VideoS/DeviceLiveVideo'
+import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
+import { Badge } from 'antd'
 
 type SmartCarVideoItem = {
   id: string
@@ -41,6 +44,9 @@ const SmartCarVideo: FC<PropsType> = memo(({ dataDetail }) => {
   }, [dataDetail?.childDevice])
 
   const [activeId, setActiveId] = useState('')
+  const deviceRealtimeProperties = useGlobalWsStore(
+    (state) => state.deviceRealtimeProperties,
+  )
 
   useEffect(() => {
     if (!videoItems.length) {
@@ -61,11 +67,29 @@ const SmartCarVideo: FC<PropsType> = memo(({ dataDetail }) => {
 
   const switchItems = useMemo(
     () =>
-      videoItems.map((item) => ({
-        label: item.label,
-        value: item.id,
-      })),
-    [videoItems],
+      videoItems.map((item) => {
+        // 业务规则：下拉项展示视频图标，并用徽标提示设备在线状态。
+        const deviceStatus =
+          deviceRealtimeProperties?.[item.deviceId]?.deviceStatus
+        const isOnline = deviceStatus === 'ONLINE'
+
+        return {
+          label: (
+            <div className="flex items-center gap-2">
+              <Badge
+                dot
+                offset={[0, 12]}
+                color={isOnline ? 'rgb(21, 179, 113)' : '#E45951'}
+              >
+                <IconCameraVideo className="text-[14px]" />
+              </Badge>
+              <span>{item.label}</span>
+            </div>
+          ),
+          value: item.id,
+        }
+      }),
+    [deviceRealtimeProperties, videoItems],
   )
 
   if (!activeVideo) {
