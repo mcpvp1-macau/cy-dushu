@@ -3,15 +3,17 @@ import IconMap from '@/assets/icons/jsx/IconMap'
 import DynamicLayoutRoot, {
   type DynamicLayoutType,
 } from '@/components/DynamicLayout'
+import IconButton from '@/components/ui/button/IconButton'
 import {
   DeviceDetailStoreContext,
   useCreateDeviceDetailStore,
 } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
+import { Dropdown, type MenuProps } from 'antd'
 import { useLocalStorageState } from 'ahooks'
 import { useStore } from 'zustand'
 import SmartCarControlRoomHeader from './components/SmartCarControlRoomHeader'
 import SmartCarMap from './components/SmartCarMap'
-import Select from '@/components/AntdOverride/Select'
 import SmartCarVideoWall, {
   type SmartCarVideoItem,
 } from './components/SmartCarVideoWall'
@@ -46,6 +48,9 @@ const PageControlRoomSmartCar: FC = memo(() => {
 
   const { store } = useCreateDeviceDetailStore(deviceId)
   const deviceDetail = useStore(store, (s) => s.deviceDetail)
+  const deviceRealtimeProperties = useGlobalWsStore(
+    (state) => state.deviceRealtimeProperties,
+  )
 
   const videoItems = useMemo<SmartCarVideoItem[]>(() => {
     // 业务规则：仅展示子设备中有视频源的摄像头。
@@ -130,11 +135,45 @@ const PageControlRoomSmartCar: FC = memo(() => {
     [deviceDetail, selectedVideoIds, videoItems],
   )
 
+  const handleVideoSelect = useMemoizedFn((info: { key: string }) => {
+    setSelectedVideoIds((prev) => {
+      if (prev.includes(info.key)) {
+        return prev
+      }
+      // 业务规则：按用户选择顺序追加，避免自动排序。
+      return [...prev, info.key]
+    })
+  })
+
+  const handleVideoDeselect = useMemoizedFn((info: { key: string }) => {
+    setSelectedVideoIds((prev) => prev.filter((id) => id !== info.key))
+  })
+
   const toolsMap = useMemo(() => {
-    const options = videoItems.map((item) => ({
-      label: item.label,
-      value: item.id,
-    }))
+    const menuItems: MenuProps['items'] = videoItems.map((item) => {
+      // 业务规则：下拉项展示视频图标，并用徽标提示设备在线状态。
+      const deviceStatus =
+        deviceRealtimeProperties?.[item.deviceId]?.deviceStatus
+      const isOnline = deviceStatus === 'ONLINE'
+
+      return {
+        key: item.id,
+        label: (
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <IconCameraVideo />
+              <div
+                className={clsx(
+                  'absolute -right-1.5 bottom-0.5 size-1.5 rounded-full',
+                  isOnline ? 'bg-green-500' : 'bg-red-500',
+                )}
+              />
+            </div>
+            <span>{item.label}</span>
+          </div>
+        ),
+      }
+    })
 
     return {
       video: (
@@ -142,23 +181,32 @@ const PageControlRoomSmartCar: FC = memo(() => {
           onClick={(e) => e.stopPropagation()}
           onDoubleClick={(e) => e.stopPropagation()}
         >
-          <Select
-            mode="multiple"
-            size="small"
-            value={selectedVideoIds}
-            allowClear
-            maxTagCount="responsive"
-            className="min-w-[220px]"
-            placeholder="选择视频"
-            options={options}
-            disabled={options.length === 0}
-            // 业务规则：仅支持多选视频源，不自动排序用户选择顺序。
-            onChange={(next) => setSelectedVideoIds(next)}
-          />
+          <Dropdown
+            trigger={['click']}
+            disabled={menuItems.length === 0}
+            menu={{
+              items: menuItems,
+              selectable: true,
+              multiple: true,
+              selectedKeys: selectedVideoIds,
+              onSelect: handleVideoSelect,
+              onDeselect: handleVideoDeselect,
+            }}
+          >
+            <IconButton className="text-blue-500">
+              <IconCameraVideo />
+            </IconButton>
+          </Dropdown>
         </div>
       ),
     }
-  }, [selectedVideoIds, videoItems])
+  }, [
+    deviceRealtimeProperties,
+    handleVideoDeselect,
+    handleVideoSelect,
+    selectedVideoIds,
+    videoItems,
+  ])
 
   return (
     <DeviceDetailStoreContext.Provider value={store}>
