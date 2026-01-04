@@ -1,11 +1,12 @@
-import { Button } from 'antd'
-import { useTranslation } from 'react-i18next'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 import { useUsvControlRoomStore } from '@/store/context-store/useUsvControlRoom.store'
+import { Button } from 'antd'
+import ControlPower from './ControlPower'
 
 const OperationsPanel: FC = memo(() => {
   const { t } = useTranslation()
+
   const serviceHave = useDeviceDetailStore((s) => s.serviceHave)
   const pointSailOpen = useUsvControlRoomStore((s) => s.pointSail.open)
   const updatePointSail = useUsvControlRoomStore((s) => s.updatePointSail)
@@ -30,15 +31,16 @@ const OperationsPanel: FC = memo(() => {
     postDeviceService('stopMission')
   })
 
-  const togglePointSail = () => {
+  const togglePointSail = useMemoizedFn(() => {
     updatePointSail({
       open: !pointSailOpen,
       targetPosition: null,
     })
-  }
+  })
 
   return (
     <div className="flex size-full items-center justify-center gap-3 px-4">
+      <ControlPower />
       <Button
         type={pointSailOpen ? 'primary' : 'default'}
         onClick={togglePointSail}
