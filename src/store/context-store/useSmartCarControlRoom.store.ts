@@ -26,7 +26,7 @@ type StateType = {
 
 type ActionsType = {
   resetState: () => void
-  updateProdctKeyAndDeviceId: (productKey: string, deviceId: string) => void
+  updateProductKeyAndDeviceId: (productKey: string, deviceId: string) => void
   updateWsReadyState: (state: StateType['wsReadyState']) => void
   updateState: (state: StateType['latestState']) => void
 }
@@ -67,8 +67,8 @@ export const createSmartCarControlRoomStore = (senders: WsSendersType) => {
             }),
           )
         },
-        updateProdctKeyAndDeviceId: (productKey, deviceId) => {
-          set({ productKey, deviceId }, false, 'updateProdctKeyAndDeviceId')
+        updateProductKeyAndDeviceId: (productKey, deviceId) => {
+          set({ productKey, deviceId }, false, 'updateProductKeyAndDeviceId')
         },
         updateWsReadyState: (state: StateType['wsReadyState']) => {
           set({ wsReadyState: state }, false, 'updateWsReadyState')
@@ -161,7 +161,9 @@ export const useCreateSmartCarControlRoomStore = (
     storeRef.current = createSmartCarControlRoomStore({
       sendMsg: (msg) => sendMessageRef.current(msg),
     })
-    storeRef.current.getState().updateProdctKeyAndDeviceId(productKey, deviceId)
+    storeRef.current
+      .getState()
+      .updateProductKeyAndDeviceId(productKey, deviceId)
   }
 
   useEffect(() => {
@@ -169,7 +171,9 @@ export const useCreateSmartCarControlRoomStore = (
   }, [readyState])
 
   useEffect(() => {
-    storeRef.current?.getState().updateProdctKeyAndDeviceId(productKey, deviceId)
+    storeRef.current
+      ?.getState()
+      .updateProductKeyAndDeviceId(productKey, deviceId)
   }, [productKey, deviceId])
 
   return storeRef.current
