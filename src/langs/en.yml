@@ -706,6 +706,7 @@ usv:
       arriving: Arriving soon
   operations:
     startMission: Start Mission
+    continueMission: Resume Mission
     pauseMission: Pause Mission
     stopMission: Stop Mission
 actionRecord:
@@ -1300,6 +1301,10 @@ message:
   warnning:
     delete: Delete or not!
 controlRoom:
+  smartCar:
+    map: Map
+    video: Video
+    noVideo: No video
   uav:
     flyParams:
       title: Control
@@ -1324,6 +1329,8 @@ controlRoom:
         title: SDR
       signal:
         title: Signal Strength
+      debug:
+        filterPlaceholder: Filter fields
       hSpeed:
         title: Horizontal Speed
       altitude:

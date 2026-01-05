@@ -3,6 +3,7 @@ import IconBattery from '@/assets/icons/jsx/IconBattery'
 import IconSatellite from '@/assets/icons/jsx/IconSatellite'
 import IconHome from '@/assets/icons/jsx/uav/IconHome'
 import SignalStrengthIcon from '@/components/device/SignalStrength'
+import CommonDebugState from '@/components/control-room/header/DebugState'
 import IconButton from '@/components/ui/button/IconButton'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import JCXT from '@/pages/right/DeviceDetail/UavAirportDetail/components/RemoteDebug/icons/JCXT'
@@ -20,7 +21,7 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { createPortal } from 'react-dom'
 import IconButtonWithDropDownDialog from '@/components/ui/button/IconButtonWithDropDownDialog'
 import { emtpyObject } from '@/constant/data'
-import { BugOutlined, WarningOutlined } from '@ant-design/icons'
+import { WarningOutlined } from '@ant-design/icons'
 import { DeviceEnum } from '@/enum/device'
 import QuickCreateAction from '@/components/device/QuickCreateAction'
 
@@ -47,16 +48,8 @@ const HeaderLeft = memo(() => {
 const I: FC<
   { l: ReactNode; v: ReactNode; t?: string } & HTMLAttributes<HTMLElement>
 > = ({ l, v, t, ...props }) => {
-  if (globalConfig.controlRoom?.uav?.particularHeader) {
-    return (
-      <li className="flex gap-1 select-none" {...props}>
-        {t && `${t} `}
-        {v}
-      </li>
-    )
-  }
   return (
-    <li className="flex gap-1 select-none">
+    <li className="flex gap-1 select-none" {...props}>
       {!l ? null : t ? <Tooltip title={t}>{l}</Tooltip> : <div>{l}</div>}
       <div>{v}</div>
     </li>
@@ -342,37 +335,6 @@ const FD = memo(() => {
   )
 })
 
-const DebugState = memo(() => {
-  const { t } = useTranslation()
-  const state = useS((s) => s.state)
-
-  return (
-    <I
-      t={t('common.debug')}
-      l={null}
-      v={
-        <IconButtonWithDropDownDialog
-          title={t('common.debug')}
-          trigger={['click']}
-          useDing
-          autoAdjustOverflow
-          tippyProps={{ content: t('common.debug') }}
-          destroyOnHidden
-          popupRender={() => (
-            <ScrollArea className="max-h-[80vh] text-xs">
-              <pre>
-                <code>{JSON.stringify(state, null, 2)}</code>
-              </pre>
-            </ScrollArea>
-          )}
-        >
-          <BugOutlined />
-        </IconButtonWithDropDownDialog>
-      }
-    />
-  )
-})
-
 const LinkWorkModeStatus = memo(() => {
   const linkWorkMode = useS((s) => s.state?.linkWorkMode)
   const is4GEnhanced = linkWorkMode === '1' || linkWorkMode === 1
@@ -382,6 +344,11 @@ const LinkWorkModeStatus = memo(() => {
   }
 
   return <I t={'4G图传'} l="Link" v={is4GEnhanced ? '4G+' : 'SDR'} />
+})
+
+const DebugState: FC = memo(() => {
+  const state = useS((s) => s.state)
+  return <CommonDebugState state={state} />
 })
 
 const ControlRoomUavHeader: FC = memo(() => {

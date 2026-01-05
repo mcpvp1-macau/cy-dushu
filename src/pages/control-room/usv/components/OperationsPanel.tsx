@@ -12,6 +12,17 @@ const OperationsPanel: FC = memo(() => {
   const hasControlPower = useUsvControlRoomStore((s) => s.hasControlPower)
   const updatePointSail = useUsvControlRoomStore((s) => s.updatePointSail)
   const postDeviceService = usePostDeviceService()
+  const missionStatus = useUsvControlRoomStore((s) => s.state?.missionStatus)
+
+  const missionStatusValue = useMemo(() => {
+    if (missionStatus === undefined || missionStatus === null) return null
+
+    const statusNumber = Number(missionStatus)
+
+    return Number.isNaN(statusNumber) ? null : statusNumber
+  }, [missionStatus])
+
+  const isRunning = missionStatusValue === 2
 
   const handleStartMission = useMemoizedFn(() => {
     // 业务规则：无对应物模型服务时不触发调用，避免接口报错
@@ -22,7 +33,6 @@ const OperationsPanel: FC = memo(() => {
 
   const handlePauseMission = useMemoizedFn(() => {
     if (!serviceHave?.pauseMission || !hasControlPower) return
-
     postDeviceService('pauseMission')
   })
 
@@ -54,25 +64,25 @@ const OperationsPanel: FC = memo(() => {
         >
           {t('usv.pointSail.title', { defaultValue: '指点航行' })}
         </Button>
-        <Button
-          className="flex-1"
-          type="primary"
-          onClick={handleStartMission}
-          disabled={!serviceHave?.startMission || !hasControlPower}
-        >
-          {t('usv.operations.startMission', {
-            defaultValue: '开始任务',
-          })}
-        </Button>
-        <Button
-          className="flex-1"
-          onClick={handlePauseMission}
-          disabled={!serviceHave?.pauseMission || !hasControlPower}
-        >
-          {t('usv.operations.pauseMission', {
-            defaultValue: '暂停任务',
-          })}
-        </Button>
+        {isRunning ? (
+          <Button
+            className="flex-1"
+            onClick={handlePauseMission}
+            disabled={!serviceHave?.pauseMission || !hasControlPower}
+          >
+            {t('usv.operations.pauseMission', {
+              defaultValue: '暂停任务',
+            })}
+          </Button>
+        ) : (
+          <Button
+            className="flex-1"
+            onClick={handleStartMission}
+            disabled={!serviceHave?.startMission || !hasControlPower}
+          >
+            {t('usv.operations.continueMission', { defaultValue: '继续任务' })}
+          </Button>
+        )}
         <Button
           className="flex-1"
           onClick={handleStopMission}

@@ -12,8 +12,9 @@ const UsvViewCombackResolver: FC = memo(() => {
   const lng = useUsvControlRoomStore((s) => s.state.longitude)
   const lat = useUsvControlRoomStore((s) => s.state.latitude)
   const mapViewLocked = useUsvControlRoomStore((s) => s.lockUsvMapView)
+  const hasInitFly = useRef(false)
 
-  const bigFly = useMemoizedFn(() => {
+  const bigFly = useMemoizedFn((alt?: number) => {
     if (
       !viewer?.scene ||
       !mapViewLocked ||
@@ -24,7 +25,7 @@ const UsvViewCombackResolver: FC = memo(() => {
       return
     }
 
-    const currentHeight = viewer.camera?.positionCartographic?.height
+    const currentHeight = alt ?? viewer.camera?.positionCartographic?.height
     if (isNil(currentHeight)) {
       return
     }
@@ -83,6 +84,19 @@ const UsvViewCombackResolver: FC = memo(() => {
       })
     }
   }, [comeBack, mapViewLocked, viewer])
+
+  useEffect(() => {
+    if (!viewer?.scene || !mapViewLocked || hasInitFly.current) return
+
+    if (isNil(lng) || isNil(lat)) {
+      return
+    }
+
+    // 业务规则：地图初始化完成后默认飞到无人船位置，避免视角未就绪时错过
+    hasInitFly.current = true
+    canFly.current = true
+    bigFly(2000)
+  }, [bigFly, lat, lng, mapViewLocked, viewer])
 
   useEffect(() => {
     if (!mapViewLocked) return

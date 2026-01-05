@@ -49,6 +49,7 @@ export const deviceIconMap: any = {
   MC: '/images/marker/icon/mc.svg',
   UGV: '/images/marker/icon/ugv.svg',
   'DUSHU-MB': '/images/marker/icon/ren.svg',
+  SMART_CAR: '/images/marker/icon/smart_car.svg',
 }
 
 const OtherMarker: FC<PropsType> = memo(({ data }) => {

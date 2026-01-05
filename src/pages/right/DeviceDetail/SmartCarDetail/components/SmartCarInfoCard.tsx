@@ -1,13 +1,6 @@
 import OverflowText from '@/components/ui/OverflowText'
-
-type MockSmartCarInfo = {
-  deviceCode?: string
-  reportTime?: string
-  plateType?: string
-  plateNumber?: string
-  longitude?: number
-  latitude?: number
-}
+import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
+import { useSmartCarControlRoomStore } from '@/store/context-store/useSmartCarControlRoom.store'
 
 type InfoItem = {
   label: string
@@ -36,47 +29,60 @@ const formatCoordinate = (value?: number) => {
 const SmartCarInfoCard: FC = memo(() => {
   const { t } = useTranslation()
 
-  const mockInfo = useMemo<MockSmartCarInfo>(
-    () => ({
-      // 业务规则：接口暂无数据，先用 mock 信息占位展示。
-      deviceCode: 'SMART-CAR-001',
-      reportTime: '2024-08-20 14:35:20',
-      plateType: '小型汽车',
-      plateNumber: '浙A12345',
-      longitude: 120.1551,
-      latitude: 30.2741,
-    }),
-    [],
+  const deviceTags = useDeviceDetailStore((s) => s.deviceDetail?.deviceTags)
+
+  const reportTime = useSmartCarControlRoomStore(
+    (s) => (s.state as { reportTime?: string })?.reportTime,
   )
+  const longitude = useSmartCarControlRoomStore((s) => s.state.longitude)
+  const latitude = useSmartCarControlRoomStore((s) => s.state.latitude)
+
+  const { modelNumber, plateType, plateNumber } = useMemo(() => {
+    const tagsMap = new Map<string, string | undefined>()
+    deviceTags?.forEach((item) => {
+      if (item?.tagName) {
+        tagsMap.set(item.tagName, item.tagValue)
+      }
+    })
+
+    return {
+      // 业务规则：型号信息存放在设备标签中。
+      modelNumber: tagsMap.get('MODEL_NUMBER') ?? '-',
+      // 业务规则：号牌信息使用设备标签映射。
+      plateType: tagsMap.get('PLATE_TYPE') ?? tagsMap.get('CARD_TYPE') ?? '-',
+      plateNumber:
+        tagsMap.get('PLATE_NUMBER') ?? tagsMap.get('CARD_NUMBER') ?? '-',
+    }
+  }, [deviceTags])
 
   const infoItems = useMemo<InfoItem[]>(
     () => [
       {
         label: t('smartCar.info.deviceCode', { defaultValue: '设备编号' }),
-        value: mockInfo.deviceCode,
+        value: modelNumber,
       },
       {
         label: t('smartCar.info.reportTime', { defaultValue: '上报时间' }),
-        value: mockInfo.reportTime,
+        value: reportTime ?? '-',
       },
       {
         label: t('smartCar.info.plateType', { defaultValue: '号牌种类' }),
-        value: mockInfo.plateType,
+        value: plateType,
       },
       {
         label: t('smartCar.info.plateNumber', { defaultValue: '号牌号码' }),
-        value: mockInfo.plateNumber,
+        value: plateNumber,
       },
       {
         label: t('smartCar.info.longitude', { defaultValue: '经度' }),
-        value: formatCoordinate(mockInfo.longitude),
+        value: formatCoordinate(longitude),
       },
       {
         label: t('smartCar.info.latitude', { defaultValue: '纬度' }),
-        value: formatCoordinate(mockInfo.latitude),
+        value: formatCoordinate(latitude),
       },
     ],
-    [mockInfo, t],
+    [latitude, longitude, modelNumber, plateNumber, plateType, reportTime, t],
   )
 
   return (

@@ -695,6 +695,7 @@ usv:
       arriving: 即将到达
   operations:
     startMission: 开始任务
+    continueMission: 继续任务
     pauseMission: 暂停任务
     stopMission: 结束任务
 actionRecord:
@@ -1278,6 +1279,10 @@ message:
   warnning:
     delete: 是否删除!
 controlRoom:
+  smartCar:
+    map: 地图
+    video: 视频
+    noVideo: 暂无视频
   uav:
     flyParams:
       title: 操控
@@ -1302,6 +1307,8 @@ controlRoom:
         title: 无线电
       signal:
         title: 信号强度
+      debug:
+        filterPlaceholder: 过滤字段
       hSpeed:
         title: 水平速度
       altitude:

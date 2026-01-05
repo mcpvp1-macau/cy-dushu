@@ -2,13 +2,14 @@ import IconBack from '@/assets/icons/jsx/IconBack'
 import IconBattery from '@/assets/icons/jsx/IconBattery'
 import IconLatitude from '@/assets/jsx/IconLatitude'
 import IconLongitude from '@/assets/jsx/IconLongitude'
+import CommonDebugState from '@/components/control-room/header/DebugState'
 import IconButton from '@/components/ui/button/IconButton'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import { useUsvControlRoomStore } from '@/store/context-store/useUsvControlRoom.store'
 import { Tooltip } from 'antd'
 import { useTitle } from 'ahooks'
-import { HTMLAttributes } from 'react'
+import { FC, HTMLAttributes } from 'react'
 import { createPortal } from 'react-dom'
 import { FlagOutlined } from '@ant-design/icons'
 
@@ -30,6 +31,13 @@ const HeaderItem: FC<
 })
 
 HeaderItem.displayName = 'HeaderItem'
+
+const DebugState: FC = memo(() => {
+  const state = useUsvControlRoomStore((s) => s.state)
+  return <CommonDebugState state={state} />
+})
+
+DebugState.displayName = 'DebugState'
 
 const ControlRoomUsvHeader: FC = memo(() => {
   const deviceName = useDeviceDetailStore((s) => s.deviceDetail?.deviceName)
@@ -102,6 +110,7 @@ const ControlRoomUsvHeader: FC = memo(() => {
                   : '-'
               }
             />
+            <DebugState />
           </ul>
         </div>
         <ScrollBar orientation="horizontal" />
