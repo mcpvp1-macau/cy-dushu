@@ -22,7 +22,7 @@ const OperationsPanel: FC = memo(() => {
     return Number.isNaN(statusNumber) ? null : statusNumber
   }, [missionStatus])
 
-  const isStopped = missionStatusValue === 0
+  const isRunning = missionStatusValue === 2
 
   const handleStartMission = useMemoizedFn(() => {
     // 业务规则：无对应物模型服务时不触发调用，避免接口报错
@@ -64,15 +64,7 @@ const OperationsPanel: FC = memo(() => {
         >
           {t('usv.pointSail.title', { defaultValue: '指点航行' })}
         </Button>
-        {isStopped ? (
-          <Button
-            className="flex-1"
-            onClick={handleStartMission}
-            disabled={!serviceHave?.startMission || !hasControlPower}
-          >
-            {t('usv.operations.continueMission', { defaultValue: '继续任务' })}
-          </Button>
-        ) : (
+        {isRunning ? (
           <Button
             className="flex-1"
             onClick={handlePauseMission}
@@ -81,6 +73,14 @@ const OperationsPanel: FC = memo(() => {
             {t('usv.operations.pauseMission', {
               defaultValue: '暂停任务',
             })}
+          </Button>
+        ) : (
+          <Button
+            className="flex-1"
+            onClick={handleStartMission}
+            disabled={!serviceHave?.startMission || !hasControlPower}
+          >
+            {t('usv.operations.continueMission', { defaultValue: '继续任务' })}
           </Button>
         )}
         <Button
