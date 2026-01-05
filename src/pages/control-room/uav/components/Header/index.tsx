@@ -3,6 +3,7 @@ import IconBattery from '@/assets/icons/jsx/IconBattery'
 import IconSatellite from '@/assets/icons/jsx/IconSatellite'
 import IconHome from '@/assets/icons/jsx/uav/IconHome'
 import SignalStrengthIcon from '@/components/device/SignalStrength'
+import CommonDebugState from '@/components/control-room/header/DebugState'
 import IconButton from '@/components/ui/button/IconButton'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import JCXT from '@/pages/right/DeviceDetail/UavAirportDetail/components/RemoteDebug/icons/JCXT'
@@ -10,7 +11,7 @@ import {
   useUavControlRoomStore as useS,
   useUavControlRoomStore,
 } from '@/store/context-store/useUavControlRoom.store'
-import { Input, Tooltip } from 'antd'
+import { Tooltip } from 'antd'
 import { isNil } from 'lodash'
 import { useShallow } from 'zustand/react/shallow'
 import LatestTask from '../../../../../components/device/LatestTask'
@@ -20,10 +21,9 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { createPortal } from 'react-dom'
 import IconButtonWithDropDownDialog from '@/components/ui/button/IconButtonWithDropDownDialog'
 import { emtpyObject } from '@/constant/data'
-import { BugOutlined, WarningOutlined } from '@ant-design/icons'
+import { WarningOutlined } from '@ant-design/icons'
 import { DeviceEnum } from '@/enum/device'
 import QuickCreateAction from '@/components/device/QuickCreateAction'
-import type { ChangeEvent } from 'react'
 
 const DeviceLinkSwitch = lazy(
   () => import('@/components/device/DeviceLinkSwitch'),
@@ -48,16 +48,8 @@ const HeaderLeft = memo(() => {
 const I: FC<
   { l: ReactNode; v: ReactNode; t?: string } & HTMLAttributes<HTMLElement>
 > = ({ l, v, t, ...props }) => {
-  if (globalConfig.controlRoom?.uav?.particularHeader) {
-    return (
-      <li className="flex gap-1 select-none" {...props}>
-        {t && `${t} `}
-        {v}
-      </li>
-    )
-  }
   return (
-    <li className="flex gap-1 select-none">
+    <li className="flex gap-1 select-none" {...props}>
       {!l ? null : t ? <Tooltip title={t}>{l}</Tooltip> : <div>{l}</div>}
       <div>{v}</div>
     </li>
@@ -343,100 +335,6 @@ const FD = memo(() => {
   )
 })
 
-const DebugState = memo(() => {
-  const { t } = useTranslation()
-  const state = useS((s) => s.state)
-  const [keyword, setKeyword] = useState('')
-
-  const handleKeywordChange = useMemoizedFn(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      setKeyword(event.target.value)
-    },
-  )
-
-  const trimmedKeyword = keyword.trim()
-  const filteredState = useMemo(() => {
-    if (!trimmedKeyword) {
-      return state ?? {}
-    }
-
-    const normalizedKeyword = trimmedKeyword.toLowerCase()
-
-    const filterValue = (value: unknown): unknown => {
-      if (Array.isArray(value)) {
-        const filteredArray = value
-          .map((item) => filterValue(item))
-          .filter((item) => !isNil(item))
-
-        return filteredArray.length ? filteredArray : undefined
-      }
-
-      if (!value || typeof value !== 'object') {
-        return undefined
-      }
-
-      const result: Record<string, unknown> = {}
-
-      Object.entries(value).forEach(([key, val]) => {
-        const keyMatched = key.toLowerCase().includes(normalizedKeyword)
-
-        // 仅按字段名过滤，命中父级字段时保留其子结构
-        if (keyMatched) {
-          result[key] = val
-          return
-        }
-
-        const filteredChild = filterValue(val)
-
-        if (!isNil(filteredChild)) {
-          result[key] = filteredChild
-        }
-      })
-
-      return Object.keys(result).length ? result : undefined
-    }
-
-    return filterValue(state) ?? {}
-  }, [state, trimmedKeyword])
-
-  return (
-    <I
-      t={t('common.debug')}
-      l={null}
-      v={
-        <IconButtonWithDropDownDialog
-          title={t('common.debug')}
-          trigger={['click']}
-          useDing
-          autoAdjustOverflow
-          tippyProps={{ content: t('common.debug') }}
-          destroyOnHidden
-          popupRender={() => (
-            <div className="flex flex-col gap-2 p-2 text-xs">
-              <Input
-                allowClear
-                size="small"
-                placeholder={t('controlRoom.uav.header.debug.filterPlaceholder', {
-                  defaultValue: '过滤字段',
-                })}
-                value={keyword}
-                onChange={handleKeywordChange}
-              />
-              <ScrollArea className="max-h-[70vh]">
-                <pre>
-                  <code>{JSON.stringify(filteredState, null, 2)}</code>
-                </pre>
-              </ScrollArea>
-            </div>
-          )}
-        >
-          <BugOutlined />
-        </IconButtonWithDropDownDialog>
-      }
-    />
-  )
-})
-
 const LinkWorkModeStatus = memo(() => {
   const linkWorkMode = useS((s) => s.state?.linkWorkMode)
   const is4GEnhanced = linkWorkMode === '1' || linkWorkMode === 1
@@ -446,6 +344,11 @@ const LinkWorkModeStatus = memo(() => {
   }
 
   return <I t={'4G图传'} l="Link" v={is4GEnhanced ? '4G+' : 'SDR'} />
+})
+
+const DebugState: FC = memo(() => {
+  const state = useS((s) => s.state)
+  return <CommonDebugState state={state} />
 })
 
 const ControlRoomUavHeader: FC = memo(() => {
