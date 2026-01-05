@@ -5,6 +5,7 @@ type StateType = {
   bounds: Record<string, [number, number, number, number]>
   iconMap: Record<string, ReactNode>
   titleMap: Record<string, ReactNode>
+  toolsMap: Record<string, ReactNode>
   updateBound: (key: string, bound: [number, number, number, number]) => void
   updateBounds: (
     bounds: Record<string, [number, number, number, number]>,
@@ -14,6 +15,7 @@ type StateType = {
   ) => void
   updateTitleMap: (titleMap: Record<string, ReactNode>) => void
   updateIconMap: (iconMap: Record<string, ReactNode>) => void
+  updateToolsMap: (toolsMap: Record<string, ReactNode>) => void
 }
 
 export const createDynamicLayoutStore = () => {
@@ -21,6 +23,7 @@ export const createDynamicLayoutStore = () => {
     bounds: {},
     iconMap: {},
     titleMap: {},
+    toolsMap: {},
     updateBound: (key, bound) => {
       set({ bounds: { ...get().bounds, [key]: bound } }, false)
     },
@@ -35,6 +38,9 @@ export const createDynamicLayoutStore = () => {
     },
     updateIconMap: (iconMap) => {
       set({ iconMap }, false)
+    },
+    updateToolsMap: (toolsMap) => {
+      set({ toolsMap }, false)
     },
   }))
 }

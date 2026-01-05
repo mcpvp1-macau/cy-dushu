@@ -10,11 +10,7 @@ import { Tooltip } from 'antd'
 import { useTitle } from 'ahooks'
 import { HTMLAttributes } from 'react'
 import { createPortal } from 'react-dom'
-import {
-  CompassOutlined,
-  DashboardOutlined,
-  FlagOutlined,
-} from '@ant-design/icons'
+import { FlagOutlined } from '@ant-design/icons'
 
 const HeaderItem: FC<
   {
@@ -46,13 +42,8 @@ const ControlRoomUsvHeader: FC = memo(() => {
   const batteryPercentage = useUsvControlRoomStore(
     (s) => s.state?.batteryPercentage,
   )
-  const heading = useUsvControlRoomStore((s) => s.state?.heading)
-  const course = useUsvControlRoomStore((s) => s.state?.course)
-  const speed = useUsvControlRoomStore((s) => s.state?.speed)
   const longitude = useUsvControlRoomStore((s) => s.state?.longitude)
   const latitude = useUsvControlRoomStore((s) => s.state?.latitude)
-
-  const headingValue = course ?? heading
 
   const appHeader = document.getElementById('app-header-center')
 
@@ -79,24 +70,6 @@ const ControlRoomUsvHeader: FC = memo(() => {
               value={
                 batteryPercentage !== undefined && batteryPercentage !== null
                   ? `${batteryPercentage}%`
-                  : '-'
-              }
-            />
-            <HeaderItem
-              icon={<CompassOutlined />}
-              tooltip={'航向角'}
-              value={
-                headingValue !== undefined && headingValue !== null
-                  ? `${headingValue.toFixed(1)}°`
-                  : '-'
-              }
-            />
-            <HeaderItem
-              icon={<DashboardOutlined />}
-              tooltip={t('common.speed')}
-              value={
-                speed !== undefined && speed !== null
-                  ? `${speed.toFixed(1)} m/s`
                   : '-'
               }
             />

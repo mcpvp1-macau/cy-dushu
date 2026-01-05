@@ -38,7 +38,7 @@ const VideoStream: FC<PropsType> = memo(
 
     return (
       <Select
-        className="w-fit text-right"
+        className="w-fit text-right [&_.ant-select-selector]:!p-0"
         placement="topLeft"
         popupMatchSelectWidth={false}
         variant="borderless"
@@ -53,7 +53,7 @@ const VideoStream: FC<PropsType> = memo(
           (document.fullscreenElement as HTMLElement) || document.body
         }
         labelRender={(v) => (
-          <div className="text-fore text-xs max-w-[70px] truncate">
+          <div className="text-fore text-xs max-w-[70px] @[450px]:max-w-[170px] truncate group-[]">
             {v.label}
           </div>
         )}

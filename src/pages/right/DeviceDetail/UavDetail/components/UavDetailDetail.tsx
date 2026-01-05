@@ -67,7 +67,7 @@ const UavDetailDetail: FC<PropsType> = memo(({ data }) => {
         deviceId={deviceId}
       />
 
-      <section className="m-3 overflow-hidden">
+      <section className="m-3 overflow-hidden rounded">
         <UavDetailVideo
           videoSource={videoSource ?? ''}
           sn={isRtcDemo ? data.sn : undefined}

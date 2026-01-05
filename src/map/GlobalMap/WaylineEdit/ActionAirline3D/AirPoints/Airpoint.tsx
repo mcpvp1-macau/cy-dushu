@@ -10,6 +10,7 @@ import { AirpointsConfigItem } from '@/store/wayline/uav-airline/types'
 import { cartesian3ToDegrees } from '@/utils/geoUtils'
 import { get3DTan } from '@/utils/geo-math'
 import { wgs84ToDrawingBufferCoordinates } from '@/utils/cesium/sence-transform'
+import HeightDashLine from '@/map/CesiumMap/components/service/common/HeightDashLine'
 
 type PropsType = {
   point: AirpointsConfigItem
@@ -276,7 +277,12 @@ const Airpoint: FC<PropsType> = ({ point, deltaHeight }) => {
     }
   }, [])
 
-  return <></>
+  return (
+    <HeightDashLine
+      position={[point.pointX, point.pointY, point.pointZ + deltaHeight]}
+      color="#FFFFFF"
+    />
+  )
 }
 
 export default memo(Airpoint)

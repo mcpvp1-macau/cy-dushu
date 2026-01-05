@@ -347,7 +347,7 @@ const DeviceLiveVideo = memo(
 
       return (
         <div
-          className="size-full overflow-hidden relative text-sm"
+          className="size-full overflow-hidden relative text-sm group @container"
           ref={wrapperRef}
           style={{ aspectRatio: aspectRatio }}
         >
@@ -473,9 +473,9 @@ const DeviceLiveVideo = memo(
             {useTopBar && (leftTop || rightTop || useDing) && (
               <aside
                 ref={topBar}
-                className="absolute inset-x-0 bg-ground-1/80 p-1 px-2 h-8 backdrop-blur-sm"
+                className="absolute inset-x-0 h-10 bg-gradient-to-b from-black/80 to-transparent  group-hover:opacity-100 opacity-0 transition-opacity duration-300"
               >
-                <div className="flex justify-between items-center h-full">
+                <div className="flex justify-between items-center h-8 absolute top-0 inset-x-0 p-1 px-2">
                   <section className="flex items-center gap-3">
                     {leftTop}
                   </section>
@@ -496,9 +496,9 @@ const DeviceLiveVideo = memo(
             {useBottomBar && (
               <aside
                 ref={bottomBar}
-                className="absolute bottom-0 inset-x-0 bg-ground-1/80 p-1 px-2 h-8 z-30 backdrop-blur-sm"
+                className="absolute bottom-0 inset-x-0 h-10 z-30 bg-gradient-to-t from-black/80 to-transparent group-hover:opacity-100 opacity-0 transition-opacity duration-300"
               >
-                <div className="flex justify-between items-center h-full">
+                <div className="flex justify-between items-center h-8 absolute inset-x-0 bottom-0 p-1 px-2">
                   <section className="flex items-center gap-3">
                     <div className="text-fore text-xs">{formatTs(ts)}</div>
                     {Array.isArray(streamList) && streamList.length > 1 && (
