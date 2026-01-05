@@ -1301,6 +1301,10 @@ message:
   warnning:
     delete: Delete or not!
 controlRoom:
+  smartCar:
+    map: Map
+    video: Video
+    noVideo: No video
   uav:
     flyParams:
       title: Control

@@ -8,6 +8,10 @@ import {
   useCreateDeviceDetailStore,
 } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
+import {
+  SmartCarControlRoomStoreContext,
+  useCreateSmartCarControlRoomStore,
+} from '@/store/context-store/useSmartCarControlRoom.store'
 import { useLocalStorageState } from 'ahooks'
 import { useStore } from 'zustand'
 import SmartCarControlRoomHeader from './components/SmartCarControlRoomHeader'
@@ -43,9 +47,19 @@ const initialLayout: DynamicLayoutType = {
 
 const PageControlRoomSmartCar: FC = memo(() => {
   const { deviceId = '' } = useParams()
+  const { t } = useTranslation()
 
   const { store } = useCreateDeviceDetailStore(deviceId)
   const deviceDetail = useStore(store, (s) => s.deviceDetail)
+  const productKey = useStore(
+    store,
+    (s) =>
+      (s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey)!,
+  )
+  const smartCarStore = useCreateSmartCarControlRoomStore(
+    productKey,
+    deviceId,
+  )
   const deviceRealtimeProperties = useGlobalWsStore(
     (state) => state.deviceRealtimeProperties,
   )
@@ -79,10 +93,10 @@ const PageControlRoomSmartCar: FC = memo(() => {
 
   const titleMap = useMemo(
     () => ({
-      map: '地图',
-      video: '视频',
+      map: t('controlRoom.smartCar.map', { defaultValue: '地图' }),
+      video: t('controlRoom.smartCar.video', { defaultValue: '视频' }),
     }),
-    [],
+    [t],
   )
 
   const componentMap = useMemo(
@@ -98,12 +112,16 @@ const PageControlRoomSmartCar: FC = memo(() => {
               onSelectedChange={handleSelectedChange}
             />
           ) : (
-            <div className="p-3 text-sm text-fore-2">暂无视频</div>
+            <div className="p-3 text-sm text-fore-2">
+              {t('controlRoom.smartCar.noVideo', {
+                defaultValue: '暂无视频',
+              })}
+            </div>
           )}
         </div>
       ),
     }),
-    [deviceDetail, selectedVideoIds, videoItems],
+    [deviceDetail, selectedVideoIds, t, videoItems],
   )
 
   const toolsMap = useMemo(() => {
@@ -124,19 +142,21 @@ const PageControlRoomSmartCar: FC = memo(() => {
 
   return (
     <DeviceDetailStoreContext.Provider value={store}>
-      <div className="page-full flex flex-col">
-        <SmartCarControlRoomHeader />
-        <main className="grow w-full relative overflow-hidden">
-          <DynamicLayoutRoot
-            layout={layout!}
-            onLayoutChange={setLayout}
-            iconMap={iconMap}
-            titleMap={titleMap}
-            toolsMap={toolsMap}
-            componentMap={componentMap}
-          />
-        </main>
-      </div>
+      <SmartCarControlRoomStoreContext.Provider value={smartCarStore}>
+        <div className="page-full flex flex-col">
+          <SmartCarControlRoomHeader />
+          <main className="grow w-full relative overflow-hidden">
+            <DynamicLayoutRoot
+              layout={layout!}
+              onLayoutChange={setLayout}
+              iconMap={iconMap}
+              titleMap={titleMap}
+              toolsMap={toolsMap}
+              componentMap={componentMap}
+            />
+          </main>
+        </div>
+      </SmartCarControlRoomStoreContext.Provider>
     </DeviceDetailStoreContext.Provider>
   )
 })
