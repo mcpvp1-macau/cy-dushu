@@ -3,7 +3,7 @@ import IconBattery from '@/assets/icons/jsx/IconBattery'
 import IconSatellite from '@/assets/icons/jsx/IconSatellite'
 import IconHome from '@/assets/icons/jsx/uav/IconHome'
 import SignalStrengthIcon from '@/components/device/SignalStrength'
-import DebugState from '@/components/control-room/header/DebugState'
+import CommonDebugState from '@/components/control-room/header/DebugState'
 import IconButton from '@/components/ui/button/IconButton'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
 import JCXT from '@/pages/right/DeviceDetail/UavAirportDetail/components/RemoteDebug/icons/JCXT'
@@ -346,6 +346,11 @@ const LinkWorkModeStatus = memo(() => {
   return <I t={'4G图传'} l="Link" v={is4GEnhanced ? '4G+' : 'SDR'} />
 })
 
+const DebugState: FC = memo(() => {
+  const state = useS((s) => s.state)
+  return <CommonDebugState state={state} />
+})
+
 const ControlRoomUavHeader: FC = memo(() => {
   const productKey = useDeviceDetailStore((s) => s.productKey)
   const deviceId = useDeviceDetailStore((s) => s.deviceId)
@@ -353,7 +358,6 @@ const ControlRoomUavHeader: FC = memo(() => {
   const appHeader = document.getElementById('app-header-center')
 
   const updateLinks = useUavControlRoomStore((s) => s.updateLinks)
-  const state = useS((s) => s.state)
 
   const h = (
     <header className="flex justify-between items-center text-sm px-3">
@@ -380,7 +384,7 @@ const ControlRoomUavHeader: FC = memo(() => {
               <HomeDistance />
               <FT />
               <FD />
-              <DebugState state={state} />
+              <DebugState />
             </ul>
           </section>
           <section className="flex gap-2">
