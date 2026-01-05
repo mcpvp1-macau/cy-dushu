@@ -28,13 +28,16 @@ const OperationsPanel: FC = memo(() => {
   const isStopped = missionStatusValue === 0
   const isKnownMissionStatus = missionStatusValue !== null
 
-  // 业务规则：未知状态时保留默认全量按钮，避免误隐藏
-  const shouldShowPointSail = !isKnownMissionStatus || isIdle || isStopped
-  const shouldShowStartMission = !isKnownMissionStatus || isPaused || isStopped
-  const shouldShowPauseMission = !isKnownMissionStatus || isRunning
-  const shouldShowStopMission = !isKnownMissionStatus || isPaused || isRunning
+  // 业务规则：指点航行与停止任务常态化显示，便于快速操作
+  const shouldShowPointSail = true
+  const shouldShowStopMission = true
 
-  const startMissionLabel = isPaused
+  // 业务规则：未知状态时保留默认全量按钮，避免误隐藏关键入口
+  const shouldShowStartMission =
+    !isKnownMissionStatus || isIdle || isPaused || isStopped
+  const shouldShowPauseMission = !isKnownMissionStatus || isRunning
+
+  const startMissionLabel = isPaused || isStopped
     ? t('usv.operations.continueMission', { defaultValue: '继续任务' })
     : t('usv.operations.startMission', { defaultValue: '开始任务' })
 

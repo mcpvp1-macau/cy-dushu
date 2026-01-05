@@ -28,10 +28,12 @@ const PointSail: FC = memo(() => {
   const handleConfirm = async () => {
     if (!pointSail.targetPosition) return
 
+    // 业务规则：指点航行确认后，先设置指点航行再启动任务
     await postDeviceService('setMission', {
       targetLongitude: pointSail.targetPosition[0],
       targetLatitude: pointSail.targetPosition[1],
     })
+    await postDeviceService('startMission')
     handleCancel()
   }
 
