@@ -2,6 +2,7 @@ import IconBack from '@/assets/icons/jsx/IconBack'
 import IconBattery from '@/assets/icons/jsx/IconBattery'
 import IconLatitude from '@/assets/jsx/IconLatitude'
 import IconLongitude from '@/assets/jsx/IconLongitude'
+import DebugState from '@/components/control-room/header/DebugState'
 import IconButton from '@/components/ui/button/IconButton'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
@@ -44,6 +45,7 @@ const ControlRoomUsvHeader: FC = memo(() => {
   )
   const longitude = useUsvControlRoomStore((s) => s.state?.longitude)
   const latitude = useUsvControlRoomStore((s) => s.state?.latitude)
+  const state = useUsvControlRoomStore((s) => s.state)
 
   const appHeader = document.getElementById('app-header-center')
 
@@ -102,6 +104,7 @@ const ControlRoomUsvHeader: FC = memo(() => {
                   : '-'
               }
             />
+            <DebugState state={state} />
           </ul>
         </div>
         <ScrollBar orientation="horizontal" />
