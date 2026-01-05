@@ -37,26 +37,23 @@ const SmartCarInfoCard: FC = memo(() => {
   const longitude = useSmartCarControlRoomStore((s) => s.state.longitude)
   const latitude = useSmartCarControlRoomStore((s) => s.state.latitude)
 
-  const modelNumber = useMemo(
-    () =>
+  const { modelNumber, plateType, plateNumber } = useMemo(() => {
+    const tagsMap = new Map<string, string | undefined>()
+    deviceTags?.forEach((item) => {
+      if (item?.tagName) {
+        tagsMap.set(item.tagName, item.tagValue)
+      }
+    })
+
+    return {
       // 业务规则：型号信息存放在设备标签中。
-      deviceTags?.find((item) => item?.tagName === 'MODEL_NUMBER')?.tagValue ??
-      '-',
-    [deviceTags],
-  )
-  const plateType = useMemo(
-    () =>
+      modelNumber: tagsMap.get('MODEL_NUMBER') ?? '-',
       // 业务规则：号牌信息使用设备标签映射。
-      deviceTags?.find((item) => item?.tagName === 'PLATE_TYPE')?.tagValue ??
-      '-',
-    [deviceTags],
-  )
-  const plateNumber = useMemo(
-    () =>
-      deviceTags?.find((item) => item?.tagName === 'PLATE_NUMBER')?.tagValue ??
-      '-',
-    [deviceTags],
-  )
+      plateType: tagsMap.get('PLATE_TYPE') ?? tagsMap.get('CARD_TYPE') ?? '-',
+      plateNumber:
+        tagsMap.get('PLATE_NUMBER') ?? tagsMap.get('CARD_NUMBER') ?? '-',
+    }
+  }, [deviceTags])
 
   const infoItems = useMemo<InfoItem[]>(
     () => [
