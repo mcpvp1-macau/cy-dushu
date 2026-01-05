@@ -1279,6 +1279,10 @@ message:
   warnning:
     delete: 是否删除!
 controlRoom:
+  smartCar:
+    map: 地图
+    video: 视频
+    noVideo: 暂无视频
   uav:
     flyParams:
       title: 操控
