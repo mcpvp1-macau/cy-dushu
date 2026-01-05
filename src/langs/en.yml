@@ -1329,6 +1329,8 @@ controlRoom:
         title: SDR
       signal:
         title: Signal Strength
+      debug:
+        filterPlaceholder: Filter fields
       hSpeed:
         title: Horizontal Speed
       altitude:

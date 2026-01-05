@@ -22,21 +22,7 @@ const OperationsPanel: FC = memo(() => {
     return Number.isNaN(statusNumber) ? null : statusNumber
   }, [missionStatus])
 
-  const isPaused = missionStatusValue === 1
   const isRunning = missionStatusValue === 2
-  const isIdle = missionStatusValue === 3
-  const isStopped = missionStatusValue === 0
-  const isKnownMissionStatus = missionStatusValue !== null
-
-  // 业务规则：未知状态时保留默认全量按钮，避免误隐藏
-  const shouldShowPointSail = !isKnownMissionStatus || isIdle || isStopped
-  const shouldShowStartMission = !isKnownMissionStatus || isPaused || isStopped
-  const shouldShowPauseMission = !isKnownMissionStatus || isRunning
-  const shouldShowStopMission = !isKnownMissionStatus || isPaused || isRunning
-
-  const startMissionLabel = isPaused
-    ? t('usv.operations.continueMission', { defaultValue: '继续任务' })
-    : t('usv.operations.startMission', { defaultValue: '开始任务' })
 
   const handleStartMission = useMemoizedFn(() => {
     // 业务规则：无对应物模型服务时不触发调用，避免接口报错
@@ -47,7 +33,6 @@ const OperationsPanel: FC = memo(() => {
 
   const handlePauseMission = useMemoizedFn(() => {
     if (!serviceHave?.pauseMission || !hasControlPower) return
-
     postDeviceService('pauseMission')
   })
 
@@ -71,27 +56,15 @@ const OperationsPanel: FC = memo(() => {
     <div className="size-full flex flex-col p-3 gap-3 justify-center">
       <ControlPower />
       <div className="flex items-center justify-center gap-3 w-full">
-        {shouldShowPointSail ? (
-          <Button
-            className="flex-1"
-            type={pointSailOpen ? 'primary' : 'default'}
-            onClick={togglePointSail}
-            disabled={!hasControlPower}
-          >
-            {t('usv.pointSail.title', { defaultValue: '指点航行' })}
-          </Button>
-        ) : null}
-        {shouldShowStartMission ? (
-          <Button
-            className="flex-1"
-            type="primary"
-            onClick={handleStartMission}
-            disabled={!serviceHave?.startMission || !hasControlPower}
-          >
-            {startMissionLabel}
-          </Button>
-        ) : null}
-        {shouldShowPauseMission ? (
+        <Button
+          className="flex-1"
+          type={pointSailOpen ? 'primary' : 'default'}
+          onClick={togglePointSail}
+          disabled={!hasControlPower}
+        >
+          {t('usv.pointSail.title', { defaultValue: '指点航行' })}
+        </Button>
+        {isRunning ? (
           <Button
             className="flex-1"
             onClick={handlePauseMission}
@@ -101,18 +74,24 @@ const OperationsPanel: FC = memo(() => {
               defaultValue: '暂停任务',
             })}
           </Button>
-        ) : null}
-        {shouldShowStopMission ? (
+        ) : (
           <Button
             className="flex-1"
-            onClick={handleStopMission}
-            disabled={!serviceHave?.stopMission || !hasControlPower}
+            onClick={handleStartMission}
+            disabled={!serviceHave?.startMission || !hasControlPower}
           >
-            {t('usv.operations.stopMission', {
-              defaultValue: '结束任务',
-            })}
+            {t('usv.operations.continueMission', { defaultValue: '继续任务' })}
           </Button>
-        ) : null}
+        )}
+        <Button
+          className="flex-1"
+          onClick={handleStopMission}
+          disabled={!serviceHave?.stopMission || !hasControlPower}
+        >
+          {t('usv.operations.stopMission', {
+            defaultValue: '结束任务',
+          })}
+        </Button>
       </div>
     </div>
   )
