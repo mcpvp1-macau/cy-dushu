@@ -1303,6 +1303,8 @@ controlRoom:
         title: 无线电
       signal:
         title: 信号强度
+      debug:
+        filterPlaceholder: 过滤字段
       hSpeed:
         title: 水平速度
       altitude:

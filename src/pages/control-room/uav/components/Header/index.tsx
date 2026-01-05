@@ -10,7 +10,7 @@ import {
   useUavControlRoomStore as useS,
   useUavControlRoomStore,
 } from '@/store/context-store/useUavControlRoom.store'
-import { Tooltip } from 'antd'
+import { Input, Tooltip } from 'antd'
 import { isNil } from 'lodash'
 import { useShallow } from 'zustand/react/shallow'
 import LatestTask from '../../../../../components/device/LatestTask'
@@ -23,6 +23,7 @@ import { emtpyObject } from '@/constant/data'
 import { BugOutlined, WarningOutlined } from '@ant-design/icons'
 import { DeviceEnum } from '@/enum/device'
 import QuickCreateAction from '@/components/device/QuickCreateAction'
+import type { ChangeEvent } from 'react'
 
 const DeviceLinkSwitch = lazy(
   () => import('@/components/device/DeviceLinkSwitch'),
@@ -345,6 +346,58 @@ const FD = memo(() => {
 const DebugState = memo(() => {
   const { t } = useTranslation()
   const state = useS((s) => s.state)
+  const [keyword, setKeyword] = useState('')
+
+  const handleKeywordChange = useMemoizedFn(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      setKeyword(event.target.value)
+    },
+  )
+
+  const trimmedKeyword = keyword.trim()
+  const filteredState = useMemo(() => {
+    if (!trimmedKeyword) {
+      return state ?? {}
+    }
+
+    const normalizedKeyword = trimmedKeyword.toLowerCase()
+
+    const filterValue = (value: unknown): unknown => {
+      if (Array.isArray(value)) {
+        const filteredArray = value
+          .map((item) => filterValue(item))
+          .filter((item) => !isNil(item))
+
+        return filteredArray.length ? filteredArray : undefined
+      }
+
+      if (!value || typeof value !== 'object') {
+        return undefined
+      }
+
+      const result: Record<string, unknown> = {}
+
+      Object.entries(value).forEach(([key, val]) => {
+        const keyMatched = key.toLowerCase().includes(normalizedKeyword)
+
+        // 仅按字段名过滤，命中父级字段时保留其子结构
+        if (keyMatched) {
+          result[key] = val
+          return
+        }
+
+        const filteredChild = filterValue(val)
+
+        if (!isNil(filteredChild)) {
+          result[key] = filteredChild
+        }
+      })
+
+      return Object.keys(result).length ? result : undefined
+    }
+
+    return filterValue(state) ?? {}
+  }, [state, trimmedKeyword])
 
   return (
     <I
@@ -359,11 +412,22 @@ const DebugState = memo(() => {
           tippyProps={{ content: t('common.debug') }}
           destroyOnHidden
           popupRender={() => (
-            <ScrollArea className="max-h-[80vh] text-xs">
-              <pre>
-                <code>{JSON.stringify(state, null, 2)}</code>
-              </pre>
-            </ScrollArea>
+            <div className="flex flex-col gap-2 p-2 text-xs">
+              <Input
+                allowClear
+                size="small"
+                placeholder={t('controlRoom.uav.header.debug.filterPlaceholder', {
+                  defaultValue: '过滤字段',
+                })}
+                value={keyword}
+                onChange={handleKeywordChange}
+              />
+              <ScrollArea className="max-h-[70vh]">
+                <pre>
+                  <code>{JSON.stringify(filteredState, null, 2)}</code>
+                </pre>
+              </ScrollArea>
+            </div>
           )}
         >
           <BugOutlined />
