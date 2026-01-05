@@ -1,25 +1,29 @@
 import IconBack from '@/assets/icons/jsx/IconBack'
 import IconLatitude from '@/assets/jsx/IconLatitude'
 import IconLongitude from '@/assets/jsx/IconLongitude'
+import CommonDebugState from '@/components/control-room/header/DebugState'
 import IconButton from '@/components/ui/button/IconButton'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
-import { Tag, Tooltip } from 'antd'
-import { useTitle } from 'ahooks'
+import { useSmartCarControlRoomStore } from '@/store/context-store/useSmartCarControlRoom.store'
+import { Tooltip } from 'antd'
+import { useMemoizedFn, useTitle } from 'ahooks'
 import { HTMLAttributes } from 'react'
 import { createPortal } from 'react-dom'
+import { CarOutlined } from '@ant-design/icons'
 
 const HeaderItem: FC<
   {
-    icon?: ReactNode
-    label: ReactNode
+    icon: ReactNode
+    tooltip?: ReactNode
     value: ReactNode
   } & HTMLAttributes<HTMLLIElement>
-> = memo(({ icon, label, value, ...props }) => {
+> = memo(({ icon, tooltip, value, ...props }) => {
   return (
     <li className="flex items-center gap-1 select-none" {...props}>
-      {icon ? <span className="text-sm text-fore-2">{icon}</span> : null}
-      <span className="text-sm text-fore-2">{label}</span>
+      <Tooltip title={tooltip} mouseEnterDelay={0.3}>
+        <span className="flex items-center text-sm text-fore-2">{icon}</span>
+      </Tooltip>
       <div className="text-sm text-fore">{value}</div>
     </li>
   )
@@ -27,22 +31,38 @@ const HeaderItem: FC<
 
 HeaderItem.displayName = 'HeaderItem'
 
+const DebugState: FC = memo(() => {
+  const state = useSmartCarControlRoomStore((s) => s.state)
+  return <CommonDebugState state={state} />
+})
+
+DebugState.displayName = 'DebugState'
+
 const SmartCarControlRoomHeader: FC = memo(() => {
   const deviceName = useDeviceDetailStore((s) => s.deviceDetail?.deviceName)
+  const deviceTags = useDeviceDetailStore((s) => s.deviceDetail?.deviceTags)
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   useTitle(`${deviceName ?? '-'} | ${globalConfig.title}`)
 
-  const mockInfo = useMemo(
-    () => ({
-      // 业务规则：驾驶舱头部信息暂时使用固定数据占位展示。
-      online: true,
-      longitude: 120.1551,
-      latitude: 30.2741,
-      plateNumber: '浙A12345',
-    }),
-    [],
+  const longitude = useSmartCarControlRoomStore((s) => s.state.longitude)
+  const latitude = useSmartCarControlRoomStore((s) => s.state.latitude)
+  const plateNumber = useMemo(
+    () =>
+      // 业务规则：号牌号码使用设备标签映射。
+      deviceTags?.find((item) => item?.tagName === 'PLATE_NUMBER')?.tagValue ??
+      '-',
+    [deviceTags],
   )
+
+  const formatCoordinate = useMemoizedFn((value?: number) => {
+    if (typeof value !== 'number') {
+      return '-'
+    }
+
+    return value.toFixed(6)
+  })
 
   const appHeader = useMemo(
     () => document.getElementById('app-header-center'),
@@ -65,36 +85,23 @@ const SmartCarControlRoomHeader: FC = memo(() => {
         <div className="flex-1 flex items-center justify-center gap-3">
           <ul className="flex gap-4 whitespace-nowrap">
             <HeaderItem
-              label="在线状态"
-              value={
-                <Tag color={mockInfo.online ? 'success' : 'default'}>
-                  {mockInfo.online ? '在线' : '离线'}
-                </Tag>
-              }
+              icon={<IconLongitude />}
+              tooltip={t('common.longitude')}
+              value={formatCoordinate(longitude)}
             />
             <HeaderItem
-              icon={
-                <Tooltip title="经度" mouseEnterDelay={0.3}>
-                  <span className="flex items-center">
-                    <IconLongitude />
-                  </span>
-                </Tooltip>
-              }
-              label="经度"
-              value={mockInfo.longitude.toFixed(6)}
+              icon={<IconLatitude />}
+              tooltip={t('common.latitude')}
+              value={formatCoordinate(latitude)}
             />
             <HeaderItem
-              icon={
-                <Tooltip title="纬度" mouseEnterDelay={0.3}>
-                  <span className="flex items-center">
-                    <IconLatitude />
-                  </span>
-                </Tooltip>
-              }
-              label="纬度"
-              value={mockInfo.latitude.toFixed(6)}
+              icon={<CarOutlined />}
+              tooltip={t('smartCar.info.plateNumber', {
+                defaultValue: '号牌号码',
+              })}
+              value={plateNumber}
             />
-            <HeaderItem label="车牌号码" value={mockInfo.plateNumber} />
+            <DebugState />
           </ul>
         </div>
         <ScrollBar orientation="horizontal" />
