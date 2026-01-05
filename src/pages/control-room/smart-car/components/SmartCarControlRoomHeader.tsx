@@ -51,8 +51,10 @@ const SmartCarControlRoomHeader: FC = memo(() => {
   const plateNumber = useMemo(
     () =>
       // 业务规则：号牌号码使用设备标签映射。
-      deviceTags?.find((item) => item?.tagName === 'PLATE_NUMBER')?.tagValue ??
-      '-',
+      deviceTags?.find(
+        (item) =>
+          item?.tagName === 'PLATE_NUMBER' || item?.tagName === 'CARD_NUMBER',
+      )?.tagValue ?? '-',
     [deviceTags],
   )
 
