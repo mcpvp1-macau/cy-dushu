@@ -16,9 +16,13 @@ import { useLocalStorageState } from 'ahooks'
 import { useStore } from 'zustand'
 import SmartCarControlRoomHeader from './components/SmartCarControlRoomHeader'
 import SmartCarMap from './components/SmartCarMap'
+import SmartCarVideoPanel from './components/SmartCarVideoPanel'
 import SmartCarVideoSelector from './components/SmartCarVideoSelector'
-import SmartCarVideoWall from './components/SmartCarVideoWall'
 import { useSmartCarVideoSelection } from './hooks/useSmartCarVideoSelection'
+import {
+  SmartCarGimbalControlRoomStoreContext,
+  useCreateSmartCarGimbalControlRoomStore,
+} from '@/store/context-store/useSmartCarGimbalControlRoom.store'
 
 const initialLayout: DynamicLayoutType = {
   type: 'row',
@@ -76,6 +80,23 @@ const PageControlRoomSmartCar: FC = memo(() => {
     deviceRealtimeProperties,
   })
 
+  const gimbalDevice = useMemo(() => {
+    return (
+      deviceDetail?.childDevice?.find(
+        (item) => item?.deviceType === 'SMART_CAR_GIMBAL',
+      ) ?? null
+    )
+  }, [deviceDetail?.childDevice])
+
+  const gimbalProductKey =
+    gimbalDevice?.productKey ?? gimbalDevice?.deviceModel?.productKey ?? ''
+  const gimbalDeviceId = gimbalDevice?.deviceId ?? ''
+
+  const gimbalStore = useCreateSmartCarGimbalControlRoomStore(
+    gimbalProductKey,
+    gimbalDeviceId,
+  )
+
   const [layout, setLayout] = useLocalStorageState<DynamicLayoutType>(
     'smartCarControlRoomLayout',
     {
@@ -103,25 +124,23 @@ const PageControlRoomSmartCar: FC = memo(() => {
     () => ({
       map: <SmartCarMap />,
       video: (
-        <div className="size-full overflow-auto">
-          {/* 边界情况：设备详情未就绪时隐藏视频区域内容。 */}
-          {deviceDetail ? (
-            <SmartCarVideoWall
-              videoItems={videoItems}
-              selectedIds={selectedVideoIds}
-              onSelectedChange={handleSelectedChange}
-            />
-          ) : (
-            <div className="p-3 text-sm text-fore-2">
-              {t('controlRoom.smartCar.noVideo', {
-                defaultValue: '暂无视频',
-              })}
-            </div>
-          )}
-        </div>
+        <SmartCarVideoPanel
+          deviceDetail={deviceDetail}
+          videoItems={videoItems}
+          selectedVideoIds={selectedVideoIds}
+          onSelectedChange={handleSelectedChange}
+          gimbalDevice={gimbalDevice}
+        />
       ),
     }),
-    [deviceDetail, selectedVideoIds, t, videoItems],
+    [
+      deviceDetail,
+      gimbalDevice,
+      handleSelectedChange,
+      selectedVideoIds,
+      t,
+      videoItems,
+    ],
   )
 
   const toolsMap = useMemo(() => {
@@ -143,19 +162,21 @@ const PageControlRoomSmartCar: FC = memo(() => {
   return (
     <DeviceDetailStoreContext.Provider value={store}>
       <SmartCarControlRoomStoreContext.Provider value={smartCarStore}>
-        <div className="page-full flex flex-col">
-          <SmartCarControlRoomHeader />
-          <main className="grow w-full relative overflow-hidden">
-            <DynamicLayoutRoot
-              layout={layout!}
-              onLayoutChange={setLayout}
-              iconMap={iconMap}
-              titleMap={titleMap}
-              toolsMap={toolsMap}
-              componentMap={componentMap}
-            />
-          </main>
-        </div>
+        <SmartCarGimbalControlRoomStoreContext.Provider value={gimbalStore}>
+          <div className="page-full flex flex-col">
+            <SmartCarControlRoomHeader />
+            <main className="grow w-full relative overflow-hidden">
+              <DynamicLayoutRoot
+                layout={layout!}
+                onLayoutChange={setLayout}
+                iconMap={iconMap}
+                titleMap={titleMap}
+                toolsMap={toolsMap}
+                componentMap={componentMap}
+              />
+            </main>
+          </div>
+        </SmartCarGimbalControlRoomStoreContext.Provider>
       </SmartCarControlRoomStoreContext.Provider>
     </DeviceDetailStoreContext.Provider>
   )
