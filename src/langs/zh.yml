@@ -695,6 +695,7 @@ usv:
       arriving: 即将到达
   operations:
     startMission: 开始任务
+    continueMission: 继续任务
     pauseMission: 暂停任务
     stopMission: 结束任务
 actionRecord:
