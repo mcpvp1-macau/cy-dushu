@@ -75,6 +75,7 @@ export default mergeConfig(
         systemName: 'jingqi',
         loginUrl: 'https://4a.jing-an.com:32712/login',
         videoProxy: true,
+        logo: '/ja-map/images/logo-jinghang2.png',
       },
     },
   }),

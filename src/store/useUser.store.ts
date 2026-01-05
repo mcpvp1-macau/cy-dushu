@@ -67,6 +67,7 @@ type StateType = {
   groupDeviceTree: GroupDeviceTree[]
   vendorBackUrl: string | null
   logo: string | null
+  logoLoading: boolean
 }
 
 type ActionsType = {
@@ -96,6 +97,7 @@ const useUserStore = create<StateType & ActionsType>()(
       systemInfo: null,
       groupDeviceTree: [],
       logo: null,
+      logoLoading: true,
       /** 第三方返回地址 */
       vendorBackUrl: null,
       // 登出
@@ -109,10 +111,12 @@ const useUserStore = create<StateType & ActionsType>()(
       },
       fetchUserInfoAndMenus: async () => {
         const { token } = get()
-        const [resp1, resp2] = await Promise.all([
-          getUserByToken(token!),
-          getSystemRoleMenu({}),
-        ])
+        const [resp1] = await Promise.all([getUserByToken(token!)])
+
+        const resp2 = await getSystemRoleMenu({
+          roleId: resp1.data.userRoles?.roleId,
+          systemName: globalConfig.systemName,
+        })
         // 缓存username
         await localStorage.setItem('username', resp1.data.username || '')
 
@@ -121,7 +125,12 @@ const useUserStore = create<StateType & ActionsType>()(
           m[e.url] = e
         })
         set(
-          { user: resp1.data, menus: resp2.data.rows, menuMap: m },
+          {
+            user: resp1.data,
+            menus: resp2.data.rows,
+            menuMap: m,
+            logoLoading: false,
+          },
           false,
           'fetchUserInfoAndMenus',
         )

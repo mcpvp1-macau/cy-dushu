@@ -37,7 +37,7 @@ const videoRouter = createBrowserRouter([
   if (location.pathname.startsWith('/share/video')) {
     ReactDOM.createRoot(document.getElementById('root')!).render(
       <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen buttonPosition="bottom-left" />
+        <ReactQueryDevtools initialIsOpen buttonPosition="bottom-right" />
         {/* <ShareVideo /> */}
         <RouterProvider router={videoRouter} />
       </QueryClientProvider>,
