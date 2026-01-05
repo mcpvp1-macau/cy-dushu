@@ -73,12 +73,27 @@ const menus = [
   },
 ]
 
+const bottomMenus = [
+  {
+    id: 'documents',
+    path: '/documents',
+    auth: 'documents',
+    component: <ReadOutlined className="text-lg" />,
+  },
+]
+
 const AppNavigator: FC<PropsType> = memo(() => {
   const userMenus = useUserStore((s) => s.menus)
   const renderMenus = useMemo(() => {
     const set = new Set((userMenus ?? []).map((e) => e.url))
     set.add('')
     return menus.filter((e) => set.has(e.auth))
+  }, [userMenus])
+
+  const renderMenusBottom = useMemo(() => {
+    const set = new Set((userMenus ?? []).map((e) => e.url))
+    set.add('')
+    return bottomMenus.filter((e) => set.has(e.auth))
   }, [userMenus])
 
   const matches = useMatches()
@@ -108,7 +123,26 @@ const AppNavigator: FC<PropsType> = memo(() => {
         ))}
       </ul>
       <ul className="flex flex-col items-center pb-3 gap-3">
-        <li>
+        {renderMenusBottom.map((e) => (
+          <li key={e.id}>
+            <Link
+              to={e.path}
+              className={twMerge(
+                clsx(
+                  'w-[28px] h-[28px] bg-ground-3 border border-solid border-ground-5 rounded',
+                  'flex justify-center items-center',
+                  'hover:border-fore transition-all duration-500',
+                  {
+                    'border-fore': usedKey.has(e.id ?? ''),
+                  },
+                ),
+              )}
+            >
+              {e.component}
+            </Link>
+          </li>
+        ))}
+        {/* <li>
           <Link
             to="/documents"
             className={twMerge(
@@ -124,7 +158,7 @@ const AppNavigator: FC<PropsType> = memo(() => {
           >
             <ReadOutlined />
           </Link>
-        </li>
+        </li> */}
       </ul>
     </nav>
   )
