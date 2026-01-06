@@ -16,9 +16,16 @@ import { useLocalStorageState } from 'ahooks'
 import { useStore } from 'zustand'
 import SmartCarControlRoomHeader from './components/SmartCarControlRoomHeader'
 import SmartCarMap from './components/SmartCarMap'
+import SmartCarVideoPanel from './components/SmartCarVideoPanel'
 import SmartCarVideoSelector from './components/SmartCarVideoSelector'
-import SmartCarVideoWall from './components/SmartCarVideoWall'
 import { useSmartCarVideoSelection } from './hooks/useSmartCarVideoSelection'
+import {
+  SmartCarGimbalControlRoomStoreContext,
+  useCreateSmartCarGimbalControlRoomStore,
+} from '@/store/context-store/useSmartCarGimbalControlRoom.store'
+import IconControl from '@/assets/icons/jsx/IconControl'
+import IconFlightOperation from '@/assets/icons/jsx/uav/IconFlightOperation'
+import SmartCarGimbalOperatorPanel from './components/SmartCarGimbalControlPanel'
 
 const initialLayout: DynamicLayoutType = {
   type: 'row',
@@ -34,11 +41,41 @@ const initialLayout: DynamicLayoutType = {
       ],
     },
     {
-      type: 'tabs',
+      type: 'col',
       size: 600,
       children: [
         {
-          key: 'video',
+          type: 'tabs',
+          size: 600,
+          children: [
+            {
+              key: 'video',
+            },
+          ],
+        },
+        {
+          type: 'row',
+          size: 300,
+          children: [
+            {
+              type: 'tabs',
+              size: 300,
+              children: [
+                {
+                  key: 'gimbal_control',
+                },
+              ],
+            },
+            {
+              type: 'tabs',
+              size: 300,
+              children: [
+                {
+                  key: 'operators',
+                },
+              ],
+            },
+          ],
         },
       ],
     },
@@ -56,10 +93,7 @@ const PageControlRoomSmartCar: FC = memo(() => {
     (s) =>
       (s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey)!,
   )
-  const smartCarStore = useCreateSmartCarControlRoomStore(
-    productKey,
-    deviceId,
-  )
+  const smartCarStore = useCreateSmartCarControlRoomStore(productKey, deviceId)
   const deviceRealtimeProperties = useGlobalWsStore(
     (state) => state.deviceRealtimeProperties,
   )
@@ -76,6 +110,23 @@ const PageControlRoomSmartCar: FC = memo(() => {
     deviceRealtimeProperties,
   })
 
+  const gimbalDevice = useMemo(() => {
+    return (
+      deviceDetail?.childDevice?.find(
+        (item) => item?.deviceType === 'SMART_CAR_GIMBAL',
+      ) ?? null
+    )
+  }, [deviceDetail?.childDevice])
+
+  const gimbalProductKey =
+    gimbalDevice?.productKey ?? gimbalDevice?.deviceModel?.productKey ?? ''
+  const gimbalDeviceId = gimbalDevice?.deviceId ?? ''
+
+  const gimbalStore = useCreateSmartCarGimbalControlRoomStore(
+    gimbalProductKey,
+    gimbalDeviceId,
+  )
+
   const [layout, setLayout] = useLocalStorageState<DynamicLayoutType>(
     'smartCarControlRoomLayout',
     {
@@ -87,6 +138,8 @@ const PageControlRoomSmartCar: FC = memo(() => {
     () => ({
       map: <IconMap className="text-blue-500" />,
       video: <IconCameraVideo className="text-blue-500" />,
+      gimbal_control: <IconFlightOperation className="text-blue-500" />,
+      operators: <IconControl className="text-blue-500" />,
     }),
     [],
   )
@@ -95,6 +148,8 @@ const PageControlRoomSmartCar: FC = memo(() => {
     () => ({
       map: t('controlRoom.smartCar.map', { defaultValue: '地图' }),
       video: t('controlRoom.smartCar.video', { defaultValue: '视频' }),
+      gimbal_control: '操控',
+      operators: '操作',
     }),
     [t],
   )
@@ -103,25 +158,24 @@ const PageControlRoomSmartCar: FC = memo(() => {
     () => ({
       map: <SmartCarMap />,
       video: (
-        <div className="size-full overflow-auto">
-          {/* 边界情况：设备详情未就绪时隐藏视频区域内容。 */}
-          {deviceDetail ? (
-            <SmartCarVideoWall
-              videoItems={videoItems}
-              selectedIds={selectedVideoIds}
-              onSelectedChange={handleSelectedChange}
-            />
-          ) : (
-            <div className="p-3 text-sm text-fore-2">
-              {t('controlRoom.smartCar.noVideo', {
-                defaultValue: '暂无视频',
-              })}
-            </div>
-          )}
-        </div>
+        <SmartCarVideoPanel
+          deviceDetail={deviceDetail}
+          videoItems={videoItems}
+          selectedVideoIds={selectedVideoIds}
+          onSelectedChange={handleSelectedChange}
+          gimbalDevice={gimbalDevice}
+        />
       ),
+      operators: <SmartCarGimbalOperatorPanel gimbalDevice={gimbalDevice} />,
     }),
-    [deviceDetail, selectedVideoIds, t, videoItems],
+    [
+      deviceDetail,
+      gimbalDevice,
+      handleSelectedChange,
+      selectedVideoIds,
+      t,
+      videoItems,
+    ],
   )
 
   const toolsMap = useMemo(() => {
@@ -134,28 +188,26 @@ const PageControlRoomSmartCar: FC = memo(() => {
         />
       ),
     }
-  }, [
-    handleVideoMenuOpenChange,
-    isVideoMenuOpen,
-    videoMenuItems,
-  ])
+  }, [handleVideoMenuOpenChange, isVideoMenuOpen, videoMenuItems])
 
   return (
     <DeviceDetailStoreContext.Provider value={store}>
       <SmartCarControlRoomStoreContext.Provider value={smartCarStore}>
-        <div className="page-full flex flex-col">
-          <SmartCarControlRoomHeader />
-          <main className="grow w-full relative overflow-hidden">
-            <DynamicLayoutRoot
-              layout={layout!}
-              onLayoutChange={setLayout}
-              iconMap={iconMap}
-              titleMap={titleMap}
-              toolsMap={toolsMap}
-              componentMap={componentMap}
-            />
-          </main>
-        </div>
+        <SmartCarGimbalControlRoomStoreContext.Provider value={gimbalStore}>
+          <div className="page-full flex flex-col">
+            <SmartCarControlRoomHeader />
+            <main className="grow w-full relative overflow-hidden">
+              <DynamicLayoutRoot
+                layout={layout!}
+                onLayoutChange={setLayout}
+                iconMap={iconMap}
+                titleMap={titleMap}
+                toolsMap={toolsMap}
+                componentMap={componentMap}
+              />
+            </main>
+          </div>
+        </SmartCarGimbalControlRoomStoreContext.Provider>
       </SmartCarControlRoomStoreContext.Provider>
     </DeviceDetailStoreContext.Provider>
   )
