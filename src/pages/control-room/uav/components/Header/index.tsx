@@ -182,7 +182,7 @@ const Battery = memo(() => {
   const formatPercent = (value?: number | null) =>
     isNil(value) ? '-' : `${value}%`
 
-  const batteryElectricity = battery?.capacity_percent ?? electricity
+  const batteryElectricity = electricity ?? battery?.capacity_percent
 
   const eleColor = useMemo(() => {
     // 电量正常
