@@ -26,6 +26,8 @@ import {
 import IconControl from '@/assets/icons/jsx/IconControl'
 import IconFlightOperation from '@/assets/icons/jsx/uav/IconFlightOperation'
 import SmartCarGimbalOperatorPanel from './components/SmartCarGimbalControlPanel'
+import DataCollapse from '@/pages/right/DeviceDetail/components/DataCollapse'
+import IconData from '@/assets/icons/jsx/IconData'
 
 const initialLayout: DynamicLayoutType = {
   type: 'row',
@@ -33,7 +35,7 @@ const initialLayout: DynamicLayoutType = {
   children: [
     {
       type: 'tabs',
-      size: 700,
+      size: 500,
       children: [
         {
           key: 'map',
@@ -76,6 +78,15 @@ const initialLayout: DynamicLayoutType = {
               ],
             },
           ],
+        },
+      ],
+    },
+    {
+      type: 'tabs',
+      size: 300,
+      children: [
+        {
+          key: 'data',
         },
       ],
     },
@@ -140,6 +151,7 @@ const PageControlRoomSmartCar: FC = memo(() => {
       video: <IconCameraVideo className="text-blue-500" />,
       gimbal_control: <IconFlightOperation className="text-blue-500" />,
       operators: <IconControl className="text-blue-500" />,
+      data: <IconData className="text-blue-500" />,
     }),
     [],
   )
@@ -150,6 +162,7 @@ const PageControlRoomSmartCar: FC = memo(() => {
       video: t('controlRoom.smartCar.video', { defaultValue: '视频' }),
       gimbal_control: '操控',
       operators: '操作',
+      data: t('common.data', { defaultValue: '数据' }),
     }),
     [t],
   )
@@ -167,6 +180,7 @@ const PageControlRoomSmartCar: FC = memo(() => {
         />
       ),
       operators: <SmartCarGimbalOperatorPanel gimbalDevice={gimbalDevice} />,
+      data: <DataCollapse />,
     }),
     [
       deviceDetail,
