@@ -151,6 +151,14 @@ export const getDeviceCapacityEnum = () => {
   )
 }
 
+/** 事件照片枚举列表 */
+export const getEventPhotoEnumList = () => {
+  return serverDBAPI.post<API_DBAPI.res.EventPhotoEnumListRes>(
+    '/api/eventPhotoEnumList',
+    {},
+  )
+}
+
 /** 获取密集数据 */
 export const getDensityStatistics = (data: {
   actionId?: number

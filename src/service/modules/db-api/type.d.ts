@@ -219,6 +219,12 @@ declare namespace API_DBAPI {
       imageUrl?: string // 图片地址可能为空
     }
 
+    interface EventPhotoEnumItem {
+      sort?: number
+      value?: string
+      key?: string
+    }
+
     export interface TargetData {
       latitude: number
       id: string
@@ -351,6 +357,7 @@ declare namespace API_DBAPI {
     type GetDeviceOperateLogsRes = API_DBAPI.domain.OperateLog[]
     type GetDeviceCapacityEnumRes = API_DBAPI.domain.DeviceCapacityEnum[]
     type GetDensityStatisticsRes = API_DBAPI.domain.DensityItem[]
+    type EventPhotoEnumListRes = API_DBAPI.domain.EventPhotoEnumItem[]
 
     type AlarmQueryRes = {
       list: API_DBAPI.domain.AlarmRecord[]
