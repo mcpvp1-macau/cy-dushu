@@ -23,6 +23,9 @@ import {
   SmartCarGimbalControlRoomStoreContext,
   useCreateSmartCarGimbalControlRoomStore,
 } from '@/store/context-store/useSmartCarGimbalControlRoom.store'
+import IconControl from '@/assets/icons/jsx/IconControl'
+import IconFlightOperation from '@/assets/icons/jsx/uav/IconFlightOperation'
+import SmartCarGimbalOperatorPanel from './components/SmartCarGimbalControlPanel'
 
 const initialLayout: DynamicLayoutType = {
   type: 'row',
@@ -38,11 +41,41 @@ const initialLayout: DynamicLayoutType = {
       ],
     },
     {
-      type: 'tabs',
+      type: 'col',
       size: 600,
       children: [
         {
-          key: 'video',
+          type: 'tabs',
+          size: 600,
+          children: [
+            {
+              key: 'video',
+            },
+          ],
+        },
+        {
+          type: 'row',
+          size: 300,
+          children: [
+            {
+              type: 'tabs',
+              size: 300,
+              children: [
+                {
+                  key: 'gimbal_control',
+                },
+              ],
+            },
+            {
+              type: 'tabs',
+              size: 300,
+              children: [
+                {
+                  key: 'operators',
+                },
+              ],
+            },
+          ],
         },
       ],
     },
@@ -60,10 +93,7 @@ const PageControlRoomSmartCar: FC = memo(() => {
     (s) =>
       (s.deviceDetail?.productKey || s.deviceDetail?.deviceModel?.productKey)!,
   )
-  const smartCarStore = useCreateSmartCarControlRoomStore(
-    productKey,
-    deviceId,
-  )
+  const smartCarStore = useCreateSmartCarControlRoomStore(productKey, deviceId)
   const deviceRealtimeProperties = useGlobalWsStore(
     (state) => state.deviceRealtimeProperties,
   )
@@ -108,6 +138,8 @@ const PageControlRoomSmartCar: FC = memo(() => {
     () => ({
       map: <IconMap className="text-blue-500" />,
       video: <IconCameraVideo className="text-blue-500" />,
+      gimbal_control: <IconFlightOperation className="text-blue-500" />,
+      operators: <IconControl className="text-blue-500" />,
     }),
     [],
   )
@@ -116,6 +148,8 @@ const PageControlRoomSmartCar: FC = memo(() => {
     () => ({
       map: t('controlRoom.smartCar.map', { defaultValue: '地图' }),
       video: t('controlRoom.smartCar.video', { defaultValue: '视频' }),
+      gimbal_control: '操控',
+      operators: '操作',
     }),
     [t],
   )
@@ -132,6 +166,7 @@ const PageControlRoomSmartCar: FC = memo(() => {
           gimbalDevice={gimbalDevice}
         />
       ),
+      operators: <SmartCarGimbalOperatorPanel gimbalDevice={gimbalDevice} />,
     }),
     [
       deviceDetail,
@@ -153,11 +188,7 @@ const PageControlRoomSmartCar: FC = memo(() => {
         />
       ),
     }
-  }, [
-    handleVideoMenuOpenChange,
-    isVideoMenuOpen,
-    videoMenuItems,
-  ])
+  }, [handleVideoMenuOpenChange, isVideoMenuOpen, videoMenuItems])
 
   return (
     <DeviceDetailStoreContext.Provider value={store}>

@@ -32,7 +32,7 @@ const SmartCarInfoCard: FC = memo(() => {
   const deviceTags = useDeviceDetailStore((s) => s.deviceDetail?.deviceTags)
 
   const reportTime = useSmartCarControlRoomStore(
-    (s) => (s.state as { reportTime?: string })?.reportTime,
+    (s) => (s.state as { updateTime?: string })?.updateTime,
   )
   const longitude = useSmartCarControlRoomStore((s) => s.state.longitude)
   const latitude = useSmartCarControlRoomStore((s) => s.state.latitude)

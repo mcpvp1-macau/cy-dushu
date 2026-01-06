@@ -2,16 +2,15 @@ import { Button } from 'antd'
 import { v4 as uuidv4 } from 'uuid'
 import { setDeviceProp } from '@/service/modules/device'
 import useUserStore from '@/store/useUser.store'
-import {
-  useSmartCarGimbalControlRoomStore,
-} from '@/store/context-store/useSmartCarGimbalControlRoom.store'
+import { useSmartCarGimbalControlRoomStore } from '@/store/context-store/useSmartCarGimbalControlRoom.store'
 import { AimOutlined } from '@ant-design/icons'
+import AppEmpty from '@/components/AppEmpty'
 
 type PropsType = {
   gimbalDevice?: API_DEVICE.domain.Device | null
 }
 
-const SmartCarGimbalControlPanel: FC<PropsType> = memo(({ gimbalDevice }) => {
+const SmartCarGimbalOperatorPanel: FC<PropsType> = memo(({ gimbalDevice }) => {
   const { t } = useTranslation()
 
   const user = useUserStore((s) => s.user)
@@ -80,40 +79,35 @@ const SmartCarGimbalControlPanel: FC<PropsType> = memo(({ gimbalDevice }) => {
 
   if (!gimbalDevice?.deviceId) {
     return (
-      <div className="text-sm text-fore-2">
-        {t('controlRoom.smartCar.noGimbal', {
-          defaultValue: '暂无云台设备',
-        })}
+      <div className="size-full flex flex-col justify-center items-center text-sm">
+        <AppEmpty
+          description={t('controlRoom.smartCar.noGimbal', {
+            defaultValue: '暂无云台设备',
+          })}
+        />
       </div>
     )
   }
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3">
-      <div className="flex flex-col gap-1">
-        <span className="text-sm font-medium text-fore">
-          {t('controlRoom.smartCar.gimbalPanel', {
-            defaultValue: '云台操作',
-          })}
-        </span>
-        <span className="text-xs text-fore-2">
-          {gimbalDevice?.name || gimbalDevice?.deviceName || deviceId}
-        </span>
+    <div className="size-full flex flex-col justify-center gap-3 p-3">
+      <div>
+        <Button
+          block
+          icon={<AimOutlined />}
+          loading={isPending}
+          disabled={!canOperate}
+          type={hasControlPower ? 'primary' : 'default'}
+          onClick={handleClick}
+        >
+          云台{t('device.controlPower.title')}
+          {operator ? ` (${operator})` : ''}
+        </Button>
       </div>
-      <Button
-        icon={<AimOutlined />}
-        loading={isPending}
-        disabled={!canOperate}
-        type={hasControlPower ? 'primary' : 'default'}
-        onClick={handleClick}
-      >
-        {t('device.controlPower.title')}
-        {operator ? ` (${operator})` : ''}
-      </Button>
     </div>
   )
 })
 
-SmartCarGimbalControlPanel.displayName = 'SmartCarGimbalControlPanel'
+SmartCarGimbalOperatorPanel.displayName = 'SmartCarGimbalOperatorPanel'
 
-export default SmartCarGimbalControlPanel
+export default SmartCarGimbalOperatorPanel

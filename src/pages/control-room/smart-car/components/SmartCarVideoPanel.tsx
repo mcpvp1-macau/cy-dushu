@@ -1,7 +1,4 @@
-import SmartCarVideoWall, {
-  type SmartCarVideoItem,
-} from './SmartCarVideoWall'
-import SmartCarGimbalControlPanel from './SmartCarGimbalControlPanel'
+import SmartCarVideoWall, { type SmartCarVideoItem } from './SmartCarVideoWall'
 
 type PropsType = {
   deviceDetail?: API_DEVICE.domain.Device | null
@@ -12,13 +9,7 @@ type PropsType = {
 }
 
 const SmartCarVideoPanel: FC<PropsType> = memo(
-  ({
-    deviceDetail,
-    videoItems,
-    selectedVideoIds,
-    onSelectedChange,
-    gimbalDevice,
-  }) => {
+  ({ deviceDetail, videoItems, selectedVideoIds, onSelectedChange }) => {
     const { t } = useTranslation()
 
     return (
@@ -38,9 +29,6 @@ const SmartCarVideoPanel: FC<PropsType> = memo(
               })}
             </div>
           )}
-        </div>
-        <div className="border-t border-ground-5/40 bg-ground-2 p-3">
-          <SmartCarGimbalControlPanel gimbalDevice={gimbalDevice} />
         </div>
       </div>
     )
