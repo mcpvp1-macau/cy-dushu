@@ -3,10 +3,9 @@ import Select from '@/components/AntdOverride/Select'
 import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
 import PanoramaViewer from '@/components/ui/PanoramaViewer'
-import usePicutreSourceTypeOptions from '@/constant/options/pictureSourceTypeOptions'
 import { dft, timeOnly } from '@/constant/time-fmt'
 import { handleStorageURL } from '@/pages/events/components/EventDetail'
-import { getPlatformCapture } from '@/service/modules/db-api'
+import { getEventPhotoEnumList, getPlatformCapture } from '@/service/modules/db-api'
 import useMediaOnMapStore from '@/store/map/useMediaOnMap.store'
 import { makePanormaToolbarRender, makeToolbarRender } from '@/utils/antd/image'
 import { Col, Image, Pagination, Row, Spin } from 'antd'
@@ -22,6 +21,7 @@ type PropsType = {
 
 const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
   ({ deviceList, timeRange, enablePictureOnMap }) => {
+    const { t } = useTranslation()
     const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>(() =>
       timeRange ?? [
         dayjs().startOf('day').startOf('minute'),
@@ -34,8 +34,6 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
         setDateRange(timeRange)
       }
     }, [timeRange])
-
-    const [mode, setMode] = useState('ALL')
 
     const deviceOptions = useMemo(
       () =>
@@ -51,6 +49,68 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
     }, [deviceOptions])
 
     const queryClient = useQueryClient()
+    const { data: eventPhotoEnums = [] } = useQuery(
+      {
+        queryKey: ['eventPhotoEnumList'],
+        queryFn: getEventPhotoEnumList,
+        select: (resp) => resp.data ?? [],
+      },
+      queryClient,
+    )
+
+    const defaultPictureSourceTypeOptions = useMemo(
+      () => [
+        {
+          label: t('device.pictureFilter.all.title', {
+            defaultValue: '全部',
+          }),
+          value: '-1',
+        },
+        {
+          label: t('device.pictureFilter.screenshot.title', {
+            defaultValue: '截图',
+          }),
+          value: 'SCREENSHOT',
+        },
+        {
+          label: t('device.pictureFilter.photograph.title', {
+            defaultValue: '拍照',
+          }),
+          value: 'PHOTOGRAPH',
+        },
+      ],
+      [t],
+    )
+
+    const pictureSourceTypeOptions = useMemo(() => {
+      if (!eventPhotoEnums.length) {
+        // 兜底逻辑：接口失败时使用内置选项，避免筛选不可用
+        return defaultPictureSourceTypeOptions
+      }
+
+      return [...eventPhotoEnums]
+        .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
+        .map((item) => ({
+          label:
+            item.value ??
+            t('device.pictureFilter.all.title', { defaultValue: '全部' }),
+          value: item.key ?? '-1',
+        }))
+    }, [defaultPictureSourceTypeOptions, eventPhotoEnums, t])
+
+    const [mode, setMode] = useState<string>('-1')
+
+    useEffect(() => {
+      if (!pictureSourceTypeOptions.length) {
+        return
+      }
+
+      // 业务规则：枚举变化时同步首项，避免筛选值失效
+      if (!pictureSourceTypeOptions.some((option) => option.value === mode)) {
+        setMode(pictureSourceTypeOptions[0]?.value ?? '-1')
+      }
+    }, [mode, pictureSourceTypeOptions])
+
     const [page, setPage] = useState(1)
     const [pageSize, setPageSize] = useState(9)
     const { data, isLoading, isRefetching } = useQuery(
@@ -80,8 +140,6 @@ const DeviceDetailMediaDataPicture: FC<PropsType> = memo(
       },
       queryClient,
     )
-
-    const pictureSourceTypeOptions = usePicutreSourceTypeOptions()
 
     // 照片上图 -------------------------------------------------------------------
     const id = useMemo(() => v4(), [])

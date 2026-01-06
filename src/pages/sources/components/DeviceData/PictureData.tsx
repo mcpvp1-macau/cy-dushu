@@ -1,9 +1,8 @@
 import AppEmpty from '@/components/AppEmpty'
 import AppSpin from '@/components/AppSpin'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import usePicutreSourceTypeOptions from '@/constant/options/pictureSourceTypeOptions'
 import { dft } from '@/constant/time-fmt'
-import { getPlatformCapture } from '@/service/modules/db-api'
+import { getEventPhotoEnumList, getPlatformCapture } from '@/service/modules/db-api'
 import { makePanormaToolbarRender, makeToolbarRender } from '@/utils/antd/image'
 import {
   Button,
@@ -47,16 +46,73 @@ const PictureData: FC<PropsType> = memo(({ deviceList }) => {
     deviceList,
   )
 
-  const pictureSourceTypeOptions = usePicutreSourceTypeOptions()
-
   const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>([
     dayjs().startOf('day'),
     dayjs().endOf('day'),
   ])
-  const [type, setType] = useState('ALL')
+  const [type, setType] = useState<string>('-1')
   const [deviceId, setDeviceId] = useState<string>(deviceList[0]?.deviceId)
 
   const queryClient = useQueryClient()
+  const { data: eventPhotoEnums = [] } = useQuery(
+    {
+      queryKey: ['eventPhotoEnumList'],
+      queryFn: getEventPhotoEnumList,
+      select: (resp) => resp.data ?? [],
+    },
+    queryClient,
+  )
+
+  const defaultPictureSourceTypeOptions = useMemo(
+    () => [
+      {
+        label: t('device.pictureFilter.all.title', {
+          defaultValue: '全部',
+        }),
+        value: '-1',
+      },
+      {
+        label: t('device.pictureFilter.screenshot.title', {
+          defaultValue: '截图',
+        }),
+        value: 'SCREENSHOT',
+      },
+      {
+        label: t('device.pictureFilter.photograph.title', {
+          defaultValue: '拍照',
+        }),
+        value: 'PHOTOGRAPH',
+      },
+    ],
+    [t],
+  )
+
+  const pictureSourceTypeOptions = useMemo(() => {
+    if (!eventPhotoEnums.length) {
+      // 兜底逻辑：枚举接口失败时使用内置选项
+      return defaultPictureSourceTypeOptions
+    }
+
+    return [...eventPhotoEnums]
+      .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0))
+      .map((item) => ({
+        label:
+          item.value ??
+          t('device.pictureFilter.all.title', { defaultValue: '全部' }),
+        value: item.key ?? '-1',
+      }))
+  }, [defaultPictureSourceTypeOptions, eventPhotoEnums, t])
+
+  useEffect(() => {
+    if (!pictureSourceTypeOptions.length) {
+      return
+    }
+
+    // 业务规则：枚举变化时确保筛选值有效
+    if (!pictureSourceTypeOptions.some((option) => option.value === type)) {
+      setType(pictureSourceTypeOptions[0]?.value ?? '-1')
+    }
+  }, [pictureSourceTypeOptions, type])
 
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(24)
