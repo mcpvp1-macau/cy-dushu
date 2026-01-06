@@ -22,6 +22,8 @@ type StateType = {
   state: SmartCarControlState
   /** 最新收到的状态 */
   latestState: SmartCarControlState
+  /** 地图视角是否跟随智慧警车 */
+  lockSmartCarMapView: boolean
 }
 
 type ActionsType = {
@@ -29,6 +31,8 @@ type ActionsType = {
   updateProductKeyAndDeviceId: (productKey: string, deviceId: string) => void
   updateWsReadyState: (state: StateType['wsReadyState']) => void
   updateState: (state: StateType['latestState']) => void
+  /** 更新地图视角跟随 */
+  updateLockSmartCarMapView: (enable: boolean) => void
 }
 
 type WsSendersType = {
@@ -46,6 +50,7 @@ const createInitialState = () =>
     wsReadyState: -1,
     state: {},
     latestState: {},
+    lockSmartCarMapView: true,
   } as StateType)
 
 export const createSmartCarControlRoomStore = (senders: WsSendersType) => {
@@ -82,6 +87,9 @@ export const createSmartCarControlRoomStore = (senders: WsSendersType) => {
             false,
             'updateState',
           )
+        },
+        updateLockSmartCarMapView: (enable) => {
+          set({ lockSmartCarMapView: enable }, false, 'updateLockSmartCarMapView')
         },
       }),
       {
