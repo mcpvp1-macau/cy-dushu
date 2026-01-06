@@ -40,7 +40,7 @@ const Header: FC<PropsType> = memo(() => {
           ) : logoLoading ? (
             <></>
           ) : (
-            <JALogo className="text-fore" />
+            <JALogo className="text-fore p-1.5" />
           )}
         </div>
         <POISearch />
