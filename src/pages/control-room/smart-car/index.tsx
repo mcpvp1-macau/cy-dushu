@@ -26,6 +26,7 @@ import {
 import IconControl from '@/assets/icons/jsx/IconControl'
 import IconFlightOperation from '@/assets/icons/jsx/uav/IconFlightOperation'
 import SmartCarGimbalOperatorPanel from './components/SmartCarGimbalControlPanel'
+import SmartCarGimbalControl from './components/SmartCarGimbalControl'
 import DataCollapse from '@/pages/right/DeviceDetail/components/DataCollapse'
 import IconData from '@/assets/icons/jsx/IconData'
 
@@ -179,6 +180,7 @@ const PageControlRoomSmartCar: FC = memo(() => {
           gimbalDevice={gimbalDevice}
         />
       ),
+      gimbal_control: <SmartCarGimbalControl gimbalDevice={gimbalDevice} />,
       operators: <SmartCarGimbalOperatorPanel gimbalDevice={gimbalDevice} />,
       data: <DataCollapse />,
     }),
