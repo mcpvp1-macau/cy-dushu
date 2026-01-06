@@ -6,10 +6,10 @@ type WindowType = Window & { config: ConfigType }
 let globalConfig = (window as unknown as WindowType).config
 
 // 根据端口合并配置
-const port = location.port;
+const port = location.port
 if (globalConfig[port]) {
-  globalConfig = { ...globalConfig, ...globalConfig[port] };
-  (window as unknown as WindowType).config = globalConfig;
+  globalConfig = { ...globalConfig, ...globalConfig[port] }
+  ;(window as unknown as WindowType).config = globalConfig
 }
 
 if (import.meta.env.DEV && __DEV_MERGE_CONFIG__) {
@@ -141,6 +141,9 @@ class GlobalConfig {
 
   /** 是否为新系统配置 */
   isNewSystemConfig: boolean = false
+
+  /** 道通接口返回采用Intranet */
+  daotongIntranet?: boolean = false
 
   constructor(def: ConfigType) {
     Object.assign(this, def)

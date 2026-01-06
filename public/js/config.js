@@ -84,4 +84,5 @@ window.config = {
     title: '测试名称',
   },
   useDeviceTreeV4: true,
+  daotongIntranet: false,
 }
