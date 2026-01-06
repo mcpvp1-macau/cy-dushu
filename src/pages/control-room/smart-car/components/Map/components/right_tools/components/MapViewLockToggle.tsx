@@ -4,7 +4,9 @@ import { useSmartCarControlRoomStore } from '@/store/context-store/useSmartCarCo
 
 const MapViewLockToggle: FC = memo(() => {
   const { t } = useTranslation()
-  const mapViewLocked = useSmartCarControlRoomStore((s) => s.lockSmartCarMapView)
+  const mapViewLocked = useSmartCarControlRoomStore(
+    (s) => s.lockSmartCarMapView,
+  )
   const updateMapViewLocked = useSmartCarControlRoomStore(
     (s) => s.updateLockSmartCarMapView,
   )
@@ -13,7 +15,7 @@ const MapViewLockToggle: FC = memo(() => {
     <FloatIconButton
       tippyProps={{
         content: t('smartCar.mapViewLock.title', {
-          defaultValue: 'Smart car map follow',
+          defaultValue: '智慧警车地图跟随',
         }),
         placement: 'left',
       }}
