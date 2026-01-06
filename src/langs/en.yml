@@ -1305,6 +1305,8 @@ controlRoom:
     map: Map
     video: Video
     noVideo: No video
+    gimbalPanel: Gimbal panel
+    noGimbal: No gimbal device
   uav:
     flyParams:
       title: Control

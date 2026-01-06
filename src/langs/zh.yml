@@ -1283,6 +1283,8 @@ controlRoom:
     map: 地图
     video: 视频
     noVideo: 暂无视频
+    gimbalPanel: 云台操作
+    noGimbal: 暂无云台设备
   uav:
     flyParams:
       title: 操控
