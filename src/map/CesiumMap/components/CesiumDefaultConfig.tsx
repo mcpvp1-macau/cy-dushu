@@ -47,6 +47,10 @@ const CesiumDefaultConfig: FC<PropsType> = memo(() => {
       Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK,
     )
 
+    // 默认值为 6，对于 HTTP/2 来说过于保守
+    Cesium.RequestScheduler.maximumRequests = 64
+    Cesium.RequestScheduler.maximumRequestsPerServer = 64
+
     // 是否开启抗锯齿
     // @ts-ignore
     // viewer.scene.fxaa = true
