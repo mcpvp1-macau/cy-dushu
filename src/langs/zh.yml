@@ -594,7 +594,7 @@ common:
   resolve: 处理
   task: 任务
   noTask: 无任务
-  accept: 收到
+  accept: 我已知晓
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索

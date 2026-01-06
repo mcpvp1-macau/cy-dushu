@@ -53,7 +53,7 @@ const SmartCarGimbalOperatorPanel: FC<PropsType> = memo(({ gimbalDevice }) => {
         updateUUID('')
         return
       }
-      if (data?.controlTag?.result === '0') {
+      if (data?.controlTag?.result == '0') {
         updateUUID(uuid)
       } else {
         updateUUID('')
