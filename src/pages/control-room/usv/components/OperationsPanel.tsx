@@ -78,7 +78,12 @@ const OperationsPanel: FC = memo(() => {
           <Button
             className="flex-1"
             onClick={handleStartMission}
-            disabled={!serviceHave?.startMission || !hasControlPower}
+            disabled={
+              !serviceHave?.startMission ||
+              !hasControlPower ||
+              // 任务状态还是未暂停时，禁止继续任务按钮
+              missionStatusValue !== 1
+            }
           >
             {t('usv.operations.continueMission', { defaultValue: '继续任务' })}
           </Button>
