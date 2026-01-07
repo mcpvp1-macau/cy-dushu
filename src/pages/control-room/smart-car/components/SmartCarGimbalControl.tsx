@@ -27,6 +27,7 @@ const SmartCarGimbalControl: FC<PropsType> = memo(({ gimbalDevice }) => {
   const hasControlPower = useSmartCarGimbalControlRoomStore(
     (s) => s.hasControlPower,
   )
+  const sendCommand = useSmartCarGimbalControlRoomStore((s) => s.sendCommand)
 
   const canControl = !!(productKey && deviceId && hasControlPower)
 
@@ -89,7 +90,7 @@ const SmartCarGimbalControl: FC<PropsType> = memo(({ gimbalDevice }) => {
   // 按住按钮时每 500ms 发送一次
   useRafInterval(
     () => {
-      postService('moveGimbal', downKey, undefined, false)
+      sendCommand('moveGimbal', downKey)
     },
     downKey && canControl ? 500 : undefined,
   )
@@ -97,15 +98,10 @@ const SmartCarGimbalControl: FC<PropsType> = memo(({ gimbalDevice }) => {
   // 按住变焦按钮时每 500ms 发送一次
   useRafInterval(
     () => {
-      postService(
-        'liveZoomChange',
-        {
-          videoId: 'live',
-          zoomFactor: zoomKey,
-        },
-        undefined,
-        false,
-      )
+      sendCommand('liveZoomChange', {
+        videoId: 'live',
+        zoomFactor: zoomKey,
+      })
     },
     zoomKey && canControl ? 500 : undefined,
   )

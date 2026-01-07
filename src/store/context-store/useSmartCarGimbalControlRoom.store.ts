@@ -1,7 +1,8 @@
 import { createContext } from 'react'
 import { createStore, useStore } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { useMemoizedFn } from 'ahooks'
+import { v4 as uuidv4 } from 'uuid'
+import { useLatest, useMemoizedFn } from 'ahooks'
 import { heartbeat } from '@/constant/websocket'
 import useWebSocket from 'react-use-websocket'
 import useUserStore from '../useUser.store'
@@ -36,6 +37,14 @@ type ActionsType = {
   updateUUID: (uuid: string) => void
 }
 
+type WsSendersType = {
+  sendMsg: (msg: string) => void
+}
+
+type CustomerSenderType = {
+  sendCommand: (method: string, value: Record<string, unknown> | null) => void
+}
+
 const createInitialState = (): StateType => ({
   productKey: '',
   deviceId: '',
@@ -46,13 +55,32 @@ const createInitialState = (): StateType => ({
   hasControlPower: false,
 })
 
-export const createSmartCarGimbalControlRoomStore = () => {
-  return createStore<StateType & ActionsType>()(
+export const createSmartCarGimbalControlRoomStore = (senders: WsSendersType) => {
+  return createStore<
+    StateType & ActionsType & WsSendersType & CustomerSenderType
+  >()(
     devtools(
       (set, get) => ({
         ...createInitialState(),
+        ...senders,
         resetState: () => {
           set(createInitialState(), false, 'resetState')
+        },
+        sendCommand: (method, value) => {
+          get().sendMsg(
+            JSON.stringify({
+              tid: uuidv4(),
+              method,
+              productKey: get().productKey,
+              deviceId: get().deviceId,
+              data: {
+                ...(value ?? {}),
+                controlTag: get().uuid,
+                sendTime: dayjs().valueOf(),
+                sendTimeFormat: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+              },
+            }),
+          )
         },
         updateProductKeyAndDeviceId: (productKey, deviceId) => {
           set({ productKey, deviceId }, false, 'updateProductKeyAndDeviceId')
@@ -102,7 +130,9 @@ export const SmartCarGimbalControlRoomStoreContext =
   createContext<SmartCarGimbalControlRoomStoreType | null>(null)
 
 export const useSmartCarGimbalControlRoomStore = <T>(
-  select: (state: StateType & ActionsType) => T,
+  select: (
+    state: StateType & ActionsType & WsSendersType & CustomerSenderType,
+  ) => T,
 ) => {
   const store = useContext(SmartCarGimbalControlRoomStoreContext)!
   return useStore(store, select)
@@ -144,7 +174,7 @@ export const useCreateSmartCarGimbalControlRoomStore = (
     return `${globalConfig.globalWs}://${location.host}/v3/${productKey}/${deviceId}?token=${token}`
   }, [productKey, deviceId, token])
 
-  const { readyState } = useWebSocket(
+  const { readyState, sendMessage } = useWebSocket(
     wsUrl,
     {
       heartbeat,
@@ -157,8 +187,12 @@ export const useCreateSmartCarGimbalControlRoomStore = (
     true,
   )
 
+  const sendMessageRef = useLatest(sendMessage)
+
   if (!storeRef.current) {
-    storeRef.current = createSmartCarGimbalControlRoomStore()
+    storeRef.current = createSmartCarGimbalControlRoomStore({
+      sendMsg: (msg) => sendMessageRef.current(msg),
+    })
     storeRef.current
       .getState()
       .updateProductKeyAndDeviceId(productKey, deviceId)
