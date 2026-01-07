@@ -2,6 +2,7 @@ import CesiumMap from '@/map/CesiumMap'
 import SmartCarMarker from './SmartCarMarker'
 import RightTools from './Map/components/right_tools'
 import SmartCarViewCombackResolver from './Map/components/CombackResolver'
+import SmartCarRealTrack from './Map/components/RealTrack'
 
 /** 智慧警车驾驶舱地图 */
 const SmartCarMap: FC = memo(() => {
@@ -10,6 +11,7 @@ const SmartCarMap: FC = memo(() => {
       <RightTools />
       <SmartCarViewCombackResolver />
       <SmartCarMarker />
+      <SmartCarRealTrack />
     </CesiumMap>
   )
 })
