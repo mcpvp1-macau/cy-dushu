@@ -1,4 +1,4 @@
-import { Tooltip } from 'antd'
+import { Button, Tooltip } from 'antd'
 import controlBG from '@/assets/imgs/control/buttonBg.png'
 import { useResetState, useRafInterval } from 'ahooks'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
@@ -30,6 +30,18 @@ const SmartCarGimbalControl: FC<PropsType> = memo(({ gimbalDevice }) => {
   )
 
   const canControl = !!(productKey && deviceId && hasControlPower)
+
+  const handleReset = useMemoizedFn(() => {
+    if (!canControl) {
+      return
+    }
+    // 业务规则：云台复位固定回到 1 号预置位。
+    postService(
+      'gotoPreset',
+      { index: 1 },
+      t('controlRoom.control.gimbalReset.title', { defaultValue: '复位' }),
+    )
+  })
 
   const controls = [
     [
@@ -112,86 +124,97 @@ const SmartCarGimbalControl: FC<PropsType> = memo(({ gimbalDevice }) => {
   }
 
   return (
-    <div className="size-full flex justify-center items-center gap-5 p-3">
-      <div className="relative h-[100px] w-[100px] select-none">
-        <img className="size-full" src={controlBG} alt="" />
-        <div className="absolute inset-1">
-          {controls.map(
-            ([title, className, payload, tooltip, placement], i) => (
-              <Tooltip key={i} title={tooltip} placement={placement}>
-                <CircleButton
-                  className={className}
-                  disabled={!canControl}
-                  onMouseDown={() => setDownKey(payload)}
-                  onTouchStart={() => setDownKey(payload)}
-                  onMouseUp={reset}
-                  onMouseLeave={reset}
-                  onTouchEnd={reset}
-                  onTouchCancel={reset}
-                >
-                  {title}
-                </CircleButton>
-              </Tooltip>
-            ),
-          )}
+    <div className="size-full flex flex-col items-center justify-center gap-3 p-3">
+      <div className="flex items-center gap-5">
+        <div className="relative h-[100px] w-[100px] select-none">
+          <img className="size-full" src={controlBG} alt="" />
+          <div className="absolute inset-1">
+            {controls.map(
+              ([title, className, payload, tooltip, placement], i) => (
+                <Tooltip key={i} title={tooltip} placement={placement}>
+                  <CircleButton
+                    className={className}
+                    disabled={!canControl}
+                    onMouseDown={() => setDownKey(payload)}
+                    onTouchStart={() => setDownKey(payload)}
+                    onMouseUp={reset}
+                    onMouseLeave={reset}
+                    onTouchEnd={reset}
+                    onTouchCancel={reset}
+                  >
+                    {title}
+                  </CircleButton>
+                </Tooltip>
+              ),
+            )}
+          </div>
+        </div>
+
+        {/* 变焦倍数控制 */}
+        <div className="mt-4 flex flex-col items-center gap-2">
+          <div className="text-xs text-fore opacity-80">
+            {t('controlRoom.control.zoomFactor.title', {
+              defaultValue: '变焦倍数',
+            })}
+            :<span className="ml-1 font-medium">{zoomFactor ?? '-'}</span>
+          </div>
+          <div className="flex gap-2">
+            <Tooltip
+              title={t('controlRoom.control.zoomOut.title', {
+                defaultValue: '缩小',
+              })}
+            >
+              <button
+                className={clsx(
+                  'w-[40px] h-[26px] text-xs rounded border border-solid border-primary text-primary',
+                  'hover:bg-primary hover:text-white',
+                  'disabled:border-ground-5 disabled:bg-ground-3 disabled:text-fore disabled:opacity-60 disabled:cursor-not-allowed',
+                )}
+                disabled={!canControl}
+                onMouseDown={() => setZoomKey(-1)}
+                onTouchStart={() => setZoomKey(-1)}
+                onMouseUp={resetZoom}
+                onMouseLeave={resetZoom}
+                onTouchEnd={resetZoom}
+                onTouchCancel={resetZoom}
+              >
+                -1
+              </button>
+            </Tooltip>
+            <Tooltip
+              title={t('controlRoom.control.zoomIn.title', {
+                defaultValue: '放大',
+              })}
+            >
+              <button
+                className={clsx(
+                  'w-[40px] h-[26px] text-xs rounded border border-solid border-primary text-primary',
+                  'hover:bg-primary hover:text-white',
+                  'disabled:border-ground-5 disabled:bg-ground-3 disabled:text-fore disabled:opacity-60 disabled:cursor-not-allowed',
+                )}
+                disabled={!canControl}
+                onMouseDown={() => setZoomKey(1)}
+                onTouchStart={() => setZoomKey(1)}
+                onMouseUp={resetZoom}
+                onMouseLeave={resetZoom}
+                onTouchEnd={resetZoom}
+                onTouchCancel={resetZoom}
+              >
+                +1
+              </button>
+            </Tooltip>
+          </div>
         </div>
       </div>
 
-      {/* 变焦倍数控制 */}
-      <div className="mt-4 flex flex-col items-center gap-2">
-        <div className="text-xs text-fore opacity-80">
-          {t('controlRoom.control.zoomFactor.title', {
-            defaultValue: '变焦倍数',
-          })}
-          :<span className="ml-1 font-medium">{zoomFactor ?? '-'}</span>
-        </div>
-        <div className="flex gap-2">
-          <Tooltip
-            title={t('controlRoom.control.zoomOut.title', {
-              defaultValue: '缩小',
-            })}
-          >
-            <button
-              className={clsx(
-                'w-[40px] h-[26px] text-xs rounded border border-solid border-primary text-primary',
-                'hover:bg-primary hover:text-white',
-                'disabled:border-ground-5 disabled:bg-ground-3 disabled:text-fore disabled:opacity-60 disabled:cursor-not-allowed',
-              )}
-              disabled={!canControl}
-              onMouseDown={() => setZoomKey(-1)}
-              onTouchStart={() => setZoomKey(-1)}
-              onMouseUp={resetZoom}
-              onMouseLeave={resetZoom}
-              onTouchEnd={resetZoom}
-              onTouchCancel={resetZoom}
-            >
-              -1
-            </button>
-          </Tooltip>
-          <Tooltip
-            title={t('controlRoom.control.zoomIn.title', {
-              defaultValue: '放大',
-            })}
-          >
-            <button
-              className={clsx(
-                'w-[40px] h-[26px] text-xs rounded border border-solid border-primary text-primary',
-                'hover:bg-primary hover:text-white',
-                'disabled:border-ground-5 disabled:bg-ground-3 disabled:text-fore disabled:opacity-60 disabled:cursor-not-allowed',
-              )}
-              disabled={!canControl}
-              onMouseDown={() => setZoomKey(1)}
-              onTouchStart={() => setZoomKey(1)}
-              onMouseUp={resetZoom}
-              onMouseLeave={resetZoom}
-              onTouchEnd={resetZoom}
-              onTouchCancel={resetZoom}
-            >
-              +1
-            </button>
-          </Tooltip>
-        </div>
-      </div>
+      <Button
+        size="small"
+        type="primary"
+        disabled={!canControl}
+        onClick={handleReset}
+      >
+        {t('controlRoom.control.gimbalReset.title', { defaultValue: '复位' })}
+      </Button>
     </div>
   )
 })
