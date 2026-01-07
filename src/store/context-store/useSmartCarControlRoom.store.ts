@@ -54,7 +54,9 @@ const createInitialState = () =>
   } as StateType)
 
 export const createSmartCarControlRoomStore = (senders: WsSendersType) => {
-  return createStore<StateType & ActionsType & WsSendersType & CustomerSenderType>()(
+  return createStore<
+    StateType & ActionsType & WsSendersType & CustomerSenderType
+  >()(
     devtools(
       (set, get) => ({
         ...createInitialState(),
@@ -89,7 +91,11 @@ export const createSmartCarControlRoomStore = (senders: WsSendersType) => {
           )
         },
         updateLockSmartCarMapView: (enable) => {
-          set({ lockSmartCarMapView: enable }, false, 'updateLockSmartCarMapView')
+          set(
+            { lockSmartCarMapView: enable },
+            false,
+            'updateLockSmartCarMapView',
+          )
         },
       }),
       {
@@ -108,7 +114,9 @@ export const SmartCarControlRoomStoreContext =
   createContext<SmartCarControlRoomStoreType | null>(null)
 
 export const useSmartCarControlRoomStore = <T>(
-  select: (state: StateType & ActionsType & WsSendersType & CustomerSenderType) => T,
+  select: (
+    state: StateType & ActionsType & WsSendersType & CustomerSenderType,
+  ) => T,
 ) => {
   const store = useContext(SmartCarControlRoomStoreContext)!
   return useStore(store, select)
@@ -134,7 +142,9 @@ export const useCreateSmartCarControlRoomStore = (
     switch (wsData.method) {
       case 'event.property.post':
       case 'properties.state':
-        storeRef.current?.getState().updateState(wsData.data || {})
+        if (wsData.deviceId === deviceId) {
+          storeRef.current?.getState().updateState(wsData.data || {})
+        }
         break
       default:
         break
