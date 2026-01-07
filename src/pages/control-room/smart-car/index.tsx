@@ -17,7 +17,7 @@ import { useStore } from 'zustand'
 import SmartCarControlRoomHeader from './components/SmartCarControlRoomHeader'
 import SmartCarMap from './components/SmartCarMap'
 import SmartCarVideoPanel from './components/SmartCarVideoPanel'
-import SmartCarVideoSelector from './components/SmartCarVideoSelector'
+import SmartCarVideoTools from './components/SmartCarVideoTools'
 import { useSmartCarVideoSelection } from './hooks/useSmartCarVideoSelection'
 import {
   SmartCarGimbalControlRoomStoreContext,
@@ -147,6 +147,11 @@ const PageControlRoomSmartCar: FC = memo(() => {
       defaultValue: initialLayout,
     },
   )
+  const [videoLayoutResetKey, setVideoLayoutResetKey] = useState(0)
+
+  const handleVideoLayoutReset = useMemoizedFn(() => {
+    setVideoLayoutResetKey((prev) => prev + 1)
+  })
 
   const iconMap = useMemo(
     () => ({
@@ -180,6 +185,7 @@ const PageControlRoomSmartCar: FC = memo(() => {
           selectedVideoIds={selectedVideoIds}
           onSelectedChange={handleSelectedChange}
           gimbalDevice={gimbalDevice}
+          layoutResetKey={videoLayoutResetKey}
         />
       ),
       gimbal_control: <SmartCarGimbalControl gimbalDevice={gimbalDevice} />,
@@ -192,6 +198,7 @@ const PageControlRoomSmartCar: FC = memo(() => {
       handleSelectedChange,
       selectedVideoIds,
       t,
+      videoLayoutResetKey,
       videoItems,
     ],
   )
@@ -199,10 +206,11 @@ const PageControlRoomSmartCar: FC = memo(() => {
   const toolsMap = useMemo(() => {
     return {
       video: (
-        <SmartCarVideoSelector
+        <SmartCarVideoTools
           videoItems={videoItems}
           isAllVideoSelected={isAllVideoSelected}
           onToggleAll={toggleAllVideoSelection}
+          onResetLayout={handleVideoLayoutReset}
           menuItems={videoMenuItems}
           open={isVideoMenuOpen}
           onOpenChange={handleVideoMenuOpenChange}
@@ -211,6 +219,7 @@ const PageControlRoomSmartCar: FC = memo(() => {
     }
   }, [
     handleVideoMenuOpenChange,
+    handleVideoLayoutReset,
     isAllVideoSelected,
     isVideoMenuOpen,
     toggleAllVideoSelection,
