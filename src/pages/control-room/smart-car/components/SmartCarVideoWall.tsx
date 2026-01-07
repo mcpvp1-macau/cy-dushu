@@ -281,12 +281,20 @@ const SmartCarVideoWall: FC<PropsType> = memo(
 
     const handleDragOver = useMemoizedFn(
       (slotIndex: number, event: React.DragEvent<HTMLDivElement>) => {
-        if (draggingSlotIndex === null || draggingSlotIndex === slotIndex) {
+        if (draggingSlotIndex === null) {
           return
         }
 
         event.preventDefault()
         event.dataTransfer.dropEffect = 'move'
+
+        if (draggingSlotIndex === slotIndex) {
+          setDragOverSlotIndex(null)
+          updateDragBoxStyle(slotIndex)
+          // 业务规则：拖回起始分块时，定位框需要回到原位。
+          return
+        }
+
         setDragOverSlotIndex(slotIndex)
         updateDragBoxStyle(slotIndex)
       },
@@ -344,7 +352,7 @@ const SmartCarVideoWall: FC<PropsType> = memo(
               useTopBar={false}
             />
           ) : (
-            <div className="absolute inset-0 flex items-center justify-center text-sm text-fore/70">
+            <div className="absolute inset-0 flex items-center justify-center text-sm text-fore/70 select-none">
               暂无视频
             </div>
           )}
