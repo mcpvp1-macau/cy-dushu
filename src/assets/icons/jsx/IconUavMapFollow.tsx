@@ -1,31 +1,22 @@
-import { type SVGAttributes } from 'react'
-import Icon from '@ant-design/icons'
+import { SVGProps } from 'react'
 
-type IconParams = Omit<Parameters<typeof Icon>[0], 'component'>
-
-const iconSvg = (props: SVGAttributes<SVGElement>) => {
+export default function IconUavMapFollow(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 1024 1024" {...props}>
-      <path
-        d="M512 96C282.304 96 96 282.304 96 512s186.304 416 416 416 416-186.304 416-416S741.696 96 512 96zm0 704c-158.784 0-288-129.216-288-288S353.216 224 512 224s288 129.216 288 288-129.216 288-288 288z"
-        fill="currentColor"
-      />
-      <path
-        d="M512 336a112 112 0 1 0 112 112A112 112 0 0 0 512 336zm0 160a48 48 0 1 1 48-48 48 48 0 0 1-48 48z"
-        fill="currentColor"
-      />
-      <path
-        d="M320 480h72a24 24 0 0 1 24 24v16a24 24 0 0 1-24 24h-72a24 24 0 0 1-24-24v-16a24 24 0 0 1 24-24zm312 40v-16a24 24 0 0 1 24-24h72a24 24 0 0 1 24 24v16a24 24 0 0 1-24 24h-72a24 24 0 0 1-24-24zM488 344v-72a24 24 0 0 1 24-24h16a24 24 0 0 1 24 24v72a24 24 0 0 1-24 24h-16a24 24 0 0 1-24-24zm0 408v-72a24 24 0 0 1 24-24h16a24 24 0 0 1 24 24v72a24 24 0 0 1-24 24h-16a24 24 0 0 1-24-24z"
-        fill="currentColor"
-      />
-      <path
-        d="M624.96 320a24 24 0 0 1-1.216-33.952l64-68.224a24 24 0 0 1 31.648-2.592l144 104a24 24 0 0 1-7.2 42.256l-176 48a24 24 0 0 1-18.208-2.256l-51.2-27.776a24 24 0 0 1-10.624-19.456zm81.12-8.864-33.472 35.68 12.224 6.624 74.432-20.288z"
-        fill="currentColor"
-      />
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      {/* Icon from MingCute Icon by MingCute Design - https://github.com/Richard9394/MingCute/blob/main/LICENSE */}
+      <g fill="none" fillRule="evenodd">
+        <path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z" />
+        <path
+          fill="currentColor"
+          d="M3 5a2 2 0 0 1 2-2h2a1 1 0 0 1 0 2H5v2a1 1 0 0 1-2 0zm0 14a2 2 0 0 0 2 2h2a1 1 0 1 0 0-2H5v-2a1 1 0 1 0-2 0zM19 3a2 2 0 0 1 2 2v2a1 1 0 1 1-2 0V5h-2a1 1 0 1 1 0-2zm2 16a2 2 0 0 1-2 2h-2a1 1 0 1 1 0-2h2v-2a1 1 0 1 1 2 0zM16.955 8.358a1 1 0 0 0-1.313-1.313l-9.9 4.243a1 1 0 0 0 .17 1.893l3.986.92l.92 3.987a1 1 0 0 0 1.894.17zm-5.998 3.935l-1.614-.372l4.789-2.053l-2.053 4.79l-.373-1.615a1 1 0 0 0-.749-.75"
+        />
+      </g>
     </svg>
   )
 }
-
-const IconUavMapFollow = (props: IconParams) => <Icon component={iconSvg} {...props} />
-
-export default IconUavMapFollow

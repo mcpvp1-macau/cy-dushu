@@ -22,7 +22,7 @@ const MapViewLockToggle: FC = memo(() => {
       active={mapViewLocked}
       onClick={() => updateMapViewLocked(!mapViewLocked)}
     >
-      <IconUavMapFollow />
+      <IconUavMapFollow className="text-xl" />
     </FloatIconButton>
   )
 })

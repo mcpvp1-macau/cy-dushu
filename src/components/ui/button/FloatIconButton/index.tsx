@@ -23,7 +23,7 @@ const FloatIconButton: FC<PropsType> = memo(
           ),
         )}
       >
-        <IconButton className="size-full" active={active} {...props} />
+        <IconButton active={active} {...props} />
       </div>
     )
   },
