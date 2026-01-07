@@ -1,4 +1,5 @@
 import IconCameraVideo from '@/assets/icons/jsx/IconCameraVideo'
+import IconVisible from '@/assets/icons/jsx/IconVisible'
 import IconButton from '@/components/ui/button/IconButton'
 import { Dropdown, type MenuProps } from 'antd'
 
@@ -20,6 +21,7 @@ const SmartCarVideoSelector: FC<SmartCarVideoSelectorProps> = (props) => {
     >
       <Dropdown
         trigger={['click']}
+        placement="bottomRight"
         disabled={!hasItems}
         open={open}
         onOpenChange={onOpenChange}
@@ -27,9 +29,14 @@ const SmartCarVideoSelector: FC<SmartCarVideoSelectorProps> = (props) => {
           items: menuItems,
         }}
       >
-        <IconButton className="text-blue-500">
+        <div className="text-fore flex gap-3 cursor-pointer bg-ground-2 px-3 border border-solid border-ground-5 rounded select-none">
           <IconCameraVideo />
-        </IconButton>
+          视频通道
+          {/* TODO: 实现一键全部显示/隐藏，并改变对应 Icon 的状态 */}
+          <IconButton>
+            <IconVisible />
+          </IconButton>
+        </div>
       </Dropdown>
     </div>
   )

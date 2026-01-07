@@ -63,8 +63,6 @@ export const createSmartCarGimbalControlRoomStore = () => {
         updateState: (state: StateType['latestState']) => {
           // 业务规则：控制权字段可能不随每次状态上报，缺失时保持上一次控制权。
           const controlTag = state?.controlTag ?? get().state?.controlTag
-          console.log('controlTag', controlTag)
-          console.log('get().uuid', get().uuid)
           set(
             {
               latestState: state,
