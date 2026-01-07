@@ -1307,6 +1307,7 @@ controlRoom:
     map: Map
     video: Video
     videoChannel: Video channels
+    resetLayout: Reset layout
     noVideo: No video
     gimbalPanel: Gimbal panel
     noGimbal: No gimbal device

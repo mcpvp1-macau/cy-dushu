@@ -6,10 +6,17 @@ type PropsType = {
   selectedVideoIds: string[]
   onSelectedChange: (nextIds: string[]) => void
   gimbalDevice?: API_DEVICE.domain.Device | null
+  layoutResetKey?: number
 }
 
 const SmartCarVideoPanel: FC<PropsType> = memo(
-  ({ deviceDetail, videoItems, selectedVideoIds, onSelectedChange }) => {
+  ({
+    deviceDetail,
+    videoItems,
+    selectedVideoIds,
+    onSelectedChange,
+    layoutResetKey,
+  }) => {
     const { t } = useTranslation()
 
     return (
@@ -21,6 +28,7 @@ const SmartCarVideoPanel: FC<PropsType> = memo(
               videoItems={videoItems}
               selectedIds={selectedVideoIds}
               onSelectedChange={onSelectedChange}
+              layoutResetKey={layoutResetKey}
             />
           ) : (
             <div className="p-3 text-sm text-fore-2">

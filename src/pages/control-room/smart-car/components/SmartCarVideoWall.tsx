@@ -16,12 +16,13 @@ type PropsType = {
   videoItems: SmartCarVideoItem[]
   selectedIds: string[]
   onSelectedChange: (nextIds: string[]) => void
+  layoutResetKey?: number
 }
 
 const MIN_PANEL_SIZE = 120
 
 const SmartCarVideoWall: FC<PropsType> = memo(
-  ({ videoItems, selectedIds, onSelectedChange }) => {
+  ({ videoItems, selectedIds, onSelectedChange, layoutResetKey }) => {
     const videoIdMap = useMemo(() => {
       const map = new Map<string, SmartCarVideoItem>()
       videoItems.forEach((item) => {
@@ -117,8 +118,8 @@ const SmartCarVideoWall: FC<PropsType> = memo(
       const sizeValue = 100 / gridSize
       setRowSizes(Array.from({ length: gridSize }, () => sizeValue))
       setColSizes(Array.from({ length: gridSize }, () => sizeValue))
-      // 业务规则：布局行列变化时重置为均分，避免历史拖拽比例失真。
-    }, [gridSize])
+      // 业务规则：布局变化或点击复位时均分分块比例，避免历史拖拽比例失真。
+    }, [gridSize, layoutResetKey])
 
     const getNextUnselectedId = useMemoizedFn(
       (currentId: string | undefined, step: number) => {

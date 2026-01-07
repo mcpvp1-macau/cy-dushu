@@ -1285,6 +1285,7 @@ controlRoom:
     map: 地图
     video: 视频
     videoChannel: 视频通道
+    resetLayout: 复位
     noVideo: 暂无视频
     gimbalPanel: 云台操作
     noGimbal: 暂无云台设备
