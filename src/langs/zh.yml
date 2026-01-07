@@ -396,6 +396,8 @@ common:
   back: 返回
   save: 保存
   edit: 编辑
+  showAll: 全部显示
+  hideAll: 全部隐藏
   color: 颜色
   time: 时间
   position: 位置
@@ -1282,6 +1284,7 @@ controlRoom:
   smartCar:
     map: 地图
     video: 视频
+    videoChannel: 视频通道
     noVideo: 暂无视频
     gimbalPanel: 云台操作
     noGimbal: 暂无云台设备

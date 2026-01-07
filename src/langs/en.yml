@@ -407,6 +407,8 @@ common:
   back: Back
   save: Save
   edit: Edit
+  showAll: Show all
+  hideAll: Hide all
   color: Color
   time: Time
   position: Pos
@@ -1304,6 +1306,7 @@ controlRoom:
   smartCar:
     map: Map
     video: Video
+    videoChannel: Video channels
     noVideo: No video
     gimbalPanel: Gimbal panel
     noGimbal: No gimbal device

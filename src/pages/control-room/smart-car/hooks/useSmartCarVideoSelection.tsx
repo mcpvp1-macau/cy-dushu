@@ -13,6 +13,8 @@ type UseSmartCarVideoSelectionResult = {
   videoItems: SmartCarVideoItem[]
   selectedVideoIds: string[]
   handleSelectedChange: (nextIds: string[]) => void
+  isAllVideoSelected: boolean
+  toggleAllVideoSelection: () => void
   videoMenuItems: MenuProps['items']
   isVideoMenuOpen: boolean
   handleVideoMenuOpenChange: (
@@ -89,6 +91,30 @@ export const useSmartCarVideoSelection = (
     setSelectedVideoIds(nextIds)
   })
 
+  const allVideoIds = useMemo(() => {
+    return videoItems.map((item) => item.id)
+  }, [videoItems])
+
+  const isAllVideoSelected = useMemo(() => {
+    if (allVideoIds.length === 0) {
+      return false
+    }
+
+    return allVideoIds.every((id) => selectedVideoIds.includes(id))
+  }, [allVideoIds, selectedVideoIds])
+
+  const toggleAllVideoSelection = useMemoizedFn(() => {
+    if (!allVideoIds.length) {
+      return
+    }
+
+    setSelectedVideoIds((prev) => {
+      const isAllSelected = allVideoIds.every((id) => prev.includes(id))
+      // 业务规则：一键切换时按列表顺序全选，或清空已选。
+      return isAllSelected ? [] : [...allVideoIds]
+    })
+  })
+
   const toggleVideoSelection = useMemoizedFn((videoId: string) => {
     setSelectedVideoIds((prev) => {
       if (prev.includes(videoId)) {
@@ -148,6 +174,8 @@ export const useSmartCarVideoSelection = (
     videoItems,
     selectedVideoIds,
     handleSelectedChange,
+    isAllVideoSelected,
+    toggleAllVideoSelection,
     videoMenuItems,
     isVideoMenuOpen,
     handleVideoMenuOpenChange,
