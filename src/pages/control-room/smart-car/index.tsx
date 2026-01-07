@@ -114,6 +114,8 @@ const PageControlRoomSmartCar: FC = memo(() => {
     videoItems,
     selectedVideoIds,
     handleSelectedChange,
+    isAllVideoSelected,
+    toggleAllVideoSelection,
     videoMenuItems,
     isVideoMenuOpen,
     handleVideoMenuOpenChange,
@@ -198,13 +200,23 @@ const PageControlRoomSmartCar: FC = memo(() => {
     return {
       video: (
         <SmartCarVideoSelector
+          videoItems={videoItems}
+          isAllVideoSelected={isAllVideoSelected}
+          onToggleAll={toggleAllVideoSelection}
           menuItems={videoMenuItems}
           open={isVideoMenuOpen}
           onOpenChange={handleVideoMenuOpenChange}
         />
       ),
     }
-  }, [handleVideoMenuOpenChange, isVideoMenuOpen, videoMenuItems])
+  }, [
+    handleVideoMenuOpenChange,
+    isAllVideoSelected,
+    isVideoMenuOpen,
+    toggleAllVideoSelection,
+    videoItems,
+    videoMenuItems,
+  ])
 
   return (
     <DeviceDetailStoreContext.Provider value={store}>
