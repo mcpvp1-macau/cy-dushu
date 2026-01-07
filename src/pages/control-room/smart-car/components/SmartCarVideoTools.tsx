@@ -31,10 +31,12 @@ const SmartCarVideoTools: FC<SmartCarVideoToolsProps> = (props) => {
 
   const hasItems = (menuItems?.length ?? 0) > 0
 
-  const handleToggleAll = useMemoizedFn((event: MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation()
-    onToggleAll()
-  })
+  const handleToggleAll = useMemoizedFn(
+    (event: MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation()
+      onToggleAll()
+    },
+  )
 
   const handleResetLayout = useMemoizedFn(
     (event: MouseEvent<HTMLButtonElement>) => {
@@ -54,9 +56,17 @@ const SmartCarVideoTools: FC<SmartCarVideoToolsProps> = (props) => {
 
   return (
     <div
+      className="flex gap-3"
       onClick={(e) => e.stopPropagation()}
       onDoubleClick={(e) => e.stopPropagation()}
     >
+      <IconButton
+        tippyProps={{ content: resetText }}
+        disabled={!videoItems.length}
+        onClick={handleResetLayout}
+      >
+        <ReloadOutlined />
+      </IconButton>
       <Dropdown
         trigger={['click']}
         placement="bottomRight"
@@ -67,16 +77,18 @@ const SmartCarVideoTools: FC<SmartCarVideoToolsProps> = (props) => {
           items: menuItems,
         }}
       >
-        <div className="text-fore flex gap-3 cursor-pointer bg-ground-2 px-3 border border-solid border-ground-5 rounded select-none">
+        <div className="text-fore flex gap-3 cursor-pointer bg-ground-2 px-4 border border-solid border-ground-5 rounded select-none">
           <IconCameraVideo />
           {t('controlRoom.smartCar.videoChannel', { defaultValue: '视频通道' })}
-          <IconButton disabled={!videoItems.length} onClick={handleToggleAll}>
-            <span className="sr-only">{toggleText}</span>
+
+          <IconButton
+            tippyProps={{
+              content: toggleText,
+            }}
+            disabled={!videoItems.length}
+            onClick={handleToggleAll}
+          >
             {toggleIcon}
-          </IconButton>
-          <IconButton disabled={!videoItems.length} onClick={handleResetLayout}>
-            <span className="sr-only">{resetText}</span>
-            <ReloadOutlined />
           </IconButton>
         </div>
       </Dropdown>
