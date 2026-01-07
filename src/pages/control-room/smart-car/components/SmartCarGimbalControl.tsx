@@ -152,12 +152,6 @@ const SmartCarGimbalControl: FC<PropsType> = memo(({ gimbalDevice }) => {
 
         {/* 变焦倍数控制 */}
         <div className="mt-4 flex flex-col items-center gap-2">
-          <div className="text-xs text-fore opacity-80">
-            {t('controlRoom.control.zoomFactor.title', {
-              defaultValue: '变焦倍数',
-            })}
-            :<span className="ml-1 font-medium">{zoomFactor ?? '-'}</span>
-          </div>
           <div className="flex gap-2">
             <Tooltip
               title={t('controlRoom.control.zoomOut.title', {
@@ -207,12 +201,7 @@ const SmartCarGimbalControl: FC<PropsType> = memo(({ gimbalDevice }) => {
         </div>
       </div>
 
-      <Button
-        size="small"
-        type="primary"
-        disabled={!canControl}
-        onClick={handleReset}
-      >
+      <Button type="primary" disabled={!canControl} onClick={handleReset}>
         {t('controlRoom.control.gimbalReset.title', { defaultValue: '复位' })}
       </Button>
     </div>
