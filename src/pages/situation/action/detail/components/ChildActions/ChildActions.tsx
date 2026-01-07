@@ -18,10 +18,12 @@ import ChildActionQuickPin from './ChildActionQuickPin'
 type PropsType = {
   actionId: number
   isBacktracking?: boolean
+  actionType?: string
 }
 
 /** 子任务列表 */
-const ChildActions: FC<PropsType> = memo(({ actionId, isBacktracking }) => {
+const ChildActions: FC<PropsType> = memo(
+  ({ actionId, isBacktracking, actionType }) => {
   const queryClient = useQueryClient()
 
   const useStore = isBacktracking ? useBackTrackingStore : null
@@ -121,6 +123,9 @@ const ChildActions: FC<PropsType> = memo(({ actionId, isBacktracking }) => {
   useGetDensityStatistics({ actionId })
   useListenRealDensityMap((deviceId) => runningDeviceIds.has(deviceId))
 
+  // 业务规则：只有行动类型为 ltfk 才展示一键钉出入口
+  const showQuickPin = actionType === 'ltfk'
+
   return (
     <>
       <div>
@@ -131,9 +136,11 @@ const ChildActions: FC<PropsType> = memo(({ actionId, isBacktracking }) => {
         ) : (
           <ScrollArea className="max-h-[45vh]">
             <Spin spinning={isRefetching}>
-              <div className="flex justify-end px-3 pt-3">
-                <ChildActionQuickPin actionItems={data} />
-              </div>
+              {showQuickPin && (
+                <div className="flex justify-end px-3 pt-3">
+                  <ChildActionQuickPin actionItems={data} />
+                </div>
+              )}
               <ul className="flex flex-col gap-3 p-3 pt-2">
                 {data2.map((item) => (
                   <li

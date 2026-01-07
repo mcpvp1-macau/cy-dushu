@@ -109,6 +109,7 @@ const PageActionDetailSub: FC<PropsType> = memo(
             <ChildActions
               actionId={actionId}
               isBacktracking={isBacktracking}
+              actionType={actionDetail?.type}
             />
           </AppViewSuspense>
         ),
