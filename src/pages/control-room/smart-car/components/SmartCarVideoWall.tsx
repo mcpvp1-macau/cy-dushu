@@ -75,16 +75,36 @@ const SmartCarVideoWall: FC<PropsType> = memo(
         return
       }
       setSlotVideoIds((prev) => {
+        const usedIds = new Set<string>()
         const next = Array.from({ length: slotCount }, (_, index) => {
           const prevId = prev[index]
-          if (prevId && selectedSet.has(prevId)) {
+          if (prevId && selectedSet.has(prevId) && !usedIds.has(prevId)) {
+            usedIds.add(prevId)
             return prevId
           }
-          return selectedIds[index] ?? ''
+          return ''
         })
+
+        let fillIndex = 0
+        for (let i = 0; i < next.length; i += 1) {
+          if (next[i]) {
+            continue
+          }
+
+          while (fillIndex < selectedIds.length) {
+            const candidate = selectedIds[fillIndex]
+            fillIndex += 1
+            if (!candidate || usedIds.has(candidate)) {
+              continue
+            }
+            next[i] = candidate
+            usedIds.add(candidate)
+            break
+          }
+        }
         return next
       })
-      // 业务规则：选中项变化时，优先保留已选中的分块视频。
+      // 业务规则：选中项变化时，保留已选中的分块并去重，其余按当前选中顺序补齐。
     }, [selectedIds, selectedSet, slotCount])
 
     useEffect(() => {
@@ -192,6 +212,31 @@ const SmartCarVideoWall: FC<PropsType> = memo(
       },
     )
 
+    const handleMoveToEmptySlot = useMemoizedFn(
+      (fromIndex: number, toIndex: number) => {
+        if (fromIndex === toIndex) {
+          return
+        }
+
+        const fromId = slotVideoIds[fromIndex]
+        const toId = slotVideoIds[toIndex]
+
+        if (!fromId || toId) {
+          return
+        }
+
+        const nextSlotVideoIds = [...slotVideoIds]
+        nextSlotVideoIds[toIndex] = fromId
+        nextSlotVideoIds[fromIndex] = ''
+
+        const nextSelected = nextSlotVideoIds.filter(Boolean) as string[]
+
+        onSelectedChange(nextSelected)
+        setSlotVideoIds(nextSlotVideoIds)
+        // 业务规则：允许移动到空槽位，空槽位保留在原位置。
+      },
+    )
+
     const handleDragStart = useMemoizedFn(
       (slotIndex: number, event: React.DragEvent<HTMLDivElement>) => {
         const currentId = slotVideoIds[slotIndex]
@@ -209,10 +254,6 @@ const SmartCarVideoWall: FC<PropsType> = memo(
     const handleDragOver = useMemoizedFn(
       (slotIndex: number, event: React.DragEvent<HTMLDivElement>) => {
         if (draggingSlotIndex === null || draggingSlotIndex === slotIndex) {
-          return
-        }
-
-        if (!slotVideoIds[slotIndex]) {
           return
         }
 
@@ -240,7 +281,11 @@ const SmartCarVideoWall: FC<PropsType> = memo(
           return
         }
 
-        handleSwapSlots(sourceIndex, slotIndex)
+        if (!slotVideoIds[slotIndex]) {
+          handleMoveToEmptySlot(sourceIndex, slotIndex)
+        } else {
+          handleSwapSlots(sourceIndex, slotIndex)
+        }
         setDraggingSlotIndex(null)
         setDragOverSlotIndex(null)
       },
@@ -260,6 +305,7 @@ const SmartCarVideoWall: FC<PropsType> = memo(
         <div className="size-full bg-black/70 relative overflow-hidden">
           {video ? (
             <DeviceLiveVideo
+              key={video.id}
               deviceId={video.deviceId}
               productKey={video.productKey}
               videoId={video.videoId}
@@ -417,7 +463,7 @@ const SmartCarVideoWall: FC<PropsType> = memo(
           >
             {Array.from({ length: slotCount }, (_, index) => (
               <div
-                key={`cell-${index}`}
+                key={`cell-${index}-${slotVideoIds[index] || 'empty'}`}
                 className={clsx(
                   'relative overflow-hidden border border-ground-5/40',
                   dragOverSlotIndex === index && 'ring-2 ring-primary/70',
