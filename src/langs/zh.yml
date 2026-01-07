@@ -597,6 +597,8 @@ common:
   task: 任务
   noTask: 无任务
   accept: 我已知晓
+  zoomOut: 缩小
+  zoomIn: 放大
 events:
   search:
     placeholder: 请根据事件名称或 ID 搜索

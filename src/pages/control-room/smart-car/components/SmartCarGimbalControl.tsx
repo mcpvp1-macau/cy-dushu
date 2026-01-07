@@ -156,42 +156,40 @@ const SmartCarGimbalControl: FC<PropsType> = memo(({ gimbalDevice }) => {
         {/* 变焦倍数控制 */}
         <div className="flex flex-col items-center gap-2">
           <div className="flex flex-col gap-2">
-            <Tooltip
-              title={t('controlRoom.control.zoomOut.title', {
-                defaultValue: '缩小',
-              })}
+            <IconButton
+              tippyProps={{
+                content: t('common.zoomOut', {
+                  defaultValue: '缩小',
+                }),
+              }}
+              className="text-2xl text-primary"
+              disabled={!canControl}
+              onMouseDown={() => setZoomKey(-1)}
+              onTouchStart={() => setZoomKey(-1)}
+              onMouseUp={resetZoom}
+              onMouseLeave={resetZoom}
+              onTouchEnd={resetZoom}
+              onTouchCancel={resetZoom}
             >
-              <IconButton
-                className="text-2xl text-primary"
-                disabled={!canControl}
-                onMouseDown={() => setZoomKey(-1)}
-                onTouchStart={() => setZoomKey(-1)}
-                onMouseUp={resetZoom}
-                onMouseLeave={resetZoom}
-                onTouchEnd={resetZoom}
-                onTouchCancel={resetZoom}
-              >
-                <ZoomOutOutlined />
-              </IconButton>
-            </Tooltip>
-            <Tooltip
-              title={t('controlRoom.control.zoomIn.title', {
-                defaultValue: '放大',
-              })}
+              <ZoomOutOutlined />
+            </IconButton>
+            <IconButton
+              tippyProps={{
+                content: t('common.zoomIn', {
+                  defaultValue: '放大',
+                }),
+              }}
+              className="text-2xl text-primary"
+              disabled={!canControl}
+              onMouseDown={() => setZoomKey(1)}
+              onTouchStart={() => setZoomKey(1)}
+              onMouseUp={resetZoom}
+              onMouseLeave={resetZoom}
+              onTouchEnd={resetZoom}
+              onTouchCancel={resetZoom}
             >
-              <IconButton
-                className="text-2xl text-primary"
-                disabled={!canControl}
-                onMouseDown={() => setZoomKey(1)}
-                onTouchStart={() => setZoomKey(1)}
-                onMouseUp={resetZoom}
-                onMouseLeave={resetZoom}
-                onTouchEnd={resetZoom}
-                onTouchCancel={resetZoom}
-              >
-                <ZoomInOutlined />
-              </IconButton>
-            </Tooltip>
+              <ZoomInOutlined />
+            </IconButton>
           </div>
         </div>
       </div>

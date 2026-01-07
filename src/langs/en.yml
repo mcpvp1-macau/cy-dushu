@@ -608,6 +608,8 @@ common:
   task: Task
   noTask: Idle
   accept: Accepted
+  zoomOut: Zoom Out
+  zoomIn: Zoom In
 events:
   search:
     placeholder: Please search by event name or ID

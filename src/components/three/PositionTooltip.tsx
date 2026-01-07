@@ -4,10 +4,6 @@ import tippy, { type Instance } from 'tippy.js'
 import { ComponentRef } from 'react'
 import { useThreeCanvasWrapper } from './ThreeCanvas'
 import { v4 } from 'uuid'
-import 'tippy.js/dist/tippy.css'
-import 'tippy.js/dist/border.css'
-import 'tippy.js/animations/scale.css'
-import 'tippy.js/animations/scale-subtle.css'
 
 type PropsType = {
   position: Vector3

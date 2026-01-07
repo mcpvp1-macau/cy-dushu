@@ -94,7 +94,7 @@ const Compass: FC = memo(() => {
       onClick={handleResetNorth}
       aria-label={resetLabel}
     >
-      <div className="relative size-full">
+      <div className="absolute inset-0">
         <div className="absolute inset-[6px] rounded-full border border-ground-4/50" />
         <div
           className="absolute inset-0 flex items-center justify-center transition-transform duration-150"
