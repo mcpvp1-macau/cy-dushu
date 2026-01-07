@@ -60,6 +60,12 @@ const SmartCarVideoWall: FC<PropsType> = memo(
     const [dragOverSlotIndex, setDragOverSlotIndex] = useState<number | null>(
       null,
     )
+    const [dragBoxStyle, setDragBoxStyle] = useState<{
+      left: number
+      top: number
+      width: number
+      height: number
+    } | null>(null)
     const [dragState, setDragState] = useState<{
       axis: 'row' | 'col'
       index: number
@@ -68,6 +74,7 @@ const SmartCarVideoWall: FC<PropsType> = memo(
     } | null>(null)
 
     const containerRef = useRef<HTMLDivElement | null>(null)
+    const slotRefs = useRef<Array<HTMLDivElement | null>>([])
     const size = useSize(containerRef)
 
     useEffect(() => {
@@ -238,6 +245,25 @@ const SmartCarVideoWall: FC<PropsType> = memo(
       },
     )
 
+    const updateDragBoxStyle = useMemoizedFn((slotIndex: number) => {
+      const container = containerRef.current
+      const slot = slotRefs.current[slotIndex]
+      if (!container || !slot) {
+        return
+      }
+
+      const containerRect = container.getBoundingClientRect()
+      const slotRect = slot.getBoundingClientRect()
+
+      setDragBoxStyle({
+        left: slotRect.left - containerRect.left,
+        top: slotRect.top - containerRect.top,
+        width: slotRect.width,
+        height: slotRect.height,
+      })
+      // 业务规则：拖拽时以容器内坐标定位，确保缩放或滚动下的定位准确。
+    })
+
     const handleDragStart = useMemoizedFn(
       (slotIndex: number, event: React.DragEvent<HTMLDivElement>) => {
         const currentId = slotVideoIds[slotIndex]
@@ -249,18 +275,28 @@ const SmartCarVideoWall: FC<PropsType> = memo(
         event.dataTransfer.effectAllowed = 'move'
         event.dataTransfer.setData('text/plain', String(slotIndex))
         setDraggingSlotIndex(slotIndex)
+        updateDragBoxStyle(slotIndex)
       },
     )
 
     const handleDragOver = useMemoizedFn(
       (slotIndex: number, event: React.DragEvent<HTMLDivElement>) => {
-        if (draggingSlotIndex === null || draggingSlotIndex === slotIndex) {
+        if (draggingSlotIndex === null) {
           return
         }
 
         event.preventDefault()
         event.dataTransfer.dropEffect = 'move'
+
+        if (draggingSlotIndex === slotIndex) {
+          setDragOverSlotIndex(null)
+          updateDragBoxStyle(slotIndex)
+          // 业务规则：拖回起始分块时，定位框需要回到原位。
+          return
+        }
+
         setDragOverSlotIndex(slotIndex)
+        updateDragBoxStyle(slotIndex)
       },
     )
 
@@ -289,12 +325,14 @@ const SmartCarVideoWall: FC<PropsType> = memo(
         }
         setDraggingSlotIndex(null)
         setDragOverSlotIndex(null)
+        setDragBoxStyle(null)
       },
     )
 
     const handleDragEnd = useMemoizedFn(() => {
       setDraggingSlotIndex(null)
       setDragOverSlotIndex(null)
+      setDragBoxStyle(null)
     })
 
     const renderVideoCell = useMemoizedFn((slotIndex: number) => {
@@ -314,7 +352,7 @@ const SmartCarVideoWall: FC<PropsType> = memo(
               useTopBar={false}
             />
           ) : (
-            <div className="absolute inset-0 flex items-center justify-center text-sm text-fore/70">
+            <div className="absolute inset-0 flex items-center justify-center text-sm text-fore/70 select-none">
               暂无视频
             </div>
           )}
@@ -465,6 +503,9 @@ const SmartCarVideoWall: FC<PropsType> = memo(
             {Array.from({ length: slotCount }, (_, index) => (
               <div
                 key={`cell-${index}-${slotVideoIds[index] || 'empty'}`}
+                ref={(element) => {
+                  slotRefs.current[index] = element
+                }}
                 className={clsx(
                   'relative overflow-hidden border border-ground-5/40',
                   dragOverSlotIndex === index && 'ring-2 ring-primary/70',
@@ -480,6 +521,18 @@ const SmartCarVideoWall: FC<PropsType> = memo(
               </div>
             ))}
           </div>
+
+          {dragBoxStyle && (
+            <div
+              className="absolute rounded border-2 border-blue-500 bg-blue-500/20 pointer-events-none transition-all duration-200 ease-out"
+              style={{
+                left: dragBoxStyle.left,
+                top: dragBoxStyle.top,
+                width: dragBoxStyle.width,
+                height: dragBoxStyle.height,
+              }}
+            />
+          )}
 
           {colOffsets.map((offset, index) => (
             <div
