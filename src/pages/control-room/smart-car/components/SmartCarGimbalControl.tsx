@@ -90,7 +90,7 @@ const SmartCarGimbalControl: FC<PropsType> = memo(({ gimbalDevice }) => {
   // 按住按钮时每 500ms 发送一次
   useRafInterval(
     () => {
-      sendCommand('moveGimbal', downKey)
+      sendCommand('service.moveGimbal.post', downKey)
     },
     downKey && canControl ? 500 : undefined,
   )
@@ -98,7 +98,7 @@ const SmartCarGimbalControl: FC<PropsType> = memo(({ gimbalDevice }) => {
   // 按住变焦按钮时每 500ms 发送一次
   useRafInterval(
     () => {
-      sendCommand('liveZoomChange', {
+      sendCommand('service.liveZoomChange.post', {
         videoId: 'live',
         zoomFactor: zoomKey,
       })
