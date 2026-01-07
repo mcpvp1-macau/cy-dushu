@@ -53,6 +53,12 @@ const SmartCarVideoWall: FC<PropsType> = memo(
     const [slotVideoIds, setSlotVideoIds] = useState<string[]>([])
     const [rowSizes, setRowSizes] = useState<number[]>([])
     const [colSizes, setColSizes] = useState<number[]>([])
+    const [draggingSlotIndex, setDraggingSlotIndex] = useState<number | null>(
+      null,
+    )
+    const [dragOverSlotIndex, setDragOverSlotIndex] = useState<number | null>(
+      null,
+    )
     const [dragState, setDragState] = useState<{
       axis: 'row' | 'col'
       index: number
@@ -147,6 +153,102 @@ const SmartCarVideoWall: FC<PropsType> = memo(
         return next
       })
       // 业务规则：左右切换时，仅从未选中的视频里替换当前分块。
+    })
+
+    const handleSwapSlots = useMemoizedFn(
+      (fromIndex: number, toIndex: number) => {
+        if (fromIndex === toIndex) {
+          return
+        }
+
+        const fromId = slotVideoIds[fromIndex]
+        const toId = slotVideoIds[toIndex]
+
+        if (!fromId || !toId || fromId === toId) {
+          return
+        }
+
+        const nextSelected = [...selectedIds]
+        const fromSelectedIndex = nextSelected.indexOf(fromId)
+        const toSelectedIndex = nextSelected.indexOf(toId)
+
+        if (fromSelectedIndex === -1 || toSelectedIndex === -1) {
+          // 边界情况：分块状态与选中列表不同步时，不触发交换。
+          return
+        }
+
+        nextSelected[fromSelectedIndex] = toId
+        nextSelected[toSelectedIndex] = fromId
+
+        onSelectedChange(nextSelected)
+
+        setSlotVideoIds((prev) => {
+          const next = [...prev]
+          next[fromIndex] = toId
+          next[toIndex] = fromId
+          return next
+        })
+        // 业务规则：拖拽交换需要同步更新选中顺序，确保布局保持一致。
+      },
+    )
+
+    const handleDragStart = useMemoizedFn(
+      (slotIndex: number, event: React.DragEvent<HTMLDivElement>) => {
+        const currentId = slotVideoIds[slotIndex]
+        if (!currentId) {
+          event.preventDefault()
+          return
+        }
+
+        event.dataTransfer.effectAllowed = 'move'
+        event.dataTransfer.setData('text/plain', String(slotIndex))
+        setDraggingSlotIndex(slotIndex)
+      },
+    )
+
+    const handleDragOver = useMemoizedFn(
+      (slotIndex: number, event: React.DragEvent<HTMLDivElement>) => {
+        if (draggingSlotIndex === null || draggingSlotIndex === slotIndex) {
+          return
+        }
+
+        if (!slotVideoIds[slotIndex]) {
+          return
+        }
+
+        event.preventDefault()
+        event.dataTransfer.dropEffect = 'move'
+        setDragOverSlotIndex(slotIndex)
+      },
+    )
+
+    const handleDragLeave = useMemoizedFn((slotIndex: number) => {
+      if (dragOverSlotIndex === slotIndex) {
+        setDragOverSlotIndex(null)
+      }
+    })
+
+    const handleDrop = useMemoizedFn(
+      (slotIndex: number, event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault()
+
+        const sourceIndex =
+          draggingSlotIndex ??
+          Number.parseInt(event.dataTransfer.getData('text/plain'), 10)
+
+        if (Number.isNaN(sourceIndex)) {
+          return
+        }
+
+        handleSwapSlots(sourceIndex, slotIndex)
+        setDraggingSlotIndex(null)
+        setDragOverSlotIndex(null)
+      },
+    )
+
+    const handleDragEnd = useMemoizedFn(() => {
+      setDraggingSlotIndex(null)
+      setDragOverSlotIndex(null)
     })
 
     const renderVideoCell = useMemoizedFn((slotIndex: number) => {
@@ -316,7 +418,16 @@ const SmartCarVideoWall: FC<PropsType> = memo(
             {Array.from({ length: slotCount }, (_, index) => (
               <div
                 key={`cell-${index}`}
-                className="relative overflow-hidden border border-ground-5/40"
+                className={clsx(
+                  'relative overflow-hidden border border-ground-5/40',
+                  dragOverSlotIndex === index && 'ring-2 ring-primary/70',
+                )}
+                draggable={Boolean(slotVideoIds[index])}
+                onDragStart={(event) => handleDragStart(index, event)}
+                onDragOver={(event) => handleDragOver(index, event)}
+                onDragLeave={() => handleDragLeave(index)}
+                onDrop={(event) => handleDrop(index, event)}
+                onDragEnd={handleDragEnd}
               >
                 {renderVideoCell(index)}
               </div>
