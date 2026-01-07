@@ -49,6 +49,7 @@ export const deviceIconMap: any = {
   MC: '/images/marker/icon/mc.svg',
   UGV: '/images/marker/icon/ugv.svg',
   'DUSHU-MB': '/images/marker/icon/ren.svg',
+  USV: '/images/marker/icon/usv.svg',
   SMART_CAR: '/images/marker/icon/smart_car.svg',
 }
 
