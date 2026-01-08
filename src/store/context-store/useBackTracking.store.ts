@@ -13,6 +13,8 @@ type StateType = {
   currentAttribute: any
   /** 设备详情 */
   detail: API_DEVICE.domain.Device | null
+  /** 选中的轨迹 ID，空值表示不过滤 */
+  selectedTrackId: string | null
 }
 
 type ActionsType = {
@@ -23,6 +25,7 @@ type ActionsType = {
   updateChildActions: (actions: API_ACTION_ITEM.domain.ActionItem[]) => void
   updateCurrentAttribute: (attribute: any) => void
   updateDetail: (detail: API_DEVICE.domain.Device | null) => void
+  updateSelectedTrackId: (trackId: string | null) => void
   resetState: () => void
 }
 
@@ -37,6 +40,7 @@ const createInitialState = () =>
     childActions: [],
     currentAttribute: {},
     detail: null,
+    selectedTrackId: null,
   } as StateType)
 
 export const createBackTrackingStore = () => {
@@ -67,6 +71,9 @@ export const createBackTrackingStore = () => {
         },
         updateDetail(detail) {
           set({ detail })
+        },
+        updateSelectedTrackId(trackId) {
+          set({ selectedTrackId: trackId })
         },
       }),
       {

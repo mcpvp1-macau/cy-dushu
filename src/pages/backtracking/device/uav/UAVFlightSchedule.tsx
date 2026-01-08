@@ -1,3 +1,4 @@
+import TextButton from '@/components/ui/button/TextButton'
 import XTable from '@/components/ui/XTable'
 import { dft, timeOnly } from '@/constant/time-fmt'
 import { getTrackQuery } from '@/service/modules/db-api'
@@ -59,6 +60,11 @@ const UAVFlightSchedule: FC<PropsType> = memo(() => {
 
   const deviceId = useBackTrackingStore((s) => s.detail?.deviceId)
   const timeRange = useBackTrackingStore((s) => s.timeRange)
+  const selectedTrackId = useBackTrackingStore((s) => s.selectedTrackId)
+  const updateSelectedTrackId = useBackTrackingStore(
+    (s) => s.updateSelectedTrackId,
+  )
+  const updateCurrentTime = useBackTrackingStore((s) => s.updateCurrentTime)
 
   const startTime = timeRange?.[0]?.format?.(dft)
   const endTime = timeRange?.[1]?.format?.(dft)
@@ -170,17 +176,45 @@ const UAVFlightSchedule: FC<PropsType> = memo(() => {
     getRowId: (row) => row.trackId,
   })
 
+  const handleSelectTrack = useMemoizedFn((track: TrackSegment) => {
+    if (!track?.trackId) {
+      return
+    }
+
+    updateSelectedTrackId(track.trackId)
+    // 业务规则：选中架次后将时间轴定位到结束时间
+    updateCurrentTime(dayjs(track.endTimestamp))
+  })
+
+  const handleResetTrack = useMemoizedFn(() => {
+    // 业务规则：清空选中架次后，表示不过滤轨迹
+    updateSelectedTrackId(null)
+  })
+
   return (
-    <div className="px-3 pb-3">
-      <div className="border border-solid border-ground-3 rounded overflow-hidden">
-        <div className="overflow-x-auto text-sm">
-          <XTable
-            table={table}
-            loading={isLoading || isRefetching}
-            thClassName="p-1 text-center"
-            tdClassName="p-1 text-center"
-          />
-        </div>
+    <div className="py-3 pt-2 text-sm">
+      <div className="mb-2 mx-3">
+        <TextButton disabled={!selectedTrackId} onClick={handleResetTrack}>
+          {t('backtracking.uavFlightSchedule.showAllTracks', {
+            defaultValue: '显示全部轨迹',
+          })}
+        </TextButton>
+      </div>
+      <div className="overflow-x-auto text-sm">
+        <XTable
+          table={table}
+          loading={isLoading || isRefetching}
+          thClassName="p-1 text-center text-highlight"
+          tdClassName="p-1 text-center"
+          headTrClassName="bg-transparent"
+          rowClassName={(row) =>
+            clsx(
+              'cursor-pointer bg-transparent text-fore',
+              row.original.trackId === selectedTrackId && 'bg-ground-5',
+            )
+          }
+          onRowClick={(row) => handleSelectTrack(row.original)}
+        />
       </div>
     </div>
   )
