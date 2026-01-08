@@ -53,18 +53,10 @@ const DataPeriod: FC<PropsType> = memo(({ deviceId }) => {
       return
     }
     const dataPeriodIdPrefix = 'data-period-'
-    const dataPeriodGroupId = 'data-period-group'
+    const dataPeriodGroupId = 'time-range-group'
     const dataPeriodItemClassName = 'data-period-item'
 
-    // 业务规则：数据段只放在专属分组里，避免混入其他时间轴项
-    if (!groupSets.get(dataPeriodGroupId)) {
-      groupSets.add({
-        id: dataPeriodGroupId,
-        content: '数据采集',
-        // @ts-ignore
-        subgroupStack: { A0: false, __dummy__: true },
-      })
-    }
+    // 业务规则：数据段与时间范围同轨展示，保持对齐
 
     const removeIds = dataSets.getIds({
       filter: (item) =>

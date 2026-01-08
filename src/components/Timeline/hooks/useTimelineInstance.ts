@@ -29,7 +29,7 @@ const useTimelineInstance = (
         type: 'background',
         start: startTime,
         end: endTime,
-        className: 'bg-blue-500',
+        className: 'time-range',
         content: '',
       },
       {
@@ -37,6 +37,7 @@ const useTimelineInstance = (
         type: 'background',
         start: startTime,
         end: endTime,
+        className: 'time-range-visited',
         content: '',
       },
     ])
@@ -44,7 +45,7 @@ const useTimelineInstance = (
     const groupDataSet = new vis.DataSet<vis.DataGroup>([
       {
         id: 'time-range-group',
-        content: '时间范围',
+        content: ' ',
         // @ts-ignore
         subgroupStack: { A0: false, __dummy__: true },
       },

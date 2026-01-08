@@ -82,12 +82,14 @@ const Timeline: FC<PropsType> = memo(
           id: 'time-range',
           type: 'background',
           group: timeRangeGroupId,
+          className: 'time-range',
           content: '',
         },
         {
           id: 'time-range-visited',
           type: 'background',
           group: timeRangeGroupId,
+          className: 'time-range-visited',
           content: '',
         },
       ])
@@ -131,6 +133,7 @@ const Timeline: FC<PropsType> = memo(
           end: currentTime.toDate(),
           content: '',
           group: timeRangeGroupId,
+          className: 'time-range-visited',
         })
       } catch (error) {
         console.error('timeline set items error', error)
@@ -214,6 +217,7 @@ const Timeline: FC<PropsType> = memo(
                       id: 'time-range',
                       content: '',
                       group: timeRangeGroupId,
+                      className: 'time-range',
                       // selectable: false,
                       // editable: false,
                     },
