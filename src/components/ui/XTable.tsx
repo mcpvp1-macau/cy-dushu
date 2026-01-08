@@ -1,4 +1,4 @@
-import { flexRender, Table } from '@tanstack/react-table'
+import { flexRender, Row, Table } from '@tanstack/react-table'
 import AppEmpty from '../AppEmpty.tsx'
 import { Popover, Spin, Switch } from 'antd'
 import IconButtonWithDropDownDialog from './button/IconButtonWithDropDownDialog.tsx'
@@ -12,6 +12,9 @@ type PropsType = {
   loading?: boolean
   thClassName?: string
   tdClassName?: string
+  headTrClassName?: string
+  rowClassName?: string | ((row: Row<any>) => string)
+  onRowClick?: (row: Row<any>) => void
 }
 
 const XTable: FC<PropsType> = ({
@@ -19,6 +22,9 @@ const XTable: FC<PropsType> = ({
   loading,
   thClassName,
   tdClassName,
+  rowClassName,
+  headTrClassName,
+  onRowClick,
 }) => {
   const state = table.getState()
   const isHaveVisible = Object.values(state.columnVisibility).length > 0
@@ -40,7 +46,9 @@ const XTable: FC<PropsType> = ({
           {table.getHeaderGroups().map((headerGroup) => (
             <tr
               key={headerGroup.id}
-              className="rounded overflow-hidden bg-ground-6"
+              className={twMerge(
+                clsx('rounded overflow-hidden bg-ground-6', headTrClassName),
+              )}
             >
               {headerGroup.headers.map((header) => (
                 <th
@@ -129,7 +137,18 @@ const XTable: FC<PropsType> = ({
         </thead>
         <tbody className="text-sm">
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="bg-ground-4 hover:bg-ground-5">
+            <tr
+              key={row.id}
+              className={twMerge(
+                clsx(
+                  'bg-ground-4 hover:bg-ground-5',
+                  typeof rowClassName === 'function'
+                    ? rowClassName(row)
+                    : rowClassName,
+                ),
+              )}
+              onClick={() => onRowClick?.(row)}
+            >
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}

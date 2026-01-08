@@ -1615,6 +1615,7 @@ tanqi:
 backtracking:
   uavFlightSchedule:
     durationUnit: 分钟
+    showAllTracks: 显示全部轨迹
     columns:
       trackId: 轨迹ID
 dayOfWeek:

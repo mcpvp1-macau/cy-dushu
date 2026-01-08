@@ -1640,6 +1640,7 @@ tanqi:
 backtracking:
   uavFlightSchedule:
     durationUnit: mins
+    showAllTracks: Show all tracks
     columns:
       trackId: Track ID
 dayOfWeek:

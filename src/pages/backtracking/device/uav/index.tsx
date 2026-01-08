@@ -33,7 +33,7 @@ const UavBackTracking: React.FC<PropsType> = memo(({ data }) => {
         }
       />
 
-      <BackTrackingPath deviceId={deviceId} />
+      <BackTrackingPath deviceId={deviceId} enableTrackFilter />
     </>
   )
 })
