@@ -12,11 +12,14 @@ import MapUavRealMarker from '@/components/map/device/UavRealMarker'
 
 type PropsType = {
   deviceId: string
+  enableTrackFilter?: boolean
 }
-const BackTrackingPath: React.FC<PropsType> = memo(({ deviceId }) => {
+const BackTrackingPath: React.FC<PropsType> = memo(
+  ({ deviceId, enableTrackFilter = false }) => {
   const queryClient = useQueryClient()
   const timeRange = useBackTrackingStore((s) => s.timeRange)
   const currentTime = useBackTrackingStore((s) => s.currentTime.format(dft))
+  const selectedTrackId = useBackTrackingStore((s) => s.selectedTrackId)
   // const { viewer } = useCesium()
 
   const { data } = useQuery(
@@ -40,10 +43,23 @@ const BackTrackingPath: React.FC<PropsType> = memo(({ deviceId }) => {
     },
     queryClient,
   )
+  const filteredData = useMemo(() => {
+    if (!enableTrackFilter || !selectedTrackId) {
+      return data ?? []
+    }
+
+    // 业务规则：开启筛选时，仅展示选中的轨迹点
+    return (
+      data?.filter(
+        (item) => item?.trackId?.toString?.() === selectedTrackId,
+      ) ?? []
+    )
+  }, [data, enableTrackFilter, selectedTrackId])
+
   const lineData = useMemo(() => {
-    const arr = data
-      ?.filter((item) =>
-        dayjs(item.acquisitionTime).isBefore(dayjs(currentTime)),
+    const arr = filteredData
+      .filter((item) =>
+        dayjs(item?.acquisitionTime).isBefore(dayjs(currentTime)),
       )
       .map((item) => ({
         ...item,
@@ -53,28 +69,29 @@ const BackTrackingPath: React.FC<PropsType> = memo(({ deviceId }) => {
         longitude: item.lng,
         latitude: item.lat,
       }))
+
     return arr || []
-  }, [data, currentTime, deviceId])
+  }, [filteredData, currentTime])
 
   const curAttr = useMemo(
     () => {
       if (lineData?.length) {
         return lineData[lineData.length - 1]
       }
-      if (data?.length) {
+      if (filteredData?.length) {
         return {
-          ...data[0],
-          lng: data[0].lng,
-          lat: data[0].lat,
-          altitude: data[0].altitude || 0,
-          longitude: data[0].lng,
-          latitude: data[0].lat,
+          ...filteredData[0],
+          lng: filteredData[0].lng,
+          lat: filteredData[0].lat,
+          altitude: filteredData[0].altitude || 0,
+          longitude: filteredData[0].lng,
+          latitude: filteredData[0].lat,
         }
       }
 
       return null
     },
-    [lineData, deviceId],
+    [lineData, filteredData],
   )
 
   useFly(curAttr)
@@ -82,11 +99,17 @@ const BackTrackingPath: React.FC<PropsType> = memo(({ deviceId }) => {
 
 
   const newData = useMemo(() => {
-    return data?.filter((item) => !out_of_china(item.lng, item.lat)).map(item => ({
-      ...item,
-      altitude: Number(item.altitude || 0) < 0 ? 0 : Number(item.altitude || 0),
-    })) || []
-  }, [data])
+    return (
+      filteredData
+        ?.filter((item) => !out_of_china(item.lng, item.lat))
+        .map((item) => ({
+          ...item,
+          // 边界情况：高度出现负值时兜底为 0
+          altitude:
+            Number(item.altitude || 0) < 0 ? 0 : Number(item.altitude || 0),
+        })) || []
+    )
+  }, [filteredData])
 
   // console.info(newData.map(item => [item.lng, item.lat, item.altitude]))
 
@@ -94,7 +117,7 @@ const BackTrackingPath: React.FC<PropsType> = memo(({ deviceId }) => {
     <>
       {/* {lineData?.length && <HistoryTrackWithAlt value={lineData} useCallback />} */}
 
-      {data?.length ? <CallbackPath value={newData || []} /> : null}
+      {filteredData?.length ? <CallbackPath value={newData || []} /> : null}
      
       {curAttr ? (
         <MapUavRealMarker

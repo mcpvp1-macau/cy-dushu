@@ -1,4 +1,4 @@
-import { flexRender, Table } from '@tanstack/react-table'
+import { flexRender, Row, Table } from '@tanstack/react-table'
 import AppEmpty from '../AppEmpty.tsx'
 import { Popover, Spin, Switch } from 'antd'
 import IconButtonWithDropDownDialog from './button/IconButtonWithDropDownDialog.tsx'
@@ -12,6 +12,8 @@ type PropsType = {
   loading?: boolean
   thClassName?: string
   tdClassName?: string
+  rowClassName?: string | ((row: Row<any>) => string)
+  onRowClick?: (row: Row<any>) => void
 }
 
 const XTable: FC<PropsType> = ({
@@ -19,6 +21,8 @@ const XTable: FC<PropsType> = ({
   loading,
   thClassName,
   tdClassName,
+  rowClassName,
+  onRowClick,
 }) => {
   const state = table.getState()
   const isHaveVisible = Object.values(state.columnVisibility).length > 0
@@ -129,7 +133,18 @@ const XTable: FC<PropsType> = ({
         </thead>
         <tbody className="text-sm">
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="bg-ground-4 hover:bg-ground-5">
+            <tr
+              key={row.id}
+              className={twMerge(
+                clsx(
+                  'bg-ground-4 hover:bg-ground-5',
+                  typeof rowClassName === 'function'
+                    ? rowClassName(row)
+                    : rowClassName,
+                ),
+              )}
+              onClick={() => onRowClick?.(row)}
+            >
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}

@@ -59,6 +59,11 @@ const UAVFlightSchedule: FC<PropsType> = memo(() => {
 
   const deviceId = useBackTrackingStore((s) => s.detail?.deviceId)
   const timeRange = useBackTrackingStore((s) => s.timeRange)
+  const selectedTrackId = useBackTrackingStore((s) => s.selectedTrackId)
+  const updateSelectedTrackId = useBackTrackingStore(
+    (s) => s.updateSelectedTrackId,
+  )
+  const updateCurrentTime = useBackTrackingStore((s) => s.updateCurrentTime)
 
   const startTime = timeRange?.[0]?.format?.(dft)
   const endTime = timeRange?.[1]?.format?.(dft)
@@ -170,15 +175,52 @@ const UAVFlightSchedule: FC<PropsType> = memo(() => {
     getRowId: (row) => row.trackId,
   })
 
+  const handleSelectTrack = useMemoizedFn((track: TrackSegment) => {
+    if (!track?.trackId) {
+      return
+    }
+
+    updateSelectedTrackId(track.trackId)
+    // 业务规则：选中架次后将时间轴定位到结束时间
+    updateCurrentTime(dayjs(track.endTimestamp))
+  })
+
+  const handleResetTrack = useMemoizedFn(() => {
+    // 业务规则：清空选中架次后，表示不过滤轨迹
+    updateSelectedTrackId(null)
+  })
+
   return (
     <div className="px-3 pb-3">
       <div className="border border-solid border-ground-3 rounded overflow-hidden">
+        <div className="flex items-center justify-end gap-2 px-2 py-1 bg-ground-4 text-xs">
+          <button
+            type="button"
+            className={clsx(
+              'text-primary transition-opacity',
+              !selectedTrackId && 'opacity-40 cursor-not-allowed',
+            )}
+            disabled={!selectedTrackId}
+            onClick={handleResetTrack}
+          >
+            {t('backtracking.uavFlightSchedule.showAllTracks', {
+              defaultValue: '显示全部轨迹',
+            })}
+          </button>
+        </div>
         <div className="overflow-x-auto text-sm">
           <XTable
             table={table}
             loading={isLoading || isRefetching}
             thClassName="p-1 text-center"
             tdClassName="p-1 text-center"
+            rowClassName={(row) =>
+              clsx(
+                'cursor-pointer',
+                row.original.trackId === selectedTrackId && 'bg-primary/20',
+              )
+            }
+            onRowClick={(row) => handleSelectTrack(row.original)}
           />
         </div>
       </div>
