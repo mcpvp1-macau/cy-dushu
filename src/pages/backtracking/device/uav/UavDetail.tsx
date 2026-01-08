@@ -75,17 +75,15 @@ const UavBackTrackingDetail: FC<PropsType> = memo(
               </Button>
             </Link>
           </section>
-          <SegmentTitle
-            className="px-3 mb-3 text-sm"
-            title={'数据采集时间: ' + updateTime}
-          />
           <AppCollapse
             items={[
               {
+                key: 1,
                 label: '飞行架次',
                 children: <UAVFlightSchedule />,
               },
             ]}
+            defaultActiveKey={[1]}
           />
         </div>
       </div>
