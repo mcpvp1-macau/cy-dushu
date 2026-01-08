@@ -37,7 +37,6 @@ import { useDictOptions } from '@/store/useDict.store'
 import globalConfig from '@/global/config'
 import { usePilotTreeData } from '@/hooks/jinghang/usePilots'
 import { CaretDownFilled } from '@ant-design/icons'
-import { pilotMock } from '@/pages/situation/action/detail/components/pilot-mock'
 
 const TipInfo = memo(() => {
   const { t } = useTranslation()
@@ -300,12 +299,6 @@ const ScheduleModal: FC<PropsType> = memo(
       {
         queryKey: ['pilotTree'],
         queryFn: () => {
-          if (
-            location.hostname === 'localhost' ||
-            location.hostname.startsWith('test.')
-          ) {
-            return Promise.resolve(pilotMock)
-          }
           return getPilotTree()
         },
         select: (d: any) => d.data?.rows ?? [],
@@ -416,7 +409,9 @@ const ScheduleModal: FC<PropsType> = memo(
       const values = form.getFieldsValue()
       if (!activeWayline) {
         msgApi.error(
-          t('schedule.errors.selectWayline.msg', { defaultValue: '请选择航线' }),
+          t('schedule.errors.selectWayline.msg', {
+            defaultValue: '请选择航线',
+          }),
         )
         return
       }
