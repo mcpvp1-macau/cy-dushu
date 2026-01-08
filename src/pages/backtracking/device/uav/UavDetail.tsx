@@ -8,7 +8,6 @@ import { Button } from 'antd'
 import IconControlRoom from '@/assets/icons/jsx/IconControlRoom'
 import IconButton from '@/components/ui/button/IconButton'
 import IconClose from '@/assets/icons/jsx/IconClose'
-import SegmentTitle from '@/components/ui/SegmentTitle'
 import UAVFlightSchedule from './UAVFlightSchedule'
 import AppCollapse from '@/components/AppCollapse'
 
@@ -20,7 +19,7 @@ type PropsType = {
 }
 
 const UavBackTrackingDetail: FC<PropsType> = memo(
-  ({ data, state, updateTime, onClose }) => {
+  ({ data, state, onClose }) => {
     const { t } = useTranslation()
 
     return (
