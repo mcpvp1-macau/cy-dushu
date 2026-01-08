@@ -1,9 +1,18 @@
 import { createContext } from 'react'
-import { Timeline, DataSet } from 'vis-timeline/standalone'
+import type {
+  DataSetDataGroup,
+  DataSetDataItem,
+  Timeline,
+} from 'vis-timeline/standalone'
 
 const TimelineContext = createContext<{
-  timeline: InstanceType<typeof Timeline> | null
-  dataSets: InstanceType<typeof DataSet> | null
-}>({ timeline: null, dataSets: null })
+  timeline: Timeline | null
+  dataSets: DataSetDataItem | null
+  groupSets: DataSetDataGroup | null
+}>({ timeline: null, dataSets: null, groupSets: null })
+
+export const useTimeline = () => {
+  return useContext(TimelineContext)
+}
 
 export default TimelineContext

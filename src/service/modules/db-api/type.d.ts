@@ -21,6 +21,7 @@ declare namespace API_DBAPI {
       latitude?: number
     }
     interface TrackPoint {
+      trackId?: string | null
       deviceType: any
       lng: number
       lat_84: any
