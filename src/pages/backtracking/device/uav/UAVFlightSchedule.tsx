@@ -65,6 +65,7 @@ const UAVFlightSchedule: FC<PropsType> = memo(() => {
     (s) => s.updateSelectedTrackId,
   )
   const updateCurrentTime = useBackTrackingStore((s) => s.updateCurrentTime)
+  const updateMoveToTime = useBackTrackingStore((s) => s.updateMoveToTime)
 
   const startTime = timeRange?.[0]?.format?.(dft)
   const endTime = timeRange?.[1]?.format?.(dft)
@@ -183,12 +184,22 @@ const UAVFlightSchedule: FC<PropsType> = memo(() => {
 
     updateSelectedTrackId(track.trackId)
     // 业务规则：选中架次后将时间轴定位到结束时间
-    updateCurrentTime(dayjs(track.endTimestamp))
+    const targetTime = dayjs(track.endTimestamp)
+    updateCurrentTime(targetTime)
+    updateMoveToTime(targetTime)
   })
 
   const handleResetTrack = useMemoizedFn(() => {
     // 业务规则：清空选中架次后，表示不过滤轨迹
     updateSelectedTrackId(null)
+    // 业务规则：显示全部轨迹时，时间轴定位到时间范围结束
+    const endRangeTime = timeRange?.[1]
+    if (!endRangeTime) {
+      return
+    }
+
+    updateCurrentTime(endRangeTime)
+    updateMoveToTime(endRangeTime)
   })
 
   return (

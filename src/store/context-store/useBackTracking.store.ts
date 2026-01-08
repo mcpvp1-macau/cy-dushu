@@ -15,6 +15,8 @@ type StateType = {
   detail: API_DEVICE.domain.Device | null
   /** 选中的轨迹 ID，空值表示不过滤 */
   selectedTrackId: string | null
+  /** 需要时间轴移动到的时间点 */
+  moveToTime: Dayjs | null
 }
 
 type ActionsType = {
@@ -26,6 +28,7 @@ type ActionsType = {
   updateCurrentAttribute: (attribute: any) => void
   updateDetail: (detail: API_DEVICE.domain.Device | null) => void
   updateSelectedTrackId: (trackId: string | null) => void
+  updateMoveToTime: (time: Dayjs | null) => void
   resetState: () => void
 }
 
@@ -41,6 +44,7 @@ const createInitialState = () =>
     currentAttribute: {},
     detail: null,
     selectedTrackId: null,
+    moveToTime: null,
   } as StateType)
 
 export const createBackTrackingStore = () => {
@@ -74,6 +78,9 @@ export const createBackTrackingStore = () => {
         },
         updateSelectedTrackId(trackId) {
           set({ selectedTrackId: trackId })
+        },
+        updateMoveToTime(time) {
+          set({ moveToTime: time })
         },
       }),
       {
