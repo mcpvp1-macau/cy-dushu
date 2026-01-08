@@ -88,16 +88,16 @@ const useTimelineInstance = (
             },
           },
           max: dayjs(endTime)
-            .add(timeDiff * 0.1, 'minutes')
+            .add(timeDiff * 0.04, 'minutes')
             .toDate(),
           min: dayjs(startTime)
-            .subtract(timeDiff * 0.1, 'minutes')
+            .subtract(timeDiff * 0.04, 'minutes')
             .toDate(),
           start: dayjs(startTime)
-            .subtract(timeDiff * 0.1, 'minutes')
+            .subtract(timeDiff * 0.04, 'minutes')
             .toDate(),
           end: dayjs(endTime)
-            .add(timeDiff * 0.1, 'minutes')
+            .add(timeDiff * 0.04, 'minutes')
             .toDate(),
           // groupHeightMode: 'fitItems',
 
