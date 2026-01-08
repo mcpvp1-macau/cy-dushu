@@ -28,11 +28,17 @@ const TimelineWarpper: React.FC<PropsType> = memo(
     const updatePlaying = useBackTrackingStore((s) => s.updatePlaying)
     const multiple = useBackTrackingStore((s) => s.multiple)
     const updateMultiple = useBackTrackingStore((s) => s.updateMultiple)
+    const moveToTime = useBackTrackingStore((s) => s.moveToTime)
+    const updateMoveToTime = useBackTrackingStore((s) => s.updateMoveToTime)
 
     const { viewer } = useCesium()
 
     const handleTimeChange = useMemoizedFn((time: DayjsInstance) => {
       updateCurrentTime(time)
+    })
+
+    const handleMoveToConsumed = useMemoizedFn(() => {
+      updateMoveToTime(null)
     })
 
     // 处理时间范围变化
@@ -68,6 +74,8 @@ const TimelineWarpper: React.FC<PropsType> = memo(
         <Timeline
           time={currentTime}
           onTimeChange={handleTimeChange}
+          moveToTime={moveToTime}
+          onMoveToTimeConsumed={handleMoveToConsumed}
           timeRange={timeRange}
           playing={playing}
           onPlayingChange={updatePlaying}

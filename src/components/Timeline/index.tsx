@@ -17,6 +17,8 @@ type PropsType = {
   defaultTime?: DayjsInstance
   onTimeChange?: (time: DayjsInstance) => void
   onTimeChanged?: (time: DayjsInstance) => void
+  moveToTime?: DayjsInstance | null
+  onMoveToTimeConsumed?: () => void
 } & {
   multiple?: number
   defaultMultiple?: number
@@ -108,6 +110,19 @@ const Timeline: FC<PropsType> = memo(
 
       timeline.on('timechange', handleTimeChange)
     }, [timeline])
+
+    useEffect(() => {
+      if (!timeline || !props.moveToTime) {
+        return
+      }
+      try {
+        // 业务规则：外部要求定位后需要触发时间轴移动
+        timeline.moveTo(props.moveToTime.toDate())
+        props.onMoveToTimeConsumed?.()
+      } catch (error) {
+        console.error('timeline moveTo error', error)
+      }
+    }, [props.moveToTime, props.onMoveToTimeConsumed, timeline])
 
     useEffect(() => {
       if (!timeline) {
