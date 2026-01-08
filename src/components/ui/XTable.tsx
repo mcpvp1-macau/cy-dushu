@@ -12,6 +12,7 @@ type PropsType = {
   loading?: boolean
   thClassName?: string
   tdClassName?: string
+  headTrClassName?: string
   rowClassName?: string | ((row: Row<any>) => string)
   onRowClick?: (row: Row<any>) => void
 }
@@ -22,6 +23,7 @@ const XTable: FC<PropsType> = ({
   thClassName,
   tdClassName,
   rowClassName,
+  headTrClassName,
   onRowClick,
 }) => {
   const state = table.getState()
@@ -44,7 +46,9 @@ const XTable: FC<PropsType> = ({
           {table.getHeaderGroups().map((headerGroup) => (
             <tr
               key={headerGroup.id}
-              className="rounded overflow-hidden bg-ground-6"
+              className={twMerge(
+                clsx('rounded overflow-hidden bg-ground-6', headTrClassName),
+              )}
             >
               {headerGroup.headers.map((header) => (
                 <th

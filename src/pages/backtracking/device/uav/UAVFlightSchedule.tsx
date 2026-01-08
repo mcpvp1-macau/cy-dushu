@@ -1,3 +1,4 @@
+import TextButton from '@/components/ui/button/TextButton'
 import XTable from '@/components/ui/XTable'
 import { dft, timeOnly } from '@/constant/time-fmt'
 import { getTrackQuery } from '@/service/modules/db-api'
@@ -191,38 +192,29 @@ const UAVFlightSchedule: FC<PropsType> = memo(() => {
   })
 
   return (
-    <div className="px-3 pb-3">
-      <div className="border border-solid border-ground-3 rounded overflow-hidden">
-        <div className="flex items-center justify-end gap-2 px-2 py-1 bg-ground-4 text-xs">
-          <button
-            type="button"
-            className={clsx(
-              'text-primary transition-opacity',
-              !selectedTrackId && 'opacity-40 cursor-not-allowed',
-            )}
-            disabled={!selectedTrackId}
-            onClick={handleResetTrack}
-          >
-            {t('backtracking.uavFlightSchedule.showAllTracks', {
-              defaultValue: '显示全部轨迹',
-            })}
-          </button>
-        </div>
-        <div className="overflow-x-auto text-sm">
-          <XTable
-            table={table}
-            loading={isLoading || isRefetching}
-            thClassName="p-1 text-center"
-            tdClassName="p-1 text-center"
-            rowClassName={(row) =>
-              clsx(
-                'cursor-pointer',
-                row.original.trackId === selectedTrackId && 'bg-primary/20',
-              )
-            }
-            onRowClick={(row) => handleSelectTrack(row.original)}
-          />
-        </div>
+    <div className="py-3 pt-2 text-sm">
+      <div className="mb-2 mx-3">
+        <TextButton disabled={!selectedTrackId} onClick={handleResetTrack}>
+          {t('backtracking.uavFlightSchedule.showAllTracks', {
+            defaultValue: '显示全部轨迹',
+          })}
+        </TextButton>
+      </div>
+      <div className="overflow-x-auto text-sm">
+        <XTable
+          table={table}
+          loading={isLoading || isRefetching}
+          thClassName="p-1 text-center text-highlight"
+          tdClassName="p-1 text-center"
+          headTrClassName="bg-transparent"
+          rowClassName={(row) =>
+            clsx(
+              'cursor-pointer bg-transparent text-fore',
+              row.original.trackId === selectedTrackId && 'bg-ground-5',
+            )
+          }
+          onRowClick={(row) => handleSelectTrack(row.original)}
+        />
       </div>
     </div>
   )

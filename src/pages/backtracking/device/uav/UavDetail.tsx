@@ -10,6 +10,7 @@ import IconButton from '@/components/ui/button/IconButton'
 import IconClose from '@/assets/icons/jsx/IconClose'
 import SegmentTitle from '@/components/ui/SegmentTitle'
 import UAVFlightSchedule from './UAVFlightSchedule'
+import AppCollapse from '@/components/AppCollapse'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -75,12 +76,17 @@ const UavBackTrackingDetail: FC<PropsType> = memo(
             </Link>
           </section>
           <SegmentTitle
-            className="px-3 text-sm"
+            className="px-3 mb-3 text-sm"
             title={'数据采集时间: ' + updateTime}
           />
-          <div className="mt-2">
-            <UAVFlightSchedule />
-          </div>
+          <AppCollapse
+            items={[
+              {
+                label: '飞行架次',
+                children: <UAVFlightSchedule />,
+              },
+            ]}
+          />
         </div>
       </div>
     )
