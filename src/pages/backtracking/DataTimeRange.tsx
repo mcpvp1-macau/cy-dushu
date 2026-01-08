@@ -54,9 +54,9 @@ export const DataTimeRange = (props: DataTimeRangeProps) => {
       {(sort === 1 ? data || [] : (data || []).reverse()).map((item, index) => (
         <div key={item.timeRange} className="flex gap-1">
           <div className="w-[60px] text-center">
-            {sort === 1 ? index + 1 : data?.length - index}
+            {sort === 1 ? index + 1 : (data?.length ?? 0) - index}
           </div>
-          {item.timeRange.split('¥').map((time: string) => (
+          {(item.timeRange?.split?.('¥') ?? []).map((time: string) => (
             <>
               <Tooltip
                 title={<div className="text-[12px]">时间定位到：{time}</div>}

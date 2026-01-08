@@ -47,7 +47,10 @@ export const getActiveTrackPeriods = (data: {
   startTime: string
   endTime: string
 }) => {
-  return serverDBAPI.post('api/getActiveTrackPeriods', data)
+  return serverDBAPI.post<{ timeRange?: string }[]>(
+    'api/getActiveTrackPeriods',
+    data,
+  )
 }
 
 /** deviceAttrInfoBack 属性回溯 */
@@ -181,15 +184,11 @@ export const queryAlarmList = (data: API_DBAPI.req.AlarmQueryReq) => {
 }
 
 /** 批量更新告警（编辑） */
-export const batchUpdateAlarms = (
-  data: API_DBAPI.req.AlarmBatchUpdateReq,
-) => {
+export const batchUpdateAlarms = (data: API_DBAPI.req.AlarmBatchUpdateReq) => {
   return serverDBAPI.post('/api/alarms/batchUpdate', data)
 }
 
 /** 批量删除告警 */
-export const batchDeleteAlarms = (
-  data: API_DBAPI.req.AlarmBatchDeleteReq,
-) => {
+export const batchDeleteAlarms = (data: API_DBAPI.req.AlarmBatchDeleteReq) => {
   return serverDBAPI.post('/api/alarms/batchDelete', data)
 }

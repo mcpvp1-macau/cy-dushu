@@ -6,12 +6,14 @@ const useTimelineInstance = (
   timeRange: [DayjsInstance, DayjsInstance],
 ) => {
   const [timeline, setTimeline] = useState<vis.Timeline | null>(null)
-  const [dataset, setDataset] = useState<InstanceType<
-    typeof vis.DataSet<any>
-  > | null>(null)
+
+  const [dataset, setDataset] = useState<vis.DataSetDataItem | null>(null)
+
+  const [groupSets, setGroupSets] = useState<vis.DataSetDataGroup | null>(null)
 
   const perStartTime = useRef(0)
   const perEndTime = useRef(0)
+
   // 创建时间轴
   useEffect(() => {
     if (!containerRef.current) {
@@ -21,61 +23,89 @@ const useTimelineInstance = (
     const startTime = timeRange[0].toDate()
     const endTime = timeRange[1].toDate()
 
-    const dataset = new vis.DataSet([
+    const dataset = new vis.DataSet<vis.DataItem>([
       {
         id: 'time-range',
         type: 'background',
         start: startTime,
         end: endTime,
-        className: 'time-range',
+        className: 'bg-blue-500',
         content: '',
       },
       {
-        id: 'time-range2',
+        id: 'time-range-visited',
         type: 'background',
         start: startTime,
         end: endTime,
-        className: 'time-range2',
         content: '',
       },
     ])
 
+    const groupDataSet = new vis.DataSet<vis.DataGroup>([
+      {
+        id: 'time-range-group',
+        content: '时间范围',
+        // @ts-ignore
+        subgroupStack: { A0: false, __dummy__: true },
+      },
+    ])
+
     setDataset(dataset)
+    setGroupSets(groupDataSet)
 
     try {
       const timeDiff = dayjs(endTime).diff(startTime, 'minute')
-      const timeline = new vis.Timeline(containerRef.current, dataset, {
-        verticalScroll: true,
-        showCurrentTime: false,
-        snap: (date) => date,
-        zoomMin: 1000 * 60,
-        format: {
-          minorLabels: {
-            year: 'YYYY年',
-            month: 'M月',
-            day: 'D日',
-            week: 'W',
-            weekday: 'M-D',
-            hour: 'H时',
-            minute: 'm分',
-            second: 's秒',
+      const timeline = new vis.Timeline(
+        containerRef.current,
+        dataset,
+        groupDataSet,
+        {
+          verticalScroll: true,
+          showCurrentTime: false,
+          snap: (date) => date,
+          zoomMin: 1000 * 60,
+          format: {
+            minorLabels: {
+              year: 'YYYY年',
+              month: 'M月',
+              day: 'D日',
+              week: 'W',
+              weekday: 'M-D',
+              hour: 'H时',
+              minute: 'm分',
+              second: 's秒',
+            },
+            majorLabels: {
+              year: '',
+              month: 'YYYY-MM-DD',
+              day: 'YYYY-MM-DD',
+              week: 'YYYY-MM-DD',
+              weekday: 'YYYY-MM-DD',
+              hour: 'YYYY-MM-DD HH:mm:ss',
+              minute: 'YYYY-MM-DD HH:mm:ss',
+              second: 'YYYY-MM-DD HH:mm:ss',
+            },
           },
-          majorLabels: {
-            year: '',
-            month: 'YYYY-MM-DD',
-            day: 'YYYY-MM-DD',
-            week: 'YYYY-MM-DD',
-            weekday: 'YYYY-MM-DD',
-            hour: 'YYYY-MM-DD HH:mm:ss',
-            minute: 'YYYY-MM-DD HH:mm:ss',
-            second: 'YYYY-MM-DD HH:mm:ss',
+          max: dayjs(endTime)
+            .add(timeDiff * 0.1, 'minutes')
+            .toDate(),
+          min: dayjs(startTime)
+            .subtract(timeDiff * 0.1, 'minutes')
+            .toDate(),
+          start: dayjs(startTime)
+            .subtract(timeDiff * 0.1, 'minutes')
+            .toDate(),
+          end: dayjs(endTime)
+            .add(timeDiff * 0.1, 'minutes')
+            .toDate(),
+          // groupHeightMode: 'fitItems',
+
+          margin: {
+            item: { vertical: 2 }, // 或 margin: { item: 2 }
+            // axis: 0,
           },
         },
-        max: dayjs(endTime).add(timeDiff * 0.1, 'minutes').toDate(),
-        min: dayjs(startTime).subtract(timeDiff * 0.1, 'minutes').toDate(),
-        start: dayjs(startTime).subtract(timeDiff * 0.1, 'minutes').toDate(),
-        end:dayjs(endTime).add(timeDiff * 0.1, 'minutes').toDate(),
-      })
+      )
 
       perStartTime.current = startTime.getTime()
       perEndTime.current = endTime.getTime()
@@ -99,35 +129,10 @@ const useTimelineInstance = (
     }
   }, [containerRef, timeRange])
 
-  // useEffect(() => {
-  //   if (!timeline) {
-  //     return
-  //   }
-
-  //   const startTime = timeRange[0].toDate()
-  //   const endTime = timeRange[1].toDate()
-  //   if (
-  //     perStartTime.current !== startTime.getTime() ||
-  //     perEndTime.current !== endTime.getTime()
-  //   ) {
-  //     console.log('timeRange change', timeRange)
-  //     perStartTime.current = startTime.getTime()
-  //     perEndTime.current = endTime.getTime()
-  //     timeline.setOptions({
-  //       max: dayjs(endTime).add(1, 'minutes').toDate(),
-  //       min: startTime,
-  //       start: startTime,
-  //       end: endTime,
-  //     })
-  //     // timeline.addCustomTime(endTime, 'current')
-  //     // timeline.setCustomTimeTitle('', 'current')
-  //     // timeline.setCustomTimeMarker(fmtCurrentTime(endTime), 'current')
-  //   }
-  // }, [timeline, timeRange])
-
   return {
     timeline,
     dataset,
+    groupSets,
   }
 }
 

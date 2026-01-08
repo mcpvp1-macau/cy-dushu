@@ -5,32 +5,35 @@
 
   border-radius: 4px;
   :global {
+    .vis-panel.vis-left {
+      border-right: 1px solid #424b54 !important;
+      border-color: #424b54 !important;
+    }
+
     .timeline {
       *,
       ::before,
       ::after {
         border: none;
+        font-size: 12px;
       }
 
-      // padding: 0 50px;
-      .time-range {
-        background-color: rgba(0, 0, 0, 0);
-        border-radius: 4px;
-      }
-      .time-range2 {
-        background-color: #4c90f0;
-        border-radius: 4px;
-      }
       .vis-time-axis .vis-text {
         color: rgb(var(--fore-color));
         font-size: 12px;
       }
-      .vis-shadow {
+      .vis-shadow,
+      .vis-labelset,
+      .vis-label,
+      .vis-item,
+      .vis-group,
+      .vis-bottom {
         border-color: #424b54 !important;
       }
       .vis-time-axis .vis-grid.vis-minor {
         border-color: #424b54;
       }
+
       .vis-time-axis .vis-grid.vis-major {
         border-color: #424b54;
         display: none;
@@ -41,11 +44,14 @@
       .vis-panel.vis-center {
         border-color: rgba(0, 0, 0, 0); // #424b54;
       }
-      .vis-itemset {
-        height: 12px !important;
-      }
       .vis-time-axis .vis-text {
         padding: 0;
+      }
+
+      .vis-item.data-period-item {
+        background-color: #00b375 !important;
+        border: none !important;
+        box-shadow: none !important;
       }
       .vis-custom-time {
         background-color: #fff;

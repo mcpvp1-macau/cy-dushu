@@ -11,6 +11,7 @@ import {
 import TimelineWarpper from './TimelineWarpper'
 import TargetBacktracking from '../target'
 import { useStore } from 'zustand'
+import DataPeriod from './DataPeriod'
 
 type PropsType = unknown
 
@@ -62,7 +63,9 @@ const PageBackTrackingDevice: FC<PropsType> = memo(() => {
             </AppViewSuspense>
           </div>
           <div className="absolute bottom-8 left-3 right-14 z-50">
-            <TimelineWarpper />
+            <TimelineWarpper>
+              {deviceId && <DataPeriod deviceId={deviceId} />}
+            </TimelineWarpper>
           </div>
           <TargetBacktracking deviceId={deviceId!} />
         </CesiumMap>

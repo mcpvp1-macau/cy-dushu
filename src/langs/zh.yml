@@ -425,6 +425,8 @@ common:
   operation: 操作
   startTime: 开始时间
   endTime: 结束时间
+  duration: 时长
+  timeRange: 时间范围
   description: 描述
   backTracking: 回溯
   picture: 图片
@@ -1610,6 +1612,11 @@ tanqi:
   sender:
     placeholder: 檀棋可以帮助你什么?
   refreshChat: 刷新聊天记录
+backtracking:
+  uavFlightSchedule:
+    durationUnit: 分钟
+    columns:
+      trackId: 轨迹ID
 dayOfWeek:
   sunday: 周日
   monday: 周一

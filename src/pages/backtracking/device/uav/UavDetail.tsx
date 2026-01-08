@@ -8,7 +8,8 @@ import { Button } from 'antd'
 import IconControlRoom from '@/assets/icons/jsx/IconControlRoom'
 import IconButton from '@/components/ui/button/IconButton'
 import IconClose from '@/assets/icons/jsx/IconClose'
-import { DataTimeRange } from '../../DataTimeRange'
+import SegmentTitle from '@/components/ui/SegmentTitle'
+import UAVFlightSchedule from './UAVFlightSchedule'
 
 type PropsType = {
   data: API_DEVICE.domain.Device
@@ -63,7 +64,7 @@ const UavBackTrackingDetail: FC<PropsType> = memo(
             />
           </div>
           <div className="my-2 px-3 text-xs text-center"></div>
-          <section className="mx-3 mr-[9px] my-3 flex gap-2">
+          <section className="mx-3 my-3 flex gap-2">
             <Link
               className="grow"
               to={`/backtracking/control-room/uav/${data.deviceId}`}
@@ -73,12 +74,12 @@ const UavBackTrackingDetail: FC<PropsType> = memo(
               </Button>
             </Link>
           </section>
-          <div className="my-2 px-3 text-xs flex items-center gap-2 text-hightlight">
-            <div className="w-[2px] h-[10px] bg-green-500"></div>数据采集时间:{' '}
-            {updateTime}
-          </div>
-          <div className="my-2 px-3 text-xs">
-            <DataTimeRange deviceId={data.deviceId} />
+          <SegmentTitle
+            className="px-3 text-sm"
+            title={'数据采集时间: ' + updateTime}
+          />
+          <div className="mt-2">
+            <UAVFlightSchedule />
           </div>
         </div>
       </div>

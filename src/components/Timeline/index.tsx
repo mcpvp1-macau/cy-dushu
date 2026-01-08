@@ -33,6 +33,8 @@ type PropsType = {
   children?: React.ReactNode
 }
 
+const timeRangeGroupId = 'time-range-group'
+
 /** 时间轴 */
 const Timeline: FC<PropsType> = memo(
   ({ children, onTimeChanged, ...props }) => {
@@ -40,10 +42,10 @@ const Timeline: FC<PropsType> = memo(
 
     // 时间范围
     const [timeRange, setTimeRange] = useControllableValue(props, {
-      defaultValue: [dayjs().subtract(1, 'days').startOf('day'), dayjs().endOf('day')] as [
-        DayjsInstance,
-        DayjsInstance,
-      ],
+      defaultValue: [
+        dayjs().subtract(1, 'days').startOf('day'),
+        dayjs().endOf('day'),
+      ] as [DayjsInstance, DayjsInstance],
       defaultValuePropName: 'defaultTimeRange',
       valuePropName: 'timeRange',
       trigger: 'onTimeRangeChange',
@@ -65,10 +67,31 @@ const Timeline: FC<PropsType> = memo(
       trigger: 'onPlayingChange',
     })
 
-    const { timeline, dataset } = useTimelineInstance(
+    const { timeline, dataset, groupSets } = useTimelineInstance(
       timelineContainerRef,
       timeRange,
     )
+
+    useEffect(() => {
+      if (!dataset) {
+        return
+      }
+
+      dataset.update([
+        {
+          id: 'time-range',
+          type: 'background',
+          group: timeRangeGroupId,
+          content: '',
+        },
+        {
+          id: 'time-range-visited',
+          type: 'background',
+          group: timeRangeGroupId,
+          content: '',
+        },
+      ])
+    }, [dataset])
 
     useEffect(() => {
       if (!timeline) {
@@ -82,10 +105,6 @@ const Timeline: FC<PropsType> = memo(
       })
 
       timeline.on('timechange', handleTimeChange)
-
-      // timeline.on('markerchange', () => {
-      //   console.log('markerchange')
-      // })
     }, [timeline])
 
     useEffect(() => {
@@ -101,24 +120,23 @@ const Timeline: FC<PropsType> = memo(
     }, [currentTime, timeline])
 
     useEffect(() => {
-      if (!timeline) {
+      if (!timeline || !dataset) {
         return
       }
       try {
-        timeline.setItems([
-          {
-            id: 'time-range2',
-            type: 'background',
-            start: timeRange[0].toDate(),
-            end: currentTime.toDate(),
-            className: 'time-range2',
-            content: '',
-          },
-        ])
+        dataset.update({
+          id: 'time-range-visited',
+          type: 'background',
+          start: timeRange[0].toDate(),
+          end: currentTime.toDate(),
+          content: '',
+          group: timeRangeGroupId,
+        })
       } catch (error) {
         console.error('timeline set items error', error)
       }
-    }, [currentTime, timeline, timeRange[0]])
+    }, [currentTime, dataset, timeline, timeRange[0]])
+
     // 播放倍数
     const [multiple, setMultiple] = useControllableValue(props, {
       defaultValue: 1,
@@ -171,7 +189,7 @@ const Timeline: FC<PropsType> = memo(
                   return
                 }
                 setTimeRange([dates[0].startOf('day'), dates[1].endOf('day')])
-                if (!timeline) {
+                if (!timeline || !dataset) {
                   return
                 }
 
@@ -180,27 +198,24 @@ const Timeline: FC<PropsType> = memo(
                     dates[0].startOf('day').toDate(),
                     dates[1].endOf('day').toDate(),
                   )
-                  timeline.setCustomTime(dates[0].startOf('day').toDate(), 'current')
+                  timeline.setCustomTime(
+                    dates[0].startOf('day').toDate(),
+                    'current',
+                  )
                   timeline.setCustomTimeMarker(
                     dayjs(dates[0].startOf('day')).format(dft),
                     'current',
                   )
-                  timeline.setItems([
+                  dataset.update([
                     {
                       type: 'background',
-                      start: dates[0].startOf('day').toDate(),
-                      end: dates[1].endOf('day').toDate(),
-                      className: 'time-range',
+                      start: dates[0].toDate(),
+                      end: dates[1].toDate(),
                       id: 'time-range',
                       content: '',
-                    },
-                    {
-                      type: 'background',
-                      start: dates[0].startOf('day').toDate(),
-                      end: dates[1].endOf('day').toDate(),
-                      className: 'time-range2',
-                      id: 'time-range2',
-                      content: '',
+                      group: timeRangeGroupId,
+                      // selectable: false,
+                      // editable: false,
                     },
                   ])
                 } catch (error) {
@@ -255,6 +270,7 @@ const Timeline: FC<PropsType> = memo(
           value={{
             timeline: timeline,
             dataSets: dataset,
+            groupSets,
           }}
         >
           <div className="timeline" ref={timelineContainerRef}>

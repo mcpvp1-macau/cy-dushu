@@ -4,14 +4,22 @@ import { Popover, Spin, Switch } from 'antd'
 import IconButtonWithDropDownDialog from './button/IconButtonWithDropDownDialog.tsx'
 import IconSetting from '@/assets/icons/jsx/IconSetting.tsx'
 import { CaretDownOutlined } from '@ant-design/icons'
+import { twMerge } from 'tailwind-merge'
 
 type PropsType = {
   table: Table<any>
   render?: unknown
   loading?: boolean
+  thClassName?: string
+  tdClassName?: string
 }
 
-const XTable: FC<PropsType> = ({ table, loading }) => {
+const XTable: FC<PropsType> = ({
+  table,
+  loading,
+  thClassName,
+  tdClassName,
+}) => {
   const state = table.getState()
   const isHaveVisible = Object.values(state.columnVisibility).length > 0
 
@@ -38,10 +46,13 @@ const XTable: FC<PropsType> = ({ table, loading }) => {
                 <th
                   key={header.id}
                   colSpan={header.colSpan}
-                  className={clsx(
-                    'p-3 whitespace-nowrap font-normal text-highlight text-left',
-                    'border-b border-r border-solid border-ground-3',
-                    'first:rounded-tl last:border-r-0',
+                  className={twMerge(
+                    clsx(
+                      'p-3 whitespace-nowrap font-normal text-highlight text-left',
+                      'border-b border-r border-solid border-ground-3',
+                      'first:rounded-tl last:border-r-0',
+                      thClassName,
+                    ),
                   )}
                 >
                   {header.isPlaceholder
@@ -122,10 +133,13 @@ const XTable: FC<PropsType> = ({ table, loading }) => {
               {row.getVisibleCells().map((cell) => (
                 <td
                   key={cell.id}
-                  className={clsx(
-                    'h-[33px] leading-6 py-1 px-3 whitespace-nowrap font-normal text-highlight',
-                    'border-r border-b border-solid border-ground-3',
-                    'last:border-r-0',
+                  className={twMerge(
+                    clsx(
+                      'h-[33px] leading-6 py-1 px-3 whitespace-nowrap font-normal text-highlight',
+                      'border-r border-b border-solid border-ground-3',
+                      'last:border-r-0',
+                    ),
+                    tdClassName,
                   )}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}

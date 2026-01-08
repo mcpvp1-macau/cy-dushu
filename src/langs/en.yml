@@ -436,6 +436,8 @@ common:
   operation: Operation
   startTime: Start Time
   endTime: End Time
+  duration: Duration
+  timeRange: Time Range
   description: Description
   backTracking: Back Tracking
   picture: Picture
@@ -1635,6 +1637,11 @@ tanqi:
   sender:
     placeholder: How can Tanqi help you?
   refreshChat: Refresh Chat History
+backtracking:
+  uavFlightSchedule:
+    durationUnit: mins
+    columns:
+      trackId: Track ID
 dayOfWeek:
   sunday: Sunday
   monday: Monday
