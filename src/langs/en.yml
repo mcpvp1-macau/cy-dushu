@@ -1599,7 +1599,14 @@ dynamicLayout:
 video:
   electricScale:
     title: Electric Scale
+  historyTitle: History Video
+  cancel: Cancel
+  retry: Retry
   downloading: Downloading video...
+  downloadFailed: Failed to download video.
+  parseUrlFailed: Unable to parse video URL.
+  objectInfoMissing: Object information not found.
+  playUrlMissing: Play URL is missing.
 screenshot:
   screenshotSuccess: Screenshot successful
 forecast:

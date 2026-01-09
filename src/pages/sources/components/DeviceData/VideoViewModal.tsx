@@ -8,7 +8,7 @@ import {
 } from '@/service/modules/minio'
 import { getVodUrl } from '@/service/modules/video'
 import { DownloadOutlined } from '@ant-design/icons'
-import { Spin } from 'antd'
+import { Button, Spin } from 'antd'
 import { nanoid } from 'nanoid'
 import { FC, memo } from 'react'
 
@@ -29,6 +29,7 @@ type PropsType = {
   onClose?: () => void
 }
 
+/** 解析存储路径并返回桶和对象路径 */
 const parseStoragePath = (url: string) => {
   const trimmed = url.startsWith('/') ? url.slice(1) : url
   if (!trimmed.startsWith('storage/')) {
@@ -41,6 +42,7 @@ const parseStoragePath = (url: string) => {
   return { bucket, path: path.join('/') }
 }
 
+/** 计算分片下载的单片大小 */
 const getChunkSize = (size: number) => {
   if (size <= MIN_CHUNK_SIZE) {
     return size
@@ -54,43 +56,94 @@ const VideoViewModal: FC<PropsType> = memo(({ data, onClose }) => {
   const msgApi = useAppMsg()
   const [t] = useTranslation()
 
+  /** 分片下载并在失败时允许重试/取消 */
   const downloadWithRange = async (
     bucket: string,
     path: string,
     size: number,
   ) => {
     const key = nanoid()
-    msgApi.open({
-      key,
-      content: (
-        <div className="flex items-center gap-2">
-          <Spin size="small" percent={1} />
-          {t('video.downloading')}
-        </div>
-      ),
-      duration: 0,
-    })
+    let isCanceled = false
+
+    /** 更新下载进度提示并提供取消按钮 */
+    const updateDownloadingMessage = (percent: number) => {
+      msgApi.open({
+        key,
+        content: (
+          <div className="flex items-center gap-2">
+            <Spin size="small" percent={percent} />
+            <span>{t('video.downloading')}</span>
+            <Button
+              size="small"
+              onClick={() => {
+                // 业务规则：用户主动取消时终止后续分片请求
+                isCanceled = true
+              }}
+            >
+              {t('video.cancel', { defaultValue: '取消' })}
+            </Button>
+          </div>
+        ),
+        duration: 0,
+      })
+    }
+
+    /** 弹出失败提示并等待用户选择重试或取消 */
+    const waitForRetryOrCancel = async () => {
+      return new Promise<'retry' | 'cancel'>((resolve) => {
+        msgApi.open({
+          key,
+          content: (
+            <div className="flex items-center gap-2">
+              <span>{t('video.downloadFailed', { defaultValue: '视频下载失败' })}</span>
+              <Button
+                size="small"
+                type="primary"
+                onClick={() => resolve('retry')}
+              >
+                {t('video.retry', { defaultValue: '重试' })}
+              </Button>
+              <Button
+                size="small"
+                onClick={() => {
+                  // 业务规则：用户取消时立即退出下载流程
+                  isCanceled = true
+                  resolve('cancel')
+                }}
+              >
+                {t('video.cancel', { defaultValue: '取消' })}
+              </Button>
+            </div>
+          ),
+          duration: 0,
+        })
+      })
+    }
+
+    updateDownloadingMessage(1)
     try {
       const chunkSize = getChunkSize(size)
       const chunks: Blob[] = []
       let start = 0
 
       while (start < size) {
+        if (isCanceled) {
+          return null
+        }
         const end = Math.min(start + chunkSize - 1, size - 1)
         const range = `bytes=${start}-${end}`
-        const blob = await downloadMinioObject(bucket, path, range)
-        chunks.push(blob)
-        start = end + 1
-        msgApi.open({
-          key,
-          content: (
-            <div className="flex items-center gap-2">
-              <Spin size="small" percent={Math.round((start / size) * 100)} />
-              {t('video.downloading')}
-            </div>
-          ),
-          duration: 0,
-        })
+        try {
+          const blob = await downloadMinioObject(bucket, path, range)
+          chunks.push(blob)
+          start = end + 1
+          updateDownloadingMessage(Math.round((start / size) * 100))
+        } catch (_error) {
+          // 边界场景：分片失败后允许用户重试继续下载
+          const action = await waitForRetryOrCancel()
+          if (action === 'cancel' || isCanceled) {
+            return null
+          }
+        }
       }
       return new Blob(chunks)
     } finally {
@@ -98,16 +151,21 @@ const VideoViewModal: FC<PropsType> = memo(({ data, onClose }) => {
     }
   }
 
+  /** 处理机身视频下载 */
   const handleDeviceDownload = async () => {
     const parsed = parseStoragePath(data.playUrl)
     if (!parsed) {
-      msgApi.error('无法解析视频地址')
+      msgApi.error(
+        t('video.parseUrlFailed', { defaultValue: '无法解析视频地址' }),
+      )
       return
     }
 
     const infoResp = await getMinioObjectInfo(parsed.bucket, parsed.path)
     if (!infoResp.data) {
-      msgApi.error('未获取到对象信息')
+      msgApi.error(
+        t('video.objectInfoMissing', { defaultValue: '未获取到对象信息' }),
+      )
       return
     }
 
@@ -116,6 +174,9 @@ const VideoViewModal: FC<PropsType> = memo(({ data, onClose }) => {
       parsed.path,
       infoResp.data.size,
     )
+    if (!mergedBlob) {
+      return
+    }
 
     const link = document.createElement('a')
     const filename = parsed.path.split('/').pop() || 'video'
@@ -128,6 +189,7 @@ const VideoViewModal: FC<PropsType> = memo(({ data, onClose }) => {
     URL.revokeObjectURL(url)
   }
 
+  /** 触发下载逻辑并处理错误提示 */
   const handleDownloadClick = async () => {
     try {
       if (data.isDevice) {
@@ -146,10 +208,15 @@ const VideoViewModal: FC<PropsType> = memo(({ data, onClose }) => {
           msgApi.error(resp.message)
         }
       } else {
-        msgApi.error('play url is not exist')
+        msgApi.error(
+          t('video.playUrlMissing', { defaultValue: 'play url is not exist' }),
+        )
       }
     } catch (error: any) {
-      msgApi.error(error?.message || '视频下载失败')
+      msgApi.error(
+        error?.message ||
+          t('video.downloadFailed', { defaultValue: '视频下载失败' }),
+      )
     }
   }
 
@@ -158,7 +225,12 @@ const VideoViewModal: FC<PropsType> = memo(({ data, onClose }) => {
       open={true}
       title={
         <div className="flex-1 flex justify-between mr-2">
-          <p>{`历史视频 ${data.startTime} - ${data.endTime}`}</p>
+          <p>
+            {t('video.historyTitle', {
+              defaultValue: '历史视频',
+            })}
+            {` ${data.startTime} - ${data.endTime}`}
+          </p>
           <IconButton onClick={handleDownloadClick}>
             <DownloadOutlined className="scale-110" />
           </IconButton>
