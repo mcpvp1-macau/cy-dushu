@@ -219,7 +219,7 @@ const UavAirportDetail: FC<PropsType> = memo(
                 stockStatus={state.isInDock}
               />
             </div>
-            <div className="mx-3 overflow-hidden">
+            <div className="mx-3 rounded overflow-hidden">
               <DeviceLiveVideo
                 productKey={productKey}
                 deviceId={deviceId}
