@@ -29,7 +29,7 @@ const useTimelineInstance = (
         type: 'background',
         start: startTime,
         end: endTime,
-        className: 'bg-blue-500',
+        className: 'time-range',
         content: '',
       },
       {
@@ -37,6 +37,7 @@ const useTimelineInstance = (
         type: 'background',
         start: startTime,
         end: endTime,
+        className: 'time-range-visited',
         content: '',
       },
     ])
@@ -44,7 +45,7 @@ const useTimelineInstance = (
     const groupDataSet = new vis.DataSet<vis.DataGroup>([
       {
         id: 'time-range-group',
-        content: '时间范围',
+        content: ' ',
         // @ts-ignore
         subgroupStack: { A0: false, __dummy__: true },
       },
@@ -87,16 +88,16 @@ const useTimelineInstance = (
             },
           },
           max: dayjs(endTime)
-            .add(timeDiff * 0.1, 'minutes')
+            .add(timeDiff * 0.04, 'minutes')
             .toDate(),
           min: dayjs(startTime)
-            .subtract(timeDiff * 0.1, 'minutes')
+            .subtract(timeDiff * 0.04, 'minutes')
             .toDate(),
           start: dayjs(startTime)
-            .subtract(timeDiff * 0.1, 'minutes')
+            .subtract(timeDiff * 0.04, 'minutes')
             .toDate(),
           end: dayjs(endTime)
-            .add(timeDiff * 0.1, 'minutes')
+            .add(timeDiff * 0.04, 'minutes')
             .toDate(),
           // groupHeightMode: 'fitItems',
 

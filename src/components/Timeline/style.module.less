@@ -48,17 +48,30 @@
         padding: 0;
       }
 
+      .vis-item {
+        border-radius: 2px;
+      }
+
       .vis-item.data-period-item {
         background-color: #00b375 !important;
         border: none !important;
         box-shadow: none !important;
       }
+      .vis-item.vis-background.time-range {
+        background-color: #00507c !important;
+      }
+      .vis-item.vis-background.time-range-visited {
+        background-color: #007ac7 !important;
+      }
       .vis-custom-time {
         background-color: #fff;
+
         .vis-custom-time-marker {
           padding: 0 5px;
           right: -40px;
-          background-color: #fff;
+          background-color: #eff3f8;
+          border-radius: 2px;
+          overflow: hidden;
           color: #000;
           margin-top: 14px;
         }

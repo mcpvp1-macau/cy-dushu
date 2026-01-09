@@ -17,6 +17,8 @@ type PropsType = {
   defaultTime?: DayjsInstance
   onTimeChange?: (time: DayjsInstance) => void
   onTimeChanged?: (time: DayjsInstance) => void
+  moveToTime?: DayjsInstance | null
+  onMoveToTimeConsumed?: () => void
 } & {
   multiple?: number
   defaultMultiple?: number
@@ -82,12 +84,14 @@ const Timeline: FC<PropsType> = memo(
           id: 'time-range',
           type: 'background',
           group: timeRangeGroupId,
+          className: 'time-range',
           content: '',
         },
         {
           id: 'time-range-visited',
           type: 'background',
           group: timeRangeGroupId,
+          className: 'time-range-visited',
           content: '',
         },
       ])
@@ -106,6 +110,19 @@ const Timeline: FC<PropsType> = memo(
 
       timeline.on('timechange', handleTimeChange)
     }, [timeline])
+
+    useEffect(() => {
+      if (!timeline || !props.moveToTime) {
+        return
+      }
+      try {
+        // 业务规则：外部要求定位后需要触发时间轴移动
+        timeline.moveTo(props.moveToTime.toDate())
+        props.onMoveToTimeConsumed?.()
+      } catch (error) {
+        console.error('timeline moveTo error', error)
+      }
+    }, [props.moveToTime, props.onMoveToTimeConsumed, timeline])
 
     useEffect(() => {
       if (!timeline) {
@@ -131,6 +148,7 @@ const Timeline: FC<PropsType> = memo(
           end: currentTime.toDate(),
           content: '',
           group: timeRangeGroupId,
+          className: 'time-range-visited',
         })
       } catch (error) {
         console.error('timeline set items error', error)
@@ -214,6 +232,7 @@ const Timeline: FC<PropsType> = memo(
                       id: 'time-range',
                       content: '',
                       group: timeRangeGroupId,
+                      className: 'time-range',
                       // selectable: false,
                       // editable: false,
                     },
