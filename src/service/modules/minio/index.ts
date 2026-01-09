@@ -38,6 +38,7 @@ export const downloadMinioObject = async (
       xCustomConfig: { autoShowMessageOnNotSuccess: false },
     })
   } catch (error: any) {
+    console.error('downloadMinioObject error', error)
     if (error instanceof Blob) {
       return error
     }
