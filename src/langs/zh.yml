@@ -1574,7 +1574,14 @@ dynamicLayout:
 video:
   electricScale:
     title: 电子放大
+  historyTitle: 历史视频
+  cancel: 取消
+  retry: 重试
   downloading: 视频下载中...
+  downloadFailed: 视频下载失败
+  parseUrlFailed: 无法解析视频地址
+  objectInfoMissing: 未获取到对象信息
+  playUrlMissing: 播放地址不存在
 screenshot:
   screenshotSuccess: 截图成功
 forecast:
