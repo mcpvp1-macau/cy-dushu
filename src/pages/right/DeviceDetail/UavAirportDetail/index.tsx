@@ -35,7 +35,7 @@ import OverflowText from '@/components/ui/OverflowText'
 import TakeoffAction from './components/TakeoffAction'
 import { useMemoizedFn } from 'ahooks'
 import { useTranslation } from 'react-i18next'
-import LinkSwitch from '@/components/LinkSwitch'
+import VideoCameraPositionSwitch from './components/VideoCameraPositionSwitch'
 
 type PropsType = BaseDeviceDetailProps
 
@@ -153,41 +153,6 @@ const UavAirportDetail: FC<PropsType> = memo(
       [data.deviceTags],
     )
 
-    const hasCameraPosition =
-      state?.cameraPosition !== null && state?.cameraPosition !== undefined
-
-    const handleCameraPositionChange = useMemoizedFn((value: string) => {
-      const nextPosition = Number(value)
-
-      if (Number.isNaN(nextPosition)) {
-        return
-      }
-
-      // 仅在视频流可用时切换舱内/舱外镜头
-      postDeviceService('liveCameraChange', {
-        cameraPosition: nextPosition,
-        videoId,
-      })
-    })
-
-    const cameraPositionItems = useMemo(
-      () => [
-        {
-          label: t('device.uavDock.cameraPosition.inside', {
-            defaultValue: '舱内',
-          }),
-          value: '0',
-        },
-        {
-          label: t('device.uavDock.cameraPosition.outside', {
-            defaultValue: '舱外',
-          }),
-          value: '1',
-        },
-      ],
-      [t],
-    )
-
     const debugHeader = (
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
@@ -261,15 +226,12 @@ const UavAirportDetail: FC<PropsType> = memo(
                 deviceId={deviceId}
                 videoId={videoId}
                 leftTop={
-                  hasCameraPosition ? (
-                    <LinkSwitch
-                      items={cameraPositionItems}
-                      value={String(state?.cameraPosition ?? 0)}
-                      onChange={handleCameraPositionChange}
-                    />
-                  ) : (
-                    <div className="text-sm">{t('common.live')}</div>
-                  )
+                  <VideoCameraPositionSwitch
+                    cameraPosition={state?.cameraPosition}
+                    deviceId={deviceId}
+                    productKey={productKey}
+                    videoId={videoId}
+                  />
                 }
               />
             </div>
