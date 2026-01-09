@@ -75,6 +75,7 @@ Do NOT add explicit import statements for symbols that are already auto-imported
 - Group related statements into logical blocks and separate blocks with blank lines.
 - Ensure naming and early returns make the flow clear.
 - Add concise Chinese comments for: business rules, edge cases, and any non-trivial reasoning.
+- For each function name, add at least one single-line documentation comment describing its purpose.
 
 ### React Hooks
 
