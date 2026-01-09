@@ -35,6 +35,7 @@ import OverflowText from '@/components/ui/OverflowText'
 import TakeoffAction from './components/TakeoffAction'
 import { useMemoizedFn } from 'ahooks'
 import { useTranslation } from 'react-i18next'
+import VideoCameraPositionSwitch from './components/VideoCameraPositionSwitch'
 
 type PropsType = BaseDeviceDetailProps
 
@@ -224,7 +225,14 @@ const UavAirportDetail: FC<PropsType> = memo(
                 productKey={productKey}
                 deviceId={deviceId}
                 videoId={videoId}
-                leftTop={<div className="text-sm">{t('common.live')}</div>}
+                leftTop={
+                  <VideoCameraPositionSwitch
+                    cameraPosition={state?.cameraPosition}
+                    deviceId={deviceId}
+                    productKey={productKey}
+                    videoId={videoId}
+                  />
+                }
               />
             </div>
             <div className="my-3 flex gap-2 px-3">
