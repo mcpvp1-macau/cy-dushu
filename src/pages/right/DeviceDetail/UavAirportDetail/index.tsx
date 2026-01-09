@@ -267,7 +267,9 @@ const UavAirportDetail: FC<PropsType> = memo(
                       value={String(state?.cameraPosition ?? 0)}
                       onChange={handleCameraPositionChange}
                     />
-                  ) : null
+                  ) : (
+                    <div className="text-sm">{t('common.live')}</div>
+                  )
                 }
               />
             </div>
