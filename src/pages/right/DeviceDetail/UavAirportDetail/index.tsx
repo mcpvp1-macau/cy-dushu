@@ -35,6 +35,7 @@ import OverflowText from '@/components/ui/OverflowText'
 import TakeoffAction from './components/TakeoffAction'
 import { useMemoizedFn } from 'ahooks'
 import { useTranslation } from 'react-i18next'
+import LinkSwitch from '@/components/LinkSwitch'
 
 type PropsType = BaseDeviceDetailProps
 
@@ -152,6 +153,41 @@ const UavAirportDetail: FC<PropsType> = memo(
       [data.deviceTags],
     )
 
+    const hasCameraPosition =
+      state?.cameraPosition !== null && state?.cameraPosition !== undefined
+
+    const handleCameraPositionChange = useMemoizedFn((value: string) => {
+      const nextPosition = Number(value)
+
+      if (Number.isNaN(nextPosition)) {
+        return
+      }
+
+      // 仅在视频流可用时切换舱内/舱外镜头
+      postDeviceService('liveCameraChange', {
+        cameraPosition: nextPosition,
+        videoId,
+      })
+    })
+
+    const cameraPositionItems = useMemo(
+      () => [
+        {
+          label: t('device.uavDock.cameraPosition.inside', {
+            defaultValue: '舱内',
+          }),
+          value: '0',
+        },
+        {
+          label: t('device.uavDock.cameraPosition.outside', {
+            defaultValue: '舱外',
+          }),
+          value: '1',
+        },
+      ],
+      [t],
+    )
+
     const debugHeader = (
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
@@ -224,7 +260,15 @@ const UavAirportDetail: FC<PropsType> = memo(
                 productKey={productKey}
                 deviceId={deviceId}
                 videoId={videoId}
-                leftTop={<div className="text-sm">{t('common.live')}</div>}
+                leftTop={
+                  hasCameraPosition ? (
+                    <LinkSwitch
+                      items={cameraPositionItems}
+                      value={String(state?.cameraPosition ?? 0)}
+                      onChange={handleCameraPositionChange}
+                    />
+                  ) : null
+                }
               />
             </div>
             <div className="my-3 flex gap-2 px-3">

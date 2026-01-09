@@ -130,6 +130,9 @@ device:
       title: 舱内温度
     externalTemperature:
       title: 舱外温度
+    cameraPosition:
+      inside: 舱内
+      outside: 舱外
     remoteDebug:
       title: 远程调试
       processProgress:

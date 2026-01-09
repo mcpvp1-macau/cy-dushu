@@ -140,6 +140,9 @@ device:
       title: Cabin Temperature
     externalTemperature:
       title: External Temperature
+    cameraPosition:
+      inside: Inside
+      outside: Outside
     remoteDebug:
       title: Debugging
       processProgress:
