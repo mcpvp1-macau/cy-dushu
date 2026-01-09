@@ -83,8 +83,7 @@ type ActionsType = {
 }
 
 /** 预加载的设备类型 */
-// const prepareDeviceType = ['UAV', 'UAV_AIRPORT']
-const prepareDeviceType = []
+const prepareDeviceType = ['UAV', 'UAV_AIRPORT']
 
 /** 用户与组织信息 */
 const useUserStore = create<StateType & ActionsType>()(
@@ -236,8 +235,9 @@ const useUserStore = create<StateType & ActionsType>()(
             }
           })
         }
-
-        groupDeviceTree[itemIndex].children = handleGroup([res.data], [])
+        // @ts-expect-error v4会有roots
+        const data = res.data?.roots ? res.data?.roots?.[0] : res.data
+        groupDeviceTree[itemIndex].children = handleGroup([data], [])
 
         set({ groupDeviceTree }, false, 'updateGroupDeviceTree')
 
@@ -256,8 +256,12 @@ const useUserStore = create<StateType & ActionsType>()(
         })
         set({ groupDeviceTree: data }, false, 'initGroupDeviceTree')
 
+        const typeList = res.data.rows.map((item) => item.type)
+
         prepareDeviceType.forEach((deviceType) => {
-          get().fetchGroupDeviceTreeByType(deviceType)
+          if (typeList.includes(deviceType)) {
+            get().fetchGroupDeviceTreeByType(deviceType)
+          }
         })
       },
       initVendorBackurl: () => {
