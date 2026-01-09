@@ -86,8 +86,6 @@ export const AddFlightAreaGroup: FC<PropsAddType | PropsEditType> = (props) => {
     return deleteGroupWithoutDevice(result)
   }, [groupDeviceTree])
 
-  console.log('fliterGroupDeviceTree', groupDeviceTree, fliterGroupDeviceTree)
-
   /** 选中的设备id值 */
   const [deviceIds, setDeviceIds] = useState<string[]>([])
   const [groupIds, setGroupIds] = useState<string[]>([])

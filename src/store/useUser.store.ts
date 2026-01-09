@@ -6,7 +6,11 @@ import {
 } from '@/service/modules/user'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { getAllDeviceType, getDeviceTree } from '@/service/modules/device'
+import {
+  getAllDeviceType,
+  getDeviceTree,
+  getDeviceTreeV4,
+} from '@/service/modules/device'
 
 export interface User {
   userId: number
@@ -196,7 +200,10 @@ const useUserStore = create<StateType & ActionsType>()(
         // 如果已经存在，则不重复请求
         if (groupDeviceTree[itemIndex]?.children?.length) return false
         // 如果不存在，则请求
-        const res = await getDeviceTree({ type })
+        const queryFn = globalConfig.useDeviceTreeV4
+          ? getDeviceTreeV4
+          : getDeviceTree
+        const res = await queryFn({ type })
 
         // 处理devices数据
         const handleDevice = (

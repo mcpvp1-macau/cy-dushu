@@ -72,7 +72,7 @@ window.config = {
   sentryProjectId: '2',
   useFlight3D: true,
   // 是否使用 V4 设备树接口
-  useDeviceTreeV4: false,
+  useDeviceTreeV4: true,
   // robotDogMap: 'wgs84',
   // 是否开启喊话器音频上传功能
   usePayloadP3Upload: true,
@@ -83,6 +83,5 @@ window.config = {
   32717: {
     title: '测试名称',
   },
-  useDeviceTreeV4: true,
   daotongIntranet: false,
 }
