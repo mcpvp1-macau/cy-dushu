@@ -124,7 +124,7 @@ const AIResultItem = forwardRef<
       ].join('\n'),
     )
       .toString()
-      .toUpperCase()
+      ?.toUpperCase()
   }, [data])
 
   useAsyncEffect(async () => {
@@ -150,17 +150,17 @@ const AIResultItem = forwardRef<
         `设备编码: ${sn}`,
         `防伪信息: ${antiCode}`,
       ]
-    try {
-      const resp = await fetch(url)
-      const blob = await resp.blob()
-      const bitmap = await createImageBitmap(blob)
-      const newBlob = await worker.current.addTextToLeftBottom(bitmap, texts)
-      const url2 = URL.createObjectURL(newBlob)
-      setNewImage(url2)
-    } catch (_error) {
-      setNewImage(url)
+      try {
+        const resp = await fetch(url)
+        const blob = await resp.blob()
+        const bitmap = await createImageBitmap(blob)
+        const newBlob = await worker.current.addTextToLeftBottom(bitmap, texts)
+        const url2 = URL.createObjectURL(newBlob)
+        setNewImage(url2)
+      } catch (_error) {
+        setNewImage(url)
+      }
     }
-  }
   }, [data, antiCode])
 
   useImperativeHandle(ref, () => ({

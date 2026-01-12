@@ -62,7 +62,7 @@ const DrawArea: FC<PropsType> = memo(({ setState, MAX_RADIUS, MIN_RADIUS }) => {
     }
 
     handlerRef.current = new Cesium.ScreenSpaceEventHandler(viewer.canvas)
-    areaPrimitiveRef.current = new ReconstructionAreaPrimitive(drawingColor)
+    areaPrimitiveRef.current = new ReconstructionAreaPrimitive('#4C90F0')
     viewer?.scene.primitives.add(areaPrimitiveRef.current)
 
     // 监听绘制面积变化

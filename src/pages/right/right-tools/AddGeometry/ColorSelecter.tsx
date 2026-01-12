@@ -43,7 +43,7 @@ const ColorSelecter: FC = () => {
             style={{
               backgroundColor: c,
               boxShadow:
-                drawingColor.toUpperCase() === c ? '0 0 0 2px #0ea5e9' : '',
+                drawingColor?.toUpperCase() === c ? '0 0 0 2px #0ea5e9' : '',
             }}
             onClick={() => {
               onChange(c)

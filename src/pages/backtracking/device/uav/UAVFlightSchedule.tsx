@@ -97,7 +97,7 @@ const UAVFlightSchedule: FC<PropsType> = memo(() => {
     const segmentMap = new Map<string, TrackSegment>()
 
     for (const point of tracks) {
-      const trackId = point?.trackId?.toString?.().trim()
+      const trackId = point?.trackId?.toString?.()?.trim()
       // 业务规则：没有 trackId 的点不参与飞行架次分段
       if (!trackId) {
         continue
