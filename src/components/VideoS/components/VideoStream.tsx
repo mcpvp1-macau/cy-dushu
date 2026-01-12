@@ -7,11 +7,12 @@ type PropsType = {
   deviceId: string
   streamList: Awaited<ReturnType<typeof getDeviceStreamList>>['data']
   onChange?: (value: string) => void
+  onOpenChange?: (open: boolean) => void
 }
 
 /** 视频流切换 */
 const VideoStream: FC<PropsType> = memo(
-  ({ currentUrl, streamList, deviceId, onChange }) => {
+  ({ currentUrl, streamList, deviceId, onChange, onOpenChange }) => {
     const currentStreamId = useMemo(
       () => calcStreamId(currentUrl),
       [currentUrl],
@@ -49,6 +50,7 @@ const VideoStream: FC<PropsType> = memo(
           sessionStorage.setItem(deviceId + '-videoURL', v)
           onChange?.(v)
         }}
+        onOpenChange={onOpenChange}
         getPopupContainer={() =>
           (document.fullscreenElement as HTMLElement) || document.body
         }
