@@ -1,4 +1,5 @@
 import IconCameraSwitch from '@/assets/jsx/IconCameraSwitch'
+import { useVideoToolbarDropdown } from '@/components/VideoS/DeviceLiveVideo'
 import IconButtonWithDropDown from '@/components/ui/button/IconButtonWithDropDown'
 import { usePostDeviceService } from '@/hooks/device/usePostDeviceService'
 import type { MenuProps } from 'antd'
@@ -15,6 +16,7 @@ const VideoCameraPositionSwitch: FC<PropsType> = memo(
   ({ cameraPosition, deviceId, productKey, videoId }) => {
     const { t } = useTranslation()
     const postDeviceService = usePostDeviceService(productKey, deviceId)
+    const toolbarDropdown = useVideoToolbarDropdown()
 
     const hasCameraPosition =
       cameraPosition !== null && cameraPosition !== undefined
@@ -65,6 +67,11 @@ const VideoCameraPositionSwitch: FC<PropsType> = memo(
       handleCameraPositionChange(String(key))
     })
 
+    /** 处理工具栏下拉框显隐联动 */
+    const handleDropdownOpenChange = useMemoizedFn((open: boolean) => {
+      toolbarDropdown?.onOpenChange?.(open)
+    })
+
     if (!hasCameraPosition) {
       return null
     }
@@ -84,6 +91,7 @@ const VideoCameraPositionSwitch: FC<PropsType> = memo(
           }),
         }}
         className="text-base"
+        onOpenChange={handleDropdownOpenChange}
       >
         <IconCameraSwitch />
       </IconButtonWithDropDown>

@@ -21,7 +21,7 @@ import {
   FullscreenExitOutlined,
   ShareAltOutlined,
 } from '@ant-design/icons'
-import { forwardRef, useImperativeHandle } from 'react'
+import { createContext, forwardRef, useImperativeHandle } from 'react'
 import { calcStreamId } from '@/utils/video/stream'
 import { getStreamQualityLevel } from '@/service/modules/video'
 import VideoQuality5G from './components/VideoQuality5G'
@@ -43,6 +43,22 @@ import { Responses } from '@/service/servers/liqunAxios'
 import useSnapshot from './hooks/useSnapshot'
 import ShareQRCode from './ShareQRCode'
 import useUpdateProjectedVideo from './hooks/useUpdateProjectedVideo'
+import useVideoToolbarVisibility from './hooks/useVideoToolbarVisibility'
+
+type VideoToolbarDropdownContextValue = {
+  isLocked: boolean
+  onOpenChange: (open: boolean) => void
+  lockToolbar: () => void
+  unlockToolbar: () => void
+}
+
+const VideoToolbarDropdownContext =
+  createContext<VideoToolbarDropdownContextValue | null>(null)
+
+/** 获取视频工具栏下拉框联动控制 */
+export const useVideoToolbarDropdown = () => {
+  return useContext(VideoToolbarDropdownContext)
+}
 
 type PropsType = {
   videoContainerId?: string
@@ -345,12 +361,37 @@ const DeviceLiveVideo = memo(
         updateProjectedVideo,
       )
 
+      const {
+        isToolbarLocked,
+        lockToolbar,
+        unlockToolbar,
+        handleToolbarOpenChange,
+      } = useVideoToolbarVisibility()
+
+      const toolbarDropdownContextValue = useMemo(
+        () => ({
+          isLocked: isToolbarLocked,
+          lockToolbar,
+          unlockToolbar,
+          onOpenChange: handleToolbarOpenChange,
+        }),
+        [
+          handleToolbarOpenChange,
+          isToolbarLocked,
+          lockToolbar,
+          unlockToolbar,
+        ],
+      )
+
       return (
-        <div
-          className="size-full overflow-hidden relative text-sm group @container"
-          ref={wrapperRef}
-          style={{ aspectRatio: aspectRatio }}
+        <VideoToolbarDropdownContext.Provider
+          value={toolbarDropdownContextValue}
         >
+          <div
+            className="size-full overflow-hidden relative text-sm group @container"
+            ref={wrapperRef}
+            style={{ aspectRatio: aspectRatio }}
+          >
           {/* 视频 SEI AI 检测 meta 信息 */}
           {Array.isArray(aiData?.displayMetaList) && (
             <SeiAIDataMetaInfo
@@ -473,7 +514,10 @@ const DeviceLiveVideo = memo(
             {useTopBar && (leftTop || rightTop || useDing) && (
               <aside
                 ref={topBar}
-                className="absolute inset-x-0 h-10 bg-gradient-to-b from-black/80 to-transparent  group-hover:opacity-100 opacity-0 transition-opacity duration-300"
+                className={clsx(
+                  'absolute inset-x-0 h-10 bg-gradient-to-b from-black/80 to-transparent transition-opacity duration-300 group-hover:opacity-100',
+                  isToolbarLocked ? 'opacity-100' : 'opacity-0',
+                )}
               >
                 <div className="flex justify-between items-center h-8 absolute top-0 inset-x-0 p-1 px-2">
                   <section className="flex items-center gap-3">
@@ -496,7 +540,10 @@ const DeviceLiveVideo = memo(
             {useBottomBar && (
               <aside
                 ref={bottomBar}
-                className="absolute bottom-0 inset-x-0 h-10 z-30 bg-gradient-to-t from-black/80 to-transparent group-hover:opacity-100 opacity-0 transition-opacity duration-300"
+                className={clsx(
+                  'absolute bottom-0 inset-x-0 h-10 z-30 bg-gradient-to-t from-black/80 to-transparent transition-opacity duration-300 group-hover:opacity-100',
+                  isToolbarLocked ? 'opacity-100' : 'opacity-0',
+                )}
               >
                 <div className="flex justify-between items-center h-8 absolute inset-x-0 bottom-0 p-1 px-2">
                   <section className="flex items-center gap-3">
@@ -507,12 +554,14 @@ const DeviceLiveVideo = memo(
                         streamList={streamList!}
                         deviceId={deviceId}
                         onChange={handleStreamChange}
+                        onOpenChange={handleToolbarOpenChange}
                       />
                     )}
                     {+videoQuality >= 0 && (
                       <VideoQuality5G
                         value={videoQuality}
                         onChange={handle5GChange}
+                        onOpenChange={handleToolbarOpenChange}
                       />
                     )}
                     {videoQuality == -1 &&
@@ -520,6 +569,7 @@ const DeviceLiveVideo = memo(
                         <VideoQualityDRC
                           value={useVideoQualityCheck.valueDRC ?? 'Unknown'}
                           onChange={useVideoQualityCheck?.onDRCChange}
+                          onOpenChange={handleToolbarOpenChange}
                         />
                       )}
                     {leftBottom}
@@ -602,7 +652,8 @@ const DeviceLiveVideo = memo(
             )}
           </ConfigProvider>
           {wrapperChildren}
-        </div>
+          </div>
+        </VideoToolbarDropdownContext.Provider>
       )
     },
   ),
