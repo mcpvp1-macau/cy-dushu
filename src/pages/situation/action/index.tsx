@@ -11,6 +11,7 @@ import IconButtonWithDropDownDialog from '@/components/ui/button/IconButtonWithD
 import IconFilter from '@/assets/icons/jsx/IconFilter'
 import { useDictOptions } from '@/store/useDict.store'
 import { DictEnum } from '@/enum/dict'
+import normalizeActionType from '@/utils/action/normalizeActionType'
 import { useDebounceFn } from 'ahooks'
 
 type PropsType = unknown
@@ -38,25 +39,6 @@ const PageSituationAction: FC<PropsType> = memo(() => {
   const resolvedActionType =
     actionType ??
     (actionTypeIncludes.length > 0 ? actionTypeIncludes : undefined)
-
-  /** 规范化行动类型查询参数。 */
-  const normalizeActionType = (
-    value?: string | string[] | number | number[] | null,
-  ) => {
-    if (value === null || value === undefined) {
-      return undefined
-    }
-
-    if (Array.isArray(value)) {
-      return value.map((item) => String(item)).join(',')
-    }
-
-    if (typeof value === 'number') {
-      return String(value)
-    }
-
-    return value
-  }
 
   const normalizedActionType = useMemo(
     () => normalizeActionType(resolvedActionType),

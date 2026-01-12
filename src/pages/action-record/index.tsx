@@ -14,6 +14,7 @@ import serverJingqi from '@/service/servers/serverJingqi'
 import { useDictOptions } from '@/store/useDict.store'
 import useUserStore from '@/store/useUser.store'
 import { downloadAndRename } from '@/utils/download'
+import normalizeActionType from '@/utils/action/normalizeActionType'
 import { DownloadOutlined } from '@ant-design/icons'
 import {
   createColumnHelper,
@@ -53,25 +54,6 @@ const PageActionRecord: FC<PropsType> = memo(() => {
   const actionTypeIncludes = globalConfig.actionTypeIncludes ?? []
   const resolvedType =
     type ?? (actionTypeIncludes.length > 0 ? actionTypeIncludes : undefined)
-
-  /** 规范化行动类型查询参数。 */
-  const normalizeActionType = (
-    value?: string | string[] | number | number[] | null,
-  ) => {
-    if (value === null || value === undefined) {
-      return undefined
-    }
-
-    if (Array.isArray(value)) {
-      return value.map((item) => String(item)).join(',')
-    }
-
-    if (typeof value === 'number') {
-      return String(value)
-    }
-
-    return value
-  }
 
   const normalizedType = useMemo(
     () => normalizeActionType(resolvedType),
