@@ -56,9 +56,8 @@ const VideoCameraPositionSwitch: FC<PropsType> = memo(
       () =>
         cameraPositionItems.map((item) => ({
           ...item,
-          disabled: item.key === String(cameraPosition ?? 0),
         })),
-      [cameraPositionItems, cameraPosition],
+      [cameraPositionItems],
     )
 
     /** 响应下拉菜单点击事件 */
@@ -76,6 +75,7 @@ const VideoCameraPositionSwitch: FC<PropsType> = memo(
         trigger={['click']}
         menu={{
           items: menuItems,
+          selectedKeys: [String(cameraPosition)],
           onClick: handleMenuClick,
         }}
         tippyProps={{
