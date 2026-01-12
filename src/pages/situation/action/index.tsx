@@ -39,6 +39,30 @@ const PageSituationAction: FC<PropsType> = memo(() => {
     actionType ??
     (actionTypeIncludes.length > 0 ? actionTypeIncludes : undefined)
 
+  /** 规范化行动类型查询参数。 */
+  const normalizeActionType = (
+    value?: string | string[] | number | number[] | null,
+  ) => {
+    if (value === null || value === undefined) {
+      return undefined
+    }
+
+    if (Array.isArray(value)) {
+      return value.map((item) => String(item)).join(',')
+    }
+
+    if (typeof value === 'number') {
+      return String(value)
+    }
+
+    return value
+  }
+
+  const normalizedActionType = useMemo(
+    () => normalizeActionType(resolvedActionType),
+    [resolvedActionType],
+  )
+
   const queryClient = useQueryClient()
   const {
     data,
@@ -49,7 +73,7 @@ const PageSituationAction: FC<PropsType> = memo(() => {
     fetchNextPage,
   } = useInfiniteQuery(
     {
-      queryKey: ['actionList', name, resolvedActionType, processStatusList],
+      queryKey: ['actionList', name, normalizedActionType, processStatusList],
       initialPageParam: 1,
       queryFn: async ({ pageParam }) => {
         // 业务规则：未手动选择类型时，使用配置包含类型作为默认筛选。
@@ -59,7 +83,7 @@ const PageSituationAction: FC<PropsType> = memo(() => {
             processStatusList.length > 0
               ? processStatusList
               : ['PENDING', 'PROCESSING'],
-          type: resolvedActionType,
+          type: normalizedActionType,
           isPage: true,
           page: pageParam,
           size: 15,

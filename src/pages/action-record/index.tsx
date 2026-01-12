@@ -54,13 +54,37 @@ const PageActionRecord: FC<PropsType> = memo(() => {
   const resolvedType =
     type ?? (actionTypeIncludes.length > 0 ? actionTypeIncludes : undefined)
 
+  /** 规范化行动类型查询参数。 */
+  const normalizeActionType = (
+    value?: string | string[] | number | number[] | null,
+  ) => {
+    if (value === null || value === undefined) {
+      return undefined
+    }
+
+    if (Array.isArray(value)) {
+      return value.map((item) => String(item)).join(',')
+    }
+
+    if (typeof value === 'number') {
+      return String(value)
+    }
+
+    return value
+  }
+
+  const normalizedType = useMemo(
+    () => normalizeActionType(resolvedType),
+    [resolvedType],
+  )
+
   const queryClient = useQueryClient()
 
   const { data, isLoading, isRefetching } = useQuery(
     {
       queryKey: [
         'getActionRecordList',
-        { page, size, kw, type: resolvedType, rangeValue },
+        { page, size, kw, type: normalizedType, rangeValue },
       ],
       queryFn: () =>
         getActionRecordList({
@@ -69,7 +93,7 @@ const PageActionRecord: FC<PropsType> = memo(() => {
           page,
           size,
           // 业务规则：未传入类型时，使用配置包含类型作为默认筛选。
-          type: resolvedType,
+          type: normalizedType,
           startTime: rangeValue?.[0].startOf('day').format(dft),
           endTime: rangeValue?.[1].endOf('day').format(dft),
         }),
