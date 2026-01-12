@@ -11,10 +11,12 @@ import IconButtonWithDropDownDialog from '@/components/ui/button/IconButtonWithD
 import IconFilter from '@/assets/icons/jsx/IconFilter'
 import { useDictOptions } from '@/store/useDict.store'
 import { DictEnum } from '@/enum/dict'
+import normalizeActionType from '@/utils/action/normalizeActionType'
 import { useDebounceFn } from 'ahooks'
 
 type PropsType = unknown
 
+// 行动列表页面组件。
 const PageSituationAction: FC<PropsType> = memo(() => {
   const [name, setName] = useState('')
 
@@ -33,6 +35,16 @@ const PageSituationAction: FC<PropsType> = memo(() => {
     }, {} as Record<string, string>)
   }, [actionTypeOptions])
 
+  const actionTypeIncludes = globalConfig.actionTypeIncludes ?? []
+  const resolvedActionType =
+    actionType ??
+    (actionTypeIncludes.length > 0 ? actionTypeIncludes : undefined)
+
+  const normalizedActionType = useMemo(
+    () => normalizeActionType(resolvedActionType),
+    [resolvedActionType],
+  )
+
   const queryClient = useQueryClient()
   const {
     data,
@@ -43,16 +55,17 @@ const PageSituationAction: FC<PropsType> = memo(() => {
     fetchNextPage,
   } = useInfiniteQuery(
     {
-      queryKey: ['actionList', name, actionType, processStatusList],
+      queryKey: ['actionList', name, normalizedActionType, processStatusList],
       initialPageParam: 1,
       queryFn: async ({ pageParam }) => {
+        // 业务规则：未手动选择类型时，使用配置包含类型作为默认筛选。
         const { data } = await getActionList({
           name: name || undefined,
           status:
             processStatusList.length > 0
               ? processStatusList
               : ['PENDING', 'PROCESSING'],
-          type: actionType,
+          type: normalizedActionType,
           isPage: true,
           page: pageParam,
           size: 15,
