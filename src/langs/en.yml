@@ -1423,8 +1423,21 @@ controlRoom:
         point: Point
       focusMode:
         title: Focus Mode
+        mode:
+          "0": MF
+          "1": AFS
+          "2": AFC
+        modeDesc:
+          "0": Manual
+          "1": Single
+          "2": Auto
       exposureMode:
         title: Exposure Mode
+        exposurePriority: Exposure Priority
+        shutterPriority: Shutter Priority
+        shutterPriorityExposure: Shutter Priority Exposure
+        aperturePriorityExposure: Aperture Priority Exposure
+        shutterExposure: Shutter Exposure
       panorama:
         title: Panorama
       gotoPosAtTarget:
