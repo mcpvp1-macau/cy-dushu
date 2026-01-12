@@ -226,6 +226,9 @@ const UavAirportDetail: FC<PropsType> = memo(
                 deviceId={deviceId}
                 videoId={videoId}
                 leftTop={
+                  <div className="text-sm text-fore">{t('common.live')}</div>
+                }
+                rightTop={
                   <VideoCameraPositionSwitch
                     cameraPosition={state?.cameraPosition}
                     deviceId={deviceId}

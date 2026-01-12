@@ -141,6 +141,7 @@ device:
     externalTemperature:
       title: External Temperature
     cameraPosition:
+      title: Switch camera
       inside: Inside
       outside: Outside
     remoteDebug:
