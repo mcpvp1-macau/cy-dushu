@@ -131,6 +131,7 @@ device:
     externalTemperature:
       title: 舱外温度
     cameraPosition:
+      title: 切换镜头
       inside: 舱内
       outside: 舱外
     remoteDebug:
