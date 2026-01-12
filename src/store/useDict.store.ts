@@ -63,7 +63,7 @@ export const useDictOptions = (dictGroup: DictEnum) => {
 
   const dict = useDictStore((state) => state.dict)
 
-  const actionTypeFilters = globalConfig.actionTypeFilters ?? []
+  const actionTypeIncludes = globalConfig.actionTypeIncludes ?? []
 
   return useMemo(() => {
     const options = Object.values(dict?.[dictGroup] || {})
@@ -73,13 +73,13 @@ export const useDictOptions = (dictGroup: DictEnum) => {
         value: item.dictKey,
       }))
 
-    if (dictGroup !== DictEnum.ACTION_TYPE || actionTypeFilters.length === 0) {
+    if (dictGroup !== DictEnum.ACTION_TYPE || actionTypeIncludes.length === 0) {
       return options
     }
 
-    // 业务规则：行动类型字典需要过滤配置中的类型。
-    return options.filter((item) => !actionTypeFilters.includes(item.value))
-  }, [dict, dictGroup, actionTypeFilters])
+    // 业务规则：行动类型字典仅展示配置允许的类型。
+    return options.filter((item) => actionTypeIncludes.includes(item.value))
+  }, [dict, dictGroup, actionTypeIncludes])
 }
 
 /** 国际化相关的字典 */

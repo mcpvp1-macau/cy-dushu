@@ -50,9 +50,9 @@ const PageActionRecord: FC<PropsType> = memo(() => {
       ] as [Dayjs, Dayjs])
     : undefined
 
-  const actionTypeFilters = globalConfig.actionTypeFilters ?? []
+  const actionTypeIncludes = globalConfig.actionTypeIncludes ?? []
   const resolvedType =
-    type ?? (actionTypeFilters.length > 0 ? actionTypeFilters : undefined)
+    type ?? (actionTypeIncludes.length > 0 ? actionTypeIncludes : undefined)
 
   const queryClient = useQueryClient()
 
@@ -68,7 +68,7 @@ const PageActionRecord: FC<PropsType> = memo(() => {
           isPage: true,
           page,
           size,
-          // 业务规则：未传入类型时，使用配置过滤类型作为默认筛选。
+          // 业务规则：未传入类型时，使用配置包含类型作为默认筛选。
           type: resolvedType,
           startTime: rangeValue?.[0].startOf('day').format(dft),
           endTime: rangeValue?.[1].endOf('day').format(dft),

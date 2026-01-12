@@ -27,7 +27,7 @@ globalConfig.enableJessibucaMetrics ??= false
 globalConfig.defaultTheme ??= 'dark'
 globalConfig.env ??= 'default'
 globalConfig.useDeviceTreeV4 ??= false
-globalConfig.actionTypeFilters ??= []
+globalConfig.actionTypeIncludes ??= []
 
 class GlobalConfig {
   systemName = 'jingqi'
@@ -121,8 +121,8 @@ class GlobalConfig {
   /** 是否使用 V4 设备树接口 */
   useDeviceTreeV4?: boolean
 
-  /** 过滤行动类型（为空数组表示不过滤） */
-  actionTypeFilters?: string[]
+  /** 包含行动类型（为空数组表示不过滤） */
+  actionTypeIncludes?: string[]
 
   // 是否开启喊话器音频上传功能
   usePayloadP3Upload: boolean = false
