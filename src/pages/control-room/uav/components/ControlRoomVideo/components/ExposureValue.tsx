@@ -3,6 +3,7 @@ import { Popover, Slider } from 'antd'
 import { isNil } from 'lodash'
 import usePostDeviceService from '@/pages/right/DeviceDetail/hooks/usePostDeviceService'
 import IconButton from '@/components/ui/button/IconButton'
+import { useVideoToolbarDropdown } from '@/components/VideoS/DeviceLiveVideo'
 
 type PropsType = unknown
 
@@ -79,6 +80,13 @@ const ExposureValue: FC<PropsType> = memo(() => {
 
   const postService = usePostDeviceService()
   const { t } = useTranslation()
+  const toolbarDropdown = useVideoToolbarDropdown()
+
+  /** 处理曝光下拉显隐与工具栏联动 */
+  const handlePopoverOpenChange = useMemoizedFn((open: boolean) => {
+    // 下拉打开时锁定工具栏，避免误隐藏
+    toolbarDropdown?.onOpenChange?.(open)
+  })
 
   if (isNil(display)) {
     return null
@@ -88,6 +96,7 @@ const ExposureValue: FC<PropsType> = memo(() => {
     <Popover
       trigger={['click']}
       placement="top"
+      onOpenChange={handlePopoverOpenChange}
       content={
         <Slider
           className="w-28"
