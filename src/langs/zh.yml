@@ -1399,8 +1399,21 @@ controlRoom:
         point: 点
       focusMode:
         title: 对焦模式
+        mode:
+          "0": MF
+          "1": AFS
+          "2": AFC
+        modeDesc:
+          "0": 手动
+          "1": 单点
+          "2": 自动
       exposureMode:
         title: 镜头曝光模式
+        exposurePriority: 曝光优先
+        shutterPriority: 快门优先
+        shutterPriorityExposure: 快门优先曝光
+        aperturePriorityExposure: 光圈优先曝光
+        shutterExposure: 快门曝光
       panorama:
         title: 全景
       gotoPosAtTarget:
