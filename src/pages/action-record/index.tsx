@@ -30,6 +30,7 @@ type PropsType = unknown
 
 const h = createColumnHelper<API_ACTION.domain.ActionRecord>()
 
+// 行动记录页面组件。
 const PageActionRecord: FC<PropsType> = memo(() => {
   const [searchParams, setSearchParams] = useSearchParams()
   const { t } = useTranslation()
@@ -49,18 +50,26 @@ const PageActionRecord: FC<PropsType> = memo(() => {
       ] as [Dayjs, Dayjs])
     : undefined
 
+  const actionTypeFilters = globalConfig.actionTypeFilters ?? []
+  const resolvedType =
+    type ?? (actionTypeFilters.length > 0 ? actionTypeFilters : undefined)
+
   const queryClient = useQueryClient()
 
   const { data, isLoading, isRefetching } = useQuery(
     {
-      queryKey: ['getActionRecordList', { page, size, kw, type, rangeValue }],
+      queryKey: [
+        'getActionRecordList',
+        { page, size, kw, type: resolvedType, rangeValue },
+      ],
       queryFn: () =>
         getActionRecordList({
           name: kw,
           isPage: true,
           page,
           size,
-          type,
+          // 业务规则：未传入类型时，使用配置过滤类型作为默认筛选。
+          type: resolvedType,
           startTime: rangeValue?.[0].startOf('day').format(dft),
           endTime: rangeValue?.[1].endOf('day').format(dft),
         }),
@@ -190,7 +199,7 @@ const PageActionRecord: FC<PropsType> = memo(() => {
     try {
       const body: Record<string, any> = {}
       if (kw) body.name = kw
-      if (type) body.type = type
+      if (resolvedType) body.type = resolvedType
       if (rangeValue) {
         body.startTime = rangeValue[0].startOf('day').format(dft)
         body.endTime = rangeValue[1].endOf('day').format(dft)

@@ -15,6 +15,7 @@ import { useDebounceFn } from 'ahooks'
 
 type PropsType = unknown
 
+// 行动列表页面组件。
 const PageSituationAction: FC<PropsType> = memo(() => {
   const [name, setName] = useState('')
 
@@ -33,6 +34,11 @@ const PageSituationAction: FC<PropsType> = memo(() => {
     }, {} as Record<string, string>)
   }, [actionTypeOptions])
 
+  const actionTypeFilters = globalConfig.actionTypeFilters ?? []
+  const resolvedActionType =
+    actionType ??
+    (actionTypeFilters.length > 0 ? actionTypeFilters : undefined)
+
   const queryClient = useQueryClient()
   const {
     data,
@@ -43,16 +49,17 @@ const PageSituationAction: FC<PropsType> = memo(() => {
     fetchNextPage,
   } = useInfiniteQuery(
     {
-      queryKey: ['actionList', name, actionType, processStatusList],
+      queryKey: ['actionList', name, resolvedActionType, processStatusList],
       initialPageParam: 1,
       queryFn: async ({ pageParam }) => {
+        // 业务规则：未手动选择类型时，使用配置过滤类型作为默认筛选。
         const { data } = await getActionList({
           name: name || undefined,
           status:
             processStatusList.length > 0
               ? processStatusList
               : ['PENDING', 'PROCESSING'],
-          type: actionType,
+          type: resolvedActionType,
           isPage: true,
           page: pageParam,
           size: 15,

@@ -80,7 +80,7 @@ declare namespace API_ACTION {
   namespace req {
     type ActionListReq = API_COMMON.PageParam & {
       name?: string
-      type?: string
+      type?: string | string[]
       startTime?: string
       endTime?: string
       status?: string[]

@@ -34,6 +34,7 @@ const useDictStore = create<StateType & ActionsType>()(
   ),
 )
 
+// 获取指定字典组的选项列表。
 export const useDictOptions = (dictGroup: DictEnum) => {
   const queryClient = useQueryClient()
   const { data } = useQuery(
@@ -61,16 +62,24 @@ export const useDictOptions = (dictGroup: DictEnum) => {
   }, [data])
 
   const dict = useDictStore((state) => state.dict)
-  return useMemo(
-    () =>
-      Object.values(dict?.[dictGroup] || {})
-        .sort((a, b) => a.orderWeight - b.orderWeight)
-        .map((item) => ({
-          label: item.dictName,
-          value: item.dictKey,
-        })),
-    [dict, dictGroup],
-  )
+
+  const actionTypeFilters = globalConfig.actionTypeFilters ?? []
+
+  return useMemo(() => {
+    const options = Object.values(dict?.[dictGroup] || {})
+      .sort((a, b) => a.orderWeight - b.orderWeight)
+      .map((item) => ({
+        label: item.dictName,
+        value: item.dictKey,
+      }))
+
+    if (dictGroup !== DictEnum.ACTION_TYPE || actionTypeFilters.length === 0) {
+      return options
+    }
+
+    // 业务规则：行动类型字典需要过滤配置中的类型。
+    return options.filter((item) => !actionTypeFilters.includes(item.value))
+  }, [dict, dictGroup, actionTypeFilters])
 }
 
 /** 国际化相关的字典 */
