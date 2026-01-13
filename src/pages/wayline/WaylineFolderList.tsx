@@ -42,10 +42,6 @@ const WAYLINE_TYPE_OPTIONS = [
     labelKey: 'wayline.create.form.waylineType.options.swarm.title',
   },
   {
-    value: WaylineEnum.RebotDogWayline,
-    labelKey: 'wayline.create.form.waylineType.options.rebotDog.title',
-  },
-  {
     value: WaylineEnum.PointCloud3DWayline,
     labelKey: 'wayline.create.form.waylineType.options.pointCloud3D.title',
   },
