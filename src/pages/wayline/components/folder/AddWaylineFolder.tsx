@@ -48,11 +48,8 @@ const AddWaylineFolder: FC<AddWaylineFolderProps> = ({
       // 调用 API 创建文件夹
       await createWaylineFolder({
         folderName,
-        // 如果 parentFolderId 为 null 或 'default'，则不传 parentId（表示根级）
-        parentId:
-          parentFolderId && parentFolderId !== 'default'
-            ? Number(parentFolderId)
-            : undefined,
+        // 如果 parentFolderId 没有，则不传 parentId（表示根级）
+        parentId: parentFolderId ? Number(parentFolderId) : undefined,
       })
 
       msgApi.success(t('wayline.folder.createSuccess'))
