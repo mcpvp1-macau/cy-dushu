@@ -303,7 +303,7 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
             />
 
             {/* 航线类型多选图标 */}
-            <div className="flex items-center gap-1 p-1 bg-ground-2 rounded">
+            <div className="flex items-center gap-0.5 p-0.5 bg-ground-3 border border-solid border-ground-5 rounded box-border">
               {WAYLINE_TYPE_OPTIONS.map((option) => {
                 const isSelected = selectedTaskTypesArray.includes(option.value)
                 return (
@@ -312,10 +312,10 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
                       type="button"
                       onClick={() => toggleTaskType(option.value)}
                       className={clsx(
-                        'p-1.5 rounded transition-colors text-base',
+                        'size-6 rounded transition-colors text-base',
                         isSelected
-                          ? 'bg-primary text-white'
-                          : 'text-fore hover:bg-ground-3',
+                          ? 'bg-primary text-hightlight'
+                          : 'text-fore hover:bg-ground-5',
                       )}
                     >
                       <WaylineIcon type={option.value} />
