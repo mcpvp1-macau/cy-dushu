@@ -63,9 +63,6 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
   // 展开的文件夹
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['default'])
 
-  // 输入框值（用于受控组件）
-  const [inputValue, setInputValue] = useState(keyword)
-
   // 查询文件夹列表
   const { data: folderData, isLoading: isFolderLoading } = useQuery({
     queryKey: ['waylineFolders'],
@@ -109,7 +106,7 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
     updateSearchParams('folderId', folderId)
   })
 
-  /** 递归过滤文件夹节点，匹配关键字 */
+  /** 递归过滤文件夹节点，匹配关键字；父级匹配时显示完整子树 */
   const filterFolderNodes = useMemoizedFn(
     (
       nodes: API_AIRLINE.domain.WaylineFolderTreeNode[],
@@ -117,21 +114,24 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
     ): API_AIRLINE.domain.WaylineFolderTreeNode[] => {
       return nodes.reduce<API_AIRLINE.domain.WaylineFolderTreeNode[]>(
         (acc, node) => {
-          // 递归过滤子节点
-          const filteredChildren = node.children
-            ? filterFolderNodes(node.children, kw)
-            : []
-
-          // 如果当前节点匹配，或者有匹配的子节点，则保留该节点
           const matchesSelf = node.folderName
             ?.toLowerCase()
             .includes(kw.toLowerCase())
 
-          if (matchesSelf || filteredChildren.length > 0) {
-            acc.push({
-              ...node,
-              children: filteredChildren.length > 0 ? filteredChildren : [],
-            })
+          if (matchesSelf) {
+            // 如果当前节点匹配，显示其完整子树
+            acc.push(node)
+            return acc
+          }
+
+          // 当前节点不匹配时，检查子节点是否有匹配
+          const filteredChildren = node.children
+            ? filterFolderNodes(node.children, kw)
+            : []
+
+          if (filteredChildren.length > 0) {
+            // 有匹配的子节点时，保留父节点以维持树形结构
+            acc.push({ ...node, children: filteredChildren })
           }
 
           return acc
@@ -293,12 +293,10 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
           <div className="flex items-center gap-2">
             <Input
               allowClear
-              value={inputValue}
+              key={keyword}
+              defaultValue={keyword}
               placeholder={t('wayline.folder.searchPlaceholder')}
-              onChange={(evt) => {
-                setInputValue(evt.target.value)
-                debouncedSearch(evt.target.value)
-              }}
+              onChange={(evt) => debouncedSearch(evt.target.value)}
               className="flex-1"
             />
 
