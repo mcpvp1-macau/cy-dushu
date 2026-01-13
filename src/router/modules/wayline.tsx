@@ -1,7 +1,7 @@
 import { lazy } from 'react'
 import { RouteObject } from 'react-router'
 
-const PageAirline = lazy(() => import('@/pages/wayline'))
+const PageAirline = lazy(() => import('@/pages/wayline/PageWayline'))
 const PageAirlineEdit = lazy(() => import('@/pages/wayline/edit'))
 const PageAreaWaylineEdit = lazy(() => import('@/pages/wayline/area-wayline'))
 const PageSwarmWaylineEdit = lazy(() => import('@/pages/wayline/swarm-wayline'))

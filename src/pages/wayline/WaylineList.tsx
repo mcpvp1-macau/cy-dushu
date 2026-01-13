@@ -6,7 +6,7 @@ import UploadAirlineTemplte from './components/UploadAirlineTemplate'
 
 type PropsType = unknown
 
-const PageAirline: FC<PropsType> = memo(() => {
+const WaylineList: FC<PropsType> = memo(() => {
   const { t } = useTranslation()
 
   return (
@@ -28,6 +28,6 @@ const PageAirline: FC<PropsType> = memo(() => {
   )
 })
 
-PageAirline.displayName = 'PageAirline'
+WaylineList.displayName = 'WaylineList'
 
-export default PageAirline
+export default WaylineList

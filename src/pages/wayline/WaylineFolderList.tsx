@@ -48,7 +48,7 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
       return nodes.map((node) => ({
         key: String(node.id),
         title: node.folderName,
-        icon: ({ expanded }: { expanded: boolean }) =>
+        icon: ({ expanded }: { expanded?: boolean }) =>
           expanded ? <FolderOpenOutlined /> : <FolderOutlined />,
         children:
           node.children && node.children.length > 0
@@ -60,7 +60,7 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
     const defaultFolder: TreeDataNode = {
       key: 'default',
       title: t('wayline.folder.defaultFolder'),
-      icon: ({ expanded }: { expanded: boolean }) =>
+      icon: ({ expanded }: { expanded?: boolean }) =>
         expanded ? <FolderOpenOutlined /> : <FolderOutlined />,
       children: folderData ? buildTreeNodes(folderData) : [],
     }
@@ -117,7 +117,9 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
 
   // 计算航线总数
   const totalWaylines = useMemo(() => {
-    return waylineData?.pages.reduce((acc, page) => acc + page.rows.length, 0) ?? 0
+    return (
+      waylineData?.pages.reduce((acc, page) => acc + page.rows.length, 0) ?? 0
+    )
   }, [waylineData])
 
   useUnmount(() => {
@@ -125,7 +127,7 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
   })
 
   return (
-    <CollapsedPage width={700}>
+    <CollapsedPage width={550}>
       <div className="h-full flex flex-col">
         {/* 顶部标题和搜索栏 */}
         <header className="p-3 border-b border-solid border-ground-4">
@@ -178,7 +180,7 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
           </div>
 
           {/* 右侧航线列表 */}
-          <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex flex-col overflow-hidden w-[350px]">
             <div className="flex justify-between items-center p-3 border-b border-solid border-ground-4">
               <span className="text-sm text-fore">
                 {t('wayline.folder.waylineListTitle')} ({totalWaylines})
