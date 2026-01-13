@@ -70,6 +70,7 @@ const AddWaylineFolder: FC<AddWaylineFolderProps> = ({
     <>
       {/* 添加按钮 */}
       <IconButton
+        className="text-sm"
         onClick={handleOpen}
         tippyProps={{ content: t('wayline.folder.addFolder') }}
       >
