@@ -1,7 +1,9 @@
 import serverControlCenter from '@/service/servers/serverControlCenter'
 
 /** 获取航线模板库列表 */
-export const getAirlineTemplateList = (data: any) => {
+export const getAirlineTemplateList = (
+  data: API_AIRLINE.req.ListFlightTaskTemplateRequest,
+) => {
   return serverControlCenter.post<API_AIRLINE.res.GetAirlineTemplateListRes>(
     '/v3/dji/waylines/task/template/list',
     data,
@@ -63,5 +65,35 @@ export const uploadAirlineTemplate = (
   return serverControlCenter.post(
     '/v3/dji/waylines/task/template/upload',
     formData,
+  )
+}
+
+/** 创建航线文件夹 */
+export const createWaylineFolder = (
+  data: API_AIRLINE.req.CreateWaylineFolderRequest,
+) => {
+  return serverControlCenter.post<API_AIRLINE.res.CreateWaylineFolderResponse>(
+    '/v3/dji/waylines/task/folder/create',
+    data,
+  )
+}
+
+/** 查询航线文件夹列表 */
+export const listWaylineFolder = (
+  data: API_AIRLINE.req.ListWaylineFolderRequest,
+) => {
+  return serverControlCenter.post<API_AIRLINE.res.ListWaylineFolderResponse>(
+    '/v3/dji/waylines/task/folder/list',
+    data,
+  )
+}
+
+/** 删除航线文件夹 */
+export const deleteWaylineFolder = (
+  data: API_AIRLINE.req.DeleteWaylineFolderRequest,
+) => {
+  return serverControlCenter.post<undefined>(
+    '/v3/dji/waylines/task/folder/delete',
+    data,
   )
 }
