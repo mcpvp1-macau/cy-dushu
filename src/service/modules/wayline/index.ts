@@ -56,12 +56,17 @@ export const uploadWaylineTemplate = (
   productKey: string,
   file: File,
   isThird?: boolean,
+  folderId?: string,
 ) => {
   const formData = new FormData()
   formData.append('deviceId', deviceId)
   formData.append('productKey', productKey)
   formData.append('file', file)
   formData.append('isThird', isThird ? 'true' : 'false')
+  // 如果有 folderId 则附带上
+  if (folderId) {
+    formData.append('folderId', folderId)
+  }
   return serverControlCenter.post(
     '/v3/dji/waylines/task/template/upload',
     formData,

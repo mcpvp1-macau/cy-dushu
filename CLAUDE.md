@@ -107,6 +107,7 @@ Using inline SVGs, external icon libraries, or icons from other sources is not a
 
 Before finishing the task, you MUST:
 
+0. Run `pnpm install` to install dependencies if `node_modules` is missing.
 1. Run `pnpm ts` and fix all TypeScript errors.
 2. Run `pnpm lint` and fix all lint issues.
 

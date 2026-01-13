@@ -6,6 +6,7 @@ import { DeviceEnum } from '@/enum/device'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import { uploadWaylineTemplate } from '@/service/modules/wayline'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
+import { useSearchParams } from 'react-router-dom'
 
 type PropsType = unknown
 
@@ -13,6 +14,7 @@ type PropsType = unknown
 const UploadWaylineTemplate: FC<PropsType> = memo(() => {
   const [open, { setTrue, setFalse }] = useBoolean()
   const { t, i18n } = useTranslation()
+  const [searchParams] = useSearchParams()
 
   const allDevices = useMapDevicesStore((s) => s.allDevices)
 
@@ -77,11 +79,14 @@ const UploadWaylineTemplate: FC<PropsType> = memo(() => {
       return
     }
     const file = data.kmzFile.file
+    // 从 URL query 参数中获取 folderId
+    const folderId = searchParams.get('folderId')
     await uploadWaylineTemplate(
       device.deviceId,
       device.productKey,
       file,
       !!data.isThird?.includes(true),
+      folderId ?? undefined,
     )
 
     if (data.isThird?.includes(true)) {
