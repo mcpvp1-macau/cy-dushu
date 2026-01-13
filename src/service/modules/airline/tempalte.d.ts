@@ -70,6 +70,17 @@ declare namespace API_AIRLINE {
     interface DeleteWaylineFolderRequest {
       folderId: number
     }
+    /** 更新航线文件夹请求参数 */
+    interface UpdateWaylineFolderRequest {
+      folderId: number
+      folderName?: string
+      parentId?: number
+    }
+    /** 批量更新航线文件夹父级请求参数 */
+    interface BatchUpdateWaylineFolderParentRequest {
+      folderIds: number[]
+      parentId: number
+    }
   }
   // ------------------ res ------------------
   namespace res {

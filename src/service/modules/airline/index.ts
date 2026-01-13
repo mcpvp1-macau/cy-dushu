@@ -97,3 +97,23 @@ export const deleteWaylineFolder = (
     data,
   )
 }
+
+/** 更新航线文件夹 */
+export const updateWaylineFolder = (
+  data: API_AIRLINE.req.UpdateWaylineFolderRequest,
+) => {
+  return serverControlCenter.post<undefined>(
+    '/v3/dji/waylines/task/folder/update',
+    data,
+  )
+}
+
+/** 批量更新航线文件夹父级 */
+export const batchUpdateWaylineFolderParent = (
+  data: API_AIRLINE.req.BatchUpdateWaylineFolderParentRequest,
+) => {
+  return serverControlCenter.post<undefined>(
+    '/v3/dji/waylines/task/folder/update-parent/batch',
+    data,
+  )
+}
