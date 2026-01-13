@@ -10,13 +10,14 @@ import {
   getAirlineTemplateList,
   listWaylineFolder,
 } from '@/service/modules/airline'
-import { WaylineIcon } from './components/AirlineTemplateListItem'
-import OverflowText from '@/components/ui/OverflowText'
+import AirlineTemplateListItem from './components/AirlineTemplateListItem'
 import useReachBottom from '@/hooks/useReachBottom'
 import { useDebounceFn, useUnmount } from 'ahooks'
 import useWaylinesStore from '@/store/map/useWaylines.store'
 import { isNil } from 'lodash'
 import { FolderOpenOutlined, FolderOutlined } from '@ant-design/icons'
+import UploadAirlineTemplte from './components/UploadAirlineTemplate'
+import AddAirlineTemplate from './components/AddAirlineTemplate'
 
 type PropsType = unknown
 
@@ -185,9 +186,9 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
               <span className="text-sm text-fore">
                 {t('wayline.folder.waylineListTitle')} ({totalWaylines})
               </span>
-              <div className="flex gap-2">
-                <button className="text-fore hover:text-primary">↑</button>
-                <button className="text-fore hover:text-primary">+</button>
+              <div className="text-sm flex gap-3">
+                <UploadAirlineTemplte />
+                <AddAirlineTemplate />
               </div>
             </div>
             <ScrollArea className="flex-1 p-3" onScroll={handleScroll}>
@@ -202,7 +203,10 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
                     {waylineData?.pages.map((page, index) => (
                       <Fragment key={index}>
                         {page.rows.map((e) => (
-                          <WaylineListItem key={e.templateId} data={e} />
+                          <AirlineTemplateListItem
+                            key={e.templateId}
+                            data={e}
+                          />
                         ))}
                       </Fragment>
                     ))}
@@ -221,31 +225,3 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
 WaylineFolderList.displayName = 'WaylineFolderList'
 
 export default WaylineFolderList
-
-// 航线列表项组件
-type WaylineListItemProps = {
-  data: API_AIRLINE.domain.AIRLINE_TEMPLATE
-}
-
-const WaylineListItem: FC<WaylineListItemProps> = memo(({ data }) => {
-  const { t } = useTranslation()
-
-  return (
-    <li className="card-border text-sm p-2 bg-ground-2">
-      <div className="flex gap-2 items-center">
-        <WaylineIcon type={data.taskType} />
-        <OverflowText className="text-hightlight flex-1 truncate">
-          {data.taskName}
-        </OverflowText>
-      </div>
-      <p className="text-xs mt-1 text-fore/70">
-        {t('wayline.regenerator.title')}: {data.gmtModifiedBy}
-      </p>
-      <p className="text-xs mt-1 text-fore/70">
-        {t('common.updateTime')}: {data.gmtModified}
-      </p>
-    </li>
-  )
-})
-
-WaylineListItem.displayName = 'WaylineListItem'
