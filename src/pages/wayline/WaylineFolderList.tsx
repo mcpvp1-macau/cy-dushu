@@ -23,6 +23,7 @@ import AddAirlineTemplate from './components/AddAirlineTemplate'
 import { useSearchParams } from 'react-router-dom'
 import { WaylineEnum } from '@/constant/uav/wayline'
 import clsx from 'clsx'
+import AddWaylineFolder from './components/folder/AddWaylineFolder'
 
 type PropsType = unknown
 
@@ -279,6 +280,11 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
     return selectedTaskTypes ? selectedTaskTypes.split(',') : []
   }, [selectedTaskTypes])
 
+  /** 文件夹创建成功后刷新列表 */
+  const handleFolderCreated = useMemoizedFn(() => {
+    queryClient.invalidateQueries({ queryKey: ['waylineFolders'] })
+  })
+
   return (
     <CollapsedPage width={550}>
       <div className="h-full flex flex-col">
@@ -333,7 +339,10 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
               <span className="text-sm text-fore">
                 {t('wayline.folder.folderListTitle')}
               </span>
-              <button className="text-fore hover:text-primary">+</button>
+              <AddWaylineFolder
+                parentFolderId={selectedFolderId}
+                onSuccess={handleFolderCreated}
+              />
             </div>
             <ScrollArea className="flex-1">
               {isFolderLoading ? (

@@ -790,6 +790,12 @@ wayline:
     folderListTitle: Folders
     waylineListTitle: Waylines
     defaultFolder: Default Folder
+    addFolder: Add Folder
+    folderName: Folder Name
+    folderNameRequired: Please enter folder name
+    folderNamePlaceholder: Please enter folder name
+    folderNameMaxLength: Folder name can be up to 50 characters
+    createSuccess: Created successfully
   upload:
     title: Upload Wayline Template
     error:
