@@ -9,7 +9,7 @@ import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
 import IconButton from '@/components/ui/button/IconButton'
 import OverflowText from '@/components/ui/OverflowText'
 import { WaylineEnum } from '@/constant/uav/wayline'
-import { delAirlineTempalte } from '@/service/modules/airline'
+import { delWaylineTemplate } from '@/service/modules/wayline'
 import useWaylinesStore from '@/store/map/useWaylines.store'
 import { downloadAndRename } from '@/utils/download'
 import { shouldJson } from '@/utils/json'
@@ -22,11 +22,13 @@ type PropsType = {
   data: API_AIRLINE.domain.AIRLINE_TEMPLATE
 }
 
-const AirlineTemplateListItem: FC<PropsType> = memo(({ data }) => {
+/** 航线模板列表项 */
+const WaylineTemplateListItem: FC<PropsType> = memo(({ data }) => {
   const queryClient = useQueryClient()
+  // 删除模板并刷新列表
   const handleDel = async () => {
-    await delAirlineTempalte(data.waylineTemplateId)
-    queryClient.invalidateQueries({ queryKey: ['airlineTemplates'] })
+    await delWaylineTemplate(data.waylineTemplateId)
+    queryClient.invalidateQueries({ queryKey: ['waylineTemplates'] })
     // 如果正在预览该航线模板，取消预览
     const store = useWaylinesStore.getState()
     if (store.previewedWayline?.id === data.templateId) {
@@ -119,10 +121,11 @@ const AirlineTemplateListItem: FC<PropsType> = memo(({ data }) => {
   )
 })
 
-AirlineTemplateListItem.displayName = 'AirlineTemplateListItem'
+WaylineTemplateListItem.displayName = 'WaylineTemplateListItem'
 
-export default AirlineTemplateListItem
+export default WaylineTemplateListItem
 
+/** 根据任务类型渲染图标 */
 export const WaylineIcon: FC<{ type: string }> = ({ type }) => {
   return (
     (
@@ -139,6 +142,7 @@ export const WaylineIcon: FC<{ type: string }> = ({ type }) => {
   )
 }
 
+/** 根据任务类型生成编辑地址 */
 export const getWaylineEditURL = (type: string) => {
   return (
     {

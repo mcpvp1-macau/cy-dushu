@@ -1,7 +1,7 @@
 import { useMemoizedFn } from 'ahooks'
-import { getAirlineTemplateList } from '@/service/modules/airline'
+import { getWaylineTemplateList } from '@/service/modules/wayline'
 import useWaylinePreview from '../wayline/useWaylinePreview'
-import { WaylineIcon } from '@/pages/wayline/components/AirlineTemplateListItem'
+import { WaylineIcon } from '@/pages/wayline/components/WaylineTemplateListItem'
 import IconButton from '@/components/ui/button/IconButton'
 import IconPreview from '@/assets/icons/jsx/IconPreview'
 import { WaylineEnum } from '@/constant/uav/wayline'
@@ -16,9 +16,9 @@ const useWaylineOptions = () => {
   const queryClient = useQueryClient()
   const { data: waylineTemplateList } = useQuery(
     {
-      queryKey: ['getAllAirlines'],
+      queryKey: ['getAllWaylines'],
       queryFn: () =>
-        getAirlineTemplateList({
+        getWaylineTemplateList({
           isPage: false,
         }),
       select: (d) => d.data.rows,
@@ -73,6 +73,7 @@ const useWaylineOptions = () => {
   }
 }
 
+/** 获取航线与设备表单选项 */
 export const useWaylineAndDeviceFormOptions = (form: FormInstance<any>) => {
   const { waylineOptions, waylineTemplateList, holder } = useWaylineOptions()
 

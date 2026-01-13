@@ -1,4 +1,4 @@
-import { getLatestTask } from '@/service/modules/airline'
+import { getLatestTask } from '@/service/modules/wayline'
 import { create } from 'zustand'
 import useGlobalWsStore from './useGlobalWebSocket.store'
 import { useUpdateEffect } from 'ahooks'

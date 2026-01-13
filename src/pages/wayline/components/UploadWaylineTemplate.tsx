@@ -4,13 +4,13 @@ import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
 import { DeviceEnum } from '@/enum/device'
 import { useAppMsg } from '@/hooks/useAppMsg'
-import { uploadAirlineTemplate } from '@/service/modules/airline'
+import { uploadWaylineTemplate } from '@/service/modules/wayline'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
 
 type PropsType = unknown
 
-/** 上传航线 */
-const UploadAirlineTemplte: FC<PropsType> = memo(() => {
+/** 上传航线模板 */
+const UploadWaylineTemplate: FC<PropsType> = memo(() => {
   const [open, { setTrue, setFalse }] = useBoolean()
   const { t, i18n } = useTranslation()
 
@@ -68,6 +68,7 @@ const UploadAirlineTemplte: FC<PropsType> = memo(() => {
 
   const msgApi = useAppMsg()
   const queryClient = useQueryClient()
+  // 处理上传确认并刷新模板列表
   const handleConfirm = async (data) => {
     const { deviceId } = data
     const device = allDevices.find((e) => deviceId === e.deviceId)
@@ -76,7 +77,7 @@ const UploadAirlineTemplte: FC<PropsType> = memo(() => {
       return
     }
     const file = data.kmzFile.file
-    await uploadAirlineTemplate(
+    await uploadWaylineTemplate(
       device.deviceId,
       device.productKey,
       file,
@@ -91,7 +92,7 @@ const UploadAirlineTemplte: FC<PropsType> = memo(() => {
 
     setFalse()
     queryClient.invalidateQueries({
-      queryKey: ['airlineTemplates'],
+      queryKey: ['waylineTemplates'],
       exact: false,
     })
   }
@@ -118,6 +119,6 @@ const UploadAirlineTemplte: FC<PropsType> = memo(() => {
   )
 })
 
-UploadAirlineTemplte.displayName = 'UploadAirlineTemplte'
+UploadWaylineTemplate.displayName = 'UploadWaylineTemplate'
 
-export default UploadAirlineTemplte
+export default UploadWaylineTemplate

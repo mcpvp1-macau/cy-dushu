@@ -84,7 +84,7 @@ declare namespace API_AIRLINE {
   }
   // ------------------ res ------------------
   namespace res {
-    type GetAirlineTemplateListRes =
+    type GetWaylineTemplateListRes =
       API_COMMON.PageRes<API_AIRLINE.domain.AIRLINE_TEMPLATE>
     type getWaylineTaskModelRes = API_AIRLINE.domain.Model[]
     /** 创建航线文件夹响应 */

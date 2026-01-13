@@ -4,17 +4,17 @@ import FormModal from '@/components/XForm/Modal'
 import { XFormItem } from '@/components/XForm/types'
 import { editRoutePathMap, WaylineEnum } from '@/constant/uav/wayline'
 import { useAppMsg } from '@/hooks/useAppMsg'
-import { getWaylineTaskModel } from '@/service/modules/airline'
+import { getWaylineTaskModel } from '@/service/modules/wayline'
 import { getSpaceList } from '@/service/modules/layer_overlay'
 import { Form } from 'antd'
 import { DefaultOptionType } from 'antd/es/cascader'
 import { isNil } from 'lodash'
-import { createWaylineTypeOptions } from './AirlineTemplateList'
+import { createWaylineTypeOptions } from './WaylineTemplateList'
 
 type PropsType = unknown
 
 /** 创建航线模板 */
-const AddAirlineTemplate: FC<PropsType> = memo(() => {
+const AddWaylineTemplate: FC<PropsType> = memo(() => {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
 
@@ -26,7 +26,7 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
 
   const { data: modelsData } = useQuery(
     {
-      queryKey: ['airlineModels'],
+      queryKey: ['waylineModels'],
       queryFn: () => getWaylineTaskModel(),
       select: (d) => d.data,
     },
@@ -85,7 +85,7 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
   const addItems = useMemo(() => {
     return [
       {
-        name: 'airlineName',
+        name: 'waylineName',
         label: t('wayline.create.form.waylineName.label'),
         type: 'input',
         rules: [
@@ -153,6 +153,7 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
     form.resetFields()
   }, [open])
 
+  /** 生成跳转参数并打开编辑页 */
   const handleConfirm = (v) => {
     // 模型名称
     const modelName = isNil(v.uavType)
@@ -178,7 +179,7 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
     }
 
     navigate(
-      `/wayline/${to}?name=${v.airlineName}${modelName}${camera}${pointCloud3DParams}`,
+      `/wayline/${to}?name=${v.waylineName}${modelName}${camera}${pointCloud3DParams}`,
     )
   }
 
@@ -207,6 +208,6 @@ const AddAirlineTemplate: FC<PropsType> = memo(() => {
   )
 })
 
-AddAirlineTemplate.displayName = 'AddAirlineTemplate'
+AddWaylineTemplate.displayName = 'AddWaylineTemplate'
 
-export default AddAirlineTemplate
+export default AddWaylineTemplate

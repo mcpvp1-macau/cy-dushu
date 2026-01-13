@@ -1,8 +1,8 @@
-import { getAirlineTemplateList } from '@/service/modules/airline'
+import { getWaylineTemplateList } from '@/service/modules/wayline'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { Input, Spin } from 'antd'
 import { Fragment } from 'react'
-import AirlineTemplateListItem from './AirlineTemplateListItem'
+import WaylineTemplateListItem from './WaylineTemplateListItem'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import AppSpin from '@/components/AppSpin'
 import useReachBottom from '@/hooks/useReachBottom'
@@ -21,6 +21,7 @@ import { type TFunction } from 'i18next'
 
 type PropsType = unknown
 
+/** 构建航线类型选项 */
 export const createWaylineTypeOptions = (
   t: TFunction<'translation', undefined>,
 ) => [
@@ -71,7 +72,8 @@ export const createWaylineTypeOptions = (
   },
 ]
 
-const AirlineTemplateList: FC<PropsType> = memo(() => {
+/** 航线模板列表 */
+const WaylineTemplateList: FC<PropsType> = memo(() => {
   const [searchParams, setSearchParams] = useSearchParams()
   const kw = searchParams.get('kw')
   const waylineType = searchParams.get('waylineType')
@@ -88,10 +90,10 @@ const AirlineTemplateList: FC<PropsType> = memo(() => {
     fetchNextPage,
   } = useInfiniteQuery(
     {
-      queryKey: ['airlineTemplates', { kw, waylineType }],
+      queryKey: ['waylineTemplates', { kw, waylineType }],
       initialPageParam: 1,
       queryFn: async ({ pageParam }) => {
-        const { data } = await getAirlineTemplateList({
+        const { data } = await getWaylineTemplateList({
           currentPage: pageParam,
           isPage: true,
           size: 15,
@@ -174,7 +176,7 @@ const AirlineTemplateList: FC<PropsType> = memo(() => {
               {data?.pages.map((page, index) => (
                 <Fragment key={index}>
                   {page.rows.map((e) => (
-                    <AirlineTemplateListItem key={e.templateId} data={e} />
+                    <WaylineTemplateListItem key={e.templateId} data={e} />
                   ))}
                 </Fragment>
               ))}
@@ -187,6 +189,6 @@ const AirlineTemplateList: FC<PropsType> = memo(() => {
   )
 })
 
-AirlineTemplateList.displayName = 'AirlineTemplateList'
+WaylineTemplateList.displayName = 'WaylineTemplateList'
 
-export default AirlineTemplateList
+export default WaylineTemplateList

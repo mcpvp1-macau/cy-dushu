@@ -7,7 +7,7 @@ import { useBackTrackingStore } from '@/store/context-store/useBackTracking.stor
 import useVisibleCheck from './useVisibleCheck'
 import { shouldJson } from '@/utils/json'
 import ChildActionGroup from './ChildActionGroup'
-import { getAirlineTemplateList } from '@/service/modules/airline'
+import { getWaylineTemplateList } from '@/service/modules/wayline'
 import {
   useGetDensityStatistics,
   useListenRealDensityMap,
@@ -91,7 +91,7 @@ const ChildActions: FC<PropsType> = memo(
   const { data: airlineTemplateList } = useQuery(
     {
       queryKey: ['airlineTemplate'],
-      queryFn: () => getAirlineTemplateList({ isPage: false }),
+      queryFn: () => getWaylineTemplateList({ isPage: false }),
       select: (d) => d?.data.rows ?? [],
     },
     queryClient,

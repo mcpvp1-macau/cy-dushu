@@ -2,7 +2,7 @@ import IconButton from '@/components/ui/button/IconButton'
 import { LoadingOutlined } from '@ant-design/icons'
 import { useDeviceDetailStore } from '../../hooks/useDeviceDetail.store'
 import useGlobalWsStore from '@/store/useGlobalWebSocket.store'
-import { getCameraByType } from '@/service/modules/airline'
+import { getCameraByType } from '@/service/modules/wayline'
 import IconQuickCreateWayline from '@/assets/icons/jsx/IconQuickCreateWayline'
 
 type PropsType = unknown

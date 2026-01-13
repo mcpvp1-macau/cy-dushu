@@ -1,4 +1,4 @@
-import { getAirlineTemplateList } from '@/service/modules/airline'
+import { getWaylineTemplateList } from '@/service/modules/wayline'
 import { shouldJson } from '@/utils/json'
 import { useSearchParams } from 'react-router-dom'
 import { pick } from 'lodash'
@@ -118,7 +118,7 @@ const useAirlineInit = () => {
     {
       queryKey: ['waylineTemplate', waylineTemplateId],
       queryFn: () =>
-        getAirlineTemplateList({
+        getWaylineTemplateList({
           waylineTemplateId,
         }),
       enabled: !!waylineTemplateId,

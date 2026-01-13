@@ -1,4 +1,4 @@
-import { getAirlineTemplateList } from '@/service/modules/airline'
+import { getWaylineTemplateList } from '@/service/modules/wayline'
 import { getSpaceDetail } from '@/service/modules/layer_overlay'
 import usePointCloud3DWaylineStore from '@/store/wayline/point-cloud-3d-wayline/usePointCloud3D.store'
 import { shouldJson } from '@/utils/json'
@@ -66,7 +66,7 @@ const usePointCloud3DWaylineInit = () => {
     {
       queryKey: ['waylineTemplate', waylineTemplateId],
       queryFn: () =>
-        getAirlineTemplateList({
+        getWaylineTemplateList({
           waylineTemplateId,
         }),
       enabled: !!waylineTemplateId,

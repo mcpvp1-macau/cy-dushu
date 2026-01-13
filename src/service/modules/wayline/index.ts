@@ -1,17 +1,17 @@
 import serverControlCenter from '@/service/servers/serverControlCenter'
 
 /** 获取航线模板库列表 */
-export const getAirlineTemplateList = (
+export const getWaylineTemplateList = (
   data: API_AIRLINE.req.ListFlightTaskTemplateRequest,
 ) => {
-  return serverControlCenter.post<API_AIRLINE.res.GetAirlineTemplateListRes>(
+  return serverControlCenter.post<API_AIRLINE.res.GetWaylineTemplateListRes>(
     '/v3/dji/waylines/task/template/list',
     data,
   )
 }
 
 /** @deprecated */
-export const getAirlineTemplateDetail = (waylineTemplateId: string) => {
+export const getWaylineTemplateDetail = (waylineTemplateId: string) => {
   return serverControlCenter.post('/v3/dji/waylines/task/template/info', {
     templateId: waylineTemplateId,
   })
@@ -32,7 +32,7 @@ export const getCameraByType = (cameraType: string) => {
 }
 
 /** 删除航线模板 */
-export const delAirlineTempalte = (waylineTemplateId: number) => {
+export const delWaylineTemplate = (waylineTemplateId: number) => {
   return serverControlCenter.post<undefined>(
     `/v3/dji/waylines/task/template/delete`,
     {
@@ -51,7 +51,7 @@ export const getLatestTask = (deviceId: string) => {
 }
 
 /** 上传航线模板 */
-export const uploadAirlineTemplate = (
+export const uploadWaylineTemplate = (
   deviceId: string,
   productKey: string,
   file: File,

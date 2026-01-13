@@ -11,7 +11,7 @@ import { useAppMsg } from '@/hooks/useAppMsg'
 import {
   getWaylineEditURL,
   WaylineIcon,
-} from '@/pages/wayline/components/AirlineTemplateListItem'
+} from '@/pages/wayline/components/WaylineTemplateListItem'
 import {
   endActionItem,
   pauseActionItem,

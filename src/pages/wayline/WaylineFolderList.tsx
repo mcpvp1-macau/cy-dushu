@@ -7,19 +7,19 @@ import { Input, Spin, Tooltip, Tree, TreeDataNode } from 'antd'
 import { Fragment, useEffect, useMemo } from 'react'
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import {
-  getAirlineTemplateList,
+  getWaylineTemplateList,
   listWaylineFolder,
-} from '@/service/modules/airline'
-import AirlineTemplateListItem, {
+} from '@/service/modules/wayline'
+import WaylineTemplateListItem, {
   WaylineIcon,
-} from './components/AirlineTemplateListItem'
+} from './components/WaylineTemplateListItem'
 import useReachBottom from '@/hooks/useReachBottom'
 import { useDebounceFn, useMemoizedFn, useUnmount } from 'ahooks'
 import useWaylinesStore from '@/store/map/useWaylines.store'
 import { isNil } from 'lodash'
 import { FolderOpenOutlined, FolderOutlined } from '@ant-design/icons'
-import UploadAirlineTemplte from './components/UploadAirlineTemplate'
-import AddAirlineTemplate from './components/AddAirlineTemplate'
+import UploadWaylineTemplate from './components/UploadWaylineTemplate'
+import AddWaylineTemplate from './components/AddWaylineTemplate'
 import { useSearchParams } from 'react-router-dom'
 import { WaylineEnum } from '@/constant/uav/wayline'
 import clsx from 'clsx'
@@ -47,6 +47,7 @@ const WAYLINE_TYPE_OPTIONS = [
   },
 ]
 
+/** 航线模板文件夹列表 */
 const WaylineFolderList: FC<PropsType> = memo(() => {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
@@ -228,12 +229,12 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
   } = useInfiniteQuery(
     {
       queryKey: [
-        'airlineTemplates',
+        'waylineTemplates',
         { keyword, folderId: selectedFolderId, taskType: selectedTaskTypes },
       ],
       initialPageParam: 1,
       queryFn: async ({ pageParam }) => {
-        const { data } = await getAirlineTemplateList({
+        const { data } = await getWaylineTemplateList({
           currentPage: pageParam,
           isPage: true,
           size: 15,
@@ -374,8 +375,8 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
                 {t('wayline.folder.waylineListTitle')} ({totalWaylines})
               </span>
               <div className="text-sm flex gap-3">
-                <UploadAirlineTemplte />
-                <AddAirlineTemplate />
+                <UploadWaylineTemplate />
+                <AddWaylineTemplate />
               </div>
             </div>
             <ScrollArea className="flex-1 p-3" onScroll={handleScroll}>
@@ -390,7 +391,7 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
                     {waylineData?.pages.map((page, index) => (
                       <Fragment key={index}>
                         {page.rows.map((e) => (
-                          <AirlineTemplateListItem
+                          <WaylineTemplateListItem
                             key={e.templateId}
                             data={e}
                           />

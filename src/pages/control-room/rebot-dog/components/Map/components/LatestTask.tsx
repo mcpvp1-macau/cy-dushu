@@ -1,6 +1,6 @@
 import { getWaylinePointBillboardSvgURI } from '@/components/Icon/WaylinePoint'
 import { useDeviceDetailStore } from '@/pages/right/DeviceDetail/hooks/useDeviceDetail.store'
-import { getLatestTask } from '@/service/modules/airline'
+import { getLatestTask } from '@/service/modules/wayline'
 import { shouldJson } from '@/utils/json'
 import { Line } from '@react-three/drei'
 import { Fragment } from 'react/jsx-runtime'
