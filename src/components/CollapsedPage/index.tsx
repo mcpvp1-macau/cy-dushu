@@ -1,14 +1,16 @@
 import IconLeft from '@/assets/icons/jsx/IconLeft'
 import IconRight from '@/assets/icons/jsx/IconRight'
 import useSituationLayoutStore from '@/store/layout/useSituationLayout.store'
-import { ReactNode } from 'react'
+import { ReactNode, CSSProperties } from 'react'
 
 type PropsType = {
   children?: ReactNode
+  /** 页面宽度，默认 350px */
+  width?: number
 }
 
 /** 可折叠页面 */
-const CollapsedPage: FC<PropsType> = memo(({ children }) => {
+const CollapsedPage: FC<PropsType> = memo(({ children, width = 350 }) => {
   // 为什么不直接使用  useSituationLayoutStore 的 collapsedOpen？
   // 因为 useSituationLayoutStore 的 collapsedOpen 是全局状态，
   // 需要再每次创建时都是默认打开的
@@ -17,19 +19,26 @@ const CollapsedPage: FC<PropsType> = memo(({ children }) => {
     useSituationLayoutStore.getState().updateCollapsedOpen(open)
   }, [open])
 
+  const containerStyle: CSSProperties = {
+    transform: open ? undefined : `translateX(-${width}px)`,
+  }
+
+  const contentStyle: CSSProperties = {
+    width: `${width}px`,
+  }
+
   return (
     <div
       className={clsx(
-        'h-full overflow-y-hidden flex  transition-[transform,filter] duration-500 ease-in-out',
-        {
-          '-translate-x-[350px]': !open,
-        },
+        'h-full overflow-y-hidden flex transition-[transform,filter] duration-500 ease-in-out',
       )}
+      style={containerStyle}
     >
       <div
-        className={clsx('h-full flex flex-col overflow-hidden w-[350px]', {
+        className={clsx('h-full flex flex-col overflow-hidden', {
           ['blur-sm']: !open,
         })}
+        style={contentStyle}
       >
         <div className=" bg-ground-1/90 backdrop-blur-sm flex-1 overflow-hidden">
           {children}

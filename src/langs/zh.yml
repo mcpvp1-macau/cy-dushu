@@ -773,6 +773,12 @@ resource:
       title: 设备编号
 wayline:
   title: 航线
+  folder:
+    title: 航线库
+    searchPlaceholder: 按文件夹名称或航线名称搜索
+    folderListTitle: 文件夹
+    waylineListTitle: 航线
+    defaultFolder: 默认文件夹
   upload:
     title: 上传航线
     error:
