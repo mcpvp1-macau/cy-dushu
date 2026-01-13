@@ -66,6 +66,12 @@ const BottomOperator: FC<PropsType> = memo(
           delete data['templateId']
         }
 
+        // 从 URL query 参数中获取 folderId 并添加到 data
+        const folderId = searchParams.get('folderId')
+        if (folderId) {
+          data['folderId'] = folderId
+        }
+
         if (actionId) {
           // 说明是行动过来的
           data['actionId'] = actionId

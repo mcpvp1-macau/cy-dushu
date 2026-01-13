@@ -9,6 +9,7 @@ import { getSpaceList } from '@/service/modules/layer_overlay'
 import { Form } from 'antd'
 import { DefaultOptionType } from 'antd/es/cascader'
 import { isNil } from 'lodash'
+import { useSearchParams } from 'react-router-dom'
 import { createWaylineTypeOptions } from './WaylineTemplateList'
 
 type PropsType = unknown
@@ -17,6 +18,7 @@ type PropsType = unknown
 const AddWaylineTemplate: FC<PropsType> = memo(() => {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const msgApi = useAppMsg()
 
@@ -178,8 +180,12 @@ const AddWaylineTemplate: FC<PropsType> = memo(() => {
       pointCloud3DParams = `&cloud3DSpaceId=${row.id}&could3DUrl=${row.spaceMapUrl}`
     }
 
+    // 从 URL query 参数中获取 folderId 并透传
+    const folderId = searchParams.get('folderId')
+    const folderIdParam = folderId ? `&folderId=${folderId}` : ''
+
     navigate(
-      `/wayline/${to}?name=${v.waylineName}${modelName}${camera}${pointCloud3DParams}`,
+      `/wayline/${to}?name=${v.waylineName}${modelName}${camera}${pointCloud3DParams}${folderIdParam}`,
     )
   }
 
