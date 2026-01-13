@@ -55,6 +55,7 @@ declare namespace API_AIRLINE {
       waylineTemplateId?: string
       templateId?: string
       folderId?: string
+      currentPage?: number
     }
     /** 创建航线文件夹请求参数 */
     interface CreateWaylineFolderRequest {
