@@ -779,6 +779,12 @@ wayline:
     folderListTitle: 文件夹
     waylineListTitle: 航线
     defaultFolder: 默认文件夹
+    addFolder: 添加文件夹
+    folderName: 文件夹名称
+    folderNameRequired: 请输入文件夹名称
+    folderNamePlaceholder: 请输入文件夹名称
+    folderNameMaxLength: 文件夹名称最多50个字符
+    createSuccess: 创建成功
   upload:
     title: 上传航线
     error:
