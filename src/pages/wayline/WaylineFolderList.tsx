@@ -3,34 +3,68 @@ import CollapsedPage from '@/components/CollapsedPage'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import AppSpin from '@/components/AppSpin'
 import AppEmpty from '@/components/AppEmpty'
-import { Input, Spin, Tree, TreeDataNode } from 'antd'
-import { Fragment, useMemo } from 'react'
+import { Input, Spin, Tooltip, Tree, TreeDataNode } from 'antd'
+import { Fragment, useEffect, useMemo } from 'react'
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import {
   getAirlineTemplateList,
   listWaylineFolder,
 } from '@/service/modules/airline'
-import AirlineTemplateListItem from './components/AirlineTemplateListItem'
+import AirlineTemplateListItem, {
+  WaylineIcon,
+} from './components/AirlineTemplateListItem'
 import useReachBottom from '@/hooks/useReachBottom'
-import { useDebounceFn, useUnmount } from 'ahooks'
+import { useDebounceFn, useMemoizedFn, useUnmount } from 'ahooks'
 import useWaylinesStore from '@/store/map/useWaylines.store'
 import { isNil } from 'lodash'
 import { FolderOpenOutlined, FolderOutlined } from '@ant-design/icons'
 import UploadAirlineTemplte from './components/UploadAirlineTemplate'
 import AddAirlineTemplate from './components/AddAirlineTemplate'
+import { useSearchParams } from 'react-router-dom'
+import { WaylineEnum } from '@/constant/uav/wayline'
+import clsx from 'clsx'
 
 type PropsType = unknown
+
+/** 航线类型选项配置 */
+const WAYLINE_TYPE_OPTIONS = [
+  {
+    value: WaylineEnum.PointWayline,
+    labelKey: 'wayline.create.form.waylineType.options.point.title',
+  },
+  {
+    value: WaylineEnum.AreaWayline,
+    labelKey: 'wayline.create.form.waylineType.options.area.title',
+  },
+  {
+    value: WaylineEnum.SwarmWayline,
+    labelKey: 'wayline.create.form.waylineType.options.swarm.title',
+  },
+  {
+    value: WaylineEnum.RebotDogWayline,
+    labelKey: 'wayline.create.form.waylineType.options.rebotDog.title',
+  },
+  {
+    value: WaylineEnum.PointCloud3DWayline,
+    labelKey: 'wayline.create.form.waylineType.options.pointCloud3D.title',
+  },
+]
 
 const WaylineFolderList: FC<PropsType> = memo(() => {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
+  const [searchParams, setSearchParams] = useSearchParams()
 
-  // 搜索关键字
-  const [keyword, setKeyword] = useState('')
-  // 当前选中的文件夹 ID，null 表示全部
-  const [selectedFolderId, setSelectedFolderId] = useState<string | null>(null)
+  // 从 URL 参数读取状态
+  const keyword = searchParams.get('kw') || ''
+  const selectedTaskTypes = searchParams.get('taskType') || ''
+  const selectedFolderId = searchParams.get('folderId') || null
+
   // 展开的文件夹
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['default'])
+
+  // 输入框值（用于受控组件）
+  const [inputValue, setInputValue] = useState(keyword)
 
   // 查询文件夹列表
   const { data: folderData, isLoading: isFolderLoading } = useQuery({
@@ -40,6 +74,114 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
       return data
     },
   })
+
+  /** 更新 URL 参数 */
+  const updateSearchParams = useMemoizedFn(
+    (key: string, value: string | null) => {
+      const newParams = new URLSearchParams(searchParams)
+      if (value) {
+        newParams.set(key, value)
+      } else {
+        newParams.delete(key)
+      }
+      setSearchParams(newParams, { replace: true })
+    },
+  )
+
+  /** 切换航线类型选择 */
+  const toggleTaskType = useMemoizedFn((type: string) => {
+    const currentTypes = selectedTaskTypes ? selectedTaskTypes.split(',') : []
+    const index = currentTypes.indexOf(type)
+
+    if (index === -1) {
+      // 添加类型
+      currentTypes.push(type)
+    } else {
+      // 移除类型
+      currentTypes.splice(index, 1)
+    }
+
+    updateSearchParams('taskType', currentTypes.join(',') || null)
+  })
+
+  /** 选择文件夹 */
+  const handleSelectFolder = useMemoizedFn((folderId: string | null) => {
+    updateSearchParams('folderId', folderId)
+  })
+
+  /** 递归过滤文件夹节点，匹配关键字 */
+  const filterFolderNodes = useMemoizedFn(
+    (
+      nodes: API_AIRLINE.domain.WaylineFolderTreeNode[],
+      kw: string,
+    ): API_AIRLINE.domain.WaylineFolderTreeNode[] => {
+      return nodes.reduce<API_AIRLINE.domain.WaylineFolderTreeNode[]>(
+        (acc, node) => {
+          // 递归过滤子节点
+          const filteredChildren = node.children
+            ? filterFolderNodes(node.children, kw)
+            : []
+
+          // 如果当前节点匹配，或者有匹配的子节点，则保留该节点
+          const matchesSelf = node.folderName
+            ?.toLowerCase()
+            .includes(kw.toLowerCase())
+
+          if (matchesSelf || filteredChildren.length > 0) {
+            acc.push({
+              ...node,
+              children: filteredChildren.length > 0 ? filteredChildren : [],
+            })
+          }
+
+          return acc
+        },
+        [],
+      )
+    },
+  )
+
+  /** 收集所有文件夹 ID */
+  const collectAllFolderIds = useMemoizedFn(
+    (nodes: API_AIRLINE.domain.WaylineFolderTreeNode[]): string[] => {
+      return nodes.flatMap((node) => [
+        String(node.id),
+        ...(node.children ? collectAllFolderIds(node.children) : []),
+      ])
+    },
+  )
+
+  // 过滤后的文件夹数据
+  const filteredFolderData = useMemo(() => {
+    if (!folderData || !keyword) {
+      return folderData
+    }
+    return filterFolderNodes(folderData, keyword)
+  }, [folderData, keyword, filterFolderNodes])
+
+  // 所有可见文件夹 ID（用于判断当前选中是否可见）
+  const visibleFolderIds = useMemo(() => {
+    if (!filteredFolderData) return new Set<string>()
+    return new Set(collectAllFolderIds(filteredFolderData))
+  }, [filteredFolderData, collectAllFolderIds])
+
+  // 当选中的文件夹被过滤掉时，切换到默认文件夹
+  useEffect(() => {
+    if (
+      selectedFolderId &&
+      keyword &&
+      filteredFolderData &&
+      !visibleFolderIds.has(selectedFolderId)
+    ) {
+      handleSelectFolder(null)
+    }
+  }, [
+    selectedFolderId,
+    keyword,
+    filteredFolderData,
+    visibleFolderIds,
+    handleSelectFolder,
+  ])
 
   // 构建树形数据
   const treeData: TreeDataNode[] = useMemo(() => {
@@ -63,16 +205,17 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
       title: t('wayline.folder.defaultFolder'),
       icon: ({ expanded }: { expanded?: boolean }) =>
         expanded ? <FolderOpenOutlined /> : <FolderOutlined />,
-      children: folderData ? buildTreeNodes(folderData) : [],
+      // 使用过滤后的数据
+      children: filteredFolderData ? buildTreeNodes(filteredFolderData) : [],
     }
 
     return [defaultFolder]
-  }, [folderData, t])
+  }, [filteredFolderData, t])
 
   // 防抖搜索
   const { run: debouncedSearch } = useDebounceFn(
     (v: string) => {
-      setKeyword(v)
+      updateSearchParams('kw', v || null)
     },
     { wait: 500 },
   )
@@ -87,7 +230,10 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
     fetchNextPage,
   } = useInfiniteQuery(
     {
-      queryKey: ['airlineTemplates', { keyword, folderId: selectedFolderId }],
+      queryKey: [
+        'airlineTemplates',
+        { keyword, folderId: selectedFolderId, taskType: selectedTaskTypes },
+      ],
       initialPageParam: 1,
       queryFn: async ({ pageParam }) => {
         const { data } = await getAirlineTemplateList({
@@ -96,6 +242,7 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
           size: 15,
           templateName: keyword || undefined,
           folderId: selectedFolderId || undefined,
+          taskType: selectedTaskTypes || undefined,
         })
         return data
       },
@@ -127,6 +274,11 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
     useWaylinesStore.getState().setPreviewedWayline(null)
   })
 
+  // 选中的航线类型数组
+  const selectedTaskTypesArray = useMemo(() => {
+    return selectedTaskTypes ? selectedTaskTypes.split(',') : []
+  }, [selectedTaskTypes])
+
   return (
     <CollapsedPage width={550}>
       <div className="h-full flex flex-col">
@@ -136,11 +288,43 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
             <MenuIconAirline />
             <h2 className="text-hightlight">{t('wayline.folder.title')}</h2>
           </div>
-          <Input
-            allowClear
-            placeholder={t('wayline.folder.searchPlaceholder')}
-            onChange={(evt) => debouncedSearch(evt.target.value)}
-          />
+
+          {/* 搜索框与航线类型筛选 */}
+          <div className="flex items-center gap-2">
+            <Input
+              allowClear
+              value={inputValue}
+              placeholder={t('wayline.folder.searchPlaceholder')}
+              onChange={(evt) => {
+                setInputValue(evt.target.value)
+                debouncedSearch(evt.target.value)
+              }}
+              className="flex-1"
+            />
+
+            {/* 航线类型多选图标 */}
+            <div className="flex items-center gap-1 p-1 bg-ground-2 rounded">
+              {WAYLINE_TYPE_OPTIONS.map((option) => {
+                const isSelected = selectedTaskTypesArray.includes(option.value)
+                return (
+                  <Tooltip key={option.value} title={t(option.labelKey)}>
+                    <button
+                      type="button"
+                      onClick={() => toggleTaskType(option.value)}
+                      className={clsx(
+                        'p-1.5 rounded transition-colors text-base',
+                        isSelected
+                          ? 'bg-primary text-white'
+                          : 'text-fore hover:bg-ground-3',
+                      )}
+                    >
+                      <WaylineIcon type={option.value} />
+                    </button>
+                  </Tooltip>
+                )
+              })}
+            </div>
+          </div>
         </header>
 
         {/* 主体内容：左右两栏 */}
@@ -168,9 +352,9 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
                   onSelect={(keys) => {
                     const key = keys[0]
                     if (key === 'default') {
-                      setSelectedFolderId(null)
+                      handleSelectFolder(null)
                     } else {
-                      setSelectedFolderId(key as string)
+                      handleSelectFolder(key as string)
                     }
                   }}
                   treeData={treeData}
