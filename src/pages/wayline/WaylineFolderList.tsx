@@ -3,7 +3,7 @@ import CollapsedPage from '@/components/CollapsedPage'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import AppSpin from '@/components/AppSpin'
 import AppEmpty from '@/components/AppEmpty'
-import { Dropdown, Input, Popconfirm, Spin, Tooltip, Tree, TreeDataNode } from 'antd'
+import { Dropdown, Input, Spin, Tooltip, Tree, TreeDataNode } from 'antd'
 import { Fragment, useEffect, useMemo } from 'react'
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import {
@@ -30,6 +30,7 @@ import { WaylineEnum } from '@/constant/uav/wayline'
 import clsx from 'clsx'
 import AddWaylineFolder from './components/folder/AddWaylineFolder'
 import CountUp from 'react-countup'
+import LiqunPopConfirm from '@/components/ui/LiqunPopConfirm'
 
 type PropsType = unknown
 
@@ -207,13 +208,16 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
         {
           key: 'delete',
           label: (
-            <Popconfirm
-              title={t('wayline.folder.deleteConfirm.title')}
-              description={t('wayline.folder.deleteConfirm.description')}
-              onConfirm={() => handleDeleteFolder(folderId)}
-            >
-              {t('common.delete')}
-            </Popconfirm>
+            <div onClick={(e) => e.stopPropagation()}>
+              <LiqunPopConfirm
+                getPopupContainer={() => document.body}
+                title={t('wayline.folder.deleteConfirm.title')}
+                description={t('wayline.folder.deleteConfirm.description')}
+                onConfirm={() => handleDeleteFolder(folderId)}
+              >
+                {t('common.delete')}
+              </LiqunPopConfirm>
+            </div>
           ),
         },
       ],
@@ -226,7 +230,10 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
       return nodes.map((node) => ({
         key: String(node.id),
         title: (
-          <Dropdown menu={buildFolderContextMenu(node.id!)} trigger={['contextMenu']}>
+          <Dropdown
+            menu={buildFolderContextMenu(node.id!)}
+            trigger={['contextMenu']}
+          >
             <span>{node.folderName}</span>
           </Dropdown>
         ),
@@ -323,7 +330,7 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
 
   return (
     <CollapsedPage width={550}>
-      <div className="h-full flex flex-col">
+      <div className="h-full flex flex-col overflow-hidden">
         {/* 顶部标题和搜索栏 */}
         <header className="p-3 border-b border-solid border-ground-4">
           <div className="flex gap-1 mb-3">
@@ -380,7 +387,7 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
                 onSuccess={handleFolderCreated}
               />
             </div>
-            <ScrollArea className="flex-1">
+            <ScrollArea className="flex-1 overflow-hidden">
               {isFolderLoading ? (
                 <AppSpin />
               ) : (
