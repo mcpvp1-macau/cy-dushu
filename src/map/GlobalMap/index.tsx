@@ -26,12 +26,19 @@ import Reconstruction2D from '../CesiumMap/components/service/Reconstruction2D/R
 import Reconstruction2DResultList from '../CesiumMap/components/service/Reconstruction2D/Reconstruction2DResultList'
 import BottomSafeArea from './BottomSafeArea'
 import GlobalPositionPicker from './GlobalPositionPicker'
+import { Suspense, lazy } from 'react'
+
+/** 懒加载上海虹桥机场高程图层 */
+const ShanghaiHongqiaoAirportElevationLayer = lazy(
+  () => import('./DemElevationLayer'),
+)
 // import Demo from './Test'
 
 type PropsType = unknown
 
 Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ACCESS_TOKEN
 
+// GlobalMap 负责渲染主地图与全局图层
 const GlobalMap: FC<PropsType> = memo(() => {
   return (
     <div className="absolute inset-0">
@@ -56,6 +63,12 @@ const GlobalMap: FC<PropsType> = memo(() => {
           <WaylineEdit />
           <Waylines />
           <ReconstructionLayer />
+          {/* 业务规则：仅在配置开启时加载上海虹桥机场高程图层 */}
+          {globalConfig.useShanghaiHongqiaoAirportElevation && (
+            <Suspense fallback={null}>
+              <ShanghaiHongqiaoAirportElevationLayer />
+            </Suspense>
+          )}
           <PicutreOnMap />
           <DensityMap />
           <Reconstruction2D />

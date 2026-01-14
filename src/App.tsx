@@ -23,6 +23,7 @@ import AppSpin from './components/AppSpin.tsx'
 
 import AppThemeProvider from './components/AppThemeProvider'
 import Toast from './components/Toast.tsx'
+import GlobalMap from './map/GlobalMap/index.tsx'
 
 const hidenSet = new Set([
   controlRoom.id,
@@ -33,7 +34,6 @@ const hidenSet = new Set([
   share.id,
 ])
 
-const GlobalMap = lazy(() => import('./map/GlobalMap'))
 const RightTools = lazy(() => import('./components/right-tools'))
 const Right = lazy(() => import('./pages/right'))
 
@@ -105,6 +105,7 @@ const App = () => {
                   {hide && (
                     <>
                       <Suspense>
+                        {/* <GlobalMap /> */}
                         <GlobalMap />
                       </Suspense>
                       <Suspense>

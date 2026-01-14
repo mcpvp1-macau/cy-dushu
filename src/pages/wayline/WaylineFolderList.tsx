@@ -17,13 +17,18 @@ import useReachBottom from '@/hooks/useReachBottom'
 import { useDebounceFn, useMemoizedFn, useUnmount } from 'ahooks'
 import useWaylinesStore from '@/store/map/useWaylines.store'
 import { isNil } from 'lodash'
-import { FolderOpenOutlined, FolderOutlined } from '@ant-design/icons'
+import {
+  FolderOpenOutlined,
+  FolderOutlined,
+  LoadingOutlined,
+} from '@ant-design/icons'
 import UploadWaylineTemplate from './components/UploadWaylineTemplate'
 import AddWaylineTemplate from './components/AddWaylineTemplate'
 import { useSearchParams } from 'react-router-dom'
 import { WaylineEnum } from '@/constant/uav/wayline'
 import clsx from 'clsx'
 import AddWaylineFolder from './components/folder/AddWaylineFolder'
+import CountUp from 'react-countup'
 
 type PropsType = unknown
 
@@ -263,9 +268,7 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
 
   // 计算航线总数
   const totalWaylines = useMemo(() => {
-    return (
-      waylineData?.pages.reduce((acc, page) => acc + page.rows.length, 0) ?? 0
-    )
+    return waylineData?.pages?.[0]?.total ?? 0
   }, [waylineData])
 
   useUnmount(() => {
@@ -372,7 +375,12 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
           <div className="flex flex-col overflow-hidden w-[350px]">
             <div className="flex justify-between items-center p-3 border-b border-solid border-ground-4">
               <span className="text-sm text-fore">
-                {t('wayline.folder.waylineListTitle')} ({totalWaylines})
+                {t('wayline.folder.waylineListTitle')}{' '}
+                {isWaylineLoading ? (
+                  <LoadingOutlined />
+                ) : (
+                  <CountUp end={totalWaylines} duration={1} />
+                )}
               </span>
               <div className="text-sm flex gap-3">
                 <UploadWaylineTemplate />
