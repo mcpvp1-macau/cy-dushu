@@ -796,6 +796,9 @@ wayline:
     folderNamePlaceholder: Please enter folder name
     folderNameMaxLength: Folder name can be up to 50 characters
     createSuccess: Created successfully
+    deleteConfirm:
+      title: Delete Folder
+      description: After deletion, the folder and its subfolders cannot be recovered. Are you sure?
   upload:
     title: Upload Wayline Template
     error:
