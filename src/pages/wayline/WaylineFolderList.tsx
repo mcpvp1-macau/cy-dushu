@@ -3,10 +3,11 @@ import CollapsedPage from '@/components/CollapsedPage'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import AppSpin from '@/components/AppSpin'
 import AppEmpty from '@/components/AppEmpty'
-import { Input, Spin, Tooltip, Tree, TreeDataNode } from 'antd'
+import { Dropdown, Input, Popconfirm, Spin, Tooltip, Tree, TreeDataNode } from 'antd'
 import { Fragment, useEffect, useMemo } from 'react'
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import {
+  deleteWaylineFolder,
   getWaylineTemplateList,
   listWaylineFolder,
 } from '@/service/modules/wayline'
@@ -186,14 +187,49 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
     handleSelectFolder,
   ])
 
+  /** 删除文件夹 */
+  const handleDeleteFolder = useMemoizedFn(async (folderId: number) => {
+    await deleteWaylineFolder({ folderId })
+    queryClient.invalidateQueries({ queryKey: ['waylineFolders'] })
+    queryClient.invalidateQueries({ queryKey: ['waylineTemplates'] })
+
+    // 如果删除的是当前选中的文件夹，重置选择
+    if (selectedFolderId === String(folderId)) {
+      handleSelectFolder(null)
+    }
+  })
+
   // 构建树形数据
   const treeData: TreeDataNode[] = useMemo(() => {
+    /** 构建文件夹右键菜单 */
+    const buildFolderContextMenu = (folderId: number) => ({
+      items: [
+        {
+          key: 'delete',
+          label: (
+            <Popconfirm
+              title={t('wayline.folder.deleteConfirm.title')}
+              description={t('wayline.folder.deleteConfirm.description')}
+              onConfirm={() => handleDeleteFolder(folderId)}
+            >
+              {t('common.delete')}
+            </Popconfirm>
+          ),
+        },
+      ],
+    })
+
+    /** 递归构建树节点 */
     const buildTreeNodes = (
       nodes: API_AIRLINE.domain.WaylineFolderTreeNode[],
     ): TreeDataNode[] => {
       return nodes.map((node) => ({
         key: String(node.id),
-        title: node.folderName,
+        title: (
+          <Dropdown menu={buildFolderContextMenu(node.id!)} trigger={['contextMenu']}>
+            <span>{node.folderName}</span>
+          </Dropdown>
+        ),
         icon: ({ expanded }: { expanded?: boolean }) =>
           expanded ? <FolderOpenOutlined /> : <FolderOutlined />,
         children:
@@ -213,7 +249,7 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
     }
 
     return [defaultFolder]
-  }, [filteredFolderData, t])
+  }, [filteredFolderData, t, handleDeleteFolder])
 
   // 防抖搜索
   const { run: debouncedSearch } = useDebounceFn(

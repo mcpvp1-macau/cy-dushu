@@ -785,6 +785,9 @@ wayline:
     folderNamePlaceholder: 请输入文件夹名称
     folderNameMaxLength: 文件夹名称最多50个字符
     createSuccess: 创建成功
+    deleteConfirm:
+      title: 删除文件夹
+      description: 删除后文件夹及其子文件夹不可恢复，确认删除吗？
   upload:
     title: 上传航线
     error:
