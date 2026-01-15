@@ -28,6 +28,7 @@ globalConfig.defaultTheme ??= 'dark'
 globalConfig.env ??= 'default'
 globalConfig.useDeviceTreeV4 ??= false
 globalConfig.actionTypeIncludes ??= []
+globalConfig.useShanghaiHongqiaoAirportElevation ??= false
 
 class GlobalConfig {
   systemName = 'jingqi'
@@ -71,6 +72,8 @@ class GlobalConfig {
   terrainUrl?: string
   /** 是否使用地形 */
   useTerrain?: boolean
+  /** 是否开启上海虹桥机场高程 */
+  useShanghaiHongqiaoAirportElevation?: boolean
   /** 杭州禁飞区 */
   useHangzhouBanAreas?: boolean
   /** 贵州自定义 */
