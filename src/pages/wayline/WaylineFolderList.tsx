@@ -4,7 +4,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import AppSpin from '@/components/AppSpin'
 import AppEmpty from '@/components/AppEmpty'
 import { Dropdown, Input, Spin, Tooltip, Tree, TreeDataNode } from 'antd'
-import { Fragment, useEffect, useMemo } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import {
   deleteWaylineFolder,
@@ -64,6 +64,9 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
   const keyword = searchParams.get('kw') || ''
   const selectedTaskTypes = searchParams.get('taskType') || ''
   const selectedFolderId = searchParams.get('folderId') || null
+
+  // 搜索输入框的本地状态（避免受控组件因 URL 同步导致重新挂载）
+  const [searchInput, setSearchInput] = useState(keyword)
 
   // 展开的文件夹
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['default'])
@@ -342,10 +345,13 @@ const WaylineFolderList: FC<PropsType> = memo(() => {
           <div className="flex items-center gap-2">
             <Input
               allowClear
-              key={keyword}
-              defaultValue={keyword}
+              value={searchInput}
               placeholder={t('wayline.folder.searchPlaceholder')}
-              onChange={(evt) => debouncedSearch(evt.target.value)}
+              onChange={(evt) => {
+                const val = evt.target.value
+                setSearchInput(val)
+                debouncedSearch(val)
+              }}
               className="flex-1"
             />
 
