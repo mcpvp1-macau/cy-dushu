@@ -409,11 +409,15 @@ declare namespace JessibucaProMulti {
             recordStopFn?: Function | null;
         };
 
-        extendOperateBtns?: Array<Record<string, unknown>>;
+        extendOperateBtns?: [
+            {}
+        ];
 
-        contextmenuBtns?: Array<Record<string, unknown>>;
+        contextmenuBtns?: [
+            {}
+        ];
 
-        watermarkConfig?: Record<string, unknown>;
+        watermarkConfig?: {}
 
         /**
          * 底部UI控制栏是否自动隐藏（仅pc端）
