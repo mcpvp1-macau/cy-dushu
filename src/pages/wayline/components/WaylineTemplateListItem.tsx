@@ -43,7 +43,7 @@ const WaylineTemplateListItem: FC<PropsType> = memo(({ data }) => {
       <div className="flex gap-2">
         <WaylineIcon type={data.taskType} />
         <div className="grow">
-          <OverflowText className="text-hightlight max-w-52 truncate">
+          <OverflowText className="text-hightlight max-w-48 truncate">
             {data.taskName}
           </OverflowText>
         </div>
