@@ -25,10 +25,18 @@ const UavCoordinatesDisplay: FC<PropsType> = memo(() => {
   /** 复制坐标到剪贴板 */
   const handleCopy = useMemoizedFn(async () => {
     const coordText = [
-      `${t('uav.coordinates.longitude', { defaultValue: '经度' })}: ${longitude?.toFixed(6) ?? '-'}`,
-      `${t('uav.coordinates.latitude', { defaultValue: '纬度' })}: ${latitude?.toFixed(6) ?? '-'}`,
-      `${t('uav.coordinates.relativeHeight', { defaultValue: '相对高度' })}: ${height?.toFixed(1) ?? '-'} m`,
-      `${t('uav.coordinates.altitude', { defaultValue: '海拔' })}: ${altitude?.toFixed(1) ?? '-'} m`,
+      `${t('common.longitude', { defaultValue: '经度' })}: ${
+        longitude?.toFixed(6) ?? '-'
+      }`,
+      `${t('common.latitude', { defaultValue: '纬度' })}: ${
+        latitude?.toFixed(6) ?? '-'
+      }`,
+      `${t('common.relativeTakeoffHeight', { defaultValue: '相对高度' })}: ${
+        height?.toFixed(1) ?? '-'
+      } m`,
+      `${t('common.altitude', { defaultValue: '海拔' })}: ${
+        altitude?.toFixed(1) ?? '-'
+      } m`,
     ].join(', ')
 
     await navigator.clipboard.writeText(coordText)
@@ -38,8 +46,8 @@ const UavCoordinatesDisplay: FC<PropsType> = memo(() => {
   })
 
   return (
-    <div className="flex items-center gap-2 text-fore text-xs">
-      <DeviceIconUAV2 className="text-sm" />
+    <div className="flex items-center gap-1 text-fore text-xs">
+      <DeviceIconUAV2 className="text-xs" />
 
       <LiqunTippy
         content={t('uav.coordinates.tooltip', {
@@ -48,8 +56,7 @@ const UavCoordinatesDisplay: FC<PropsType> = memo(() => {
         placement="top"
       >
         <span className="whitespace-nowrap">
-          {longitude?.toFixed(6) ?? '-'}, {latitude?.toFixed(6) ?? '-'},{' '}
-          {height?.toFixed(1) ?? '-'} m, {altitude?.toFixed(1) ?? '-'} m
+          {longitude?.toFixed(6) ?? '-'}, {latitude?.toFixed(6) ?? '-'}
         </span>
       </LiqunTippy>
 
