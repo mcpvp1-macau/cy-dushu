@@ -36,6 +36,7 @@ import useDelayState from '@/hooks/useDelay'
 import BigFlyListener from '@/map/GlobalMap/BigFlyListener'
 import TanqiFlyPlan from './components/TanqiFlyPlan'
 import DeviceOverlays from '@/map/GlobalMap/DeviceMarkers/components/DeviceOverlays'
+import UavCoordinatesDisplay from './components/UavCoordinatesDisplay'
 
 type PropsType = unknown
 
@@ -71,7 +72,7 @@ const ControlRoomUavMap: FC<PropsType> = memo(() => {
   const delayed = useDelayState(1000)
 
   return (
-    <CesiumMap id="uav-control-room-map">
+    <CesiumMap id="uav-control-room-map" bottomBarLeft={<UavCoordinatesDisplay />}>
       <LeftTopTools />
       <RightTools />
       <Right />

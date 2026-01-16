@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react'
 import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { useThrottleFn } from 'ahooks'
@@ -12,8 +13,13 @@ export const positionEmitter = mitt<{
   click: { lon: number; lat: number; alt: number }
 }>()
 
+type BottomBarProps = {
+  /** 左侧自定义内容 */
+  left?: ReactNode
+}
+
 /** 地图底部工具栏 */
-const BottomBar: FC<unknown> = memo(() => {
+const BottomBar: FC<BottomBarProps> = memo(({ left }) => {
   const { viewer } = useCesium()
   const msgApi = useAppMsg()
   const { t } = useTranslation()
@@ -116,7 +122,12 @@ const BottomBar: FC<unknown> = memo(() => {
 
   return (
     <div className="absolute bottom-0 left-0 right-0 h-5 bg-ground-1/90 backdrop-blur-sm z-10">
-      <div className="flex h-full items-center justify-end text-fore text-xs px-3 gap-1">
+      <div className="flex h-full items-center justify-between text-fore text-xs px-3 gap-1">
+        {/* 左侧插槽 */}
+        <div className="flex items-center gap-1">{left}</div>
+
+        {/* 右侧内容 */}
+        <div className="flex items-center gap-1">
         <IconButton
           active={openCopy}
           onClick={toggleOpenCopy}
@@ -146,6 +157,7 @@ const BottomBar: FC<unknown> = memo(() => {
             </span>
           </p>
         </LiqunTippy>
+        </div>
       </div>
     </div>
   )
