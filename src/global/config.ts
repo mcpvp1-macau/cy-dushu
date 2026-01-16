@@ -152,6 +152,9 @@ class GlobalConfig {
   /** 道通接口返回采用Intranet */
   daotongIntranet?: boolean = false
 
+  /** 是否开启航线文件夹 */
+  useWaylineFolder: boolean = false
+
   constructor(def: ConfigType) {
     Object.assign(this, def)
   }
