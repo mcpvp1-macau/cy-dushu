@@ -5,15 +5,18 @@ import mitt from 'mitt'
 import IconButton from '@/components/ui/button/IconButton'
 import { CopyOutlined } from '@ant-design/icons'
 import { useAppMsg } from '@/hooks/useAppMsg'
+import LiqunTippy from '@/components/ui/LiqunTippy'
 
 /** 位置事件发射器 */
 export const positionEmitter = mitt<{
   click: { lon: number; lat: number; alt: number }
 }>()
 
+/** 地图底部工具栏 */
 const BottomBar: FC<unknown> = memo(() => {
   const { viewer } = useCesium()
   const msgApi = useAppMsg()
+  const { t } = useTranslation()
 
   const [position, setPosition] = useState<{
     lon: number
@@ -23,6 +26,7 @@ const BottomBar: FC<unknown> = memo(() => {
 
   const [openCopy, { toggle: toggleOpenCopy }] = useBoolean(false)
 
+  /** 鼠标移动时更新坐标展示 */
   const { run: updateMousePosition } = useThrottleFn(
     (movement: Cesium.ScreenSpaceEventHandler.MotionEvent) => {
       if (!viewer) {
@@ -92,11 +96,15 @@ const BottomBar: FC<unknown> = memo(() => {
       return
     }
 
+    // 仅在开启复制时监听点击复制，避免无效订阅
+    /** 处理点击复制坐标 */
     const fn = async (pos: { lon: number; lat: number; alt: number }) => {
       await navigator.clipboard.writeText(
         `${pos.lon.toFixed(6)}, ${pos.lat.toFixed(6)}, ${pos.alt.toFixed(1)}`,
       )
-      msgApi.success('坐标已复制到剪切板')
+      msgApi.success(
+        t('map.bottomBar.copySuccess', { defaultValue: '坐标已复制到剪切板' }),
+      )
     }
 
     positionEmitter.on('click', fn)
@@ -114,16 +122,30 @@ const BottomBar: FC<unknown> = memo(() => {
           onClick={toggleOpenCopy}
           tippyProps={{
             content: openCopy
-              ? '坐标复制'
-              : '坐标复制 (点击地图后坐标会复制到剪切板)',
+              ? t('map.bottomBar.copyCoordinates', {
+                  defaultValue: '坐标复制',
+                })
+              : t('map.bottomBar.copyCoordinatesHint', {
+                  defaultValue: '坐标复制 (点击地图后坐标会复制到剪切板)',
+                }),
           }}
         >
           <CopyOutlined />
         </IconButton>
-        <p className="text-right whitespace-nowrap">
-          {position?.lon?.toFixed(6) || '-'}, {position?.lat?.toFixed(6) || '-'}
-          , {position?.alt?.toFixed(1) || '-'} m
-        </p>
+        <LiqunTippy
+          content={t('map.bottomBar.mousePosition', {
+            defaultValue: '当前鼠标位置坐标 (经度, 纬度, 高程)',
+          })}
+          placement="top"
+        >
+          <p className="text-right whitespace-nowrap flex items-center gap-1">
+            <span>
+              {position?.lon?.toFixed(6) || '-'},{' '}
+              {position?.lat?.toFixed(6) || '-'},{' '}
+              {position?.alt?.toFixed(1) || '-'} m
+            </span>
+          </p>
+        </LiqunTippy>
       </div>
     </div>
   )

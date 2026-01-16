@@ -1239,6 +1239,11 @@ map:
     gpuInfoUnknown: Unknown graphics device
   compass:
     reset: Reset heading to north
+  bottomBar:
+    copyCoordinates: Copy coordinates
+    copyCoordinatesHint: Copy coordinates (click the map to copy to the clipboard)
+    mousePosition: Current mouse coordinates (longitude, latitude, altitude)
+    copySuccess: Coordinates copied to the clipboard
 mapLayer:
   setting:
     title: Layer Setting

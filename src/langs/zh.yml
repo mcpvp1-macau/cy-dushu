@@ -1217,6 +1217,11 @@ map:
     gpuInfoUnknown: 未能获取显卡信息
   compass:
     reset: 重置朝北
+  bottomBar:
+    copyCoordinates: 坐标复制
+    copyCoordinatesHint: 坐标复制 (点击地图后坐标会复制到剪切板)
+    mousePosition: 当前鼠标位置坐标 (经度, 纬度, 高程)
+    copySuccess: 坐标已复制到剪切板
 mapLayer:
   setting:
     title: 图层设置
