@@ -53,6 +53,8 @@ type PropsType = {
   id: string
   children?: ReactNode
   useToolBar?: boolean
+  /** 底部栏左侧自定义内容 */
+  bottomBarLeft?: ReactNode
 }
 
 type ErrorBoundaryProps = {
@@ -107,7 +109,7 @@ class CesiumRenderErrorBoundary extends Component<
 
 Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ACCESS_TOKEN
 
-const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
+const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, bottomBarLeft, children }) => {
   const [is2D, { toggle }] = useBoolean(false)
 
   const webgl1 = useMapSettingStore((s) => s.webgl1)
@@ -209,7 +211,7 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, children }) => {
             {globalConfig.isBinzhou && <BinzhouDemo />}
             {globalConfig.isXiaoshan && <XiaoshanXZZone />}
           </Suspense>
-          <BottomBar />
+          <BottomBar left={bottomBarLeft} />
           <FuzhouJiefangBridge />
         </Viewer>
       </CesiumRenderErrorBoundary>

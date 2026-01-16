@@ -616,6 +616,7 @@ common:
   accept: Accepted
   zoomOut: Zoom Out
   zoomIn: Zoom In
+  relativeTakeoffHeight: Relative Take-off Point Height
 events:
   search:
     placeholder: Please search by event name or ID
@@ -798,7 +799,9 @@ wayline:
     createSuccess: Created successfully
     deleteConfirm:
       title: Delete Folder
-      description: After deletion, the folder and its subfolders cannot be recovered. Are you sure?
+      description: >-
+        After deletion, the folder and its subfolders cannot be recovered. Are
+        you sure?
   upload:
     title: Upload Wayline Template
     error:
@@ -1444,13 +1447,13 @@ controlRoom:
       focusMode:
         title: Focus Mode
         mode:
-          "0": MF
-          "1": AFS
-          "2": AFC
+          '0': MF
+          '1': AFS
+          '2': AFC
         modeDesc:
-          "0": Manual
-          "1": Single
-          "2": Auto
+          '0': Manual
+          '1': Single
+          '2': Auto
       exposureMode:
         title: Exposure Mode
         exposurePriority: Exposure Priority
