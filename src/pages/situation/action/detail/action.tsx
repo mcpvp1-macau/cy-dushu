@@ -5,6 +5,7 @@ import AddTask from './components/AddTask'
 import AddSHJHTask from './components/AddSHJHTask'
 import useActionDetail from './context'
 import AppSpin from '@/components/AppSpin'
+import AppEmpty from '@/components/AppEmpty'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import KCYPPanel from './components/kcyp/Panel'
 import { Suspense, lazy } from 'react'
@@ -18,7 +19,7 @@ import { ActionEnum } from '@/constant/action/action_type'
 import AddEventResolveTask from './components/AddEventResolveTask'
 import { useQueryClient } from '@tanstack/react-query'
 
-import { LoadingOutlined } from '@ant-design/icons'
+import { LoadingOutlined, PictureOutlined } from '@ant-design/icons'
 
 const ChildActions = lazy(
   () => import('./components/ChildActions/ChildActions'),
@@ -26,6 +27,8 @@ const ChildActions = lazy(
 const ActionLogList = lazy(() => import('./components/ActionLogList'))
 const AIResult = lazy(() => import('./components/AIResult'))
 const KCYPModal = lazy(() => import('./components/kcyp/KCYPModal'))
+
+const actionDetailPanelDefaultActiveKeys = ['2', '3', '4']
 
 type PropsType = {
   detail?: API_ACTION.domain.ActionDetail
@@ -48,6 +51,14 @@ const PageActionDetailSub: FC<PropsType> = memo(
     const queryClient = useQueryClient()
 
     const [enablePictureOnMap, setEnablePictureOnMap] = useState(false)
+    const [activeKeys, setActiveKeys] = useState<string[]>(
+      actionDetailPanelDefaultActiveKeys,
+    )
+
+    useEffect(() => {
+      setActiveKeys(actionDetailPanelDefaultActiveKeys)
+      setEnablePictureOnMap(false)
+    }, [actionId])
 
     const TaskComponent = globalConfig.useFlightReporting
       ? AddSHJHTask
@@ -62,15 +73,8 @@ const PageActionDetailSub: FC<PropsType> = memo(
         label: string
         key: string
         children: JSX.Element
+        extra?: JSX.Element | false
       }[] = []
-
-      if (actionDetail.eventId) {
-        items.push({
-          label: t('common.event'),
-          key: 'event',
-          children: <ActionEventDetail eventId={actionDetail.eventId} />,
-        })
-      }
 
       const kcyp = {
         label: t('action.detail.kcyp.title'),
@@ -126,6 +130,16 @@ const PageActionDetailSub: FC<PropsType> = memo(
             >
               <IconMap />
             </IconButton>
+            <IconButton
+              tippyProps={{ content: t('common.pictureData') }}
+              onClick={() =>
+                setActiveKeys((keys) =>
+                  keys.includes('picture') ? keys : [...keys, 'picture'],
+                )
+              }
+            >
+              <PictureOutlined />
+            </IconButton>
           </div>
         ),
         children: (
@@ -133,6 +147,16 @@ const PageActionDetailSub: FC<PropsType> = memo(
             actionId={actionId}
             enablePictureOnMap={enablePictureOnMap}
           />
+        ),
+      }
+
+      const eventList = {
+        label: '事件列表',
+        key: 'event',
+        children: actionDetail.eventId ? (
+          <ActionEventDetail eventId={actionDetail.eventId} />
+        ) : (
+          <AppEmpty />
         ),
       }
 
@@ -169,22 +193,38 @@ const PageActionDetailSub: FC<PropsType> = memo(
         ),
       }
       if (actionDetail.type === ActionEnum.KCYP) {
-        return items.concat([kcyp, task, pictures, aiResult, log])
+        return items.concat([kcyp, task, pictures, eventList, aiResult, log])
       }
       if (actionDetail.type === ActionEnum.KCYPXS) {
-        return items.concat([kcyp, task, pictures, aiResult, log])
+        return items.concat([kcyp, task, pictures, eventList, aiResult, log])
       }
       if (actionDetail.type === ActionEnum.KCYPZS) {
-        return items.concat([kcyp, task, pictures, aiResult, log])
+        return items.concat([kcyp, task, pictures, eventList, aiResult, log])
       }
-      return items.concat([task, pictures, aiResult, log])
-    }, [actionDetail?.type, enablePictureOnMap])
+      return items.concat([task, pictures, eventList, aiResult, log])
+    }, [
+      actionDetail?.eventId,
+      actionDetail?.type,
+      actionId,
+      enablePictureOnMap,
+      isBacktracking,
+      queryClient,
+      t,
+    ])
+
+    const handleCollapseChange = (keys: string | string[]) => {
+      setActiveKeys((Array.isArray(keys) ? keys : [keys]).map(String))
+    }
 
     return (
       <div className="pt-3 h-full flex flex-col overflow-y-hidden">
         {actionDetail ? (
           <ScrollArea className="grow">
-            <AppCollapse defaultActiveKey={['2', '3', '4']} items={items} />
+            <AppCollapse
+              activeKey={activeKeys}
+              items={items}
+              onChange={handleCollapseChange}
+            />
           </ScrollArea>
         ) : (
           <AppSpin />
