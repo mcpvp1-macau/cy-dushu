@@ -1,4 +1,9 @@
 import IconAddMark from '@/assets/icons/jsx/right-tools/IconAddMark'
+import IconTanQi from '@/assets/icons/jsx/IconTanQi'
+import TanqiFloatDialog, {
+  useTanqiDialogStore,
+} from '@/components/Tanqi/demo/TanqiFloatDialog'
+import { useLocation } from 'react-router-dom'
 import FloatIconButton from '../ui/button/FloatIconButton'
 import FloatIconButtonGroup from '@/components/ui/button/FloatIconButton/FloatIconButtonGroup'
 import IconDrawArea from '@/assets/icons/jsx/right-tools/IconDrawArea'
@@ -18,6 +23,12 @@ const RightTools: FC<PropsType> = memo(() => {
   const rightMode = useRightMode((s) => s.rightMode)
   const updateRightMode = useRightMode((s) => s.updateRightMode)
   const updateIsFlightArea = useMapDrawStore((s) => s.updateIsFlightArea)
+
+  const tanqiDialogOpen = useTanqiDialogStore((s) => s.open)
+  const { pathname } = useLocation()
+  // 行动详情页已有自己的檀棋入口, 避免重复
+  const showTanqiEntry =
+    globalConfig.useFixedWingDemo && !pathname.includes('/action/')
 
   const { t } = useTranslation()
 
@@ -78,6 +89,18 @@ const RightTools: FC<PropsType> = memo(() => {
             </FloatIconButton>
           </>
         </FloatIconButtonGroup>
+        {showTanqiEntry && (
+          <>
+            <FloatIconButton
+              tippyProps={{ content: '檀棋', placement: 'left' }}
+              active={tanqiDialogOpen}
+              onClick={() => useTanqiDialogStore.getState().toggleOpen()}
+            >
+              <IconTanQi />
+            </FloatIconButton>
+            <TanqiFloatDialog />
+          </>
+        )}
         <WirelessSituationTool />
         <UavInfoBoardSwitchButton />
         <FloatIconButton

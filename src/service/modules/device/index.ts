@@ -1,17 +1,67 @@
+import {
+  DEMO_DEVICE_TYPES,
+  DEMO_FLEET_DEVICES,
+} from '@/demo/fixed-wing/constants'
 import { XCustomConfig } from '@/service/servers/liqunAxios'
 import serverControlCenter from '@/service/servers/serverControlCenter'
 import serverJingqi from '@/service/servers/serverJingqi'
 import serverOTA from '@/service/servers/serverOTA'
 import serverVod from '@/service/servers/serverVod'
+
+/** 演示模式统一响应包装 (保留 data 类型) */
+const demoResp = <T>(data: T): Promise<{ data: T } & Record<string, any>> =>
+  Promise.resolve({ code: 'SUCCESS', message: 'demo', data })
+
+/** 演示设备按类型过滤 (固定翼并入无人机类目) */
+const filterDemoDevices = (type?: string) => {
+  if (!type) {
+    return DEMO_FLEET_DEVICES
+  }
+  if (type === 'UAV') {
+    return DEMO_FLEET_DEVICES.filter(
+      (e) => e.deviceType === 'UAV' || e.deviceType === 'FIXED_WING',
+    )
+  }
+  return DEMO_FLEET_DEVICES.filter((e) => e.deviceType === type)
+}
+
 /** 获取所有设备类型 */
 export const getAllDeviceType = () => {
+  if (globalConfig.demoMode) {
+    return demoResp<API_DEVICE.res.DeviceTypeListRes>({
+      rows: DEMO_DEVICE_TYPES,
+    } as API_DEVICE.res.DeviceTypeListRes)
+  }
   return serverControlCenter.get<API_DEVICE.res.DeviceTypeListRes>(
     '/device/type/list/v3',
   )
 }
 
+/** 演示设备树根节点 */
+const buildDemoDeviceTree = (
+  type?: string,
+  name?: string,
+): API_DEVICE.domain.DeviceTreeItem => {
+  const devices = filterDemoDevices(type).filter(
+    (e) => !name || e.deviceName.includes(name),
+  )
+  return {
+    groupId: 'demo-root',
+    groupName: '演示中队',
+    devices: devices as unknown as API_DEVICE.domain.Device[],
+    children: [],
+  }
+}
+
 /** 获取设备 tree */
-export const getDeviceTree = (data: API_DEVICE.req.GetDeviceTreeReq) => {
+export const getDeviceTree = (
+  data: API_DEVICE.req.GetDeviceTreeReq & { name?: string; type?: string },
+) => {
+  if (globalConfig.demoMode) {
+    return demoResp<API_DEVICE.res.DeviceTreeRes>(
+      buildDemoDeviceTree(data.type, data.name),
+    )
+  }
   return serverControlCenter.post<API_DEVICE.res.DeviceTreeRes>(
     '/device/list/tree/v3',
     data,
@@ -19,7 +69,14 @@ export const getDeviceTree = (data: API_DEVICE.req.GetDeviceTreeReq) => {
 }
 
 /** 获取设备 tree v4 */
-export const getDeviceTreeV4 = (data: API_DEVICE.req.GetDeviceTreeV4Req) => {
+export const getDeviceTreeV4 = (
+  data: API_DEVICE.req.GetDeviceTreeV4Req & { name?: string; type?: string },
+) => {
+  if (globalConfig.demoMode) {
+    return demoResp<API_DEVICE.res.DeviceTreeV4Res>({
+      roots: [buildDemoDeviceTree(data.type, data.name)],
+    })
+  }
   return serverControlCenter.post<API_DEVICE.res.DeviceTreeV4Res>(
     '/device/list/tree/v4',
     data,
@@ -47,6 +104,13 @@ export const getAllDeviceListV3 = (data: {
   type?: string
   isPage?: boolean
 }) => {
+  if (globalConfig.demoMode) {
+    const rows = filterDemoDevices(data.type)
+    return demoResp<API_DEVICE.res.AllDeviceListV3Res>({
+      rows,
+      total: rows.length,
+    } as unknown as API_DEVICE.res.AllDeviceListV3Res)
+  }
   return serverControlCenter.post<API_DEVICE.res.AllDeviceListV3Res>(
     '/device/list/v3',
     data,
@@ -54,6 +118,13 @@ export const getAllDeviceListV3 = (data: {
 }
 
 export const getAllDeviceListOta = (data: any) => {
+  if (globalConfig.demoMode) {
+    const rows = filterDemoDevices(data.type)
+    return demoResp<API_DEVICE.res.AllDeviceListV3OTARes>({
+      rows: rows.map((e) => ({ ...e, deviceModel: 'demo' })),
+      total: rows.length,
+    } as unknown as API_DEVICE.res.AllDeviceListV3OTARes)
+  }
   return serverControlCenter.post<API_DEVICE.res.AllDeviceListV3OTARes>(
     '/device/list/v3/ota',
     data,

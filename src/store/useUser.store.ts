@@ -105,6 +105,10 @@ const useUserStore = create<StateType & ActionsType>()(
       vendorBackUrl: null,
       // 登出
       logout: async () => {
+        // 演示模式不跳转登录页
+        if (globalConfig.demoMode) {
+          return
+        }
         set({ token: null, user: null, menus: null }, false, 'logout')
         await local.removeItem('token')
         const { loginUrl, systemName } = globalConfig

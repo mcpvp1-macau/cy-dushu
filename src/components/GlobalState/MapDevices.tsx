@@ -1,3 +1,4 @@
+import { FIXED_WING_DEMO_DEVICES } from '@/demo/fixed-wing/constants'
 import { DeviceEnum } from '@/enum/device'
 import { getAllDeviceListV3 } from '@/service/modules/device'
 import useMapDevicesStore from '@/store/map/useMapDevices.store'
@@ -24,11 +25,17 @@ const MapDevices: FC<PropsType> = memo(() => {
     if (!data) {
       return
     }
+    // 固定翼无人机纯前端演示设备
+    // 演示模式下 data 已包含完整机队(含固定翼), 无需重复追加
+    const renderData =
+      globalConfig.useFixedWingDemo && !globalConfig.demoMode
+        ? [...data, ...FIXED_WING_DEMO_DEVICES]
+        : data
     const store = useMapDevicesStore.getState()
     // 更新所有设备
-    store.updateAllDevices(data)
+    store.updateAllDevices(renderData)
     store.updateDeviceMap(
-      data.reduce((acc, cur) => {
+      renderData.reduce((acc, cur) => {
         acc[cur.deviceId] = cur
         return acc
       }, {}),
@@ -44,7 +51,7 @@ const MapDevices: FC<PropsType> = memo(() => {
     }
 
     const g = groupBy(
-      data.filter((e) => checkGeo(e.longitude, e.latitude)),
+      renderData.filter((e) => checkGeo(e.longitude, e.latitude)),
       (e) => m[e.deviceType] || 'other',
     )
 
@@ -55,7 +62,7 @@ const MapDevices: FC<PropsType> = memo(() => {
     store.updateCameraDevices(g[DeviceEnum.CAMERA] || [])
     store.updateOtherDevices(g['other'] || [])
 
-    const gm = groupBy(data, (e) => e.deviceId)
+    const gm = groupBy(renderData, (e) => e.deviceId)
     store.updateAllDevicesMap(gm)
   }, [data])
 

@@ -155,6 +155,12 @@ class GlobalConfig {
   /** 是否开启航线文件夹 */
   useWaylineFolder: boolean = false
 
+  /** 是否开启固定翼无人机 (CY-9A) 纯前端演示 */
+  useFixedWingDemo: boolean = true
+
+  /** 纯前端演示模式: 跳过登录鉴权, 使用本地假用户 */
+  demoMode: boolean = true
+
   constructor(def: ConfigType) {
     Object.assign(this, def)
   }

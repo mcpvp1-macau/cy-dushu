@@ -52,6 +52,8 @@ export enum DeviceEnum {
   USV = 'USV',
   /** 智慧警车 */
   SMART_CAR = 'SMART_CAR',
+  /** 固定翼无人机 */
+  FIXED_WING = 'FIXED_WING',
 
   'DUSHU-MB' = 'DUSHU-MB',
 }
@@ -93,6 +95,9 @@ export const deviceIconMap = {
   [DeviceEnum.UGV]: DeviceIconUGV,
   [DeviceEnum.USV]: IconUSV,
   [DeviceEnum.SMART_CAR]: IconPoliceCar,
+  // 固定翼无人机
+  // 固定翼与多旋翼无人机使用同款图标
+  [DeviceEnum.FIXED_WING]: DeviceIconUAV2,
   ['DUSHU-MB']: DeviceIconRen,
 }
 

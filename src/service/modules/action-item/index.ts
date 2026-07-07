@@ -1,9 +1,24 @@
+import { DEMO_ACTION_ITEMS } from '@/demo/situation/constants'
 import serverJingqi from '@/service/servers/serverJingqi'
+
+/** 演示模式统一响应包装 */
+const demoResp = <T>(
+  data: T,
+): Promise<{ code: string; message: string; data: T }> =>
+  Promise.resolve({ code: 'SUCCESS', message: 'demo', data })
 
 /** 行动子任务列表查询 */
 export const getActionItemList = (
   data: API_ACTION_ITEM.req.ActionItemListReq,
 ) => {
+  if (globalConfig.demoMode) {
+    const actionId = Number(data.actionId)
+    const items = DEMO_ACTION_ITEMS[actionId] ?? []
+    return demoResp<API_ACTION_ITEM.res.ActionItemListRes>({
+      rows: items,
+      total: items.length,
+    })
+  }
   return serverJingqi.post<API_ACTION_ITEM.res.ActionItemListRes>(
     '/action/item/list',
     data,

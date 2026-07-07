@@ -1,9 +1,31 @@
+import {
+  DEMO_WAYLINE_FOLDERS,
+  DEMO_WAYLINE_TEMPLATES,
+} from '@/demo/situation/constants'
 import serverControlCenter from '@/service/servers/serverControlCenter'
+
+/** 演示模式统一响应包装 */
+const demoResp = <T>(data: T): Promise<{ data: T } & Record<string, any>> =>
+  Promise.resolve({ code: 'SUCCESS', message: 'demo', data })
 
 /** 获取航线模板库列表 */
 export const getWaylineTemplateList = (
   data: API_AIRLINE.req.ListFlightTaskTemplateRequest,
 ) => {
+  if (globalConfig.demoMode) {
+    const rows = DEMO_WAYLINE_TEMPLATES.filter(
+      (e) =>
+        (data.waylineTemplateId == null ||
+          String(e.waylineTemplateId) === String(data.waylineTemplateId)) &&
+        (!data.templateId || e.templateId === data.templateId) &&
+        (!data.templateName || e.taskName.includes(data.templateName)) &&
+        (!data.taskType || data.taskType.split(',').includes(e.taskType)),
+    )
+    return demoResp<API_AIRLINE.res.GetWaylineTemplateListRes>({
+      rows,
+      total: rows.length,
+    } as API_AIRLINE.res.GetWaylineTemplateListRes)
+  }
   return serverControlCenter.post<API_AIRLINE.res.GetWaylineTemplateListRes>(
     '/v3/dji/waylines/task/template/list',
     data,
@@ -87,6 +109,11 @@ export const createWaylineFolder = (
 export const listWaylineFolder = (
   data: API_AIRLINE.req.ListWaylineFolderRequest,
 ) => {
+  if (globalConfig.demoMode) {
+    return demoResp<API_AIRLINE.res.ListWaylineFolderResponse>(
+      DEMO_WAYLINE_FOLDERS,
+    )
+  }
   return serverControlCenter.post<API_AIRLINE.res.ListWaylineFolderResponse>(
     '/v3/dji/waylines/task/folder/list',
     data,

@@ -51,6 +51,8 @@ export const deviceIconMap: any = {
   'DUSHU-MB': '/images/marker/icon/ren.svg',
   USV: '/images/marker/icon/usv.svg',
   SMART_CAR: '/images/marker/icon/smart_car.svg',
+  // 固定翼与多旋翼无人机使用同款地图图标
+  FIXED_WING: '/images/marker/icon/uav3.svg',
 }
 
 const OtherMarker: FC<PropsType> = memo(({ data }) => {

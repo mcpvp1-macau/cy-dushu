@@ -22,6 +22,7 @@ import UavDetail from './UavDetail'
 import Logs from './Logs'
 import UploadDetail from './UavDetail/UploadDetail'
 import { useDebounceFn, useLocalStorageState } from 'ahooks'
+import TaskCapabilityColumn from './TaskCapabilityColumn'
 
 type PropsType = unknown
 
@@ -212,6 +213,16 @@ const SourceTable: FC<PropsType> = memo(() => {
           },
           enableColumnFilter: false,
         }),
+        // 演示模式: 无人机类目展示可执行任务类型
+        globalConfig.demoMode && type === 'UAV'
+          ? columnHelper.display({
+              id: 'taskCapability',
+              header: '可执行任务类型',
+              cell: (cell) => (
+                <TaskCapabilityColumn deviceId={cell.row.original.deviceId} />
+              ),
+            })
+          : null,
         isUavType
           ? columnHelper.accessor('djiOtaInfo.firmwareVersion', {
               header: t('resource.table.otaInfo.title'),

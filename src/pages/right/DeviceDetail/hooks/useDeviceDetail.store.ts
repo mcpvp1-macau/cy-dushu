@@ -1,3 +1,4 @@
+import { getFixedWingDemoDevice } from '@/demo/fixed-wing/constants'
 import { getDeviceDetail } from '@/service/modules/device'
 import { createContext } from 'react'
 import { createStore, useStore } from 'zustand'
@@ -95,6 +96,12 @@ export const useCreateDeviceDetailStore = (deviceId: string) => {
     {
       queryKey: ['deviceDetail', deviceId],
       queryFn: async () => {
+        // 固定翼演示设备不请求后端, 直接使用本地数据
+        const demoDevice = getFixedWingDemoDevice(deviceId)
+        if (demoDevice) {
+          deviceDetailStoreRef.current!.getState().updateDeviceDetail(demoDevice)
+          return { data: demoDevice }
+        }
         const resp = await getDeviceDetail(deviceId)
         deviceDetailStoreRef.current!.getState().updateDeviceDetail(resp.data)
         return resp

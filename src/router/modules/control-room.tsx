@@ -22,6 +22,9 @@ const PageControlRoomUGV = lazy(() => import('@/pages/control-room/ugv/UGV'))
 const PageControlRoomSmartCar = lazy(
   () => import('@/pages/control-room/smart-car'),
 )
+const PageControlRoomFixedWing = lazy(
+  () => import('@/pages/control-room/fixed-wing'),
+)
 
 export default {
   id: 'control-room',
@@ -66,6 +69,11 @@ export default {
       id: 'control-room/smart-car',
       path: 'smart-car/:deviceId',
       element: <PageControlRoomSmartCar />,
+    },
+    {
+      id: 'control-room/fixed-wing',
+      path: 'fixed-wing/:deviceId',
+      element: <PageControlRoomFixedWing />,
     },
     {
       id: 'control-room/others',

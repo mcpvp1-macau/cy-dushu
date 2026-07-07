@@ -3,6 +3,7 @@ import { useCesium } from 'resium'
 import * as Cesium from 'cesium'
 import { useRafInterval } from 'ahooks'
 import useMapSettingStore from '@/store/setting/useMapSetting.store'
+import { DEMO_FLEET_CENTER } from '@/demo/fixed-wing/constants'
 
 import posz from '@/assets/imgs/sky-box/pz.jpg'
 import negz from '@/assets/imgs/sky-box/nz.jpg'
@@ -56,9 +57,16 @@ const CesiumDefaultConfig: FC<PropsType> = memo(() => {
     // viewer.scene.fxaa = true
     // viewer.scene.postProcessStages.fxaa.enabled = true
 
-    // 默认视角
+    // 默认视角 (演示模式聚焦机队)
+    const defaultDestination = globalConfig.demoMode
+      ? Cesium.Cartesian3.fromDegrees(
+          DEMO_FLEET_CENTER.longitude,
+          DEMO_FLEET_CENTER.latitude,
+          4000,
+        )
+      : Cesium.Cartesian3.fromDegrees(110, 30, 18000000)
     viewer.camera?.setView?.({
-      destination: Cesium.Cartesian3.fromDegrees(110, 30, 18000000),
+      destination: defaultDestination,
       orientation: {
         heading: Cesium.Math.toRadians(0),
         pitch: Cesium.Math.toRadians(-90),

@@ -9,7 +9,8 @@ const CesiumDebug: FC<PropsType> = memo(() => {
     if (!viewer?.scene) {
       return
     }
-    viewer.scene.debugShowFramesPerSecond = import.meta.env.DEV
+    // 演示环境不展示 FPS 调试面板
+    viewer.scene.debugShowFramesPerSecond = false
     setTimeout(() => {
       const debugEl = document.querySelector(
         '.cesium-performanceDisplay-defaultContainer',

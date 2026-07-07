@@ -1,7 +1,22 @@
+import { DEMO_ACTIONS } from '@/demo/situation/constants'
 import serverJingqi from '@/service/servers/serverJingqi'
+
+/** 演示模式统一响应包装 */
+const demoResp = <T>(
+  data: T,
+): Promise<{ code: string; message: string; data: T }> =>
+  Promise.resolve({ code: 'SUCCESS', message: 'demo', data })
 
 /** 行动列表查询 */
 export const getActionList = (data: API_ACTION.req.ActionListReq = {}) => {
+  if (globalConfig.demoMode) {
+    const rows = DEMO_ACTIONS.filter(
+      (e) =>
+        (!data.name || e.name.includes(data.name)) &&
+        (!data.status?.length || data.status.includes(e.status)),
+    )
+    return demoResp<API_ACTION.res.ActionListRes>({ rows, total: rows.length })
+  }
   return serverJingqi.post<API_ACTION.res.ActionListRes>('/action/list', data)
 }
 
@@ -9,6 +24,9 @@ export const getActionList = (data: API_ACTION.req.ActionListReq = {}) => {
 export const getActionRecordList = (
   data: API_ACTION.req.ActionListReq = {},
 ) => {
+  if (globalConfig.demoMode) {
+    return demoResp<API_ACTION.res.ActionListRes>({ rows: [], total: 0 })
+  }
   return serverJingqi.post<API_ACTION.res.ActionListRes>(
     '/action/record/list',
     data,
@@ -17,6 +35,26 @@ export const getActionRecordList = (
 
 /** 获取大行动任务信息 */
 export const getAction = (params: { actionId?: number; eventId?: string }) => {
+  if (globalConfig.demoMode) {
+    const record =
+      DEMO_ACTIONS.find((e) => e.id === Number(params.actionId)) ??
+      DEMO_ACTIONS[0]
+    return demoResp<API_ACTION.res.ActionDetailRes>({
+      id: record.id,
+      name: record.name,
+      description: record.description,
+      eventId: null,
+      type: 'normal',
+      status: record.status,
+      isValid: true,
+      gmtCreate: record.gmtCreate,
+      gmtModified: record.gmtModified,
+      gmtCreateBy: record.gmtCreateBy,
+      gmtModifiedBy: record.gmtModifiedBy,
+      actionRecordId: null,
+      userList: [],
+    } as API_ACTION.res.ActionDetailRes)
+  }
   return serverJingqi.get<API_ACTION.res.ActionDetailRes>('/action/get', {
     params,
   })
@@ -56,6 +94,9 @@ export const updAction = (data: any) => {
 
 /** 行动日志列表查询 */
 export const getActionLogList = (data: any) => {
+  if (globalConfig.demoMode) {
+    return demoResp({ rows: [], total: 0 })
+  }
   return serverJingqi.post('/action/log/list', data)
 }
 
@@ -68,6 +109,9 @@ export const getAIResultList = (data: {
   actionItemId?: number
   actionRecordId?: number
 }) => {
+  if (globalConfig.demoMode) {
+    return demoResp<API_ACTION.res.AIResultListRes>({ rows: [], total: 0 })
+  }
   return serverJingqi.post<API_ACTION.res.AIResultListRes>('/result/list', data)
 }
 
