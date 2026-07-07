@@ -10,6 +10,21 @@ const publicPathPattern = /(^|[^:\w])\/(audio|data|iconfonts|images|js)\//g
 const faviconPattern = /(^|[^:\w])\/(favicon(?:-dark)?\.svg)/g
 const spaEntryRoutes = ['action']
 
+const normalizeCesiumAssets = async () => {
+  const nestedCesiumDir = path.join(distDir, baseNoTrailing.replace(/^\//, ''), 'cesium')
+  const cesiumDir = path.join(distDir, 'cesium')
+
+  try {
+    await fs.access(nestedCesiumDir)
+  } catch {
+    return
+  }
+
+  await fs.rm(cesiumDir, { recursive: true, force: true })
+  await fs.rename(nestedCesiumDir, cesiumDir)
+  await fs.rm(path.dirname(nestedCesiumDir), { recursive: true, force: true })
+}
+
 const prefixPublicPaths = (content) =>
   content
     .replace(publicPathPattern, (_, prefix, dir) => `${prefix}${baseNoTrailing}/${dir}/`)
@@ -32,6 +47,7 @@ const walk = async (dir) => {
 
 const run = async () => {
   await fs.access(distDir)
+  await normalizeCesiumAssets()
 
   const files = await walk(distDir)
   await Promise.all(
