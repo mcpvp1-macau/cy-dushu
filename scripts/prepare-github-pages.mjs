@@ -8,6 +8,7 @@ const baseNoTrailing = base.replace(/\/$/, '')
 const textExtensions = new Set(['.css', '.html', '.js', '.json', '.map', '.svg', '.txt'])
 const publicPathPattern = /(^|[^:\w])\/(audio|data|iconfonts|images|js)\//g
 const faviconPattern = /(^|[^:\w])\/(favicon(?:-dark)?\.svg)/g
+const spaEntryRoutes = ['action']
 
 const prefixPublicPaths = (content) =>
   content
@@ -46,6 +47,13 @@ const run = async () => {
   )
 
   await fs.copyFile(path.join(distDir, 'index.html'), path.join(distDir, '404.html'))
+  await Promise.all(
+    spaEntryRoutes.map(async (route) => {
+      const routeDir = path.join(distDir, route)
+      await fs.mkdir(routeDir, { recursive: true })
+      await fs.copyFile(path.join(distDir, 'index.html'), path.join(routeDir, 'index.html'))
+    }),
+  )
   await fs.writeFile(path.join(distDir, '.nojekyll'), '')
 }
 
