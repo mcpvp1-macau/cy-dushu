@@ -34,6 +34,26 @@ export const FIXED_WING_LASER_STATES = [
 /** 可执行任务类型 */
 export const FIXED_WING_TASK_CAPABILITIES = ['侦察', '打击', '察打一体'] as const
 
+/** 包头 447 靶场演示坐标，与任务/航线区域保持一致 */
+const BAOTOU_POINTS = {
+  audienceStand: [109.59264679, 40.87423242],
+  cy9aReconStart: [109.54119737, 40.87408504],
+  smallUavTakeoff: [109.59256368, 40.87428219],
+  targetStrike: [109.59175665, 40.8741476],
+} satisfies Record<string, [number, number]>
+
+/** 小无人机 B 区域四角坐标 */
+const SMALL_UAV_AREA = [
+  [109.5826864, 40.8742758],
+  [109.59191485, 40.87426525],
+  [109.5919144, 40.87037189],
+  [109.58269399, 40.87036621],
+] satisfies [number, number][]
+
+/** 给同起点设备轻微错开，避免地图标记完全重叠 */
+const offsetPosition = ([longitude, latitude]: [number, number], lngOffset: number, latOffset: number) =>
+  [longitude + lngOffset, latitude + latOffset] satisfies [number, number]
+
 /** 演示遥测数据（静态） */
 export const FIXED_WING_DEMO_TELEMETRY = {
   /** 链路类型 */
@@ -49,8 +69,8 @@ export const FIXED_WING_DEMO_TELEMETRY = {
   /** 无线电高度 m */
   radioHeight: 96.5,
   /** 飞机位置 */
-  longitude: 121.93216,
-  latitude: 29.06491,
+  longitude: BAOTOU_POINTS.cy9aReconStart[0],
+  latitude: BAOTOU_POINTS.cy9aReconStart[1],
   /** 姿态 */
   pitch: 2.4,
   roll: -1.2,
@@ -68,12 +88,12 @@ export const FIXED_WING_DEMO_TELEMETRY = {
   /** 激光测距值 m */
   laserData: 1380,
   /** 目标定位 */
-  targetLongitude: 121.9396,
-  targetLatitude: 29.06942,
+  targetLongitude: BAOTOU_POINTS.targetStrike[0],
+  targetLatitude: BAOTOU_POINTS.targetStrike[1],
   targetAltitude: 116,
 }
 
-/** 演示机队中心点（宁波附近） */
+/** 演示机队中心点（包头 447 靶场） */
 export const DEMO_FLEET_CENTER = {
   longitude: FIXED_WING_DEMO_TELEMETRY.longitude,
   latitude: FIXED_WING_DEMO_TELEMETRY.latitude,
@@ -84,7 +104,7 @@ const makeDevice = (
   idx: number,
   deviceName: string,
   deviceType: string,
-  offset: [number, number],
+  position: [number, number],
   power = 90,
   status = 'ONLINE',
 ): API_DEVICE.domain.Device => ({
@@ -98,8 +118,8 @@ const makeDevice = (
   taskStatus: '',
   remainingPower: power,
   createTime: Date.now(),
-  longitude: DEMO_FLEET_CENTER.longitude + offset[0],
-  latitude: DEMO_FLEET_CENTER.latitude + offset[1],
+  longitude: position[0],
+  latitude: position[1],
   altitude: 120,
   spaceId: '',
   deviceRegisterVersion: '',
@@ -112,19 +132,19 @@ const makeDevice = (
 
 /** 固定翼演示设备（右侧详情/驾驶舱使用） */
 export const FIXED_WING_DEMO_DEVICES: API_DEVICE.domain.Device[] = [
-  makeDevice(1, 'CY-9A-001', 'FIXED_WING', [0, 0], FIXED_WING_DEMO_TELEMETRY.fuel),
+  makeDevice(1, 'CY-9A-001', 'FIXED_WING', BAOTOU_POINTS.cy9aReconStart, FIXED_WING_DEMO_TELEMETRY.fuel),
 ]
 
 /** 完整演示机队（注入地图设备，纯前端） */
 export const DEMO_FLEET_DEVICES: API_DEVICE.domain.Device[] = [
   ...FIXED_WING_DEMO_DEVICES,
-  makeDevice(2, 'DJI M400', 'UAV', [0.004, 0.003], 88),
-  makeDevice(3, 'DJI M350', 'UAV', [-0.005, 0.004], 76),
-  makeDevice(4, 'DJI M300', 'UAV', [0.006, -0.004], 82),
-  makeDevice(5, 'DJI 30T', 'UAV', [-0.006, -0.003], 91),
-  makeDevice(6, '紫燕 F15', 'UAV', [0.003, 0.006], 64),
-  makeDevice(7, 'HY-3', 'UAV', [-0.003, -0.006], 70),
-  makeDevice(8, '机器狗-01', 'ROBOT_DOG', [0.001, -0.002], 95),
+  makeDevice(2, 'DJI M400', 'UAV', SMALL_UAV_AREA[0], 88),
+  makeDevice(3, 'DJI M350', 'UAV', offsetPosition(BAOTOU_POINTS.targetStrike, -0.0003, -0.0001), 76),
+  makeDevice(4, 'DJI M300', 'UAV', SMALL_UAV_AREA[1], 82),
+  makeDevice(5, 'DJI 30T', 'UAV', SMALL_UAV_AREA[2], 91),
+  makeDevice(6, '紫燕 F15', 'UAV', BAOTOU_POINTS.audienceStand, 64),
+  makeDevice(7, 'HY-3', 'UAV', offsetPosition(BAOTOU_POINTS.smallUavTakeoff, -0.00018, -0.00018), 70),
+  makeDevice(8, '机器狗-01', 'ROBOT_DOG', offsetPosition(BAOTOU_POINTS.smallUavTakeoff, 0.00018, -0.00012), 95),
 ]
 
 /** 演示设备类型（资源页 Tab / 设备树, 固定翼并入无人机类目） */

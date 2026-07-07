@@ -23,10 +23,8 @@ const DEMO_MENU_URLS = [
   'event',
   'action',
   'device',
-  'organization',
   'airline',
   'actionPlan',
-  'defence',
   'alarm',
   'documents',
 ]

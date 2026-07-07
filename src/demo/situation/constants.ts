@@ -1,14 +1,47 @@
-import { DEMO_FLEET_CENTER } from '@/demo/fixed-wing/constants'
 import { WaylineEnum } from '@/constant/uav/wayline'
 
-const { longitude: LNG, latitude: LAT } = DEMO_FLEET_CENTER
+/** 包头 447 靶场演示坐标 */
+const BAOTOU_POINTS = {
+  audienceStand: [109.59264679, 40.87423242],
+  cy9aReconStart: [109.54119737, 40.87408504],
+  smallUavTakeoff: [109.59256368, 40.87428219],
+  targetStrike: [109.59175665, 40.8741476],
+} satisfies Record<string, [number, number]>
 
-/** 行动列表演示数据 - 基于异构试验脚本提取的作战任务（RW） */
+/** 小无人机 B 区域四角坐标 */
+const SMALL_UAV_AREA = [
+  [109.5826864, 40.8742758],
+  [109.59191485, 40.87426525],
+  [109.5919144, 40.87037189],
+  [109.58269399, 40.87036621],
+] satisfies [number, number][]
+
+/** 整体 C 区域作业范围四角坐标 */
+const C_OPERATION_AREA = [
+  [109.52579872, 40.88406377],
+  [109.52562523, 40.86321341],
+  [109.63228439, 40.86310684],
+  [109.52558244, 40.86311609],
+] satisfies [number, number][]
+
+/** 演示任务设备 ID */
+const DEMO_DEVICE_IDS = {
+  cy9a: 'fixed-wing-demo-001',
+  m400: 'fixed-wing-demo-002',
+  m350: 'fixed-wing-demo-003',
+  m300: 'fixed-wing-demo-004',
+  dji30t: 'fixed-wing-demo-005',
+  ziyanF15: 'fixed-wing-demo-006',
+  hy3: 'fixed-wing-demo-007',
+  robotDog: 'fixed-wing-demo-008',
+}
+
+/** 行动列表演示数据 - 基于异构试验脚本提取的全部作战任务（RW） */
 export const DEMO_ACTIONS: API_ACTION.domain.ActionRecord[] = [
   {
     id: 9001,
     actionId: 9001,
-    name: 'A目标打击任务',
+    name: '机场区域日常巡逻任务',
     status: 'PROCESSING',
     eventId: '',
     startTime: '2026-07-07 08:30:00',
@@ -18,42 +51,61 @@ export const DEMO_ACTIONS: API_ACTION.domain.ActionRecord[] = [
     gmtModified: '2026-07-07 08:30:00',
     gmtCreateBy: 'demo',
     gmtModifiedBy: 'demo',
-    description: 'DJI M350 前出对A目标车辆进行打击，抛投手雷1次，命中目标，毁伤程度中，残余作战能力丧失部分能力',
+    description:
+      '紫燕F15按既定航线执行机场区域日常巡逻，控制光电球转动，发现车辆和人员活动。',
   },
   {
     id: 9002,
     actionId: 9002,
-    name: 'A目标二次打击任务',
+    name: 'B区域五机协同侦察任务',
     status: 'PROCESSING',
     eventId: '',
-    startTime: '2026-07-07 09:15:00',
+    startTime: '2026-07-07 09:00:00',
     type: 'normal',
     endTime: '',
-    gmtCreate: '2026-07-07 09:15:00',
-    gmtModified: '2026-07-07 09:15:00',
+    gmtCreate: '2026-07-07 09:00:00',
+    gmtModified: '2026-07-07 09:00:00',
     gmtCreateBy: 'demo',
     gmtModifiedBy: 'demo',
-    description: 'DJI M350 对A目标车辆进行二次打击，抛投手雷1次，命中目标，毁伤程度高，残余作战能力完全丧失',
+    description:
+      'DJI M400、DJI M300和DJI 30T对B区域展开五机协同精细侦察，搜索车辆和人员目标并更新态势。',
   },
   {
     id: 9003,
     actionId: 9003,
-    name: 'A目标机器狗侦察任务',
+    name: 'A目标打击任务',
     status: 'PROCESSING',
     eventId: '',
-    startTime: '2026-07-07 09:45:00',
+    startTime: '2026-07-07 09:30:00',
     type: 'normal',
     endTime: '',
-    gmtCreate: '2026-07-07 09:45:00',
-    gmtModified: '2026-07-07 09:45:00',
+    gmtCreate: '2026-07-07 09:30:00',
+    gmtModified: '2026-07-07 09:30:00',
     gmtCreateBy: 'demo',
     gmtModifiedBy: 'demo',
-    description: '派出机器狗进行递进侦察，查看敌方人员伤亡情况，获取现场图像后进行毁伤评估',
+    description:
+      'DJI M350前出对A目标车辆进行打击，抛投手雷1次，命中目标，毁伤程度中，残余作战能力丧失部分能力。',
   },
   {
     id: 9004,
     actionId: 9004,
-    name: 'C区域侦察任务',
+    name: 'A目标二次打击任务',
+    status: 'PROCESSING',
+    eventId: '',
+    startTime: '2026-07-07 10:00:00',
+    type: 'normal',
+    endTime: '',
+    gmtCreate: '2026-07-07 10:00:00',
+    gmtModified: '2026-07-07 10:00:00',
+    gmtCreateBy: 'demo',
+    gmtModifiedBy: 'demo',
+    description:
+      'DJI M350对A目标车辆进行二次打击，抛投手雷1次，命中目标，毁伤程度高，残余作战能力完全丧失。',
+  },
+  {
+    id: 9005,
+    actionId: 9005,
+    name: 'A目标机器狗侦察任务',
     status: 'PROCESSING',
     eventId: '',
     startTime: '2026-07-07 10:30:00',
@@ -63,22 +115,40 @@ export const DEMO_ACTIONS: API_ACTION.domain.ActionRecord[] = [
     gmtModified: '2026-07-07 10:30:00',
     gmtCreateBy: 'demo',
     gmtModifiedBy: 'demo',
-    description: 'CY-9A对C区域进行远域侦察，发现敌方入侵车辆1辆，系统进行定位与目标识别，更新态势地图',
+    description:
+      '派出机器狗进行递进侦察，查看敌方人员伤亡情况，获取现场图像后进行毁伤评估。',
   },
   {
-    id: 9005,
-    actionId: 9005,
-    name: '跟踪目标打击任务',
-    status: 'PENDING',
+    id: 9006,
+    actionId: 9006,
+    name: 'C区域侦察任务',
+    status: 'PROCESSING',
     eventId: '',
-    startTime: '',
+    startTime: '2026-07-07 11:00:00',
     type: 'normal',
     endTime: '',
     gmtCreate: '2026-07-07 11:00:00',
     gmtModified: '2026-07-07 11:00:00',
     gmtCreateBy: 'demo',
     gmtModifiedBy: 'demo',
-    description: 'CY-9A对C区域跟踪目标进行打击，使用空地导弹1次，命中目标，车辆完全丧失能力',
+    description:
+      'CY-9A对C区域进行远域侦察，发现敌方入侵车辆1辆，系统进行定位与目标识别，更新态势地图。',
+  },
+  {
+    id: 9007,
+    actionId: 9007,
+    name: '跟踪目标打击任务',
+    status: 'PENDING',
+    eventId: '',
+    startTime: '',
+    type: 'normal',
+    endTime: '',
+    gmtCreate: '2026-07-07 11:30:00',
+    gmtModified: '2026-07-07 11:30:00',
+    gmtCreateBy: 'demo',
+    gmtModifiedBy: 'demo',
+    description:
+      'CY-9A接收打击任务，对C区域跟踪目标进行打击，使用空地导弹1次，命中目标，车辆完全丧失能力。',
   },
 ]
 
@@ -94,12 +164,21 @@ export const DEMO_DICTS: API_DICT.domain.DictRecord[] = [
 ]
 
 /** 生成航点 (pointX 经度 / pointY 纬度 / pointZ 高度) */
-const point = (dx: number, dy: number, pointZ = 120, index = 0) => ({
-  pointX: LNG + dx,
-  pointY: LAT + dy,
+const point = (
+  pointX: number,
+  pointY: number,
+  pointZ = 120,
+  index = 0,
+) => ({
+  pointX,
+  pointY,
   pointZ,
   index,
 })
+
+/** 坐标数组转航点 */
+const routePoints = (coordinates: [number, number][], altitude: number) =>
+  coordinates.map(([lng, lat], index) => point(lng, lat, altitude, index))
 
 /** 组装航线模板 */
 const makeWayline = (
@@ -125,6 +204,8 @@ const makeWayline = (
     flyToWaylineMode: 'safely',
     takeOffSecurityHeight: 60,
     globalTransitionalSpeed: 10,
+    globalRTHHeight: 120,
+    waylineType: taskType,
   }),
   parameters: JSON.stringify({
     spaces: [{ positions: points.map((p, i) => ({ ...p, index: i })) }],
@@ -137,7 +218,7 @@ const makeWayline = (
 const makeSwarmWayline = (
   id: number,
   taskName: string,
-  polygon: number[][],
+  polygon: [number, number][],
   droneCount: number,
 ): API_AIRLINE.domain.AIRLINE_TEMPLATE => ({
   username: 'demo',
@@ -162,64 +243,103 @@ const makeSwarmWayline = (
     height: 100,
     waylineType: WaylineEnum.SwarmWayline,
     polygon,
-    // 主航向 45°
     mainK: Math.tan((45 * Math.PI) / 180),
     coverage: 70,
-    // 蜂群飞机数量
     droneCount,
   }),
-  parameters: JSON.stringify({}),
+  parameters: JSON.stringify({
+    spaces: [{ positions: routePoints([...polygon, polygon[0]], 100) }],
+  }),
   isTemplate: 'YES',
   isThird: 'NO',
 })
 
-/** 航线模板演示数据 - 基于异构试验脚本提取的作战任务航线 */
+/** 航线模板演示数据 - 基于演习脚本和包头地理位置信息提取 */
 export const DEMO_WAYLINE_TEMPLATES: API_AIRLINE.domain.AIRLINE_TEMPLATE[] = [
-  // 五机蜂群区域覆盖航线（包头演示方案）
-  makeSwarmWayline(
-    9104,
-    '五机蜂群区域覆盖航线',
-    [
-      [LNG - 0.012, LAT - 0.009],
-      [LNG + 0.012, LAT - 0.009],
-      [LNG + 0.012, LAT + 0.009],
-      [LNG - 0.012, LAT + 0.009],
-    ],
-    5,
+  makeWayline(
+    9101,
+    '机场区域日常巡逻航线',
+    WaylineEnum.PointWayline,
+    routePoints(
+      [
+        BAOTOU_POINTS.smallUavTakeoff,
+        BAOTOU_POINTS.audienceStand,
+        BAOTOU_POINTS.targetStrike,
+        BAOTOU_POINTS.smallUavTakeoff,
+      ],
+      100,
+    ),
   ),
-  // A目标打击任务航线 - DJI M350
-  makeWayline(9101, 'A目标打击航线', WaylineEnum.PointWayline, [
-    point(-0.005, -0.003, 80),
-    point(0, 0, 80),
-    point(0.005, 0.003, 80),
-  ]),
-  // A目标二次打击航线 - DJI M350
-  makeWayline(9102, 'A目标二次打击航线', WaylineEnum.PointWayline, [
-    point(-0.006, -0.004, 75),
-    point(0, 0, 75),
-    point(0.006, 0.004, 75),
-  ]),
-  // A目标机器狗侦察航线
-  makeWayline(9103, 'A目标机器狗侦察航线', WaylineEnum.PointWayline, [
-    point(-0.003, -0.002, 30),
-    point(0, 0, 30),
-    point(0.003, 0.002, 30),
-    point(0.002, -0.001, 30),
-  ]),
-  // C区域侦察任务航线 - CY-9A
-  makeWayline(9105, 'C区域侦察航线', WaylineEnum.PointWayline, [
-    point(-0.015, -0.01, 200),
-    point(-0.005, -0.005, 200),
-    point(0.005, 0.005, 200),
-    point(0.015, 0.01, 200),
-    point(0.01, 0, 200),
-  ]),
-  // 跟踪目标打击航线 - CY-9A
-  makeWayline(9106, '跟踪目标打击航线', WaylineEnum.PointWayline, [
-    point(0.01, 0, 180),
-    point(0.005, 0.005, 180),
-    point(0, 0, 180),
-  ]),
+  makeSwarmWayline(9102, 'B区域五机协同侦察航线', SMALL_UAV_AREA, 5),
+  makeWayline(
+    9103,
+    'A目标打击航线',
+    WaylineEnum.PointWayline,
+    routePoints(
+      [
+        BAOTOU_POINTS.smallUavTakeoff,
+        [109.59196, 40.87422],
+        BAOTOU_POINTS.targetStrike,
+      ],
+      80,
+    ),
+  ),
+  makeWayline(
+    9104,
+    'A目标二次打击航线',
+    WaylineEnum.PointWayline,
+    routePoints(
+      [
+        BAOTOU_POINTS.smallUavTakeoff,
+        [109.59162, 40.87405],
+        BAOTOU_POINTS.targetStrike,
+      ],
+      80,
+    ),
+  ),
+  makeWayline(
+    9105,
+    'A目标机器狗侦察航线',
+    WaylineEnum.PointWayline,
+    routePoints(
+      [
+        BAOTOU_POINTS.smallUavTakeoff,
+        [109.59218, 40.87422],
+        BAOTOU_POINTS.targetStrike,
+        [109.59158, 40.87402],
+      ],
+      30,
+    ),
+  ),
+  makeWayline(
+    9106,
+    'C区域侦察航线',
+    WaylineEnum.PointWayline,
+    routePoints(
+      [
+        BAOTOU_POINTS.cy9aReconStart,
+        C_OPERATION_AREA[0],
+        C_OPERATION_AREA[1],
+        C_OPERATION_AREA[2],
+        C_OPERATION_AREA[3],
+        BAOTOU_POINTS.cy9aReconStart,
+      ],
+      200,
+    ),
+  ),
+  makeWayline(
+    9107,
+    '跟踪目标打击航线',
+    WaylineEnum.PointWayline,
+    routePoints(
+      [
+        BAOTOU_POINTS.cy9aReconStart,
+        [109.5665, 40.8738],
+        BAOTOU_POINTS.targetStrike,
+      ],
+      180,
+    ),
+  ),
 ]
 
 /** 航线文件夹演示数据 */
@@ -237,109 +357,187 @@ export const DEMO_WAYLINE_FOLDERS: API_AIRLINE.domain.WaylineFolderTreeNode[] =
     },
   ]
 
-/** 行动子任务（ActionItem）演示数据 - 基于异构试验脚本提取的作战任务详情 */
+const WAYLINE_TEMPLATE_MAP = new Map(
+  DEMO_WAYLINE_TEMPLATES.map((wayline) => [wayline.waylineTemplateId, wayline]),
+)
+
+/** 获取演示航线模板 */
+const getDemoWayline = (waylineTemplateId: number) =>
+  WAYLINE_TEMPLATE_MAP.get(waylineTemplateId)!
+
+/** 组装任务中的航线配置快照 */
+const makeTaskTemplateInfo = (
+  wayline: API_AIRLINE.domain.AIRLINE_TEMPLATE,
+) =>
+  JSON.stringify({
+    templateId: wayline.templateId,
+    waylineTemplateId: wayline.waylineTemplateId,
+    templateName: wayline.taskName,
+    waylineType: wayline.taskType,
+    taskBasic: wayline.taskBasic,
+    parameters: JSON.parse(wayline.parameters),
+  })
+
+/** 组装行动子任务 */
+const makeActionItem = (
+  actionId: number,
+  actionItemName: string,
+  device: {
+    id: string
+    name: string
+    type: string
+  },
+  waylineTemplateId: number,
+  status: string,
+  description: string,
+  gmtCreate: string,
+  options: Partial<API_ACTION_ITEM.domain.ActionItem> = {},
+): API_ACTION_ITEM.domain.ActionItem => {
+  const wayline = getDemoWayline(waylineTemplateId)
+
+  return {
+    id: actionId * 100 + 1,
+    actionId,
+    actionItemName,
+    actionType: 'NO_SMART',
+    deviceId: device.id,
+    deviceName: device.name,
+    deviceType: device.type,
+    status,
+    description,
+    gmtCreate,
+    gmtCreateBy: 'demo',
+    taskTplId: String(wayline.waylineTemplateId),
+    templateId: wayline.templateId,
+    taskTemplateInfo: makeTaskTemplateInfo(wayline),
+    extra: JSON.stringify({}),
+    ...options,
+  }
+}
+
+/** 行动子任务（ActionItem）演示数据 - 基于异构试验脚本提取的全部作战任务详情 */
 export const DEMO_ACTION_ITEMS: Record<
   number,
   API_ACTION_ITEM.domain.ActionItem[]
 > = {
   9001: [
-    {
-      id: 900101,
-      actionId: 9001,
-      actionItemName: 'A目标打击-无人机前出',
-      actionType: 'NO_SMART',
-      deviceId: 'uav-m350-001',
-      deviceName: 'DJI M350',
-      deviceType: 'uav',
-      status: 'FINISHED',
-      description: 'DJI M350 前出对A目标车辆进行打击',
-      gmtCreate: '2026-07-07 08:30:00',
-      gmtCreateBy: 'demo',
-      taskTemplateInfo: JSON.stringify({
-        templateId: '9101',
-        templateName: 'A目标打击航线',
-      }),
-      extra: JSON.stringify({}),
-    },
+    makeActionItem(
+      9001,
+      '机场区域巡逻-紫燕F15前出',
+      {
+        id: DEMO_DEVICE_IDS.ziyanF15,
+        name: '紫燕 F15',
+        type: 'uav',
+      },
+      9101,
+      'PROCESSING',
+      '紫燕F15执行机场区域日常巡逻，控制光电球转动并发现车辆和人员活动。',
+      '2026-07-07 08:30:00',
+      { flightHeight: 100, returnHeight: 120 },
+    ),
   ],
   9002: [
-    {
-      id: 900201,
-      actionId: 9002,
-      actionItemName: 'A目标二次打击-无人机前出',
-      actionType: 'NO_SMART',
-      deviceId: 'uav-m350-001',
-      deviceName: 'DJI M350',
-      deviceType: 'uav',
-      status: 'FINISHED',
-      description: 'DJI M350 对A目标车辆进行二次打击',
-      gmtCreate: '2026-07-07 09:15:00',
-      gmtCreateBy: 'demo',
-      taskTemplateInfo: JSON.stringify({
-        templateId: '9102',
-        templateName: 'A目标二次打击航线',
-      }),
-      extra: JSON.stringify({}),
-    },
+    makeActionItem(
+      9002,
+      'B区域五机协同侦察',
+      {
+        id: [
+          DEMO_DEVICE_IDS.m400,
+          DEMO_DEVICE_IDS.m300,
+          DEMO_DEVICE_IDS.dji30t,
+        ].join(','),
+        name: 'DJI M400 / DJI M300×2 / DJI 30T×2',
+        type: 'uav',
+      },
+      9102,
+      'PROCESSING',
+      '五架侦察无人机对B区域开展精细侦察，搜索车辆和人员目标并持续回传图像。',
+      '2026-07-07 09:00:00',
+      {
+        flightHeight: 100,
+        returnHeight: 120,
+        extra: JSON.stringify({ actionItemGroupId: 'rw-9002-swarm' }),
+      },
+    ),
   ],
   9003: [
-    {
-      id: 900301,
-      actionId: 9003,
-      actionItemName: 'A目标机器狗侦察',
-      actionType: 'NO_SMART',
-      deviceId: 'robot-dog-001',
-      deviceName: '机器狗',
-      deviceType: 'robot',
-      status: 'PROCESSING',
-      description: '派出机器狗进行递进侦察，查看敌方人员伤亡情况',
-      gmtCreate: '2026-07-07 09:45:00',
-      gmtCreateBy: 'demo',
-      taskTemplateInfo: JSON.stringify({
-        templateId: '9103',
-        templateName: 'A目标机器狗侦察航线',
-      }),
-      extra: JSON.stringify({}),
-    },
+    makeActionItem(
+      9003,
+      'A目标打击-DJI M350前出',
+      {
+        id: DEMO_DEVICE_IDS.m350,
+        name: 'DJI M350',
+        type: 'uav',
+      },
+      9103,
+      'FINISHED',
+      'DJI M350前出对A目标车辆进行打击，抛投手雷1次并命中目标。',
+      '2026-07-07 09:30:00',
+      { flightHeight: 80, returnHeight: 120 },
+    ),
   ],
   9004: [
-    {
-      id: 900401,
-      actionId: 9004,
-      actionItemName: 'C区域侦察-CY-9A前出',
-      actionType: 'NO_SMART',
-      deviceId: 'uav-cy9a-001',
-      deviceName: 'CY-9A',
-      deviceType: 'uav',
-      status: 'PROCESSING',
-      description: 'CY-9A对C区域进行远域侦察，发现敌方入侵车辆',
-      gmtCreate: '2026-07-07 10:30:00',
-      gmtCreateBy: 'demo',
-      taskTemplateInfo: JSON.stringify({
-        templateId: '9105',
-        templateName: 'C区域侦察航线',
-      }),
-      extra: JSON.stringify({}),
-    },
+    makeActionItem(
+      9004,
+      'A目标二次打击-DJI M350复击',
+      {
+        id: DEMO_DEVICE_IDS.m350,
+        name: 'DJI M350',
+        type: 'uav',
+      },
+      9104,
+      'FINISHED',
+      'DJI M350对A目标车辆进行二次打击，毁伤程度高，残余作战能力完全丧失。',
+      '2026-07-07 10:00:00',
+      { flightHeight: 80, returnHeight: 120 },
+    ),
   ],
   9005: [
-    {
-      id: 900501,
-      actionId: 9005,
-      actionItemName: '跟踪目标打击-CY-9A打击',
-      actionType: 'NO_SMART',
-      deviceId: 'uav-cy9a-001',
-      deviceName: 'CY-9A',
-      deviceType: 'uav',
-      status: 'PENDING',
-      description: 'CY-9A对C区域跟踪目标进行打击',
-      gmtCreate: '2026-07-07 11:00:00',
-      gmtCreateBy: 'demo',
-      taskTemplateInfo: JSON.stringify({
-        templateId: '9106',
-        templateName: '跟踪目标打击航线',
-      }),
-      extra: JSON.stringify({}),
-    },
+    makeActionItem(
+      9005,
+      'A目标机器狗递进侦察',
+      {
+        id: DEMO_DEVICE_IDS.robotDog,
+        name: '机器狗-01',
+        type: 'robot',
+      },
+      9105,
+      'PROCESSING',
+      '机器狗从小无人机起飞点附近出发，对A目标实施递进侦察并采集毁伤评估图像。',
+      '2026-07-07 10:30:00',
+      { flightHeight: 30, returnHeight: 30 },
+    ),
+  ],
+  9006: [
+    makeActionItem(
+      9006,
+      'C区域侦察-CY-9A前出',
+      {
+        id: DEMO_DEVICE_IDS.cy9a,
+        name: 'CY-9A',
+        type: 'uav',
+      },
+      9106,
+      'PROCESSING',
+      'CY-9A沿预设航线前往C区域侦察目标起始点，对整体作业区域展开远域侦察。',
+      '2026-07-07 11:00:00',
+      { flightHeight: 200, returnHeight: 200 },
+    ),
+  ],
+  9007: [
+    makeActionItem(
+      9007,
+      '跟踪目标打击-CY-9A打击',
+      {
+        id: DEMO_DEVICE_IDS.cy9a,
+        name: 'CY-9A',
+        type: 'uav',
+      },
+      9107,
+      'PENDING',
+      'CY-9A接收打击任务，对持续跟踪目标实施空地导弹打击。',
+      '2026-07-07 11:30:00',
+      { flightHeight: 180, returnHeight: 200 },
+    ),
   ],
 }

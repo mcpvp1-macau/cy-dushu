@@ -2,13 +2,11 @@ import { Link, useMatches } from 'react-router-dom'
 import MenuIconAction from '@/assets/icons/jsx/menus/MenuIconAction'
 import MenuIconAlarm from '@/assets/icons/jsx/menus/MenuIconAlarm'
 import MenuIconAirline from '@/assets/icons/jsx/menus/MenuIconAirline'
-import MenuIconOrganization from '@/assets/icons/jsx/menus/MenuIconOrganization'
 import MenuIconSituation from '@/assets/icons/jsx/menus/MenuIconSituation'
 import MenuIconSource from '@/assets/icons/jsx/menus/MenuIconSource'
 import MenuIconSchedule from '@/assets/icons/jsx/menus/MenuIconSchedule'
 import useUserStore from '@/store/useUser.store'
 import MenuIconEvents from '@/assets/icons/jsx/menus/MenuIconEvents'
-import MenuIconDefence from '@/assets/icons/jsx/menus/MenuIconDefence'
 import { twMerge } from 'tailwind-merge'
 import { ReadOutlined } from '@ant-design/icons'
 
@@ -41,13 +39,6 @@ const menus = [
     component: <MenuIconSource className="text-lg text-[#63588F]" />,
   },
   {
-    id: 'organization',
-    path: '/organization',
-    auth: 'organization',
-    component: <MenuIconOrganization className="text-lg text-[#3D8882]" />,
-    color: '#3D8882',
-  },
-  {
     id: 'wayline',
     path: '/wayline',
     auth: 'airline',
@@ -58,12 +49,6 @@ const menus = [
     path: '/schedule',
     auth: 'actionPlan',
     component: <MenuIconSchedule className="text-lg text-[#B86C6C]" />,
-  },
-  {
-    id: 'defence',
-    path: '/defence',
-    auth: 'defence',
-    component: <MenuIconDefence className="text-lg text-[#4F81D7]" />,
   },
   {
     id: 'alarms',

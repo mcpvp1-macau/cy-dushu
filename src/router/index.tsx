@@ -4,14 +4,12 @@ import situation from './modules/situation'
 import sources from './modules/sources'
 import actionRecord from './modules/action-record'
 import alarms from './modules/alarms'
-import organization from './modules/organization'
 import controlRoom from './modules/control-room'
 import actionPlan from './modules/action-plan'
 import wayline from './modules/wayline'
 import demo from './modules/demo'
 import events from './modules/events'
 import backtracking from './modules/backtracking'
-import defence from './modules/defence'
 import AppErrorBoundary from '@/components/AppError'
 // import Page404 from '@/pages/404'
 import share from './modules/share'
@@ -27,12 +25,10 @@ export const rootRoute = {
     sources,
     actionRecord,
     alarms,
-    organization,
     controlRoom,
     actionPlan,
     wayline,
     backtracking,
-    defence,
     share,
     documents,
     // 测试页面

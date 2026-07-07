@@ -13,11 +13,9 @@ import en from 'antd/es/locale/en_US'
 import controlRoom from './router/modules/control-room'
 import sources from './router/modules/sources'
 import schedule from './router/modules/action-plan'
-import organization from './router/modules/organization'
 import FixedWindowArea from './components/FixedWindowsArea'
 import backtracking from './router/modules/backtracking'
 import share from './router/modules/share.tsx'
-import Update from './components/Update'
 import { lazy, Suspense } from 'react'
 import AppSpin from './components/AppSpin.tsx'
 
@@ -29,7 +27,6 @@ const hidenSet = new Set([
   controlRoom.id,
   sources.id,
   schedule.id,
-  organization.id,
   backtracking.id,
   share.id,
 ])
@@ -74,7 +71,6 @@ const App = () => {
 
   return (
     <AppThemeProvider locale={i18n.language === 'zh' ? zh : en}>
-      <Update />
       <div
         className={clsx(
           'w-screen h-screen overflow-hidden',
