@@ -115,7 +115,7 @@ const WaylineTemplateListItem: FC<PropsType> = memo(({ data }) => {
         {t('wayline.regenerator.title')}: {data.gmtModifiedBy}
       </p>
       <p className="text-xs mt-1">
-        {t('common.updateTime')}: {data.gmtModified}
+        {data.gmtModified}
       </p>
     </li>
   )
