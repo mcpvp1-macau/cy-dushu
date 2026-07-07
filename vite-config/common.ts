@@ -10,6 +10,7 @@ import topLevelAwait from 'vite-plugin-top-level-await'
 
 // 公共的配置, 开发时, 生产时都需要的配置
 export default defineConfig({
+  base: process.env.VITE_BASE || '/',
   plugins: [
     wasm(),
     react(),

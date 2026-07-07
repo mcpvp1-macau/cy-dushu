@@ -16,6 +16,8 @@ import share from './modules/share'
 import eventResolve from './modules/event-resolve'
 import documents from './modules/documents'
 
+export const routerBasename = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.replace(/\/$/, '')
+
 export const rootRoute = {
   element: <App />,
   children: [
@@ -41,6 +43,6 @@ export const rootRoute = {
   ErrorBoundary: AppErrorBoundary,
 } as RouteObject
 
-const router = createBrowserRouter([rootRoute])
+const router = createBrowserRouter([rootRoute], { basename: routerBasename })
 
 export default router

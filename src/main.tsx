@@ -5,7 +5,7 @@ import initToken from './global/Initial/init-token.ts'
 import initDemoAuth from './global/Initial/init-demo-auth.ts'
 import useUserStore from './store/useUser.store.ts'
 import { RouterProvider } from 'react-router'
-import router from './router'
+import router, { routerBasename } from './router'
 
 import { QueryClientProvider } from '@tanstack/react-query'
 
@@ -25,16 +25,32 @@ import { createBrowserRouter } from 'react-router-dom'
 // 设置 dayjs 语言
 dayjs.locale('zh-cn')
 
-const videoRouter = createBrowserRouter([
-  {
-    path: 'share/video/:productKey/:deviceId/:videoId/:token',
-    element: <ShareVideo />,
-  },
-])
+const getAppPath = () => {
+  if (routerBasename === '/') {
+    return location.pathname
+  }
+  if (location.pathname === routerBasename) {
+    return '/'
+  }
+  if (location.pathname.startsWith(`${routerBasename}/`)) {
+    return location.pathname.slice(routerBasename.length)
+  }
+  return location.pathname
+}
+
+const videoRouter = createBrowserRouter(
+  [
+    {
+      path: 'share/video/:productKey/:deviceId/:videoId/:token',
+      element: <ShareVideo />,
+    },
+  ],
+  { basename: routerBasename },
+)
 
 // 入口
 ;(async () => {
-  if (location.pathname.startsWith('/share/video')) {
+  if (getAppPath().startsWith('/share/video')) {
     ReactDOM.createRoot(document.getElementById('root')!).render(
       <QueryClientProvider client={queryClient}>
         {/* <ShareVideo /> */}

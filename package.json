@@ -24,6 +24,7 @@
     "dev:taixin": "vite --config ./vite-config/dev/config.taixin.ts",
     "dev:changzhou": "vite --config ./vite-config/dev/config.changzhou.ts",
     "build": "tsc --noEmit && vite build",
+    "build:pages": "tsc --noEmit && VITE_BASE=/cy-dushu/ vite build && node scripts/prepare-github-pages.mjs",
     "skip-check-build": "vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview --config ./vite-config/dev/config.82.ts",
