@@ -10,6 +10,7 @@ export type TanqiTaskExecutionPreset = {
   actionId: number
   actionName: string
   actionItemName: string
+  isGrouped?: boolean
   reportTitle: string
   reportNo?: string
   taskTarget?: string
@@ -25,12 +26,25 @@ export type TanqiTaskExecutionPreset = {
   speed?: string
   status: string
   timing?: string
+  childTasks?: TanqiTaskExecutionChildTask[]
+}
+
+export type TanqiTaskExecutionChildTask = {
+  actionItemId: number
+  actionItemName: string
+  deviceId?: string
+  deviceName?: string
+  waylineName: string
+  flightHeight?: number | string
+  returnHeight?: number | string
+  status: string
 }
 
 const ACTION_STATUS_TEXT: Record<string, string> = {
   PENDING: '待执行',
   PROCESSING: '进行中',
   PAUSED: '暂停',
+  PAUSE: '暂停',
   FINISHED: '已完成',
   FINISH: '已完成',
 }
@@ -159,18 +173,43 @@ export const getTanqiTaskExecutionPreset = (
   const groupMeta = parseJson<{
     actionItemGroupId?: string
     actionItemGroupName?: string
+    swarmIndex?: number
   }>(actionItem.extra)
   const isGroupedAction = Boolean(groupMeta?.actionItemGroupId)
+  const groupedActionItems = isGroupedAction
+    ? [...actionItems].sort((prev, next) => {
+        const prevIndex =
+          parseJson<{ swarmIndex?: number }>(prev.extra)?.swarmIndex ?? 0
+        const nextIndex =
+          parseJson<{ swarmIndex?: number }>(next.extra)?.swarmIndex ?? 0
+        return prevIndex - nextIndex
+      })
+    : []
   const actionDeviceName = isGroupedAction
-    ? uniqueText(actionItems.map((item) => item.deviceName ?? '').filter(Boolean))
+    ? uniqueText(
+        groupedActionItems.map((item) => item.deviceName ?? '').filter(Boolean),
+      )
     : actionItem.deviceName
   const actionDeviceId = isGroupedAction ? '' : actionItem.deviceId
+  const childTasks = isGroupedAction
+    ? groupedActionItems.map((item) => ({
+        actionItemId: item.id,
+        actionItemName: item.actionItemName || '-',
+        deviceId: item.deviceId,
+        deviceName: item.deviceName,
+        waylineName: formatWaylineDisplayName(wayline),
+        flightHeight: item.flightHeight,
+        returnHeight: item.returnHeight,
+        status: ACTION_STATUS_TEXT[item.status!] ?? item.status ?? '-',
+      }))
+    : undefined
 
   return {
     actionId,
     actionName: action.name,
     actionItemName:
       groupMeta?.actionItemGroupName || actionItem.actionItemName || report.title,
+    isGrouped: isGroupedAction,
     reportTitle: report.title,
     reportNo: report.reportNo,
     taskTarget,
@@ -187,5 +226,6 @@ export const getTanqiTaskExecutionPreset = (
     speed: speedFromReport || `${taskBasic?.globalTransitionalSpeed ?? '-'}m/s`,
     status: ACTION_STATUS_TEXT[action.status] ?? action.status,
     timing,
+    childTasks,
   }
 }

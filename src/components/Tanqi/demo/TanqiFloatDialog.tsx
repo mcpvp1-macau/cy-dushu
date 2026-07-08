@@ -1,11 +1,8 @@
 import IconTanQi from '@/assets/icons/jsx/IconTanQi'
 import {
   CloseOutlined,
-  FolderAddOutlined,
-  LayoutOutlined,
   PushpinFilled,
   PushpinOutlined,
-  SearchOutlined,
 } from '@ant-design/icons'
 import clsx from 'clsx'
 import { createPortal } from 'react-dom'
@@ -164,27 +161,6 @@ const TanqiFloatDialog: FC<PropsType> = memo(() => {
             onClick={() => useTanqiDialogStore.getState().togglePinned()}
           >
             {pinned ? <PushpinFilled /> : <PushpinOutlined />}
-          </button>
-          <button
-            className="size-7 flex items-center justify-center rounded bg-transparent border-0 text-fore opacity-60 cursor-not-allowed"
-            title="搜索（未接入）"
-            disabled
-          >
-            <SearchOutlined />
-          </button>
-          <button
-            className="size-7 flex items-center justify-center rounded bg-transparent border-0 text-fore opacity-60 cursor-not-allowed"
-            title="新建（未接入）"
-            disabled
-          >
-            <FolderAddOutlined />
-          </button>
-          <button
-            className="size-7 flex items-center justify-center rounded bg-transparent border-0 text-fore opacity-60 cursor-not-allowed"
-            title="历史（未接入）"
-            disabled
-          >
-            <LayoutOutlined />
           </button>
           <button
             className="size-7 flex items-center justify-center rounded bg-transparent border-0 text-fore hover:text-hightlight cursor-pointer"
