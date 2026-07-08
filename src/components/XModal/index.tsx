@@ -14,6 +14,7 @@ type PropsType = GetProps<typeof Modal> & {
   noPadding?: boolean
   confirmTitle?: string
   confirmDisable?: boolean
+  footerClassName?: string
   noClose?: boolean
   noCancel?: boolean
 }
@@ -27,6 +28,7 @@ const XModal: FC<PropsType> = ({
   titleRight,
   confirmTitle,
   confirmDisable,
+  footerClassName,
   noCancel,
   noClose,
   onClose,
@@ -127,7 +129,7 @@ const XModal: FC<PropsType> = ({
             {children}
           </div>
           {footer ? (
-            <div className="footer">
+            <div className={clsx('footer', footerClassName)}>
               {!noCancel && (
                 <Button
                   onClick={(e) => {
