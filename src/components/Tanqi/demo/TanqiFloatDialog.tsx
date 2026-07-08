@@ -32,6 +32,9 @@ type DialogActionsType = {
   updateRect: (rect: Partial<Pick<DialogStateType, 'x' | 'y' | 'width' | 'height'>>) => void
 }
 
+export const TANQI_FLOAT_DEFAULT_WIDTH = 520
+export const TANQI_FLOAT_DEFAULT_HEIGHT = 600
+
 /** 檀棋浮窗状态（位置与尺寸本地持久化） */
 export const useTanqiDialogStore = create<DialogStateType & DialogActionsType>()(
   persist(
@@ -40,8 +43,8 @@ export const useTanqiDialogStore = create<DialogStateType & DialogActionsType>()
       pinned: false,
       x: -1,
       y: -1,
-      width: 520,
-      height: 640,
+      width: TANQI_FLOAT_DEFAULT_WIDTH,
+      height: TANQI_FLOAT_DEFAULT_HEIGHT,
       toggleOpen: () => set({ open: !get().open }),
       updateOpen: (open) => set({ open }),
       togglePinned: () => set({ pinned: !get().pinned }),

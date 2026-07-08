@@ -19,6 +19,11 @@ import FloatIconButtonGroup from '@/components/ui/button/FloatIconButton/FloatIc
 import Reconstruction2D from '../LayerConfig/components/Reconstruction2D/Reconstruction2D'
 import RenderErrorOverlay from './components/RenderErrorOverlay'
 import Compass from './components/Compass'
+import useRightMode from '@/store/layout/useRightMode.store'
+import {
+  RIGHT_TOOLBAR_SHIFT_WITH_OUTER,
+  RIGHT_TOOLBAR_RIGHT,
+} from '@/pages/right/constants'
 
 const HangzhouBanAreas = lazy(
   () => import('./components/custom/HangzhouBanAreas'),
@@ -111,6 +116,10 @@ Cesium.Ion.defaultAccessToken = import.meta.env.VITE_CESIUM_ACCESS_TOKEN
 
 const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, bottomBarLeft, children }) => {
   const [is2D, { toggle }] = useBoolean(false)
+  const rightOuterMode = useRightMode((s) => s.rightOuterMode)
+  const mapToolbarRight = rightOuterMode
+    ? RIGHT_TOOLBAR_SHIFT_WITH_OUTER
+    : RIGHT_TOOLBAR_RIGHT
 
   const webgl1 = useMapSettingStore((s) => s.webgl1)
   const contextOptions = useMemo<Cesium.ContextOptions>(
@@ -180,8 +189,11 @@ const CesiumMap: FC<PropsType> = memo(({ id, useToolBar = true, bottomBarLeft, c
           >
             {children}
           </Suspense>
-            {useToolBar && (
-            <div className="absolute right-3 bottom-8 flex flex-col gap-3 z-10 items-end">
+          {useToolBar && (
+            <div
+              className="absolute bottom-8 flex flex-col gap-3 z-10 items-end transition-[right] duration-300"
+              style={{ right: mapToolbarRight }}
+            >
               <FloatIconButtonGroup mode="vertical">
                 <MapSpace />
                 <LayerOverlay />

@@ -5,6 +5,11 @@ import { lazy } from 'react'
 import OverlayDetail from './right-tools/OverlayDetail/OverlayDetail'
 import RightRangingPanel from './right-tools/Ranging'
 import { useCurrentToasts } from '@/store/useToast'
+import {
+  RIGHT_BOTTOM_BAR_HEIGHT,
+  RIGHT_PANEL_RIGHT,
+  RIGHT_PANEL_SHIFT_WITH_OUTER,
+} from './constants'
 
 const RightDeviceDetail = lazy(() => import('./DeviceDetail'))
 const RightAddPoint = lazy(() => import('./right-tools/AddPoint'))
@@ -69,7 +74,9 @@ const Right: FC<PropsType> = memo(() => {
     const RightComponent = route[rightMode]
 
     // 距离右边的像素
-    const rightPixel = rightOuterMode ? 54 + 350 + 12 : 54
+    const rightPixel = rightOuterMode
+      ? RIGHT_PANEL_SHIFT_WITH_OUTER
+      : RIGHT_PANEL_RIGHT
     // 靠左时，通知挡不到
     const finialLayoutShift = rightOuterMode ? 0 : layoutShift
 
@@ -115,11 +122,17 @@ const Right: FC<PropsType> = memo(() => {
 
     if (!RightOuterComponent) {
       return (
-        <div className="absolute top-3 z-10 p-3" style={{ right: '54px' }}>
+        <div
+          className="absolute top-3 z-10 p-3"
+          style={{ right: `${RIGHT_PANEL_RIGHT}px` }}
+        >
           404
         </div>
       )
     }
+
+    const isTanqiOuter = rightOuterMode === RightOuterEnum.TANQI
+    const tanqiOuterHeight = `calc(100% - ${RIGHT_BOTTOM_BAR_HEIGHT}px)`
 
     return (
       <div
@@ -132,9 +145,12 @@ const Right: FC<PropsType> = memo(() => {
           'transition-[top,right,max-height] duration-300',
         )}
         style={{
-          maxHeight: `calc(100vh - ${82 + layoutShift}px)`,
-          top: `${12 + layoutShift}px`,
-          right: `54px`,
+          height: isTanqiOuter ? tanqiOuterHeight : undefined,
+          maxHeight: isTanqiOuter
+            ? tanqiOuterHeight
+            : `calc(100vh - ${82 + layoutShift}px)`,
+          top: isTanqiOuter ? 0 : `${12 + layoutShift}px`,
+          right: isTanqiOuter ? 0 : `${RIGHT_PANEL_RIGHT}px`,
         }}
       >
         <AppViewSuspense>
