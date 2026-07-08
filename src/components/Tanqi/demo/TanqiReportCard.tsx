@@ -1,4 +1,8 @@
 import { REPORT_TYPE_CONFIG, TanqiReport, TanqiReportType } from './report-data'
+import { Button } from 'antd'
+import { PlayCircleOutlined } from '@ant-design/icons'
+import TanqiTaskExecutionModal from './TanqiTaskExecutionModal'
+import { getTanqiTaskExecutionPreset } from './task-execution'
 
 type PropsType = {
   report: TanqiReport
@@ -16,6 +20,11 @@ const BADGE_CLS: Record<TanqiReportType, string> = {
 /** 檀棋结构化报告卡片（演示） */
 const TanqiReportCard: FC<PropsType> = memo(({ report }) => {
   const config = REPORT_TYPE_CONFIG[report.type]
+  const [executionOpen, setExecutionOpen] = useState(false)
+  const executionPreset = useMemo(
+    () => getTanqiTaskExecutionPreset(report),
+    [report],
+  )
 
   return (
     <div className="w-full rounded border border-solid border-ground-3 bg-ground-2 overflow-hidden text-sm">
@@ -118,7 +127,28 @@ const TanqiReportCard: FC<PropsType> = memo(({ report }) => {
             {report.conclusion}
           </div>
         )}
+
+        {executionPreset && (
+          <div className="flex justify-end">
+            <Button
+              size="small"
+              type="primary"
+              icon={<PlayCircleOutlined />}
+              onClick={() => setExecutionOpen(true)}
+            >
+              执行任务
+            </Button>
+          </div>
+        )}
       </div>
+
+      {executionPreset && (
+        <TanqiTaskExecutionModal
+          open={executionOpen}
+          preset={executionPreset}
+          onClose={() => setExecutionOpen(false)}
+        />
+      )}
     </div>
   )
 })
