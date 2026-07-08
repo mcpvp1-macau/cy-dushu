@@ -6,8 +6,8 @@ import { useAppMsg } from '@/hooks/useAppMsg'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { TanqiTaskExecutionPreset } from './task-execution'
 import {
+  dispatchFullFlowReportTask,
   isFullFlowDemoMode,
-  startFullFlowActionItems,
 } from '@/demo/situation/full-flow-demo.store'
 
 type PropsType = {
@@ -28,15 +28,12 @@ const TanqiTaskExecutionModal: FC<PropsType> = memo(
 
     const handleConfirm = () => {
       if (isFullFlowDemoMode()) {
-        const actionItemIds = showGroupedCard
-          ? childTasks.map((item) => item.actionItemId)
-          : preset.actionItemId
-            ? [preset.actionItemId]
-            : []
-        startFullFlowActionItems(preset.actionId, actionItemIds)
+        dispatchFullFlowReportTask(preset.actionId, preset.waylineTemplateId)
         queryClient.invalidateQueries({
           queryKey: ['action', preset.actionId, 'items'],
         })
+        queryClient.invalidateQueries({ queryKey: ['airlineTemplate'] })
+        queryClient.invalidateQueries({ queryKey: ['waylineTemplates'] })
       }
       msgApi.success('任务已下发执行')
       onClose()

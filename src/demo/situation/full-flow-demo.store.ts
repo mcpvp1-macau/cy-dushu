@@ -41,6 +41,7 @@ type ActionsType = {
   }) => API_ACTION.domain.ActionRecord
   updateAction: (data: Partial<API_ACTION.domain.ActionRecord> & { id: number }) => void
   startActionItems: (actionId: number, actionItemIds: number[]) => void
+  dispatchReportTask: (actionId: number, waylineTemplateId: number) => number[]
   appendMessage: (actionId: number, message: FullFlowMessage) => void
   createNextReport: (actionId: number) => TanqiReport | null
 }
@@ -97,49 +98,11 @@ const cloneReport = (report: TanqiReport, index: number): TanqiReport => {
   return nextReport
 }
 
-const normalize = (value?: string) => value?.replace(/\s+/g, '') ?? ''
-
-const getMetaValue = (report: TanqiReport, labels: string[]) =>
-  report.meta?.find(([key]) => labels.some((label) => key.includes(label)))?.[1]
-
-const getColumnValues = (report: TanqiReport, labels: string[]) => {
-  const table = report.tables?.find((item) => item.rows.length)
-  if (!table) return []
-
-  const columnIndex = table.headers.findIndex((header) =>
-    labels.some((label) => header.includes(label)),
-  )
-  if (columnIndex < 0) return []
-
-  return table.rows.map((row) => row[columnIndex]).filter(Boolean)
-}
-
-const resolveWaylineTemplateId = (report: TanqiReport) => {
-  if (report.type !== 'task') return undefined
-
-  const title = normalize(report.title)
-  const area = normalize(getMetaValue(report, ['任务区域', '任务区域/目标']))
-  const target = normalize(
-    getMetaValue(report, ['任务类型/目标', '任务区域/目标', '任务类型']),
-  )
-  const deviceNames = normalize([...new Set(getColumnValues(report, ['装备名称']))].join('/'))
-
-  if (target.includes('跟踪目标') || title.includes('CY-9A')) return 9107
-  if (title.includes('C区域') || area.includes('C区域')) return 9106
-  if (title.includes('机器狗') || deviceNames.includes('机器狗')) return 9105
-  if (title.includes('二次')) return 9104
-  if (title.includes('打击') || target.includes('A目标')) return 9103
-  if (area.includes('机场区域')) return 9101
-  if (area.includes('B区域') || area.includes('B区')) return 9102
-
-  return undefined
-}
-
 const cloneActionItemsForReport = (
   actionId: number,
   waylineTemplateId: number,
   existingCount: number,
-) => {
+): API_ACTION_ITEM.domain.ActionItem[] => {
   const sourceActionId = waylineTemplateId >= 9106 ? 9002 : 9001
   const now = dayjs().format('YYYY-MM-DD HH:mm:ss')
   return (DEMO_ACTION_ITEMS[sourceActionId] ?? [])
@@ -240,6 +203,50 @@ export const useFullFlowDemoStore = create<StateType & ActionsType>()(
           },
         }
       }),
+    dispatchReportTask: (actionId, waylineTemplateId) => {
+      let dispatchedIds: number[] = []
+      set((state) => {
+        const currentItems = state.actionItemsByActionId[actionId] ?? []
+        const existingItems = currentItems.filter(
+          (item) => String(item.taskTplId) === String(waylineTemplateId),
+        )
+        const targetItems = existingItems.length
+          ? existingItems
+          : cloneActionItemsForReport(
+              actionId,
+              waylineTemplateId,
+              currentItems.length,
+            )
+        const targetIdSet = new Set(targetItems.map((item) => item.id))
+        const now = dayjs().format('YYYY-MM-DD HH:mm:ss')
+        dispatchedIds = [...targetIdSet]
+
+        const nextItems = (
+          existingItems.length ? currentItems : [...currentItems, ...targetItems]
+        ).map((item) =>
+          targetIdSet.has(item.id)
+            ? {
+                ...item,
+                status: 'PROCESSING',
+                startTime: now,
+                gmtModified: now,
+              }
+            : item,
+        )
+
+        return {
+          actionItemsByActionId: {
+            ...state.actionItemsByActionId,
+            [actionId]: nextItems,
+          },
+          revealedWaylineTemplateIds:
+            !state.revealedWaylineTemplateIds.includes(waylineTemplateId)
+              ? [...state.revealedWaylineTemplateIds, waylineTemplateId]
+              : state.revealedWaylineTemplateIds,
+        }
+      })
+      return dispatchedIds
+    },
     appendMessage: (actionId, message) =>
       set((state) => ({
         messagesByActionId: {
@@ -273,23 +280,6 @@ export const useFullFlowDemoStore = create<StateType & ActionsType>()(
         rawReport,
         countGeneratedReports(state, rawReport.type) + 1,
       )
-      const waylineTemplateId = resolveWaylineTemplateId(report)
-      const currentItems = state.actionItemsByActionId[actionId] ?? []
-      const shouldCreateTask =
-        waylineTemplateId != null &&
-        !currentItems.some(
-          (item) => String(item.taskTplId) === String(waylineTemplateId),
-        )
-      const nextItems = shouldCreateTask
-        ? [
-            ...currentItems,
-            ...cloneActionItemsForReport(
-              actionId,
-              waylineTemplateId,
-              currentItems.length,
-            ),
-          ]
-        : currentItems
 
       const nextCompletedPhases = { ...state.completedPhases }
       if (cursor + 1 >= phaseReports.length) {
@@ -297,10 +287,6 @@ export const useFullFlowDemoStore = create<StateType & ActionsType>()(
       }
 
       set({
-        actionItemsByActionId: {
-          ...state.actionItemsByActionId,
-          [actionId]: nextItems,
-        },
         reportCursorByActionId: {
           ...state.reportCursorByActionId,
           [actionId]:
@@ -309,11 +295,6 @@ export const useFullFlowDemoStore = create<StateType & ActionsType>()(
         completedPhases: nextCompletedPhases,
         finalReportGenerated:
           rawReport === FULL_FLOW_REPORTS.phase3[0] || state.finalReportGenerated,
-        revealedWaylineTemplateIds:
-          waylineTemplateId != null &&
-          !state.revealedWaylineTemplateIds.includes(waylineTemplateId)
-            ? [...state.revealedWaylineTemplateIds, waylineTemplateId]
-            : state.revealedWaylineTemplateIds,
       })
 
       return report
@@ -322,6 +303,8 @@ export const useFullFlowDemoStore = create<StateType & ActionsType>()(
     {
       name: 'full-flow-demo',
       storage: createJSONStorage(() => localStorage),
+      version: 2,
+      migrate: () => emptyState(),
     },
   ),
 )
@@ -339,10 +322,33 @@ export const getFullFlowAction = (actionId?: number) =>
 export const getFullFlowActionItems = (actionId: number) =>
   useFullFlowDemoStore.getState().actionItemsByActionId[actionId] ?? []
 
+export const getFullFlowPreparedActionItems = (
+  actionId: number,
+  waylineTemplateId: number,
+) => {
+  const currentItems =
+    useFullFlowDemoStore.getState().actionItemsByActionId[actionId] ?? []
+  const existingItems = currentItems.filter(
+    (item) => String(item.taskTplId) === String(waylineTemplateId),
+  )
+  if (existingItems.length) return existingItems
+
+  return cloneActionItemsForReport(
+    actionId,
+    waylineTemplateId,
+    currentItems.length,
+  )
+}
+
 export const startFullFlowActionItems = (
   actionId: number,
   actionItemIds: number[],
 ) => useFullFlowDemoStore.getState().startActionItems(actionId, actionItemIds)
+
+export const dispatchFullFlowReportTask = (
+  actionId: number,
+  waylineTemplateId: number,
+) => useFullFlowDemoStore.getState().dispatchReportTask(actionId, waylineTemplateId)
 
 export const getFullFlowWaylineTemplates = () => {
   const ids = useFullFlowDemoStore.getState().revealedWaylineTemplateIds

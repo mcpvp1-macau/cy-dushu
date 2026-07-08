@@ -5,7 +5,7 @@ import {
 } from '@/demo/situation/constants'
 import {
   getFullFlowAction,
-  getFullFlowActionItems,
+  getFullFlowPreparedActionItems,
   isFullFlowDemoMode,
 } from '@/demo/situation/full-flow-demo.store'
 import { formatWaylineDisplayName } from '@/utils/wayline'
@@ -13,6 +13,7 @@ import { TanqiReport } from './report-data'
 
 export type TanqiTaskExecutionPreset = {
   actionId: number
+  waylineTemplateId: number
   actionName: string
   actionItemId?: number
   actionItemName: string
@@ -166,7 +167,7 @@ export const getTanqiTaskExecutionPreset = (
       : DEMO_ACTIONS.find((item) => item.actionId === actionId)
   const sourceActionItems =
     currentActionId && isFullFlowDemoMode()
-      ? getFullFlowActionItems(currentActionId)
+      ? getFullFlowPreparedActionItems(currentActionId, waylineTemplateId)
       : (DEMO_ACTION_ITEMS[actionId] ?? [])
   const actionItems = sourceActionItems.filter(
     (item) => String(item.taskTplId) === String(waylineTemplateId),
@@ -224,6 +225,7 @@ export const getTanqiTaskExecutionPreset = (
 
   return {
     actionId,
+    waylineTemplateId,
     actionName: action.name,
     actionItemId: actionItem.id,
     actionItemName:
