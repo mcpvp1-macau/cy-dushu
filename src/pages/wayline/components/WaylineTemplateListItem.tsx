@@ -13,6 +13,7 @@ import { delWaylineTemplate } from '@/service/modules/wayline'
 import useWaylinesStore from '@/store/map/useWaylines.store'
 import { downloadAndRename } from '@/utils/download'
 import { shouldJson } from '@/utils/json'
+import { formatWaylineDisplayName } from '@/utils/wayline'
 import { QuestionCircleFilled } from '@ant-design/icons'
 import { Dropdown, Popconfirm } from 'antd'
 import { ReactNode } from 'react'
@@ -37,6 +38,7 @@ const WaylineTemplateListItem: FC<PropsType> = memo(({ data }) => {
   }
 
   const { t } = useTranslation()
+  const waylineDisplayName = formatWaylineDisplayName(data)
 
   return (
     <li className="card-border text-sm p-2 bg-ground-2">
@@ -44,7 +46,7 @@ const WaylineTemplateListItem: FC<PropsType> = memo(({ data }) => {
         <WaylineIcon type={data.taskType} />
         <div className="grow">
           <OverflowText className="text-hightlight max-w-48 truncate">
-            {data.taskName}
+            {waylineDisplayName}
           </OverflowText>
         </div>
         <IconButton

@@ -14,6 +14,7 @@ import {
 } from '@/store/map/useDensityMap.store'
 import { Spin } from 'antd'
 import ChildActionQuickPin from './ChildActionQuickPin'
+import { formatWaylineDisplayName } from '@/utils/wayline'
 
 type PropsType = {
   actionId: number
@@ -99,7 +100,10 @@ const ChildActions: FC<PropsType> = memo(
 
   const waylineNameMap = useMemo(() => {
     return Object.fromEntries(
-      airlineTemplateList?.map((e) => [e.templateId, e.taskName]) ?? [],
+      airlineTemplateList?.map((e) => [
+        e.templateId,
+        formatWaylineDisplayName(e),
+      ]) ?? [],
     )
   }, [airlineTemplateList])
 

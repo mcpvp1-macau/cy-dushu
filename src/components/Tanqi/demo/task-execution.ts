@@ -3,6 +3,7 @@ import {
   DEMO_ACTIONS,
   DEMO_WAYLINE_TEMPLATES,
 } from '@/demo/situation/constants'
+import { formatWaylineDisplayName } from '@/utils/wayline'
 import { TanqiReport } from './report-data'
 
 export type TanqiTaskExecutionPreset = {
@@ -13,6 +14,7 @@ export type TanqiTaskExecutionPreset = {
   reportNo?: string
   taskTarget?: string
   taskArea?: string
+  deviceId?: string
   deviceName: string
   waylineName: string
   waylineType?: string
@@ -128,9 +130,10 @@ export const getTanqiTaskExecutionPreset = (
     reportNo: report.reportNo,
     taskTarget,
     taskArea,
+    deviceId: actionItem.deviceId ?? '',
     deviceName:
       actionItem.deviceName || uniqueText(getColumnValues(report, ['装备名称'])),
-    waylineName: wayline?.taskName ?? '',
+    waylineName: formatWaylineDisplayName(wayline),
     waylineType: wayline?.taskType,
     waypointCount,
     waylineSummary: waypointCount ? `${waypointCount} 个航点` : undefined,
