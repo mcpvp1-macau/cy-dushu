@@ -38,12 +38,12 @@ const DEMO_DEVICE_IDS = {
   robotDog: 'fixed-wing-demo-008',
 }
 
-/** 行动列表演示数据 - 基于异构试验脚本提取的全部作战任务（RW） */
+/** 行动列表演示数据 - 一个脚本环节对应一个行动 */
 export const DEMO_ACTIONS: API_ACTION.domain.ActionRecord[] = [
   {
     id: 9001,
     actionId: 9001,
-    name: '机场区域日常巡逻任务',
+    name: '环节一：区域内部侦察与打击',
     status: 'PROCESSING',
     eventId: '',
     startTime: '2026-07-07 08:30:00',
@@ -54,76 +54,12 @@ export const DEMO_ACTIONS: API_ACTION.domain.ActionRecord[] = [
     gmtCreateBy: 'demo',
     gmtModifiedBy: 'demo',
     description:
-      '紫燕F15按既定航线执行机场区域日常巡逻，控制光电球完成重点区域观察。',
+      '机场区域日常巡逻、B区域精细侦察、A目标打击与机器狗递进侦察。',
   },
   {
     id: 9002,
     actionId: 9002,
-    name: 'B区域五机协同侦察任务',
-    status: 'PROCESSING',
-    eventId: '',
-    startTime: '2026-07-07 09:00:00',
-    type: 'normal',
-    endTime: '',
-    gmtCreate: '2026-07-07 09:00:00',
-    gmtModified: '2026-07-07 09:00:00',
-    gmtCreateBy: 'demo',
-    gmtModifiedBy: 'demo',
-    description:
-      'DJI M400、DJI M300和DJI 30T对B区域展开五机协同精细侦察，持续回传区域态势。',
-  },
-  {
-    id: 9003,
-    actionId: 9003,
-    name: 'A目标打击任务',
-    status: 'PROCESSING',
-    eventId: '',
-    startTime: '2026-07-07 09:30:00',
-    type: 'normal',
-    endTime: '',
-    gmtCreate: '2026-07-07 09:30:00',
-    gmtModified: '2026-07-07 09:30:00',
-    gmtCreateBy: 'demo',
-    gmtModifiedBy: 'demo',
-    description:
-      'DJI M350前出至A目标区域，按预设流程执行打击任务。',
-  },
-  {
-    id: 9004,
-    actionId: 9004,
-    name: 'A目标二次打击任务',
-    status: 'PROCESSING',
-    eventId: '',
-    startTime: '2026-07-07 10:00:00',
-    type: 'normal',
-    endTime: '',
-    gmtCreate: '2026-07-07 10:00:00',
-    gmtModified: '2026-07-07 10:00:00',
-    gmtCreateBy: 'demo',
-    gmtModifiedBy: 'demo',
-    description:
-      'DJI M350再次前出至A目标区域，按预设流程执行复击任务。',
-  },
-  {
-    id: 9005,
-    actionId: 9005,
-    name: 'A目标机器狗侦察任务',
-    status: 'PROCESSING',
-    eventId: '',
-    startTime: '2026-07-07 10:30:00',
-    type: 'normal',
-    endTime: '',
-    gmtCreate: '2026-07-07 10:30:00',
-    gmtModified: '2026-07-07 10:30:00',
-    gmtCreateBy: 'demo',
-    gmtModifiedBy: 'demo',
-    description:
-      '机器狗前出至A目标周边，执行递进侦察并采集现场图像。',
-  },
-  {
-    id: 9006,
-    actionId: 9006,
-    name: 'C区域侦察任务',
+    name: '环节二：远域侦察与对地打击',
     status: 'PROCESSING',
     eventId: '',
     startTime: '2026-07-07 11:00:00',
@@ -134,23 +70,7 @@ export const DEMO_ACTIONS: API_ACTION.domain.ActionRecord[] = [
     gmtCreateBy: 'demo',
     gmtModifiedBy: 'demo',
     description:
-      'CY-9A沿预设航线前往C区域，执行远域侦察与目标搜索。',
-  },
-  {
-    id: 9007,
-    actionId: 9007,
-    name: '跟踪目标打击任务',
-    status: 'PENDING',
-    eventId: '',
-    startTime: '',
-    type: 'normal',
-    endTime: '',
-    gmtCreate: '2026-07-07 11:30:00',
-    gmtModified: '2026-07-07 11:30:00',
-    gmtCreateBy: 'demo',
-    gmtModifiedBy: 'demo',
-    description:
-      'CY-9A接收跟踪目标任务，按预设航线进入打击准备流程。',
+      'CY-9A执行C区域远域侦察，并对跟踪目标实施对地打击。',
   },
 ]
 
@@ -418,12 +338,12 @@ const makeActionItem = (
 }
 
 const B_AREA_SWARM_GROUP = {
-  actionItemGroupId: 'rw-9002-swarm',
+  actionItemGroupId: 'rw-9001-b-swarm',
   actionItemGroupName: 'B区域五机协同侦察任务',
   actionItemGroupType: 'cluster',
 }
 
-/** 行动子任务（ActionItem）演示数据 - 基于异构试验脚本提取的全部作战任务详情 */
+/** 行动子任务（ActionItem）演示数据 - 一个 RW 对应一个任务，集群 RW 下发后拆分设备执行子任务。 */
 export const DEMO_ACTION_ITEMS: Record<
   number,
   API_ACTION_ITEM.domain.ActionItem[]
@@ -431,7 +351,7 @@ export const DEMO_ACTION_ITEMS: Record<
   9001: [
     makeActionItem(
       9001,
-      '机场区域巡逻-紫燕F15前出',
+      '机场区域日常巡逻任务',
       {
         id: DEMO_DEVICE_IDS.ziyanF15,
         name: '紫燕 F15',
@@ -441,12 +361,10 @@ export const DEMO_ACTION_ITEMS: Record<
       'PROCESSING',
       '紫燕F15执行机场区域日常巡逻，控制光电球完成重点区域观察。',
       '2026-07-07 08:30:00',
-      { flightHeight: 100, returnHeight: 120 },
+      { id: 900101, flightHeight: 100, returnHeight: 120 },
     ),
-  ],
-  9002: [
     makeActionItem(
-      9002,
+      9001,
       'B区域五机协同侦察-DJI M400',
       {
         id: DEMO_DEVICE_IDS.m400,
@@ -458,7 +376,7 @@ export const DEMO_ACTION_ITEMS: Record<
       'DJI M400执行B区域五机协同侦察中的主侦察任务。',
       '2026-07-07 09:00:00',
       {
-        id: 900201,
+        id: 900102,
         flightHeight: 100,
         returnHeight: 120,
         extra: JSON.stringify({
@@ -469,7 +387,7 @@ export const DEMO_ACTION_ITEMS: Record<
       },
     ),
     makeActionItem(
-      9002,
+      9001,
       'B区域五机协同侦察-DJI M300-01',
       {
         id: DEMO_DEVICE_IDS.m300A,
@@ -481,7 +399,7 @@ export const DEMO_ACTION_ITEMS: Record<
       'DJI M300-01承担B区域东侧分区侦察任务。',
       '2026-07-07 09:00:00',
       {
-        id: 900202,
+        id: 900103,
         flightHeight: 100,
         returnHeight: 120,
         extra: JSON.stringify({
@@ -492,7 +410,7 @@ export const DEMO_ACTION_ITEMS: Record<
       },
     ),
     makeActionItem(
-      9002,
+      9001,
       'B区域五机协同侦察-DJI M300-02',
       {
         id: DEMO_DEVICE_IDS.m300B,
@@ -504,7 +422,7 @@ export const DEMO_ACTION_ITEMS: Record<
       'DJI M300-02承担B区域西侧分区侦察任务。',
       '2026-07-07 09:00:00',
       {
-        id: 900203,
+        id: 900104,
         flightHeight: 100,
         returnHeight: 120,
         extra: JSON.stringify({
@@ -515,7 +433,7 @@ export const DEMO_ACTION_ITEMS: Record<
       },
     ),
     makeActionItem(
-      9002,
+      9001,
       'B区域五机协同侦察-DJI 30T-01',
       {
         id: DEMO_DEVICE_IDS.dji30tA,
@@ -527,7 +445,7 @@ export const DEMO_ACTION_ITEMS: Record<
       'DJI 30T-01承担B区域南侧精细成像侦察任务。',
       '2026-07-07 09:00:00',
       {
-        id: 900204,
+        id: 900105,
         flightHeight: 100,
         returnHeight: 120,
         extra: JSON.stringify({
@@ -538,7 +456,7 @@ export const DEMO_ACTION_ITEMS: Record<
       },
     ),
     makeActionItem(
-      9002,
+      9001,
       'B区域五机协同侦察-DJI 30T-02',
       {
         id: DEMO_DEVICE_IDS.dji30tB,
@@ -550,7 +468,7 @@ export const DEMO_ACTION_ITEMS: Record<
       'DJI 30T-02承担B区域北侧精细成像侦察任务。',
       '2026-07-07 09:00:00',
       {
-        id: 900205,
+        id: 900106,
         flightHeight: 100,
         returnHeight: 120,
         extra: JSON.stringify({
@@ -560,11 +478,9 @@ export const DEMO_ACTION_ITEMS: Record<
         }),
       },
     ),
-  ],
-  9003: [
     makeActionItem(
-      9003,
-      'A目标打击-DJI M350前出',
+      9001,
+      'A目标打击任务',
       {
         id: DEMO_DEVICE_IDS.m350,
         name: 'DJI M350',
@@ -574,13 +490,11 @@ export const DEMO_ACTION_ITEMS: Record<
       'FINISHED',
       'DJI M350前出至A目标区域，按预设流程执行打击任务。',
       '2026-07-07 09:30:00',
-      { flightHeight: 80, returnHeight: 120 },
+      { id: 900107, flightHeight: 80, returnHeight: 120 },
     ),
-  ],
-  9004: [
     makeActionItem(
-      9004,
-      'A目标二次打击-DJI M350复击',
+      9001,
+      'A目标二次打击任务',
       {
         id: DEMO_DEVICE_IDS.m350,
         name: 'DJI M350',
@@ -590,13 +504,11 @@ export const DEMO_ACTION_ITEMS: Record<
       'FINISHED',
       'DJI M350再次前出至A目标区域，按预设流程执行复击任务。',
       '2026-07-07 10:00:00',
-      { flightHeight: 80, returnHeight: 120 },
+      { id: 900108, flightHeight: 80, returnHeight: 120 },
     ),
-  ],
-  9005: [
     makeActionItem(
-      9005,
-      'A目标机器狗递进侦察',
+      9001,
+      'A目标机器狗侦察任务',
       {
         id: DEMO_DEVICE_IDS.robotDog,
         name: '机器狗-01',
@@ -606,13 +518,13 @@ export const DEMO_ACTION_ITEMS: Record<
       'PROCESSING',
       '机器狗从小无人机起飞点附近出发，对A目标周边实施递进侦察并采集现场图像。',
       '2026-07-07 10:30:00',
-      { flightHeight: 30, returnHeight: 30 },
+      { id: 900109, flightHeight: 30, returnHeight: 30 },
     ),
   ],
-  9006: [
+  9002: [
     makeActionItem(
-      9006,
-      'C区域侦察-CY-9A前出',
+      9002,
+      'C区域侦察任务',
       {
         id: DEMO_DEVICE_IDS.cy9a,
         name: 'CY-9A',
@@ -622,13 +534,11 @@ export const DEMO_ACTION_ITEMS: Record<
       'PROCESSING',
       'CY-9A沿预设航线前往C区域侦察目标起始点，对整体作业区域展开远域侦察。',
       '2026-07-07 11:00:00',
-      { flightHeight: 200, returnHeight: 200 },
+      { id: 900201, flightHeight: 200, returnHeight: 200 },
     ),
-  ],
-  9007: [
     makeActionItem(
-      9007,
-      '跟踪目标打击-CY-9A打击',
+      9002,
+      '跟踪目标打击任务',
       {
         id: DEMO_DEVICE_IDS.cy9a,
         name: 'CY-9A',
@@ -638,7 +548,7 @@ export const DEMO_ACTION_ITEMS: Record<
       'PENDING',
       'CY-9A接收打击任务，对持续跟踪目标实施空地导弹打击。',
       '2026-07-07 11:30:00',
-      { flightHeight: 180, returnHeight: 200 },
+      { id: 900202, flightHeight: 180, returnHeight: 200 },
     ),
   ],
 }

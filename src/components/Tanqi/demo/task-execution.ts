@@ -77,41 +77,75 @@ const getWaypointCount = (wayline?: API_AIRLINE.domain.AIRLINE_TEMPLATE) => {
   )
 }
 
-const resolveActionId = (report: TanqiReport) => {
-  if (report.type !== 'task') return undefined
+type ResolvedTaskTarget = {
+  actionId: number
+  waylineTemplateId: number
+}
+
+const resolveTaskTarget = (report: TanqiReport): ResolvedTaskTarget | null => {
+  if (report.type !== 'task') return null
 
   const title = normalize(report.title)
   const area = normalize(getMetaValue(report, ['任务区域', '任务区域/目标']))
-  const target = normalize(getMetaValue(report, ['任务类型/目标', '任务区域/目标']))
+  const target = normalize(
+    getMetaValue(report, ['任务类型/目标', '任务区域/目标', '任务类型']),
+  )
+  const deviceNames = normalize(uniqueText(getColumnValues(report, ['装备名称'])))
 
-  if (title.includes('CY-9A')) return 9007
-  if (title.includes('C区域')) return 9006
-  if (title.includes('机器狗')) return 9005
-  if (title.includes('二次')) return 9004
-  if (title.includes('打击')) return 9003
-  if (area.includes('机场区域')) return 9001
-  if (area.includes('B区域') || area.includes('B区')) return 9002
-  if (target.includes('侦察任务') && area.includes('B')) return 9002
+  if (target.includes('跟踪目标') || title.includes('CY-9A')) {
+    return { actionId: 9002, waylineTemplateId: 9107 }
+  }
 
-  return undefined
+  if (title.includes('C区域') || area.includes('C区域')) {
+    return { actionId: 9002, waylineTemplateId: 9106 }
+  }
+
+  if (title.includes('机器狗') || deviceNames.includes('机器狗')) {
+    return { actionId: 9001, waylineTemplateId: 9105 }
+  }
+
+  if (title.includes('二次')) {
+    return { actionId: 9001, waylineTemplateId: 9104 }
+  }
+
+  if (title.includes('打击') || target.includes('A目标')) {
+    return { actionId: 9001, waylineTemplateId: 9103 }
+  }
+
+  if (area.includes('机场区域')) {
+    return { actionId: 9001, waylineTemplateId: 9101 }
+  }
+
+  if (
+    area.includes('B区域') ||
+    area.includes('B区') ||
+    (target.includes('侦察任务') && area.includes('B'))
+  ) {
+    return { actionId: 9001, waylineTemplateId: 9102 }
+  }
+
+  return null
 }
 
 /** 将 RW 任务规划报告映射到演示行动库中的预设行动信息。 */
 export const getTanqiTaskExecutionPreset = (
   report: TanqiReport,
 ): TanqiTaskExecutionPreset | null => {
-  const actionId = resolveActionId(report)
-  if (!actionId) return null
+  const resolvedTask = resolveTaskTarget(report)
+  if (!resolvedTask) return null
+  const { actionId, waylineTemplateId } = resolvedTask
 
   const action = DEMO_ACTIONS.find((item) => item.actionId === actionId)
-  const actionItems = DEMO_ACTION_ITEMS[actionId] ?? []
+  const actionItems = (DEMO_ACTION_ITEMS[actionId] ?? []).filter(
+    (item) => String(item.taskTplId) === String(waylineTemplateId),
+  )
   const actionItem = actionItems[0]
   if (!action || !actionItem) return null
 
   const wayline = DEMO_WAYLINE_TEMPLATES.find(
     (item) =>
       item.templateId === actionItem.templateId ||
-      String(item.waylineTemplateId) === String(actionItem.taskTplId),
+      item.waylineTemplateId === waylineTemplateId,
   )
   const taskBasic = parseJson<{ globalTransitionalSpeed?: number | string }>(
     wayline?.taskBasic,
