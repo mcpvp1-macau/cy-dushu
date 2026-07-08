@@ -207,7 +207,7 @@ const SourceTable: FC<PropsType> = memo(() => {
           },
         }),
         columnHelper.accessor('remainingPower', {
-          header: t('common.electricity'),
+          header: t('resource.table.remainingPower.title'),
           cell: (cell) => {
             return <span>{cell?.getValue()}%</span>
           },

@@ -783,6 +783,8 @@ resource:
       title: Device SN
     deviceId:
       title: Device ID
+    remainingPower:
+      title: Battery / Fuel
 wayline:
   title: Wayline
   folder:

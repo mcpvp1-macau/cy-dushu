@@ -772,6 +772,8 @@ resource:
       title: 设备序列号
     deviceId:
       title: 设备编号
+    remainingPower:
+      title: 电量/油量
 wayline:
   title: 航线
   folder:
