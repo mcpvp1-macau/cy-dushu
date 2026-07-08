@@ -158,6 +158,7 @@ const ChildActions: FC<PropsType> = memo(
                       <ChildActionGroup
                         data={item.data}
                         visibleSet={visibleSet}
+                        waylineNameMap={waylineNameMap}
                         onVisibleChange={(id, visible) =>
                           handleVisibleChange(id, visible)
                         }

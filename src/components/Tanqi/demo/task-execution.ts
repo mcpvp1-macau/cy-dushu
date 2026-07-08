@@ -104,7 +104,8 @@ export const getTanqiTaskExecutionPreset = (
   if (!actionId) return null
 
   const action = DEMO_ACTIONS.find((item) => item.actionId === actionId)
-  const actionItem = DEMO_ACTION_ITEMS[actionId]?.[0]
+  const actionItems = DEMO_ACTION_ITEMS[actionId] ?? []
+  const actionItem = actionItems[0]
   if (!action || !actionItem) return null
 
   const wayline = DEMO_WAYLINE_TEMPLATES.find(
@@ -121,18 +122,28 @@ export const getTanqiTaskExecutionPreset = (
   const taskArea = getMetaValue(report, ['任务区域', '任务区域/目标'])
   const speedFromReport = uniqueText(getColumnValues(report, ['飞行速度']))
   const timing = uniqueText(getColumnValues(report, ['作战时序', '时序']))
+  const groupMeta = parseJson<{
+    actionItemGroupId?: string
+    actionItemGroupName?: string
+  }>(actionItem.extra)
+  const isGroupedAction = Boolean(groupMeta?.actionItemGroupId)
+  const actionDeviceName = isGroupedAction
+    ? uniqueText(actionItems.map((item) => item.deviceName ?? '').filter(Boolean))
+    : actionItem.deviceName
+  const actionDeviceId = isGroupedAction ? '' : actionItem.deviceId
 
   return {
     actionId,
     actionName: action.name,
-    actionItemName: actionItem.actionItemName ?? report.title,
+    actionItemName:
+      groupMeta?.actionItemGroupName || actionItem.actionItemName || report.title,
     reportTitle: report.title,
     reportNo: report.reportNo,
     taskTarget,
     taskArea,
-    deviceId: actionItem.deviceId ?? '',
+    deviceId: actionDeviceId ?? '',
     deviceName:
-      actionItem.deviceName || uniqueText(getColumnValues(report, ['装备名称'])),
+      actionDeviceName || uniqueText(getColumnValues(report, ['装备名称'])),
     waylineName: formatWaylineDisplayName(wayline),
     waylineType: wayline?.taskType,
     waypointCount,

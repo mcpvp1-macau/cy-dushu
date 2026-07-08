@@ -140,11 +140,13 @@ export const DEMO_FLEET_DEVICES: API_DEVICE.domain.Device[] = [
   ...FIXED_WING_DEMO_DEVICES,
   makeDevice(2, 'DJI M400', 'UAV', SMALL_UAV_AREA[0], 88),
   makeDevice(3, 'DJI M350', 'UAV', offsetPosition(BAOTOU_POINTS.targetStrike, -0.0003, -0.0001), 76),
-  makeDevice(4, 'DJI M300', 'UAV', SMALL_UAV_AREA[1], 82),
-  makeDevice(5, 'DJI 30T', 'UAV', SMALL_UAV_AREA[2], 91),
+  makeDevice(4, 'DJI M300-01', 'UAV', SMALL_UAV_AREA[1], 82),
+  makeDevice(5, 'DJI 30T-01', 'UAV', SMALL_UAV_AREA[2], 91),
   makeDevice(6, '紫燕 F15', 'UAV', BAOTOU_POINTS.audienceStand, 64),
   makeDevice(7, 'HY-3', 'UAV', offsetPosition(BAOTOU_POINTS.smallUavTakeoff, -0.00018, -0.00018), 70),
   makeDevice(8, '机器狗-01', 'ROBOT_DOG', offsetPosition(BAOTOU_POINTS.smallUavTakeoff, 0.00018, -0.00012), 95),
+  makeDevice(9, 'DJI M300-02', 'UAV', offsetPosition(SMALL_UAV_AREA[1], -0.00022, -0.00016), 84),
+  makeDevice(10, 'DJI 30T-02', 'UAV', offsetPosition(SMALL_UAV_AREA[2], 0.00022, 0.00016), 89),
 ]
 
 /** 演示设备类型（资源页 Tab / 设备树, 固定翼并入无人机类目） */

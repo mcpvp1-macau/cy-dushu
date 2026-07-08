@@ -29,8 +29,10 @@ const DEMO_DEVICE_IDS = {
   cy9a: 'fixed-wing-demo-001',
   m400: 'fixed-wing-demo-002',
   m350: 'fixed-wing-demo-003',
-  m300: 'fixed-wing-demo-004',
-  dji30t: 'fixed-wing-demo-005',
+  m300A: 'fixed-wing-demo-004',
+  m300B: 'fixed-wing-demo-009',
+  dji30tA: 'fixed-wing-demo-005',
+  dji30tB: 'fixed-wing-demo-010',
   ziyanF15: 'fixed-wing-demo-006',
   hy3: 'fixed-wing-demo-007',
   robotDog: 'fixed-wing-demo-008',
@@ -415,6 +417,12 @@ const makeActionItem = (
   }
 }
 
+const B_AREA_SWARM_GROUP = {
+  actionItemGroupId: 'rw-9002-swarm',
+  actionItemGroupName: 'B区域五机协同侦察任务',
+  actionItemGroupType: 'cluster',
+}
+
 /** 行动子任务（ActionItem）演示数据 - 基于异构试验脚本提取的全部作战任务详情 */
 export const DEMO_ACTION_ITEMS: Record<
   number,
@@ -439,24 +447,117 @@ export const DEMO_ACTION_ITEMS: Record<
   9002: [
     makeActionItem(
       9002,
-      'B区域五机协同侦察',
+      'B区域五机协同侦察-DJI M400',
       {
-        id: [
-          DEMO_DEVICE_IDS.m400,
-          DEMO_DEVICE_IDS.m300,
-          DEMO_DEVICE_IDS.dji30t,
-        ].join(','),
-        name: 'DJI M400 / DJI M300×2 / DJI 30T×2',
+        id: DEMO_DEVICE_IDS.m400,
+        name: 'DJI M400',
         type: 'uav',
       },
       9102,
       'PROCESSING',
-      '五架侦察无人机对B区域开展精细侦察，并持续回传区域图像。',
+      'DJI M400执行B区域五机协同侦察中的主侦察任务。',
       '2026-07-07 09:00:00',
       {
+        id: 900201,
         flightHeight: 100,
         returnHeight: 120,
-        extra: JSON.stringify({ actionItemGroupId: 'rw-9002-swarm' }),
+        extra: JSON.stringify({
+          ...B_AREA_SWARM_GROUP,
+          swarmIndex: 1,
+          swarmTotal: 5,
+        }),
+      },
+    ),
+    makeActionItem(
+      9002,
+      'B区域五机协同侦察-DJI M300-01',
+      {
+        id: DEMO_DEVICE_IDS.m300A,
+        name: 'DJI M300-01',
+        type: 'uav',
+      },
+      9102,
+      'PROCESSING',
+      'DJI M300-01承担B区域东侧分区侦察任务。',
+      '2026-07-07 09:00:00',
+      {
+        id: 900202,
+        flightHeight: 100,
+        returnHeight: 120,
+        extra: JSON.stringify({
+          ...B_AREA_SWARM_GROUP,
+          swarmIndex: 2,
+          swarmTotal: 5,
+        }),
+      },
+    ),
+    makeActionItem(
+      9002,
+      'B区域五机协同侦察-DJI M300-02',
+      {
+        id: DEMO_DEVICE_IDS.m300B,
+        name: 'DJI M300-02',
+        type: 'uav',
+      },
+      9102,
+      'PROCESSING',
+      'DJI M300-02承担B区域西侧分区侦察任务。',
+      '2026-07-07 09:00:00',
+      {
+        id: 900203,
+        flightHeight: 100,
+        returnHeight: 120,
+        extra: JSON.stringify({
+          ...B_AREA_SWARM_GROUP,
+          swarmIndex: 3,
+          swarmTotal: 5,
+        }),
+      },
+    ),
+    makeActionItem(
+      9002,
+      'B区域五机协同侦察-DJI 30T-01',
+      {
+        id: DEMO_DEVICE_IDS.dji30tA,
+        name: 'DJI 30T-01',
+        type: 'uav',
+      },
+      9102,
+      'PROCESSING',
+      'DJI 30T-01承担B区域南侧精细成像侦察任务。',
+      '2026-07-07 09:00:00',
+      {
+        id: 900204,
+        flightHeight: 100,
+        returnHeight: 120,
+        extra: JSON.stringify({
+          ...B_AREA_SWARM_GROUP,
+          swarmIndex: 4,
+          swarmTotal: 5,
+        }),
+      },
+    ),
+    makeActionItem(
+      9002,
+      'B区域五机协同侦察-DJI 30T-02',
+      {
+        id: DEMO_DEVICE_IDS.dji30tB,
+        name: 'DJI 30T-02',
+        type: 'uav',
+      },
+      9102,
+      'PROCESSING',
+      'DJI 30T-02承担B区域北侧精细成像侦察任务。',
+      '2026-07-07 09:00:00',
+      {
+        id: 900205,
+        flightHeight: 100,
+        returnHeight: 120,
+        extra: JSON.stringify({
+          ...B_AREA_SWARM_GROUP,
+          swarmIndex: 5,
+          swarmTotal: 5,
+        }),
       },
     ),
   ],
