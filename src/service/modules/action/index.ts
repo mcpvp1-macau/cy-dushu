@@ -10,10 +10,14 @@ const demoResp = <T>(
 /** 行动列表查询 */
 export const getActionList = (data: API_ACTION.req.ActionListReq = {}) => {
   if (globalConfig.demoMode) {
+    const typeFilter = Array.isArray(data.type)
+      ? data.type
+      : (data.type?.split(',').filter(Boolean) ?? [])
     const rows = DEMO_ACTIONS.filter(
       (e) =>
         (!data.name || e.name.includes(data.name)) &&
-        (!data.status?.length || data.status.includes(e.status)),
+        (!data.status?.length || data.status.includes(e.status)) &&
+        (!typeFilter.length || typeFilter.includes(e.type)),
     )
     return demoResp<API_ACTION.res.ActionListRes>({ rows, total: rows.length })
   }
@@ -44,7 +48,7 @@ export const getAction = (params: { actionId?: number; eventId?: string }) => {
       name: record.name,
       description: record.description,
       eventId: null,
-      type: 'normal',
+      type: record.type,
       status: record.status,
       isValid: true,
       gmtCreate: record.gmtCreate,

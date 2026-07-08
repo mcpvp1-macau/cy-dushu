@@ -38,6 +38,11 @@ const DEMO_DEVICE_IDS = {
   robotDog: 'fixed-wing-demo-008',
 }
 
+export const DEMO_ACTION_TYPE = {
+  AREA_RECON_STRIKE: 'area_recon_strike',
+  REMOTE_RECON_GROUND_STRIKE: 'remote_recon_ground_strike',
+} as const
+
 /** 行动列表演示数据 - 一个脚本环节对应一个行动 */
 export const DEMO_ACTIONS: API_ACTION.domain.ActionRecord[] = [
   {
@@ -47,7 +52,7 @@ export const DEMO_ACTIONS: API_ACTION.domain.ActionRecord[] = [
     status: 'PROCESSING',
     eventId: '',
     startTime: '2026-07-07 08:30:00',
-    type: 'normal',
+    type: DEMO_ACTION_TYPE.AREA_RECON_STRIKE,
     endTime: '',
     gmtCreate: '2026-07-07 08:30:00',
     gmtModified: '2026-07-07 08:30:00',
@@ -63,7 +68,7 @@ export const DEMO_ACTIONS: API_ACTION.domain.ActionRecord[] = [
     status: 'PROCESSING',
     eventId: '',
     startTime: '2026-07-07 11:00:00',
-    type: 'normal',
+    type: DEMO_ACTION_TYPE.REMOTE_RECON_GROUND_STRIKE,
     endTime: '',
     gmtCreate: '2026-07-07 11:00:00',
     gmtModified: '2026-07-07 11:00:00',
@@ -78,10 +83,17 @@ export const DEMO_ACTIONS: API_ACTION.domain.ActionRecord[] = [
 export const DEMO_DICTS: API_DICT.domain.DictRecord[] = [
   {
     dictGroup: 'action_type',
-    dictName: '常规行动',
-    dictKey: 'normal',
+    dictName: '区域内部侦查与打击',
+    dictKey: DEMO_ACTION_TYPE.AREA_RECON_STRIKE,
     isEnable: true,
     orderWeight: 1,
+  },
+  {
+    dictGroup: 'action_type',
+    dictName: '远域侦查与对地打击',
+    dictKey: DEMO_ACTION_TYPE.REMOTE_RECON_GROUND_STRIKE,
+    isEnable: true,
+    orderWeight: 2,
   },
 ]
 

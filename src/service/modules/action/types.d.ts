@@ -23,6 +23,8 @@ declare namespace API_ACTION {
       eventId: any
       type:
         | 'normal'
+        | 'area_recon_strike'
+        | 'remote_recon_ground_strike'
         | 'kcyp_action'
         | 'xiaoshan_kcyp_action'
         | 'ewjt_action'
