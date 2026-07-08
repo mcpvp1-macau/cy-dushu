@@ -18,8 +18,6 @@ const ChildActionGroup: FC<PropsType> = ({
 }) => {
   const { t } = useTranslation()
   const groupName = data[0]?.extra?.actionItemGroupName || '任务组'
-  const groupTypeText =
-    data[0]?.extra?.actionItemGroupType === 'cluster' ? '集群任务' : '任务组'
 
   const allowStart = useMemo(
     () => data.every((e) => e.status === 'PENDING'),
@@ -68,9 +66,6 @@ const ChildActionGroup: FC<PropsType> = ({
           <OverflowText className="text-hightlight text-sm font-medium truncate">
             {groupName}
           </OverflowText>
-          <div className="mt-0.5 text-xs text-fore opacity-70">
-            {groupTypeText} / 已拆分 {data.length} 个无人机任务
-          </div>
         </div>
         <div className="flex shrink-0 gap-2">
           <Button
