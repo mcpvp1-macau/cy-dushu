@@ -8,7 +8,7 @@ const baseNoTrailing = base.replace(/\/$/, '')
 const textExtensions = new Set(['.css', '.html', '.js', '.json', '.map', '.svg', '.txt'])
 const publicPathPattern = /(^|[^:\w])\/(audio|data|iconfonts|images|js)\//g
 const faviconPattern = /(^|[^:\w])\/(favicon(?:-dark)?\.svg)/g
-const spaEntryRoutes = ['action']
+const spaEntryRoutes = ['action', 'sources']
 
 const normalizeCesiumAssets = async () => {
   const nestedCesiumDir = path.join(distDir, baseNoTrailing.replace(/^\//, ''), 'cesium')
