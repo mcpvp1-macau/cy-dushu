@@ -3,12 +3,18 @@ import {
   DEMO_ACTIONS,
   DEMO_WAYLINE_TEMPLATES,
 } from '@/demo/situation/constants'
+import {
+  getFullFlowAction,
+  getFullFlowActionItems,
+  isFullFlowDemoMode,
+} from '@/demo/situation/full-flow-demo.store'
 import { formatWaylineDisplayName } from '@/utils/wayline'
 import { TanqiReport } from './report-data'
 
 export type TanqiTaskExecutionPreset = {
   actionId: number
   actionName: string
+  actionItemId?: number
   actionItemName: string
   isGrouped?: boolean
   reportTitle: string
@@ -144,13 +150,25 @@ const resolveTaskTarget = (report: TanqiReport): ResolvedTaskTarget | null => {
 /** 将 RW 任务规划报告映射到演示行动库中的预设行动信息。 */
 export const getTanqiTaskExecutionPreset = (
   report: TanqiReport,
+  currentActionId?: number,
 ): TanqiTaskExecutionPreset | null => {
   const resolvedTask = resolveTaskTarget(report)
   if (!resolvedTask) return null
-  const { actionId, waylineTemplateId } = resolvedTask
+  const { waylineTemplateId } = resolvedTask
+  const actionId =
+    currentActionId && isFullFlowDemoMode()
+      ? currentActionId
+      : resolvedTask.actionId
 
-  const action = DEMO_ACTIONS.find((item) => item.actionId === actionId)
-  const actionItems = (DEMO_ACTION_ITEMS[actionId] ?? []).filter(
+  const action =
+    currentActionId && isFullFlowDemoMode()
+      ? getFullFlowAction(currentActionId)
+      : DEMO_ACTIONS.find((item) => item.actionId === actionId)
+  const sourceActionItems =
+    currentActionId && isFullFlowDemoMode()
+      ? getFullFlowActionItems(currentActionId)
+      : (DEMO_ACTION_ITEMS[actionId] ?? [])
+  const actionItems = sourceActionItems.filter(
     (item) => String(item.taskTplId) === String(waylineTemplateId),
   )
   const actionItem = actionItems[0]
@@ -207,6 +225,7 @@ export const getTanqiTaskExecutionPreset = (
   return {
     actionId,
     actionName: action.name,
+    actionItemId: actionItem.id,
     actionItemName:
       groupMeta?.actionItemGroupName || actionItem.actionItemName || report.title,
     isGrouped: isGroupedAction,

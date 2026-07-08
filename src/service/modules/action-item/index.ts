@@ -1,4 +1,8 @@
 import { DEMO_ACTION_ITEMS } from '@/demo/situation/constants'
+import {
+  getFullFlowActionItems,
+  isFullFlowDemoMode,
+} from '@/demo/situation/full-flow-demo.store'
 import serverJingqi from '@/service/servers/serverJingqi'
 
 /** 演示模式统一响应包装 */
@@ -13,7 +17,9 @@ export const getActionItemList = (
 ) => {
   if (globalConfig.demoMode) {
     const actionId = Number(data.actionId)
-    const items = DEMO_ACTION_ITEMS[actionId] ?? []
+    const items = isFullFlowDemoMode()
+      ? getFullFlowActionItems(actionId)
+      : (DEMO_ACTION_ITEMS[actionId] ?? [])
     return demoResp<API_ACTION_ITEM.res.ActionItemListRes>({
       rows: items,
       total: items.length,

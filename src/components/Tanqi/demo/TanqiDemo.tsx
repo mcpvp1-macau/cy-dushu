@@ -1,6 +1,7 @@
 import { ArrowUpOutlined, AudioOutlined } from '@ant-design/icons'
 import { Button, Input, Tooltip } from 'antd'
 import { TANQI_NATURAL_SCRIPT } from './natural-script'
+import { useFullFlowDemoStore } from '@/demo/situation/full-flow-demo.store'
 import {
   getReportByType,
   matchReportType,
@@ -8,6 +9,7 @@ import {
   TanqiReportType,
 } from './report-data'
 import TanqiReportCard from './TanqiReportCard'
+import { useParams } from 'react-router-dom'
 
 type PropsType = unknown
 
@@ -29,11 +31,27 @@ const MODE_REPLY_INTRO: Record<TanqiReportType, string> = {
 
 /** 输入框提示 (与原型一致) */
 const INPUT_PROMPT = '请描述任务目标、区域、可用装备和时间要求。'
+const FULL_FLOW_INPUT_PROMPT = '请输入演示指令。'
 
 /** 檀棋会话演示面板（纯前端 Mock） */
 const TanqiDemo: FC<PropsType> = memo(() => {
+  const { actionId: actionIdParam } = useParams()
+  const actionId = Number(actionIdParam)
+  const fullFlowMode = useFullFlowDemoStore((s) => s.mode)
+  const fullFlowMessages = useFullFlowDemoStore((s) =>
+    Number.isFinite(actionId) ? s.messagesByActionId[actionId] : undefined,
+  )
+  const fullFlowAction = useFullFlowDemoStore((s) =>
+    Number.isFinite(actionId)
+      ? s.actions.find((item) => item.id === actionId)
+      : undefined,
+  )
+  const isFullFlow = fullFlowMode === 'full-flow'
+  const hasFullFlowAction = isFullFlow && Number.isFinite(actionId)
+  const queryClient = useQueryClient()
+
   // 预置会话: 原型「自然语言交互版」完整脚本
-  const [messages, setMessages] = useState<DemoMessage[]>(() =>
+  const [standardMessages, setStandardMessages] = useState<DemoMessage[]>(() =>
     TANQI_NATURAL_SCRIPT.map((e, i) => ({
       key: `script-${i}`,
       role: e.role,
@@ -43,6 +61,11 @@ const TanqiDemo: FC<PropsType> = memo(() => {
   )
   const [inputValue, setInputValue] = useState('')
   const [thinking, setThinking] = useState(false)
+  const messages = isFullFlow
+    ? hasFullFlowAction
+      ? (fullFlowMessages ?? [])
+      : []
+    : standardMessages
 
   const scrollAreaRef = useRef<HTMLDivElement | null>(null)
   const replyTimerRef = useRef<NodeJS.Timeout | null>(null)
@@ -65,14 +88,45 @@ const TanqiDemo: FC<PropsType> = memo(() => {
     if (thinking) {
       return
     }
+    if (isFullFlow) {
+      if (!fullFlowAction) return
+
+      useFullFlowDemoStore.getState().appendMessage(actionId, {
+        key: `user-${Date.now()}`,
+        role: 'user',
+        content: message,
+      })
+      setThinking(true)
+      replyTimerRef.current = setTimeout(() => {
+        const report = useFullFlowDemoStore
+          .getState()
+          .createNextReport(actionId)
+
+        if (report) {
+          useFullFlowDemoStore.getState().appendMessage(actionId, {
+            key: `ai-${Date.now()}`,
+            role: 'ai',
+            report,
+          })
+          queryClient.invalidateQueries({
+            queryKey: ['action', actionId, 'items'],
+          })
+          queryClient.invalidateQueries({ queryKey: ['airlineTemplate'] })
+          queryClient.invalidateQueries({ queryKey: ['waylineTemplates'] })
+        }
+        setThinking(false)
+      }, 900)
+      return
+    }
+
     const type: TanqiReportType = forceType ?? matchReportType(message) ?? 'task'
-    setMessages((prev) => [
+    setStandardMessages((prev) => [
       ...prev,
       { key: `user-${Date.now()}`, role: 'user', content: message },
     ])
     setThinking(true)
     replyTimerRef.current = setTimeout(() => {
-      setMessages((prev) => [
+      setStandardMessages((prev) => [
         ...prev,
         {
           key: `ai-${Date.now()}`,
@@ -116,7 +170,12 @@ const TanqiDemo: FC<PropsType> = memo(() => {
                     {item.content}
                   </div>
                 )}
-                {item.report && <TanqiReportCard report={item.report} />}
+                {item.report && (
+                  <TanqiReportCard
+                    report={item.report}
+                    actionId={hasFullFlowAction ? actionId : undefined}
+                  />
+                )}
               </div>
             ),
           )}
@@ -136,7 +195,7 @@ const TanqiDemo: FC<PropsType> = memo(() => {
       >
         <Input.TextArea
           autoSize={{ minRows: 2, maxRows: 5 }}
-          placeholder={INPUT_PROMPT}
+          placeholder={isFullFlow ? FULL_FLOW_INPUT_PROMPT : INPUT_PROMPT}
           variant="borderless"
           className="!px-1"
           value={inputValue}
@@ -163,7 +222,11 @@ const TanqiDemo: FC<PropsType> = memo(() => {
             shape="circle"
             icon={<ArrowUpOutlined />}
             loading={thinking}
-            disabled={!inputValue.trim()}
+            disabled={
+              !inputValue.trim() ||
+              (hasFullFlowAction && !fullFlowAction) ||
+              (isFullFlow && !hasFullFlowAction)
+            }
             onClick={handleSubmit}
           />
         </div>

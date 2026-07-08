@@ -6,6 +6,7 @@ import { getTanqiTaskExecutionPreset } from './task-execution'
 
 type PropsType = {
   report: TanqiReport
+  actionId?: number
 }
 
 /** 各报告类型 badge 配色 (对齐原型) */
@@ -18,12 +19,12 @@ const BADGE_CLS: Record<TanqiReportType, string> = {
 }
 
 /** 檀棋结构化报告卡片（演示） */
-const TanqiReportCard: FC<PropsType> = memo(({ report }) => {
+const TanqiReportCard: FC<PropsType> = memo(({ report, actionId }) => {
   const config = REPORT_TYPE_CONFIG[report.type]
   const [executionOpen, setExecutionOpen] = useState(false)
   const executionPreset = useMemo(
-    () => getTanqiTaskExecutionPreset(report),
-    [report],
+    () => getTanqiTaskExecutionPreset(report, actionId),
+    [actionId, report],
   )
 
   return (

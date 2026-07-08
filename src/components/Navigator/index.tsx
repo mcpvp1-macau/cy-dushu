@@ -8,7 +8,12 @@ import MenuIconSchedule from '@/assets/icons/jsx/menus/MenuIconSchedule'
 import useUserStore from '@/store/useUser.store'
 import MenuIconEvents from '@/assets/icons/jsx/menus/MenuIconEvents'
 import { twMerge } from 'tailwind-merge'
-import { ReadOutlined } from '@ant-design/icons'
+import { ExperimentOutlined, ReadOutlined } from '@ant-design/icons'
+import { Tooltip } from 'antd'
+import { useNavigate } from 'react-router-dom'
+import { useFullFlowDemoStore } from '@/demo/situation/full-flow-demo.store'
+import { useTanqiDialogStore } from '@/components/Tanqi/demo/TanqiFloatDialog'
+import useRightMode from '@/store/layout/useRightMode.store'
 
 type PropsType = unknown
 
@@ -69,6 +74,11 @@ const bottomMenus = [
 
 const AppNavigator: FC<PropsType> = memo(() => {
   const userMenus = useUserStore((s) => s.menus)
+  const demoMode = useFullFlowDemoStore((s) => s.mode)
+  const setDemoMode = useFullFlowDemoStore((s) => s.setMode)
+  const resetFullFlow = useFullFlowDemoStore((s) => s.resetFullFlow)
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const renderMenus = useMemo(() => {
     const set = new Set((userMenus ?? []).map((e) => e.url))
     set.add('')
@@ -83,6 +93,22 @@ const AppNavigator: FC<PropsType> = memo(() => {
 
   const matches = useMatches()
   const usedKey = useMemo(() => new Set(matches.map((m) => m.id)), [matches])
+  const isFullFlowMode = demoMode === 'full-flow'
+
+  const handleDemoModeToggle = () => {
+    useTanqiDialogStore.getState().updateOpen(false)
+    useRightMode.getState().updateRightOuterMode(null)
+    if (isFullFlowMode) {
+      setDemoMode('standard')
+    } else {
+      resetFullFlow()
+      setDemoMode('full-flow')
+    }
+    queryClient.invalidateQueries({ queryKey: ['actionList'], exact: false })
+    queryClient.invalidateQueries({ queryKey: ['waylineTemplates'] })
+    queryClient.invalidateQueries({ queryKey: ['airlineTemplate'] })
+    navigate('/action')
+  }
 
   return (
     <nav className="h-full w-[38px] bg-ground-1 z-20 shadow-[0_2px_4px_#00000080] flex flex-col justify-between">
@@ -108,6 +134,29 @@ const AppNavigator: FC<PropsType> = memo(() => {
         ))}
       </ul>
       <ul className="flex flex-col items-center pb-3 gap-3">
+        <li>
+          <Tooltip
+            placement="right"
+            title={isFullFlowMode ? '切回原型页面' : '切换演示页面'}
+          >
+            <button
+              type="button"
+              className={twMerge(
+                clsx(
+                  'w-[28px] h-[28px] bg-ground-3 border border-solid border-ground-5 rounded',
+                  'flex justify-center items-center text-fore cursor-pointer',
+                  'hover:border-fore transition-all duration-500',
+                  {
+                    'border-primary text-primary': isFullFlowMode,
+                  },
+                ),
+              )}
+              onClick={handleDemoModeToggle}
+            >
+              <ExperimentOutlined className="text-lg" />
+            </button>
+          </Tooltip>
+        </li>
         {renderMenusBottom.map((e) => (
           <li key={e.id}>
             <Link

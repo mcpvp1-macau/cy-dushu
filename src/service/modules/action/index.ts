@@ -1,5 +1,12 @@
 import { DEMO_ACTIONS } from '@/demo/situation/constants'
+import {
+  getFullFlowAction,
+  getFullFlowActionList,
+  isFullFlowDemoMode,
+  useFullFlowDemoStore,
+} from '@/demo/situation/full-flow-demo.store'
 import serverJingqi from '@/service/servers/serverJingqi'
+import dayjs from 'dayjs'
 
 /** 演示模式统一响应包装 */
 const demoResp = <T>(
@@ -10,10 +17,13 @@ const demoResp = <T>(
 /** 行动列表查询 */
 export const getActionList = (data: API_ACTION.req.ActionListReq = {}) => {
   if (globalConfig.demoMode) {
+    const sourceRows = isFullFlowDemoMode()
+      ? getFullFlowActionList()
+      : DEMO_ACTIONS
     const typeFilter = Array.isArray(data.type)
       ? data.type
       : (data.type?.split(',').filter(Boolean) ?? [])
-    const rows = DEMO_ACTIONS.filter(
+    const rows = sourceRows.filter(
       (e) =>
         (!data.name || e.name.includes(data.name)) &&
         (!data.status?.length || data.status.includes(e.status)) &&
@@ -41,6 +51,9 @@ export const getActionRecordList = (
 export const getAction = (params: { actionId?: number; eventId?: string }) => {
   if (globalConfig.demoMode) {
     const record =
+      (isFullFlowDemoMode()
+        ? getFullFlowAction(Number(params.actionId))
+        : undefined) ??
       DEMO_ACTIONS.find((e) => e.id === Number(params.actionId)) ??
       DEMO_ACTIONS[0]
     return demoResp<API_ACTION.res.ActionDetailRes>({
@@ -66,6 +79,14 @@ export const getAction = (params: { actionId?: number; eventId?: string }) => {
 
 /** 添加行动 */
 export const addAction = (data: any) => {
+  if (globalConfig.demoMode && isFullFlowDemoMode()) {
+    const action = useFullFlowDemoStore.getState().addAction({
+      name: data.name,
+      type: data.type,
+      description: data.description,
+    })
+    return demoResp<{ actionId: number }>({ actionId: action.id })
+  }
   return serverJingqi.post<{ actionId: number }>('/action/add', data)
 }
 
@@ -79,6 +100,14 @@ export const fastAddAction = (data: API_ACTION.req.FastAddActionReq) => {
 
 /** 结束行动 */
 export const endAction = (actionId: number) => {
+  if (globalConfig.demoMode && isFullFlowDemoMode()) {
+    useFullFlowDemoStore.getState().updateAction({
+      id: actionId,
+      status: 'FINISHED',
+      endTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+    })
+    return demoResp(undefined)
+  }
   return serverJingqi.get('/action/stop', {
     params: { actionId },
   })
@@ -93,6 +122,10 @@ export const checkEndAction = (actionId: number) => {
 
 /** 更新行动 */
 export const updAction = (data: any) => {
+  if (globalConfig.demoMode && isFullFlowDemoMode()) {
+    useFullFlowDemoStore.getState().updateAction(data)
+    return demoResp(undefined)
+  }
   return serverJingqi.post('/action/update', data)
 }
 

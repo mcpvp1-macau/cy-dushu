@@ -5,6 +5,10 @@ import { RightModeEnum } from '@/enum/right-mode'
 import { useAppMsg } from '@/hooks/useAppMsg'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { TanqiTaskExecutionPreset } from './task-execution'
+import {
+  isFullFlowDemoMode,
+  startFullFlowActionItems,
+} from '@/demo/situation/full-flow-demo.store'
 
 type PropsType = {
   open: boolean
@@ -17,11 +21,23 @@ const TanqiTaskExecutionModal: FC<PropsType> = memo(
   ({ open, preset, onClose }) => {
     const msgApi = useAppMsg()
     const { t } = useTranslation()
+    const queryClient = useQueryClient()
     const waylineText = preset.waylineName
     const childTasks = preset.childTasks ?? []
     const showGroupedCard = preset.isGrouped && childTasks.length > 1
 
     const handleConfirm = () => {
+      if (isFullFlowDemoMode()) {
+        const actionItemIds = showGroupedCard
+          ? childTasks.map((item) => item.actionItemId)
+          : preset.actionItemId
+            ? [preset.actionItemId]
+            : []
+        startFullFlowActionItems(preset.actionId, actionItemIds)
+        queryClient.invalidateQueries({
+          queryKey: ['action', preset.actionId, 'items'],
+        })
+      }
       msgApi.success('任务已下发执行')
       onClose()
     }

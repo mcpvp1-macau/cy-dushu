@@ -2,6 +2,10 @@ import {
   DEMO_WAYLINE_FOLDERS,
   DEMO_WAYLINE_TEMPLATES,
 } from '@/demo/situation/constants'
+import {
+  getFullFlowWaylineTemplates,
+  isFullFlowDemoMode,
+} from '@/demo/situation/full-flow-demo.store'
 import serverControlCenter from '@/service/servers/serverControlCenter'
 
 /** 演示模式统一响应包装 */
@@ -13,7 +17,10 @@ export const getWaylineTemplateList = (
   data: API_AIRLINE.req.ListFlightTaskTemplateRequest,
 ) => {
   if (globalConfig.demoMode) {
-    const rows = DEMO_WAYLINE_TEMPLATES.filter(
+    const sourceRows = isFullFlowDemoMode()
+      ? getFullFlowWaylineTemplates()
+      : DEMO_WAYLINE_TEMPLATES
+    const rows = sourceRows.filter(
       (e) =>
         (data.waylineTemplateId == null ||
           String(e.waylineTemplateId) === String(data.waylineTemplateId)) &&
