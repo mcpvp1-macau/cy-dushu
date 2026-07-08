@@ -129,7 +129,7 @@ const TanqiReportCard: FC<PropsType> = memo(({ report }) => {
         )}
 
         {executionPreset && (
-          <div className="flex justify-end">
+          <div className="flex justify-center">
             <Button
               size="small"
               type="primary"

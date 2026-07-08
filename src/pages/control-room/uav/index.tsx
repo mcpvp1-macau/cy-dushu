@@ -43,6 +43,7 @@ import useTrickMessage from './useTrickMessage'
 import ReturnHomeConfirm from './components/ReturnHomeConfirm'
 
 const ControlRoomUavMap = lazy(() => import('./components/ControlRoomMap'))
+const TanqiDemo = lazy(() => import('@/components/Tanqi/demo/TanqiDemo'))
 const DitingTanqi = lazy(() => import('./components/DitingTanqi/DitingTanqi'))
 const ControlRoomVideo = lazy(() => import('./components/ControlRoomVideo'))
 const RightOverlayDetail = lazy(
@@ -179,7 +180,7 @@ const PageControlRoomUav: FC<PropsType> = memo(() => {
         </div>
       ),
       overlay: <RightOverlayDetail />,
-      tanqi: <DitingTanqi />,
+      tanqi: globalConfig.useFixedWingDemo ? <TanqiDemo /> : <DitingTanqi />,
       event: <ControlRoomEventDetail />,
     }),
     [productKey, deviceId],

@@ -15,12 +15,14 @@ export type TanqiTaskExecutionPreset = {
   taskArea?: string
   deviceName: string
   waylineName: string
+  waylineType?: string
+  waypointCount?: number
+  waylineSummary?: string
   flightHeight?: number | string
   returnHeight?: number | string
   speed?: string
   status: string
   timing?: string
-  description?: string
 }
 
 const ACTION_STATUS_TEXT: Record<string, string> = {
@@ -57,6 +59,20 @@ const parseJson = <T>(value?: string | null): T | undefined => {
   } catch {
     return undefined
   }
+}
+
+const getWaypointCount = (wayline?: API_AIRLINE.domain.AIRLINE_TEMPLATE) => {
+  const parameters = parseJson<{
+    spaces?: {
+      positions?: unknown[]
+    }[]
+  }>(wayline?.parameters)
+
+  return parameters?.spaces?.reduce(
+    (count, space) =>
+      count + (Array.isArray(space.positions) ? space.positions.length : 0),
+    0,
+  )
 }
 
 const resolveActionId = (report: TanqiReport) => {
@@ -97,6 +113,7 @@ export const getTanqiTaskExecutionPreset = (
   const taskBasic = parseJson<{ globalTransitionalSpeed?: number | string }>(
     wayline?.taskBasic,
   )
+  const waypointCount = getWaypointCount(wayline)
 
   const taskTarget = getMetaValue(report, ['任务类型/目标', '任务区域/目标', '任务类型'])
   const taskArea = getMetaValue(report, ['任务区域', '任务区域/目标'])
@@ -113,12 +130,14 @@ export const getTanqiTaskExecutionPreset = (
     taskArea,
     deviceName:
       actionItem.deviceName || uniqueText(getColumnValues(report, ['装备名称'])),
-    waylineName: wayline?.taskName ?? '-',
+    waylineName: wayline?.taskName ?? '',
+    waylineType: wayline?.taskType,
+    waypointCount,
+    waylineSummary: waypointCount ? `${waypointCount} 个航点` : undefined,
     flightHeight: actionItem.flightHeight,
     returnHeight: actionItem.returnHeight,
     speed: speedFromReport || `${taskBasic?.globalTransitionalSpeed ?? '-'}m/s`,
     status: ACTION_STATUS_TEXT[action.status] ?? action.status,
     timing,
-    description: action.description || actionItem.description,
   }
 }

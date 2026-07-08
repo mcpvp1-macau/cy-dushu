@@ -52,7 +52,7 @@ export const DEMO_ACTIONS: API_ACTION.domain.ActionRecord[] = [
     gmtCreateBy: 'demo',
     gmtModifiedBy: 'demo',
     description:
-      '紫燕F15按既定航线执行机场区域日常巡逻，控制光电球转动，发现车辆和人员活动。',
+      '紫燕F15按既定航线执行机场区域日常巡逻，控制光电球完成重点区域观察。',
   },
   {
     id: 9002,
@@ -68,7 +68,7 @@ export const DEMO_ACTIONS: API_ACTION.domain.ActionRecord[] = [
     gmtCreateBy: 'demo',
     gmtModifiedBy: 'demo',
     description:
-      'DJI M400、DJI M300和DJI 30T对B区域展开五机协同精细侦察，搜索车辆和人员目标并更新态势。',
+      'DJI M400、DJI M300和DJI 30T对B区域展开五机协同精细侦察，持续回传区域态势。',
   },
   {
     id: 9003,
@@ -84,7 +84,7 @@ export const DEMO_ACTIONS: API_ACTION.domain.ActionRecord[] = [
     gmtCreateBy: 'demo',
     gmtModifiedBy: 'demo',
     description:
-      'DJI M350前出对A目标车辆进行打击，抛投手雷1次，命中目标，毁伤程度中，残余作战能力丧失部分能力。',
+      'DJI M350前出至A目标区域，按预设流程执行打击任务。',
   },
   {
     id: 9004,
@@ -100,7 +100,7 @@ export const DEMO_ACTIONS: API_ACTION.domain.ActionRecord[] = [
     gmtCreateBy: 'demo',
     gmtModifiedBy: 'demo',
     description:
-      'DJI M350对A目标车辆进行二次打击，抛投手雷1次，命中目标，毁伤程度高，残余作战能力完全丧失。',
+      'DJI M350再次前出至A目标区域，按预设流程执行复击任务。',
   },
   {
     id: 9005,
@@ -116,7 +116,7 @@ export const DEMO_ACTIONS: API_ACTION.domain.ActionRecord[] = [
     gmtCreateBy: 'demo',
     gmtModifiedBy: 'demo',
     description:
-      '派出机器狗进行递进侦察，查看敌方人员伤亡情况，获取现场图像后进行毁伤评估。',
+      '机器狗前出至A目标周边，执行递进侦察并采集现场图像。',
   },
   {
     id: 9006,
@@ -132,7 +132,7 @@ export const DEMO_ACTIONS: API_ACTION.domain.ActionRecord[] = [
     gmtCreateBy: 'demo',
     gmtModifiedBy: 'demo',
     description:
-      'CY-9A对C区域进行远域侦察，发现敌方入侵车辆1辆，系统进行定位与目标识别，更新态势地图。',
+      'CY-9A沿预设航线前往C区域，执行远域侦察与目标搜索。',
   },
   {
     id: 9007,
@@ -148,7 +148,7 @@ export const DEMO_ACTIONS: API_ACTION.domain.ActionRecord[] = [
     gmtCreateBy: 'demo',
     gmtModifiedBy: 'demo',
     description:
-      'CY-9A接收打击任务，对C区域跟踪目标进行打击，使用空地导弹1次，命中目标，车辆完全丧失能力。',
+      'CY-9A接收跟踪目标任务，按预设航线进入打击准备流程。',
   },
 ]
 
@@ -431,7 +431,7 @@ export const DEMO_ACTION_ITEMS: Record<
       },
       9101,
       'PROCESSING',
-      '紫燕F15执行机场区域日常巡逻，控制光电球转动并发现车辆和人员活动。',
+      '紫燕F15执行机场区域日常巡逻，控制光电球完成重点区域观察。',
       '2026-07-07 08:30:00',
       { flightHeight: 100, returnHeight: 120 },
     ),
@@ -451,7 +451,7 @@ export const DEMO_ACTION_ITEMS: Record<
       },
       9102,
       'PROCESSING',
-      '五架侦察无人机对B区域开展精细侦察，搜索车辆和人员目标并持续回传图像。',
+      '五架侦察无人机对B区域开展精细侦察，并持续回传区域图像。',
       '2026-07-07 09:00:00',
       {
         flightHeight: 100,
@@ -471,7 +471,7 @@ export const DEMO_ACTION_ITEMS: Record<
       },
       9103,
       'FINISHED',
-      'DJI M350前出对A目标车辆进行打击，抛投手雷1次并命中目标。',
+      'DJI M350前出至A目标区域，按预设流程执行打击任务。',
       '2026-07-07 09:30:00',
       { flightHeight: 80, returnHeight: 120 },
     ),
@@ -487,7 +487,7 @@ export const DEMO_ACTION_ITEMS: Record<
       },
       9104,
       'FINISHED',
-      'DJI M350对A目标车辆进行二次打击，毁伤程度高，残余作战能力完全丧失。',
+      'DJI M350再次前出至A目标区域，按预设流程执行复击任务。',
       '2026-07-07 10:00:00',
       { flightHeight: 80, returnHeight: 120 },
     ),
@@ -503,7 +503,7 @@ export const DEMO_ACTION_ITEMS: Record<
       },
       9105,
       'PROCESSING',
-      '机器狗从小无人机起飞点附近出发，对A目标实施递进侦察并采集毁伤评估图像。',
+      '机器狗从小无人机起飞点附近出发，对A目标周边实施递进侦察并采集现场图像。',
       '2026-07-07 10:30:00',
       { flightHeight: 30, returnHeight: 30 },
     ),

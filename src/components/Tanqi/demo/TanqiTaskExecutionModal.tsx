@@ -25,7 +25,9 @@ const TanqiTaskExecutionModal: FC<PropsType> = memo(
       ['任务类型/目标', preset.taskTarget],
       ['任务区域/目标', preset.taskArea],
       ['执行装备', preset.deviceName],
-      ['航线', preset.waylineName],
+      ['航线名称', preset.waylineName],
+      ['航线类型', preset.waylineType],
+      ['航线信息', preset.waylineSummary],
       ['飞行高度', formatHeight(preset.flightHeight)],
       ['返航高度', formatHeight(preset.returnHeight)],
       ['飞行速度', preset.speed],
@@ -70,11 +72,6 @@ const TanqiTaskExecutionModal: FC<PropsType> = memo(
             ))}
           </dl>
 
-          {preset.description && (
-            <div className="rounded bg-ground-3 px-3 py-2 text-xs leading-5 text-fore">
-              {preset.description}
-            </div>
-          )}
         </div>
       </XModal>
     )
