@@ -2,7 +2,7 @@ import { ArrowUpOutlined, AudioOutlined } from '@ant-design/icons'
 import { Button, Input, Tooltip } from 'antd'
 import {
   getSeatDemoAccount,
-  getSeatDemoRequiredSeat,
+  getSeatDemoNextReport,
   useSeatDemoStore,
 } from '@/demo/situation/seat-demo.store'
 import { getSeatDemoReportLabel } from '@/demo/situation/seat-demo.logic'
@@ -19,21 +19,22 @@ const SeatTanqiDemo: FC<PropsType> = memo(() => {
   const replyTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   const { seat, activeActionId } = state
-  const messages = state.messagesByActionAndSeat[`${activeActionId}:${seat}`] ?? []
-  const requiredSeat = getSeatDemoRequiredSeat(activeActionId)
+  const messages = activeActionId === null
+    ? []
+    : state.messagesByActionAndSeat[`${activeActionId}:${seat}`] ?? []
   const activeAccount = getSeatDemoAccount(seat)
-  const requiredAccount = requiredSeat
-    ? getSeatDemoAccount(requiredSeat)
-    : undefined
+  const nextReport = activeActionId === null
+    ? null
+    : getSeatDemoNextReport(activeActionId, seat)
   const canSubmit =
-    activeAccount.canUseTanqi && requiredSeat === seat && !thinking
+    activeAccount.canUseTanqi && activeActionId !== null && !!nextReport && !thinking
   const placeholder = !activeAccount.canUseTanqi
-    ? `${activeAccount.label}不提供檀棋交互。`
-    : !requiredSeat
+    ? ''
+    : activeActionId === null
+      ? '请先创建或选择行动。'
+      : !nextReport
       ? '当前环节报告已生成完成。'
-      : requiredSeat !== seat
-        ? `请切换至${requiredAccount?.label}继续当前环节。`
-        : '请输入演示指令。'
+      : '请输入演示指令。'
 
   useEffect(() => {
     const viewport = scrollAreaRef.current
@@ -49,7 +50,7 @@ const SeatTanqiDemo: FC<PropsType> = memo(() => {
 
   const handleSubmit = useMemoizedFn(() => {
     const message = inputValue.trim()
-    if (!message || !canSubmit) return
+    if (!message || !canSubmit || activeActionId === null) return
 
     setInputValue('')
     useSeatDemoStore.getState().appendMessage(activeActionId, seat, {
@@ -77,6 +78,10 @@ const SeatTanqiDemo: FC<PropsType> = memo(() => {
       setThinking(false)
     }, 900)
   })
+
+  if (!activeAccount.canUseTanqi) {
+    return <div className="size-full" />
+  }
 
   return (
     <div className="size-full overflow-hidden flex flex-col">
