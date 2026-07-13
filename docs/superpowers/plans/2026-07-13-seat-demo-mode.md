@@ -55,7 +55,7 @@ test('does not advance a shared cursor from the wrong seat', () => {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `node --test --experimental-strip-types tests/seat-demo.logic.test.ts`
+Run: `/Users/zhengzetec/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --test --experimental-strip-types tests/seat-demo.logic.test.ts`
 
 Expected: FAIL because `src/demo/situation/seat-demo.logic.ts` does not exist.
 
@@ -79,7 +79,7 @@ Implement `getNextSeatReport` to return the report only when the current cursor 
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `node --test --experimental-strip-types tests/seat-demo.logic.test.ts`
+Run: `/Users/zhengzetec/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --test --experimental-strip-types tests/seat-demo.logic.test.ts`
 
 Expected: 2 passing tests.
 
@@ -108,7 +108,7 @@ Add a third test in `tests/seat-demo.logic.test.ts` that imports `getNextSeatRep
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `node --test --experimental-strip-types tests/seat-demo.logic.test.ts`
+Run: `/Users/zhengzetec/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --test --experimental-strip-types tests/seat-demo.logic.test.ts`
 
 Expected: FAIL because the implementation does not yet return the next owned report after a valid cursor advancement.
 
@@ -118,7 +118,7 @@ Create `seat-demo.store.ts` with deep-cloned `DEMO_ACTIONS`, empty action-item s
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `node --test --experimental-strip-types tests/seat-demo.logic.test.ts`
+Run: `/Users/zhengzetec/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --test --experimental-strip-types tests/seat-demo.logic.test.ts`
 
 Expected: 3 passing tests.
 
@@ -153,7 +153,7 @@ Extend `tests/seat-demo.logic.test.ts` with a report sequence containing `task`,
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `node --test --experimental-strip-types tests/seat-demo.logic.test.ts`
+Run: `/Users/zhengzetec/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --test --experimental-strip-types tests/seat-demo.logic.test.ts`
 
 Expected: FAIL if `getNextSeatReport` does not gate every sequence position by seat.
 
@@ -163,7 +163,7 @@ Render `SeatDemoAccountMenu` in the existing top-right user popup only while `is
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `node --test --experimental-strip-types tests/seat-demo.logic.test.ts`
+Run: `/Users/zhengzetec/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --test --experimental-strip-types tests/seat-demo.logic.test.ts`
 
 Expected: all report ownership tests pass.
 
@@ -226,7 +226,7 @@ git commit -m "feat: isolate seat demo task dispatch"
 Run:
 
 ```bash
-node --test --experimental-strip-types tests/seat-demo.logic.test.ts
+/Users/zhengzetec/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node --test --experimental-strip-types tests/seat-demo.logic.test.ts
 /Users/zhengzetec/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/pnpm ts
 /Users/zhengzetec/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/pnpm lint
 /Users/zhengzetec/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/pnpm build:pages
