@@ -11,6 +11,8 @@ import AppSpin from '@/components/AppSpin'
 import Reconstruction2DResolver from './components/ActionRecon2DResolver'
 import ActionTanqi from './components/ActionTanqi/ActionTanqi'
 import { useSearchParams } from 'react-router-dom'
+import { useFullFlowDemoStore } from '@/demo/situation/full-flow-demo.store'
+import { useSeatDemoStore } from '@/demo/situation/seat-demo.store'
 
 type PropsType = unknown
 
@@ -20,8 +22,15 @@ const PageSituationActionDetail: FC<PropsType> = memo(() => {
   const { t } = useTranslation()
 
   const actionId = Number(actionIdParam)
+  const demoPageMode = useFullFlowDemoStore((s) => s.mode)
 
   const queryClient = useQueryClient()
+
+  useEffect(() => {
+    if (demoPageMode === 'seat-demo' && Number.isFinite(actionId)) {
+      useSeatDemoStore.getState().setActiveActionId(actionId)
+    }
+  }, [actionId, demoPageMode])
 
   const defaultActiveTab = /^\/action\/[^/]+\/source.*/.test(location.pathname)
     ? 'source'

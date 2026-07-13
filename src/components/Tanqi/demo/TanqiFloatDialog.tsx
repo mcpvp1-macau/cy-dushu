@@ -9,6 +9,8 @@ import { createPortal } from 'react-dom'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import TanqiDemo from './TanqiDemo'
+import SeatTanqiDemo from './SeatTanqiDemo'
+import { useFullFlowDemoStore } from '@/demo/situation/full-flow-demo.store'
 
 type PropsType = unknown
 
@@ -68,6 +70,7 @@ const TanqiFloatDialog: FC<PropsType> = memo(() => {
   const y = useTanqiDialogStore((s) => s.y)
   const width = useTanqiDialogStore((s) => s.width)
   const height = useTanqiDialogStore((s) => s.height)
+  const demoPageMode = useFullFlowDemoStore((s) => s.mode)
 
   /** 默认位置: 右上角（与原型一致, 避开右侧工具栏） */
   const left = x >= 0 ? x : Math.max(window.innerWidth - width - 64, 16)
@@ -173,7 +176,7 @@ const TanqiFloatDialog: FC<PropsType> = memo(() => {
       </div>
       {/* 会话内容 */}
       <div className="grow overflow-hidden">
-        <TanqiDemo />
+        {demoPageMode === 'seat-demo' ? <SeatTanqiDemo /> : <TanqiDemo />}
       </div>
       {/* 右下角缩放手柄 */}
       <div

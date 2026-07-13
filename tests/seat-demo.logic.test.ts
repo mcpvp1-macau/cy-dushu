@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   advanceSeatReportCursor,
+  getSeatDemoReportLabel,
   getNextSeatReport,
   getRequiredSeatForCursor,
   getSeatForReportType,
@@ -26,4 +27,11 @@ test('reveals the seat required for the next report after command advances', () 
 
   assert.equal(nextCursor, 1)
   assert.equal(getRequiredSeatForCursor(reports, nextCursor), 'intelligence')
+})
+
+test('uses seat-specific names for structured reports', () => {
+  assert.equal(getSeatDemoReportLabel('task'), '作战方案报告')
+  assert.equal(getSeatDemoReportLabel('damage'), '毁伤评估报告')
+  assert.equal(getSeatDemoReportLabel('evaluation'), '作战效能评估报告')
+  assert.equal(getSeatDemoReportLabel('situation'), '态势报告')
 })

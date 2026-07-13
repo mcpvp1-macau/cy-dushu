@@ -9,6 +9,8 @@ import {
 } from '@/components/Tanqi/demo/TanqiFloatDialog'
 import ActionTanqi from './ActionTanqi'
 import { RIGHT_OUTER_PANEL_WIDTH } from '../constants'
+import { useFullFlowDemoStore } from '@/demo/situation/full-flow-demo.store'
+import SeatTanqiDemo from '@/components/Tanqi/demo/SeatTanqiDemo'
 
 type PropsType = unknown
 
@@ -21,6 +23,7 @@ const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value))
 
 const RightActionTanqiWrapper: FC<PropsType> = memo(() => {
+  const demoPageMode = useFullFlowDemoStore((s) => s.mode)
   const handleDragOutStart = useMemoizedFn(
     (e: React.PointerEvent<HTMLDivElement>) => {
       if (e.button !== 0) {
@@ -106,7 +109,13 @@ const RightActionTanqiWrapper: FC<PropsType> = memo(() => {
         </div>
       </CloseableHeader>
       <div className="flex-1 overflow-hidden">
-        {globalConfig.useFixedWingDemo ? <TanqiDemo /> : <ActionTanqi />}
+        {demoPageMode === 'seat-demo' ? (
+          <SeatTanqiDemo />
+        ) : globalConfig.useFixedWingDemo ? (
+          <TanqiDemo />
+        ) : (
+          <ActionTanqi />
+        )}
       </div>
     </div>
   )

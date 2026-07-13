@@ -20,6 +20,8 @@ import {
   RIGHT_TOOLBAR_SHIFT_WITH_OUTER,
   RIGHT_TOOLBAR_RIGHT,
 } from '@/pages/right/constants'
+import { useFullFlowDemoStore } from '@/demo/situation/full-flow-demo.store'
+import { canSeatUseTanqi, useSeatDemoStore } from '@/demo/situation/seat-demo.store'
 
 type PropsType = unknown
 
@@ -31,10 +33,14 @@ const RightTools: FC<PropsType> = memo(() => {
   const updateIsFlightArea = useMapDrawStore((s) => s.updateIsFlightArea)
 
   const tanqiDialogOpen = useTanqiDialogStore((s) => s.open)
+  const demoPageMode = useFullFlowDemoStore((s) => s.mode)
+  const seat = useSeatDemoStore((s) => s.seat)
   const { pathname } = useLocation()
   // 行动详情页已有自己的檀棋入口, 避免重复
   const showTanqiEntry =
-    globalConfig.useFixedWingDemo && !pathname.includes('/action/')
+    globalConfig.useFixedWingDemo &&
+    !pathname.includes('/action/') &&
+    (demoPageMode !== 'seat-demo' || canSeatUseTanqi(seat))
   const rightToolsRight = rightOuterMode
     ? RIGHT_TOOLBAR_SHIFT_WITH_OUTER
     : RIGHT_TOOLBAR_RIGHT

@@ -70,7 +70,7 @@ export const SEAT_DEMO_ACCOUNTS: SeatDemoAccount[] = [
   {
     seat: 'intelligence',
     label: '情报处理席',
-    defaultPath: '/events',
+    defaultPath: '/situation/events',
     canUseTanqi: true,
   },
   {
@@ -82,7 +82,7 @@ export const SEAT_DEMO_ACCOUNTS: SeatDemoAccount[] = [
   {
     seat: 'display',
     label: '综合显示席',
-    defaultPath: '/',
+    defaultPath: '/source/UAV',
     canUseTanqi: false,
   },
 ]

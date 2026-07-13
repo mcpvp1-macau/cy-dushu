@@ -15,6 +15,8 @@ import ThemeSwitcher from './ThemeSwitcher'
 import LiqunTippy from '../ui/LiqunTippy'
 import { useFavicon } from 'ahooks'
 import { getFavicon } from '@/global/favicon-change'
+import { useFullFlowDemoStore } from '@/demo/situation/full-flow-demo.store'
+import { getSeatDemoAccount, useSeatDemoStore } from '@/demo/situation/seat-demo.store'
 
 type PropsType = unknown
 
@@ -23,6 +25,11 @@ const Header: FC<PropsType> = memo(() => {
   const vendorBackUrl = useUserStore((s) => s.vendorBackUrl)
   const logo = useUserStore((s) => s.logo || globalConfig.logo)
   const logoLoading = useUserStore((s) => s.logoLoading)
+  const demoPageMode = useFullFlowDemoStore((s) => s.mode)
+  const seat = useSeatDemoStore((s) => s.seat)
+  const displayName = demoPageMode === 'seat-demo'
+    ? getSeatDemoAccount(seat).label
+    : user?.name
 
   useFavicon(logo || globalConfig.logo || getFavicon())
 
@@ -73,7 +80,7 @@ const Header: FC<PropsType> = memo(() => {
         <LiqunTippy content={<UserDownMenu />} trigger={'click'}>
           <div className="flex items-center gap-1 text-sm cursor-pointer">
             <IconLoginUser className="text-lg" />
-            <span>{user?.name}</span>
+            <span>{displayName}</span>
             <CaretDownOutlined />
           </div>
         </LiqunTippy>

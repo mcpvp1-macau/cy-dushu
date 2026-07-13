@@ -24,8 +24,19 @@ const REPORT_SEAT: Record<SeatDemoReportType, SeatDemoSeat> = {
   inventory: 'intelligence',
 }
 
+const REPORT_LABEL: Record<SeatDemoReportType, string> = {
+  task: '作战方案报告',
+  situation: '态势报告',
+  damage: '毁伤评估报告',
+  evaluation: '作战效能评估报告',
+  inventory: '装备清单报告',
+}
+
 export const getSeatForReportType = (type: SeatDemoReportType) =>
   REPORT_SEAT[type]
+
+export const getSeatDemoReportLabel = (type: SeatDemoReportType) =>
+  REPORT_LABEL[type]
 
 export const getRequiredSeatForCursor = <T extends ReportLike>(
   reports: readonly T[],

@@ -159,7 +159,7 @@ Expected: FAIL if `getNextSeatReport` does not gate every sequence position by s
 
 - [ ] **Step 3: Write minimal implementation**
 
-Render `SeatDemoAccountMenu` in the existing top-right user popup only while `isSeatDemoMode()`. Route the five buttons to `/action`, `/wayline`, `/events`, `/sources?type=UAV`, and `/`. Hide the global and action-detail Tanqi launchers for `planning`, `management`, and `display`; render `SeatTanqiDemo` in the existing right panel and float dialog path. In the action-detail effect, call `setActiveActionId(actionId)` when seat mode is active. Keep all existing non-seat Tanqi components unchanged.
+Render `SeatDemoAccountMenu` in the existing top-right user popup only while `isSeatDemoMode()`. Route the five buttons to `/action`, `/wayline`, `/situation/events`, `/sources?type=UAV`, and `/source/UAV`. Hide the global and action-detail Tanqi launchers for `planning`, `management`, and `display`; render `SeatTanqiDemo` in the existing right panel and float dialog path. In the action-detail effect, call `setActiveActionId(actionId)` when seat mode is active. Keep all existing non-seat Tanqi components unchanged.
 
 - [ ] **Step 4: Run test to verify it passes**
 

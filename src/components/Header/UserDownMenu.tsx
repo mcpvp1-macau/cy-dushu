@@ -2,11 +2,14 @@ import useUserStore from '@/store/useUser.store'
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
 import { memo, type FC } from 'react'
 import { logout as logout4A } from '@/service/modules/user'
+import { useFullFlowDemoStore } from '@/demo/situation/full-flow-demo.store'
+import SeatDemoAccountMenu from './SeatDemoAccountMenu'
 
 type PropsType = unknown
 
 const UserDownMenu: FC<PropsType> = memo(() => {
   const username = useUserStore((s) => s.user?.name) ?? '-'
+  const demoPageMode = useFullFlowDemoStore((s) => s.mode)
   const logout = useUserStore((s) => s.logout)
 
   const handleLogoutClick = useMemoizedFn(async () => {
@@ -15,6 +18,10 @@ const UserDownMenu: FC<PropsType> = memo(() => {
   })
 
   const { t } = useTranslation()
+
+  if (demoPageMode === 'seat-demo') {
+    return <SeatDemoAccountMenu />
+  }
 
   return (
     <ul className="border border-solid border-ground-5 rounded text-fore">

@@ -5,12 +5,16 @@ import { RightOuterEnum } from '@/enum/right-mode'
 import useRightMode from '@/store/layout/useRightMode.store'
 import { useUnmount } from 'ahooks'
 import { createPortal } from 'react-dom'
+import { useFullFlowDemoStore } from '@/demo/situation/full-flow-demo.store'
+import { canSeatUseTanqi, useSeatDemoStore } from '@/demo/situation/seat-demo.store'
 
 type PropsType = unknown
 
 const ActionTanqi: FC<PropsType> = memo(() => {
   const rightOuterMode = useRightMode((s) => s.rightOuterMode)
   const tanqiDialogOpen = useTanqiDialogStore((s) => s.open)
+  const demoPageMode = useFullFlowDemoStore((s) => s.mode)
+  const seat = useSeatDemoStore((s) => s.seat)
 
   useUnmount(() => {
     if (rightOuterMode === RightOuterEnum.TANQI) {
@@ -27,6 +31,10 @@ const ActionTanqi: FC<PropsType> = memo(() => {
   }, [])
 
   if (!render) {
+    return null
+  }
+
+  if (demoPageMode === 'seat-demo' && !canSeatUseTanqi(seat)) {
     return null
   }
 
