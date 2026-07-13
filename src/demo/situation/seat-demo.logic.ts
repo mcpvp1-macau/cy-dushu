@@ -16,6 +16,8 @@ type ReportLike = {
   type: SeatDemoReportType
 }
 
+export const SEAT_DEMO_INPUT_PLACEHOLDER = '向檀棋发送消息。'
+
 const REPORT_SEAT: Record<SeatDemoReportType, SeatDemoSeat> = {
   task: 'command',
   situation: 'intelligence',

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
+  SEAT_DEMO_INPUT_PLACEHOLDER,
   advanceSeatReportCursor,
   appendUniqueNumber,
   getSeatDemoReportLabel,
@@ -9,6 +10,10 @@ import {
   getSeatReportCursorKey,
   getSeatForReportType,
 } from '../src/demo/situation/seat-demo.logic.ts'
+
+test('uses one neutral Tanqi message placeholder', () => {
+  assert.equal(SEAT_DEMO_INPUT_PLACEHOLDER, '向檀棋发送消息。')
+})
 
 test('routes command reports to the command seat', () => {
   assert.equal(getSeatForReportType('task'), 'command')

@@ -5,7 +5,10 @@ import {
   getSeatDemoNextReport,
   useSeatDemoStore,
 } from '@/demo/situation/seat-demo.store'
-import { getSeatDemoReportLabel } from '@/demo/situation/seat-demo.logic'
+import {
+  getSeatDemoReportLabel,
+  SEAT_DEMO_INPUT_PLACEHOLDER,
+} from '@/demo/situation/seat-demo.logic'
 import TanqiReportCard from './TanqiReportCard'
 
 type PropsType = unknown
@@ -28,13 +31,6 @@ const SeatTanqiDemo: FC<PropsType> = memo(() => {
     : getSeatDemoNextReport(activeActionId, seat)
   const canSubmit =
     activeAccount.canUseTanqi && activeActionId !== null && !!nextReport && !thinking
-  const placeholder = !activeAccount.canUseTanqi
-    ? ''
-    : activeActionId === null
-      ? '请先创建或选择行动。'
-      : !nextReport
-      ? '当前环节报告已生成完成。'
-      : '请输入演示指令。'
 
   useEffect(() => {
     const viewport = scrollAreaRef.current
@@ -124,7 +120,7 @@ const SeatTanqiDemo: FC<PropsType> = memo(() => {
       >
         <Input.TextArea
           autoSize={{ minRows: 2, maxRows: 5 }}
-          placeholder={placeholder}
+          placeholder={SEAT_DEMO_INPUT_PLACEHOLDER}
           variant="borderless"
           className="!px-1"
           value={inputValue}
