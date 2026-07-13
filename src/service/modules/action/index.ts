@@ -9,6 +9,7 @@ import {
 import {
   getSeatDemoAction,
   getSeatDemoActionList,
+  useSeatDemoStore,
 } from '@/demo/situation/seat-demo.store'
 import serverJingqi from '@/service/servers/serverJingqi'
 import dayjs from 'dayjs'
@@ -90,6 +91,14 @@ export const getAction = (params: { actionId?: number; eventId?: string }) => {
 export const addAction = (data: any) => {
   if (globalConfig.demoMode && isFullFlowDemoMode()) {
     const action = useFullFlowDemoStore.getState().addAction({
+      name: data.name,
+      type: data.type,
+      description: data.description,
+    })
+    return demoResp<{ actionId: number }>({ actionId: action.id })
+  }
+  if (globalConfig.demoMode && isSeatDemoMode()) {
+    const action = useSeatDemoStore.getState().addAction({
       name: data.name,
       type: data.type,
       description: data.description,

@@ -14,12 +14,14 @@ import { DictEnum } from '@/enum/dict'
 import normalizeActionType from '@/utils/action/normalizeActionType'
 import { useDebounceFn } from 'ahooks'
 import { useFullFlowDemoStore } from '@/demo/situation/full-flow-demo.store'
+import { useSeatDemoStore } from '@/demo/situation/seat-demo.store'
 
 type PropsType = unknown
 
 // 行动列表页面组件。
 const PageSituationAction: FC<PropsType> = memo(() => {
   const demoPageMode = useFullFlowDemoStore((state) => state.mode)
+  const seat = useSeatDemoStore((state) => state.seat)
   const [name, setName] = useState('')
 
   const [actionType, setActionType] = useState<string | undefined>(undefined)
@@ -191,7 +193,7 @@ const PageSituationAction: FC<PropsType> = memo(() => {
           </div>
         )}
       </ScrollArea>
-      {demoPageMode !== 'seat-demo' && (
+      {(demoPageMode !== 'seat-demo' || seat === 'command') && (
         <div className="mt-3 text-center">
           <AddAction />
         </div>

@@ -3,14 +3,14 @@ import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import {
   DEMO_ACTION_ITEMS,
-  DEMO_ACTIONS,
   DEMO_ACTION_TYPE,
   DEMO_WAYLINE_TEMPLATES,
 } from './constants'
 import {
   appendUniqueNumber,
-  getRequiredSeatForCursor,
-  getSeatForReportType,
+  getNextSeatReport,
+  getReportsForSeat,
+  getSeatReportCursorKey,
   type SeatDemoSeat,
 } from './seat-demo.logic'
 import { TANQI_NATURAL_SCRIPT } from '@/components/Tanqi/demo/natural-script'
@@ -34,20 +34,26 @@ type SeatDemoPhase = 'phase1' | 'phase2'
 
 type StateType = {
   seat: SeatDemoSeat
-  activeActionId: number
+  activeActionId: number | null
   actions: API_ACTION.domain.ActionRecord[]
-  reportCursorByActionId: Record<number, number>
-  completedPhases: Record<SeatDemoPhase, boolean>
+  reportCursorByActionAndSeat: Record<string, number>
+  completedCommandPhases: Record<SeatDemoPhase, boolean>
   finalReportGenerated: boolean
   messagesByActionAndSeat: Record<string, SeatDemoMessage[]>
   actionItemsByActionId: Record<number, API_ACTION_ITEM.domain.ActionItem[]>
   revealedWaylineTemplateIds: number[]
+  nextActionId: number
 }
 
 type ActionsType = {
   resetSeatDemo: () => void
   setSeat: (seat: SeatDemoSeat) => void
   setActiveActionId: (actionId: number) => void
+  addAction: (data: {
+    name: string
+    type: string
+    description?: string
+  }) => API_ACTION.domain.ActionRecord
   appendMessage: (
     actionId: number,
     seat: SeatDemoSeat,
@@ -115,23 +121,21 @@ const ACTION_PHASE: Record<string, SeatDemoPhase | undefined> = {
   [DEMO_ACTION_TYPE.REMOTE_RECON_GROUND_STRIKE]: 'phase2',
 }
 
-const cloneActions = () =>
-  JSON.parse(JSON.stringify(DEMO_ACTIONS)) as API_ACTION.domain.ActionRecord[]
-
 const emptyState = (): StateType => ({
   seat: 'command',
-  activeActionId: DEMO_ACTIONS[0]?.id ?? 9001,
-  actions: cloneActions(),
-  reportCursorByActionId: {},
-  completedPhases: { phase1: false, phase2: false },
+  activeActionId: null,
+  actions: [],
+  reportCursorByActionAndSeat: {},
+  completedCommandPhases: { phase1: false, phase2: false },
   finalReportGenerated: false,
   messagesByActionAndSeat: {},
   actionItemsByActionId: {},
   revealedWaylineTemplateIds: [],
+  nextActionId: 12001,
 })
 
 const messageKey = (actionId: number, seat: SeatDemoSeat) =>
-  `${actionId}:${seat}`
+  getSeatReportCursorKey(actionId, seat)
 
 const cloneReport = (report: TanqiReport, index: number): TanqiReport => {
   const nextReport = JSON.parse(JSON.stringify(report)) as TanqiReport
@@ -151,17 +155,24 @@ const countGeneratedReports = (state: StateType, type: TanqiReportType) =>
 const getActionPhase = (action?: API_ACTION.domain.ActionRecord) =>
   action ? ACTION_PHASE[action.type] : undefined
 
-const getNextRawReport = (state: StateType, actionId: number) => {
+const getNextRawReport = (
+  state: StateType,
+  actionId: number,
+  seat: SeatDemoSeat,
+) => {
   const action = state.actions.find((item) => item.id === actionId)
   const phase = getActionPhase(action)
   if (!phase) return null
 
-  const cursor = state.reportCursorByActionId[actionId] ?? 0
+  const cursorKey = getSeatReportCursorKey(actionId, seat)
+  const cursor = state.reportCursorByActionAndSeat[cursorKey] ?? 0
   const phaseReports = PHASE_REPORTS[phase]
-  if (cursor < phaseReports.length) return phaseReports[cursor]
+  const nextReport = getNextSeatReport(phaseReports, cursor, seat)
+  if (nextReport) return nextReport
 
-  return state.completedPhases.phase1 &&
-    state.completedPhases.phase2 &&
+  return seat === 'command' &&
+    state.completedCommandPhases.phase1 &&
+    state.completedCommandPhases.phase2 &&
     !state.finalReportGenerated
     ? PHASE_REPORTS.phase3[0]
     : null
@@ -204,6 +215,36 @@ export const useSeatDemoStore = create<StateType & ActionsType>()(
           set({ activeActionId })
         }
       },
+      addAction: (data) => {
+        const state = get()
+        const id = state.nextActionId
+        const now = dayjs().format('YYYY-MM-DD HH:mm:ss')
+        const record: API_ACTION.domain.ActionRecord = {
+          id,
+          actionId: id,
+          name: data.name,
+          status: 'PROCESSING',
+          eventId: '',
+          startTime: now,
+          type: data.type,
+          endTime: '',
+          gmtCreate: now,
+          gmtModified: now,
+          gmtCreateBy: 'seat-demo',
+          gmtModifiedBy: 'seat-demo',
+          description: data.description ?? '',
+        }
+        set({
+          actions: [record, ...state.actions],
+          activeActionId: id,
+          actionItemsByActionId: {
+            ...state.actionItemsByActionId,
+            [id]: [],
+          },
+          nextActionId: id + 1,
+        })
+        return record
+      },
       appendMessage: (actionId, seat, message) =>
         set((state) => {
           const key = messageKey(actionId, seat)
@@ -220,28 +261,30 @@ export const useSeatDemoStore = create<StateType & ActionsType>()(
         const phase = getActionPhase(action)
         if (!phase) return null
 
-        const cursor = state.reportCursorByActionId[actionId] ?? 0
+        const cursorKey = getSeatReportCursorKey(actionId, seat)
+        const cursor = state.reportCursorByActionAndSeat[cursorKey] ?? 0
         const phaseReports = PHASE_REPORTS[phase]
-        const rawReport = getNextRawReport(state, actionId)
-        if (!rawReport || getSeatForReportType(rawReport.type) !== seat) {
-          return null
-        }
+        const seatReports = getReportsForSeat(phaseReports, seat)
+        const rawReport = getNextRawReport(state, actionId, seat)
+        if (!rawReport) return null
 
         const report = cloneReport(
           rawReport,
           countGeneratedReports(state, rawReport.type) + 1,
         )
-        const nextCompletedPhases = { ...state.completedPhases }
-        if (cursor + 1 >= phaseReports.length) {
-          nextCompletedPhases[phase] = true
+        const nextCompletedCommandPhases = {
+          ...state.completedCommandPhases,
+        }
+        if (seat === 'command' && cursor + 1 >= seatReports.length) {
+          nextCompletedCommandPhases[phase] = true
         }
 
         set({
-          reportCursorByActionId: {
-            ...state.reportCursorByActionId,
-            [actionId]: cursor < phaseReports.length ? cursor + 1 : cursor,
+          reportCursorByActionAndSeat: {
+            ...state.reportCursorByActionAndSeat,
+            [cursorKey]: cursor < seatReports.length ? cursor + 1 : cursor,
           },
-          completedPhases: nextCompletedPhases,
+          completedCommandPhases: nextCompletedCommandPhases,
           finalReportGenerated:
             rawReport === PHASE_REPORTS.phase3[0] || state.finalReportGenerated,
         })
@@ -296,7 +339,7 @@ export const useSeatDemoStore = create<StateType & ActionsType>()(
     {
       name: 'seat-demo',
       storage: createJSONStorage(() => localStorage),
-      version: 1,
+      version: 2,
       migrate: () => emptyState(),
     },
   ),
@@ -315,21 +358,12 @@ export const getSeatDemoAction = (actionId?: number) =>
 export const getSeatDemoMessages = (actionId: number, seat: SeatDemoSeat) =>
   useSeatDemoStore.getState().messagesByActionAndSeat[messageKey(actionId, seat)] ?? []
 
-export const getSeatDemoRequiredSeat = (actionId: number) => {
+export const getSeatDemoNextReport = (
+  actionId: number,
+  seat: SeatDemoSeat,
+) => {
   const state = useSeatDemoStore.getState()
-  const action = state.actions.find((item) => item.id === actionId)
-  const phase = getActionPhase(action)
-  if (!phase) return null
-
-  const cursor = state.reportCursorByActionId[actionId] ?? 0
-  const phaseReports = PHASE_REPORTS[phase]
-  const rawReport = getNextRawReport(state, actionId)
-  if (!rawReport) return null
-
-  if (cursor < phaseReports.length) {
-    return getRequiredSeatForCursor(phaseReports, cursor)
-  }
-  return getSeatForReportType(rawReport.type)
+  return getNextRawReport(state, actionId, seat)
 }
 
 export const getSeatDemoWaylineTemplates = () => {
