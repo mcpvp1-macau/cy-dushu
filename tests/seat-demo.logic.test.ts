@@ -5,7 +5,8 @@ import {
   appendUniqueNumber,
   getSeatDemoReportLabel,
   getNextSeatReport,
-  getRequiredSeatForCursor,
+  getReportsForSeat,
+  getSeatReportCursorKey,
   getSeatForReportType,
 } from '../src/demo/situation/seat-demo.logic.ts'
 
@@ -15,19 +16,49 @@ test('routes command reports to the command seat', () => {
   assert.equal(getSeatForReportType('evaluation'), 'command')
 })
 
-test('does not advance a shared cursor from the wrong seat', () => {
-  const reports = [{ type: 'task' }, { type: 'situation' }] as const
+test('builds independent report sequences for the same phase', () => {
+  const reports = [
+    { type: 'task' },
+    { type: 'situation' },
+    { type: 'damage' },
+    { type: 'inventory' },
+  ] as const
 
-  assert.equal(getNextSeatReport(reports, 0, 'intelligence'), null)
-  assert.equal(advanceSeatReportCursor(reports, 0, 'intelligence'), 0)
+  assert.deepEqual(
+    getReportsForSeat(reports, 'command').map((item) => item.type),
+    ['task', 'damage'],
+  )
+  assert.deepEqual(
+    getReportsForSeat(reports, 'intelligence').map((item) => item.type),
+    ['situation', 'inventory'],
+  )
 })
 
-test('reveals the seat required for the next report after command advances', () => {
-  const reports = [{ type: 'task' }, { type: 'situation' }] as const
-  const nextCursor = advanceSeatReportCursor(reports, 0, 'command')
+test('advances each seat within its own filtered report sequence', () => {
+  const reports = [
+    { type: 'task' },
+    { type: 'situation' },
+    { type: 'damage' },
+  ] as const
 
-  assert.equal(nextCursor, 1)
-  assert.equal(getRequiredSeatForCursor(reports, nextCursor), 'intelligence')
+  assert.equal(getNextSeatReport(reports, 0, 'command')?.type, 'task')
+  assert.equal(getNextSeatReport(reports, 0, 'intelligence')?.type, 'situation')
+  assert.equal(advanceSeatReportCursor(reports, 0, 'command'), 1)
+  assert.equal(getNextSeatReport(reports, 1, 'command')?.type, 'damage')
+})
+
+test('uses a different cursor key for each seat in one action', () => {
+  assert.equal(getSeatReportCursorKey(12001, 'command'), '12001:command')
+  assert.equal(
+    getSeatReportCursorKey(12001, 'intelligence'),
+    '12001:intelligence',
+  )
+})
+
+test('returns an empty report sequence for seats without report content', () => {
+  const reports = [{ type: 'task' }, { type: 'situation' }] as const
+
+  assert.deepEqual(getReportsForSeat(reports, 'planning'), [])
 })
 
 test('uses seat-specific names for structured reports', () => {

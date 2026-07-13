@@ -41,6 +41,16 @@ export const getSeatDemoReportLabel = (type: SeatDemoReportType) =>
 export const appendUniqueNumber = (values: readonly number[], value: number) =>
   values.includes(value) ? [...values] : [...values, value]
 
+export const getReportsForSeat = <T extends ReportLike>(
+  reports: readonly T[],
+  seat: SeatDemoSeat,
+) => reports.filter((report) => getSeatForReportType(report.type) === seat)
+
+export const getSeatReportCursorKey = (
+  actionId: number,
+  seat: SeatDemoSeat,
+) => `${actionId}:${seat}`
+
 export const getRequiredSeatForCursor = <T extends ReportLike>(
   reports: readonly T[],
   cursor: number,
@@ -53,10 +63,7 @@ export const getNextSeatReport = <T extends ReportLike>(
   reports: readonly T[],
   cursor: number,
   seat: SeatDemoSeat,
-) => {
-  const report = reports[cursor]
-  return report && getRequiredSeatForCursor(reports, cursor) === seat ? report : null
-}
+) => getReportsForSeat(reports, seat)[cursor] ?? null
 
 export const advanceSeatReportCursor = <T extends ReportLike>(
   reports: readonly T[],
