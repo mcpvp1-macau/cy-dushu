@@ -3,6 +3,7 @@ import test from 'node:test'
 import {
   advanceSeatReportCursor,
   getNextSeatReport,
+  getRequiredSeatForCursor,
   getSeatForReportType,
 } from '../src/demo/situation/seat-demo.logic.ts'
 
@@ -17,4 +18,12 @@ test('does not advance a shared cursor from the wrong seat', () => {
 
   assert.equal(getNextSeatReport(reports, 0, 'intelligence'), null)
   assert.equal(advanceSeatReportCursor(reports, 0, 'intelligence'), 0)
+})
+
+test('reveals the seat required for the next report after command advances', () => {
+  const reports = [{ type: 'task' }, { type: 'situation' }] as const
+  const nextCursor = advanceSeatReportCursor(reports, 0, 'command')
+
+  assert.equal(nextCursor, 1)
+  assert.equal(getRequiredSeatForCursor(reports, nextCursor), 'intelligence')
 })

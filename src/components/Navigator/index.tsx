@@ -8,10 +8,11 @@ import MenuIconSchedule from '@/assets/icons/jsx/menus/MenuIconSchedule'
 import useUserStore from '@/store/useUser.store'
 import MenuIconEvents from '@/assets/icons/jsx/menus/MenuIconEvents'
 import { twMerge } from 'tailwind-merge'
-import { ExperimentOutlined, ReadOutlined } from '@ant-design/icons'
+import { ExperimentOutlined, ReadOutlined, TeamOutlined } from '@ant-design/icons'
 import { Tooltip } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { useFullFlowDemoStore } from '@/demo/situation/full-flow-demo.store'
+import { useSeatDemoStore } from '@/demo/situation/seat-demo.store'
 import { useTanqiDialogStore } from '@/components/Tanqi/demo/TanqiFloatDialog'
 import useRightMode from '@/store/layout/useRightMode.store'
 
@@ -77,6 +78,7 @@ const AppNavigator: FC<PropsType> = memo(() => {
   const demoMode = useFullFlowDemoStore((s) => s.mode)
   const setDemoMode = useFullFlowDemoStore((s) => s.setMode)
   const resetFullFlow = useFullFlowDemoStore((s) => s.resetFullFlow)
+  const resetSeatDemo = useSeatDemoStore((s) => s.resetSeatDemo)
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const renderMenus = useMemo(() => {
@@ -94,6 +96,7 @@ const AppNavigator: FC<PropsType> = memo(() => {
   const matches = useMatches()
   const usedKey = useMemo(() => new Set(matches.map((m) => m.id)), [matches])
   const isFullFlowMode = demoMode === 'full-flow'
+  const isSeatDemoMode = demoMode === 'seat-demo'
 
   const handleDemoModeToggle = () => {
     useTanqiDialogStore.getState().updateOpen(false)
@@ -103,6 +106,21 @@ const AppNavigator: FC<PropsType> = memo(() => {
     } else {
       resetFullFlow()
       setDemoMode('full-flow')
+    }
+    queryClient.invalidateQueries({ queryKey: ['actionList'], exact: false })
+    queryClient.invalidateQueries({ queryKey: ['waylineTemplates'] })
+    queryClient.invalidateQueries({ queryKey: ['airlineTemplate'] })
+    navigate('/action')
+  }
+
+  const handleSeatDemoModeToggle = () => {
+    useTanqiDialogStore.getState().updateOpen(false)
+    useRightMode.getState().updateRightOuterMode(null)
+    if (isSeatDemoMode) {
+      setDemoMode('standard')
+    } else {
+      resetSeatDemo()
+      setDemoMode('seat-demo')
     }
     queryClient.invalidateQueries({ queryKey: ['actionList'], exact: false })
     queryClient.invalidateQueries({ queryKey: ['waylineTemplates'] })
@@ -134,6 +152,29 @@ const AppNavigator: FC<PropsType> = memo(() => {
         ))}
       </ul>
       <ul className="flex flex-col items-center pb-3 gap-3">
+        <li>
+          <Tooltip
+            placement="right"
+            title={isSeatDemoMode ? '退出席位演示' : '切换席位演示'}
+          >
+            <button
+              type="button"
+              className={twMerge(
+                clsx(
+                  'w-[28px] h-[28px] bg-ground-3 border border-solid border-ground-5 rounded',
+                  'flex justify-center items-center text-fore cursor-pointer',
+                  'hover:border-fore transition-all duration-500',
+                  {
+                    'border-primary text-primary': isSeatDemoMode,
+                  },
+                ),
+              )}
+              onClick={handleSeatDemoModeToggle}
+            >
+              <TeamOutlined className="text-lg" />
+            </button>
+          </Tooltip>
+        </li>
         <li>
           <Tooltip
             placement="right"

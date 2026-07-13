@@ -9,7 +9,7 @@ import {
 import { TANQI_NATURAL_SCRIPT } from '@/components/Tanqi/demo/natural-script'
 import { TanqiReport, TanqiReportType } from '@/components/Tanqi/demo/report-data'
 
-export type DemoPageMode = 'standard' | 'full-flow'
+export type DemoPageMode = 'standard' | 'full-flow' | 'seat-demo'
 type FullFlowPhase = 'phase1' | 'phase2'
 
 export type FullFlowMessage = {
@@ -311,6 +311,9 @@ export const useFullFlowDemoStore = create<StateType & ActionsType>()(
 
 export const isFullFlowDemoMode = () =>
   useFullFlowDemoStore.getState().mode === 'full-flow'
+
+export const isSeatDemoMode = () =>
+  useFullFlowDemoStore.getState().mode === 'seat-demo'
 
 export const getFullFlowActionList = () => useFullFlowDemoStore.getState().actions
 

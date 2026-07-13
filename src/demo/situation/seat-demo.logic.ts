@@ -27,13 +27,21 @@ const REPORT_SEAT: Record<SeatDemoReportType, SeatDemoSeat> = {
 export const getSeatForReportType = (type: SeatDemoReportType) =>
   REPORT_SEAT[type]
 
+export const getRequiredSeatForCursor = <T extends ReportLike>(
+  reports: readonly T[],
+  cursor: number,
+) => {
+  const report = reports[cursor]
+  return report ? getSeatForReportType(report.type) : null
+}
+
 export const getNextSeatReport = <T extends ReportLike>(
   reports: readonly T[],
   cursor: number,
   seat: SeatDemoSeat,
 ) => {
   const report = reports[cursor]
-  return report && getSeatForReportType(report.type) === seat ? report : null
+  return report && getRequiredSeatForCursor(reports, cursor) === seat ? report : null
 }
 
 export const advanceSeatReportCursor = <T extends ReportLike>(
