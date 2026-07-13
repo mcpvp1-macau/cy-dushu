@@ -98,7 +98,7 @@ const SeatTanqiDemo: FC<PropsType> = memo(() => {
                 {item.report && (
                   <TanqiReportCard
                     report={item.report}
-                    actionId={activeActionId}
+                    actionId={activeActionId ?? undefined}
                     badgeLabel={getSeatDemoReportLabel(item.report.type)}
                   />
                 )}
