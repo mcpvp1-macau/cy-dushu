@@ -3,8 +3,13 @@ import {
   getFullFlowAction,
   getFullFlowActionList,
   isFullFlowDemoMode,
+  isSeatDemoMode,
   useFullFlowDemoStore,
 } from '@/demo/situation/full-flow-demo.store'
+import {
+  getSeatDemoAction,
+  getSeatDemoActionList,
+} from '@/demo/situation/seat-demo.store'
 import serverJingqi from '@/service/servers/serverJingqi'
 import dayjs from 'dayjs'
 
@@ -19,6 +24,8 @@ export const getActionList = (data: API_ACTION.req.ActionListReq = {}) => {
   if (globalConfig.demoMode) {
     const sourceRows = isFullFlowDemoMode()
       ? getFullFlowActionList()
+      : isSeatDemoMode()
+        ? getSeatDemoActionList()
       : DEMO_ACTIONS
     const typeFilter = Array.isArray(data.type)
       ? data.type
@@ -53,6 +60,8 @@ export const getAction = (params: { actionId?: number; eventId?: string }) => {
     const record =
       (isFullFlowDemoMode()
         ? getFullFlowAction(Number(params.actionId))
+        : isSeatDemoMode()
+          ? getSeatDemoAction(Number(params.actionId))
         : undefined) ??
       DEMO_ACTIONS.find((e) => e.id === Number(params.actionId)) ??
       DEMO_ACTIONS[0]

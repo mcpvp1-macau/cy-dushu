@@ -7,7 +7,12 @@ import {
   getFullFlowAction,
   getFullFlowPreparedActionItems,
   isFullFlowDemoMode,
+  isSeatDemoMode,
 } from '@/demo/situation/full-flow-demo.store'
+import {
+  getSeatDemoAction,
+  getSeatDemoPreparedActionItems,
+} from '@/demo/situation/seat-demo.store'
 import { formatWaylineDisplayName } from '@/utils/wayline'
 import { TanqiReport } from './report-data'
 
@@ -157,17 +162,21 @@ export const getTanqiTaskExecutionPreset = (
   if (!resolvedTask) return null
   const { waylineTemplateId } = resolvedTask
   const actionId =
-    currentActionId && isFullFlowDemoMode()
+    currentActionId && (isFullFlowDemoMode() || isSeatDemoMode())
       ? currentActionId
       : resolvedTask.actionId
 
   const action =
     currentActionId && isFullFlowDemoMode()
       ? getFullFlowAction(currentActionId)
+      : currentActionId && isSeatDemoMode()
+        ? getSeatDemoAction(currentActionId)
       : DEMO_ACTIONS.find((item) => item.actionId === actionId)
   const sourceActionItems =
     currentActionId && isFullFlowDemoMode()
       ? getFullFlowPreparedActionItems(currentActionId, waylineTemplateId)
+      : currentActionId && isSeatDemoMode()
+        ? getSeatDemoPreparedActionItems(currentActionId, waylineTemplateId)
       : (DEMO_ACTION_ITEMS[actionId] ?? [])
   const actionItems = sourceActionItems.filter(
     (item) => String(item.taskTplId) === String(waylineTemplateId),

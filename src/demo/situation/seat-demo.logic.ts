@@ -38,6 +38,9 @@ export const getSeatForReportType = (type: SeatDemoReportType) =>
 export const getSeatDemoReportLabel = (type: SeatDemoReportType) =>
   REPORT_LABEL[type]
 
+export const appendUniqueNumber = (values: readonly number[], value: number) =>
+  values.includes(value) ? [...values] : [...values, value]
+
 export const getRequiredSeatForCursor = <T extends ReportLike>(
   reports: readonly T[],
   cursor: number,

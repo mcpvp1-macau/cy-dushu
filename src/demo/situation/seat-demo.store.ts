@@ -2,11 +2,13 @@ import dayjs from 'dayjs'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import {
+  DEMO_ACTION_ITEMS,
   DEMO_ACTIONS,
   DEMO_ACTION_TYPE,
   DEMO_WAYLINE_TEMPLATES,
 } from './constants'
 import {
+  appendUniqueNumber,
   getRequiredSeatForCursor,
   getSeatForReportType,
   type SeatDemoSeat,
@@ -52,6 +54,7 @@ type ActionsType = {
     message: SeatDemoMessage,
   ) => void
   createNextReport: (actionId: number, seat: SeatDemoSeat) => TanqiReport | null
+  dispatchReportTask: (actionId: number, waylineTemplateId: number) => number[]
 }
 
 export const SEAT_DEMO_ACCOUNTS: SeatDemoAccount[] = [
@@ -164,6 +167,32 @@ const getNextRawReport = (state: StateType, actionId: number) => {
     : null
 }
 
+const cloneActionItemsForReport = (
+  actionId: number,
+  waylineTemplateId: number,
+  existingCount: number,
+): API_ACTION_ITEM.domain.ActionItem[] => {
+  const sourceActionId = waylineTemplateId >= 9106 ? 9002 : 9001
+  const now = dayjs().format('YYYY-MM-DD HH:mm:ss')
+  return (DEMO_ACTION_ITEMS[sourceActionId] ?? [])
+    .filter((item) => String(item.taskTplId) === String(waylineTemplateId))
+    .map((item, index) => {
+      const extra = item.extra ? JSON.parse(item.extra) : {}
+      if (extra.actionItemGroupId) {
+        extra.actionItemGroupId = `${extra.actionItemGroupId}-${actionId}`
+      }
+      return {
+        ...item,
+        id: actionId * 1000 + existingCount + index + 1,
+        actionId,
+        status: 'PENDING',
+        gmtCreate: now,
+        gmtModified: now,
+        extra: JSON.stringify(extra),
+      }
+    })
+}
+
 export const useSeatDemoStore = create<StateType & ActionsType>()(
   persist(
     (set, get) => ({
@@ -219,6 +248,50 @@ export const useSeatDemoStore = create<StateType & ActionsType>()(
 
         return report
       },
+      dispatchReportTask: (actionId, waylineTemplateId) => {
+        let dispatchedIds: number[] = []
+        set((state) => {
+          const currentItems = state.actionItemsByActionId[actionId] ?? []
+          const existingItems = currentItems.filter(
+            (item) => String(item.taskTplId) === String(waylineTemplateId),
+          )
+          const targetItems = existingItems.length
+            ? existingItems
+            : cloneActionItemsForReport(
+                actionId,
+                waylineTemplateId,
+                currentItems.length,
+              )
+          const targetIdSet = new Set(targetItems.map((item) => item.id))
+          const now = dayjs().format('YYYY-MM-DD HH:mm:ss')
+          dispatchedIds = [...targetIdSet]
+
+          const nextItems = (
+            existingItems.length ? currentItems : [...currentItems, ...targetItems]
+          ).map((item) =>
+            targetIdSet.has(item.id)
+              ? {
+                  ...item,
+                  status: 'PROCESSING',
+                  startTime: now,
+                  gmtModified: now,
+                }
+              : item,
+          )
+
+          return {
+            actionItemsByActionId: {
+              ...state.actionItemsByActionId,
+              [actionId]: nextItems,
+            },
+            revealedWaylineTemplateIds: appendUniqueNumber(
+              state.revealedWaylineTemplateIds,
+              waylineTemplateId,
+            ),
+          }
+        })
+        return dispatchedIds
+      },
     }),
     {
       name: 'seat-demo',
@@ -265,6 +338,27 @@ export const getSeatDemoWaylineTemplates = () => {
     ids.includes(item.waylineTemplateId),
   )
 }
+
+export const getSeatDemoActionItems = (actionId: number) =>
+  useSeatDemoStore.getState().actionItemsByActionId[actionId] ?? []
+
+export const getSeatDemoPreparedActionItems = (
+  actionId: number,
+  waylineTemplateId: number,
+) => {
+  const currentItems = getSeatDemoActionItems(actionId)
+  const existingItems = currentItems.filter(
+    (item) => String(item.taskTplId) === String(waylineTemplateId),
+  )
+  return existingItems.length
+    ? existingItems
+    : cloneActionItemsForReport(actionId, waylineTemplateId, currentItems.length)
+}
+
+export const dispatchSeatDemoReportTask = (
+  actionId: number,
+  waylineTemplateId: number,
+) => useSeatDemoStore.getState().dispatchReportTask(actionId, waylineTemplateId)
 
 export const canSeatUseTanqi = (seat: SeatDemoSeat) =>
   getSeatDemoAccount(seat).canUseTanqi

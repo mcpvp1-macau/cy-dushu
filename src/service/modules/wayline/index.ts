@@ -5,7 +5,9 @@ import {
 import {
   getFullFlowWaylineTemplates,
   isFullFlowDemoMode,
+  isSeatDemoMode,
 } from '@/demo/situation/full-flow-demo.store'
+import { getSeatDemoWaylineTemplates } from '@/demo/situation/seat-demo.store'
 import serverControlCenter from '@/service/servers/serverControlCenter'
 
 /** 演示模式统一响应包装 */
@@ -19,6 +21,8 @@ export const getWaylineTemplateList = (
   if (globalConfig.demoMode) {
     const sourceRows = isFullFlowDemoMode()
       ? getFullFlowWaylineTemplates()
+      : isSeatDemoMode()
+        ? getSeatDemoWaylineTemplates()
       : DEMO_WAYLINE_TEMPLATES
     const rows = sourceRows.filter(
       (e) =>

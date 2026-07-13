@@ -8,7 +8,9 @@ import { TanqiTaskExecutionPreset } from './task-execution'
 import {
   dispatchFullFlowReportTask,
   isFullFlowDemoMode,
+  isSeatDemoMode,
 } from '@/demo/situation/full-flow-demo.store'
+import { dispatchSeatDemoReportTask } from '@/demo/situation/seat-demo.store'
 
 type PropsType = {
   open: boolean
@@ -29,6 +31,10 @@ const TanqiTaskExecutionModal: FC<PropsType> = memo(
     const handleConfirm = () => {
       if (isFullFlowDemoMode()) {
         dispatchFullFlowReportTask(preset.actionId, preset.waylineTemplateId)
+      } else if (isSeatDemoMode()) {
+        dispatchSeatDemoReportTask(preset.actionId, preset.waylineTemplateId)
+      }
+      if (isFullFlowDemoMode() || isSeatDemoMode()) {
         queryClient.invalidateQueries({
           queryKey: ['action', preset.actionId, 'items'],
         })

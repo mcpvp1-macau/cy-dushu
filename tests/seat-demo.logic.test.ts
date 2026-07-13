@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   advanceSeatReportCursor,
+  appendUniqueNumber,
   getSeatDemoReportLabel,
   getNextSeatReport,
   getRequiredSeatForCursor,
@@ -34,4 +35,9 @@ test('uses seat-specific names for structured reports', () => {
   assert.equal(getSeatDemoReportLabel('damage'), '毁伤评估报告')
   assert.equal(getSeatDemoReportLabel('evaluation'), '作战效能评估报告')
   assert.equal(getSeatDemoReportLabel('situation'), '态势报告')
+})
+
+test('reveals a wayline identifier only once', () => {
+  assert.deepEqual(appendUniqueNumber([9102], 9102), [9102])
+  assert.deepEqual(appendUniqueNumber([9102], 9103), [9102, 9103])
 })
