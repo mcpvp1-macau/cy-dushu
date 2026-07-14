@@ -16,10 +16,16 @@ const FixedWingVideo: FC<PropsType> = memo(() => {
       {/* 左上角信息（与无人机驾驶舱视频页布局一致） */}
       <aside className="absolute top-3 left-3 flex gap-2 items-center z-10">
         <span className="h-7 px-3 text-xs rounded-sm bg-ground-3/80 text-fore flex items-center gap-1.5">
-          传感器模式：{sensorMode === 'tv' ? '电视' : '红外'}
+          传感器
+          <strong className="text-hightlight">
+            {sensorMode === 'tv' ? '电视' : '红外'}
+          </strong>
         </span>
         <span className="h-7 px-3 text-xs rounded-sm bg-ground-3/80 text-fore flex items-center gap-1.5">
-          红外电源：{laserOn ? '上电' : '下电'}
+          红外电源
+          <strong className="text-hightlight">
+            {laserOn ? '上电' : '下电'}
+          </strong>
         </span>
         <span className="h-7 px-3 text-xs rounded-sm bg-ground-3/80 text-fore flex items-center gap-1.5">
           模式
