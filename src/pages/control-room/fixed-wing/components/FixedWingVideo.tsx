@@ -1,12 +1,15 @@
 import useFixedWingDemoStore from '@/demo/fixed-wing/useFixedWingDemo.store'
 import { DisconnectOutlined } from '@ant-design/icons'
+import clsx from 'clsx'
 
 type PropsType = unknown
 
 /** 固定翼视频面板（视频流未接入, 保留传感器状态展示） */
 const FixedWingVideo: FC<PropsType> = memo(() => {
   const sensorMode = useFixedWingDemoStore((s) => s.sensorMode)
+  const workMode = useFixedWingDemoStore((s) => s.workMode)
   const laserOn = useFixedWingDemoStore((s) => s.laserOn)
+  const laserState = useFixedWingDemoStore((s) => s.laserState)
 
   return (
     <div className="size-full relative bg-black">
@@ -17,6 +20,22 @@ const FixedWingVideo: FC<PropsType> = memo(() => {
         </span>
         <span className="h-7 px-3 text-xs rounded-sm bg-ground-3/80 text-fore flex items-center gap-1.5">
           红外电源：{laserOn ? '上电' : '下电'}
+        </span>
+        <span className="h-7 px-3 text-xs rounded-sm bg-ground-3/80 text-fore flex items-center gap-1.5">
+          模式
+          <strong className="text-hightlight">{workMode}</strong>
+        </span>
+        <span className="h-7 px-3 text-xs rounded-sm bg-ground-3/80 text-fore flex items-center gap-1.5">
+          激光
+          <span
+            className={clsx(
+              'size-2 rounded-full',
+              laserOn ? 'bg-green-500' : 'bg-ground-2',
+            )}
+          />
+          <strong className="text-hightlight">
+            {laserOn ? laserState : '未上电'}
+          </strong>
         </span>
       </aside>
       {/* 视频占位 (设备已离线) */}
